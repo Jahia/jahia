@@ -88,43 +88,24 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
 
             Map<String, String> newsletterVersions = new HashMap<String, String>();
 
-            PaginatedList<Subscription> l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), null,false,0,0);
+            if (req.getParameter("testemail") != null) {
+                sendNewsletter(renderContext, node, req.getParameter("testemail"), req.getParameter("user"), req.getParameter("type"),
+                        LanguageCodeConverters.languageCodeToLocale(req.getParameter("locale")), "default",
+                        newsletterVersions);
+            } else {
+                PaginatedList<Subscription> l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), null,false,0,0);
 
-            for (Subscription subscription : l.getData()) {
-                Locale locale = LanguageCodeConverters.languageCodeToLocale(node.getResolveSite().getDefaultLanguage());
-                String user = "guest";
-                String type = "html";
-
-                final String key = locale + user + type;
-                if (!newsletterVersions.containsKey(key)) {
-                    String out = JCRTemplate.getInstance().doExecute(false, user, "live", locale, new JCRCallback<String>() {
-                        public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            try {
-                                String out = renderService.render(new Resource(node, "html", null, "page"), renderContext);
-                                out = htmlExternalizationService.externalize(out, renderContext);
-                                return out;
-                            } catch (RenderException e) {
-                                throw new RepositoryException(e);
-                            }
-                        }
-                    });
-                    newsletterVersions.put(key, out);
+                for (Subscription subscription : l.getData()) {
+                    sendNewsletter(renderContext, node, subscription.getEmail(), "guest", "html",
+                            LanguageCodeConverters.languageCodeToLocale(node.getResolveSite().getDefaultLanguage()), "live",
+                            newsletterVersions);
                 }
-                String out = newsletterVersions.get(key);
 
-                mailService.sendHtmlMessage(mailService.defaultSender(), subscription.getEmail(), null,null,node.getName(), out);
+                node.checkout();
+                node.setProperty(J_SCHEDULED, (Value) null);
+                node.setProperty(J_LAST_SENT, Calendar.getInstance());
+                node.getSession().save();
             }
-
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    session.checkout(node);
-                    node.setProperty(J_SCHEDULED, (Value) null);
-                    node.setProperty(J_LAST_SENT, Calendar.getInstance());
-                    session.save();
-
-                    return Boolean.TRUE;
-                }
-            });
         } catch (RepositoryException e) {
             logger.warn("Unable to update properties for node " + node.getPath(), e);
         }
@@ -133,6 +114,30 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
                 System.currentTimeMillis() - timer);
 
 	    return ActionResult.OK;
+    }
+
+    private void sendNewsletter(final RenderContext renderContext, final JCRNodeWrapper node, final String email,
+                                final String user, final String type, final Locale locale, final String workspace, Map<String, String> newsletterVersions)
+            throws RepositoryException {
+
+        final String key = locale + user + type;
+        if (!newsletterVersions.containsKey(key)) {
+            String out = JCRTemplate.getInstance().doExecute(false, user, workspace, locale, new JCRCallback<String>() {
+                public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        String out = renderService.render(new Resource(node, "html", null, "page"), renderContext);
+                        out = htmlExternalizationService.externalize(out, renderContext);
+                        return out;
+                    } catch (RenderException e) {
+                        throw new RepositoryException(e);
+                    }
+                }
+            });
+            newsletterVersions.put(key, out);
+        }
+        String out = newsletterVersions.get(key);
+
+        mailService.sendHtmlMessage(mailService.defaultSender(), email, null,null,node.getName(), out);
     }
 
     public void executeBackgroundAction(JCRNodeWrapper node) {

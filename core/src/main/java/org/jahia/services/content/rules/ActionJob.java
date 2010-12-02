@@ -47,8 +47,6 @@ import javax.jcr.RepositoryException;
 
 public class ActionJob extends BackgroundJob {
 	
-    public static final String GROUP = "ACTIONS_JOBS";
-    
     public static final String NAME_PREFIX = "ACTION_JOB_"; 
     
 	private static transient Logger logger = LoggerFactory.getLogger(ActionJob.class);

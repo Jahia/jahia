@@ -460,17 +460,19 @@ public class Service extends JahiaService {
     public void executeRuleLater(AddedNodeFact node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
-        final String jobName = "RULE_JOB_" + uuid + ruleToExecute;
-        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, RuleJob.class);
+        final JobDetail jobDetail = BackgroundJob.createJahiaJob("Rule job", RuleJob.class);
+        final String group = ruleToExecute + uuid;
+        jobDetail.setGroup(group);
+        final String jobName = jobDetail.getName();
         final JobDataMap map = jobDetail.getJobDataMap();
         map.put(RuleJob.JOB_RULE_TO_EXECUTE, ruleToExecute);
         map.put(RuleJob.JOB_NODE_UUID, uuid);
         map.put(RuleJob.JOB_USER, ((User) drools.getWorkingMemory().getGlobal("user")).getName());
         map.put(RuleJob.JOB_WORKSPACE, ((String) drools.getWorkingMemory().getGlobal("workspace")));
 
-        schedulerService.deleteJob(jobName, "RULES_JOBS");
+        schedulerService.deleteJob(jobName, BackgroundJob.getGroupName(RuleJob.class));
         try {
-            schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName));
+            schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName, group));
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
         }
@@ -479,15 +481,17 @@ public class Service extends JahiaService {
     public void executeActionLater(AddedNodeFact node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
-        final String jobName = ActionJob.NAME_PREFIX + uuid + actionToExecute;
-        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, ActionJob.class);
+        final JobDetail jobDetail = BackgroundJob.createJahiaJob("Action job", ActionJob.class);
+        final String group = actionToExecute + uuid;
+        jobDetail.setGroup(group);
+        String jobName = jobDetail.getName();
         final JobDataMap map = jobDetail.getJobDataMap();
         map.put(ActionJob.JOB_ACTION_TO_EXECUTE, actionToExecute);
         map.put(ActionJob.JOB_NODE_UUID, uuid);
         map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
-        schedulerService.deleteJob(jobName, ActionJob.GROUP);
+        schedulerService.deleteJob(jobName, BackgroundJob.getGroupName(ActionJob.class));
         try {
-            schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName));
+            schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName, group));
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
         }
@@ -495,16 +499,19 @@ public class Service extends JahiaService {
 
 	public void cancelActionExecution(AddedNodeFact node, final String actionToCancel,
 	        KnowledgeHelper drools) throws JahiaException, RepositoryException {
-		schedulerService.deleteJob(ActionJob.NAME_PREFIX + node.getNode().getIdentifier() + actionToCancel, ActionJob.GROUP);
+		List<JobDetail> l = schedulerService.getAllJobsDetails(actionToCancel+node.getNode().getIdentifier());
+        for (JobDetail jobDetail : l) {
+            schedulerService.deleteJob(jobDetail.getName(), jobDetail.getGroup());
+        }
 	}
 
-    private Trigger getTrigger(AddedNodeFact node, String propertyName, String jobName)
+    private Trigger getTrigger(AddedNodeFact node, String propertyName, String jobName, String group)
             throws ParseException, RepositoryException {
         final Property property = node.getNode().getProperty(propertyName);
         if (property.getType() == PropertyType.DATE) {
-            return new SimpleTrigger(jobName + "TRIGGER", "RULES_JOBS", property.getDate().getTime());
+            return new SimpleTrigger(jobName + "TRIGGER", group, property.getDate().getTime());
         } else {
-            return new CronTrigger(jobName + "TRIGGER", ActionJob.GROUP, property.getString());
+            return new CronTrigger(jobName + "TRIGGER", group, property.getString());
         }
     }
 

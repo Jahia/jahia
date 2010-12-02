@@ -491,11 +491,16 @@ public class SchedulerServiceImpl extends SchedulerService {
             return false;
         }
         try {
-            return scheduler.deleteJob(jobName, groupName);
+            final JobDetail jobDetail = scheduler.getJobDetail(jobName, groupName);
+            if (jobDetail != null) {
+                unscheduleJob(jobDetail);
+                return scheduler.deleteJob(jobName, groupName);
+            }
         } catch (SchedulerException se) {
             logger.debug(se.getMessage(), se);
             throw getJahiaException(se);
         }
+        return false;
     }
 
     public String[] getJobNames(String jobGroupName) throws JahiaException {

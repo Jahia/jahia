@@ -14,13 +14,13 @@
 
             <jcr:nodeProperty var="picture" node="${userNode}" name="j:picture"/>
             <c:if test="${not empty picture}">
-                <a href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html"><img
+                <%--a href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html"--%><img
                         src="${picture.node.thumbnailUrls['avatar_60']}"
                         alt="${userNode.properties.title.string} ${userNode.properties.firstname.string} ${userNode.properties.lastname.string}"
                         width="60"
-                        height="60"/></a>
+                        height="60"/><%--/a--%>
             </c:if>
-            <c:if test="${empty picture}"><a href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html"><img alt=""
+            <c:if test="${empty picture}"><%--a href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html"--%><img alt=""
                                                                                                     src="${url.currentModule}/css/img/userbig.png"/></a></c:if>
         </div>
     </div>
@@ -33,7 +33,7 @@
     <p>
         <span class="author">
             <c:if test="${createdBy.string ne ' guest '}">
-            <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a></c:if>
+            <%--a href="${url.base}/users/${createdBy.string}.html"--%>${createdBy.string}<%--/a--%></c:if>
             <c:if test="${createdBy.string eq ' guest '}">guest</c:if>:&nbsp;</span>
         ${content.string}
     </p>

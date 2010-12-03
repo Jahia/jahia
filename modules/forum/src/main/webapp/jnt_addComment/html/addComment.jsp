@@ -58,5 +58,5 @@
     <template:linker property="j:bindedComponent"/>
 </c:if>
 <c:if test="${not writeable}">
-    comments is only avaible in live
+    comments is only available in live
 </c:if>

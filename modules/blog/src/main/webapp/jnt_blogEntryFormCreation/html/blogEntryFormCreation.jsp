@@ -77,5 +77,5 @@
     </form>
 </c:if>
 <c:if test="${not writeable}">
-    blog post is only avaible in live
+    blog post is only available in live
 </c:if>

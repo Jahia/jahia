@@ -28,8 +28,9 @@
     </c:forTokens>
 </c:if>
 <ul class="genericListComment" id="${currentNode.UUID}">
-    <c:set var="commentsList" value="${currentNode.nodes}" />
-    <c:forEach items="${commentsList}" var="subchild">
+    <c:set target="${moduleMap}" property="commentsList" value="${currentNode.nodes}"/>
+    <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(currentNode.nodes)}"/>
+    <c:forEach items="${moduleMap.commentsList}" var="subchild" varStatus="status">
         <template:module node="${subchild}" template="comments"/>
     </c:forEach>
 </ul>

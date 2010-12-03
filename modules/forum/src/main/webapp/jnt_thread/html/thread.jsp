@@ -42,7 +42,7 @@
         </div>
         <c:set target="${moduleMap}" property="currentList" value="${currentNode.nodes}" />
         <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(currentNode.nodes)}" />
-        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status">
             <div class="forum-box forum-box-style${(status.index mod 2)+1}">
                 <template:module node="${subchild}" template="default"/>
             </div>

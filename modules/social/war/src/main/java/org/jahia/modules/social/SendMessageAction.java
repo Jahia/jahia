@@ -38,8 +38,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.bin.BaseAction;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -53,9 +53,7 @@ import org.json.JSONObject;
  *         Date: Jun 22, 2010
  *         Time: 9:53:53 AM
  */
-public class SendMessageAction implements Action {
-
-    private String name;
+public class SendMessageAction extends BaseAction {
 
     private SocialService socialService;
 
@@ -65,14 +63,6 @@ public class SendMessageAction implements Action {
 
     public void setSocialService(SocialService socialService) {
         this.socialService = socialService;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
@@ -87,9 +77,7 @@ public class SendMessageAction implements Action {
             return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, new JSONObject());
         }
 
-        JSONObject results = new JSONObject();
-
-        return new ActionResult(HttpServletResponse.SC_OK, null, results);
+        return ActionResult.OK_JSON;
     }
 
 }

@@ -33,6 +33,7 @@
 package org.jahia.services.templates;
 
 import org.slf4j.Logger;
+import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -62,7 +63,7 @@ import java.util.*;
  */
 class TemplatePackageRegistry {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageRegistry.class);
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageRegistry.class);
     
     private final static String MODULES_ROOT_PATH = "modules.";
 
@@ -179,11 +180,20 @@ class TemplatePackageRegistry {
     private Map<String, List<JahiaTemplatesPackage>> packagesPerModule = new HashMap<String, List<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
-    private Map<String,Action> actions = new HashMap<String,Action>();
+    private Map<String,Action> actions;
     private Map<String, BackgroundAction> backgroundActions = new HashMap<String,BackgroundAction>();
     private SettingsBean settingsBean;
 
     private List<JahiaTemplatesPackage> templatePackages;
+
+    /**
+     * Initializes an instance of this class.
+     */
+    @SuppressWarnings("unchecked")
+    public TemplatePackageRegistry() {
+	    super();
+	    actions = new CaseInsensitiveMap();
+    }
 
     /**
      * Checks if the specified template set is present in the repository.

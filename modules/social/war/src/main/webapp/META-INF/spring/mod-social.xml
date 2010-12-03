@@ -7,21 +7,13 @@
         <property name="socialService" ref="socialService"/>
     </bean>
 
-    <bean class="org.jahia.modules.social.RequestSocialConnectionAction" parent="socialAction">
-        <property name="name" value="requestsocialconnection"/>
-    </bean>
+    <bean class="org.jahia.modules.social.RequestSocialConnectionAction" parent="socialAction"/>
 
-    <bean class="org.jahia.modules.social.RemoveSocialConnectionAction" parent="socialAction">
-        <property name="name" value="removesocialconnection"/>
-    </bean>
+    <bean class="org.jahia.modules.social.RemoveSocialConnectionAction" parent="socialAction"/>
 
-    <bean class="org.jahia.modules.social.SendMessageAction" parent="socialAction">
-        <property name="name" value="sendmessage"/>
-    </bean>
+    <bean class="org.jahia.modules.social.SendMessageAction" parent="socialAction"/>
 
-    <bean class="org.jahia.modules.social.RemoveSocialMessageAction">
-        <property name="name" value="removesocialmessage"/>
-    </bean>
+    <bean class="org.jahia.modules.social.RemoveSocialMessageAction"/>
     
     <bean id="socialService" class="org.jahia.modules.social.SocialService">
         <!-- enable auto-splitting of user activities by year and month -->

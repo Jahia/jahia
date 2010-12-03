@@ -143,7 +143,7 @@
     <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="${url.context}/icons/delete.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.delete"/></a>
     <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><img src="${url.context}/icons/copy.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.copy"/></a>
-    <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img src="${url.context}/icons/cut.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.copy"/></a>
+    <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img src="${url.context}/icons/cut.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.cut"/></a>
     <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes();"><img src="${url.context}/icons/publish.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.publication"/></a>
     <a href="#" id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><img src="${url.context}/icons/clipboard.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.clipboard.reset"/></a>

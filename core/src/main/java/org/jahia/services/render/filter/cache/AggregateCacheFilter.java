@@ -39,6 +39,8 @@ import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.filter.Template;
 import org.slf4j.Logger;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -49,6 +51,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -70,7 +73,7 @@ import java.util.regex.Pattern;
  * @since : JAHIA 6.1
  *        Created : 8 janv. 2010
  */
-public class AggregateCacheFilter extends AbstractFilter {
+public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
     private ModuleCacheProvider cacheProvider;
     private ModuleGeneratorQueue generatorQueue;
@@ -90,10 +93,6 @@ public class AggregateCacheFilter extends AbstractFilter {
     
     private static long lastThreadDumpTime = 0L;
     private Byte[] threadDumpCheckLock = new Byte[0];
-
-    public static void clearNotCacheableFragmentCache() {
-        notCacheableFragment.clear();
-    }
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -605,5 +604,11 @@ public class AggregateCacheFilter extends AbstractFilter {
             ThreadMonitor tm = new ThreadMonitor();
             tm.dumpThreadInfo();
         }
+    }
+
+	public void onApplicationEvent(ApplicationEvent event) {
+	    if (event instanceof TemplatePackageRedeployedEvent) {
+	        notCacheableFragment.clear();
+	    }
     }   
 }

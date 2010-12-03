@@ -46,6 +46,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFormatException;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
@@ -279,6 +280,83 @@ public class SubscriptionService {
 	}
 
 	/**
+	 * Checks if the provided user is subscribed to the specified node.
+	 * 
+	 * @param subscribableIdentifier
+	 *            the UUID of the target subscribable node
+	 * @param user
+	 *            the user key for the registered users or an e-mail for
+	 *            non-registered users
+	 * @return <code>true</code> if the provided user is subscribed to the
+	 *         specified node
+	 */
+	public boolean isSubscribed(final String subscribableIdentifier, final String user) {
+		try {
+			return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
+				public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+					JCRNodeWrapper target = session.getNodeByIdentifier(subscribableIdentifier);
+					if (!target.isNodeType(JMIX_SUBSCRIBABLE)) {
+						logger.warn("The target node {} does not have the " + JMIX_SUBSCRIBABLE
+						        + " mixin." + " No subscriptions can be found.", target.getPath());
+						return false;
+					}
+
+					return isSubscribed(target.getPath(), user, session);
+				}
+			});
+		} catch (RepositoryException e) {
+			logger.error("Error checking subscription status for user '" + user + "' and node "
+			        + subscribableIdentifier, e);
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the provided user is subscribed to the specified node.
+	 * 
+	 * @param targetPath
+	 *            the path of the target subscribable node
+	 * @param user
+	 *            the user key for the registered users or an e-mail for
+	 *            non-registered users
+	 * @param session
+	 *            the JCR session
+	 * @return <code>true</code> if the provided user is subscribed to the
+	 *         specified node
+	 * @throws RepositoryException
+	 *             in case of a JCR error
+	 * @throws InvalidQueryException
+	 *             if the query syntax is invalid
+	 */
+	protected boolean isSubscribed(String targetPath, String user, JCRSessionWrapper session)
+	        throws InvalidQueryException, RepositoryException {
+		QueryManager queryManager = session.getWorkspace().getQueryManager();
+		if (queryManager == null) {
+			logger.error("Unable to obtain QueryManager instance");
+			return false;
+		}
+		String subscriber = user;
+		String provider = null;
+		if (user.charAt(0) == '{') {
+			// we deal with a registered user
+			subscriber = StringUtils.substringAfter(user, "}");
+			provider = StringUtils.substringBetween(user, "{", "}");
+		}
+
+		StringBuilder q = new StringBuilder(64);
+		q.append("select * from [" + JNT_SUBSCRIPTION + "] where [" + J_SUBSCRIBER + "]='")
+		        .append(subscriber).append("'");
+		if (provider != null) {
+			q.append(" and [" + J_PROVIDER + "]='").append(provider).append("'");
+		}
+		q.append(" and").append(" isdescendantnode([").append(targetPath).append("])");
+		Query query = queryManager.createQuery(q.toString(), Query.JCR_SQL2);
+		query.setLimit(1);
+		return query.execute().getNodes().hasNext();
+	}
+
+	/**
 	 * Resumes the specified subscriptions.
 	 * 
 	 * @param subscriptionIds
@@ -300,7 +378,6 @@ public class SubscriptionService {
 		changeSuspendedStatus(subscriptions, false);
 	}
 
-	
 	public void setUserManagerService(JahiaUserManagerService userManagerService) {
 		this.userManagerService = userManagerService;
 	}
@@ -497,14 +574,11 @@ public class SubscriptionService {
 						        "The target {} is locked and no subscriptions can be created. Skipping {} subscribers.",
 						        targetPath, subscribers.size());
 					}
-					
-					boolean allowUnregisteredUsers = target.hasProperty(J_ALLOW_UNREGISTERED_USERS) ? target.getProperty(J_ALLOW_UNREGISTERED_USERS).getBoolean() : true;
+
+					boolean allowUnregisteredUsers = target.hasProperty(J_ALLOW_UNREGISTERED_USERS) ? target
+					        .getProperty(J_ALLOW_UNREGISTERED_USERS).getBoolean() : true;
 					boolean checkoutDone = false;
-					QueryManager queryManager = session.getWorkspace().getQueryManager();
-					if (queryManager == null) {
-						logger.error("Unable to obtain QueryManager instance");
-						return Boolean.FALSE;
-					}
+
 					for (Map.Entry<String, Map<String, Object>> subscriber : subscribers.entrySet()) {
 						String username = subscriber.getKey();
 						String provider = null;
@@ -519,18 +593,7 @@ public class SubscriptionService {
 							continue;
 						}
 
-						StringBuilder q = new StringBuilder(64);
-						q.append(
-						        "select * from [" + JNT_SUBSCRIPTION + "] where [" + J_SUBSCRIBER
-						                + "]='").append(username).append("'");
-						if (provider != null) {
-							q.append(" and [" + J_PROVIDER + "]='").append(provider).append("'");
-						}
-						q.append(" and").append(" isdescendantnode([").append(targetPath)
-						        .append("])");
-						Query query = queryManager.createQuery(q.toString(), Query.JCR_SQL2);
-						query.setLimit(1);
-						if (!query.execute().getNodes().hasNext()) {
+						if (!isSubscribed(targetPath, subscriber.getKey(), session)) {
 							if (logger.isDebugEnabled()) {
 								logger.debug("Creating subscription to the {} for {}.", targetPath,
 								        subscriber.getKey());

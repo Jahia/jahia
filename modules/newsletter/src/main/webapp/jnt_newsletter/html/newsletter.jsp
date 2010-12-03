@@ -15,7 +15,7 @@
 
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="timepicker.js"/>
-<template:addResources type="javascript" resources="jquery-ui.datepicker.min.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.datepicker.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="css" resources="timepicker.css"/>
 
@@ -79,13 +79,13 @@
                                             pattern="yyyy-MM-dd HH:mm" var="date"/>
                         </c:when>
                         <c:otherwise>
-                            <c:set var="date">Not yet scheduled</c:set>
+                            <c:set var="date">???Not yet scheduled</c:set>
                         </c:otherwise>
                     </c:choose>
                     <div class="scheduleDate" id="j_scheduled${issue.identifier}" path="${issue.path}">${date}</div>
                 </c:if>
                 <c:if test="${empty issue.properties['j:lastPublished']}">
-                    Newsletter issue not yet published.
+                    ???Newsletter issue not yet published.
                 </c:if>
             </td>
             <td align="center">
@@ -124,40 +124,37 @@
     </p>
 
 </c:if>
-    <p><a href="#subscribe"
-          onclick="$.post('${url.base}${currentNode.path}.subscribe.do', null, null, 'json'); return false;">Subscribe
-        me</a></p>
 </c:if>
 
 
 
 <c:if test="${empty currentNode.properties['j:lastPublished']}">
-    Publish newsletter to add subscribers.
+    ???Publish newsletter to add subscribers.
 </c:if>
 
 <div>
         <fieldset>
-            <legend>Newsletter test</legend>
+            <legend>???Newsletter test</legend>
 
             <p>
-                <label class="left" for="testemail">Email</label>
+                <label class="left" for="testemail">???Email</label>
                 <input id="testemail" name="testemail">
             </p>
 
             <p>
-                <label class="left" for="user">User</label>
+                <label class="left" for="user">???User</label>
                 <input id="user" name="user" value="guest">
             </p>
 
             <p>
-                <label class="left" for="type">Type</label>
+                <label class="left" for="type">???Type</label>
                 <select id="type" name="type">
-                    <option value="html">HTML</option>
-                    <option value="txt">Text</option>
+                    <option value="html">???HTML</option>
+                    <option value="txt">???Text</option>
                 </select>
             </p>
             <p>
-                <label class="left" for="locale">Locale</label>
+                <label class="left" for="locale">???Locale</label>
                 <select id="locale" name="locale">
                     <c:forEach var="locale" items="${renderContext.site.languagesAsLocales}">
                         <option value="${locale}">${locale}</option>
@@ -165,8 +162,8 @@
                 </select>
             </p>
             <div class="divButton"><br/>
-                <input id="submitbutton" type="submit" tabindex="28" value="<fmt:message key='send'/>" class="button" id="submit" disabled=""/>
-                <input type="reset" tabindex="29" value="<fmt:message key='reset'/>" class="button" id="reset"/>
+                <input id="submitbutton" type="submit" tabindex="28" value="<fmt:message key='label.send'/>" class="button" id="submit" disabled=""/>
+                <input type="reset" tabindex="29" value="<fmt:message key='label.reset'/>" class="button" id="reset"/>
             </div>
         </fieldset>
 </div>

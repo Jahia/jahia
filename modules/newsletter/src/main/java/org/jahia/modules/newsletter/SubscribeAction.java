@@ -32,8 +32,7 @@
 
 package org.jahia.modules.newsletter;
 
-import static javax.servlet.http.HttpServletResponse.SC_PRECONDITION_FAILED;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static javax.servlet.http.HttpServletResponse.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +77,7 @@ public class SubscribeAction extends BaseAction {
 				// provided e-mail is empty
 				logger.warn("Invalid e-mail address '{}' provided for subscription to {}."
 				        + " Ignoring subscription request.", email, resource.getNode().getPath());
-				return ActionResult.BAD_REQUEST;
+				return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-email\"}"));
 			}
 			Map<String, Object> props = new HashMap<String, Object>();
 			
@@ -95,14 +94,14 @@ public class SubscribeAction extends BaseAction {
 				String userEmail = user.getProperty("j:email");
 				if (userEmail == null || !MailService.isValidEmailAddress(userEmail, false)) {
 					// no valid e-mail provided -> refuse
-					return new ActionResult(SC_PRECONDITION_FAILED, null, new JSONObject("{\"errorCode\":\"no-valid-email\"}"));
+					return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"no-valid-email\"}"));
 				}
 			}
 			
 			subscriptionService.subscribe(resource.getNode().getIdentifier(), user.getUserKey());
 		}
 
-		return ActionResult.OK;
+		return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"ok\"}"));
 	}
 
 	public void setAllowRegistrationWithoutEmail(boolean allowRegistrationWithoutEmail) {

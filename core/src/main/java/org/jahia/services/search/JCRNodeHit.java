@@ -42,12 +42,10 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
-import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -61,7 +59,7 @@ import org.jahia.services.render.RenderContext;
  */
 public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeHit.class);
+    private static Logger logger = LoggerFactory.getLogger(JCRNodeHit.class);
 
     private Map<String, JCRPropertyWrapper> propertiesFacade;
 

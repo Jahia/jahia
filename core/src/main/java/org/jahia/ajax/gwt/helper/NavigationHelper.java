@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
@@ -1031,7 +1032,7 @@ public class NavigationHelper {
             }
         }
         if (!node.getPath().equals("/")) {
-            n.setDisplayName(node.getDisplayableName());
+            n.setDisplayName(WordUtils.abbreviate(node.getDisplayableName(),70,90,"..."));
         }
         n.setNormalizedName(removeDiacritics(n.getName()));
 

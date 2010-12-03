@@ -285,7 +285,7 @@ siteURLPortOverride                                    = 0
 ### Development Mode #################################################
 ######################################################################
 # This setting can be used to activate/deactivate the development mode
-developmentMode                                         = false
+developmentMode                                         = true
 
 ######################################################################
 ### custom errorDocument site property  ##############################

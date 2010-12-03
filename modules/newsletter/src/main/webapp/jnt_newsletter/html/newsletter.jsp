@@ -79,13 +79,13 @@
                                             pattern="yyyy-MM-dd HH:mm" var="date"/>
                         </c:when>
                         <c:otherwise>
-                            <c:set var="date">???Not yet scheduled</c:set>
+                            <c:set var="date"><fmt:message key="label.issueNotScheduled"/></c:set>
                         </c:otherwise>
                     </c:choose>
                     <div class="scheduleDate" id="j_scheduled${issue.identifier}" path="${issue.path}">${date}</div>
                 </c:if>
                 <c:if test="${empty issue.properties['j:lastPublished']}">
-                    ???Newsletter issue not yet published.
+                    <fmt:message key="label.issueNotPublished"/>
                 </c:if>
             </td>
             <td align="center">
@@ -129,32 +129,32 @@
 
 
 <c:if test="${empty currentNode.properties['j:lastPublished']}">
-    ???Publish newsletter to add subscribers.
+    <fmt:message key="label.publishToAddSuscribers"/>
 </c:if>
 
 <div>
         <fieldset>
-            <legend>???Newsletter test</legend>
+            <legend><fmt:message key="label.testSending"/></legend>
 
             <p>
-                <label class="left" for="testemail">???Email</label>
+                <label class="left" for="testemail"><fmt:message key="label.email"/></label>
                 <input id="testemail" name="testemail">
             </p>
 
             <p>
-                <label class="left" for="user">???User</label>
+                <label class="left" for="user"><fmt:message key="label.user"/></label>
                 <input id="user" name="user" value="guest">
             </p>
 
             <p>
-                <label class="left" for="type">???Type</label>
+                <label class="left" for="type"><fmt:message key="label.format"/></label>
                 <select id="type" name="type">
-                    <option value="html">???HTML</option>
-                    <option value="txt">???Text</option>
+                    <option value="html"><fmt:message key="label.html"/></option>
+                    <option value="txt"><fmt:message key="label.text"/></option>
                 </select>
             </p>
             <p>
-                <label class="left" for="locale">???Locale</label>
+                <label class="left" for="locale"><fmt:message key="label.locale"/></label>
                 <select id="locale" name="locale">
                     <c:forEach var="locale" items="${renderContext.site.languagesAsLocales}">
                         <option value="${locale}">${locale}</option>

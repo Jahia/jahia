@@ -90,7 +90,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     
     static private ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
     static private ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
-    
+    static private ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
     private static long lastThreadDumpTime = 0L;
     private Byte[] threadDumpCheckLock = new Byte[0];
 
@@ -126,6 +126,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         final boolean cacheable = !notCacheableFragment.contains(key);
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
+        LinkedList<String> userKeysLinkedList = userKeys.get();
+        if(userKeysLinkedList==null) {
+            userKeysLinkedList = new LinkedList<String>();
+            userKeys.set(userKeysLinkedList);
+        }
+        userKeysLinkedList.push(perUserKey);
         if (cacheable) {
             try {
                 if (debugEnabled) {
@@ -500,35 +506,23 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
-        final Script script = (Script) renderContext.getRequest().getAttribute("script");
-        if (script != null) {
-            chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+        LinkedList<String> userKeysLinkedList = userKeys.get();
+        if (userKeysLinkedList != null) {
 
-            if (Boolean.valueOf(script.getTemplate().getProperties().getProperty(
-                    "cache.additional.key.useMainResourcePath", "false"))) {
-                resource.getModuleParams().put("module.cache.additional.key",
-                        renderContext.getMainResource().getNode().getPath());
+            String perUserKey = userKeysLinkedList.pop();
+            if (perUserKey.equals(acquiredSemaphore.get())) {
+                generatorQueue.getAvailableProcessings().release();
+                acquiredSemaphore.set(null);
             }
-        }
-        String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
-        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
-                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
-        
-        if (perUserKey.equals(acquiredSemaphore.get())) {
-            generatorQueue.getAvailableProcessings().release();
-            acquiredSemaphore.set(null);
-        }
-        
-        Set<CountDownLatch> latches = processingLatches.get();
-        Map<String, CountDownLatch> countDownLatchMap = generatorQueue.getGeneratingModules();
-        CountDownLatch latch = countDownLatchMap.get(perUserKey);
-        if (latches != null && latches.contains(latch)) {
-            latch.countDown();
-            synchronized (countDownLatchMap) {
-                latches.remove(countDownLatchMap.remove(perUserKey));
+
+            Set<CountDownLatch> latches = processingLatches.get();
+            Map<String, CountDownLatch> countDownLatchMap = generatorQueue.getGeneratingModules();
+            CountDownLatch latch = countDownLatchMap.get(perUserKey);
+            if (latches != null && latches.contains(latch)) {
+                latch.countDown();
+                synchronized (countDownLatchMap) {
+                    latches.remove(countDownLatchMap.remove(perUserKey));
+                }
             }
         }
     }

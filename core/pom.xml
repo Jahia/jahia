@@ -747,7 +747,18 @@
 		            <groupId>log4j</groupId>
 		            <artifactId>log4j</artifactId>
             	</exclusion>
+            	<exclusion>
+            		<!-- workaround for https://issues.apache.org/jira/browse/TIKA-556 -->
+            		<groupId>edu.ucar</groupId>
+            		<artifactId>netcdf</artifactId>
+            	</exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+			<!-- workaround for https://issues.apache.org/jira/browse/TIKA-556 -->
+			<groupId>edu.ucar</groupId>
+			<artifactId>netcdf</artifactId>
+			<version>4.2-min</version>
         </dependency>
 
         <dependency>

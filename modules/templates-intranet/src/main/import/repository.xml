@@ -266,7 +266,7 @@
                             <row column="2col115" jcr:primaryType="jnt:row" />
                         </pagecontent>
                         <row-col1 j:skin="skins.box3style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                            <summary jcr:primaryType="jnt:summary">
+                            <summary jcr:primaryType="jnt:summary" j:bindedComponent="/templateSets/templates-intranet/templates/base/summary/row-col1/listA">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Summary" jcr:primaryType="jnt:translation" />
                             </summary>
                             <listA jcr:primaryType="jnt:area" j:areaView="anchor" j:allowedTypes="" />

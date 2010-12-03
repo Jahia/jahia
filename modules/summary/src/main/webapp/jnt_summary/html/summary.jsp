@@ -5,6 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="faq.css"/>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>

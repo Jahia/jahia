@@ -33,7 +33,7 @@
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><a href="${url.base}${currentNode.path}.html"><c:out value="${title.string}"/></a></h2>
 
-    <p class="post-info"><fmt:message key="by"/> <c:set var="fields" value="${currentNode.propertiesAsString}"/>
+    <p class="post-info"><fmt:message key="blog.label.by"/> <c:set var="fields" value="${currentNode.propertiesAsString}"/>
         <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
         - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
         <!-- <a href="#"><fmt:message key="blog.category"/></a>    -->

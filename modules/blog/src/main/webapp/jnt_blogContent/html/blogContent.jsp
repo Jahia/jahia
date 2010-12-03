@@ -31,9 +31,23 @@
 <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
     <c:set var="blogHome" value="${url.current}"/>
 </c:if>
+<c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+    <form action="${url.base}${currentNode.path}" method="post"
+          id="jahia-blog-article-delete-${currentNode.UUID}">
+        <input type="hidden" name="redirectTo" value="${url.base}${jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page').path}"/>
+            <%-- Define the output format for the newly created node by default html or by redirectTo--%>
+        <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <input type="hidden" name="methodToCall" value="delete"/>
+    </form>
+</c:if>
 
 <div class="post">
-	<a class="postedit" href="${url.base}${currentResource.node.path}.blog-edit.html"><fmt:message key="blog.label.edit"/></a>
+    <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+        <span class="posteditdelete">
+            <a class="postdelete"  href="#" onclick="document.getElementById('jahia-blog-article-delete-${currentNode.UUID}').submit();"><fmt:message key="blog.label.delete"/></a>
+            <a class="postedit" href="${url.base}${currentResource.node.path}.blog-edit.html"><fmt:message key="blog.label.edit"/></a>
+        </span>
+    </c:if>
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><a href="${url.base}${currentNode.path}.html"><c:out value="${title.string}"/></a></h2>
 

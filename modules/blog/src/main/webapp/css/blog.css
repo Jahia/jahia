@@ -787,14 +787,23 @@ display:block
     background: url(img/blog/post.png ) no-repeat scroll 0.2em 0em;
 	padding-left:24px;
 }
-/* Post edit link */
+/* Post delete edit link */
 #bodywrapper a.postedit {
 	background:url(img/blog/postedit.png) no-repeat scroll 0 50% transparent;
 	clear:both;
 	display:inline;
 	margin-right:8px;
 	padding-left:20px;
-	float:right
 }
 
+#bodywrapper a.postdelete {
+	background:url(img/blog/postedit.png) no-repeat scroll 0 50% transparent;
+	clear:both;
+	display:inline;
+	margin-right:8px;
+	padding-left:20px;
+}
 
+#bodywrapper span.posteditdelete{
+	float:right;
+}

@@ -181,7 +181,7 @@ class TemplatePackageRegistry {
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String,Action> actions;
-    private Map<String, BackgroundAction> backgroundActions = new HashMap<String,BackgroundAction>();
+    private Map<String, BackgroundAction> backgroundActions;
     private SettingsBean settingsBean;
 
     private List<JahiaTemplatesPackage> templatePackages;
@@ -193,6 +193,7 @@ class TemplatePackageRegistry {
     public TemplatePackageRegistry() {
 	    super();
 	    actions = new CaseInsensitiveMap();
+	    backgroundActions = new CaseInsensitiveMap();
     }
 
     /**

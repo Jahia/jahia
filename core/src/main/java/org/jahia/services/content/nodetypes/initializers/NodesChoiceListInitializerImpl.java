@@ -99,10 +99,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 while (nodeIterator.hasNext()) {
                     JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
                     if (nodeWrapper.isNodeType(nodetype)) {
-                        String displayName = nodeWrapper.getName();
-                        if (nodeWrapper.hasProperty("jcr:title")) {
-                            displayName = nodeWrapper.getProperty("jcr:title").getString();
-                        }
+                        String displayName = nodeWrapper.getDisplayableName();
                         listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
                                 nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
                     }

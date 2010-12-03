@@ -34,9 +34,7 @@ package org.jahia.services.render;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.JahiaService;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
@@ -44,6 +42,8 @@ import org.jahia.services.render.filter.RenderServiceAware;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -56,7 +56,7 @@ import java.util.*;
  *
  * @author toto
  */
-public class RenderService extends JahiaService {
+public class RenderService {
 
     public static class RenderServiceBeanPostProcessor implements BeanPostProcessor {
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -68,16 +68,16 @@ public class RenderService extends JahiaService {
                 ((RenderServiceAware) bean).setRenderService(getInstance());
             }
             if(bean instanceof RenderFilter) {
-                getInstance().addFilter((RenderFilter)bean);
+				logger.info("Registering render filter {}", bean.getClass().getName());
+				getInstance().addFilter((RenderFilter) bean);
             }
             return bean;
         }
     }
+    
+    private static final Logger logger = LoggerFactory.getLogger(RenderService.class);
 
     private void addFilter(RenderFilter renderFilter) {
-        if(filters==null) {
-            filters = new LinkedList<RenderFilter>();
-        }
         filters.add(renderFilter);
     }
 
@@ -94,20 +94,11 @@ public class RenderService extends JahiaService {
         return instance;
     }
 
-    private JCRStoreService storeService;
     private JahiaTemplateManagerService templateManagerService;
 
     private Collection<ScriptResolver> scriptResolvers;
 
-    private List<RenderFilter> filters;
-
-    public JCRStoreService getStoreService() {
-        return storeService;
-    }
-
-    public void setStoreService(JCRStoreService storeService) {
-        this.storeService = storeService;
-    }
+    private List<RenderFilter> filters = new LinkedList<RenderFilter>();
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
@@ -115,10 +106,6 @@ public class RenderService extends JahiaService {
 
     public void setScriptResolvers(Collection<ScriptResolver> scriptResolvers) {
         this.scriptResolvers = scriptResolvers;
-    }
-
-    public void setFilters(List<RenderFilter> filters) {
-        this.filters = filters;
     }
 
     public void start() throws JahiaInitializationException {

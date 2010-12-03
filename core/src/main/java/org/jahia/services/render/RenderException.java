@@ -39,7 +39,9 @@ package org.jahia.services.render;
  */
 public class RenderException extends Exception {
 
-    /**
+    private static final long serialVersionUID = 2870495145167923971L;
+
+	/**
      * Initializes an instance of this class.
      * 
      * @param message

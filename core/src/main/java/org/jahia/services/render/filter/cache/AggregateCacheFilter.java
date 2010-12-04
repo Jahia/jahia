@@ -131,7 +131,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             userKeysLinkedList = new LinkedList<String>();
             userKeys.set(userKeysLinkedList);
         }
-        userKeysLinkedList.push(perUserKey);
+        userKeysLinkedList.add(0, perUserKey);
         if (cacheable) {
             try {
                 if (debugEnabled) {
@@ -509,7 +509,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList != null) {
 
-            String perUserKey = userKeysLinkedList.pop();
+            String perUserKey = userKeysLinkedList.remove(0);
             if (perUserKey.equals(acquiredSemaphore.get())) {
                 generatorQueue.getAvailableProcessings().release();
                 acquiredSemaphore.set(null);

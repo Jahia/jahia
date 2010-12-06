@@ -58,5 +58,12 @@
     <template:linker property="j:bindedComponent"/>
 </c:if>
 <c:if test="${not writeable}">
-    comments is only available in live
+    <c:choose>
+        <c:when test="${jcr:hasPermission(currentNode,'addChildNodes')}">
+            <fmt:message key="label.comments.only.live"/>            
+        </c:when>
+        <c:otherwise>
+            <!--- User does not have the rights to add comments--->
+        </c:otherwise>
+    </c:choose>
 </c:if>

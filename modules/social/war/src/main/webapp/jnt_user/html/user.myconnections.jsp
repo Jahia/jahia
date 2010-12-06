@@ -8,6 +8,7 @@
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addResources type="css" resources="jquery.autocomplete.css" />
 <template:addResources type="css" resources="simplesearchform.css" />
+<template:addResources type="css" resources="jahia.fancybox-form.css"/>
 <template:addResources type="css" resources="social.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
@@ -315,7 +316,7 @@
 
 <div class='clear'></div>
 
-<div id="divSendMessage">
+<div id="divSendMessage" class="jahiaFancyboxForm">
     <div class="popup-bodywrapper">
         <h3 class="boxmessage-title"><fmt:message key="message.new"/></h3>
 

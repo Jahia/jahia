@@ -1,0 +1,56 @@
+.jahiaFancyboxForm {
+    overflow: auto;
+	width: 500px;
+	height: 230px;
+	background-color: #eaeaea;
+}
+
+#bodywrapper .jahiaFancyboxForm {
+	display: none;
+}
+.jahiaFancyboxForm h3.boxmessage-title {
+	background:#666666 url(images/jahia-fancybox-form-header.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
+.jahiaFancyboxForm .formMessage {
+	margin:10px
+}
+.jahiaFancyboxForm .formMessage fieldset {
+	border:none
+}
+.jahiaFancyboxForm .formMessage legend {
+	display:none
+}
+.jahiaFancyboxForm .formMessage input,
+.jahiaFancyboxForm .formMessage textarea {
+	width:97%
+}
+.jahiaFancyboxForm .formMessage p{
+	clear:both;
+	margin:0.5em 0;
+	padding:0px
+}
+.jahiaFancyboxForm .formMessage .formMarginLeft{
+	margin:0.5em 0 0.5em 0;
+	padding:0;
+}
+.jahiaFancyboxForm .formMessage label.left,
+.jahiaFancyboxForm .formMessage label {
+	display:block;
+	font-weight:bold;
+
+}
+.jahiaFancyboxForm .formMessage input.radio,
+.jahiaFancyboxForm .formMessage input.checkbox,
+.jahiaFancyboxForm .formMessage input.button,
+.jahiaFancyboxForm .formMessage button {
+	width:auto;
+}

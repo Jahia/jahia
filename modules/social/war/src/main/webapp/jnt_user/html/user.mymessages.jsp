@@ -4,6 +4,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="css" resources="jahia.fancybox-form.css"/>
 <template:addResources type="css" resources="social.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
@@ -148,7 +149,7 @@
 
 <div class='clear'></div>
 
-<div id="divSendMessage">
+<div id="divSendMessage" class="jahiaFancyboxForm">
     <div class="popup-bodywrapper">
         <h3 class="boxmessage-title"><fmt:message key="message.new"/></h3>
 

@@ -483,25 +483,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     @Override
     public void handleError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
         super.handleError(renderContext, resource, chain, e);
-        final Script script = (Script) renderContext.getRequest().getAttribute("script");
-        if (script != null) {
-            chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+        LinkedList<String> userKeysLinkedList = userKeys.get();
+        if (userKeysLinkedList != null) {
+            String perUserKey = userKeysLinkedList.get(0);
 
-            if (Boolean.valueOf(script.getTemplate().getProperties().getProperty(
-                    "cache.additional.key.useMainResourcePath", "false"))) {
-                resource.getModuleParams().put("module.cache.additional.key",
-                        renderContext.getMainResource().getNode().getPath());
-            }
+            final Cache cache = cacheProvider.getCache();
+            cache.put(new Element(perUserKey, null));
         }
-        String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
-
-        final Cache cache = cacheProvider.getCache();
-        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
-                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
-        cache.put(new Element(perUserKey,null));
     }
 
     @Override

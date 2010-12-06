@@ -84,9 +84,9 @@ public class JobListPanel extends LayoutContainer {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
-        RpcProxy<BasePagingLoadResult<GWTJahiaJobDetail>> proxy = new RpcProxy<BasePagingLoadResult<GWTJahiaJobDetail>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaJobDetail>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaJobDetail>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaJobDetail>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> callback) {
                 if (loadConfig == null) {
                     service.getJobs(0, Integer.MAX_VALUE, null, null, activeGroupNames, callback);
                 } else if (loadConfig instanceof BasePagingLoadConfig) {

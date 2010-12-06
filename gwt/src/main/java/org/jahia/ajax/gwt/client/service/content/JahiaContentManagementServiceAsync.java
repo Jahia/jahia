@@ -32,8 +32,6 @@
 
 package org.jahia.ajax.gwt.client.service.content;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.*;
@@ -70,7 +68,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getEditConfiguration(String name, AsyncCallback<GWTEditConfiguration> async);
 
-    void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
+    void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
     void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, AsyncCallback<List<GWTJahiaNode>> async);
 
@@ -85,8 +83,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, AsyncCallback<List<GWTJahiaNode>> async);
 
     void searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void searchSQLForLoad(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
 
     void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
 
@@ -291,13 +287,13 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getActiveJobs(AsyncCallback<List<GWTJahiaJobDetail>> async);
 
-    void getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames, AsyncCallback<BasePagingLoadResult<GWTJahiaJobDetail>> async);
+    void getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> async);
 
     void deleteJob(String jobName, String groupName, AsyncCallback<Boolean> async);
 
     void getAllJobGroupNames(AsyncCallback<List<String>> async);
 
-    void getContentHistory(String nodeIdentifier, int offset, int limit, AsyncCallback<BasePagingLoadResult<GWTJahiaContentHistoryEntry>> async);
+    void getContentHistory(String nodeIdentifier, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaContentHistoryEntry>> async);
 
     void cleanReferences(String path, AsyncCallback callback);
     

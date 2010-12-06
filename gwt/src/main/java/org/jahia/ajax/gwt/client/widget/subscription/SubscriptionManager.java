@@ -35,6 +35,9 @@ package org.jahia.ajax.gwt.client.widget.subscription;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
@@ -43,6 +46,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 
@@ -62,10 +67,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -91,7 +92,7 @@ import com.google.gwt.user.client.ui.FileUpload;
  * 
  * @author Sergiy Shyrkov
  */
-public class SubscriptionManager extends Window {
+public class SubscriptionManager extends LayoutContainer {
 
 	private class ImportWindow extends Window {
 		public ImportWindow() {
@@ -205,24 +206,25 @@ public class SubscriptionManager extends Window {
 
 	private String source;
 
+    private Linker linker;
+
+    private EngineContainer container;
+
 	/**
 	 * Initializes an instance of this class.
 	 * 
-	 * @param source
-	 * @param eventType
-	 * @param siteId
 	 */
-	public SubscriptionManager(String nodeIdentifier) {
+	public SubscriptionManager(String nodeIdentifier, Linker linker, EngineContainer engineContainer) {
 		super();
 		this.source = nodeIdentifier;
-		setHeading(Messages.get("label.subscriptionManager", "Subscription Manager"));
-		setSize(900, 620);
-		setModal(true);
-		setResizable(true);
+		this.linker = linker;
 		setLayout(new FitLayout());
+
+        this.container = engineContainer;
+
+        container.setEngine(this, Messages.get("label.subscriptionManager", "Subscription Manager"), null, linker);
 	}
 
-	
 	private BasePagingLoader<PagingLoadResult<GWTSubscription>> createDataLoader() {
 		// data proxy
 		RpcProxy<PagingLoadResult<GWTSubscription>> proxy = new RpcProxy<PagingLoadResult<GWTSubscription>>() {
@@ -529,9 +531,9 @@ public class SubscriptionManager extends Window {
 		bottomToolBar.bind(loader);
 		panel.setBottomComponent(bottomToolBar);
 		
-        Button cancel = new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.get("label.close", "Close"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                hide();
+                container.closeEngine();
             }
         });
         panel.addButton(cancel) ;

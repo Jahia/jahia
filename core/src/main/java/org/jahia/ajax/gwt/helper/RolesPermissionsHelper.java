@@ -458,7 +458,7 @@ public class RolesPermissionsHelper {
         return gwtRole;
     }
 
-    public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context,
+    public BasePagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context,
                                                                JCRSiteNode currentSite)
             throws GWTJahiaServiceException {
         if (context != null) {

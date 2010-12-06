@@ -83,13 +83,13 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
         contentContainer.setScrollMode(Style.Scroll.AUTOY);
 
         // data proxy
-        RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
             @Override
-            protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
+            protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 if (gwtJahiaFolder != null) {
                     Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FILE_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:width", "j:height"), false, listAsyncCallback);
+                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FILE_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:width", "j:height"), false, -1, -1, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }

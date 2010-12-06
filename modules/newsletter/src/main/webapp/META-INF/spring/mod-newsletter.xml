@@ -16,4 +16,8 @@
         <property name="subscriptionService" ref="subscriptionService"/>
     </bean>
 
+    <bean class="org.jahia.modules.newsletter.UnsubscribeAction">
+        <property name="subscriptionService" ref="subscriptionService"/>
+    </bean>
+
 </beans>

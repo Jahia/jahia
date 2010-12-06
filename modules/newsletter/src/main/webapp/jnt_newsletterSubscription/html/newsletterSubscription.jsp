@@ -4,6 +4,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="newsletter" uri="http://www.jahia.org/tags/newsletter" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -68,6 +69,42 @@
 					dataType: "json"
 				});
 			}
+			function jahiaUnsubscribe(unsubscribeActionUrl, formData) {
+				$.ajax({
+					type: "POST",
+					url: unsubscribeActionUrl,
+					cache: false,
+					data: formData,
+					success: function (data, textStatus, xhr) {
+						var doClose=true;
+						if (data.status == "ok") {
+					    	<fmt:message key="messsage.subscriptions.successfullyUnsubscribed" var="msg"/>
+					        alert("${functions:escapeJavaScript(msg)}");
+						} else if (data.status == "invalid-user") {
+					    	<fmt:message key="messsage.subscriptions.notSubscribed" var="msg"/>
+					        alert("${functions:escapeJavaScript(msg)}");
+						} else {
+					        alert(data.status);
+						}
+						if (doClose) {
+							$.fancybox.close();
+						} else {
+							$.fancybox.hideActivity();
+						}
+					},
+					error: function (xhr, textStatus, errorThrown) {
+						if (xhr.status == 401) {
+					    	<fmt:message key="label.httpUnauthorized" var="msg"/>
+					        alert("${functions:escapeJavaScript(msg)}");
+							$.fancybox.close();
+						} else {
+							alert(xhr.status + ": " + xhr.statusText);
+							$.fancybox.close();
+						}
+					},
+					dataType: "json"
+				});
+			}
 			$(document).ready(function() {
 		        $(".showSubscriptionForm").fancybox({
 		            'centerOnScroll'     : true,
@@ -98,8 +135,14 @@
 		<p>
 			${subscribeTitle}
 		<c:if test="${renderContext.loggedIn}">
-			&nbsp;<a href="#subscribe" onclick="jahiaSubscribe('${url.base}${target.path}.subscribe.do'); return false;" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>		
-			</p>
+            <c:if test="${newsletter:hasSubscribed(target, renderContext.user)}">
+                &nbsp;<a href="#unsubscribe" onclick="jahiaUnsubscribe('${url.base}${target.path}.unsubscribe.do'); return false;" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='/icons/jnt_unsubscribe.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.unsubscribe'/>" height="16" width="16"/></a>
+                </p>
+            </c:if>
+            <c:if test="${not newsletter:hasSubscribed(target, renderContext.user)}">
+                &nbsp;<a href="#subscribe" onclick="jahiaSubscribe('${url.base}${target.path}.subscribe.do'); return false;" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
+                </p>
+            </c:if>
 		</c:if>
 		<c:if test="${not renderContext.loggedIn}">
 			&nbsp;<a href="#subscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
@@ -121,7 +164,7 @@
 				                    <input type="text" name="${fld.string}" id="subscribeForm-${currentNode.identifier}-${fldKey}" class="field" value="" tabindex="${20 + status.count}"/>
 				                </p>
 			                </c:forEach>
-			                
+
 			                <input class="button" type="button" value=" <fmt:message key="label.subscribe"/> "
 			                       tabindex="30" onclick="$('#subscribeForm-${currentNode.identifier}').submit();">
 			            </fieldset>

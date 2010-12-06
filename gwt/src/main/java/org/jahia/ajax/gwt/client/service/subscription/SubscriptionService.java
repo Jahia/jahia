@@ -86,7 +86,7 @@ public interface SubscriptionService extends RemoteService {
 	 * @param subscriptions
 	 *            the subscriptions to be removed
 	 */
-	void cancel(List<GWTSubscription> subscriptions);
+	void cancel(List<GWTSubscription> subscriptions) throws GWTJahiaServiceException;
 
 	/**
 	 * Returns a list of subscribers for the specified object.
@@ -97,7 +97,7 @@ public interface SubscriptionService extends RemoteService {
 	 *            the paging configuration, including limits and sorting
 	 * @return a list of subscribers for the specified object and event type
 	 */
-	PagingLoadResult<GWTSubscription> getSubscriptions(String uuid, PagingLoadConfig pagingConfig);
+	PagingLoadResult<GWTSubscription> getSubscriptions(String uuid, PagingLoadConfig pagingConfig) throws GWTJahiaServiceException;
 
 	/**
 	 * Resumes the specified subscriptions.
@@ -105,19 +105,17 @@ public interface SubscriptionService extends RemoteService {
 	 * @param subscriptions
 	 *            the subscriptions to be suspended
 	 */
-	void resume(List<GWTSubscription> subscriptions);
+	void resume(List<GWTSubscription> subscriptions) throws GWTJahiaServiceException;
 
 	/**
 	 * Creates subscription entries for the provided users and specified object.
 	 * 
 	 * @param uuid
 	 *            the node identifier to subscribe for
-	 * @param siteId
-	 *            the ID of the site
 	 * @param subscribers
 	 *            list of users to create subscription for
 	 */
-	void subscribe(String uuid, List<GWTJahiaUser> subscribers);
+	void subscribe(String uuid, List<GWTJahiaUser> subscribers) throws GWTJahiaServiceException;
 
 	/**
 	 * Creates subscription entries for the users, imported from the CSV file.
@@ -137,6 +135,6 @@ public interface SubscriptionService extends RemoteService {
 	 * @param subscriptions
 	 *            the subscriptions to be suspended
 	 */
-	void suspend(List<GWTSubscription> subscriptions);
+	void suspend(List<GWTSubscription> subscriptions) throws GWTJahiaServiceException;
 
 }

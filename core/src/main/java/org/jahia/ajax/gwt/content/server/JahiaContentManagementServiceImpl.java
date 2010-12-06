@@ -32,16 +32,12 @@
 
 package org.jahia.ajax.gwt.content.server;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -82,6 +78,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -252,8 +249,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return config;
     }
 
-    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
-                                               List<String> filters, List<String> fields, boolean checkSubChild)
+    public BasePagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
+                                               List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset)
             throws GWTJahiaServiceException {
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : navigation
@@ -262,7 +259,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 filteredList.add(n);
             }
         }
-        return new BaseListLoadResult<GWTJahiaNode>(filteredList);
+        final int length = filteredList.size();
+        if (offset > -1 && limit > 0) {
+            if (offset >= length) {
+                filteredList = new ArrayList<GWTJahiaNode>();
+            } else {
+                filteredList = new ArrayList<GWTJahiaNode>(filteredList.subList(offset, Math.min(length-1,offset+limit)));
+            }
+        }
+        return new BasePagingLoadResult<GWTJahiaNode>(filteredList, offset, length);
     }
 
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
@@ -347,7 +352,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         getSession().setAttribute(NavigationHelper.SAVED_OPEN_PATHS + repositoryType, paths);
     }
 
-    public PagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery searchQuery, int limit, int offset)
+    public BasePagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery searchQuery, int limit, int offset)
             throws GWTJahiaServiceException {
         // To do: find a better war to handle total size
         List<GWTJahiaNode> result = search.search(searchQuery, 0, 0, retrieveCurrentSession());
@@ -375,13 +380,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             });
         }
         return gwtJahiaNodes;
-    }
-
-    public ListLoadResult<GWTJahiaNode> searchSQLForLoad(String searchString, int limit, List<String> nodeTypes,
-                                                         List<String> mimeTypes, List<String> filters,
-                                                         List<String> fields) throws GWTJahiaServiceException {
-        return new BaseListLoadResult<GWTJahiaNode>(
-                search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters, fields, retrieveCurrentSession()));
     }
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
@@ -773,7 +771,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return navigation.getNodesByCategory(category.getPath(), retrieveCurrentSession());
     }
 
-    public PagingLoadResult<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category, int limit, int offset)
+    public BasePagingLoadResult<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category, int limit, int offset)
             throws GWTJahiaServiceException {
         // ToDo: handle pagination directly in the jcr
         final List<GWTJahiaNode> result = getNodesByCategory(category);
@@ -939,7 +937,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, int limit, int offset)
+    public BasePagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, int limit, int offset)
             throws GWTJahiaServiceException {
         try {
             List<GWTJahiaNodeVersion> result = navigation.getVersions(
@@ -1376,7 +1374,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return workflow.getWorkflowHistoryTasks(provider, processId, getUILocale());
     }
 
-    public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context)
+    public BasePagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context)
             throws GWTJahiaServiceException {
         return rolesPermissions.searchRolesInContext(search, offset, limit, context, getSite());
     }

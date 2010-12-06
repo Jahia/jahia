@@ -881,6 +881,32 @@
         <property name="icon" value="saveAsPortalComponent"/>
     </bean>
 
+    <bean id="Toolbar.Item.SubscriptionManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" >
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.subscription.SubscriptionManagerActionItem"/>
+        </property>
+        <property name="titleKey" value="label.subscriptionManager"/>
+        <property name="icon" value="subscriptionManager"/>
+    </bean>
+
+    <bean id="Toolbar.Item.TestNewsletter" class="org.jahia.services.uicomponents.bean.toolbar.Item" >
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.subscription.TestNewsletterActionItem"/>
+        </property>
+        <property name="titleKey" value="label.testNewsletter"/>
+        <property name="icon" value="testMail"/>
+    </bean>
+
+    <bean id="Toolbar.Item.SendNewsletter" class="org.jahia.services.uicomponents.bean.toolbar.Item" >
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.subscription.SendNewsletterActionItem"/>
+        </property>
+        <property name="titleKey" value="label.sendNewsletter"/>
+        <property name="icon" value="sendMail"/>
+    </bean>
+
+    
+
     <bean id="Toolbar.Item.FilePreview" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PreviewActionItem"/>

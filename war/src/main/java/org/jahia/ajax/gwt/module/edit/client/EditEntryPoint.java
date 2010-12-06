@@ -79,29 +79,5 @@ public class EditEntryPoint extends CommonEntryPoint {
                 }
             });
         }
-        exposeSubscriptionManager();
     }
-
-    protected native void exposeSubscriptionManager() /*-{
-	    if (!$wnd.jahia) {
-	        $wnd.jahia = new Object();
-	    }
-	    if ($wnd.jahia.openSubscriptionManager) {
-	    	return;
-	    }
-	    $wnd.jahia.openSubscriptionManager = function (sourceNode) { @org.jahia.ajax.gwt.module.edit.client.EditEntryPoint::openSubscriptionManager(Ljava/lang/String;)(sourceNode) };
-	
-	}-*/;
-
-	static void openSubscriptionManager(final String uuid) {
-		GWT.runAsync(new RunAsyncCallback() {
-			public void onSuccess() {
-				new SubscriptionManager(uuid).show();
-			}
-
-			public void onFailure(Throwable reason) {
-				Window.alert("Error: " + reason);
-			}
-		});
-	}
 }

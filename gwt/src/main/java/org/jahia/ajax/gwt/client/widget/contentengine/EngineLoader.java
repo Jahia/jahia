@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Hover;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
 
 import java.util.Map;
@@ -71,13 +72,7 @@ public class EngineLoader {
             }
 
             public void onSuccess() {
-                EngineContainer container;
-
-                if (!(GXT.isIE7 || GXT.isIE6)  && (linker instanceof EditLinker || linker instanceof SidePanelLinker)) {
-                    container = new EnginePanel();
-                } else {
-                    container = new EngineWindow();
-                }
+                EngineContainer container = createContainer(linker);
 
                 if (t == CREATE) {
                     new CreateContentEngine(linker, node, type, props, targetName, createInParentAndMoveBefore, container);
@@ -90,5 +85,15 @@ public class EngineLoader {
         });
 
 
+    }
+
+    public static EngineContainer createContainer(Linker linker) {
+        EngineContainer container;
+        if (!(GXT.isIE7 || GXT.isIE6)  && (linker instanceof EditLinker || linker instanceof SidePanelLinker)) {
+            container = new EnginePanel();
+        } else {
+            container = new EngineWindow();
+        }
+        return container;
     }
 }

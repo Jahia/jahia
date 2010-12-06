@@ -32,11 +32,10 @@
 
 package org.jahia.ajax.gwt.subscription.server;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
@@ -46,111 +45,109 @@ import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.services.notification.Subscription;
 import org.jahia.utils.PaginatedList;
 
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GWT subscription service implementation.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class SubscriptionServiceImpl extends JahiaRemoteService implements SubscriptionService {
 
-	private static final Map<String, String> FIELD_MAPPING;
+    private static final Map<String, String> FIELD_MAPPING;
 
-	static {
-		FIELD_MAPPING = new HashMap<String, String>(4);
-		FIELD_MAPPING.put("subscriber", "j:subscriber");
-		FIELD_MAPPING.put("provider", "j:provider");
-		FIELD_MAPPING.put("confirmed", "j:confirmed");
-		FIELD_MAPPING.put("suspended", "j:suspended");
-	}
+    static {
+        FIELD_MAPPING = new HashMap<String, String>(4);
+        FIELD_MAPPING.put("subscriber", "j:subscriber");
+        FIELD_MAPPING.put("provider", "j:provider");
+        FIELD_MAPPING.put("confirmed", "j:confirmed");
+        FIELD_MAPPING.put("suspended", "j:suspended");
+    }
 
-	private org.jahia.services.notification.SubscriptionService subscriptionService;
+    private org.jahia.services.notification.SubscriptionService subscriptionService;
 
-	public void cancel(List<GWTSubscription> subscriptions) {
-		subscriptionService.cancel(toSubscriptionIds(subscriptions));
-	}
+    public void cancel(List<GWTSubscription> subscriptions) throws GWTJahiaServiceException {
+        subscriptionService.cancel(toSubscriptionIds(subscriptions), retrieveCurrentSession("live", getLocale(), true));
+    }
 
-	public PagingLoadResult<GWTSubscription> getSubscriptions(String uuid,
-	        final PagingLoadConfig pagingConfig) {
+    public PagingLoadResult<GWTSubscription> getSubscriptions(String uuid, final PagingLoadConfig pagingConfig)
+            throws GWTJahiaServiceException {
 
-		PaginatedList<Subscription> subscriptions = subscriptionService.getSubscriptions(
-		        uuid,
-		        pagingConfig.getSortInfo() != null ? FIELD_MAPPING.get(pagingConfig.getSortInfo()
-		                .getSortField()) : null, pagingConfig.getSortInfo() != null ? pagingConfig
-		                .getSortInfo().getSortDir() == SortDir.ASC : false, pagingConfig
-		                .getOffset(), pagingConfig.getLimit());
+        PaginatedList<Subscription> subscriptions = subscriptionService.getSubscriptions(uuid,
+                pagingConfig.getSortInfo() != null ? FIELD_MAPPING.get(pagingConfig.getSortInfo().getSortField()) :
+                        null,
+                pagingConfig.getSortInfo() != null ? pagingConfig.getSortInfo().getSortDir() == SortDir.ASC : false,
+                pagingConfig.getOffset(), pagingConfig.getLimit(), retrieveCurrentSession("live", getLocale(), true));
 
-		final List<GWTSubscription> gwtSubscriptions = new LinkedList<GWTSubscription>();
-		for (Subscription subscription : subscriptions.getData()) {
-			gwtSubscriptions.add(toGWTSubscription(subscription));
-		}
+        final List<GWTSubscription> gwtSubscriptions = new LinkedList<GWTSubscription>();
+        for (Subscription subscription : subscriptions.getData()) {
+            gwtSubscriptions.add(toGWTSubscription(subscription));
+        }
 
-		return new BasePagingLoadResult<GWTSubscription>(gwtSubscriptions,
-		        pagingConfig.getOffset(), subscriptions.getTotalSize());
-	}
+        return new BasePagingLoadResult<GWTSubscription>(gwtSubscriptions, pagingConfig.getOffset(),
+                subscriptions.getTotalSize());
+    }
 
-	public void resume(List<GWTSubscription> subscriptions) {
-		subscriptionService.resume(toSubscriptionIds(subscriptions));
-	}
+    public void resume(List<GWTSubscription> subscriptions) throws GWTJahiaServiceException {
+        subscriptionService.resume(toSubscriptionIds(subscriptions), retrieveCurrentSession("live", getLocale(), true));
+    }
 
-	public void setSubscriptionService(
-	        org.jahia.services.notification.SubscriptionService subscriptionService) {
-		this.subscriptionService = subscriptionService;
-	}
+    public void setSubscriptionService(org.jahia.services.notification.SubscriptionService subscriptionService) {
+        this.subscriptionService = subscriptionService;
+    }
 
-	public void subscribe(final String uuid, final List<GWTJahiaUser> users) {
-		List<String> subscribers = new LinkedList<String>();
-		for (GWTJahiaUser user : users) {
-			subscribers.add(user.getUserKey());
-		}
-		subscriptionService.subscribe(uuid, subscribers);
-	}
+    public void subscribe(final String uuid, final List<GWTJahiaUser> users) throws GWTJahiaServiceException {
+        List<String> subscribers = new LinkedList<String>();
+        for (GWTJahiaUser user : users) {
+            subscribers.add(user.getUserKey());
+        }
+        subscriptionService.subscribe(uuid, subscribers, retrieveCurrentSession("live", getLocale(), true));
+    }
 
-	public void subscribe(String uuid, String subscribersFile) throws GWTJahiaServiceException {
+    public void subscribe(String uuid, String subscribersFile) throws GWTJahiaServiceException {
 
-		GWTFileManagerUploadServlet.Item fileItem = GWTFileManagerUploadServlet
-		        .getItem(subscribersFile);
-		if (fileItem == null) {
-			throw new GWTJahiaServiceException("Unable to locate uploaded file");
-		}
+        GWTFileManagerUploadServlet.Item fileItem = GWTFileManagerUploadServlet.getItem(subscribersFile);
+        if (fileItem == null) {
+            throw new GWTJahiaServiceException("Unable to locate uploaded file");
+        }
 
-		try {
-			subscriptionService.subscribe(uuid, fileItem.getFile());
-		} finally {
-			fileItem.dispose();
-		}
-	}
+        try {
+            subscriptionService.subscribe(uuid, fileItem.getFile(), retrieveCurrentSession("live", getLocale(), true));
+        } finally {
+            fileItem.dispose();
+        }
+    }
 
-	public void suspend(List<GWTSubscription> subscriptions) {
-		subscriptionService.suspend(toSubscriptionIds(subscriptions));
-	}
+    public void suspend(List<GWTSubscription> subscriptions) throws GWTJahiaServiceException {
+        subscriptionService
+                .suspend(toSubscriptionIds(subscriptions), retrieveCurrentSession("live", getLocale(), true));
+    }
 
-	protected GWTSubscription toGWTSubscription(Subscription subscription) {
-		GWTSubscription gwtBean = new GWTSubscription();
+    protected GWTSubscription toGWTSubscription(Subscription subscription) {
+        GWTSubscription gwtBean = new GWTSubscription();
 
-		gwtBean.setId(subscription.getId());
-		gwtBean.setSubscriber(subscription.getSubscriber());
-		gwtBean.setProvider(subscription.getProvider());
-		gwtBean.setFirstName(subscription.getFirstName());
-		gwtBean.setLastName(subscription.getLastName());
-		gwtBean.setEmail(subscription.getEmail());
-		gwtBean.setSuspended(subscription.isSuspended());
-		gwtBean.setConfirmed(subscription.isConfirmed());
-		gwtBean.setConfirmationKey(subscription.getConfirmationKey());
+        gwtBean.setId(subscription.getId());
+        gwtBean.setSubscriber(subscription.getSubscriber());
+        gwtBean.setProvider(subscription.getProvider());
+        gwtBean.setFirstName(subscription.getFirstName());
+        gwtBean.setLastName(subscription.getLastName());
+        gwtBean.setEmail(subscription.getEmail());
+        gwtBean.setSuspended(subscription.isSuspended());
+        gwtBean.setConfirmed(subscription.isConfirmed());
+        gwtBean.setConfirmationKey(subscription.getConfirmationKey());
 
-		return gwtBean;
-	}
+        return gwtBean;
+    }
 
-	private List<String> toSubscriptionIds(List<GWTSubscription> subscriptions) {
-		List<String> ids = new LinkedList<String>();
-		for (GWTSubscription subscription : subscriptions) {
-			ids.add(subscription.getId());
-		}
+    private List<String> toSubscriptionIds(List<GWTSubscription> subscriptions) {
+        List<String> ids = new LinkedList<String>();
+        for (GWTSubscription subscription : subscriptions) {
+            ids.add(subscription.getId());
+        }
 
-		return ids;
-	}
+        return ids;
+    }
 }

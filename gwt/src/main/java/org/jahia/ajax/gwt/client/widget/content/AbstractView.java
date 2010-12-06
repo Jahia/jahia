@@ -26,6 +26,7 @@ import java.util.List;
  * 
  */
 public abstract class AbstractView extends TopRightComponent {
+    protected Object root;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> loader;
     protected GWTManagerConfiguration configuration;
     protected List<GWTJahiaNode> hiddenSelection;
@@ -36,15 +37,15 @@ public abstract class AbstractView extends TopRightComponent {
     public AbstractView(final GWTManagerConfiguration config) {
         configuration = config;
         // data proxy
-        RpcProxy<ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
             @Override
-            protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
+            protected void load(Object config, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children with type " + configuration.getNodeTypes() + " of " +
-                        ((GWTJahiaNode) gwtJahiaFolder).getPath());
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder,
+                        ((GWTJahiaNode) root).getPath());
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) root,
                         configuration.getAllNodeTypes(),
                         configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
-                        false, listAsyncCallback);
+                        false, -1, -1, listAsyncCallback);
             }
         };
 
@@ -128,8 +129,9 @@ public abstract class AbstractView extends TopRightComponent {
 
     public void setContent(final Object root) {
         clearTable();
+        this.root = root;
         if (root != null) {
-            loader.load(root);
+            loader.load();
         }
     }
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Jahia Newsletter module tag library</description>
+    <display-name>Jahia Newsletter Service</display-name>
+    <tlib-version>6.5</tlib-version>
+    <short-name>newsletter</short-name>
+    <uri>http://www.jahia.org/tags/newsletter</uri>
+    <function>
+        <description>Has the user subscribed to the newsletter</description>
+        <name>hasSubscribed</name>
+        <function-class>org.jahia.modules.newsletter.NewsletterFunctions</function-class>
+        <function-signature>boolean hasSubscribed(org.jahia.services.content.JCRNodeWrapper,org.jahia.services.usermanager.JahiaUser)</function-signature>
+    </function>
+</taglib>

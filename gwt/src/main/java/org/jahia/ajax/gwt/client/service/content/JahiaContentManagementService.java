@@ -32,8 +32,6 @@
 
 package org.jahia.ajax.gwt.client.service.content;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -78,7 +76,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTEditConfiguration getEditConfiguration(String name) throws GWTJahiaServiceException;
 
-    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild) throws GWTJahiaServiceException;
+    public PagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild) throws GWTJahiaServiceException;
 
@@ -93,8 +91,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName) throws GWTJahiaServiceException;
-
-    public ListLoadResult<GWTJahiaNode> searchSQLForLoad(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields) throws GWTJahiaServiceException;
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException;
 
@@ -301,7 +297,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      * @return a Pagination-ready list of job details
      * @throws GWTJahiaServiceException
      */
-    BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames) throws GWTJahiaServiceException;
+    PagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames) throws GWTJahiaServiceException;
 
     /**
      * Deletes a job either already executed or not yet executed. Don't try to call this on a running job as the
@@ -331,7 +327,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      * @return a paging list of history entries for the specified node identifier.
      * @throws GWTJahiaServiceException
      */
-    BasePagingLoadResult<GWTJahiaContentHistoryEntry> getContentHistory(String nodeIdentifier, int offset, int limit) throws GWTJahiaServiceException;
+    PagingLoadResult<GWTJahiaContentHistoryEntry> getContentHistory(String nodeIdentifier, int offset, int limit) throws GWTJahiaServiceException;
 
     public void cleanReferences(String path) throws GWTJahiaServiceException;
     

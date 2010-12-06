@@ -290,9 +290,9 @@ public class GWTJahiaNodeTreeFactory {
                     listAsyncCallback.onSuccess(list);
                 } else {
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds,
-                                    new BaseAsyncCallback<ListLoadResult<GWTJahiaNode>>() {
-                                        public void onSuccess(ListLoadResult<GWTJahiaNode> result) {
+                            .lsLoad(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds, -1, -1,
+                                    new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+                                        public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
                                             listAsyncCallback.onSuccess(result.getData());
                                         }
 

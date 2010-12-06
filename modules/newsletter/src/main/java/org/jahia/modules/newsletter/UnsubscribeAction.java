@@ -32,15 +32,6 @@
 
 package org.jahia.modules.newsletter;
 
-import static javax.servlet.http.HttpServletResponse.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.BaseAction;
 import org.jahia.services.content.JCRCallback;
@@ -58,24 +49,30 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 /**
  * An action for subscribing a user to the target node.
  * 
  * @author Sergiy Shyrkov
  */
-public class SubscribeAction extends BaseAction {
+public class UnsubscribeAction extends BaseAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(SubscribeAction.class);
-
-	private boolean allowRegistrationWithoutEmail;
-
-	private boolean requireEmailConfirmation = true;
+	private static final Logger logger = LoggerFactory.getLogger(UnsubscribeAction.class);
 
 	private SubscriptionService subscriptionService;
 
-	public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
-	        final Resource resource, final Map<String, List<String>> parameters, URLResolver urlResolver)
-	        throws Exception {
+    public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
+            final Resource resource, final Map<String, List<String>> parameters, URLResolver urlResolver)
+            throws Exception {
 
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<ActionResult>() {
             public ActionResult doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -83,41 +80,27 @@ public class SubscribeAction extends BaseAction {
                     String email = getParameter(parameters, "email");
                     if (email != null) {
                         // consider as non-registered user
-                        if (email.length() == 0 || !MailService.isValidEmailAddress(email, false)) {
-                            // provided e-mail is empty
-                            logger.warn("Invalid e-mail address '{}' provided for subscription to {}."
-                                    + " Ignoring subscription request.", email, resource.getNode().getPath());
-                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-email\"}"));
-                        }
-                        Map<String, Object> props = new HashMap<String, Object>();
+                        String id = subscriptionService.getSubscription(resource.getNode().getIdentifier(), email, session);
 
-                        if (subscriptionService.getSubscription(resource.getNode().getIdentifier(), email, session) != null) {
-                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"already-subscribed\"}"));
-                        } else {
-                            subscriptionService.subscribe(resource.getNode().getIdentifier(), email, props, requireEmailConfirmation,
-                                    session);
+                        if (id == null) {
+                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-user\"}"));
                         }
+
+                        subscriptionService.cancel(id, session);
                     } else {
                         JahiaUser user = renderContext.getUser();
                         if (JahiaUserManagerService.isGuest(user)) {
                             // anonymous users are not allowed (and no email was provided)
-                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-email\"}"));
+                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-user\"}"));
                         }
 
-                        if (!allowRegistrationWithoutEmail) {
-                            // checking if the user has a valid e-mail address
-                            String userEmail = user.getProperty("j:email");
-                            if (userEmail == null || !MailService.isValidEmailAddress(userEmail, false)) {
-                                // no valid e-mail provided -> refuse
-                                return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"no-valid-email\"}"));
-                            }
+                        String id = subscriptionService.getSubscription(resource.getNode().getIdentifier(), user.getUsername(), session);
+
+                        if (id == null) {
+                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-user\"}"));
                         }
-                        if (subscriptionService.getSubscription(resource.getNode().getIdentifier(), user.getUserKey(),
-                                session) != null) {
-                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"already-subscribed\"}"));
-                        } else {
-                            subscriptionService.subscribe(resource.getNode().getIdentifier(), user.getUserKey(), session);
-                        }
+
+                        subscriptionService.cancel(id, session);
                     }
                     return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"ok\"}"));
                 } catch (JSONException e) {
@@ -126,14 +109,7 @@ public class SubscribeAction extends BaseAction {
                 }
             }
         });
-	}
 
-	public void setAllowRegistrationWithoutEmail(boolean allowRegistrationWithoutEmail) {
-		this.allowRegistrationWithoutEmail = allowRegistrationWithoutEmail;
-	}
-
-	public void setRequireEmailConfirmation(boolean requireEmailConfirmation) {
-	    this.requireEmailConfirmation = requireEmailConfirmation;
     }
 
 	public void setSubscriptionService(SubscriptionService subscriptionService) {

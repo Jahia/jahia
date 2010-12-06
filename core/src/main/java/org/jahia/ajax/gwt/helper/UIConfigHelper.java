@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
@@ -540,18 +541,17 @@ public class UIConfigHelper {
         gwtToolbarItem.setLayout(getLayoutAsInt(item.getLayout()));
         gwtToolbarItem.setProperties(pMap);
 
+        ActionItem actionItem = item.getActionItem();
+        try {
+            actionItem.getClass().getMethod("setLanguages", List.class);
+            BeanUtils.setProperty(actionItem, "languages", languages.getLanguages(site, jahiaUser, locale));
+            BeanUtils.setProperty(actionItem, "selectedLang", languages.getCurrentLang(locale));
+        } catch (NoSuchMethodException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+        }
 
-            ActionItem actionItem = item.getActionItem();
-            if (actionItem instanceof SiteLanguageSwitcherActionItem) {
-                ((LanguageSwitcherActionItem) actionItem).setSelectedLang(languages.getCurrentLang(locale));
-                ((LanguageSwitcherActionItem) actionItem).setLanguages(languages.getLanguages(site, jahiaUser, locale));
-            } else if (actionItem instanceof LanguageSwitcherActionItem) {
-                ((LanguageSwitcherActionItem) actionItem).setSelectedLang(languages.getCurrentLang(locale));
-                ((LanguageSwitcherActionItem) actionItem).setLanguages(languages.getLanguages(null, null, locale));
-            }
-
-            gwtToolbarItem.setActionItem(actionItem);
-//        }
+        gwtToolbarItem.setActionItem(actionItem);
 
         return gwtToolbarItem;
     }

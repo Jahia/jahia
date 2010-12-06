@@ -17,8 +17,6 @@
 <c:if test="${!renderContext.loggedIn || currentAliasUser.username eq 'guest'}">
 
     <script type="text/javascript">
-        document.onkeydown = keyDown;
-
         function keyDown(e) {
             if (!e) e = window.event;
             var ieKey = e.keyCode;
@@ -35,12 +33,12 @@
 
         <p>
             <label class="left" for="username"><fmt:message key="label.username"/></label>
-            <input type="text" value="" tabindex="1" maxlength="250" name="username" id="username"/>
+            <input type="text" value="" tabindex="1" maxlength="250" name="username" id="username" onkeydown="keyDown"/>
         </p>
 
         <p>
             <label class="left" for="password"><fmt:message key="label.password"/></label>
-            <input type="password" tabindex="2" maxlength="250" name="password" id="password"/>
+            <input type="password" tabindex="2" maxlength="250" name="password" id="password" onkeydown="keyDown"/>
         </p>
 
         <p>

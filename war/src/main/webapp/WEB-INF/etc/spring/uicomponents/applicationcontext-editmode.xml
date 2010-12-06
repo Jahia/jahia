@@ -591,7 +591,7 @@
 
     <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="topToolbar">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="editModeToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
@@ -651,6 +651,7 @@
                             </property>
                             <property name="visibility" value="$site/toolbar/cache"/>
                         </bean>
+
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <!-- <property name="icon" value="user"/> -->
                             <property name="visibility" value="$site/toolbar/user"/>
@@ -671,7 +672,7 @@
             </bean>
         </property>
         <property name="sidePanelToolbar">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="editModeSidePanelToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
@@ -689,7 +690,7 @@
             </bean>
         </property>
         <property name="mainModuleToolbar">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="editModeMainModuleToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
@@ -728,7 +729,7 @@
         </property>
 
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="editModeContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.EditContent"/>
@@ -745,6 +746,9 @@
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
+                        <ref bean="Toolbar.Item.SubscriptionManager"/>
+                        <ref bean="Toolbar.Item.TestNewsletter"/>
+                        <ref bean="Toolbar.Item.SendNewsletter"/>
                     </list>
                 </property>
                 <property name="visibility" value="$site/actions/edit-mode"/>

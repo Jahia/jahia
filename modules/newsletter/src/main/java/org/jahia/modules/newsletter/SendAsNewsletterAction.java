@@ -93,12 +93,20 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
                         LanguageCodeConverters.languageCodeToLocale(req.getParameter("locale")), "default",
                         newsletterVersions);
             } else {
-                PaginatedList<Subscription> l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), null,false,0,0);
-
+                PaginatedList<Subscription> l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), null,false,0,0,
+                        resource.getNode().getSession());
+                boolean personalized = false;
+                if (node.hasProperty("j:personalized")) {
+                    personalized = node.getProperty("j:personalized").getBoolean();
+                }
                 for (Subscription subscription : l.getData()) {
-                    sendNewsletter(renderContext, node, subscription.getEmail(), "guest", "html",
+                    final String username = "guest";
+                    
+                    if (subscription.getEmail() != null) {
+                    sendNewsletter(renderContext, node, subscription.getEmail(), username, "html",
                             LanguageCodeConverters.languageCodeToLocale(node.getResolveSite().getDefaultLanguage()), "live",
                             newsletterVersions);
+                    }
                 }
 
                 node.checkout();

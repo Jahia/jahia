@@ -62,9 +62,9 @@ public class HistoryPanel extends LayoutContainer {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
-        RpcProxy<BasePagingLoadResult<GWTJahiaContentHistoryEntry>> proxy = new RpcProxy<BasePagingLoadResult<GWTJahiaContentHistoryEntry>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaContentHistoryEntry>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaContentHistoryEntry>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaContentHistoryEntry>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaContentHistoryEntry>> callback) {
                 if (loadConfig == null) {
                     service.getContentHistory(node.getUUID(), 0, Integer.MAX_VALUE, callback);
                 } else if (loadConfig instanceof BasePagingLoadConfig) {

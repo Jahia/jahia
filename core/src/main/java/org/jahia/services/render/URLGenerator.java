@@ -272,6 +272,9 @@ public class URLGenerator {
             }
             return getEdit();
         } else if (context.isContributionMode()) {
+            if(context.getMainResource().getTemplate()!=null) {
+                return baseContribute+context.getMainResource().getNode().getPath()+"."+context.getMainResource().getTemplate()+".html";
+            }
             return contribute;
         } else {
             return Constants.LIVE_WORKSPACE.equals(resource.getWorkspace()) ? live : preview;

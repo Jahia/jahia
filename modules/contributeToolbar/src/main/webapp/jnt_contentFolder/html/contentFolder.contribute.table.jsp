@@ -72,7 +72,7 @@
                              src="${url.templatesPath}/default/images/icons/locked.gif">
                     </c:if>
 
-                    <a href="${url.base}${child.path}.html">${fn:escapeXml(child.displayableName)}</a>
+                    <a href="${url.base}${child.path}.editContent.html">${fn:escapeXml(child.displayableName)}</a>
                 </td>
                 <td>
                     <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>

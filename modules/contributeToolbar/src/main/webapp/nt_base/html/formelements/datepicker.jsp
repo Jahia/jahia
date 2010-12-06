@@ -25,17 +25,23 @@
 <c:if test="${not empty workflowTaskFormTask}">
     <c:set var="now" value="${workflowTaskFormTask.variables[propertyDefinition.name][0].valueAsDate}"/>
 </c:if>
-<label class="left" for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
-<input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
+<label class="left"
+       for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
+<input type="hidden" name="${propertyDefinition.name}"
+       id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <input type="text" id="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" readonly="readonly"
        value="<c:if test="${not empty now}"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/></c:if>"/>
-<ui:dateSelector fieldId="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" time="${dateTimePicker}">
+<ui:dateSelector fieldId="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                 time="${dateTimePicker}">
     {dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'}
 </ui:dateSelector>
 <script>
-    $("#${currentNode.name}${scriptTypeName}").submit(function() {
-        var datePicked = $("#datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val().trim().replace(" ","T");
-        $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(datePicked);
-        return false;
+    $(document).ready(function() {
+        $("#${jsNodeName}${scriptTypeName}").submit(function() {
+            var datePicked = $("#datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val().trim().replace(" ",
+                    "T");
+            $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(datePicked);
+            return false;
+        })
     });
 </script>

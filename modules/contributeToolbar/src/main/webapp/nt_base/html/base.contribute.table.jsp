@@ -31,7 +31,8 @@
     <c:set var="animatedTasks" value=""/>
     <c:set var="animatedWFs" value=""/>
 
-            <input type="checkbox" checked="true" name="${currentNode.identifier}" visible="false" style="display:none"/>
+    <input type="checkbox" checked="true" name="${currentNode.identifier}" visible="false" style="display:none"/>
+
     <h3>
         <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
             <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16"
@@ -40,19 +41,7 @@
                                                                                      title="parent" alt="parent"
                                                                                      src="${url.templatesPath}/default/images/icons/folder_up.png"></a>
         </c:if>
-
-            <%--<c:if test="${not empty currentNode.primaryNodeType.templatePackage.rootFolder}">--%>
-                <%--<img src="${url.templatesPath}/${currentNode.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(currentNode.primaryNodeType.name),":","_")}.png"/>--%>
-            <%--</c:if>--%>
-            <%--<c:if test="${empty currentNode.primaryNodeType.templatePackage.rootFolder}">--%>
-                <%--<img src="${url.templatesPath}/default/icons/${fn:replace(fn:escapeXml(currentNode.primaryNodeType.name),":","_")}.png"/>--%>
-            <%--</c:if>--%>
-            <c:if test="${!empty currentNode.properties['jcr:title'].string}">
-                ${fn:escapeXml(currentNode.properties['jcr:title'].string)}
-            </c:if>
-            <c:if test="${empty currentNode.properties['jcr:title'].string}">
-                ${fn:escapeXml(currentNode.name)}
-            </c:if>
-        </h3>
+        ${fn:escapeXml(currentNode.displayableName)}
+    </h3>
 </div>
 

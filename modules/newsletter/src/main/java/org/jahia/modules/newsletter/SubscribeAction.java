@@ -64,6 +64,8 @@ public class SubscribeAction extends BaseAction {
 
 	private boolean allowRegistrationWithoutEmail;
 
+	private boolean requireEmailConfirmation = true;
+
 	private SubscriptionService subscriptionService;
 
 	public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext,
@@ -81,7 +83,11 @@ public class SubscribeAction extends BaseAction {
 			}
 			Map<String, Object> props = new HashMap<String, Object>();
 			
-			subscriptionService.subscribe(resource.getNode().getIdentifier(), email, props);
+			if (subscriptionService.isSubscribed(resource.getNode().getIdentifier(), email)) {
+				return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"already-subscribed\"}"));
+			} else {
+				subscriptionService.subscribe(resource.getNode().getIdentifier(), email, props, requireEmailConfirmation);
+			}
 		} else {
 			JahiaUser user = renderContext.getUser();
 			if (JahiaUserManagerService.isGuest(user)) {
@@ -98,7 +104,11 @@ public class SubscribeAction extends BaseAction {
 				}
 			}
 			
-			subscriptionService.subscribe(resource.getNode().getIdentifier(), user.getUserKey());
+			if (subscriptionService.isSubscribed(resource.getNode().getIdentifier(), user.getUserKey())) {
+				return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"already-subscribed\"}"));
+			} else {
+				subscriptionService.subscribe(resource.getNode().getIdentifier(), user.getUserKey());
+			}
 		}
 
 		return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"ok\"}"));
@@ -107,6 +117,10 @@ public class SubscribeAction extends BaseAction {
 	public void setAllowRegistrationWithoutEmail(boolean allowRegistrationWithoutEmail) {
 		this.allowRegistrationWithoutEmail = allowRegistrationWithoutEmail;
 	}
+
+	public void setRequireEmailConfirmation(boolean requireEmailConfirmation) {
+	    this.requireEmailConfirmation = requireEmailConfirmation;
+    }
 
 	public void setSubscriptionService(SubscriptionService subscriptionService) {
 		this.subscriptionService = subscriptionService;

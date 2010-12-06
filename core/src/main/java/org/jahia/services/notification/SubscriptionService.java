@@ -50,6 +50,7 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -110,7 +111,7 @@ public class SubscriptionService {
 	 */
 	public void cancel(final List<String> subscriptionIds) {
 		try {
-			JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+			executeInJCR(new JCRCallback<Boolean>() {
 				public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
 					int count = 0;
 					for (String id : subscriptionIds) {
@@ -160,7 +161,7 @@ public class SubscriptionService {
 	 */
 	private void changeSuspendedStatus(final List<String> subscriptionIds, final boolean doSuspend) {
 		try {
-			JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+			executeInJCR(new JCRCallback<Boolean>() {
 				public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
 					int count = 0;
@@ -197,6 +198,14 @@ public class SubscriptionService {
 		}
 	}
 
+	protected <X> X executeInJCR(JCRCallback<X> callback) throws RepositoryException {
+		return JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", callback);
+	}
+
+	protected String generateConfirmationKey(String identifier, String username) {
+	    return DigestUtils.md5Hex(identifier + username);
+    }
+
 	/**
 	 * Retrieves subscription for the specified node.
 	 * 
@@ -223,7 +232,7 @@ public class SubscriptionService {
 		final List<Subscription> subscriptions = new LinkedList<Subscription>();
 		int total = 0;
 		try {
-			total = JCRTemplate.getInstance().doExecuteWithSystemSession(
+			total = executeInJCR(
 			        new JCRCallback<Integer>() {
 
 				        public Integer doInJCR(JCRSessionWrapper session)
@@ -292,7 +301,7 @@ public class SubscriptionService {
 	 */
 	public boolean isSubscribed(final String subscribableIdentifier, final String user) {
 		try {
-			return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+			return executeInJCR(new JCRCallback<Boolean>() {
 
 				public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
 					JCRNodeWrapper target = session.getNodeByIdentifier(subscribableIdentifier);
@@ -377,6 +386,11 @@ public class SubscriptionService {
 		subscriptions.add(subscriptionId);
 		changeSuspendedStatus(subscriptions, false);
 	}
+
+	protected void sendConfirmationEmail(String username, String confirmationKey) {
+	    // TODO Auto-generated method stub
+	    
+    }
 
 	public void setUserManagerService(JahiaUserManagerService userManagerService) {
 		this.userManagerService = userManagerService;
@@ -557,8 +571,31 @@ public class SubscriptionService {
 	 */
 	public void subscribe(final String subscribableIdentifier,
 	        final Map<String, Map<String, Object>> subscribers) {
+		subscribe(subscribableIdentifier, subscribers, false);
+	}
+
+	/**
+	 * Creates subscription for the specified users and subscribable node
+	 * 
+	 * @param subscribableIdentifier
+	 *            the UUID of the target subscribable node
+	 * @param subscribers
+	 *            a map with subscriber information. The key is a subscriber ID,
+	 *            the value is a map with additional properties that will be
+	 *            stored for the subscription object. The subscriber ID is a a
+	 *            user key in case of a registered Jahia user (the one, returned
+	 *            by {@link JahiaUser#getUserKey()}). In case of a
+	 *            non-registered user this is an e-mail address of the
+	 *            subscriber.
+	 * @param sendConfirmationEmail
+	 *            if set to <code>true</code> the newly created subscription
+	 *            will be inactive until a confirmation is received. An e-mail
+	 *            with the confirmation request is sent to the user.
+	 */
+	public void subscribe(final String subscribableIdentifier,
+	        final Map<String, Map<String, Object>> subscribers, final boolean sendConfirmationEmail) {
 		try {
-			JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+			executeInJCR(new JCRCallback<Boolean>() {
 
 				public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
 					JCRNodeWrapper target = session.getNodeByIdentifier(subscribableIdentifier);
@@ -610,6 +647,13 @@ public class SubscriptionService {
 								newSubscriptionNode.setProperty(J_PROVIDER, provider);
 							}
 							storeProperties(newSubscriptionNode, subscriber.getValue(), session);
+							
+							if (sendConfirmationEmail) {
+								String confirmationKey = generateConfirmationKey(newSubscriptionNode.getIdentifier(), username);
+								newSubscriptionNode.setProperty("j:confirmed", false);
+								newSubscriptionNode.setProperty("j:confirmationKey", confirmationKey);
+								sendConfirmationEmail(username, confirmationKey);
+							}
 						} else {
 							if (logger.isDebugEnabled()) {
 								logger.debug(
@@ -654,12 +698,16 @@ public class SubscriptionService {
 	 * @param properties
 	 *            additional properties to be stored for the subscription (e.g.
 	 *            first and last name, etc.)
+	 * @param sendConfirmationEmail
+	 *            if set to <code>true</code> the newly created subscription
+	 *            will be inactive until a confirmation is received. An e-mail
+	 *            with the confirmation request is sent to the user.
 	 */
 	public void subscribe(final String subscribableIdentifier, String subscriberEmail,
-	        Map<String, Object> properties) {
+	        Map<String, Object> properties, boolean sendConfirmationEmail) {
 		Map<String, Map<String, Object>> subscribers = new HashMap<String, Map<String, Object>>(1);
 		subscribers.put(subscriberEmail, properties);
-		subscribe(subscribableIdentifier, subscribers);
+		subscribe(subscribableIdentifier, subscribers, sendConfirmationEmail);
 	}
 
 	/**
@@ -735,5 +783,5 @@ public class SubscriptionService {
 
 		return subscriber;
 	}
-
+	
 }

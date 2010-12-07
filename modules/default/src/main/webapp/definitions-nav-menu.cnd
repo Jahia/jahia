@@ -16,7 +16,6 @@
  - j:baselineNode (weakreference,picker[type='page']) mandatory
  - j:maxDepth (long) = 2
  - j:startLevel (long) = 0
- - j:menuType (weakreference,choicelist[nodes='$currentSite/templates/contents/menuAvailable;jnt:navMenuAvailable']) nofulltext mandatory
  - j:menuItemView (string,choicelist[templates='jmix:navMenuItem,menuItem',resourceBundle,image]) = menuElement
  - j:styleName (string) nofulltext
  - j:layoutID (string) nofulltext

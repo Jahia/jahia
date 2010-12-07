@@ -211,6 +211,9 @@
           class="org.jahia.services.content.nodetypes.initializers.NodesChoiceListInitializerImpl">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
+    <bean id="menuInitializer"
+          class="org.jahia.services.content.nodetypes.initializers.MenusChoiceListInitializerImpl">
+    </bean>
     <bean id="scriptInitializer"
           class="org.jahia.services.content.nodetypes.initializers.ScriptChoiceListInitializerImpl"/>
     <bean id="sortableFieldnamesInitializer"
@@ -253,6 +256,7 @@
                 <entry key="nodetypes" value-ref="nodetypesInitializer"/>
                 <entry key="subnodetypes" value-ref="subNodetypesInitializer"/>
                 <entry key="nodes" value-ref="nodesInitializer"/>
+                <entry key="menus" value-ref="menuInitializer"/>
                 <entry key="script" value-ref="scriptInitializer"/>
                 <entry key="flag" value-ref="countryFlagInitializer"/>
                 <entry key="sortableFieldnames" value-ref="sortableFieldnamesInitializer"/>

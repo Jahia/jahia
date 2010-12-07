@@ -51,38 +51,50 @@
     </c:if>
 </c:if>
 <c:if test="${not empty current}">
-<template:addDependency node="${current}"/>
-<c:set var="items" value="${jcr:getChildrenOfType(current,'jmix:navMenuItem')}"/>
-<c:if test="${navMenuLevel eq 1}">
-    <div class="navbar">
-</c:if>
-<c:if test="${navMenuLevel > 1}">
-    <div class="box-inner">
-</c:if>
-<ul class="navmenu level_${navMenuLevel - startLevelValue}">
-    <c:forEach items="${items}" var="menuItem" varStatus="menuStatus">
-        <c:set var="inpath" value="${fn:startsWith(renderContext.mainResource.node.path, menuItem.path)}"/>
-        <c:set var="selected" value="${renderContext.mainResource.node.path eq menuItem.path}"/>
-        <c:set var="correctType" value="false"/>
-        <c:forEach items="${menuItem.properties['j:displayInMenu']}" var="display">
-            <c:if test="${display.string eq currentNode.properties['j:menuType'].string}">
-                <c:set var="correctType" value="${display.string eq currentNode.properties['j:menuType'].string}"/>
+    <template:addDependency node="${current}"/>
+    <c:set var="items" value="${jcr:getChildrenOfType(current,'jmix:navMenuItem')}"/>
+    <c:if test="${navMenuLevel eq 1}">
+        <div class="navbar">
+    </c:if>
+    <c:if test="${navMenuLevel > 1}">
+        <div class="box-inner">
+    </c:if>
+    <ul class="navmenu level_${navMenuLevel - startLevelValue}">
+        <c:forEach items="${items}" var="menuItem" varStatus="menuStatus">
+            <c:set var="inpath" value="${fn:startsWith(renderContext.mainResource.node.path, menuItem.path)}"/>
+            <c:set var="selected" value="${renderContext.mainResource.node.path eq menuItem.path}"/>
+            <c:set var="correctType" value="true"/>
+            <c:if test="${!empty menuItem.properties['j:displayInMenu']}">
+                <c:set var="correctType" value="false"/>
+                <c:forEach items="${menuItem.properties['j:displayInMenu']}" var="display">
+                    <c:if test="${display.string eq currentNode.name}">
+                        <c:set var="correctType" value="${display.string eq currentNode.name}"/>
+                    </c:if>
+                </c:forEach>
             </c:if>
-        </c:forEach>
+            <c:if test="${(startLevelValue < navMenuLevel or inpath) and correctType}">
+                <c:set var="notempty" value="true"/>
+                <c:set var="hasChildren" value="${navMenuLevel < maxDepth.long && jcr:hasChildrenOfType(menuItem,'jnt:page,jnt:nodeLink,jnt:externalLink')}"/>
 
-        <c:if test="${(startLevelValue < navMenuLevel or inpath) and correctType}">
-            <c:set var="notempty" value="true"/>
-            <c:set var="hasChildren" value="${navMenuLevel < maxDepth.long && jcr:hasChildrenOfType(menuItem,'jnt:page,jnt:nodeLink,jnt:externalLink')}"/>
-
-            <c:choose>
-                <c:when test="${startLevelValue < navMenuLevel}">
-                    <c:set var="listItemCssClass"
-                           value="${hasChildren ? 'hasChildren' : 'noChildren'}${inpath ? ' inPath' : ''}${selected ? ' selected' : ''}${menuStatus.first ? ' firstInLevel' : ''}${menuStatus.last ? ' lastInLevel' : ''}"
-                           scope="request"/>
-                    <li class="${listItemCssClass}">
-                        <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
-                        <template:module node="${menuItem}" template="${menuItemTemplate}" editable="false"/>
-                            <%--<a href="">${menuItem.name}</a>--%>
+                <c:choose>
+                    <c:when test="${startLevelValue < navMenuLevel}">
+                        <c:set var="listItemCssClass"
+                               value="${hasChildren ? 'hasChildren' : 'noChildren'}${inpath ? ' inPath' : ''}${selected ? ' selected' : ''}${menuStatus.first ? ' firstInLevel' : ''}${menuStatus.last ? ' lastInLevel' : ''}"
+                               scope="request"/>
+                        <li class="${listItemCssClass}">
+                            <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
+                            <template:module node="${menuItem}" template="${menuItemTemplate}" editable="false"/>
+                                <%--<a href="">${menuItem.name}</a>--%>
+                            <c:if test="${hasChildren}">
+                                <template:include template="default">
+                                    <template:param name="base" value="${menuItem.identifier}"/>
+                                    <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
+                                    <template:param name="omitFormatting" value="true"/>
+                                </template:include>
+                            </c:if>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
                         <c:if test="${hasChildren}">
                             <template:include template="default">
                                 <template:param name="base" value="${menuItem.identifier}"/>
@@ -90,34 +102,24 @@
                                 <template:param name="omitFormatting" value="true"/>
                             </template:include>
                         </c:if>
-                    </li>
-                </c:when>
-                <c:otherwise>
-                    <c:if test="${hasChildren}">
-                        <template:include template="default">
-                            <template:param name="base" value="${menuItem.identifier}"/>
-                            <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
-                            <template:param name="omitFormatting" value="true"/>
-                        </template:include>
-                    </c:if>
-                </c:otherwise>
-            </c:choose>
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
+        </c:forEach>
+        <c:if test="${not notempty and renderContext.editMode}">
+            <li><fmt:message key="label.navbar.empty"/> </li>
         </c:if>
-    </c:forEach>
-    <c:if test="${not notempty and renderContext.editMode}">
-        <li><fmt:message key="label.navbar.empty"/> </li>
-    </c:if>
-</ul>
-<c:if test="${navMenuLevel > 1}">
-    </div>
-</c:if>
-<c:if test="${navMenuLevel eq 1}">
-    <c:if test="${!empty layoutID}">
+    </ul>
+    <c:if test="${navMenuLevel > 1}">
         </div>
     </c:if>
-    </div>
-</c:if>
-<c:if test="${navMenuLevel == 1}">
-    </div>
-</c:if>
+    <c:if test="${navMenuLevel eq 1}">
+        <c:if test="${!empty layoutID}">
+            </div>
+        </c:if>
+        </div>
+    </c:if>
+    <c:if test="${navMenuLevel == 1}">
+        </div>
+    </c:if>
 </c:if>

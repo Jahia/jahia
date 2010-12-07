@@ -538,15 +538,12 @@
 // Pages, content lists, reusable components
 //---------------------------------------------------------
 
+[jmix:navMenu] mixin
+ itemtype=content
+ extends = jmix:navMenuItem
+ - j:displayInMenu (weakreference,choicelist[menus]) multiple nofulltext mandatory
+
 [jmix:navMenuItem] mixin
- itemtype = content
- - j:displayInMenu (weakreference,choicelist[nodes='$currentSite/templates/contents/menuAvailable;jnt:navMenuAvailable']) multiple nofulltext mandatory
-
-
-[jnt:navMenuAvailableFolder] > jnt:content, jmix:droppableContent
-+ * (jnt:navMenuAvailable)
-
-[jnt:navMenuAvailable] > jnt:content, mix:title
 
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
  orderable

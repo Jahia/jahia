@@ -16,7 +16,7 @@
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="appearance" value="${functions:default(appearance, 'checkbox')}"/>
 <c:set var="value" value="${functions:default(value, 'siteContent')}"/>
-<c:set var="formId" value='<%= findAncestorWithClass(this, (Class) request.getAttribute("org.jahia.tags.search.form.class")).toString() %>'/>
+<c:set var="formId" value='<%= request.getAttribute("org.jahia.tags.search.form.formId") %>'/>
 <c:set var="termIndex" value="${searchTermFieldIndexes[formId]}"/>
 <c:set var="selectionOptions" value="${functions:default(fn:replace(selectionOptions, ' ', ''), 'siteContent,files')}"/>
 <c:if test="${display}">

@@ -9,7 +9,16 @@
     <tlib-version>6.5</tlib-version>
     <short-name>facet</short-name>
     <uri>http://www.jahia.org/tags/facetLib</uri>
-    
+
+    <tag-file>
+        <name>facetLabel</name>
+        <path>/META-INF/tags/facet/facetLabel.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>facetValueLabel</name>
+        <path>/META-INF/tags/facet/facetValueLabel.tag</path>
+    </tag-file> 
+
     <function>
         <description>Get a list of applied facets</description>
         <name>getAppliedFacetFilters</name>
@@ -58,7 +67,7 @@
         <description>Create the URL to remove the facet from value the filter</description>
         <name>getDeleteFacetUrl</name>
         <function-class>org.jahia.taglibs.facet.Functions</function-class>
-        <function-signature>String getDeleteFacetUrl(java.lang.Object, org.apache.commons.collections.KeyValue, java.lang.String)
+        <function-signature>java.lang.String getDeleteFacetUrl(java.lang.Object, org.apache.commons.collections.KeyValue, java.lang.String)
         </function-signature>
         <example>
             ${facet:getDeleteFacetUrl(facet, facetValue, activeFacetsVars[facetParamVarName])}
@@ -69,7 +78,7 @@
         <description>Encode facet filter URL parameter</description>
         <name>encodeFacetUrlParam</name>
         <function-class>org.jahia.taglibs.facet.Functions</function-class>
-        <function-signature>String encodeFacetUrlParam(java.lang.String)
+        <function-signature>java.lang.String encodeFacetUrlParam(java.lang.String)
         </function-signature>
         <example>
             ${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}
@@ -80,19 +89,10 @@
         <description>Decode facet filter URL parameter</description>
         <name>decodeFacetUrlParam</name>
         <function-class>org.jahia.taglibs.facet.Functions</function-class>
-        <function-signature>String decodeFacetUrlParam(java.lang.String)
+        <function-signature>java.lang.String decodeFacetUrlParam(java.lang.String)
         </function-signature>
         <example>
             ${facet:decodeFacetUrlParam(param[facetParamVarName])}
         </example>
-    </function>    
-    
-    <tag-file>
-        <name>facetLabel</name>
-        <path>/META-INF/tags/facet/facetLabel.tag</path>
-    </tag-file>    
-    <tag-file>
-        <name>facetValueLabel</name>
-        <path>/META-INF/tags/facet/facetValueLabel.tag</path>
-    </tag-file>    
+    </function>
  </taglib>    

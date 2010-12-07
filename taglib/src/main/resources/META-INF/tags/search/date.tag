@@ -1,3 +1,10 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 <%@ tag body-content="empty" description="Renders a date control to query any date field of a content object. It is used internally by created, lastModified and nodeProperty tags." %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
@@ -9,13 +16,6 @@
               description="Initial value for date from in case of the range date type." %>
 <%@ attribute name="to" required="false" type="java.lang.String"
               description="Initial value for date to in case of the range date type." %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib"%>
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
-<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="valueParamName" value="${attributes.name}.type"/>

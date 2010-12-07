@@ -14,7 +14,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="appearance" value="${functions:default(appearance, 'select')}"/>
-<c:set var="formId" value='<%= findAncestorWithClass(this, (Class) request.getAttribute("org.jahia.tags.search.form.class")).toString() %>'/>
+<c:set var="formId" value='<%= request.getAttribute("org.jahia.tags.search.form.formId") %>'/>
 <c:set var="termIndex" value="${searchTermMatchIndexes[formId]}"/>
 <c:set var="key" value="src_terms[${termIndex}].match"/>
 <c:set target="${attributes}" property="name" value="${key}"/>

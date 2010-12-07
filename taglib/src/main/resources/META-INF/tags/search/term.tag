@@ -17,9 +17,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search"%>
-
 <c:set var="display" value="${functions:default(display, true)}"/>
-<c:set var="formId" value='<%= findAncestorWithClass(this, (Class) request.getAttribute("org.jahia.tags.search.form.class")).toString() %>'/>
+<c:set var="formId" value='<%= request.getAttribute("org.jahia.tags.search.form.formId") %>'/>
 <c:set var="termIndex" value="${searchTermIndexes[formId]}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set var="key" value="src_terms[${termIndex}].term"/>

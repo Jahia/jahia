@@ -15,71 +15,7 @@
         <name>and</name>
         <tag-class>org.jahia.taglibs.query.CompoundConstraintTag$AndTag</tag-class>
         <body-content>JSP</body-content>
-    </tag>
-    
-    <tag>
-        <description>Display a category selection drop-down, or other, in order to allow filtering by categories.
-        </description>
-        <name>categoryFilter</name>
-        <tag-class>org.jahia.taglibs.template.category.GetCategoryChildrenTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>define the start of category tree</description>
-            <name>startingCategoryKey</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>default is true. Display or not the selector</description>
-            <name>display</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <description>Maximum level</description>
-            <name>level</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <description>name of the selector</description>
-            <name>name</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>name of the selected category</description>
-            <name>selected</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>Display resource key message if selector contains no category</description>
-            <name>messageKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>CSS class name embed by the surrounding &lt;div&gt;</description>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>default true, display or not the root category in selector</description>
-            <name>displayRootCategory</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-    </tag>
+    </tag>        
     
     <tag>
         <description>Used to define a ChildNode Constraint. You can set one or less childNode constraint by query.

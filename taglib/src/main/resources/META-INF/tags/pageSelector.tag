@@ -1,3 +1,7 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ tag body-content="empty" description="Renders the trigger link and the tree control to select a page." %>
 <%@ attribute name="fieldId" required="true" type="java.lang.String"
               description="The input field name and ID to synchronize the seletcted item value with." %>
@@ -29,10 +33,7 @@
               description="In case the options for the jQuery FancyBox plugin needs to be overridden, they should be specified here in a form {option1: value1, opttion2: value2}. If option value is a literal, please, enclose it into single quotes." %>
 <%@ attribute name="treeviewOptions" required="false" type="java.lang.String"
               description="In case the options for the jQuery Treeview plugin needs to be overridden, they should be specified here in a form {option1: value1, opttion2: value2}. If option value is a literal, please, enclose it into single quotes." %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+
 <c:if test="${empty label}"><c:set var="label"><fmt:message key="selectors.pageSelector.selectPage"/></c:set></c:if>
 <c:if test="${empty includeChildrenLabel}"><c:set var="includeChildrenLabel"><fmt:message key="selectors.pageSelector.selectPage.includeChildren"/></c:set></c:if>
 <uiComponents:treeItemSelector fieldId="${fieldId}" displayFieldId="${displayFieldId}" fieldIdIncludeChildren="${fieldIdIncludeChildren}" displayIncludeChildren="${functions:default(displayIncludeChildren, 'true')}"

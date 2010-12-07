@@ -193,7 +193,7 @@
         <description>Returns the smaller of two long values.</description>
         <name>nextLongIdentifier</name>
         <function-class>org.apache.commons.id.IdentifierUtils</function-class>
-        <function-signature>long nextLongIdentifier()</function-signature>
+        <function-signature>java.lang.Long nextLongIdentifier()</function-signature>
         <example>
             &lt;input type="text" name="date" id="date-${functions:nextLongIdentifier()}"/&gt;
         </example>

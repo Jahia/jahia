@@ -7,7 +7,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search"%>
-<c:set var="org.jahia.tags.search.form.class" value="<%= this.getClass() %>" scope="request"/>
+<c:set var="org.jahia.tags.search.form.formId" value="<%= this.toString() %>" scope="request"/>
 <c:set var="formId" value="<%= this.toString() %>"/>
 <c:set target="${searchTermIndexes}" property="${formId}" value="0"/>
 <c:set target="${searchTermMatchIndexes}" property="${formId}" value="0"/>

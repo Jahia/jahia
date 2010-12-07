@@ -22,7 +22,7 @@
 		<%-- Subscriptions are available in live mode only --%>
 		<template:addResources type="css" resources="jquery.fancybox.css"/>
 		<template:addResources type="css" resources="jahia.fancybox-form.css"/>
-		<template:addResources type="javascript" resources="jquery.min.js,jquery.fancybox.pack.js"/>
+		<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fancybox.pack.js"/>
 		
 		<template:addResources>
 			<script type="text/javascript">
@@ -41,9 +41,9 @@
 					    	<fmt:message key="messsage.subscriptions.alreadySubscribed" var="msg"/>
 					        alert("${functions:escapeJavaScript(msg)}");
 						} else if (data.status == "invalid-email") {
-                            $('.showSubscriptionForm').effect("shake", {times:4}, 60)
-					    	<fmt:message key="messsage.subscriptions.invalidEmailAddress" var="msg"/>
-					        <%--alert("${functions:escapeJavaScript(msg)}");--%>
+                            $('#subscribeFormPanel-${currentNode.identifier}').effect("shake", {times:4}, 60);
+                            <fmt:message key="messsage.subscriptions.invalidEmailAddress" var="msg"/>
+                            $('#subscribeError-${currentNode.identifier}').html('${msg}')					    	
 					        doClose=false;
 						} else if (data.status == 'mail-sent') {
                             <fmt:message key="messsage.subscriptions.mail" var="msg"/>
@@ -117,21 +117,35 @@
 		            'centerOnScroll'     : true,
 		            'overlayOpacity'     : 0.6,
 		            'titleShow'          : false,
+		            'showNavArrows'      : false,
 		            'transitionIn'       : 'none',
 		            'transitionOut'      : 'none',
 		            'onStart'            : function(selectedArray, selectedIndex, selectedOpts) {
 		            	$('#subscribeForm-' + $(selectedArray).attr('rel') + '-email').val('');
 		            }
 		        });
-		        $("form.jahiaSubscribeForm").submit(function() {
+		        $("#subscribeForm-${currentNode.identifier}").submit(function() {
 		        	if (this.email.value.length == 0) {
 				    	<fmt:message key="messsage.subscriptions.provideEmailAddress" var="msg"/>
-				        alert("${functions:escapeJavaScript(msg)}");
+                        $('#subscribeFormPanel-${currentNode.identifier}').effect("shake", {times:4}, 60)
+                        $('#subscribeError-${currentNode.identifier}').html('${msg}')
 			        	return false;
 		        	}
 		        	
 		            $.fancybox.showActivity();
 		            jahiaSubscribe(this.action, $(this).serialize());
+		        	return false;
+		        });
+		        $("#unsubscribeForm-${currentNode.identifier}").submit(function() {
+		        	if (this.email.value.length == 0) {
+				    	<fmt:message key="messsage.subscriptions.provideEmailAddress" var="msg"/>
+                        $('#unsubscribeFormPanel-${currentNode.identifier}').effect("shake", {times:4}, 60)
+                        $('#unsubscribeError-${currentNode.identifier}').html('${msg}')
+			        	return false;
+		        	}
+
+		            $.fancybox.showActivity();
+		            jahiaUnsubscribe(this.action, $(this).serialize());
 		        	return false;
 		        });
 		    });
@@ -152,17 +166,18 @@
             </c:if>
 		</c:if>
 		<c:if test="${not renderContext.loggedIn}">
-			&nbsp;<a href="#subscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
+			&nbsp;<a href="#subscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.subscribe'/></a>
+			&nbsp;<a href="#unsubscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='/icons/jnt_unsubscribe.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.unsubscribe'/></a>
 			</p>
 			<div id="subscribeFormPanel-${currentNode.identifier}" class="jahiaFancyboxForm" style="width: 350px;height: ${130 + fn:length(currentNode.properties['j:fields'])*50}px;">
 			    <div class="popup-bodywrapper">
-			        <h3 class="boxmessage-title">${subscribeTitle}</h3>
+			        <h3 class="boxmessage-title"><fmt:message key='label.subscribe'/> ${subscribeTitle}</h3>
 			        <form class="formMessage jahiaSubscribeForm" id="subscribeForm-${currentNode.identifier}" method="post" action="<c:url value='${target.path}.subscribe.do' context='${url.base}'/>">
 			            <input type="hidden" name="j:to" id="destinationUserKey" value="" />
 			            <fieldset>
 			                <p>
 			                	<label for="subscribeForm-${currentNode.identifier}-email" class="left"><fmt:message key="label.email"/>*</label>
-			                    <input type="text" name="email" id="subscribeForm-${currentNode.identifier}-email" class="field" value="" tabindex="20"/>
+			                    <input type="text" name="email" id="subscribeForm-${currentNode.identifier}-email" class="field" value="" tabindex="20"/><span id="subscribeError-${currentNode.identifier}" style="color:red;"></span>
 			                </p>
 			                <c:forEach items="${currentNode.properties['j:fields']}" var="fld" varStatus="status">
 	                			<c:set var="fldKey" value="${fn:replace(fld.string, ':', '_')}"/>
@@ -178,6 +193,23 @@
 			        </form>
 			    </div>
 			</div>			
+			<div id="unsubscribeFormPanel-${currentNode.identifier}" class="jahiaFancyboxForm" style="width: 350px;height: 130px;">
+			    <div class="popup-bodywrapper">
+			        <h3 class="boxmessage-title"><fmt:message key='label.unsubscribe'/> ${subscribeTitle}</h3>
+			        <form class="formMessage jahiaUnsubscribeForm" id="unsubscribeForm-${currentNode.identifier}" method="post" action="<c:url value='${target.path}.unsubscribe.do' context='${url.base}'/>">
+			            <input type="hidden" name="j:to" id="destinationUserKey" value="" />
+			            <fieldset>
+			                <p>
+			                	<label for="subscribeForm-${currentNode.identifier}-email" class="left"><fmt:message key="label.email"/>*</label>
+			                    <input type="text" name="email" id="subscribeForm-${currentNode.identifier}-email" class="field" value="" tabindex="20"/><span id="unsubscribeError-${currentNode.identifier}" style="color:red;"></span>
+			                </p>
+
+			                <input class="button" type="button" value=" <fmt:message key="label.subscribe"/> "
+			                       tabindex="30" onclick="$('#unsubscribeForm-${currentNode.identifier}').submit();">
+			            </fieldset>
+			        </form>
+			    </div>
+			</div>
 		</c:if>
 	</c:if>
 	<c:if test="${not liveMode}">

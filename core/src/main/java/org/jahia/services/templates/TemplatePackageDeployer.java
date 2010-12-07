@@ -228,7 +228,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 + templatePackageRegistry.getAvailablePackagesCount() + " template packages.");
     }
 
-    private JahiaTemplatesPackage getPackage(File templateDir) {
+    public JahiaTemplatesPackage getPackage(File templateDir) {
         logger.debug("Reading the templates set under " + templateDir);
         JahiaTemplatesPackage pkg = JahiaTemplatesPackageHandler.build(templateDir);
         if (pkg != null) {

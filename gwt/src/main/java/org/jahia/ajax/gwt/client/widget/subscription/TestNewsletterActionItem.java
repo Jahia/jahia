@@ -16,6 +16,7 @@ import com.google.gwt.http.client.*;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
@@ -39,8 +40,9 @@ public class TestNewsletterActionItem extends BaseActionItem {
     }
 
     @Override public void handleNewLinkerSelection() {
-        setEnabled(linker.getSelectionContext().getSingleSelection() != null &&
-                linker.getSelectionContext().getSingleSelection().getNodeTypes().contains("jnt:newsletterIssue"));
+        final GWTJahiaNode n = linker.getSelectionContext().getSingleSelection();
+        setEnabled(n != null && n.getNodeTypes().contains("jnt:newsletterIssue") &&
+                (n.getAggregatedPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED));
     }
 
     class EmailTestWindow extends Window {

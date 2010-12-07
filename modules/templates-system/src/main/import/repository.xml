@@ -32,7 +32,7 @@
           <simple jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList" />
           </simple>
-            <folderTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:folder jnt:contentFolder" j:hiddenTemplate="false">
+            <folderTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:folder jnt:contentFolder" j:hiddenTemplate="false" j:defaultTemplate="true">
             <pagecontent jcr:primaryType="jnt:contentList">
               <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-system/templates/base/folderTemplate/pagecontent/mainResourceDisplay">
                 <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" missing="false" facet="tags" offset="0" limit="100">
@@ -43,7 +43,7 @@
               <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" />
             </pagecontent>
             </folderTemplate>
-            <editContent jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="false" j:requiredMode="contribute" j:requiredPermissions="write">
+            <editContent jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="true" j:requiredMode="contribute" j:requiredPermissions="write">
               <pagecontent jcr:primaryType="jnt:contentList">
                 <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
                 <tabularList jcr:primaryType="jnt:tabularList">
@@ -78,13 +78,13 @@
                 </tabularList>
               </pagecontent>
             </editContent>
-              <viewContent jcr:primaryType="jnt:contentTemplate" j:requiredMode="normal" j:applyOn="jnt:content">
+              <viewContent jcr:primaryType="jnt:contentTemplate" j:requiredMode="normal" j:applyOn="jnt:content" j:hiddenTemplate="true">
                 <pagecontent jcr:primaryType="jnt:contentList">
                   <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
                   <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
                 </pagecontent>
               </viewContent>
-              <fileTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:file">
+              <fileTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:file" j:defaultTemplate="true">
                 <pagecontent jcr:primaryType="jnt:contentList">
                   <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
                   <mainResourceDisplay j:mainResourceView="detail" jcr:primaryType="jnt:mainResourceDisplay" />

@@ -41,6 +41,9 @@ public class Template implements Serializable {
     }
 
     public String getView() {
+        if (view == null) {
+            return "default";
+        }
         return view;
     }
 

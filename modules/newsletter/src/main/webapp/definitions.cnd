@@ -45,7 +45,8 @@
 [jnt:newsletter] > jnt:content, mix:title, jmix:list, jmix:subscribable, jmix:visibleInPagesTree
  + * (jnt:newsletterIssue)
 
-[jnt:newsletterIssue] > jnt:content, mix:title, jmix:observable
+[jnt:newsletterIssue] > jnt:content, mix:title, jmix:observable, jmix:hasTemplateNode
+ + * (nt:base) = nt:base version
  - j:personalized (boolean) = false autocreated nofulltext
  - j:lastSent (date) protected nofulltext
  - j:scheduled (date) nofulltext

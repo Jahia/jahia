@@ -1197,6 +1197,7 @@
                         <value>jnt:template</value>
                         <value>jnt:pageTemplate</value>
                         <value>jnt:contentTemplate</value>
+                        <value>jnt:newsletterIssue</value>
                     </list>
                 </property>
             </bean>
@@ -1225,6 +1226,7 @@
                         <value>jnt:template</value>
                         <value>jnt:pageTemplate</value>
                         <value>jnt:contentTemplate</value>
+                        <value>jnt:newsletterIssue</value>
                     </list>
                 </property>
             </bean>

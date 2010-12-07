@@ -99,7 +99,7 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
 
             if (req.getParameter("testemail") != null) {
                 sendNewsletter(renderContext, node, req.getParameter("testemail"), req.getParameter("user"), req.getParameter("type"),
-                        LanguageCodeConverters.languageCodeToLocale(req.getParameter("locale")), "default",
+                        LanguageCodeConverters.languageCodeToLocale(req.getParameter("locale")), "live",
                         newsletterVersions);
             } else {
                 final boolean personalized = node.hasProperty("j:personalized") && node.getProperty("j:personalized").getBoolean();

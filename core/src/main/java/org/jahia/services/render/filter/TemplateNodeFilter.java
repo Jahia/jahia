@@ -77,7 +77,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     renderContext.getRequest().setAttribute("wrappedResource", resource);
                     Resource wrapperResource = new Resource(templateNode,
                             resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
-                    if (service.hasTemplate(templateNode, template.view)) {
+                    if (service.hasTemplate(templateNode, template.getView())) {
 
                         Integer currentLevel =
                                 (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");
@@ -175,6 +175,8 @@ public class TemplateNodeFilter extends AbstractFilter {
                 "select * from [jnt:" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() + "'])";
         if (resource.getTemplate() != null && !resource.getTemplate().equals("default")) {
             query += " and name(w)='"+ resource.getTemplate()+"'";
+        } else {
+            query += " and [j:defaultTemplate]=true";
         }
         Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query,
                 Query.JCR_SQL2);

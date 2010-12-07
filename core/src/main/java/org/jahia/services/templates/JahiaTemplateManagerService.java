@@ -418,7 +418,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
-
+            templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
         }
     }

@@ -347,6 +347,7 @@
 
 [jnt:contentTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:content,jnt:contentList,jnt:folder,jnt:file,jnt:user,jnt:group',resourceBundle]) multiple
+ - j:defaultTemplate (boolean) = false
 
 [jmix:mockupStyle] mixin
  itemtype = layout

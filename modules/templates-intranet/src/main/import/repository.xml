@@ -120,7 +120,7 @@
                             </tabs>
                         </pagecontent>
                     </wiki>
-                    <wiki-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:wikiPage">
+                    <wiki-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:wikiPage" j:defaultTemplate="true">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row" />
                         </pagecontent>
@@ -151,7 +151,7 @@
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList" />
                     </forum>
-                    <forum-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:topic jnt:thread">
+                    <forum-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:topic jnt:thread" j:defaultTemplate="true">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row" />
                         </pagecontent>
@@ -226,7 +226,7 @@
                             <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay" />
                         </row-col2>
                     </blog-edit>
-                    <blog-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent">
+                    <blog-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent" j:defaultTemplate="true">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row" />
                         </pagecontent>

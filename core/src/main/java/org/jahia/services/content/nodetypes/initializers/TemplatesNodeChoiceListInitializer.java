@@ -96,7 +96,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                     ok = false;
                     Value[] types = templateNode.getProperty("j:applyOn").getValues();
                     for (Value value : types) {
-                        if (node.isNodeType(value.getString())) {
+                        if (nodetype.isNodeType(value.getString())) {
                             ok = true;
                             break;
                         }

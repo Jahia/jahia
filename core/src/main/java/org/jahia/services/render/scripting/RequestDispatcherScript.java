@@ -32,6 +32,7 @@
 
 package org.jahia.services.render.scripting;
 
+import org.jahia.utils.StringResponseWrapper;
 import org.slf4j.Logger;
 import org.jahia.services.render.*;
 
@@ -91,62 +92,38 @@ public class RequestDispatcherScript implements Script {
         this.response = context.getResponse();
         rd = request.getRequestDispatcher(template.getPath());
 
-        final boolean[] isWriter = new boolean[1];
-        final StringWriter stringWriter = new StringWriter();
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
-
         Object oldModule = request.getAttribute("currentModule");
-        request.setAttribute("currentModule",template.getModule());
+        request.setAttribute("currentModule", template.getModule());
 
         if (logger.isDebugEnabled()) {
             // Let's enumerate request attribute to see what we are exposing.
             Enumeration attributeNamesEnum = request.getAttributeNames();
             while (attributeNamesEnum.hasMoreElements()) {
                 String currentAttributeName = (String) attributeNamesEnum.nextElement();
-                String currentAttributeValue = request.getAttribute(currentAttributeName) . toString();
+                String currentAttributeValue = request.getAttribute(currentAttributeName).toString();
                 if (currentAttributeValue.length() < 80) {
                     logger.debug("Request attribute " + currentAttributeName + "=" + currentAttributeValue);
                 } else {
-                    logger.debug("Request attribute " + currentAttributeName + "=" + currentAttributeValue.substring(0, 80) + " (first 80 chars)");
+                    logger.debug("Request attribute " + currentAttributeName + "=" + currentAttributeValue.substring(0,
+                            80) + " (first 80 chars)");
                 }
             }
         }
-
+        StringResponseWrapper wrapper = new StringResponseWrapper(response);
         try {
-            rd.include(request, new HttpServletResponseWrapper(response) {
-                @Override
-                public ServletOutputStream getOutputStream() throws IOException {
-                    return new ServletOutputStream() {
-                        @Override
-                        public void write(int i) throws IOException {
-                            outputStream.write(i);
-                        }
-                    };
-                }
-
-                public PrintWriter getWriter() throws IOException {
-                    isWriter[0] = true;
-                    return new PrintWriter(stringWriter);
-                }
-            });
+            rd.include(request, wrapper);
         } catch (ServletException e) {
             throw new RenderException(e.getRootCause() != null ? e.getRootCause() : e);
         } catch (IOException e) {
             throw new RenderException(e);
         } finally {
-            request.setAttribute("currentModule",oldModule);
+            request.setAttribute("currentModule", oldModule);
         }
-        if (isWriter[0]) {
-            return stringWriter.getBuffer().toString();
-        } else {
-            try {
-                String s = outputStream.toString("UTF-8");
-                return s;
-            } catch (IOException e) {
-                throw new RenderException(e);
-            }
+        try {
+            return wrapper.getString();
+        } catch (IOException e) {
+            throw new RenderException(e);
         }
-
     }
 
     /**

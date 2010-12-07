@@ -255,10 +255,6 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Refresh"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.ListView"/>
-                                    <ref bean="Toolbar.Item.ThumbsView"/>
-                                    <ref bean="Toolbar.Item.Detailedview"/>
                                 </list>
                             </property>
                         </bean>

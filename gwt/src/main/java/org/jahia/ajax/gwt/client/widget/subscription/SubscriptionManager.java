@@ -432,8 +432,6 @@ public class SubscriptionManager extends LayoutContainer {
 			public void addUsers(List<GWTJahiaUser> users) {
 				service.subscribe(source, users, new SubscriptionAsyncCallback<Void>() {
 					public void onSuccess(Void result) {
-						MessageBox.info(Messages.get("label.add", "Add"),
-						        Messages.get("message.success", "Operation successfully completed"), null);
 						loader.load();
 					}
 				});
@@ -465,8 +463,6 @@ public class SubscriptionManager extends LayoutContainer {
 				for (GWTSubscription subscriber : toRemove) {
 					grid.getStore().remove(subscriber);
 				}
-				MessageBox.info(Messages.get("label.remove", "Remove"),
-				        Messages.get("message.success", "Operation successfully completed"), null);
 				loader.load();
 			}
 		});
@@ -483,8 +479,6 @@ public class SubscriptionManager extends LayoutContainer {
 					}
 				}
 				updateToolbar(grid.getSelectionModel().getSelectedItems());
-				MessageBox.info(Messages.get("label.resume", "Resume"),
-				        Messages.get("message.success", "Operation successfully completed"), null);
 			}
 		});
 	}
@@ -500,8 +494,6 @@ public class SubscriptionManager extends LayoutContainer {
 					}
 				}
 				updateToolbar(grid.getSelectionModel().getSelectedItems());
-				MessageBox.info(Messages.get("label.suspend", "Suspend"),
-				        Messages.get("message.success", "Operation successfully completed"), null);
 			}
 		});
 	}

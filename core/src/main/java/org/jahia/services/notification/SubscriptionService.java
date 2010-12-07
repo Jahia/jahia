@@ -37,7 +37,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.PaginatedList;
@@ -108,8 +111,7 @@ public class SubscriptionService {
                     session.checkout(target.getParent());
                     target.remove();
                 } catch (ItemNotFoundException e) {
-                    logger.warn(
-                            "Unable to find subscription node for identifier {}. Skip cancelling subscription.",
+                    logger.warn("Unable to find subscription node for identifier {}. Skip cancelling subscription.",
                             id);
                 }
             }
@@ -270,16 +272,16 @@ public class SubscriptionService {
     /**
      * Checks if the provided user is subscribed to the specified node.
      *
-     * @param target     the path of the target subscribable node
-     * @param user       the user key for the registered users or an e-mail for
-     *                   non-registered users
-     * @param session    the JCR session
+     * @param target  the path of the target subscribable node
+     * @param user    the user key for the registered users or an e-mail for
+     *                non-registered users
+     * @param session the JCR session
      * @return <code>true</code> if the provided user is subscribed to the
      *         specified node
      * @throws RepositoryException   in case of a JCR error
      * @throws InvalidQueryException if the query syntax is invalid
      */
-    protected JCRNodeWrapper getSubscription(JCRNodeWrapper target, String user, JCRSessionWrapper session)
+    public JCRNodeWrapper getSubscription(JCRNodeWrapper target, String user, JCRSessionWrapper session)
             throws InvalidQueryException, RepositoryException {
         QueryManager queryManager = session.getWorkspace().getQueryManager();
         if (queryManager == null) {
@@ -332,13 +334,28 @@ public class SubscriptionService {
         changeSuspendedStatus(subscriptions, false, session);
     }
 
-    protected void sendConfirmationEmail(String username, String confirmationKey) {
-        // TODO Auto-generated method stub
-
+    public String generateConfirmationKey(JCRNodeWrapper subscription) {
+        try {
+            return DigestUtils.md5Hex(subscription.getIdentifier() + System.currentTimeMillis());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
     }
 
-    protected String generateConfirmationKey(String identifier, String username) {
-        return DigestUtils.md5Hex(identifier + username);
+    public JCRNodeWrapper getSubscriptionFromKey(String key, JCRSessionWrapper session) {
+        try {
+            Query q = session.getWorkspace().getQueryManager().createQuery(
+                    "select * from [" + JNT_SUBSCRIPTION + "] where [" + J_CONFIRMATION_KEY + "]='" + key + "'",
+                    Query.JCR_SQL2);
+            NodeIterator ni = q.execute().getNodes();
+            if (ni.hasNext()) {
+                return (JCRNodeWrapper) ni.nextNode();
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
@@ -373,7 +390,7 @@ public class SubscriptionService {
      * @param subscribersCSVFile     the subscribers file in CSV format
      * @param session
      */
-    public void subscribe(String subscribableIdentifier, File subscribersCSVFile, JCRSessionWrapper session) {
+    public void importSubscriptions(String subscribableIdentifier, File subscribersCSVFile, JCRSessionWrapper session) {
         long timer = System.currentTimeMillis();
 
         if (logger.isDebugEnabled()) {
@@ -484,15 +501,16 @@ public class SubscriptionService {
      *
      * @param subscribableIdentifier the UUID of the target subscribable node
      * @param userKeys               the list of values for registered Jahia user keys (the one,
- *                               returned by {@link org.jahia.services.usermanager.JahiaUser#getUserKey()})
+     *                               returned by {@link org.jahia.services.usermanager.JahiaUser#getUserKey()})
      * @param session
      */
-    public void subscribe(final String subscribableIdentifier, List<String> userKeys, JCRSessionWrapper session) {
+    public JCRNodeWrapper subscribe(final String subscribableIdentifier, List<String> userKeys,
+                                    JCRSessionWrapper session) {
         Map<String, Map<String, Object>> subscribers = new HashMap<String, Map<String, Object>>(userKeys.size());
         for (String user : userKeys) {
             subscribers.put(user, null);
         }
-        subscribe(subscribableIdentifier, subscribers, session);
+        return subscribe(subscribableIdentifier, subscribers, session);
     }
 
     /**
@@ -507,38 +525,16 @@ public class SubscriptionService {
      *                               non-registered user this is an e-mail address of the
      * @param session
      */
-    public void subscribe(final String subscribableIdentifier, final Map<String, Map<String, Object>> subscribers,
-                          JCRSessionWrapper session) {
-        subscribe(subscribableIdentifier, subscribers, false, session);
-    }
+    public JCRNodeWrapper subscribe(final String subscribableIdentifier,
+                                    final Map<String, Map<String, Object>> subscribers, JCRSessionWrapper session) {
 
-    /**
-     * Creates subscription for the specified users and subscribable node
-     *
-     * @param subscribableIdentifier
-     *            the UUID of the target subscribable node
-     * @param subscribers
-     *            a map with subscriber information. The key is a subscriber ID,
-     *            the value is a map with additional properties that will be
-     *            stored for the subscription object. The subscriber ID is a a
-     *            user key in case of a registered Jahia user (the one, returned
-     *            by {@link org.jahia.services.usermanager.JahiaUser#getUserKey()}). In case of a
-     *            non-registered user this is an e-mail address of the
-     *            subscriber.
-     * @param sendConfirmationEmail
-     *            if set to <code>true</code> the newly created subscription
-     *            will be inactive until a confirmation is received. An e-mail
-     * @param session
-     */
-    public void subscribe(final String subscribableIdentifier, final Map<String, Map<String, Object>> subscribers,
-                          final boolean sendConfirmationEmail, JCRSessionWrapper session) {
-
+        JCRNodeWrapper newSubscriptionNode = null;
         try {
             JCRNodeWrapper target = session.getNodeByIdentifier(subscribableIdentifier);
             if (!target.isNodeType(JMIX_SUBSCRIBABLE)) {
                 logger.warn("The target node {} does not have the " + JMIX_SUBSCRIBABLE + " mixin." +
                         " No subscriptions can be created.", target.getPath());
-                return;
+                return null;
             }
             JCRNodeWrapper subscriptionsNode = target.getNode(J_SUBSCRIPTIONS);
             String targetPath = subscriptionsNode.getPath();
@@ -549,7 +545,6 @@ public class SubscriptionService {
 
             boolean allowUnregisteredUsers = target.hasProperty(J_ALLOW_UNREGISTERED_USERS) ?
                     target.getProperty(J_ALLOW_UNREGISTERED_USERS).getBoolean() : true;
-            boolean checkoutDone = false;
 
             for (Map.Entry<String, Map<String, Object>> subscriber : subscribers.entrySet()) {
                 String username = subscriber.getKey();
@@ -569,11 +564,8 @@ public class SubscriptionService {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Creating subscription to the {} for {}.", targetPath, subscriber.getKey());
                     }
-                    if (!checkoutDone) {
-                        session.checkout(subscriptionsNode);
-                        checkoutDone = true;
-                    }
-                    JCRNodeWrapper newSubscriptionNode = subscriptionsNode
+                    session.checkout(subscriptionsNode);
+                    newSubscriptionNode = subscriptionsNode
                             .addNode(JCRContentUtils.findAvailableNodeName(subscriptionsNode, "subscription"),
                                     JNT_SUBSCRIPTION);
                     newSubscriptionNode.setProperty(J_SUBSCRIBER, username);
@@ -581,14 +573,6 @@ public class SubscriptionService {
                         newSubscriptionNode.setProperty(J_PROVIDER, provider);
                     }
                     storeProperties(newSubscriptionNode, subscriber.getValue(), session);
-
-                    if (sendConfirmationEmail) {
-                        String confirmationKey = generateConfirmationKey(newSubscriptionNode.getIdentifier(), username);
-                        newSubscriptionNode.setProperty("j:confirmed", false);
-                        newSubscriptionNode.setProperty("j:confirmationKey", confirmationKey);
-                        sendConfirmationEmail(username, confirmationKey);
-                    }
-
                 } else {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Subscription for the {} and {} is already present. Skipping ceraring new one.",
@@ -596,12 +580,11 @@ public class SubscriptionService {
                     }
                 }
             }
-            if (checkoutDone) {
-                session.save();
-            }
+            session.save();
         } catch (RepositoryException e) {
             logger.error("Error creating subscriptions for node " + subscribableIdentifier, e);
         }
+        return newSubscriptionNode;
     }
 
     /**
@@ -609,13 +592,13 @@ public class SubscriptionService {
      *
      * @param subscribableIdentifier the UUID of the target subscribable node
      * @param userKey                the key of a registered Jahia user (the one, returned by
- *                               {@link org.jahia.services.usermanager.JahiaUser#getUserKey()})
+     *                               {@link org.jahia.services.usermanager.JahiaUser#getUserKey()})
      * @param session
      */
-    public void subscribe(final String subscribableIdentifier, String userKey, JCRSessionWrapper session) {
+    public JCRNodeWrapper subscribe(final String subscribableIdentifier, String userKey, JCRSessionWrapper session) {
         Map<String, Map<String, Object>> subscribers = new HashMap<String, Map<String, Object>>(1);
         subscribers.put(userKey, null);
-        subscribe(subscribableIdentifier, subscribers, session);
+        return subscribe(subscribableIdentifier, subscribers, session);
     }
 
     /**
@@ -626,11 +609,11 @@ public class SubscriptionService {
      * @param properties             additional properties to be stored for the subscription (e.g.
      * @param session
      */
-    public void subscribe(final String subscribableIdentifier, String subscriberEmail, Map<String, Object> properties,
-                          boolean sendConfirmationEmail, JCRSessionWrapper session) {
+    public JCRNodeWrapper subscribe(final String subscribableIdentifier, String subscriberEmail,
+                                    Map<String, Object> properties, JCRSessionWrapper session) {
         Map<String, Map<String, Object>> subscribers = new HashMap<String, Map<String, Object>>(1);
         subscribers.put(subscriberEmail, properties);
-        subscribe(subscribableIdentifier, subscribers, sendConfirmationEmail, session);
+        return subscribe(subscribableIdentifier, subscribers, session);
     }
 
     /**

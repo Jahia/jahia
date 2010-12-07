@@ -36,14 +36,19 @@ import static javax.servlet.http.HttpServletResponse.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.jcr.RepositoryException;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.BaseAction;
+import org.jahia.bin.Jahia;
+import org.jahia.bin.Render;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.mail.MailService;
@@ -69,11 +74,12 @@ public class SubscribeAction extends BaseAction {
 
 	private boolean allowRegistrationWithoutEmail;
 
-	private boolean requireEmailConfirmation = true;
+	private String mailConfirmationTemplate = null;
 
+    private MailService mailService;
 	private SubscriptionService subscriptionService;
 
-	public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
+	public ActionResult doExecute(final HttpServletRequest req, final RenderContext renderContext,
 	        final Resource resource, final Map<String, List<String>> parameters, URLResolver urlResolver)
 	        throws Exception {
 
@@ -81,21 +87,32 @@ public class SubscribeAction extends BaseAction {
             public ActionResult doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     String email = getParameter(parameters, "email");
+                    final JCRNodeWrapper node = resource.getNode();
                     if (email != null) {
                         // consider as non-registered user
                         if (email.length() == 0 || !MailService.isValidEmailAddress(email, false)) {
                             // provided e-mail is empty
                             logger.warn("Invalid e-mail address '{}' provided for subscription to {}."
-                                    + " Ignoring subscription request.", email, resource.getNode().getPath());
+                                    + " Ignoring subscription request.", email, node.getPath());
                             return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-email\"}"));
                         }
                         Map<String, Object> props = new HashMap<String, Object>();
 
-                        if (subscriptionService.getSubscription(resource.getNode().getIdentifier(), email, session) != null) {
+                        final JCRNodeWrapper subscription = subscriptionService.getSubscription(node, email, session);
+                        if (subscription != null) {
+                            if (!subscription.getProperty("j:confirmed").getBoolean()) {
+                                if (sendConfirmationMail(session, email, node, subscription, resource.getLocale(), req)) {
+                                    return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
+                                }
+                            }
                             return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"already-subscribed\"}"));
                         } else {
-                            subscriptionService.subscribe(resource.getNode().getIdentifier(), email, props, requireEmailConfirmation,
-                                    session);
+                            JCRNodeWrapper newSubscriptionNode = subscriptionService.subscribe(node.getIdentifier(), email, props, session);
+
+                            if (sendConfirmationMail(session, email, node, newSubscriptionNode, resource.getLocale(),
+                                    req)) {
+                                return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
+                            }
                         }
                     } else {
                         JahiaUser user = renderContext.getUser();
@@ -112,11 +129,17 @@ public class SubscribeAction extends BaseAction {
                                 return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"no-valid-email\"}"));
                             }
                         }
-                        if (subscriptionService.getSubscription(resource.getNode().getIdentifier(), user.getUserKey(),
+                        if (subscriptionService.getSubscription(node.getIdentifier(), user.getUserKey(),
                                 session) != null) {
                             return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"already-subscribed\"}"));
                         } else {
-                            subscriptionService.subscribe(resource.getNode().getIdentifier(), user.getUserKey(), session);
+                            JCRNodeWrapper newSubscriptionNode = subscriptionService.subscribe(node.getIdentifier(), user.getUserKey(), session);
+
+                            if (sendConfirmationMail(session, user.getProperty("j:email"), node, newSubscriptionNode,
+                                    resource.getLocale(), req)) {
+                                return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
+                            }
+
                         }
                     }
                     return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"ok\"}"));
@@ -128,15 +151,45 @@ public class SubscribeAction extends BaseAction {
         });
 	}
 
-	public void setAllowRegistrationWithoutEmail(boolean allowRegistrationWithoutEmail) {
+    private boolean sendConfirmationMail(JCRSessionWrapper session, String email, JCRNodeWrapper node,
+                                         JCRNodeWrapper newSubscriptionNode, final Locale locale, HttpServletRequest req)
+            throws RepositoryException, JSONException {
+        if (mailConfirmationTemplate != null) {
+            String confirmationKey = subscriptionService.generateConfirmationKey(newSubscriptionNode);
+            newSubscriptionNode.setProperty("j:confirmed", false);
+            newSubscriptionNode.setProperty("j:confirmationKey", confirmationKey);
+            session.save();
+            Map<String, Object> bindings = new HashMap<String, Object>();
+            bindings.put("newsletter", node);
+
+            bindings.put("confirmationlink", req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() +
+                    Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
+                    + node.getResolveSite().getDefaultLanguage() + node.getPath() + ".confirm.do?key="+confirmationKey+"&exec=add");
+            try {
+                mailService.sendMessageWithTemplate(mailConfirmationTemplate, bindings, email, mailService.defaultSender(), null, null,
+                        locale, "Jahia Newsletter");
+            } catch (ScriptException e) {
+                logger.error("Cannot generate confirmation mail",e);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    public void setAllowRegistrationWithoutEmail(boolean allowRegistrationWithoutEmail) {
 		this.allowRegistrationWithoutEmail = allowRegistrationWithoutEmail;
 	}
 
-	public void setRequireEmailConfirmation(boolean requireEmailConfirmation) {
-	    this.requireEmailConfirmation = requireEmailConfirmation;
+    public void setMailConfirmationTemplate(String mailConfirmationTemplate) {
+        this.mailConfirmationTemplate = mailConfirmationTemplate;
     }
 
-	public void setSubscriptionService(SubscriptionService subscriptionService) {
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
+
+    public void setSubscriptionService(SubscriptionService subscriptionService) {
 		this.subscriptionService = subscriptionService;
 	}
 

@@ -115,7 +115,7 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements Subsc
         }
 
         try {
-            subscriptionService.subscribe(uuid, fileItem.getFile(), retrieveCurrentSession("live", getLocale(), true));
+            subscriptionService.importSubscriptions(uuid, fileItem.getFile(), retrieveCurrentSession("live", getLocale(), true));
         } finally {
             fileItem.dispose();
         }

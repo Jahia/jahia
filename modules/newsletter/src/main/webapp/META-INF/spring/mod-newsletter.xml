@@ -14,10 +14,19 @@
     <bean class="org.jahia.modules.newsletter.SubscribeAction">
     	<property name="allowRegistrationWithoutEmail" value="false"/>
         <property name="subscriptionService" ref="subscriptionService"/>
+        <property name="mailService" ref="MailService"/>
+        <property name="mailConfirmationTemplate" value="/mails/templates/subscribeConfirmation.vm"/>
     </bean>
 
     <bean class="org.jahia.modules.newsletter.UnsubscribeAction">
         <property name="subscriptionService" ref="subscriptionService"/>
+        <property name="mailService" ref="MailService"/>
+        <property name="mailConfirmationTemplate" value="/mails/templates/unsubscribeConfirmation.vm"/>
+    </bean>
+
+    <bean class="org.jahia.modules.newsletter.ConfirmAction">
+        <property name="subscriptionService" ref="subscriptionService"/>
+        <property name="confirmationPagePath" value="/newsletter-confirmation"/>
     </bean>
 
 </beans>

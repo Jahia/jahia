@@ -32,10 +32,16 @@
 
 package org.jahia.modules.newsletter;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.BaseAction;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
+import org.jahia.params.valves.TokenAuthValveImpl;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.mail.MailService;
@@ -46,12 +52,15 @@ import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.render.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PaginatedList;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -86,28 +95,33 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
 
         try {
 
-            Map<String, String> newsletterVersions = new HashMap<String, String>();
+            final Map<String, String> newsletterVersions = new HashMap<String, String>();
 
             if (req.getParameter("testemail") != null) {
                 sendNewsletter(renderContext, node, req.getParameter("testemail"), req.getParameter("user"), req.getParameter("type"),
                         LanguageCodeConverters.languageCodeToLocale(req.getParameter("locale")), "default",
                         newsletterVersions);
             } else {
-                PaginatedList<Subscription> l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), null,false,0,0,
-                        resource.getNode().getSession());
-                boolean personalized = false;
-                if (node.hasProperty("j:personalized")) {
-                    personalized = node.getProperty("j:personalized").getBoolean();
-                }
-                for (Subscription subscription : l.getData()) {
-                    final String username = "guest";
-                    
-                    if (subscription.getEmail() != null) {
-                    sendNewsletter(renderContext, node, subscription.getEmail(), username, "html",
-                            LanguageCodeConverters.languageCodeToLocale(node.getResolveSite().getDefaultLanguage()), "live",
-                            newsletterVersions);
+                final boolean personalized = node.hasProperty("j:personalized") && node.getProperty("j:personalized").getBoolean();
+
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live", new JCRCallback() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        PaginatedList<Subscription> l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), null,false,0,0,
+                                session);
+                        for (Subscription subscription : l.getData()) {
+                            String username = "guest";
+                            if (personalized && subscription.getSubscriber() != null) {
+                                username = subscription.getSubscriber();
+                            }
+                            if (subscription.getEmail() != null && subscription.isConfirmed() && !subscription.isSuspended()) {
+                                sendNewsletter(renderContext, node, subscription.getEmail(), username, "html",
+                                        LanguageCodeConverters.languageCodeToLocale(node.getResolveSite().getDefaultLanguage()), "live",
+                                        newsletterVersions);
+                            }
+                        }
+                        return null;
                     }
-                }
+                });
 
                 node.checkout();
                 node.setProperty(J_SCHEDULED, (Value) null);
@@ -125,36 +139,48 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
     }
 
     private void sendNewsletter(final RenderContext renderContext, final JCRNodeWrapper node, final String email,
-                                final String user, final String type, final Locale locale, final String workspace, Map<String, String> newsletterVersions)
+                                final String user, final String type, final Locale locale, final String workspace, final Map<String, String> newsletterVersions)
             throws RepositoryException {
+
+        final String id = node.getIdentifier();
 
         final String key = locale + user + type;
         if (!newsletterVersions.containsKey(key)) {
-            String out = JCRTemplate.getInstance().doExecute(false, user, workspace, locale, new JCRCallback<String>() {
+            JCRTemplate.getInstance().doExecute(false, user, workspace, locale, new JCRCallback() {
                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
+                        JCRNodeWrapper node = session.getNodeByIdentifier(id);
                         String out = renderService.render(new Resource(node, "html", null, "page"), renderContext);
                         out = htmlExternalizationService.externalize(out, renderContext);
-                        return out;
+
+                        newsletterVersions.put(key, out);
+
+                        String title = node.getName();
+                        if (node.hasProperty("jcr:title")) {
+                            title = node.getProperty("jcr:title").getString();
+                        }
+                        newsletterVersions.put(key + ".title", title);
                     } catch (RenderException e) {
                         throw new RepositoryException(e);
                     }
+                    return null;
                 }
             });
-            newsletterVersions.put(key, out);
         }
         String out = newsletterVersions.get(key);
-
-        mailService.sendHtmlMessage(mailService.defaultSender(), email, null,null,node.getName(), out);
+        String subject = newsletterVersions.get(key + ".title");
+        mailService.sendHtmlMessage(mailService.defaultSender(), email, null,null,subject, out);
     }
 
     public void executeBackgroundAction(JCRNodeWrapper node) {
         // do local post on node.getPath/sendAsNewsletter.do
     	try {
+            Map<String,String> headers = new HashMap<String,String>();
+            headers.put("jahiatoken",TokenAuthValveImpl.addToken(node.getSession().getUser()));
 			String out = httpClientService.executePost("http://localhost:8080"+
 			        Jahia.getContextPath() + Render.getRenderServletPath() + "/default/"
 			                + node.getResolveSite().getDefaultLanguage() + node.getPath()
-			                + ".sendAsNewsletter.do", null);
+			                + ".sendAsNewsletter.do", null, headers);
 			logger.info(out);
         } catch (Exception e) {
         	logger.error(e.getMessage(), e);

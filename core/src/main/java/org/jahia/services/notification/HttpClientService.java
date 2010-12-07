@@ -44,14 +44,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.StatusLine;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.params.valves.TokenAuthValveImpl;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.jahia.settings.SettingsBean;
@@ -135,10 +133,11 @@ public class HttpClientService implements ServletContextAware {
      * 
      * @param url a URL to connect to
      * @param parameters the request parameter to submit
+     * @param headers
      * @return the string representation of the URL connection response
      * @throws {@link IllegalArgumentException} in case of a malformed URL
      */
-    public String executePost(String url, Map<String, String> parameters) throws IllegalArgumentException {
+    public String executePost(String url, Map<String, String> parameters, Map<String, String> headers) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
             throw new IllegalArgumentException("Provided URL is null");
         }
@@ -152,6 +151,11 @@ public class HttpClientService implements ServletContextAware {
         if (parameters != null && !parameters.isEmpty()) {
         	for (Map.Entry<String, String> param : parameters.entrySet()) {
 	            httpMethod.addParameter(param.getKey(), param.getValue());
+            }
+        }
+        if (headers != null && !headers.isEmpty()) {
+        	for (Map.Entry<String, String> header : headers.entrySet()) {
+	            httpMethod.addRequestHeader(header.getKey(), header.getValue());
             }
         }
 

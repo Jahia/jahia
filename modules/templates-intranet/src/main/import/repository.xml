@@ -47,7 +47,12 @@
                         </theme-yellow>
                     </themes>
                 </files>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+                <contents jcr:primaryType="jnt:contentFolder">
+                    <menuAvailable jcr:primaryType="jnt:navMenuAvailableFolder">
+                        <primary jcr:primaryType="jnt:navMenuAvailable"/>
+                        <secondary jcr:primaryType="jnt:navMenuAvailable"/>
+                    </menuAvailable>
+                </contents>                
                 <base jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:template" j:view="intranet">
                     <logo jcr:primaryType="jnt:contentList">
                         <logo j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
@@ -284,6 +289,14 @@
                 </row1-col1>
                 <row1-col2 jcr:primaryType="jnt:contentList" />
             </search-results>
+            <newsletter-confirmation jcr:primaryType="jnt:page" j:templateNode="/templateSets/templates-intranet/templates/base/simple" >
+              <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="Newsletter confirmation" jcr:primaryType="jnt:translation" />
+              <listA jcr:primaryType="jnt:contentList" >
+                <bigText jcr:primaryType="jnt:bigText" >
+                  <j:translation_en jcr:language="en" text="&lt;p&gt;  Your request has been taken into account.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
+                </bigText>
+              </listA>
+            </newsletter-confirmation>            
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                 <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:editor" j:aceType="DENY" jcr:primaryType="jnt:ace" />

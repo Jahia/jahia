@@ -1,0 +1,14 @@
+#* @vtlvariable name="confirmationlink" type="java.lang.String" *#
+#* @vtlvariable name="newsletter" type="org.jahia.services.content.JCRNodeWrapper" *#
+#* @vtlvariable name="bundle" type="java.util.ResourceBundle" *#
+<html>
+<body>
+<p>
+Hi !
+</p>
+<p>
+Please confirm your subscription to ${newsletter.name} by clicking <a href="${confirmationlink}">here</a>
+</p>
+
+</body>
+</html>

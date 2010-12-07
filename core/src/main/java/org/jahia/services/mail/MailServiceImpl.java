@@ -327,7 +327,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
                 scriptEngine.eval(scriptContent, bindings);
                 subject = ((StringWriter) scriptContext.getWriter()).toString().trim();
             } catch (Exception e) {
-                subject = resourceBundle.getString("subject");
+                subject = resourceBundle.getString(StringUtils.substringBeforeLast(StringUtils.substringAfterLast(template, "/"), ".") + ".subject");
             } finally {
                 IOUtils.closeQuietly(scriptContent);
             }

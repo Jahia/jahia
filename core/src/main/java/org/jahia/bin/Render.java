@@ -371,23 +371,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
             resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
         } else {
-            ActionResult result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
-            if (result != null) {
-                if (result.getResultCode() < 300) {
-                    resp.setStatus(result.getResultCode());
-                    if (req.getHeader("accept").contains("application/json") && result.getJson() != null) {
-                        try {
-                            result.getJson().write(resp.getWriter());
-                        } catch (JSONException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    } else {
-                        performRedirect(result.getUrl(), urlResolver.getPath(), req, resp, parameters);
-                    }
-                } else {
-                    resp.sendError(result.getResultCode());
-                }
-            }
+            doAction(req, resp, urlResolver, renderContext, resource, action, parameters);
         }
     }
 
@@ -671,22 +655,28 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 //                    resource.pushWrapper("wrapper.fullpage");
 //                    resource.pushBodyWrapper();
 
-                    long lastModified = getLastModified(resource, renderContext);
-
-                    if (lastModified == -1) {
-                        // servlet doesn't support if-modified-since, no reason
-                        // to go through further expensive logic
-                        doGet(req, resp, renderContext, resource, startTime);
+                    if (urlResolver.getPath().endsWith(".do")) {
+                        Action action = templateService.getActions().get(resource.getTemplate());
+                        Map<String, List<String>> parameters = toParameterMapOfListOfString(req);
+                        doAction(req, resp, urlResolver, renderContext, resource, action, parameters);
                     } else {
-                        long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
-                        if (ifModifiedSince < (lastModified / 1000 * 1000)) {
-                            // If the servlet mod time is later, call doGet()
-                            // Round down to the nearest second for a proper compare
-                            // A ifModifiedSince of -1 will always be less
-                            maybeSetLastModified(resp, lastModified);
+                        long lastModified = getLastModified(resource, renderContext);
+
+                        if (lastModified == -1) {
+                            // servlet doesn't support if-modified-since, no reason
+                            // to go through further expensive logic
                             doGet(req, resp, renderContext, resource, startTime);
                         } else {
-                            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                            long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
+                            if (ifModifiedSince < (lastModified / 1000 * 1000)) {
+                                // If the servlet mod time is later, call doGet()
+                                // Round down to the nearest second for a proper compare
+                                // A ifModifiedSince of -1 will always be less
+                                maybeSetLastModified(resp, lastModified);
+                                doGet(req, resp, renderContext, resource, startTime);
+                            } else {
+                                resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                            }
                         }
                     }
                 }
@@ -737,6 +727,28 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
         return null;
+    }
+
+    private void doAction(HttpServletRequest req, HttpServletResponse resp, URLResolver urlResolver,
+                          RenderContext renderContext, Resource resource, Action action,
+                          Map<String, List<String>> parameters) throws Exception {
+        ActionResult result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
+        if (result != null) {
+            if (result.getResultCode() < 300) {
+                resp.setStatus(result.getResultCode());
+                if (req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && result.getJson() != null) {
+                    try {
+                        result.getJson().write(resp.getWriter());
+                    } catch (JSONException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                } else {
+                    performRedirect(result.getUrl(), urlResolver.getPath(), req, resp, parameters);
+                }
+            } else {
+                resp.sendError(result.getResultCode());
+            }
+        }
     }
 
     protected boolean isMethodAllowed(String method) {

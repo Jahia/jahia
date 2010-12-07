@@ -17,8 +17,8 @@
 <c:set var="target" value="${currentNode.properties['j:target'].node}"/>
 <c:set var="doDisplaySubscription" value="${not empty target && (renderContext.loggedIn || target.properties['j:allowUnregisteredUsers'].boolean)}"/>
 <c:if test="${doDisplaySubscription}">
-	<c:set var="availableInLive" value="${not empty target.properties['j:lastPublished']}"/>
-	<c:if test="${availableInLive}">
+	<c:set var="liveMode" value="${currentResource.workspace eq 'live'}"/>
+	<c:if test="${liveMode}">
 		<%-- Subscriptions are available in live mode only --%>
 		<template:addResources type="css" resources="jquery.fancybox.css"/>
 		<template:addResources type="css" resources="jahia.fancybox-form.css"/>
@@ -41,9 +41,13 @@
 					    	<fmt:message key="messsage.subscriptions.alreadySubscribed" var="msg"/>
 					        alert("${functions:escapeJavaScript(msg)}");
 						} else if (data.status == "invalid-email") {
+                            $('.showSubscriptionForm').effect("shake", {times:4}, 60)
 					    	<fmt:message key="messsage.subscriptions.invalidEmailAddress" var="msg"/>
-					        alert("${functions:escapeJavaScript(msg)}");
+					        <%--alert("${functions:escapeJavaScript(msg)}");--%>
 					        doClose=false;
+						} else if (data.status == 'mail-sent') {
+                            <fmt:message key="messsage.subscriptions.mail" var="msg"/>
+                            alert("${functions:escapeJavaScript(msg)}");
 						} else if (data.status == 'no-valid-email') {
 					    	<fmt:message key="messsage.subscriptions.provideEmailAddress" var="msg"/>
 					        alert("${functions:escapeJavaScript(msg)}");
@@ -83,6 +87,9 @@
 						} else if (data.status == "invalid-user") {
 					    	<fmt:message key="messsage.subscriptions.notSubscribed" var="msg"/>
 					        alert("${functions:escapeJavaScript(msg)}");
+                        } else if (data.status == 'mail-sent') {
+                            <fmt:message key="messsage.subscriptions.mail" var="msg"/>
+                            alert("${functions:escapeJavaScript(msg)}");
 						} else {
 					        alert(data.status);
 						}
@@ -173,11 +180,10 @@
 			</div>			
 		</c:if>
 	</c:if>
-	<c:if test="${not availableInLive}">
+	<c:if test="${not liveMode}">
 		<p>
 		${fn:escapeXml(functions:default(currentNode.propertiesAsString['jcr:title'], target.displayableName))}
-		<fmt:message key="label.subscriptions.notAvailableInliveMode" var="msg"/>
-		&nbsp;<a href="#subscribe" onclick="alert('${functions:escapeJavaScript(msg)}'); return false;" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
+		<fmt:message key="label.liveModeOnly" />
 		</p>
 	</c:if>
 </c:if>

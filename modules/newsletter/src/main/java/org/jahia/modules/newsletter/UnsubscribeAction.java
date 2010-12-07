@@ -34,7 +34,10 @@ package org.jahia.modules.newsletter;
 
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.BaseAction;
+import org.jahia.bin.Jahia;
+import org.jahia.bin.Render;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.mail.MailService;
@@ -50,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +61,6 @@ import java.util.Map;
 
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 /**
  * An action for subscribing a user to the target node.
@@ -68,9 +71,12 @@ public class UnsubscribeAction extends BaseAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(UnsubscribeAction.class);
 
+    private String mailConfirmationTemplate = null;
+
+    private MailService mailService;
 	private SubscriptionService subscriptionService;
 
-    public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
+    public ActionResult doExecute(final HttpServletRequest req, final RenderContext renderContext,
             final Resource resource, final Map<String, List<String>> parameters, URLResolver urlResolver)
             throws Exception {
 
@@ -78,15 +84,18 @@ public class UnsubscribeAction extends BaseAction {
             public ActionResult doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     String email = getParameter(parameters, "email");
+                    final JCRNodeWrapper node = resource.getNode();
                     if (email != null) {
                         // consider as non-registered user
-                        String id = subscriptionService.getSubscription(resource.getNode().getIdentifier(), email, session);
+                        JCRNodeWrapper subscription = subscriptionService.getSubscription(node, email, session);
 
-                        if (id == null) {
+                        if (subscription == null) {
                             return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-user\"}"));
+                        } else if (sendConfirmationMail(session, email, node, subscription, resource, req)) {
+                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
                         }
 
-                        subscriptionService.cancel(id, session);
+                        subscriptionService.cancel(subscription.getIdentifier(), session);
                     } else {
                         JahiaUser user = renderContext.getUser();
                         if (JahiaUserManagerService.isGuest(user)) {
@@ -94,13 +103,16 @@ public class UnsubscribeAction extends BaseAction {
                             return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-user\"}"));
                         }
 
-                        String id = subscriptionService.getSubscription(resource.getNode().getIdentifier(), user.getUsername(), session);
+                        JCRNodeWrapper subscription = subscriptionService.getSubscription(node, user.getUsername(), session);
 
-                        if (id == null) {
+                        if (subscription == null) {
                             return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-user\"}"));
+                        } else if (sendConfirmationMail(session, user.getProperty("j:email"), node, subscription, resource,
+                                req)) {
+                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
                         }
 
-                        subscriptionService.cancel(id, session);
+                        subscriptionService.cancel(subscription.getIdentifier(), session);
                     }
                     return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"ok\"}"));
                 } catch (JSONException e) {
@@ -110,6 +122,37 @@ public class UnsubscribeAction extends BaseAction {
             }
         });
 
+    }
+
+    private boolean sendConfirmationMail(JCRSessionWrapper session, String email, JCRNodeWrapper node, JCRNodeWrapper subscription,
+                                         Resource resource, HttpServletRequest req) throws RepositoryException, JSONException {
+        if (mailConfirmationTemplate != null) {
+            String confirmationKey = subscriptionService.generateConfirmationKey(subscription);
+            subscription.setProperty("j:confirmationKey", confirmationKey);
+            session.save();
+
+            Map<String, Object> bindings = new HashMap<String, Object>();
+            bindings.put("newsletter", node);
+            bindings.put("confirmationlink", req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() +
+                    Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
+                    + node.getResolveSite().getDefaultLanguage() + node.getPath() + ".confirm.do?key="+confirmationKey+"&exec=rem");
+            try {
+                mailService.sendMessageWithTemplate(mailConfirmationTemplate, bindings, email, mailService.defaultSender(), null, null, resource.getLocale(), "Jahia Newsletter");
+            } catch (ScriptException e) {
+                logger.error("Cannot generate confirmation mail",e);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    public void setMailConfirmationTemplate(String mailConfirmationTemplate) {
+        this.mailConfirmationTemplate = mailConfirmationTemplate;
+    }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
 	public void setSubscriptionService(SubscriptionService subscriptionService) {

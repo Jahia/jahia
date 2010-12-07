@@ -136,7 +136,7 @@
 [jmix:lockable] > mix:lockable mixin
  - j:locktoken (string) protected indexed=no hidden
  - j:lockTypes (string) protected multiple indexed=no hidden
- 
+
 //---------------------------------------------------------
 // Workflow
 //---------------------------------------------------------
@@ -638,6 +638,11 @@
 //---------------------------------------------------------
 // Compatibility nodes
 //---------------------------------------------------------
+
+[jnt:container] > nt:base,  jmix:basemetadata, mix:title
+
+[jnt:containerList] > nt:base,  jmix:basemetadata orderable
+ + * (jnt:container) version
 
 [jnt:layoutItem]  > nt:base, jmix:basemetadata
  - j:columnIndex (long)

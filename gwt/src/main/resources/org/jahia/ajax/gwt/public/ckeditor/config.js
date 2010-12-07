@@ -16,7 +16,7 @@ CKEDITOR.editorConfig = function( config )
     config.filebrowserBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?site=' + config.siteUuid;
     config.filebrowserImageBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?type=imagepicker&site=' + config.siteUuid;
     config.filebrowserFlashBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?mime=application%2Fx-shockwave-flash%2Cvideo%2Fx-flv&site=' + config.siteUuid;
-    config.filebrowserLinkBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?type=pagepicker&site=' + config.siteUuid;
+    config.filebrowserLinkBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?type=editorialpicker&site=' + config.siteUuid;
     config.image_previewText = '';
 
     config.toolbar = 'Full';

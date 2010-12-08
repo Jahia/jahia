@@ -30,15 +30,13 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.modules.forum.actions;
+package org.jahia.modules.defaultmodule.actions;
 
 import org.slf4j.Logger;
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.DefaultPostAction;
 import org.jahia.bin.Render;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;

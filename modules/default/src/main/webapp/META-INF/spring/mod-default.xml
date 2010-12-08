@@ -42,4 +42,8 @@
     <bean class="org.apache.camel.spring.CamelBeanPostProcessor">
     	<property name="camelContext" ref="jahiaNotificationContext"/>
     </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.AddComment">
+        <property name="name" value="addComment"/>
+    </bean>
 </beans>

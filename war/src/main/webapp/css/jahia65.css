@@ -35,11 +35,12 @@ body {
     margin: 20px;
 }
 body.login, #bodyLogin {
-    background:url(images/andromeda/bg-body_community.gif) repeat-x bottom left;
-    background-color: #FFFFFF;
+    background:url(images/andromeda/bg-body_beta.jpg) no-repeat 50% 50%;
+    background-color: #000;
     margin:0 auto;
     text-align:center
 }
+
 div.grass{
     background: transparent url(images/andromeda/grass.png) no-repeat top left;
     width:648px;
@@ -126,8 +127,7 @@ select[multiple]{
 /* Copyright */
 #copyright {
     text-align: center;
-    color: #ADB7BD;
-    padding-top: 7px;
+    color: #fff;
     width: 100%;
     float: left;
 }
@@ -153,6 +153,13 @@ select[multiple]{
 }
 
 #mainLoginLayout {
+
+}
+h2.loginlogo_beta{
+    width:300px;
+    height:80px;
+    display:block;
+    background:url(images/andromeda/logo_jahia_beta.png) no-repeat top left ;
 
 }
 h2.loginlogo{
@@ -192,19 +199,13 @@ h2.loginlogo_community{
 #adminLogin {
     clear:both;
     border: 1px solid #000;
-    background-color: #333;
+    background-color: #000;
     margin:0 auto;
     margin-top: 10px;
     text-align: center;
     width: 300px;
-    background:#fff url(images/andromeda/toolbar-input.png) repeat-x left top;
-    color: #000;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-box-shadow: 0 1px 3px #999;
-    -webkit-box-shadow: 0 1px 3px #999;
+    color: #fff;
     padding:20px;
-    border:1px solid #b7cbd8;
     font-family:Arial,Verdana,Helvetica,sans-serif;
     font-size:11px !important;
     margin-bottom:5px;
@@ -218,19 +219,21 @@ h2.loginlogo_community{
     margin-left:-170px;
 }
 #adminLoginFooter {
-    color: #333;
+    color: #fff;
     font-family:Arial,Verdana,Helvetica,sans-serif;
     font-size:10px !important;
     overflow:hidden;
     position:absolute;
-    bottom:5px;
+    bottom:0px;
     z-index:99;
     width:500px;
     left:50%;
     margin-left:-250px;
+    border: 1px solid #000;
+    background-color: #000;
 }
 #adminLoginFooter #copyright {
-    color: #333;
+    color: #fff;
 }
 
 #topTitle {
@@ -273,7 +276,7 @@ h1.big {
 
 h3.loginIcon{
     padding: 5px 0 10px 50px;
-    color: #D32222;
+    color: #fff;
     margin:0 auto 5px auto;
     padding:5px;
     font-size:12px

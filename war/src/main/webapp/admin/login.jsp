@@ -32,16 +32,9 @@ pageContext.setAttribute("displayMsg", request.getAttribute(JahiaAdministration.
       }
   }
 </script>
-<div class="grass"></div>
-<div class="grass2"></div>
-<div class="hive"></div>
-<c:if test="${not empty displayMsg}">
-<div class="bear"></div>
-</c:if>
-<div class="cloud"></div>
-<div class="cloud2"></div>
-<h2 class="loginlogo_community"></h2>
+
 <div id="adminLogin">
+<h2 class="loginlogo_beta"></h2>
 <h3 class="loginIcon"><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></h3>
 <br class="clearFloat" />
 <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"processlogin","&redirectTo=" + URLEncoder.encode(redirectTo))%>' method="post">

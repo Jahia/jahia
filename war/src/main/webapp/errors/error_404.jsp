@@ -15,16 +15,11 @@
     <title><fmt:message key="label.error.404.title"/></title>
 
 </head>
-<body class="login" onload="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
-<div class="grass"></div>
-<div class="grass2"></div>
-<div class="hive"></div>
-<div class="bear"></div>
-<div class="cloud"></div>
-<div class="cloud2"></div>
-<h2 class="loginlogo_community"></h2>
+<body class="login" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
+
 
     <div id="adminLogin">
+    <h2 class="loginlogo_beta"></h2>
             <br class="clearFloat" />
             <h3 class="loginIcon"><fmt:message key="label.error.404.title"/></h3>
         <p><fmt:message key="label.error.404.description"/></p>

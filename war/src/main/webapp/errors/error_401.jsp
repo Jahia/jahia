@@ -29,18 +29,11 @@ function keyDown(e) {
 </script>
 
 </head>
-<body onload="autoFocus()" class="login">
-<div class="grass"></div>
-<div class="grass2"></div>
-<div class="hive"></div>
-<ui:isLoginError>
-<div class="bear"></div>
-</ui:isLoginError>
-<div class="cloud"></div>
-<div class="cloud2"></div>
-<h2 class="loginlogo_community"></h2>
+<body onLoad="autoFocus()" class="login">
+
 
     <div id="adminLogin">
+    <h2 class="loginlogo_beta"></h2>
         <ui:loginArea action="${pageContext.request.contextPath}/cms/login">
             <h3 class="loginIcon"><fmt:message key="label.login"/></h3>
             <br class="clearFloat" />
@@ -70,7 +63,7 @@ function keyDown(e) {
         <div id="actionBar" class="alignCenter">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="#login" onclick="document.forms.loginForm.submit(); return false;" tabindex="5" title="<fmt:message key="label.login"/>">
+              <a class="ico-ok" href="#login" onClick="document.forms.loginForm.submit(); return false;" tabindex="5" title="<fmt:message key="label.login"/>">
                   <fmt:message key="label.login"/></a>
              </span>
           </span>

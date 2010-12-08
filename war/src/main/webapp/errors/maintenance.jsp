@@ -15,15 +15,8 @@
 
 </head>
 <body class="login">
-<div class="grass"></div>
-<div class="grass2"></div>
-<div class="hive"></div>
-<div class="bear"></div>
-<div class="cloud"></div>
-<div class="cloud2"></div>
-<h2 class="loginlogo_community"></h2>
-
     <div id="adminLogin">
+    <h2 class="loginlogo_beta"></h2>
             <br class="clearFloat" />
             <h3 class="loginIcon"><fmt:message key="label.error.maintenance.title"/></h3>
         <p><fmt:message key="label.error.maintenance.description"/></p>

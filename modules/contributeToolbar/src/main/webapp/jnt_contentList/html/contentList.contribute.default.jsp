@@ -19,26 +19,23 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="timepicker.js"/>
+<template:addResources type="javascript" resources="jquery.form.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.js"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
+<template:addResources type="javascript"
+                       resources="${url.context}/gwt/resources/${url.ckEditor}/adapters/jquery.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.datepicker.js"/>
-<template:addResources type="css" resources="jquery.treeview.css,jquery.fancybox.css"/>
 <template:addResources type="javascript"
                        resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.pack.js"/>
-<template:addResources>
-    <style type="text/css">
-        div#fancy_div {
-            background: #FFF;
-            color: #000;
-            overflow: auto;
-        }
-    </style>
-</template:addResources>
+<template:addResources type="javascript" resources="jquery.defer.js"/>
+<template:addResources type="javascript" resources="treeselector.js"/>
+<template:addResources type="css" resources="timepicker.css,datepicker.css,jquery.treeview.css,jquery.fancybox.css,contentlist.css,formcontribute.css"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>

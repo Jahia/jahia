@@ -33,15 +33,6 @@
 <template:addResources type="javascript"
                        resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.pack.js"/>
 <template:addResources type="css" resources="timepicker.css"/>
-<template:addResources>
-    <style type="text/css">
-        div#fancy_div {
-            background: #FFF;
-            color: #000;
-            overflow: auto;
-        }
-    </style>
-</template:addResources>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>

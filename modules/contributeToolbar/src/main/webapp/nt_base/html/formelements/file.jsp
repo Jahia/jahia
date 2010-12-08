@@ -26,10 +26,40 @@
 <fmt:message key="label.select.file" var="fileLabel"/>
 <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                  displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
-        label="${fileLabel}" onClose="$.defer( 200, function() { $.fancybox($('#${currentResource.moduleParams.fancyboxid}')); })"/>
+        label="${fileLabel}"
+        onSelect="function(uuid, path, title) {
+            $('#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').val(uuid);
+            $('#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').html('selected'+title);
+            return false;
+        }"
+        onClose="$.defer( 200, function() {
+            $.fancybox({
+                'content':$('.FormContribute'),
+                'height':600,
+                'width':600,
+                'autoScale':false,
+                'autoDimensions':false,
+                'onComplete':function() {
+                    $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { $(this).ckeditor() })
+                },
+
+                'onCleanup':function() {
+                    $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
+                }
+             }
+            );
+        })"
+        fancyboxOptions="{
+            onStart: function() {
+                $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
+                $('#temp').append($('.FormContribute'))
+            }
+        }"/>
 <span><fmt:message key="label.or"/></span>
 <div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
     <span><fmt:message key="add.file"/></span>
+</div>
+<div id="display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
 </div>
 <script>
     $(document).ready(function() {
@@ -42,7 +72,8 @@
             callback : function (data, status,original) {
                 var id = $(original).attr('jcr:id');
                 $("#"+id).val(data.uuids[0]);
-                $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html($('<span style="color:green;text-decoration:blink;">file uploaded</span><br/><img src="'+data.urls[0]+'"/>'));
+                $("#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html(data.urls[0]);
+                $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html('<span><fmt:message key="add.file"/></span>');
             }
         });
     });

@@ -30,25 +30,20 @@
 <c:if test="${types != null}">
     <ul class="sf-menu sf-navbar">
     <c:forEach items="${types}" var="nodeType" varStatus="status">
-        <li><a href="#add${currentNode.identifier}-${status.index}" id="addButton${currentNode.identifier}-${status.index}"><span
+        <li><a href="${url.base}${currentNode.path}.contribute.add.html.ajax?resourceNodeType=${nodeType.name}" id="addButton${currentNode.identifier}-${status.index}"><span
             class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
         </a></li>
     </c:forEach>
     </ul>
-    <c:forEach items="${types}" var="nodeType" varStatus="status">
 
-        <%-- todo: move to ajax calls --%>
-
-        <div style="display:none;"><div id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv${currentNode.identifier}" style="width:800px;">
-            <template:module node="${currentNode}" template="contribute.add">
-                <template:param name="resourceNodeType" value="${nodeType.name}"/>
-            </template:module>
-        </div></div>
-    </c:forEach>
     <script type="text/javascript">
         $(document).ready(function() {
             <c:forEach items="${types}" var="nodeType" varStatus="status">
                 $("#addButton${currentNode.identifier}-${status.index}").fancybox({
+                    'height':600,
+                    'width':600,
+                    'autoScale':false,
+                    'autoDimensions':false,
                     'onComplete':function() {
                         $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor() })
                     },
@@ -62,3 +57,6 @@
     </script>
 
 </c:if>
+<div id="temp" style="display:none;" >
+    
+</div>

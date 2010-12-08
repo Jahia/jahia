@@ -14,7 +14,7 @@
 <c:forEach var="tpl" items="${previousTemplate.nextTemplates}">
     <jcr:node uuid="${tpl.node}" var="tplnode" />
     <jcr:nodeProperty var="theme" node="${tplnode}" name="j:theme" />
-    <c:if test="${!empty theme}">
+    <c:if test="${not empty theme.node}">
         <c:forEach var="themeFile" items="${jcr:getChildrenOfType(theme.node,'nt:file')}">
             <template:addResources type="css" resources="${themeFile.url}" />
         </c:forEach>

@@ -447,6 +447,7 @@
                 <value>jmix:editorialContent</value>
                 <value>jnt:contentFolder</value>
                 <value>jnt:contentList</value>
+                <value>nt:folder</value>
             </list>
         </property>
 
@@ -456,6 +457,7 @@
                 <value>jnt:virtualsite</value>
                 <value>jnt:contentList</value>
                 <value>jnt:contentFolder</value>
+                <value>nt:folder</value>
             </list>
         </property>
 

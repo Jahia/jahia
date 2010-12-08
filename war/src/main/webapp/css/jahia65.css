@@ -160,7 +160,7 @@ h2.loginlogo_beta{
     height:80px;
     display:block;
     background:url(images/andromeda/logo_jahia_beta.png) no-repeat top left ;
-
+	margin-bottom:10px;
 }
 h2.loginlogo{
     width:340px;

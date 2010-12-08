@@ -169,6 +169,11 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
                 templateNode = t;
 
+                if (currentResource.getNode().isNodeType("jnt:area") && t != null) {
+                    // Skip to next node automatically if you're in an area to avoid loop
+                    t = t.next;
+                }
+
                 if (!path.startsWith("/")) {
                     List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
                     if (t != null) {
@@ -206,6 +211,9 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     }
                 } else if (path.startsWith("/")) {
                     JCRSessionWrapper session = resource.getNode().getSession();
+
+                    // No more areas in an absolute area
+                    renderContext.getRequest().setAttribute("previousTemplate", null);
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
                         applyContributeModeOptions(currentResource.getNode(), true);

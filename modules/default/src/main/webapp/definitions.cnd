@@ -142,3 +142,19 @@
  - j:type (string, choicelist[nodetypes=nt:base,resourceBundle]) multiple 
 
 [jnt:introduction] > jnt:bigText, jmix:structuredContent, jmix:editorialContent
+
+
+[jnt:post] > jnt:content, jmix:rating, mix:title
+ - content (string,richtext) i18n
+
+[jnt:thread] > jnt:content
+ - threadSubject (string)
+ + * (jnt:post)
+
+[jmix:comments] mixin
+ - shortView (boolean) = false autocreated
+ + comments (jnt:thread) = jnt:thread autocreated hidden
+
+[jnt:commentsList] > jnt:content, jmix:bindedComponent, jmix:structuredContent
+
+[jnt:addComment] > jnt:content, jmix:bindedComponent, jmix:structuredContent

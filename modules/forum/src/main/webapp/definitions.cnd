@@ -3,13 +3,6 @@
 
 [jmix:forumContent] > jmix:droppableContent
 
-[jnt:post] > jnt:content, jmix:rating, mix:title
- - content (string,richtext) i18n
-
-[jnt:thread] > jnt:content
- - threadSubject (string)
- + * (jnt:post)
-
 [jnt:topic] > jnt:content, jmix:forumContent
  - topicSubject (string)
  + * (jnt:thread)
@@ -20,11 +13,3 @@
  - boardSubject (string)
  - boardDescription (string)
  + * (jnt:topic)
-
-[jmix:comments] mixin
- - shortView (boolean) = false autocreated
- + comments (jnt:thread) = jnt:thread autocreated hidden
-
-[jnt:commentsList] > jnt:content, jmix:bindedComponent, jmix:forumContent
-
-[jnt:addComment] > jnt:content, jmix:bindedComponent, jmix:forumContent

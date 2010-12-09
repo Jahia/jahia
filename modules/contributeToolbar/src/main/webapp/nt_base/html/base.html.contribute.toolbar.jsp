@@ -135,35 +135,35 @@
 <div id="contributeToolbar" >
 
     <div id="edit">
-    <a href="${url.live}" ><img src="${url.context}/icons/live.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="${url.live}" ><img src="${url.context}/icons/live.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.live"/></a>
-    <a href="${url.preview}" ><img src="${url.context}/icons/preview.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="${url.preview}" ><img src="${url.context}/icons/preview.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.preview"/></a>
 
-    <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="${url.context}/icons/delete.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="${url.context}/icons/delete.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.delete"/></a>
-    <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><img src="${url.context}/icons/copy.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.copy"/></a>
-    <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img src="${url.context}/icons/cut.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.cut"/></a>
-    <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes();"><img src="${url.context}/icons/publish.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.publication"/></a>
-    <a href="#" id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><img src="${url.context}/icons/clipboard.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><img src="${url.context}/icons/copy.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.copy"/></a>
+    <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img src="${url.context}/icons/cut.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.cut"/></a>
+    <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes();"><img src="${url.context}/icons/publish.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.publication"/></a>
+    <a href="#" id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><img src="${url.context}/icons/clipboard.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.clipboard.reset"/></a>
-    <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><img src="${url.context}/icons/clipboard.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><img src="${url.context}/icons/clipboard.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.clipboard.contains"/></a>
-    <a href="${url.base}/users/${renderContext.user.username}.tasklist.html.ajax" class="fancylink"><img src="${url.context}/icons/user.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="${url.base}/users/${renderContext.user.username}.tasklist.html.ajax" class="fancylink"><img src="${url.context}/icons/user.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.goto.myTasks"/></a>
     <c:choose>
     <c:when test="${jcr:isNodeType(currentNode, 'jnt:folder') || jcr:isNodeType(currentNode, 'nt:file')}">
-    <a href="${url.context}/engines/manager.jsp?conf=filemanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="${url.context}/engines/manager.jsp?conf=filemanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.filemanager"/></a>
     </c:when>
     <c:otherwise>
-    <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.contentmanager"/></a>
     </c:otherwise>
     </c:choose>
-    <a href="${url.base}${currentNode.resolveSite.path}/home.html"><img src="${url.context}/icons/siteManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; ">Home</a>
-    <a href="${url.base}${currentNode.resolveSite.path}/contents.html"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; ">Content</a>
-    <a href="${url.base}${currentNode.resolveSite.path}/files.html"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; ">Files</a>
+    <a href="${url.base}${currentNode.resolveSite.path}/home.html"><img src="${url.context}/icons/siteManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Home</a>
+    <a href="${url.base}${currentNode.resolveSite.path}/contents.html"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Content</a>
+    <a href="${url.base}${currentNode.resolveSite.path}/files.html"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Files</a>
     </div>
     <div style="display:none;">
     <div id="clipboardpreview-${currentNode.identifier}">

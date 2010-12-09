@@ -63,7 +63,7 @@
             in the following example :
             BundleCache: num=2860 mem=8189k max=8192k avg=2932 hits=12'217'232 miss=5'802'768
             You should increase the bundle cache size. The value is in MB. -->
-            <!--param name=“bundleCacheSize“ value=“512“ /-->
+            <!--param name="bundleCacheSize" value="512" /-->
         </PersistenceManager>
 
         <SearchIndex class="org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex">

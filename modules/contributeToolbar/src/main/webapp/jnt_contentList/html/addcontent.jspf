@@ -3,6 +3,9 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%--@elvariable id="nodeType" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 
 <template:addResources type="css" resources="contribute-toolbar.css"/>
 
@@ -19,8 +22,8 @@
     <ul class="pagecontributeToolbar">
     <c:forEach items="${types}" var="nodeType" varStatus="status">
         <li><a href="${url.base}${currentNode.path}.contribute.add.html.ajax?resourceNodeType=${nodeType.name}" id="addButton${currentNode.identifier}-${status.index}">
-		<img title="" align="absmiddle" alt="" src="${url.templatesPath}/default/icons/jnt_acl.png"/> ${jcr:label(nodeType, renderContext.mainResourceLocale)}
-        </a></li>
+		<img title="" align="absmiddle" alt="" src="${url.templatesPath}/${(empty nodeType.templatePackage.rootFolder)?'default':nodeType.templatePackage.rootFolder}/icons/${fn:replace(nodeType.name,':' ,'_' )}.png"/> ${jcr:label(nodeType, renderContext.mainResourceLocale)}
+        </a></li>                                  
     </c:forEach>
     </ul>
 

@@ -109,7 +109,7 @@
                         </row-col1>
                     </news-template>
                 </base>
-                <newsletter-issue j:requiredPermissions="" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletterIssue" j:hiddenTemplate="false" j:defaultTemplate="false">
+                <newsletter-issue j:requiredPermissions="" j:view="newsletter" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletterIssue" j:hiddenTemplate="false" j:defaultTemplate="false">
                   <pagecontent jcr:primaryType="jnt:contentList">
                     <logo j:basenode="/templateSets/templates-web/home" jcr:primaryType="jnt:absoluteArea" />
                     <contentList jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="2">

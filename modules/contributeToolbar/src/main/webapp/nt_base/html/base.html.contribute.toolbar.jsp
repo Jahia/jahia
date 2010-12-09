@@ -139,6 +139,7 @@
             key="label.live"/></a>
     <a href="${url.preview}" ><img src="${url.context}/icons/preview.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.preview"/></a>
+    <a href="${url.edit}"><img src="${url.context}/icons/editContent.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.edit"/></a>
 
     <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="${url.context}/icons/delete.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.delete"/></a>
@@ -161,10 +162,9 @@
             key="label.contentmanager"/></a>
     </c:otherwise>
     </c:choose>
-    <span>Go to: </span> <a href="${url.base}${currentNode.resolveSite.path}/home.html"><img src="${url.context}/icons/siteManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Site Home Page</a>
-    <a href="${url.base}${currentNode.resolveSite.path}/contents.html"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Site Content </a>
-    <a href="${url.base}${currentNode.resolveSite.path}/files.html"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Site Files</a>
-    <a href="${url.edit}"><img src="${url.context}/icons/editContent.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="edit"/></a>
+    <span>Go to: </span> <a href="${url.base}${currentNode.resolveSite.path}/home.html"><img src="${url.context}/icons/siteManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteHomepage"/></a>
+    <a href="${url.base}${currentNode.resolveSite.path}/contents.html"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteContent"/></a>
+    <a href="${url.base}${currentNode.resolveSite.path}/files.html"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteFiles"/></a>
     </div>
     <div style="display:none;">
     <div id="clipboardpreview-${currentNode.identifier}">

@@ -161,9 +161,9 @@
             key="label.contentmanager"/></a>
     </c:otherwise>
     </c:choose>
-    <a href="${url.base}${currentNode.resolveSite.path}/home.html"><img src="${url.context}/icons/siteManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Home</a>
-    <a href="${url.base}${currentNode.resolveSite.path}/contents.html"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Content</a>
-    <a href="${url.base}${currentNode.resolveSite.path}/files.html"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Files</a>
+    <span>Go to: </span> <a href="${url.base}${currentNode.resolveSite.path}/home.html"><img src="${url.context}/icons/siteManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Site Home Page</a>
+    <a href="${url.base}${currentNode.resolveSite.path}/contents.html"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Site Content </a>
+    <a href="${url.base}${currentNode.resolveSite.path}/files.html"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Site Files</a>
     </div>
     <div style="display:none;">
     <div id="clipboardpreview-${currentNode.identifier}">

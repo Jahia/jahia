@@ -3,20 +3,8 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<template:addResources type="javascript" resources="hoverIntent.js,superfish.js"/>
-<template:addResources type="css" resources="superfish.css,superfish-navbar.css"/>
-<script type="text/javascript">
-    var contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")} = {
-        contributeTarget: "${currentNode.path}",
-        contributeReplaceTarget: "${currentNode.UUID}",
-        contributeReplaceUrl: "${url.base}${currentNode.path}.${currentResource.template}.html.ajax"
-    };
-    contributeParams[contributeParams.length] = contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")};
-    
-    $(document).ready(function(){
-        $("ul.sf-menu").superfish();
-    });
-</script>
+
+<template:addResources type="css" resources="contribute-toolbar.css"/>
 
 <h3 class="titleaddnewcontent">
     <img title="" alt="" src="${url.templatesPath}/default/images/add.png"/><fmt:message key="label.add.new.content"/>
@@ -28,7 +16,7 @@
 <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
 
 <c:if test="${types != null}">
-    <ul class="sf-menu sf-navbar">
+    <ul class="pagecontributeToolbar">
     <c:forEach items="${types}" var="nodeType" varStatus="status">
         <li><a href="${url.base}${currentNode.path}.contribute.add.html.ajax?resourceNodeType=${nodeType.name}" id="addButton${currentNode.identifier}-${status.index}"><span
             class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}

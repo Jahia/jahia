@@ -37,7 +37,7 @@
 </ui:dateSelector>
 <script>
     $(document).ready(function() {
-        $("#${jsNodeName}${scriptTypeName}").submit(function() {
+        $("#${jsNodeName}${scriptTypeName}").bind('form-pre-serialize',function() {
             var datePicked = $("#datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val().trim().replace(" ",
                     "T");
             $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(datePicked);

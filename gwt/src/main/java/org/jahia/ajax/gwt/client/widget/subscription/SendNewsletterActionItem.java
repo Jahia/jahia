@@ -110,7 +110,7 @@ public class SendNewsletterActionItem extends BaseActionItem {
             Log.debug("action");
             String baseURL = org.jahia.ajax.gwt.client.util.URL.getAbsoluteURL(
                     JahiaGWTParameters.getContextPath() + "/cms/render");
-            String localURL = baseURL + "/default/" + JahiaGWTParameters.getLanguage() + gwtJahiaNode.getPath();
+            String localURL = baseURL + "/live/" + JahiaGWTParameters.getLanguage() + gwtJahiaNode.getPath();
             linker.loading("Executing action ...");
             RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + ".sendAsNewsletter.do");
             try {

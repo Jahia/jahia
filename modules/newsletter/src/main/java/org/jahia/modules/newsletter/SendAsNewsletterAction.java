@@ -178,7 +178,7 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
             Map<String,String> headers = new HashMap<String,String>();
             headers.put("jahiatoken",TokenAuthValveImpl.addToken(node.getSession().getUser()));
 			String out = httpClientService.executePost("http://localhost:8080"+
-			        Jahia.getContextPath() + Render.getRenderServletPath() + "/default/"
+			        Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
 			                + node.getResolveSite().getDefaultLanguage() + node.getPath()
 			                + ".sendAsNewsletter.do", null, headers);
 			logger.info(out);

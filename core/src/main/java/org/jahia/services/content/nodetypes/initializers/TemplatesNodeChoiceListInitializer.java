@@ -32,6 +32,7 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -55,7 +56,7 @@ import java.util.Map;
  * User: toto
  * Date: Jul 1, 2010
  * Time: 3:37:11 PM
- * 
+ *
  */
 public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatesNodeChoiceListInitializer.class);
@@ -79,11 +80,14 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
 
             final JCRSessionWrapper session = site.getSession();
             final QueryManager queryManager = session.getWorkspace().getQueryManager();
-
             String type = "contentTemplate";
-            if (nodetype.isNodeType("jnt:page")) {
-                type = "pageTemplate";
-            }                     
+            if (StringUtils.isEmpty(param)) {
+                if (nodetype.isNodeType("jnt:page")) {
+                    type = "pageTemplate";
+                }
+            } else {
+                type = param;
+            }
 
             QueryResult result = queryManager.createQuery(
                     "select * from [jnt:" + type + "] as n where isdescendantnode(n,['" +site.getPath()+"'])", Query.JCR_SQL2).execute();

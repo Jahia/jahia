@@ -116,7 +116,7 @@
 
     function onresizewindow() {
         h = window.innerHeight- $("#contributeToolbar").height();
-        $("#bodywrapper").attr("style","overflow:auto; height:"+ h +"px");
+        $("#bodywrapper").attr("style","position:relative;overflow:auto; height:"+ h +"px");
     }
 
     $(document).ready(function() {

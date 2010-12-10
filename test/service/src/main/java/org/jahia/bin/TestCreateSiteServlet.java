@@ -26,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -33,7 +34,6 @@ import java.io.IOException;
  * User: Dorth
  * Date: 9 sept. 2010
  * Time: 15:50:42
- * 
  */
 @SuppressWarnings("serial")
 public class TestCreateSiteServlet extends HttpServlet implements Controller, ServletContextAware {
@@ -67,52 +67,38 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
         }
 
         if (httpServletRequest.getParameter("site").equals("ACME")) {
-
-            final JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
-            JCRNodeWrapper homeNode = null;
-            if (defaultSite != null) {
-                try {
-                    JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
-                            LanguageCodeConverters.languageCodeToLocale("en"));
-                    homeNode = session.getRootNode().getNode("sites/" + defaultSite.getSiteKey() + "/home");
-                } catch (Exception e) {
-                }
-            }
-            if (homeNode == null) {
-                final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-                try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            try {
-                                TestHelper.createSite("ACME", "localhost", TestHelper.ACME_TEMPLATES,
-                                        SettingsBean.getInstance().getJahiaVarDiskPath()
-                                                + "/prepackagedSites/webtemplates65.zip", "ACME.zip");
-                                jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME/home")
-                                        .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-                                session.save();
-                            } catch (Exception e) {
-                                logger.error("Cannot create or publish site", e);
-                            }
-                            return null;
+            final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        try {
+                            int numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
+                            TestHelper.createSite("ACME"  + numberOfSites, "localhost"  + numberOfSites, TestHelper.ACME_TEMPLATES,
+                                    SettingsBean.getInstance().getJahiaVarDiskPath()
+                                            + "/prepackagedSites/webtemplates65.zip", "ACME.zip");
+                            jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME"+ (numberOfSites) +"/home")
+                                    .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+                            session.save();
+                        } catch (Exception e) {
+                            logger.error("Cannot create or publish site", e);
                         }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                        return null;
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         } else if (httpServletRequest.getParameter("site").equals("mySite")) {
             try {
-                final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhosttest");
-                if(mySite == null){
-                    TestHelper.createSite("mySite", "localhosttest" , TestHelper.INTRANET_TEMPLATES);
-                }else logger.warn("site already exist");
+                int numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
+                TestHelper.createSite("mySite" + numberOfSites, "localhost" + numberOfSites, TestHelper.INTRANET_TEMPLATES);
             } catch (Exception e) {
                 logger.warn("Exception during mySite Creation", e);
             }
         } else if (httpServletRequest.getParameter("site").equals("delete")) {
             try {
-                TestHelper.deleteSite("ACME");
-                TestHelper.deleteSite("mySite");
+                TestHelper.removeAllSites(ServicesRegistry.getInstance().getJahiaSitesService());
             } catch (Exception e) {
                 logger.warn("Exception during test tearDown", e);
             }

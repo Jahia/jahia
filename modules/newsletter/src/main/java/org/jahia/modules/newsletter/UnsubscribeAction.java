@@ -85,6 +85,7 @@ public class UnsubscribeAction extends BaseAction {
                 try {
                     String email = getParameter(parameters, "email");
                     final JCRNodeWrapper node = resource.getNode();
+                    session.checkout(node);
                     if (email != null) {
                         // consider as non-registered user
                         JCRNodeWrapper subscription = subscriptionService.getSubscription(node, email, session);
@@ -127,6 +128,7 @@ public class UnsubscribeAction extends BaseAction {
     private boolean sendConfirmationMail(JCRSessionWrapper session, String email, JCRNodeWrapper node, JCRNodeWrapper subscription,
                                          Resource resource, HttpServletRequest req) throws RepositoryException, JSONException {
         if (mailConfirmationTemplate != null) {
+            session.checkout(subscription);
             String confirmationKey = subscriptionService.generateConfirmationKey(subscription);
             subscription.setProperty("j:confirmationKey", confirmationKey);
             session.save();

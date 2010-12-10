@@ -45,7 +45,7 @@
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>templates-web</artifactId>
-    <name>Jahia Web templates</name>
+    <name>Jahia Web Templates</name>
     <packaging>war</packaging>
     <description>These are the custom module (jahiaPages) for running on a Jahia server.</description>
     <repositories>

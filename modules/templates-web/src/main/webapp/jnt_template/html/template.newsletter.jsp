@@ -17,130 +17,133 @@
 
 <html>
 <head>
-     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
-<body>
-<table style="font-size:80%;background-color:#f0eee4;width:100%;font-family: Arial, Helvetica, sans-serif;line-height:160%;"
-       width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td align="center">
+<body id="body">
+<div id="bodywrapper">
+    <table style="font-size:80%;background-color:#f0eee4;width:100%;font-family: Arial, Helvetica, sans-serif;line-height:160%;"
+           width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center">
 
-<table width="579" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-        <td style="padding: 8px 0 8px 0;">
-            <p style="font-size: 11px;font-weight: normal;font-style: italic;color: #333;text-align: center;">
-                <fmt:message key="web_templates_newsletter.intro.1">
-                    <fmt:param value="<a style='color: #900;text-decoration: none;' href='/' name='top'>${renderContext.site.path}</a>"/>
-                </fmt:message>
-                <br/>
-                <fmt:message key="web_templates_newsletter.intro.2"/>
-                <a href="${currentNode.url}" target="_blank" style="color: #900;text-decoration: none;">
-                <fmt:message key="web_templates_newsletter.intro.3"/></a>.</p></td>
-    </tr>
-</table>
+                <table width="579" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td style="padding: 8px 0 8px 0;">
+                            <p style="font-size: 11px;font-weight: normal;font-style: italic;color: #333;text-align: center;">
+                                <fmt:message key="web_templates_newsletter.intro.1">
+                                    <fmt:param value="<a style='color: #900;text-decoration: none;' href='/' name='top'>${renderContext.site.path}</a>"/>
+                                </fmt:message>
+                                <br/>
+                                <fmt:message key="web_templates_newsletter.intro.2"/>
+                                <a href="${currentNode.url}" target="_blank" style="color: #900;text-decoration: none;">
+                                    <fmt:message key="web_templates_newsletter.intro.3"/></a>.</p></td>
+                    </tr>
+                </table>
 
-<table width="579" border="0" cellspacing="0" cellpadding="0" style="background-color:#4f5c79">
-    <tr>
-        <td align="center">
+                <table width="579" border="0" cellspacing="0" cellpadding="0" style="background-color:#4f5c79">
+                    <tr>
+                        <td align="center">
 
-            <table width="579" height="108" border="0" cellspacing="0" cellpadding="0"
-                   style="background-color:#4f5c79">
-                <tr>
-                    <td><template:area path="logo"/></td>
-                    <td align="right" style="height: 108px; padding-right: 20px;">
-                        <h3 style="color:#fff; font-weight:normal; margin:0; padding:5px 20px; font-size:30px;font-family:Georgia, 'Times New Roman', Times, serif">
-                            <em>${currentNode.properties["jcr:title"]}</em></h3>
+                            <table width="579" height="108" border="0" cellspacing="0" cellpadding="0"
+                                   style="background-color:#4f5c79">
+                                <tr>
+                                    <td style="width:200px;"><template:area path="logo"/></td>
+                                    <td align="right" style="height: 108px; padding-right: 20px;">
+                                        <h3 style="color:#fff; font-weight:normal; margin:0; padding:5px 20px; font-size:30px;font-family:Georgia, 'Times New Roman', Times, serif">
+                                            <em>${currentNode.properties["jcr:title"]}</em></h3>
                         <span style="color:#fff; padding:0 20px; font-size:14px;font-family:Georgia, 'Times New Roman', Times, serif">
                             <em>
                                 <jsp:useBean id="startDate" class="java.util.Date" />
                                 <fmt:formatDate value="${startDate}" dateStyle="long" type="date"/>
                             </em>
                         </span>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-
-<table width="579" border="0" cellspacing="0" cellpadding="0" style="background-color:#fff">
-    <tr>
-        <td width="254" align="center" valign="top"
-            style="background-color: #f8f8f8;border-right: 1px solid #ccc;">
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td align="left" style="padding: 10px;">
-
-                        <h2 style="font-size: 16px;font-weight: normal;color: #464646;margin: 0 0 10px 0;border-bottom: 3px solid #ccc;text-transform: uppercase;">
-                            In this issue</h2>
-                        <template:area path="contents"/>
-                        <h2 style="font-size: 16px;font-weight: normal;color: #464646;margin: 0 0 10px 0;border-bottom: 3px solid #ccc;text-transform: uppercase;">
-                            In short</h2>
-                        <template:area path="short"/>
-                            <%--<table width="100%" height="173" border="0" cellspacing="0" cellpadding="0"
-                                   style="border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;">
-                                <tr>
-                                    <td align="center" valign="top"
-                                        style="border-bottom: 1px solid #ccc;padding: 16px 22px 16px 22px;">
-                                        <h3 style="font-size: 16px;font-weight: normal;color: #666;margin: 0 0 4px 0;padding: 0;">
-                                            UNSUBSCRIBE</h3>
-
-                                        <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
-                                            <a href="#" target="_blank"
-                                               style="color: #900;text-decoration: none; border: none;margin: 0;padding: 0;">Click
-                                                to instantly unsubscribe from this email</a></p></td>
+                                    </td>
                                 </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <table width="579" border="0" cellspacing="0" cellpadding="0" style="background-color:#fff">
+                    <tr>
+                        <td width="254" align="center" valign="top"
+                            style="background-color: #f8f8f8;border-right: 1px solid #ccc;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                 <tr>
-                                    <td align="center" valign="top"
-                                        style="padding: 16px 22px 16px 22px;">
-                                        <h3 style="font-size: 16px;font-weight: normal;color: #666;margin: 0 0 4px 0;padding: 0;">
-                                            FORWARD</h3>
+                                    <td align="left" style="padding: 10px;">
 
-                                        <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
-                                            <a href="#" target="_blank"
-                                               style="color: #900;text-decoration: none; border: none;margin: 0;padding: 0;">Click
-                                                to forward this email to a friend</a></p></td>
+                                        <h2 style="font-size: 16px;font-weight: normal;color: #464646;margin: 0 0 10px 0;border-bottom: 3px solid #ccc;text-transform: uppercase;">
+                                            In this issue</h2>
+                                        <template:area path="contents"/>
+                                        <h2 style="font-size: 16px;font-weight: normal;color: #464646;margin: 0 0 10px 0;border-bottom: 3px solid #ccc;text-transform: uppercase;">
+                                            In short</h2>
+                                        <template:area path="short"/>
+                                        <%--<table width="100%" height="173" border="0" cellspacing="0" cellpadding="0"
+                                               style="border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;">
+                                            <tr>
+                                                <td align="center" valign="top"
+                                                    style="border-bottom: 1px solid #ccc;padding: 16px 22px 16px 22px;">
+                                                    <h3 style="font-size: 16px;font-weight: normal;color: #666;margin: 0 0 4px 0;padding: 0;">
+                                                        UNSUBSCRIBE</h3>
+
+                                                    <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
+                                                        <a href="#" target="_blank"
+                                                           style="color: #900;text-decoration: none; border: none;margin: 0;padding: 0;">Click
+                                                            to instantly unsubscribe from this email</a></p></td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" valign="top"
+                                                    style="padding: 16px 22px 16px 22px;">
+                                                    <h3 style="font-size: 16px;font-weight: normal;color: #666;margin: 0 0 4px 0;padding: 0;">
+                                                        FORWARD</h3>
+
+                                                    <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
+                                                        <a href="#" target="_blank"
+                                                           style="color: #900;text-decoration: none; border: none;margin: 0;padding: 0;">Click
+                                                            to forward this email to a friend</a></p></td>
+                                            </tr>
+                                        </table>--%>
+                                    </td>
                                 </tr>
-                            </table>--%>
-                    </td>
-                </tr>
-            </table>
-        </td>
+                            </table>
+                        </td>
 
-        <td width="325" align="center" valign="top">
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td align="left" style=" padding: 20px;">
-                        <template:area path="lastNews"/>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+                        <td width="325" align="center" valign="top">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td align="left" style=" padding: 20px;">
+                                        <template:area path="lastNews"/>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
 
-<table width="579" height="108" border="0" cellspacing="0" cellpadding="0"
-       style="padding: 10px;background-color: #eaeaea;">
-    <tr>
-        <td align="center" valign="middle">
+                <table width="579" height="108" border="0" cellspacing="0" cellpadding="0"
+                       style="padding: 10px;background-color: #eaeaea;">
+                    <tr>
+                        <td align="center" valign="middle">
 
-            <table width="559" height="88" border="0" cellspacing="0" cellpadding="0"
-                   style="font-size: 11px;font-weight: normal;color: #999999;text-align: center;">
-                <tr>
-                    <td align="center" style="height: 88px;">
-                        <template:area path="logoFooter"/>
-                        <br/>
-                        &copy; Copyright 2002-2009 - ACME International Corp.
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-</td>
-</tr>
-<tr>
-    <td align="center">&nbsp;</td>
-</tr>
-</table>
+                            <table width="559" height="88" border="0" cellspacing="0" cellpadding="0"
+                                   style="font-size: 11px;font-weight: normal;color: #999999;text-align: center;">
+                                <tr>
+                                    <td align="center" style="height: 88px;">
+                                        <template:area path="logoFooter"/>
+                                        <br/>
+                                        &copy; Copyright 2002-2009 - ACME International Corp.
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">&nbsp;</td>
+        </tr>
+    </table>
+</div>
 </body>
+
 </html>

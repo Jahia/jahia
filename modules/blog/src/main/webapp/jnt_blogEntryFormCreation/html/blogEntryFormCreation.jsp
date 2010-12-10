@@ -71,7 +71,7 @@
                             alert('${fn:replace(noTitle,"'","\\'")}');
                             return false;
                         }
-                        document.blogPost.action = '${renderContext.mainResource.node.name}/blog-issues/' + encodeURIComponent(document.blogPost.elements['jcr:title'].value);
+                        document.blogPost.action = '${renderContext.mainResource.node.name}/blog-content/' + encodeURIComponent(document.blogPost.elements['jcr:title'].value);
                         document.blogPost.submit();"/>
             </p>
         </div>

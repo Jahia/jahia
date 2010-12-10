@@ -34,14 +34,14 @@
     <h2 class="post-title"><a href="${url.base}${currentNode.path}.html"><c:out value="${title.string}"/></a></h2>
 
     <p class="post-info"><fmt:message key="blog.label.by"/> <c:set var="fields" value="${currentNode.propertiesAsString}"/>
-        <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
+        ${createdBy.string}
         - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
         <!-- <a href="#"><fmt:message key="blog.category"/></a>    -->
     </p>
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
         <c:forEach items="${assignedTags}" var="tag" varStatus="status">
-            <li><a href="${blogHome}?addTag=${tag.node.name}">${tag.node.name}</a></li>
+            <li>${tag.node.name}</li>
         </c:forEach>
     </ul>
     <div class="post-resume">

@@ -53,7 +53,7 @@
 
     <jcr:node path="/users/${createdBy.string}" var="contentUser"/>
     <c:set var="fields" value="${contentUser.propertiesAsString}"/>
-    <p class="post-info"><fmt:message key="blog.label.by"/>&nbsp;<a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>&nbsp;-&nbsp;<fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/></p>
+    <p class="post-info"><fmt:message key="blog.label.by"/>&nbsp;${createdBy.string}&nbsp;-&nbsp;<fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/></p>
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
         <c:forEach items="${assignedTags}" var="tag" varStatus="status">

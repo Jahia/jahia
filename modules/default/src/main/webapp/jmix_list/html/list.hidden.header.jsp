@@ -32,7 +32,7 @@
 <c:if test="${empty moduleMap.currentList and not empty moduleMap.listQuerySql}">
     <jcr:sql var="result" sql="${moduleMap.listQuerySql}"/>
     <c:set target="${moduleMap}" property="currentList" value="${result.nodes}"/>
-    <c:set target="${moduleMap}" property="end" value="${functions:length(moduleMap.currentList)}"/>
+    <c:set target="${moduleMap}" property="end" value="${functions:length(result.nodes)}"/>
     <c:set target="${moduleMap}" property="listTotalSize" value="${moduleMap.end}"/>
 </c:if>
 <c:set var="facetParamVarName" value="N-${currentNode.name}"/>
@@ -57,13 +57,12 @@
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery"/>
 
-    <%-- set result --%>
-    <c:set target="${moduleMap}" property="currentList" value="${result.nodes}"/>
-
     <%-- pager specific --%>
-    <c:set target="${moduleMap}" property="end" value="${functions:length(moduleMap.currentList)}"/>
+    <c:set target="${moduleMap}" property="end" value="${functions:length(result.nodes)}"/>
     <c:set target="${moduleMap}" property="listTotalSize" value="${moduleMap.end}"/>
 
+    <%-- set result --%>
+    <c:set target="${moduleMap}" property="currentList" value="${result.nodes}"/>
 </c:if>
 
 <c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">

@@ -32,6 +32,7 @@
 
 package org.jahia.taglibs.template.include;
 
+import org.apache.derby.impl.store.access.UTF;
 import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;
@@ -40,7 +41,10 @@ import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
@@ -105,6 +109,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
                     if (title != null) {
                         renderContext.getStaticAssetOptions().get(resource).put("title", title);
                     }
+                    writeResourceTag(type,resource, insert, resource, title, null);
                 }
             } else {
                 for (String lookupPath : lookupPaths){
@@ -129,6 +134,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
                                 if (title != null) {
                                     renderContext.getStaticAssetOptions().get(resource).put("title", title);
                                 }
+                                writeResourceTag(type, pathWithContext, insert, resource, title, null);
                             }
                             found = true;
                             if (builder.length() > 0) {
@@ -166,11 +172,14 @@ public class AddResourcesTag extends AbstractJahiaTag {
     @Override
     public int doAfterBody() throws JspException {
         if (bodyContent != null) {
+            String asset = getBodyContent().getString();
             if(key!=null) {
-                getRenderContext().addStaticAsset("inline", getBodyContent().getString(), insert, key);
+                getRenderContext().addStaticAsset("inline", asset, insert, key);
+                writeResourceTag("inline",asset,insert,null,null,key);
             }
             else {
-            getRenderContext().addStaticAsset("inline", getBodyContent().getString(), insert);
+            getRenderContext().addStaticAsset("inline", asset, insert);
+                writeResourceTag("inline",asset,insert,null,null,null);
             }
             getBodyContent().clearBody();
         }
@@ -192,6 +201,29 @@ public class AddResourcesTag extends AbstractJahiaTag {
         return (Map<String, String>) SpringContextSingleton.getBean("org.jahia.services.render.StaticAssetMappingRegistry");
     }
 
+    private void writeResourceTag(String type, String path, boolean insert, String resource, String title, String key) {
+        if (getRenderContext().isLiveMode()) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("<!-- cache:resource type=\"");
+            builder.append(type!=null?type:"").append("\"");
+            try {
+                builder.append(" path=\"").append(URLEncoder.encode(path!=null?path:"", "UTF-8")).append("\"");
+            } catch (UnsupportedEncodingException e) {
+                logger.error(e.getMessage(), e);
+            }
+            builder.append(" insert=\"").append(insert).append("\"");
+            builder.append(" resource=\"").append(resource!=null?resource:"").append("\"");
+            builder.append(" title=\"").append(title!=null?title:"").append("\"");
+            builder.append(" key=\"").append(key!=null?key:"").append("\"");
+            builder.append("\" -->\n");
+            builder.append("\n<!-- /cache:resource -->\n");
+            try {
+                pageContext.getOut().print(builder.toString());
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
     /**
      * Sets the title to be used for the asset if applicable.
      * @param title the title to set

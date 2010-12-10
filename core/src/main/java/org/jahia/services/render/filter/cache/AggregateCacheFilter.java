@@ -33,14 +33,10 @@
 package org.jahia.services.render.filter.cache;
 
 import net.htmlparser.jericho.*;
-import net.sf.ehcache.*;
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.render.filter.Template;
-import org.slf4j.Logger;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -50,15 +46,19 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
+import org.jahia.services.render.filter.Template;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
+import org.slf4j.Logger;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -83,11 +83,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final Pattern ESI_INCLUDE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:include -->");
     private static final Pattern CLEANUP_REGEXP = Pattern.compile(
             "<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
-
+    public static final Pattern ESI_RESOURCE_STARTTAG_REGEXP = Pattern.compile(
+            "<!-- cache:resource type=\\\"(.*)\\\" path=\\\"(.*)\\\" insert=\\\"(.*)\\\" resource=\\\"(.*)\\\" title=\\\"(.*)\\\" key=\\\"(.*)\\\" -->");
+    public static final Pattern ESI_RESOURCE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:resource -->");
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
     private static final String RESOURCES = "resources";
+    private static final String RESOURCES_OPTIONS = "resources_options";
 //    private static final String TEMPLATE = "template";
-    
+
     static private ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
     static private ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
     static private ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
@@ -127,7 +130,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
         LinkedList<String> userKeysLinkedList = userKeys.get();
-        if(userKeysLinkedList==null) {
+        if (userKeysLinkedList == null) {
             userKeysLinkedList = new LinkedList<String>();
             userKeys.set(userKeysLinkedList);
         }
@@ -148,7 +151,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         } else {
             if (cacheable) {
                 // Use CountLatch as not found in cache
-                CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey, resource.getContextConfiguration(), renderContext.getRequest());
+                CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey,
+                        resource.getContextConfiguration(), renderContext.getRequest());
                 if (countDownLatch == null) {
                     element = cache.get(perUserKey);
                     if (element != null && element.getValue() != null) {
@@ -174,9 +178,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (debugEnabled) {
             logger.debug("Content retrieved from cache for node with key: " + perUserKey);
         }
-        String cachedContent = (String) ((CacheEntry<?>) element.getValue()).getObject();
+        CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getValue();
+        String cachedContent = (String) cacheEntry.getObject();
         cachedContent = aggregateContent(cache, cachedContent, renderContext);
-
+        setResources(renderContext, cacheEntry);
         if (renderContext.getMainResource() == resource) {
             cachedContent = removeEsiTags(cachedContent);
         }
@@ -205,8 +210,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         if (key.contains("_mr_")) {
             resource.getDependencies().add(renderContext.getMainResource().getNode().getPath());
-            if(script!=null && Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.mainResource.flushParent", "false"))) {
+            if (script != null && Boolean.valueOf(script.getTemplate().getProperties().getProperty(
+                    "cache.mainResource.flushParent", "false"))) {
                 try {
                     resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
                 } catch (ItemNotFoundException e) {
@@ -217,7 +222,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         final Cache cache = cacheProvider.getCache();
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
-        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
+        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
+                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
         if (debugEnabled) {
             logger.debug("Generating content for node : " + perUserKey);
         }
@@ -246,23 +252,73 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         "</esi:include>");
                 cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
                         "<esi:include src=\"$1\">");
+                cachedRenderContent = ESI_RESOURCE_STOPTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
+                        "</esi:resource>");
+                cachedRenderContent = ESI_RESOURCE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
+                        "<esi:resource type=\"$1\" path=\"$2\" insert=\"$3\" resource=\"$4\" title=\"$5\" key=\"$6\">");
                 if (debugEnabled) {
-                    logger.debug("Storing for key: " + key + " content:\n" + cachedRenderContent);
+                    logger.debug("Storing for key: " + key);
                 }
                 Source source = new Source(cachedRenderContent);
                 // This will remove all blank line and drastically reduce data in memory
                 source = new Source((new SourceFormatter(source)).toString());
                 List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
-                if (debugEnabled) {
+                /*if (debugEnabled) {
                     displaySegments(esiIncludeTags);
-                }
+                }*/
                 // We will remove container content here has we do not want to store them twice in memory
                 OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
-                final String output = outputDocument.toString();
+                String output = outputDocument.toString();
+                Map<String, Set<String>> assets = new HashMap<String, Set<String>>();
+                Map<String, Map<String, String>> assetsOptions = new HashMap<String, Map<String, String>>();
+                source = new Source(output);
+                List<StartTag> esiResourceTags = source.getAllStartTags("esi:resource");
+                for (StartTag esiResourceTag : esiResourceTags) {
+                    String type = esiResourceTag.getAttributeValue("type");
+                    String path = esiResourceTag.getAttributeValue("path");
+                    path = URLDecoder.decode(path, "UTF-8");
+                    Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
+                    String resourceS = esiResourceTag.getAttributeValue("resource");
+                    String title = esiResourceTag.getAttributeValue("title");
+                    String keyS = esiResourceTag.getAttributeValue("key");
+                    Set<String> stringSet = assets.get(type);
+                    if (stringSet == null) {
+                        stringSet = new LinkedHashSet<String>();
+                    }
+                    if (insert) {
+                        LinkedHashSet<String> my = new LinkedHashSet<String>();
+                        my.add(path);
+                        my.addAll(stringSet);
+                        stringSet = my;
+                    } else {
+                        if (!"".equals(keyS)) {
+                            stringSet.clear();
+                            stringSet.add(path);
+                        } else {
+                            stringSet.add(path);
+                        }
+                    }
+                    assets.put(type, stringSet);
+                    if (title != null && !"".equals(title.trim())) {
+                        Map<String, String> stringMap = assetsOptions.get(resourceS);
+                        if (stringMap == null) {
+                            stringMap = new HashMap<String, String>();
+                            assetsOptions.put(resourceS, stringMap);
+                        }
+                        stringMap.put("title", title);
+                    }
+                }
+
+                outputDocument = emptyEsiResourceTagContainer(esiResourceTags, source);
+                output = outputDocument.toString();
                 cachedRenderContent = surroundWithCacheTag(key, output);
                 CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
-                cacheEntry.setProperty(RESOURCES, renderContext.getStaticAssets());
-//                cacheEntry.setProperty(TEMPLATE, renderContext.getRequest().getAttribute("previousTemplate"));
+                if (assets.size() > 0) {
+                    cacheEntry.setProperty(RESOURCES, assets);
+                }
+                if (assetsOptions.size() > 0) {
+                    cacheEntry.setProperty(RESOURCES_OPTIONS, assetsOptions);
+                }
                 Element cachedElement = new Element(perUserKey, cacheEntry);
                 if (expiration > 0) {
                     cachedElement.setTimeToLive(expiration.intValue() + 1);
@@ -328,12 +384,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             OutputDocument outputDocument = new OutputDocument(htmlContent);
             for (Tag esiIncludeTag : esiIncludeTags) {
                 StartTag segment = (StartTag) esiIncludeTag;
-                if(logger.isDebugEnabled()){
+                if (logger.isDebugEnabled()) {
                     logger.debug(segment.toString());
                 }
                 String cacheKey = segment.getAttributeValue("src").replaceAll("_perUser_",
-                                                                              renderContext.getUser().getUsername());
-                String mrCacheKey = cacheKey.replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
+                        renderContext.getUser().getUsername());
+                String mrCacheKey = cacheKey.replaceAll("_mr_", renderContext.getMainResource().getNode().getPath() +
+                                                                renderContext.getMainResource().getTemplate());
                 logger.debug("Check if " + cacheKey + " is in cache");
                 if (cache.isKeyInCache(mrCacheKey)) {
                     final Element element = cache.get(mrCacheKey);
@@ -341,40 +398,46 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         logger.debug(cacheKey + " has been found in cache");
                         final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getValue();
                         String content = cacheEntry.getObject();
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Document replace from : "+segment.getStartTagType()+" to "+segment.getElement().getEndTag().getEndTagType()+ " with "+content);
-                        }
-                        if(!cachedContent.equals(content)) {
+                        /*if (logger.isDebugEnabled()) {
+                            logger.debug("Document replace from : " + segment.getStartTagType() + " to " +
+                                         segment.getElement().getEndTag().getEndTagType() + " with " + content);
+                        }*/
+                        if (!cachedContent.equals(content)) {
                             String aggregatedContent = aggregateContent(cache, content, renderContext);
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
-                                aggregatedContent);
+                                    aggregatedContent);
                         } else {
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
-                                content);
+                                    content);
                         }
-                        if (cacheEntry.getProperty(RESOURCES) != null) {
-                            renderContext.addStaticAsset((Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES));
-                        }
-                        else {logger.warn("resource not found"); }
+                        setResources(renderContext, cacheEntry);
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         logger.debug("Missing content : " + cacheKey);
-                        Map<String, Set<String>> map = renderContext.getStaticAssets();
-                        renderContext.resetStaticAssets();
                         generateContent(renderContext, outputDocument, segment, cacheKey);
-                        renderContext.addStaticAsset(map);
                     }
                 } else {
                     logger.debug("Missing content : " + mrCacheKey);
-                    Map<String, Set<String>> map = renderContext.getStaticAssets();
-                    renderContext.resetStaticAssets();
                     generateContent(renderContext, outputDocument, segment, cacheKey);
-                    renderContext.addStaticAsset(map);
                 }
             }
             return outputDocument.toString();
         }
         return cachedContent;
+    }
+
+    private void setResources(RenderContext renderContext, CacheEntry<?> cacheEntry) {
+        if (cacheEntry.getProperty(RESOURCES) != null) {
+            Map<String, Set<String>> map = (Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES);
+            renderContext.addStaticAsset(map);
+        }
+        if (cacheEntry.getProperty(RESOURCES_OPTIONS) != null) {
+            Map<String, Map<String, String>> map = (Map<String, Map<String, String>>) cacheEntry.getProperty(
+                    RESOURCES_OPTIONS);
+            for (String s : map.keySet()) {
+                renderContext.getStaticAssetOptions().get(s).putAll(map.get(s));
+            }
+        }
     }
 
     private void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
@@ -385,19 +448,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             Map<String, String> keyAttrbs = cacheKeyGenerator.parse(cacheKey);
             final JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
                     "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
-                                                                                              renderContext.getFallbackLocale()).getNode(
-                    keyAttrbs.get("path"));
+                    renderContext.getFallbackLocale()).getNode(keyAttrbs.get("path"));
 
-            renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
+            renderContext.getRequest().removeAttribute(
+                    "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
             if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
-                renderContext.getRequest().setAttribute("previousTemplate", new Template(keyAttrbs.get("templateNodes")));
+                renderContext.getRequest().setAttribute("previousTemplate", new Template(keyAttrbs.get(
+                        "templateNodes")));
             } else {
                 renderContext.getRequest().removeAttribute("previousTemplate");
             }
             String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get("templateType"),
-                                                                             keyAttrbs.get("template"),
-                                                                             Resource.CONFIGURATION_MODULE),
-                                                                renderContext);
+                    keyAttrbs.get("template"), Resource.CONFIGURATION_MODULE), renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
@@ -476,6 +538,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         return outputDocument;
     }
 
+    private static OutputDocument emptyEsiResourceTagContainer(Iterable<StartTag> segments, Source source) {
+        OutputDocument outputDocument = new OutputDocument(source);
+        for (StartTag segment : segments) {
+            outputDocument.remove(segment.getElement().getEndTag());
+            outputDocument.remove(segment);
+        }
+        return outputDocument;
+    }
+
     public static String removeEsiTags(String content) {
         return StringUtils.isNotEmpty(content) ? CLEANUP_REGEXP.matcher(content).replaceAll("") : content;
     }
@@ -515,7 +586,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    private CountDownLatch avoidParallelProcessingOfSameModule(String key, String contextConfiguration, HttpServletRequest request) throws Exception {
+    private CountDownLatch avoidParallelProcessingOfSameModule(String key, String contextConfiguration,
+                                                               HttpServletRequest request) throws Exception {
         CountDownLatch latch = null;
         boolean mustWait = true;
         boolean semaphoreAcquired = false;
@@ -524,10 +596,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(),
                     TimeUnit.MILLISECONDS)) {
                 manageThreadDump();
-                throw new Exception(
-                        "Module generation takes too long due to maximum parallel processings reached ("
-                                + generatorQueue.getMaxModulesToGenerateInParallel() + ") - " + key
-                                + " - " + request.getRequestURI());
+                throw new Exception("Module generation takes too long due to maximum parallel processings reached (" +
+                                    generatorQueue.getMaxModulesToGenerateInParallel() + ") - " + key + " - " +
+                                    request.getRequestURI());
             } else {
                 acquiredSemaphore.set(key);
                 semaphoreAcquired = true;
@@ -549,16 +620,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (semaphoreAcquired) {
                 // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait 
                 generatorQueue.getAvailableProcessings().release();
-                acquiredSemaphore.set(null);                
+                acquiredSemaphore.set(null);
             }
             try {
-                if (!latch.await(generatorQueue
-                        .getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
+                if (!latch.await(generatorQueue.getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
                     manageThreadDump();
-                    throw new Exception(
-                            "Module generation takes too long due to module not generated fast enough (>"
-                                    + generatorQueue.getModuleGenerationWaitTime() + " ms)- " + key
-                                    + " - " + request.getRequestURI());
+                    throw new Exception("Module generation takes too long due to module not generated fast enough (>" +
+                                        generatorQueue.getModuleGenerationWaitTime() + " ms)- " + key + " - " +
+                                        request.getRequestURI());
                 }
                 latch = null;
             } catch (InterruptedException ie) {
@@ -568,11 +637,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         return latch;
     }
-    
+
     private void manageThreadDump() {
         boolean createDump = false;
-        long minInterval = generatorQueue
-                .getMinimumIntervalAfterLastAutoThreadDump();
+        long minInterval = generatorQueue.getMinimumIntervalAfterLastAutoThreadDump();
         if (minInterval > -1) {
             long now = System.currentTimeMillis();
             synchronized (threadDumpCheckLock) {
@@ -588,9 +656,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-	public void onApplicationEvent(ApplicationEvent event) {
-	    if (event instanceof TemplatePackageRedeployedEvent) {
-	        notCacheableFragment.clear();
-	    }
-    }   
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof TemplatePackageRedeployedEvent) {
+            notCacheableFragment.clear();
+        }
+    }
 }

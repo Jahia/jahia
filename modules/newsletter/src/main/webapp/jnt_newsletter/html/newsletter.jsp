@@ -23,7 +23,9 @@
 
 <%--<form id="sendAsNewsletter" method="POST">--%>
     <%--<input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>--%>
-
+<p>
+    <img src="<c:url value='/images/jahiapp-newsletter-small.png' context='${url.currentModule}'/>"/>
+</p>
 <table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
     <thead>
     <tr>

@@ -14,7 +14,9 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <template:include template="hidden.header"/>
-
+<p>
+    <img src="<c:url value='/images/jahiapp-newsletter-small.png' context='${url.currentModule}'/>"/>
+</p>
 <table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
     <thead>
     <tr>

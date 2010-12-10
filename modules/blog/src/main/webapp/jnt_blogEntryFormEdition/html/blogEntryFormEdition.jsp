@@ -12,6 +12,7 @@
 <template:addResources type="css" resources="blog.css"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <script type="text/javascript">
     $(document).ready(function() {
         $.each(['editContent'], function(index, element) {

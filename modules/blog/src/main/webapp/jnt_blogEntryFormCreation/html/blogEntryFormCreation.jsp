@@ -7,14 +7,15 @@
 <template:addResources type="css" resources="blog.css"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
-
+<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="text" var="text"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:created" var="created"/>
+
 <script type="text/javascript">
     $(document).ready(function() {
-        $.each(['editContent'], function(index, element) {
+        $.each(['addContent'], function(index, element) {
             if ($('#' + element).length > 0) {
                 $('label[for="' + element + '"]').hide();
                 CKEDITOR.replace(element, { toolbar : 'User'});
@@ -51,7 +52,7 @@
         <div class="post-content">
             <p>
                 <label><fmt:message key="blog.post"/> </label>
-                <textarea name="text" rows="10" cols="70" id="editContent"></textarea>
+                <textarea name="text" rows="10" cols="70" id="addContent"></textarea>
             </p>
 
             <p>
@@ -67,10 +68,10 @@
                         value="<fmt:message key='blog.label.save'/>"
                         onclick="
                         if (document.blogPost.elements['jcr:title'].value == '') {
-                            alert('${noTitle}');
+                            alert('${fn:replace(noTitle,"'","\\'")}');
                             return false;
                         }
-                        document.blogPost.action = '${renderContext.mainResource.node.name}/blog-content/' + encodeURIComponent(document.blogPost.elements['jcr:title'].value);
+                        document.blogPost.action = '${renderContext.mainResource.node.name}/blog-issues/' + encodeURIComponent(document.blogPost.elements['jcr:title'].value);
                         document.blogPost.submit();"/>
             </p>
         </div>

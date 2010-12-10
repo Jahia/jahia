@@ -155,6 +155,6 @@
  - shortView (boolean) = false autocreated
  + comments (jnt:thread) = jnt:thread autocreated hidden
 
-[jnt:commentsList] > jnt:content, jmix:bindedComponent, jmix:structuredContent
+[jnt:commentsList] > jnt:content, jmix:bindedComponent, jmix:socialComponent
 
-[jnt:addComment] > jnt:content, jmix:bindedComponent, jmix:structuredContent
+[jnt:addComment] > jnt:content, jmix:bindedComponent, jmix:socialComponent

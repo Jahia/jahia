@@ -8,6 +8,14 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 
 <template:addResources type="css" resources="contribute-toolbar.css"/>
+<script type="text/javascript">
+    var contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")} = {
+        contributeTarget: "${currentNode.path}",
+        contributeReplaceTarget: "${currentNode.UUID}",
+        contributeReplaceUrl: "${url.base}${currentNode.path}.${currentResource.template}.html.ajax"
+    };
+    contributeParams[contributeParams.length] = contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")};
+</script>
 
 <h3 class="titleaddnewcontent">
     <img title="" alt="" src="${url.templatesPath}/default/images/add.png"/><fmt:message key="label.add.new.content"/>

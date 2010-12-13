@@ -46,5 +46,12 @@
 </form>
 </c:if>
 <c:if test="${not writeable}">
-    page creation form is only available in live
+    <c:choose>
+        <c:when test="${jcr:hasPermission(currentNode,'addChildNodes')}">
+            <fmt:message key="label.page.creation.only.live"/>
+        </c:when>
+        <c:otherwise>
+            <!--- User does not have the rights to add comments--->
+        </c:otherwise>
+    </c:choose>
 </c:if>

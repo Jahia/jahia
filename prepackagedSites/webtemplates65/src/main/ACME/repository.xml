@@ -442,6 +442,7 @@
                         </bigText_58>
                     </introduction>
                     <j:translation_en jcr:lastModifiedBy="root" jcr:uuid="73afa89a-540b-4481-b6d3-458cf076ffe1" jcr:language="en" jcr:title="My Portal" jcr:lastModified="2010-11-22T16:48:07.816+01:00" jcr:primaryType="jnt:translation"></j:translation_en>
+                    <portalComponents jcr:created="2010-12-13T11:29:24.270+01:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-13T14:08:10.018+01:00"></portalComponents>
                 </mon-espace-personnalise>
             </home>
             <contents jcr:uuid="b8aa8054-c70a-4cf7-bb28-4287625e75f0" jcr:created="2010-11-22T16:47:11.670+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy="" jcr:createdBy=" system " j:fullpath="/sites/ACME/contents" jcr:lastModified="2010-11-22T16:47:14.779+01:00"/>

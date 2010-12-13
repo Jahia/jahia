@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -298,4 +299,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void cleanReferences(String path, AsyncCallback callback);
     
     void getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, AsyncCallback<GWTJahiaFieldInitializer> async);
+
+    void getSitePagesWithTargetAreaName(String targetAreaName, AsyncCallback<List<GWTJahiaNode>> asyncCallback);
 }

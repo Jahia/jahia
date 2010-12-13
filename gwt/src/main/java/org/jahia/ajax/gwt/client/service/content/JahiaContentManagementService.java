@@ -333,6 +333,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     
     GWTJahiaFieldInitializer getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues) throws GWTJahiaServiceException;
 
+    List<GWTJahiaNode> getSitePagesWithTargetAreaName(String targetAreaName);
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

@@ -715,7 +715,7 @@
                                     <ref bean="Toolbar.Item.Lock"/>
                                     <ref bean="Toolbar.Item.Unlock"/>
                                     <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                                    <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.OpenInContentManager"/>
                                 </list>
@@ -744,7 +744,7 @@
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
-                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
                         <ref bean="Toolbar.Item.SubscriptionManager"/>
                         <ref bean="Toolbar.Item.TestNewsletter"/>

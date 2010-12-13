@@ -84,6 +84,8 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
@@ -1826,5 +1828,23 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException("Cannot get node");
         }
+    }
+
+    public List<GWTJahiaNode> getSitePagesWithTargetAreaName(String targetAreaName) {
+        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+        try {
+            Query q = retrieveCurrentSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:contentList] as l where localname()='"+targetAreaName+"' and isdescendantnode(l,['"+getSite().getPath()+"'])",Query.JCR_SQL2);
+            QueryResult queryResult = q.execute();
+            NodeIterator nodeIterator = queryResult.getNodes();
+            while (nodeIterator.hasNext()) {
+                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.nextNode();
+                nodes.add(navigation.getGWTJahiaNode(nodeWrapper.getParent()));
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (GWTJahiaServiceException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return nodes;
     }
 }

@@ -1,4 +1,23 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
- 
-<a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
-            key="label.contentmanager"/></a>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${currentNode.properties.type.string eq 'content'}">
+    <c:set var="conf" value="contentmanager"/>
+</c:if>
+<c:if test="${!(currentNode.properties.type.string eq 'content')}">
+    <c:set var="conf" value="filemanager"/>
+</c:if>
+
+<a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank">
+    <c:if test="${!empty currentNode.properties.picto.node}">
+        <img src="${currentNode.properties.picto.node.url}" alt="<fmt:message key='label.administration'/>"/>
+    </c:if>
+    <c:if test="${empty currentNode.properties.picto.node}">
+        <img src="${url.context}/icons/editContent.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">
+        <c:if test="${!empty currentNode.properties['jcr:title']}">
+            ${currentNode.properties["jcr:title"].string}
+        </c:if>
+        <c:if test="${empty currentNode.properties['jcr:title']}">
+            <fmt:message key="label.contentmanager"/>
+        </c:if>
+    </c:if>
+</a>

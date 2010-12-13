@@ -51,6 +51,7 @@
         </property>
         <property name="folderTypes">
             <list>
+                <value>jnt:virtualsite</value>
                 <value>nt:folder</value>
                 <value>jnt:mountPoint</value>
                 <value>jnt:user</value>
@@ -168,6 +169,7 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sites"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
                 <ref bean="repository.users"/>
@@ -875,6 +877,7 @@
         <!-- accordion -->
         <property name="repositories">
             <list>
+                <ref bean="repository.site"/>
                 <ref bean="repository.sites"/>
                 <ref bean="repository.mycontent"/>
             </list>
@@ -1255,9 +1258,9 @@
 
     <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRepository"/>
-        <property name="paths" value="$site"/>
+        <property name="paths" value="$site/contents"/>
         <property name="titleKey"
-                  value="repository.siteRepository.label"/>
+                  value="repository.websiteRepository.label"/>
     </bean>
 
     <bean id="repository.sites" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">

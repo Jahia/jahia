@@ -158,3 +158,14 @@
 [jnt:commentsList] > jnt:content, jmix:bindedComponent, jmix:socialComponent
 
 [jnt:addComment] > jnt:content, jmix:bindedComponent, jmix:socialComponent
+
+[jnt:gotoStudio] > jnt:content, mix:title, jmix:siteComponent
+
+[jnt:gotoEdit] > jnt:content, mix:title, jmix:siteComponent
+
+[jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent
+
+[jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent
+
+[jnt:listSites] > jnt:content, mix:title, jmix:siteComponent
+- type (string, choicelist) = edit < contribute,edit

@@ -96,10 +96,10 @@ public class AreaModule extends SimpleModule {
         super.onParsed();
         String headerText = head.getText();
         if (missingList) {
-            head.addStyleName("area-notcreated");
+            addStyleName("area-notcreated");
             headerText += " (" + Messages.get("label.notCreated", "not created")+ ")";
         } else if (!hasChildren) {
-            head.addStyleName("area-empty");
+            addStyleName("area-empty");
             headerText += " (" + Messages.get("label.empty", "empty")+ ")";
         }
         head.setText(headerText);

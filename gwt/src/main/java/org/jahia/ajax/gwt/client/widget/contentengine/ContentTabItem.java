@@ -75,6 +75,8 @@ public class ContentTabItem extends PropertiesTabItem {
             fSet.add(createNamePanel(engine, tab));
             isNodeNameFieldDisplayed = true;
             propertiesEditor.insert(fSet,0);
+        } else {
+        	isNodeNameFieldDisplayed = false;
         }
 
         // attach properties node

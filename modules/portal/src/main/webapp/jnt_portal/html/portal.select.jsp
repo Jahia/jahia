@@ -42,5 +42,15 @@
         </form>
         <button name="addRss" type="button" value="Add Rss" onclick="addRSSWidget()">Add Rss Widget</button>
 
+        <h3>Add Script Gadget</h3>
+
+        <form class="Form" action="" method="post">
+            <p>
+                <label>Script :</label>
+                <input type="text" name="scriptGadget" id="scriptGadget"/>
+            </p>
+        </form>
+        <button name="addRss" type="button" value="Add Rss" onclick="addScriptWidget()">Add Script Widget</button>
+
     </div>
 </div>

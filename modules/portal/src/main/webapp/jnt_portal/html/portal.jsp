@@ -28,11 +28,21 @@
                 window.location.reload();
             });
         }
+
         function addRSSWidget() {
             var data = {};
             data["nodeType"] = "jnt:rss";
             data["url"] = $("#feedUrl").val();
             data["nbEntries"] = $("#nbFeeds").val();
+            $.post("${url.base}${currentNode.path}/column1/*", data, function(data) {
+                window.location.reload();
+            });
+        }
+
+        function addScriptWidget() {
+            var data = {};
+            data["nodeType"] = "jnt:scriptGadget";
+            data["script"] = $("#scriptGadget").val();
             $.post("${url.base}${currentNode.path}/column1/*", data, function(data) {
                 window.location.reload();
             });

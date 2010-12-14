@@ -218,18 +218,21 @@ public class GWTInitializer {
      */
     public static String getJahiaGWTConfig(Map params) {
         StringBuilder s = new StringBuilder();
-        s.append("var " + JahiaGWTParameters.JAHIA_GWT_PARAMETERS + " = {\n");
+        s.append("var " + JahiaGWTParameters.JAHIA_GWT_PARAMETERS + " = {");
         if (params != null) {
             Iterator keys = params.keySet().iterator();
+            boolean b = false;
             while (keys.hasNext()) {
                 String name = keys.next().toString();
                 Object value = params.get(name);
                 if (value != null) {
-                    s.append(name).append(":\"").append(value.toString()).append("\"");
-                    if (keys.hasNext()) {
+                    if (b) {
                         s.append(",");
+                    } else {
+                        b = true;
                     }
                     s.append("\n");
+                    s.append(name).append(":\"").append(value.toString()).append("\"");
                 }
             }
         }

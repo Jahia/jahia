@@ -32,12 +32,10 @@
 
 package org.jahia.services.applications.pluto;
 
+import org.apache.commons.collections.EnumerationUtils;
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.render.URLGenerator;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -46,7 +44,6 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: jahia
  * Date: 26 mai 2009
  * Time: 16:58:51
@@ -329,15 +326,16 @@ public class JahiaPortletUtil {
      */
     public static Map<String, Object> filterJahiaAttributes(HttpServletRequest portalRequest) {
         HashMap<String, Object> map = new HashMap<String, Object>();
-        Enumeration<String> enume = portalRequest.getAttributeNames();
-        while (enume.hasMoreElements()) {
-            String key = enume.nextElement();
+        @SuppressWarnings("unchecked")
+        List<String> names = EnumerationUtils.toList(portalRequest.getAttributeNames());
+        for (String key : names) {
             if (isSpringAttribute(key)) {
                 Object value = portalRequest.getAttribute(key);
                 map.put(key, value);
                 portalRequest.removeAttribute(key);
             }
         }
+        
         return map;
     }
 

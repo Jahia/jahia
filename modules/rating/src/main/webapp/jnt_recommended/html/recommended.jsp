@@ -27,7 +27,7 @@
                 <c:if test="${recommended.value > 0.5}">
                     <jcr:node var="recNode" path="${recommended.path}"/>
                     <li>
-                        <a href="${url.base}${recNode.path}.${renderContext.mainResource.template}.html">${fn:replace(recNode.name,'.',' '}</a>
+                        <a href="${url.base}${recNode.path}.${renderContext.mainResource.template}.html">${fn:replace(recNode.name,'.',' ')}</a>
                     </li>
                 </c:if>
             </c:forEach>

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-common-installer-package</artifactId>
-        <version>1.8</version>
+        <version>1.11</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-installer-package</artifactId>
@@ -14,7 +14,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <jahia.package.name>jahia-war</jahia.package.name>
+        <jahia.war.package.name>jahia-war</jahia.war.package.name>
+        <jahia.ear.package.name>jahia-ear</jahia.ear.package.name>
         <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
         <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
     	<jahia.manifest.vendor.email>info@jahia.org</jahia.manifest.vendor.email>

@@ -25,10 +25,10 @@
     <panel order="1">
         <field type="title" txt="Server type" id="server.title"/>
         <field type="radio" variable="server.type" alight="left">
-            <description align="left" txt="Choose target application server type" id="server.type"/>
+            <description align="left" txt="Choose target application server type" id="radio.server.type"/>
             <spec>
-                <choice txt="Apache Tomcat 6.0.x" id="server.type.tomcat" value="tomcat" set="true"/>
-                <choice txt="Red Hat JBoss 4.2.x" id="server.type.jboss" value="jboss"/>
+                <choice txt="Apache Tomcat 6.0.x" value="tomcat" set="true"/>
+                <choice txt="Red Hat JBoss 4.2.x" value="jboss"/>
             </spec>
         </field>
     </panel>
@@ -165,11 +165,14 @@
 
     <panel order="7">
         <field type="title" txt="Installation" id="afterInstall.title"/>
-        <field type="staticText" txt="Installation successfull" id="afterInstall.description"/>
+        <field type="staticText" txt="Installation successful" id="afterInstall.description"/>
         <field type="check" variable="afterInstall.launchJahia" alight="left" conditionid="cnd.pack.tomcat">
             <spec txt="Launch Jahia" id="afterInstall.launchJahia" true="true" false="false" set="true"/>
         </field>
-        <field type="check" variable="afterInstall.viewReadme" alight="left">
+        <field type="check" variable="afterInstall.viewHowToInstall" alight="left" conditionid="!cnd.pack.tomcat">
+            <spec txt="Open How To Install file" id="afterInstall.viewHowToInstall" true="true" false="false" set="true"/>
+        </field>
+        <field type="check" variable="afterInstall.viewReadme" alight="left" conditionid="cnd.pack.tomcat">
             <spec txt="Open README file" id="afterInstall.viewReadme" true="true" false="false" set="true"/>
         </field>
     </panel>

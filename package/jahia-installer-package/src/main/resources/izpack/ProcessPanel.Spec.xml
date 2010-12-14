@@ -27,11 +27,17 @@
     </job>
     -->
     <job name="Show Readme" condition="cnd.view.readme">
-        <executeForPack name="Apache Tomcat"/>
         <os family="windows" />
         <executefile name="cmd">
             <arg>/c</arg>
             <arg>$INSTALL_PATH\docs\Readme.URL</arg>
+        </executefile>
+    </job>
+    <job name="Show How-To-Install" condition="cnd.view.howtoinstall">
+        <os family="windows" />
+        <executefile name="cmd">
+            <arg>/c</arg>
+            <arg>$INSTALL_PATH\docs\HowToInstall.URL</arg>
         </executefile>
     </job>
     <job name="Wait for Apache Tomcat startup" condition="cnd.launch.jahia">

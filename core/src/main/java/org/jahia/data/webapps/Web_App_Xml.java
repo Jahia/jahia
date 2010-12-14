@@ -38,14 +38,17 @@
 //
 package org.jahia.data.webapps;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jahia.data.xml.JahiaXmlDocument;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.xml.XMLParser;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -55,7 +58,7 @@ import org.w3c.dom.Node;
  * @author Khue ng
  * @version 1.0
  */
-public class Web_App_Xml extends JahiaXmlDocument {
+public class Web_App_Xml {
 
     /** The Servlet Type WebApp **/
     private static final int SERVLET_TYPE = 1;
@@ -85,24 +88,33 @@ public class Web_App_Xml extends JahiaXmlDocument {
     /** The list of Welcome files **/
     private List<String> m_WelcomeFiles = new ArrayList<String>();
 
+    private Document m_XMLDocument;
+    
     /**
      * Constructor
-     * 
-     * @param (String) path, the full path to the application.xml file
      */
-    public Web_App_Xml(String docPath) throws JahiaException {
-        super(docPath);
+    private Web_App_Xml(Document xmlDocument) {
+        super();
+        m_XMLDocument = xmlDocument;
     }
+    
+    public static Web_App_Xml parse(InputStream stream) throws JahiaException {
+    	Web_App_Xml xml = null;
+        try {
+            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
-    /**
-     * Constructor using a gived parser
-     * 
-     * @param (String) path, the full path to a xml file
-     * @param (Parser) parser, the parser to use
-     */
-    public Web_App_Xml(String docPath, org.xml.sax.helpers.ParserAdapter parser)
-            throws JahiaException {
-        super(docPath, parser);
+            Document xmlDocument = dfactory.newDocumentBuilder().parse(stream);
+            xmlDocument.normalize(); // clean up DOM tree a little
+            xml = new Web_App_Xml(xmlDocument);
+            xml.extractDocumentData();
+        } catch (Exception t) {
+            throw new JahiaException("JahiaXmlDocument",
+                                     "Exception while parsing web.xml stream",
+                                     JahiaException.ERROR_SEVERITY,
+                                     JahiaException.SERVICE_ERROR, t);
+        }
+        
+        return xml;
     }
 
     // --------------------------------------------------------------------------
@@ -110,7 +122,7 @@ public class Web_App_Xml extends JahiaXmlDocument {
      * Extracts data from the web.xml file.
      * 
      */
-    public void extractDocumentData() throws JahiaException {
+    private void extractDocumentData() throws JahiaException {
 
         if (m_XMLDocument == null) {
 

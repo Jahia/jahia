@@ -33,10 +33,12 @@
 package org.jahia.services.applications;
 
 
+import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.io.IOUtils;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.ServletBean;
 import org.jahia.data.applications.WebAppContext;
@@ -207,18 +209,20 @@ public class ServletContextManager implements ServletContextAware {
             logger.error ("Error getting dispatch context [" + context + "]");
             return null;
         }
-        String path = dispatchedContext.getRealPath (WEB_XML_FILE);
-        logger.debug ("dispatched context real Path :  " + path);
+        
+        InputStream is = null;
 
         // extract data from the web.xml file
         WebAppContext appContext;
         Web_App_Xml webXmlDoc;
         try {
-            webXmlDoc = new Web_App_Xml(path);
-            webXmlDoc.extractDocumentData ();
+        	is = dispatchedContext.getResourceAsStream(WEB_XML_FILE);
+            webXmlDoc = Web_App_Xml.parse(is);
         } catch (Exception e) {
             logger.error("Error during loading of web.xml file for application "+ context, e);
             return null;
+        } finally {
+        	IOUtils.closeQuietly(is);
         }
 
         appContext = new WebAppContext(context,

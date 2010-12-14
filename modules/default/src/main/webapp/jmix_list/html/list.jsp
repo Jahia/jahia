@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:if test="${not omitFormatting && !inWrapper}"><div id="${currentNode.UUID}"></c:if>
 <template:include template="hidden.header"/>
-<c:set var="isEmpty" value="true"/> ${renderContext.editModeConfigName }
+<c:set var="isEmpty" value="true"/>
 <c:choose>
     <c:when test="${moduleMap.liveOnly eq 'true' && !renderContext.liveMode}">
         <template:addResources type="javascript" resources="jquery.min.js"/>

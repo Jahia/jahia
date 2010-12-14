@@ -119,9 +119,9 @@
                             <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
                                 <jcr:propertyInitializers var="options" nodeType="${type.name}"
                                                           name="${propertyDefinition.name}"/>
-                        <span jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
+                        <div jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
                               jcr:url="${url.base}${currentNode.path}"
-                              jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</span>
+                              jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</div>
                             </c:when>
                             <c:otherwise>
                                 <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
@@ -140,30 +140,30 @@
                     <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
                         <c:set var="dateTimePicker"
                                value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
-                        <span jcr:id="${propertyDefinition.name}" class="dateEdit${currentNode.identifier}"
+                        <div jcr:id="${propertyDefinition.name}" class="dateEdit${currentNode.identifier}"
                               id="dateEdit${currentNode.identifier}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">
                             <c:if test="${not empty prop}">
                                 <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy HH:mm"/>
                             </c:if>
-                        </span>
+                        </div>
                     </c:when>
                     <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
                         <jcr:propertyInitializers var="options" nodeType="${type.name}"
                                                   name="${propertyDefinition.name}"/>
-                        <span jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
+                        <div jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
                               jcr:url="${url.base}${currentNode.path}"
-                              jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</span>
+                              jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</div>
                     </c:when>
                     <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
-                        <span jcr:id="${propertyDefinition.name}" class="ckeditorEdit${currentNode.identifier}"
+                        <div jcr:id="${propertyDefinition.name}" class="ckeditorEdit${currentNode.identifier}"
                               id="ckeditorEdit${currentNode.identifier}${scriptPropName}"
-                              jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
+                              jcr:url="${url.base}${currentNode.path}">${prop.string}</div>
                     </c:when>
                     <c:otherwise>
-                        <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
+                        <div jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
                               id="edit${currentNode.identifier}${scriptPropName}"
-                              jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
+                              jcr:url="${url.base}${currentNode.path}">${prop.string}</div>
                     </c:otherwise>
                 </c:choose>
             </c:if>

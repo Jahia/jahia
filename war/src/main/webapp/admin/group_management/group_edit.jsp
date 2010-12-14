@@ -3,7 +3,6 @@
 <%@page import="java.util.*" %>
 <%@page import="org.jahia.bin.*" %>
 <%@page import="org.jahia.utils.*" %>
-<%@page import="org.jahia.services.pages.*" %>
 <%@page import="org.jahia.data.JahiaData" %>
 <%@page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
 <%@page import="org.jahia.params.ParamBean" %>

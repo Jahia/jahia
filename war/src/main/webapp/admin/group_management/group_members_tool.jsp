@@ -1,7 +1,6 @@
 <%@page language = "java" %>
 <%@page import = "java.util.*"%>
 <%@page import="org.jahia.bin.*"%>
-<%@page import = "org.jahia.services.pages.*"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>

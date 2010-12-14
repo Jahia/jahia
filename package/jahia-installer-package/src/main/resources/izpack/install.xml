@@ -90,6 +90,11 @@
             <value>jboss</value>
         </condition>
         
+        <condition type="variable" id="cnd.server.type.tomcat">
+            <name>server.type</name>
+            <value>tomcat</value>
+        </condition>
+        
         <condition type="or" id="cnd.skip.shared.libs">
             <condition type="ref" refid="cnd.pack.tomcat"/>
             <condition type="ref" refid="cnd.server.type.jboss"/>
@@ -273,7 +278,7 @@
             <singlefile override="true" src="../dependency/archivers-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
             <singlefile override="true" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
             <singlefile overrride="true" src="../docs/How-to-install-jboss.html" target="$INSTALL_PATH/How-to-install.html" condition="cnd.server.type.jboss"/>
-            <singlefile overrride="true" src="../docs/How-to-install-tomcat.html" target="$INSTALL_PATH/How-to-install.html" condition="cnd.server.type.tomcat"/>
+            <singlefile overrride="true" src="../docs/How-to-install-tomcat.html" target="$INSTALL_PATH/How-to-install.html" condition="cnd.server.type.tomcat+!cnd.pack.tomcat"/>
             <parsable targetfile="$INSTALL_PATH/logs/install.properties" type="javaprop"/>
             <parsable targetfile="$INSTALL_PATH/docs/Readme.URL" condition="cnd.pack.tomcat"/>
             <parsable targetfile="$INSTALL_PATH/docs/HowToInstall.URL" condition="!cnd.pack.tomcat"/>

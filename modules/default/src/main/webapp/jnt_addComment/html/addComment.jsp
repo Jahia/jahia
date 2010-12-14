@@ -15,9 +15,9 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="commentable.css"/>
-<c:set var="writeable" value="${jcr:hasPermission(currentNode,'addChildNodes') and currentResource.workspace eq 'live'}" />
+<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:set var="writeable" value="${jcr:hasPermission(bindedComponent,'addChildNodes') and currentResource.workspace eq 'live'}" />
 <c:if test='${writeable}'>
-    <c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
     <c:if test="${not empty bindedComponent}">
         <a name="addComments"></a>
 
@@ -60,7 +60,7 @@
 <c:if test="${not writeable}">
     <c:choose>
         <c:when test="${jcr:hasPermission(currentNode,'addChildNodes')}">
-            <fmt:message key="label.comments.only.live"/>            
+            <fmt:message key="label.comments.only.live"/>
         </c:when>
         <c:otherwise>
             <!--- User does not have the rights to add comments--->

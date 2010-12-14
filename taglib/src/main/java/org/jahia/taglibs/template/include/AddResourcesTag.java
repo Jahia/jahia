@@ -55,7 +55,7 @@ import java.util.List;
  *
  * @author rincevent
  * @since JAHIA 6.5
- * Created : 27 oct. 2009
+ *        Created : 27 oct. 2009
  */
 public class AddResourcesTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -552052631291168495L;
@@ -66,6 +66,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
     private String title;
     private String key;
     private String var;
+
     /**
      * Default processing of the end tag returning EVAL_PAGE.
      *
@@ -82,13 +83,18 @@ public class AddResourcesTag extends AbstractJahiaTag {
     }
 
     protected void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String type,
-                              String resources) {
+                                String resources) {
         if (bodyContent != null) {
-            return;
+            try {
+                pageContext.getOut().print(bodyContent.getString());
+                return;
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
-        
+
         final Map<String, String> mapping = getStaticAssetMapping();
-        
+
         final Set<String> links = renderContext.getStaticAssets(type);
         String[] strings = resources.split(",");
 
@@ -109,16 +115,16 @@ public class AddResourcesTag extends AbstractJahiaTag {
                     if (title != null) {
                         renderContext.getStaticAssetOptions().get(resource).put("title", title);
                     }
-                    writeResourceTag(type,resource, insert, resource, title, null);
+                    writeResourceTag(type, resource, insert, resource, title, null);
                 }
             } else {
-                for (String lookupPath : lookupPaths){
+                for (String lookupPath : lookupPaths) {
                     String path = lookupPath + resource;
                     String pathWithContext = renderContext.getRequest().getContextPath() + path;
                     if (links != null && links.contains(pathWithContext)) {
                         // we have it already
                         found = true;
-                        break;  
+                        break;
                     }
                     try {
                         if (pageContext.getServletContext().getResource(path) != null) {
@@ -152,8 +158,8 @@ public class AddResourcesTag extends AbstractJahiaTag {
                 logger.warn("Unable to find resource '" + resource + "' in: " + lookupPaths);
             }
         }
-        if(var!=null && !"".equals(var.trim())) {
-            pageContext.setAttribute(var,builder.toString());
+        if (var != null && !"".equals(var.trim())) {
+            pageContext.setAttribute(var, builder.toString());
         }
     }
 
@@ -173,20 +179,19 @@ public class AddResourcesTag extends AbstractJahiaTag {
     public int doAfterBody() throws JspException {
         if (bodyContent != null) {
             String asset = getBodyContent().getString();
-            if(key!=null) {
-                getRenderContext().addStaticAsset("inline", asset, insert, key);
-                writeResourceTag("inline",asset,insert,null,null,key);
-            }
-            else {
-            getRenderContext().addStaticAsset("inline", asset, insert);
-                writeResourceTag("inline",asset,insert,null,null,null);
-            }
             getBodyContent().clearBody();
+            if (key != null) {
+                getRenderContext().addStaticAsset("inline", asset, insert, key);
+                writeResourceTag("inline", asset, insert, null, null, key);
+            } else {
+                getRenderContext().addStaticAsset("inline", asset, insert);
+                writeResourceTag("inline", asset, insert, null, null, null);
+            }
         }
         return super.doAfterBody();
     }
-    
- 
+
+
     @Override
     protected void resetState() {
         insert = false;
@@ -195,7 +200,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         title = null;
         super.resetState();
     }
-    
+
     @SuppressWarnings("unchecked")
     protected Map<String, String> getStaticAssetMapping() {
         return (Map<String, String>) SpringContextSingleton.getBean("org.jahia.services.render.StaticAssetMappingRegistry");
@@ -205,17 +210,17 @@ public class AddResourcesTag extends AbstractJahiaTag {
         if (getRenderContext().isLiveMode()) {
             StringBuilder builder = new StringBuilder();
             builder.append("<!-- cache:resource type=\"");
-            builder.append(type!=null?type:"").append("\"");
+            builder.append(type != null ? type : "").append("\"");
             try {
-                builder.append(" path=\"").append(URLEncoder.encode(path!=null?path:"", "UTF-8")).append("\"");
+                builder.append(" path=\"").append(URLEncoder.encode(path != null ? path : "", "UTF-8")).append("\"");
             } catch (UnsupportedEncodingException e) {
                 logger.error(e.getMessage(), e);
             }
             builder.append(" insert=\"").append(insert).append("\"");
-            builder.append(" resource=\"").append(resource!=null?resource:"").append("\"");
-            builder.append(" title=\"").append(title!=null?title:"").append("\"");
-            builder.append(" key=\"").append(key!=null?key:"").append("\"");
-            builder.append("\" -->\n");
+            builder.append(" resource=\"").append(resource != null ? resource : "").append("\"");
+            builder.append(" title=\"").append(title != null ? title : "").append("\"");
+            builder.append(" key=\"").append(key != null ? key : "").append("\"");
+            builder.append(" -->\n");
             builder.append("\n<!-- /cache:resource -->\n");
             try {
                 pageContext.getOut().print(builder.toString());
@@ -224,8 +229,10 @@ public class AddResourcesTag extends AbstractJahiaTag {
             }
         }
     }
+
     /**
      * Sets the title to be used for the asset if applicable.
+     *
      * @param title the title to set
      */
     public void setTitle(String title) {

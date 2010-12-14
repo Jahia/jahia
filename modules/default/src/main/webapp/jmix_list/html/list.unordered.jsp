@@ -14,12 +14,23 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="fileList.css"/>
 <template:include template="hidden.header"/>
-<ul class="${currentNode.properties['j:className'].string}">
-<c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
-    <li><template:module node="${subchild}" template="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/></li>
-</c:forEach>
-<c:if test="${moduleMap.editable and renderContext.editMode}">
-    <li><template:module path="*"/></li>
-</c:if>
-</ul>
-<template:include template="hidden.footer"/>
+<c:choose>
+    <c:when test="${moduleMap.liveOnly eq 'true' && !renderContext.liveMode}">
+        <template:addResources type="javascript" resources="jquery.min.js"/>
+        <div id="liveList${currentNode.identifier}"></div>
+        <script type="text/javascript">
+            $('#liveList${currentNode.identifier}').load('${url.baseLive}${currentNode.path}.html.ajax');
+        </script>
+    </c:when>
+    <c:otherwise>
+        <ul class="${currentNode.properties['j:className'].string}">
+            <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
+                <li><template:module node="${subchild}" template="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/></li>
+            </c:forEach>
+            <c:if test="${moduleMap.editable and renderContext.editMode}">
+                <li><template:module path="*"/></li>
+            </c:if>
+        </ul>
+        <template:include template="hidden.footer"/>
+    </c:otherwise>
+</c:choose>

@@ -403,3 +403,7 @@
     background : url(images/placeholder-area.png) top left;
     height:100%;
 }
+#bodywrapper .area-notcreated .dashedArea {
+    background : url(images/area-notcreated.png) top left;
+    height:100%;
+}

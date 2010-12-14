@@ -56,11 +56,16 @@ import java.util.List;
  */
 public class TranslateMenuActionItem extends BaseActionItem {
     private List<GWTJahiaLanguage> languages;
+    private String siteKey;
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
         setEnabled(false);
+        siteKey = JahiaGWTParameters.getSiteKey();
+        initMenu(linker);
+    }
 
+    private void initMenu(final Linker linker) {
         JahiaContentManagementService.App.getInstance().getSiteLanguages(
                 new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
                     public void onSuccess(List<GWTJahiaLanguage> result) {
@@ -73,7 +78,8 @@ public class TranslateMenuActionItem extends BaseActionItem {
                             for (final GWTJahiaLanguage language : languages) {
                                 for (final GWTJahiaLanguage jahiaLanguage : languages) {
                                     if (!jahiaLanguage.getDisplayName().equals(language.getDisplayName()) &&
-                                        (jahiaLanguage.getLanguage().equals(uiLanguage) || language.getLanguage().equals(uiLanguage))) {
+                                        (jahiaLanguage.getLanguage().equals(uiLanguage) ||
+                                         language.getLanguage().equals(uiLanguage))) {
                                         MenuItem item = new MenuItem(
                                                 language.getDisplayName() + "->" + jahiaLanguage.getDisplayName());
                                         item.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -104,6 +110,10 @@ public class TranslateMenuActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
+        if(!JahiaGWTParameters.getSiteKey().equals(siteKey)){
+            siteKey=JahiaGWTParameters.getSiteKey();
+            initMenu(linker);
+        }
     }
 }
 

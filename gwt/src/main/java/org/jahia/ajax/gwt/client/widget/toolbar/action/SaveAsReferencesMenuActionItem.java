@@ -57,11 +57,21 @@ import java.util.List;
  */
 public class SaveAsReferencesMenuActionItem extends BaseActionItem {
     private List<GWTJahiaNode> pages;
+    private GWTJahiaProperty targetName;
+    private String siteKey;
+    private GWTJahiaProperty allowedNodeType;
+    private boolean menuItemsCount;
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
         setEnabled(false);
-        final GWTJahiaProperty targetName = gwtToolbarItem.getProperties().get("targetName");
+        targetName = gwtToolbarItem.getProperties().get("targetName");
+        allowedNodeType = gwtToolbarItem.getProperties().get("allowedNodeType");
+        siteKey = JahiaGWTParameters.getSiteKey();
+        initMenu(linker);
+    }
+
+    private void initMenu(final Linker linker) {
         JahiaContentManagementService.App.getInstance().getSitePagesWithTargetAreaName(targetName.getValue(),
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
@@ -69,7 +79,6 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                         final Menu menu = new Menu();
 
                         menu.removeAll();
-                        final String uiLanguage = JahiaGWTParameters.getUILanguage();
                         if (pages != null) {
                             for (final GWTJahiaNode page : pages) {
                                 MenuItem item = new MenuItem(page.getDisplayName());
@@ -98,8 +107,14 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                                 menu.add(item);
                             }
                         }
-                        setSubMenu(menu);
-                        setEnabled(true);
+                        if(menu.getItemCount()>0) {
+                            setSubMenu(menu);
+                            setEnabled(true);
+                            menuItemsCount = true;
+                        } else {
+                            setEnabled(false);
+                            menuItemsCount = false;
+                        }
                     }
 
                     public void onApplicationFailure(Throwable caught) {
@@ -110,7 +125,12 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
+        setEnabled(lh.getSingleSelection() != null && !lh.isSecondarySelection() && lh.getSingleSelection().getInheritedNodeTypes().contains(
+                allowedNodeType.getValue()) && menuItemsCount);
+        if(!JahiaGWTParameters.getSiteKey().equals(siteKey)){
+            siteKey=JahiaGWTParameters.getSiteKey();
+            initMenu(linker);
+        }
     }
 }
 

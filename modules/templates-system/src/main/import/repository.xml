@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <templateSets jcr:primaryType="jnt:templateSets">
-    <templates-system jcr:mixinTypes="jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-system" priority="0.5">
+    <templates-system jcr:mixinTypes="jmix:accessControlled jmix:sitemap" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-system" priority="0.5">
       <templates jcr:primaryType="jnt:templatesFolder">
         <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="system">
           <newsletters jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletters jnt:newsletter" j:defaultTemplate="true">
@@ -10,61 +10,61 @@
             </pagecontent>
           </newsletters>
           <home jcr:primaryType="jnt:pageTemplate">
-            <pagecontent jcr:mixinTypes="jmix:style jmix:accessControlled" jcr:primaryType="jnt:contentList">
+            <pagecontent jcr:mixinTypes="jmix:accessControlled jmix:style" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Links" jcr:primaryType="jnt:translation" />
               <j:acl jcr:primaryType="jnt:acl" />
-              <listbutton jcr:mixinTypes="jmix:renderable jmix:columns jmix:accessControlled" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="2">
-                <j:translation_en jcr:title="listbutton" jcr:primaryType="jnt:translation" jcr:language="en" />
+              <listbutton jcr:mixinTypes="jmix:renderable jmix:accessControlled jmix:columns" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="2">
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="listbutton" jcr:primaryType="jnt:translation" />
                 <my-profile j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="My profile" jcr:primaryType="jnt:translation" jcr:language="en" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My profile" jcr:primaryType="jnt:translation" />
                   <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" j:alternateText="My profile" jcr:primaryType="jnt:imageReference" />
                   <bigText jcr:primaryType="jnt:bigText">
-                    <j:translation_en jcr:language="en" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " />
                   </bigText>
                   <links jcr:primaryType="jnt:linkList">
-                    <j:translation_en jcr:mixinTypes="mix:title" jcr:title="Links" jcr:primaryType="jnt:translation" jcr:language="en" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Links" jcr:primaryType="jnt:translation" />
                     <my-profile j:node="/templateSets/templates-system/home/my-profile" jcr:primaryType="jnt:nodeLink">
-                      <j:translation_en jcr:mixinTypes="mix:title" jcr:title="&gt;&gt; My profile" jcr:primaryType="jnt:translation" jcr:language="en" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="&gt;&gt; My profile" jcr:primaryType="jnt:translation" />
                     </my-profile>
                   </links>
                 </my-profile>
                 <j:acl jcr:primaryType="jnt:acl" />
                 <my-profile-1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My profile" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My profile" jcr:primaryType="jnt:translation" />
                   <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" j:alternateText="My profile" jcr:primaryType="jnt:imageReference" />
                   <bigText jcr:primaryType="jnt:bigText">
-                    <j:translation_en jcr:language="en" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " />
                   </bigText>
                   <links jcr:primaryType="jnt:linkList">
-                    <j:translation_en jcr:language="en" jcr:title="Links" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Links" jcr:primaryType="jnt:translation" />
                     <my-profile j:node="/templateSets/templates-system/home/my-profile" jcr:primaryType="jnt:nodeLink">
-                      <j:translation_en jcr:language="en" jcr:title="&gt;&gt; My profile" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="&gt;&gt; My profile" jcr:primaryType="jnt:translation" />
                     </my-profile>
                   </links>
                 </my-profile-1>
                 <my-profile-2 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My profile" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My profile" jcr:primaryType="jnt:translation" />
                   <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" j:alternateText="My profile" jcr:primaryType="jnt:imageReference" />
                   <bigText jcr:primaryType="jnt:bigText">
-                    <j:translation_en jcr:language="en" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " />
                   </bigText>
                   <links jcr:primaryType="jnt:linkList">
-                    <j:translation_en jcr:language="en" jcr:title="Links" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Links" jcr:primaryType="jnt:translation" />
                     <my-profile j:node="/templateSets/templates-system/home/my-profile" jcr:primaryType="jnt:nodeLink">
-                      <j:translation_en jcr:language="en" jcr:title="&gt;&gt; My profile" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="&gt;&gt; My profile" jcr:primaryType="jnt:translation" />
                     </my-profile>
                   </links>
                 </my-profile-2>
                 <my-profile-3 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My profile" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My profile" jcr:primaryType="jnt:translation" />
                   <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" j:alternateText="My profile" jcr:primaryType="jnt:imageReference" />
                   <bigText jcr:primaryType="jnt:bigText">
-                    <j:translation_en jcr:language="en" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " />
                   </bigText>
                   <links jcr:primaryType="jnt:linkList">
-                    <j:translation_en jcr:language="en" jcr:title="Links" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Links" jcr:primaryType="jnt:translation" />
                     <my-profile j:node="/templateSets/templates-system/home/my-profile" jcr:primaryType="jnt:nodeLink">
-                      <j:translation_en jcr:language="en" jcr:title="&gt;&gt; My profile" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="&gt;&gt; My profile" jcr:primaryType="jnt:translation" />
                     </my-profile>
                   </links>
                 </my-profile-3>
@@ -74,7 +74,7 @@
           <simple jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList" />
           </simple>
-          <folderTemplate jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="false" j:applyOn="jnt:folder jnt:contentFolder" j:defaultTemplate="true">
+          <folderTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:folder jnt:contentFolder" j:hiddenTemplate="false" j:defaultTemplate="true">
             <pagecontent jcr:primaryType="jnt:contentList">
               <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-system/templates/base/folderTemplate/pagecontent/mainResourceDisplay">
                 <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" missing="false" facet="tags" offset="0" limit="100">
@@ -85,7 +85,7 @@
               <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" />
             </pagecontent>
           </folderTemplate>
-          <editContent j:requiredPermissions="write" j:requiredMode="contribute" jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="true" j:applyOn="jnt:content">
+          <editContent j:requiredPermissions="write" j:requiredMode="contribute" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="true">
             <pagecontent jcr:primaryType="jnt:contentList">
               <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
               <tabularList jcr:primaryType="jnt:tabularList">
@@ -108,11 +108,11 @@
                 </tags>
                 <categories jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Classifications" jcr:primaryType="jnt:translation" />
-                  <category jcr:mixinTypes="jmix:renderable jmix:accessControlled" jcr:primaryType="jnt:categorizing" j:view="default" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table">
+                  <category jcr:mixinTypes="jmix:accessControlled jmix:renderable" jcr:primaryType="jnt:categorizing" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table" j:view="default">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Category" jcr:primaryType="jnt:translation" />
                     <j:acl jcr:primaryType="jnt:acl" />
                   </category>
-                  <category-1 jcr:mixinTypes="jmix:renderable jmix:accessControlled" jcr:primaryType="jnt:categorizing" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table" j:view="addcategory">
+                  <category-1 jcr:mixinTypes="jmix:accessControlled jmix:renderable" jcr:primaryType="jnt:categorizing" j:view="addcategory" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Category" jcr:primaryType="jnt:translation" />
                     <j:acl jcr:primaryType="jnt:acl" />
                   </category-1>
@@ -122,6 +122,7 @@
           </editContent>
           <viewContent j:requiredMode="normal" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="true">
             <pagecontent jcr:primaryType="jnt:contentList">
+
               <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
               <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
             </pagecontent>
@@ -153,6 +154,7 @@
                 </my-bookmarks>
                 <my-portal jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Portal" jcr:primaryType="jnt:translation" />
+                  <my-portal-logo.png j:node="/templateSets/templates-system/templates/files/themes/default/my-portal-logo.png" j:alternateText="My portal logo" jcr:primaryType="jnt:imageReference" />
                   <currentUserDisplay j:userView="portal" jcr:primaryType="jnt:currentUserDisplay" />
                 </my-portal>
                 <my-connections jcr:primaryType="jnt:contentList">
@@ -187,16 +189,21 @@
         <files jcr:primaryType="jnt:folder">
           <themes jcr:primaryType="jnt:folder">
             <default jcr:primaryType="jnt:folder">
-              <photo_portrait.png jcr:mixinTypes="jmix:image" j:height="48" jcr:primaryType="jnt:file" j:width="48">
+              <photo_portrait.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="48" j:width="48">
                 <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
                 <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
                 <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
               </photo_portrait.png>
-              <logo-xcm-6.5-beta.png jcr:mixinTypes="jmix:image" j:height="60" jcr:primaryType="jnt:file" j:width="220">
+              <logo-xcm-6.5-beta.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="60" j:width="220">
                 <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
                 <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
                 <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
               </logo-xcm-6.5-beta.png>
+              <my-portal-logo.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="50" j:width="129">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </my-portal-logo.png>
             </default>
           </themes>
         </files>

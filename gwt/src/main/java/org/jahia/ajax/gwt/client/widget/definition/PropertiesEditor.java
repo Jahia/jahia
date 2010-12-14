@@ -283,7 +283,7 @@ public class PropertiesEditor extends FormPanel {
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));
                 fieldSet.add(field, fd);
-                fieldSet.layout();
+                //fieldSet.layout();
                 if (optional) {
                     boolean isOrderingList = "jmix:orderedList".equalsIgnoreCase(definition.getDeclaringNodeType());
                     if (isWriteable) {

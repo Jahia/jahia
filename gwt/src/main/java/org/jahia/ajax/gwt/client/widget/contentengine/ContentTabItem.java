@@ -33,9 +33,12 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
@@ -71,9 +74,19 @@ public class ContentTabItem extends PropertiesTabItem {
         // handle jcr:title property
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title") && !engine.isMultipleSelection()) {
                 tab.setLayout(new RowLayout());
+            final FormLayout fl = new FormLayout();
+            fl.setLabelWidth(0);
             FieldSet fSet = new FieldSet();
-            fSet.add(createNamePanel(engine, tab));
+            createNamePanel(engine, tab);
+            FormData fd = new FormData("98%");
+            fd.setMargins(new Margins(0));
+            fSet.setHeading(name.getName());
+            fSet.setLayout(fl);
+            fSet.add(name,fd);
             isNodeNameFieldDisplayed = true;
+            if (engine instanceof EditContentEngine) {
+                fSet.disable();
+            }
             propertiesEditor.insert(fSet,0);
         } else {
         	isNodeNameFieldDisplayed = false;
@@ -90,19 +103,13 @@ public class ContentTabItem extends PropertiesTabItem {
      * @return  @param engine
      * @param tab
      */
-    private FormPanel createNamePanel(NodeHolder engine, AsyncTabItem tab) {
+    private void createNamePanel(NodeHolder engine, AsyncTabItem tab) {
 
-        FormPanel formPanel = new FormPanel();
-        formPanel.setLabelAlign(FormPanel.LabelAlign.TOP);
-        formPanel.setFieldWidth(550);
-        formPanel.setLabelWidth(180);
-        formPanel.setFrame(false);
-        formPanel.setBorders(false);
-        formPanel.setBodyBorder(false);
-        formPanel.setHeaderVisible(false);
         name = new TextField<String>();
+        name.setWidth("98%");
+        name.setStyleAttribute("padding-left", "0");
         name.setFieldLabel("Name");
-        name.setName("name");
+        name.setName(Messages.get("label.systemName","System name"));
         if (engine.isExistingNode()) {
             name.setValue(engine.getNode().getName());
             tab.setData("NodeName", engine.getNode().getName());
@@ -112,8 +119,6 @@ public class ContentTabItem extends PropertiesTabItem {
         } else {
             name.setValue(Messages.get("label.nodeAutoName", "Automatically Created (you can type your name here if you want)"));
         }
-        formPanel.add(name);
-        return formPanel;
     }
 
     /**

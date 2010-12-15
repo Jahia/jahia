@@ -16,7 +16,12 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="commentable.css"/>
 <c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:set var="writeable" value="${jcr:hasPermission(bindedComponent,'addChildNodes') and currentResource.workspace eq 'live'}" />
+<c:if test="${!(empty bindedComponent)}">
+    <c:set var="writeable" value="${jcr:hasPermission(bindedComponent,'addChildNodes') and currentResource.workspace eq 'live'}" />
+</c:if>
+<c:if test="${!(empty bindedComponent)}">
+    <c:set var="writeable" value="${currentResource.workspace eq 'live'}" />
+</c:if>
 <c:if test='${writeable}'>
     <c:if test="${not empty bindedComponent}">
         <a name="addComments"></a>

@@ -157,8 +157,14 @@
 		<c:if test="${not isUserConnectionRequest}">
 		<c:set var="taskTitle" value="${not empty task.formResourceName and not empty task.variables['jcr:title'] ? task.variables['jcr:title'][0].value : (not empty task.displayName ? task.displayName : task.name)}"/>
 		</c:if>
+        <c:if test="${jcr:isNodeType(node,'jnt:page')}">
+            <c:set var="path" value="${node.path}"/>
+        </c:if>
+        <c:if test="${!jcr:isNodeType(node,'jnt:page')}">
+            <c:set var="path" value="${jcr:getParentOfType(node,'jnt:page').path}"/>
+        </c:if>
         <a target="_blank"
-           href="${url.context}/cms/render/${task.variables.workspace}/${task.variables.locale}${node.path}.html">${fn:escapeXml(taskTitle)}</a>
+           href="${url.context}/cms/render/${task.variables.workspace}/${task.variables.locale}${path}.html">${fn:escapeXml(taskTitle)}</a>
     </td>
     <td colspan="3">
         <div class="listEditToolbar">

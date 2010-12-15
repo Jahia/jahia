@@ -12,7 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="fileList.css"/>
+<template:addResources type="css" resources="fileList.css, simpleList.css"/>
 <template:include template="hidden.header"/>
 <c:choose>
     <c:when test="${moduleMap.liveOnly eq 'true' && !renderContext.liveMode}">

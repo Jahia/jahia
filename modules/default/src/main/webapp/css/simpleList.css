@@ -1,0 +1,16 @@
+/******************************************************************************
+*  Simple List
+******************************************************************************/
+#bodywrapper ul.simple, 
+#bodywrapper ol.simple {
+	list-style:none;
+	margin:0;
+	padding:0;
+	border-bottom:none;
+}
+#bodywrapper ul.simple li, 
+#bodywrapper ol.simple li {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}

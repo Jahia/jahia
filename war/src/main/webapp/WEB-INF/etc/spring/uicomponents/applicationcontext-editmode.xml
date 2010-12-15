@@ -82,7 +82,7 @@
                                 </list>
                             </property>
                             <property name="visibility" value="$site/toolbar/edit"/>
-                        </bean>                        
+                        </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GenerateWarActionItem"/>
@@ -261,13 +261,80 @@
                     <property name="visibility" value="$site/selector/templates"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="themes"/>
-                    <property name="icon" value="tab-themes"/>
+                    <property name="key" value="createContent"/>
+                    <property name="icon" value="tab-createcontent"/>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateContentTabItem">
+                        </bean>
+                    </property>
+
+                    <property name="visibility" value="$site/selector/create"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                    <property name="key" value="content"/>
+                    <property name="icon" value="tab-content"/>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ContentBrowseTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>$site/templates/contents</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes">
+                                <list>
+                                    <value>jnt:contentFolder</value>
+                                    <value>jnt:navMenuAvailableFolder</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="treeColumns">
+                        <list>
+                            <value>displayName,*,label.title</value>
+                        </list>
+                    </property>
+                    <property name="treeContextMenu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.NewContentFolder"/>
+                                    <ref bean="Toolbar.Item.NewContent"/>
+                                    <ref bean="Toolbar.Item.NewMenuAvailable"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="tableContextMenu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="visibility" value="$site/selector/content"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                    <property name="key" value="filesimagesthemes"/>
+                    <property name="icon" value="tab-filesimages-themes"/>
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/templates/files/themes</value>
+                                    <value>$site/templates/files</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -291,6 +358,10 @@
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
                                 </list>
                             </property>
                         </bean>
@@ -312,6 +383,59 @@
                         </bean>
                     </property>
                     <property name="visibility" value="$site/selector/files-and-images"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                    <property name="key" value="portlets"/>
+                    <property name="icon" value="tab-portlets"/>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PortletBrowseTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>$site/portlets</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes" value="jnt:portletFolder"/>
+                        </bean>
+                    </property>
+                    <property name="treeColumns">
+                        <list>
+                            <value>displayName,*,label.title</value>
+                        </list>
+                    </property>
+                    <property name="treeContextMenu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.NewPortletFolder"/>
+                                    <ref bean="Toolbar.Item.NewPortlet"/>
+                                    <ref bean="Toolbar.Item.NewRss"/>
+                                    <ref bean="Toolbar.Item.NewGadget"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="tableContextMenu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="visibility" value="$site/selector/portlets"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="pages"/>
@@ -392,179 +516,6 @@
                         </bean>
                     </property>
                     <property name="visibility" value="$site/selector/sitemap"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="createContent"/>
-                    <property name="icon" value="tab-createcontent"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateContentTabItem">
-                        </bean>
-                    </property>
-
-                    <property name="visibility" value="$site/selector/create"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="content"/>
-                    <property name="icon" value="tab-content"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ContentBrowseTabItem">
-                            <property name="paths">
-                                <list>
-                                    <value>$site/templates/contents</value>
-                                </list>
-                            </property>
-                            <property name="folderTypes">
-                                <list>
-                                    <value>jnt:contentFolder</value>
-                                    <value>jnt:navMenuAvailableFolder</value>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="treeColumns">
-                        <list>
-                            <value>displayName,*,label.title</value>
-                        </list>
-                    </property>
-                    <property name="treeContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.NewContentFolder"/>
-                                    <ref bean="Toolbar.Item.NewContent"/>
-                                    <ref bean="Toolbar.Item.NewMenuAvailable"/>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="tableContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="visibility" value="$site/selector/content"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="filesimages"/>
-                    <property name="icon" value="tab-filesimages"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
-                            <property name="paths">
-                                <list>
-                                    <value>$site/templates/files</value>
-                                </list>
-                            </property>
-                            <property name="folderTypes">
-                                <list>
-                                    <value>nt:folder</value>
-                                    <value>jnt:mountPoint</value>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="treeColumns">
-                        <list>
-                            <value>displayName,*,label.title</value>
-                        </list>
-                    </property>
-                    <property name="treeContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.NewFolder"/>
-                                    <ref bean="Toolbar.Item.Upload"/>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="tableContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Download"/>
-                                    <ref bean="Toolbar.Item.FilePreview"/>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="visibility" value="$site/selector/files-and-images"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="portlets"/>
-                    <property name="icon" value="tab-portlets"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PortletBrowseTabItem">
-                            <property name="paths">
-                                <list>
-                                    <value>$site/portlets</value>
-                                </list>
-                            </property>
-                            <property name="folderTypes" value="jnt:portletFolder"/>
-                        </bean>
-                    </property>
-                    <property name="treeColumns">
-                        <list>
-                            <value>displayName,*,label.title</value>
-                        </list>
-                    </property>
-                    <property name="treeContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.NewPortletFolder"/>
-                                    <ref bean="Toolbar.Item.NewPortlet"/>
-                                    <ref bean="Toolbar.Item.NewRss"/>
-                                    <ref bean="Toolbar.Item.NewGadget"/>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="tableContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="visibility" value="$site/selector/portlets"/>
                 </bean>
                 <ref bean="sidePanelTab.search"/>
             </list>

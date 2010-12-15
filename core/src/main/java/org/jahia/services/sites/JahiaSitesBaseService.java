@@ -37,7 +37,9 @@
 //
 package org.jahia.services.sites;
 
+import org.jahia.api.Constants;
 import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
@@ -45,10 +47,6 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.jcr.JCRSitesProvider;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -148,7 +146,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
         siteCacheByID = cacheService.createCacheInstance(SITE_CACHE_BYID);
         siteCacheByName = cacheService.createCacheInstance(SITE_CACHE_BYNAME);
-        siteCacheByKey = cacheService.createCacheInstance(SITE_CACHE_BYKEY);        
+        siteCacheByKey = cacheService.createCacheInstance(SITE_CACHE_BYKEY);
     }
 
     public void stop() {
@@ -508,8 +506,23 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                         "root");
                 sessionFactory.setCurrentUser(jahiaUser);
                 Locale selectedLocale = LanguageCodeConverters.languageCodeToLocale(systemSiteDefaultLanguage);
-                addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
+                JahiaSite site = addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
                         systemSiteTemplateSetName, "noImport", null, null, false, false, null);
+                final LinkedHashSet<String> languages = new LinkedHashSet<String>();
+                languages.add(selectedLocale.toString());
+                final List<String> uuids = new ArrayList<String>();
+                 try {
+                    uuids.add(sessionFactory.getCurrentUserSession().getNode("/sites").getNodes().nextNode().getIdentifier());
+                    List<PublicationInfo> publicationInfos = JCRPublicationService.getInstance().getPublicationInfo(sessionFactory.getCurrentUserSession().getNode("/sites").getNodes().nextNode().getIdentifier(),languages,true,true,true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+                    for (PublicationInfo publicationInfo : publicationInfos) {
+                        if (publicationInfo.needPublication(null)) {
+                            uuids.addAll(publicationInfo.getAllUuids());
+                        }
+                    }
+                    JCRPublicationService.getInstance().publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);

@@ -18,7 +18,12 @@
         $.each(['editContent'], function(index, element) {
             if ($('#' + element).length > 0) {
                 $('label[for="' + element + '"]').hide();
-                CKEDITOR.replace(element, { toolbar : 'User'});
+                CKEDITOR.replace(element, { toolbar : 'User',
+                	filebrowserBrowseUrl : null,
+                	filebrowserImageBrowseUrl : null,
+                	filebrowserFlashBrowseUrl : null,
+                	filebrowserLinkBrowseUrl : null
+                });
             }
         });
     });

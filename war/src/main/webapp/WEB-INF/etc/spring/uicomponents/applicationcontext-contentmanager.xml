@@ -877,7 +877,7 @@
         <!-- accordion -->
         <property name="repositories">
             <list>
-                <ref bean="repository.site"/>
+                <ref bean="repository.contentSite"/>
                 <ref bean="repository.sites"/>
                 <ref bean="repository.mycontent"/>
             </list>
@@ -1256,9 +1256,15 @@
                   value="repository.categoryRepository.label"/>
     </bean>
 
-    <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+    <bean id="repository.contentSite" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRepository"/>
         <property name="paths" value="$site/contents"/>
+        <property name="titleKey"
+                  value="repository.websiteRepository.label"/>
+    </bean>
+    <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="siteRepository"/>
+        <property name="paths" value="$site"/>
         <property name="titleKey"
                   value="repository.websiteRepository.label"/>
     </bean>

@@ -429,7 +429,7 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.site"/>
+                <ref bean="repository.contentSite"/>
             </list>
         </property>
 

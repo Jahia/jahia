@@ -65,7 +65,9 @@
 <c:if test="${not writeable}">
     <c:choose>
         <c:when test="${jcr:hasPermission(currentNode,'addChildNodes')}">
-            <fmt:message key="label.comments.only.live"/>
+            <div class="area-liveOnly">
+                <fmt:message key="label.comments.only.live"/>
+            </div>
         </c:when>
         <c:otherwise>
             <!--- User does not have the rights to add comments--->

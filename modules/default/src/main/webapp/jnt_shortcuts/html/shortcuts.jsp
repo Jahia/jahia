@@ -54,11 +54,11 @@
         <li>
             <a href="javascript:ts('body',-1)"><fmt:message key="font.down"/></a>
         </li>
-        <li>
+<!--        <li>
             <a href="${url.base}${renderContext.site.path}/home.html"><fmt:message key="home"/></a>
         </li>
         <li>
             <a href="${url.base}${renderContext.site.path}/home.sitemap.html"><fmt:message key="sitemap"/></a>
-        </li>
+        </li>-->
     </ul>
 </div>

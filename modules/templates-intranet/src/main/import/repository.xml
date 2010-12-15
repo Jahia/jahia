@@ -10,6 +10,8 @@
                 <footer jcr:primaryType="jnt:contentList" />
             </home>
             <portlets jcr:primaryType="jnt:portletFolder" />
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
             <templates jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder" >
                     <themes jcr:primaryType="jnt:folder">

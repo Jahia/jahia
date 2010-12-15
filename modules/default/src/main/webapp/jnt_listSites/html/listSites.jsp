@@ -19,6 +19,7 @@
 <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
 <ul>
 <c:forEach items="${result.nodes}" var="node">
+    <c:if test="${jcr:hasPermission(node,'addChildNodes')}">
     <li><c:if test="${currentNode.properties.type.string eq 'edit'}">
         ${node.properties['j:title'].string} <a href="${url.baseEdit}${node.path}/home.html"> <img src="${url.context}/icons/editContent.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.edit"/></a>
     </c:if>
@@ -26,5 +27,6 @@
         ${node.properties['j:title'].string} <a href="${url.baseContribute}${node.path}/home.html"><img src="${url.context}/icons/contribute.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.contribute"/></a>
     </c:if>
     </li>
+    </c:if>
 </c:forEach>
 </ul>

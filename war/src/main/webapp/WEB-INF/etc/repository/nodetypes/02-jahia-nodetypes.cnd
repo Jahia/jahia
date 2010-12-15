@@ -497,7 +497,7 @@
 
 [jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:basicContent, jmix:editorialContent
  - j:node (weakreference,picker[type='image']) < jmix:image
- - j:alternateText (string)
+ - j:alternateText (string) i18n
 
 [jnt:nodeLinkImageReference] > jnt:imageReference, jmix:link
  - j:linknode (weakreference) < jmix:droppableContent, jnt:page

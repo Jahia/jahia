@@ -11,6 +11,8 @@
                 <listA jcr:primaryType="jnt:contentList"/>
                 <listB jcr:primaryType="jnt:contentList"/>
             </home>
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder">
                 <themes jcr:primaryType="jnt:folder">

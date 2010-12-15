@@ -398,7 +398,15 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-
+#bodywrapper .area-liveOnly {
+	height:100px;
+	overflow: hidden;
+	background:#ccffcc url(images/area-liveonly-bg.png) no-repeat scroll 50% 50% ;
+	padding:5px;
+	color:#666;
+	position:relative;
+	border: 1px dashed #99cc99;
+}
 #bodywrapper .dashedArea {
     background : url(images/placeholder-area.png) top left;
     height:100%;

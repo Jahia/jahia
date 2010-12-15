@@ -67,7 +67,7 @@ public class LanguageHelper {
         List<GWTJahiaLanguage> items = new ArrayList<GWTJahiaLanguage>();
 
         try {
-            if (site != null && site.getLanguages() != null)  {
+            if (site != null && site.getLanguages() != null && site.getLanguages().size()>0)  {
                 final Set<String> languageSettings = site.getLanguages();
                 if (languageSettings != null && languageSettings.size() > 0) {
                     final TreeSet<String> orderedLangs = new TreeSet<String>();

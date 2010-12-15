@@ -971,6 +971,10 @@
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
                                 </list>
                             </property>
                         </bean>

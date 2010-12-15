@@ -151,7 +151,7 @@
 				'width'			: width,
 				'paddingLeft'	: currentOpts.padding,
 				'paddingRight'	: currentOpts.padding
-			}).html(title).appendTo('body');
+			}).html(title).appendTo('#bodywrapper');
 
 			switch (currentOpts.titlePosition) {
 				case 'inside':
@@ -716,7 +716,7 @@
 				return;
 			}
 
-			$('body').append(
+			$('#bodywrapper').append(
 				tmp			= $('<div id="fancybox-tmp"></div>'),
 				loading		= $('<div id="fancybox-loading"><div></div></div>'),
 				overlay		= $('<div id="fancybox-overlay"></div>'),

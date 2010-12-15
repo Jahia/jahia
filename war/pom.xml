@@ -105,6 +105,7 @@
                                 <module>org.jahia.ajax.gwt.module.edit.Edit</module>
                                 <module>org.jahia.ajax.gwt.module.resources.Resources</module>
                             </modules>
+                            <style>DETAILED</style>
                         </configuration>
                         <executions>
                             <execution>
@@ -1114,6 +1115,13 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
+            <artifactId>templates-web-blue</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>templates-apps</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
@@ -1165,18 +1173,25 @@
         
         <dependency>
             <groupId>org.jahia.prepackagedsites</groupId>
-            <artifactId>webtemplates</artifactId>
+            <artifactId>acme</artifactId>
             <version>${jahia.package.version}</version>
             <type>zip</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.prepackagedsites</groupId>
-            <artifactId>webtemplates65</artifactId>
+            <artifactId>webtemplates</artifactId>
             <version>${jahia.package.version}</version>
             <type>zip</type>
             <scope>runtime</scope>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.jahia.prepackagedsites</groupId>-->
+            <!--<artifactId>webtemplates65</artifactId>-->
+            <!--<version>${jahia.package.version}</version>-->
+            <!--<type>zip</type>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
         
         <dependency>
             <groupId>javax.servlet</groupId>

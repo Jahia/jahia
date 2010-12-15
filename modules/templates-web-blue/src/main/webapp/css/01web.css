@@ -1,0 +1,936 @@
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}
+
+img,body,html{border:0;}
+
+#bodywrapper #slider,#bodywrapper #slider li,
+#bodywrapper #slider2,#bodywrapper #slider2 li{
+	height:200px;
+	margin-bottom:0;
+}
+#prevBtn, #nextBtn, #slider1next, #slider1prev {
+	top:62px !important;
+}
+#bodywrapper #banner {
+    height: 200px !important;
+}
+#bodywrapper #banner h2 {
+    background: none;
+	padding-bottom:0;
+	margin-bottom:0;
+		margin-right:500px
+}
+#bodywrapper #banner p {
+	padding-bottom:0;
+	margin-bottom:0;
+	margin-right:550px
+}
+/******************************************************************************
+* Body and GWT .x-border-layout-ct BG
+******************************************************************************/
+.gwt-body-edit {
+	background-color:#fff;
+}
+body {
+	background-color:#fff !important;
+	color:#000;
+	margin:0;
+	padding:0;
+	font-family: Arial, Helvetica, sans-serif;
+	line-height:125%;
+	font-size:78%;
+}
+#bodywrapper {}
+/******************************************************************************
+* Utils
+******************************************************************************/
+.collapsible {
+	display:none;
+}
+#bodywrapper .clear {
+	clear:both;
+}
+#bodywrapper .clearitem 	{
+	clear:both;
+}
+#bodywrapper br.clear {
+	clear:both;
+	font-family: Arial, Helvetica, sans-serif;
+	line-height:0px;	/* no height ! */
+	font-size:0px;
+}
+#bodywrapper .hide, #bodywrapper .hidden {
+	display:none;
+}
+
+#bodywrapper .floatright {
+	float:right;
+	position:relative;
+	margin: 5px;
+}
+#bodywrapper .floatleft {
+	float:left;
+	position:relative;
+	margin: 5px;
+}
+
+#bodywrapper .leftside{
+	float:left;
+	position:relative;
+}
+#bodywrapper .rightside{
+	float: right;
+	position:relative;
+}
+#bodywrapper .clearMaringPadding{
+	padding:0;
+	margin:0;
+}
+/******************************************************************************
+*  Float Right List for ordered or unordered links list
+******************************************************************************/
+#bodywrapper .FloatRightList ul {
+	text-align:right;
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+
+#bodywrapper .FloatRightList li {
+	list-style:none;
+	padding-left:1em;
+	display:inline;
+	line-height:125%
+}
+/******************************************************************************
+*  Hilight List
+******************************************************************************/
+
+#bodywrapper .hilightList ul {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	border-bottom:none;
+}
+#bodywrapper .hilightList li {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+#bodywrapper .hilightList li a,
+#bodywrapper .hilightList li a:link,
+#bodywrapper .hilightList li a:visited
+{
+	border-bottom:1px solid #ccc;
+	padding:0.2em 0.5em;
+	display:block;
+	text-decoration:none;
+	color:#333;
+}
+#bodywrapper .hilightList li a:hover,
+#bodywrapper .hilightList li a:active {
+	text-decoration:none;
+	color:#669900;
+	background-color:#eaeaea
+}
+
+/******************************************************************************
+* Breadcrumb
+******************************************************************************/
+
+#bodywrapper ul.breadcrumb  {
+	margin:1em 0;
+	padding:0;
+	list-style:none;
+	color:#333;
+	text-transform:uppercase;
+	font-size:85%;
+}
+#bodywrapper ul.breadcrumb li {
+	display:inline;
+	margin:0;
+	padding:0;
+	background: none;
+	margin: 0 ;
+}
+#bodywrapper ul.breadcrumb a,
+#bodywrapper ul.breadcrumb a:link,
+#bodywrapper ul.breadcrumb a:visited
+{
+	padding:0 1em 0 0;
+	margin:0;
+	background: url(img/breadcrumb-separator.png) no-repeat 100% 50% ;
+	color:#333;
+	text-decoration:none;
+}
+#bodywrapper ul.breadcrumb a:hover,
+#bodywrapper ul.breadcrumb a:active {
+	color:#333;
+	text-decoration:underline;
+}
+/******************************************************************************
+*  header
+******************************************************************************/
+#bodywrapper #header{
+	background:#2c8bc5 url(img/header-bg.png) repeat-x bottom left;
+	color:#fff;
+	padding-top:5px;
+	padding-bottom:5px;
+	position:relative;
+	z-index:900;
+	width:100%
+}
+#bodywrapper #header a,
+#bodywrapper #header a:link,
+#bodywrapper #header a:visited {
+	color:#fff;
+	text-decoration:none;
+	line-height:160%;
+}
+#bodywrapper #header a:hover,
+#bodywrapper #header a:active {
+	color:#fff;
+	text-decoration:underline;
+}
+/******************************************************************************
+Search form top
+******************************************************************************/
+#bodywrapper #header form.simplesearchform .text-input {
+	width:304px !important;
+}
+#bodywrapper #header form.simplesearchform {
+	width:340px !important;
+	float:right;
+	margin-top:0.7em;
+}
+
+/******************************************************************************
+*  header
+******************************************************************************/
+#bodywrapper #headerBottom{
+	background:#fff url(img/headerBottom-bg.png) repeat-x bottom left;
+	position:relative;
+	z-index:900;
+	width:100%
+}
+
+/******************************************************************************
+*  illustration
+******************************************************************************/
+#bodywrapper #illustration{
+	background-color:#f7f7f7;
+	border-bottom:1px solid #efefef;
+	position:relative;
+	z-index:900;
+	width:100%
+}
+/******************************************************************************
+*  content
+******************************************************************************/
+#bodywrapper .page {
+	background-color:#fff;
+}
+#bodywrapper #content{
+	padding-top:15px;
+	padding-bottom:15px;
+	position:relative;
+	z-index:700;
+	width:100%
+}
+/******************************************************************************
+*  footerTop
+******************************************************************************/
+#bodywrapper #footerTop{
+	background:transparent url(img/footer-bg.png) repeat-x bottom left;
+	background-color:#151615;
+	position:relative;
+	z-index:500;
+	width:100%;
+	padding-top:5px;
+	color:#ccc;
+	font-size:0.9em;
+	padding:15px 0 ;
+}
+
+#bodywrapper #footerTop p {
+	padding:0;
+	color:#fff;
+}
+#bodywrapper #footerTop a,
+#bodywrapper #footerTop a:link,
+#bodywrapper #footerTop a:visited {
+	color:#fff;
+	text-decoration:none;
+	line-height:160%;
+}
+#bodywrapper #footerTop a:hover,
+#bodywrapper #footerTop a:active {
+	color:#fff;
+	text-decoration:underline;
+}
+
+
+/******************************************************************************
+*  footer
+******************************************************************************/
+#bodywrapper #footer{
+	background-color:#fff;
+	position:relative;
+	z-index:500;
+	width:100%;
+	padding-top:5px;
+	color:#ccc;
+	font-size:0.9em;
+	padding:15px 0 ;
+}
+
+#bodywrapper #footer p {
+	padding:0;
+	color:#333;
+}
+
+#bodywrapper #footer a,
+#bodywrapper #footer a:link,
+#bodywrapper #footer a:visited {
+	color:#333;
+	text-decoration:none;
+	line-height:160%;
+}
+#bodywrapper #footer a:hover,
+#bodywrapper #footer a:active {
+	color:#333;
+	text-decoration:underline;
+}
+/******************************************************************************
+*  general
+******************************************************************************/
+#bodywrapper img 			{ border: 0px;}
+
+#bodywrapper a,
+#bodywrapper a:link,
+#bodywrapper a:visited {
+	color:#003399 ;
+	text-decoration:none;
+}
+#bodywrapper a:hover,
+#bodywrapper a:active {
+	color:#003399 ;
+	text-decoration:underline;
+}
+#bodywrapper p {
+	padding:1em 0 1em 0;
+}
+#bodywrapper ul {
+	list-style-type:square;
+	list-style-position:outside;
+	margin-bottom:6px;
+	margin-left:20px;
+	margin-top:6px;
+}
+#bodywrapper ol  {
+	margin:1em 0 1em 2em;
+	padding:0;
+	list-style-position:outside;
+}
+#bodywrapper ol li {
+	margin:0;
+	padding:0;
+	background: none;
+	list-style: decimal;
+}
+#bodywrapper ul li {
+	margin-bottom:2px;
+	padding-left:8px;
+}
+#bodywrapper div.intro{
+	font-size:1.4em;
+	font-style:italic;
+	line-height:1.6em
+}
+#bodywrapper div.intro p{
+	padding:0.7em 0;
+}
+#bodywrapper p.intro {
+	font-size:1.3em;
+	line-height:1.6em;
+}
+
+#bodywrapper h1 {
+	color:#000;
+	font-weight:normal;
+	font-size:2em;
+	line-height:normal;
+	padding:0 0 0.5em 0;
+}
+#bodywrapper h2.pageTitle,#bodywrapper .pageTitle {
+	font-family:"Times New Roman", Times, serif;
+	margin:0;
+	color:#333;
+	margin-bottom:5px;
+	padding:5px 0;
+	font-weight:normal;
+	font-size:2.2em;
+	line-height:normal;
+}
+#bodywrapper h2 {
+	font-weight:normal;
+	font-size:1.8em;
+	padding-bottom:20px;
+	margin-bottom:10px;
+	margin-top:15px;
+	background:transparent url(img/hr-bg.png) repeat-x bottom left;
+}
+
+#bodywrapper h3 {
+	font-weight:normal;
+	font-size:1.6em;
+	margin-bottom:10px;
+	margin-top:10px;
+}
+
+#bodywrapper h4 {
+	font-weight:bold;
+	font-size:1.4em;
+	margin-bottom:10px;
+	margin-top:10px;
+}
+#bodywrapper h5 {
+	font-weight:bold;
+	font-size:1.1em;
+}
+
+#bodywrapper fieldset {
+	padding:0.5em;
+	border:1px solid #ccc;
+	margin:0.5em 0;
+}
+#bodywrapper legend {
+	font-size:1em;
+	color:#333;
+	padding:0 0.5em;
+	background:#3297cb url(img/contactformlegend.png) repeat-x bottom left;
+	border:1px solid #ccc;
+	display:inline;
+	font-weight:bold;
+	text-transform:uppercase
+}
+
+#bodywrapper hr {
+	height:2px;
+	background:transparent url(img/hr-bg.png) repeat-x bottom left;
+	border: none;
+	margin : 18px 0;
+}
+#bodywrapper blockquote {
+	background:#E0E0E0 url(img/blockquote.png) no-repeat top left;
+	border:1px solid #A5A5A5;
+	font-style:italic;
+	margin-bottom:15px;
+	margin-top:15px;
+	padding:20px;
+}
+
+#bodywrapper textarea {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:100%
+}
+#bodywrapper p.field{
+	margin-bottom:0.2em
+}
+#bodywrapper input,
+#bodywrapper select,
+#bodywrapper textarea {
+	color:#666;
+	padding:2px ;
+	font-size:100%
+}
+#bodywrapper label {
+	font-weight:bold;
+}
+
+#bodywrapper input.gobutton{
+	background:none;
+	border:none;
+	margin:0;
+	padding:0;
+	vertical-align: bottom;
+}
+#bodywrapper pre {
+	background-color:#eaeaea;
+	border-left:4px solid #003399;
+	font-family:Courier,"Courier New",monospace;
+	font-size:100%;
+	overflow:auto;
+	margin-bottom:15px;
+	margin-top:15px;
+	padding:20px;
+	line-height:100%
+}
+#bodywrapper .highlight{
+	background-color:#ffff99;
+	padding-right:0.5em;
+	padding-left:0.5em;
+}
+#bodywrapper code, #bodywrapper .code {
+	background-color:#eaeaea;
+	font-family:Courier,"Courier New",monospace;
+	font-weight:normal;
+	padding-right:0.5em;
+	padding-left:0.5em;
+}
+/******************************************************************************
+*  Images
+******************************************************************************/
+#bodywrapper .imagefloatright {
+	float:right;
+	margin-bottom:20px;
+	padding-left:20px;
+}
+#bodywrapper .imagefloatleft {
+	float:left;
+	margin-bottom:20px;
+	padding-right:20px;
+}
+#bodywrapper .imagefloatright {
+	float:right;
+	margin-bottom:20px;
+	padding-left:20px;
+}
+
+#bodywrapper .itemImage {
+	background-color:#F4F4F4;
+	border:1px solid #CCC;
+	position:relative;
+	padding:1px;
+	margin-bottom:10px;
+}
+#bodywrapper .imagefloatleft .itemImage  {
+	margin-bottom:0px;
+}
+#bodywrapper .imagefloatright .itemImage  {
+	margin-bottom:0px;
+}
+#bodywrapper div.itemImageRight {
+	float:right;
+}
+#bodywrapper div.itemImageLeft {
+	float:left;
+}
+#bodywrapper .itemImage img {
+	background-color:#e1e1e1;
+	display: block;
+	padding:9px;
+}
+#bodywrapper .itemImagewhite img{
+	background-color:#fff;
+	display: block;
+}
+/******************************************************************************
+*  Pagination
+******************************************************************************/
+#bodywrapper div.pagination {
+	height:1%;
+	overflow:hidden;
+	text-transform:uppercase;
+	border: 1px solid #ccc;
+	padding:0.5em 0.5em;
+	margin:0.5em 0;
+	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
+}
+#bodywrapper .paginationPosition {
+	float:left;
+	font-size:0.85em;
+	color:#36393d;
+}
+#bodywrapper .paginationNavigation {
+	float:right;
+	font-size:0.85em;
+
+}
+#bodywrapper .paginationNavigation a:link,
+#bodywrapper .paginationNavigation a:visited,
+#bodywrapper .paginationNavigation a:hover,
+#bodywrapper .paginationNavigation a:active {
+	text-decoration:none;
+	padding:0.2em 0.5em;
+}
+
+#bodywrapper .paginationNavigation a:hover {
+	background:#003399 ;
+	color:#fff;
+}
+#bodywrapper .paginationNavigation .currentPage{
+	background:#003399 ;
+	color:#fff;
+	padding:0.2em 0.5em;
+}
+
+
+#bodywrapper .paginationNavigation span {
+	text-decoration:none;
+	color:#666;
+	padding:0;
+}
+/******************************************************************************
+*  AlphabeticalMenu
+******************************************************************************/
+#bodywrapper div.alphabeticalMenu {
+	height:1%;
+	overflow:hidden;
+	text-transform:uppercase;
+	border: 1px solid #ccc;
+	padding:0.5em 0.5em;
+	margin:0.5em 0;
+	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
+}
+#bodywrapper .alphabeticalLabel {
+	float:left;
+	font-size:0.9em;
+	font-weight:bold;
+	color:#333;
+}
+#bodywrapper .alphabeticalNavigation {
+	float:right;
+
+}
+#bodywrapper .alphabeticalNavigation a:link,
+#bodywrapper .alphabeticalNavigation a:visited,
+#bodywrapper .alphabeticalNavigation a:hover,
+#bodywrapper .alphabeticalNavigation a:active {
+		height:28px;
+		line-height:28px;
+		border:1px solid #ccc;
+		background:#eaeaea;
+		padding:6px 10px;
+		text-decoration:none;
+}
+
+#bodywrapper .alphabeticalNavigation a:hover {
+		background:#333;
+		color:#fff;
+}
+#bodywrapper .alphabeticalNavigation a.current{
+		height:28px;
+		line-height:28px;
+		border:1px solid #ccc;
+		background:#333;
+		color:#fff;
+		padding:6px 10px;
+		text-decoration:none;
+}
+
+
+#bodywrapper .alphabeticalNavigation span {
+		text-decoration:none;
+		color:#666;
+		padding:0;
+}
+/******************************************************************************
+*  Button
+******************************************************************************/
+#bodywrapper .divButton{
+	text-align:center;
+	margin:0 0 10px 0;
+}
+#bodywrapper .divButtonRight{
+	text-align:right;
+}
+#bodywrapper input.button, #bodywrapper button {
+	margin-right:0.5em;
+}
+
+#bodywrapper input.button, #bodywrapper button {
+	background:#ccc url(img/bg-button.png) repeat-x top left;
+	border:1px solid #ccc;
+	color:#003399;
+	text-align:center;
+	padding:3px 15px;
+	-moz-border-radius:	3px;
+	-webkit-border-radius: 3px;
+
+}
+#bodywrapper .button:hover, #bodywrapper button:hover {
+	cursor: pointer;
+	background:#ccc url(img/bg-button-on.png) repeat-x top left;
+	color:#003399;
+}
+
+/******************************************************************************
+*  <A> Button
+******************************************************************************/
+
+#bodywrapper  a.aButton,
+#bodywrapper  a.aButton:link,
+#bodywrapper  a.aButton:visited {
+	background: transparent url(img/button-right.png) no-repeat scroll top right;
+	display: block;
+	float: left;
+	height: 24px; /* CHANGE THIS VALUE ACCORDING TO IMAGE HEIGHT */
+	margin-right: 6px;
+	padding-right: 20px; /* CHENGE THIS VALUE ACCORDING TO RIGHT IMAGE WIDTH */
+	/* FONT PROPERTIES */
+	text-decoration: none;
+	color:#003399;
+	margin-top: 5px;
+}
+#bodywrapper  a.aButton span {
+	/* Background left image */
+	background: transparent url(img/button-left.png) no-repeat;
+	display: block;
+	line-height: 12px; /* CHANGE THIS VALUE ACCORDING TO BUTTONG HEIGHT */
+	padding: 6px 0 6px 18px;
+}
+#bodywrapper  a.aButton:hover span{
+	text-decoration:underline;
+}
+#bodywrapper  a.aButtonRight,
+#bodywrapper  a.aButtonRight:link,
+#bodywrapper  a.aButtonRight:visited{
+	float: right;
+}
+/******************************************************************************
+*  Anchor
+******************************************************************************/
+#bodywrapper div.bottomanchor {
+	padding:0.2em;
+	margin: 1em 0;
+	font-size:0.85em;
+	clear:both
+}
+#bodywrapper .bottomanchor a,
+#bodywrapper .bottomanchor a:link,
+#bodywrapper .bottomanchor a:visited  {
+	float:right;
+	margin:0 ;
+	text-transform:uppercase
+}
+#bodywrapper .bottomanchor a:hover ,
+#bodywrapper .bottomanchor a:active  {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+/******************************************************************************
+*  Thumbnails
+******************************************************************************/
+#bodywrapper div.thumbnail {
+	float:left;
+	position:relative;
+	margin-right:20px;
+}
+#bodywrapper div.thumbnailRight {
+	float:right;
+	position:relative;
+	margin-left:20px;
+}
+#bodywrapper div.thumbnail img {
+	position:relative
+}
+
+/******************************************************************************
+*  Tables
+******************************************************************************/
+#bodywrapper .table th img{
+	vertical-align: middle
+}
+#bodywrapper .table,
+#bodywrapper .table caption
+{
+    margin: auto;
+	line-height:1.9em;
+
+}
+
+#bodywrapper .table
+{
+    border-collapse:collapse;
+	margin-bottom:1em;
+	font-size:0.85em;
+	border:none;
+}
+#bodywrapper .table, #bodywrapper .table th, #bodywrapper .table td
+{
+border: 1px solid #fff;
+}
+#bodywrapper .table caption
+{
+	font-weight:normal;
+	font-size:2em;
+	margin:0 ;
+	padding:0;
+}
+
+#bodywrapper .table th {
+    color: #fff;
+	white-space:nowrap;
+	background-color:#003399;
+	padding:5px;
+}
+#bodywrapper .table td
+{
+	background-color:#fff;
+	padding:5px;
+}
+#bodywrapper .table tr:hover{
+	background-color:#ccc
+}
+#bodywrapper .table .odd td{background-color:#eaeaea}
+#bodywrapper .table .even td{ background-color:#fff}
+#bodywrapper .col1{}
+#bodywrapper .col2{}
+#bodywrapper .col3{}
+#bodywrapper .col4{}
+
+#bodywrapper .table td.center,
+#bodywrapper .table th.center
+{
+	text-align:center;
+}
+
+/******************************************************************************
+*  Tabs
+******************************************************************************/
+#bodywrapper div.idTabsContainer{
+	margin:0 ;
+}
+#bodywrapper  ul.idTabs {
+	clear:both;
+	list-style-type:none;
+	overflow:hidden;
+	background:transparent url(img/tab-bg.png) repeat-x bottom left;
+	margin:0 0 10px 0;
+	padding:0;
+
+}
+#bodywrapper .idTabs li {
+	display:inline;
+	float:left;
+	margin:0;
+	padding:0;
+}
+#bodywrapper .idTabs li.spacing{
+	padding-left:20px;
+}
+
+#bodywrapper .idTabs li a {
+	background:transparent url(img/tab-left.png) no-repeat scroll 0 0;
+	color:#003399;
+	display:inline;
+	float:left;
+	height:29px;
+	line-height:29px;
+	padding-left:15px;
+	text-decoration:none;
+	margin-right:2px
+}
+#bodywrapper .idTabs li a.selected,
+#bodywrapper .idTabs li a:hover,
+#bodywrapper .idTabs li a.selected {
+	background-position:0 -29px;
+	color:#003399;
+	text-decoration:none;
+}
+
+
+#bodywrapper .idTabs li a span {
+	background:transparent url(img/tab-right.png) no-repeat scroll 100% 0;
+	color:#666;
+	cursor:pointer;
+	display:inline;
+	float:left;
+	height:29px;
+	line-height:29px;
+	padding-right:15px;
+	text-decoration:none;
+
+}
+#bodywrapper .idTabs li a.selected span,
+#bodywrapper .idTabs li a:hover span,
+#bodywrapper .idTabs li a.idTabs span {
+	background-position:100% -29px;
+	color:#003399;
+	text-decoration:none;
+}
+
+/******************************************************************************
+*  Summary
+******************************************************************************/
+#bodywrapper ul.summary, #bodywrapper .summary {
+	margin:10px 0;
+	line-height:130%;
+	padding: 10px;
+	background-color:#eaeaea;
+	border:1px solid #ccc;
+	margin:0;
+	list-style:none;
+}
+
+#bodywrapper .summary a,
+#bodywrapper .summary a:link,
+#bodywrapper .summary a:visited {
+	text-decoration:none;
+}
+#bodywrapper .summary a:hover,
+#bodywrapper .summary a:active {
+	text-decoration:underline;
+}
+
+#bodywrapper .summary ul {
+	margin:0;
+	padding:0 0 0 2em;
+	list-style:none;
+}
+#bodywrapper .summary li {
+	padding:0;
+	margin-bottom:10px
+}
+
+/******************************************************************************
+* Form
+******************************************************************************/
+#bodywrapper .Form  p{
+	clear:both;
+	margin:0.2em 0;
+	padding:0px
+}
+#bodywrapper .Form { 
+	margin:1em 0 0 0;
+	overflow:hidden;
+}
+#bodywrapper .formMarginLeft{ 
+	margin:0 0 0 25%;
+	padding:0 1em 0 2.3em;
+}
+#bodywrapper .Form label.left {
+	float:left; 
+	width:25%;
+	margin:0 1em 0 1em;
+	padding:2px;
+	text-align:right;
+}
+#bodywrapper .divButton{
+	text-align:center;
+	margin:0.5em 0;
+}
+
+/******************************************************************************
+*  error
+******************************************************************************/
+#bodywrapper .error{
+	padding:10px;
+	margin:10px;
+	background-color:#ffebe8;
+	border:1px solid #cc3300;
+}
+/******************************************************************************
+* Links
+******************************************************************************/
+#bodywrapper div.more {
+    float: right;
+    display: block;
+}
+
+#bodywrapper a.returnLink {
+	display: block;
+}

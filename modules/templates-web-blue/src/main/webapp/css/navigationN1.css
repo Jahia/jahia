@@ -1,0 +1,47 @@
+#bodywrapper .navigationN1 {
+
+}
+#bodywrapper .navigationN1 ul {
+	margin:0;
+	padding:0;
+	line-height:1.4em;
+	color:#333;
+}
+#bodywrapper .navigationN1 li {
+	list-style:none;
+	padding:0;
+	margin:0;
+	float:left;
+	text-align:center;
+}
+#bodywrapper .navigationN1 li.lastInLevel {
+	border-right:none
+}
+#bodywrapper .navigationN1 li a,
+#bodywrapper .navigationN1 li a:link,
+#bodywrapper .navigationN1 li a:visited
+{
+	color:#333;
+	display:block;
+	font-size:1.6em;
+	height:58px;
+	line-height:58px;
+	margin:0;
+	padding:0 10px;
+	text-decoration:none;
+	border-bottom:3px solid #e8ebec;
+}
+#bodywrapper .navigationN1 li a:hover,
+#bodywrapper .navigationN1 li a:active {
+	color:#003399;
+	text-decoration:none;
+	border-bottom:3px solid #1443a0;
+}
+#bodywrapper .navigationN1 li.selected a,
+#bodywrapper .navigationN1 li.selected a:link,
+#bodywrapper .navigationN1 li.selected a:visited {
+	color:#003399;
+	border-bottom:3px solid #1443a0;
+}
+
+

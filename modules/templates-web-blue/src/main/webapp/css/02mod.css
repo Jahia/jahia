@@ -1,0 +1,32 @@
+
+#bodywrapper .shortcuts-inline li{
+	background:none !important;
+	padding-left:0px  !important;
+	border:none !important ;
+}
+#bodywrapper div.shortcuts-inline {
+	font-size:100%;
+	padding:0px;
+}
+
+#bodywrapper p.newsInfo {
+	border-bottom:none;
+	border-top:none;
+	margin:0;
+}
+/*calendar*/
+.fc-event, .fc-agenda .fc-event-time, .fc-event a {
+	background-color:#003399;
+	border-color:#000099;
+}
+#bodywrapper .fc-header h2 {
+	background:none;
+	padding-bottom:0;
+}
+.fc-content .fc-state-highlight {
+	background-color:#ccffcc;
+}
+/*jobs*/
+#bodywrapper .jobsSearchForm .jobsSearchKeyword input {
+	width:200px;
+}

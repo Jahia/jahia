@@ -1,0 +1,15 @@
+#bodywrapper #slider, #bodywrapper #slider li, #bodywrapper #slider2, #bodywrapper #slider2 li {
+	height:auto !important;
+	margin:0;
+	padding:0;
+	list-style:none
+}
+#bodywrapper #slider ul, #bodywrapper #slider2 ul{
+	height:auto !important;
+	margin:0;
+	padding:0;
+}
+#bodywrapper #slider ul img, #bodywrapper #slider2 ul img{
+	max-width:300px;
+	max-height:50px;
+}

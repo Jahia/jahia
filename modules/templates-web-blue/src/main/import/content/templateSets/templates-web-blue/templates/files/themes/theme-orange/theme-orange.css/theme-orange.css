@@ -1,0 +1,86 @@
+
+/******************************************************************************
+*  Hilight List
+******************************************************************************/
+#bodywrapper .hilightList li a:hover,
+#bodywrapper .hilightList li a:active {
+	color:#ff6600;
+}
+
+/******************************************************************************
+*  header
+******************************************************************************/
+#bodywrapper #header{
+	background:#c34a27 url(theme-orange/img/header-bg.png) repeat-x top left;
+}
+
+/******************************************************************************
+*  general
+******************************************************************************/
+#bodywrapper img 			{ border: 0px;}
+
+#bodywrapper a,
+#bodywrapper a:link,
+#bodywrapper a:visited {
+	color:#ff6600 ;
+}
+#bodywrapper a:hover,
+#bodywrapper a:active {
+	color:#ff6600 ;
+}
+#bodywrapper pre {
+	border-left:4px solid #ff6600;
+}
+
+#bodywrapper .paginationNavigation a:hover {
+	background:#ff6600 ;
+}
+#bodywrapper .paginationNavigation .currentPage{
+	background:#ff6600 ;
+}
+
+#bodywrapper input.button, #bodywrapper button {
+	color:#ff6600;
+}
+#bodywrapper .button:hover, #bodywrapper button:hover {
+	color:#ff6600;
+}
+
+#bodywrapper .table th {
+	background-color:#ff6600;
+}
+
+#bodywrapper .idTabs li a {
+	color:#ff6600;
+}
+#bodywrapper .idTabs li a.selected,
+#bodywrapper .idTabs li a:hover,
+#bodywrapper .idTabs li a.selected {
+	color:#ff6600;
+}
+
+#bodywrapper .idTabs li a.selected span,
+#bodywrapper .idTabs li a:hover span,
+#bodywrapper .idTabs li a.idTabs span {
+	color:#ff6600;
+}
+/******************************************************************************
+*  navigationN1
+******************************************************************************/
+#bodywrapper .navigationN1 li a:hover,
+#bodywrapper .navigationN1 li a:active {
+	border-bottom:3px solid #ff6600;
+}
+#bodywrapper .navigationN1 li.selected a,
+#bodywrapper .navigationN1 li.selected a:link,
+#bodywrapper .navigationN1 li.selected a:visited {
+	color:#ff6600;
+	border-bottom:3px solid #ff6600;
+}
+/******************************************************************************
+*  navigationN2
+******************************************************************************/
+#bodywrapper .navigationN2-2 li a:hover,
+#bodywrapper .navigationN2-2 li a:active {
+	color:#ff6600;
+}

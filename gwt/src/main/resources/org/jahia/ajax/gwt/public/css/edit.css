@@ -399,7 +399,7 @@
 	box-shadow: 0 1px 3px #999;
 }
 #bodywrapper .area-liveOnly {
-	height:100px;
+	min-height:100px;
 	overflow: hidden;
 	background:#ccffcc url(images/area-liveonly-bg.png) no-repeat scroll 50% 50% ;
 	padding:5px;

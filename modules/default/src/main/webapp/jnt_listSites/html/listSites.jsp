@@ -15,11 +15,21 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:addResources type="javascript" resources="jquery.min.js"/>
+<c:if test="${currentResource.workspace eq 'live'}">
+<div id="listsites${currentNode.identifier}"/>
+    <script type="text/javascript">
+        $('#listsites${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax');
+    </script>
+</div>
+</c:if>
+<c:if test="${currentResource.workspace ne 'live'}">
 
 <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
 <ul>
 <c:forEach items="${result.nodes}" var="node">
-    <c:if test="${jcr:hasPermission(node,'addChildNodes')}">
+    <jcr:node var="home" path="${node.path}/home"/>
+    <c:if test="${jcr:hasPermission(home,'addChildNodes')}">
     <li><c:if test="${currentNode.properties.type.string eq 'edit'}">
         ${node.properties['j:title'].string} <a href="${url.baseEdit}${node.path}/home.html"> <img src="${url.context}/icons/editContent.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.edit"/></a>
     </c:if>
@@ -30,3 +40,4 @@
     </c:if>
 </c:forEach>
 </ul>
+</c:if>

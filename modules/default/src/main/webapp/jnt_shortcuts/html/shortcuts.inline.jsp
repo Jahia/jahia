@@ -50,11 +50,11 @@
         <li class="shortcuts-typoreduce">
             <a href="javascript:ts('body',-1)"><fmt:message key="font.down"/></a>
         </li>
-<!--        <li class="shortcuts-home">
+<%-- <li class="shortcuts-home">
             <a href="${url.base}${renderContext.site.path}/home.html"><fmt:message key="home"/></a>
         </li>
         <li class="shortcuts-sitemap">
             <a href="${url.base}${renderContext.site.path}/home.sitemap.html"><fmt:message key="sitemap"/></a>
-        </li>-->
+        </li>--%>
     </ul>
 </div>

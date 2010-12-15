@@ -16,11 +16,18 @@
 <template:include template="hidden.header"/>
 <c:choose>
     <c:when test="${moduleMap.liveOnly eq 'true' && !renderContext.liveMode}">
-        <template:addResources type="javascript" resources="jquery.min.js"/>
-        <div id="liveList${currentNode.identifier}"></div>
-        <script type="text/javascript">
-            $('#liveList${currentNode.identifier}').load('${url.baseLive}${currentNode.path}.html.ajax');
-        </script>
+        <c:if test="${renderContext.editModeConfigName eq 'studiomode'}">
+            <div class="area-liveOnly dashedArea">
+                <fmt:message key="label.content.creation.only.live"/>
+            </div>
+        </c:if>
+        <c:if test="${!(renderContext.editModeConfigName eq 'studiomode')}">
+            <template:addResources type="javascript" resources="jquery.min.js"/>
+            <div id="liveList${currentNode.identifier}"></div>
+            <script type="text/javascript">
+                $('#liveList${currentNode.identifier}').load('${url.baseLive}${currentNode.path}.html.ajax');
+            </script>
+        </c:if>
     </c:when>
     <c:otherwise>
         <ul class="${currentNode.properties['j:className'].string}">

@@ -114,12 +114,12 @@
         </div>
     </c:if>
     <c:if test="${navMenuLevel eq 1}">
-        <c:if test="${!empty layoutID}">
-            </div>
-        </c:if>
         </div>
     </c:if>
-    <c:if test="${navMenuLevel == 1}">
+</c:if>
+<c:if test="${navMenuLevel eq 1}">
+    <c:if test="${!empty layoutID}">
         </div>
     </c:if>
+    </div>
 </c:if>

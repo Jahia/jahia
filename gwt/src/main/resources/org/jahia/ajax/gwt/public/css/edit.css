@@ -407,3 +407,8 @@
     background : url(images/area-notcreated.png) top left;
     height:100%;
 }
+
+#bodywrapper .area-liveOnly .dashedArea {
+    background : url(images/area-liveOnly.png) top left;
+    height:100%;
+}

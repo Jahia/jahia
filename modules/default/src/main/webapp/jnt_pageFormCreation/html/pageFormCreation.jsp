@@ -47,8 +47,10 @@
 </c:if>
 <c:if test="${not writeable}">
     <c:choose>
-        <c:when test="${jcr:hasPermission(currentNode,'addChildNodes')}">
-            <fmt:message key="label.page.creation.only.live"/>
+        <c:when test="${!(currentResource.workspace eq 'live')}">
+            <div class="area-liveOnly dashedArea">
+                <fmt:message key="label.page.creation.only.live"/>
+            </div>
         </c:when>
         <c:otherwise>
             <!--- User does not have the rights to add comments--->

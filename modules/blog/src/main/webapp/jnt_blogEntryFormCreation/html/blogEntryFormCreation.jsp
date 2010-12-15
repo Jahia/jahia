@@ -33,8 +33,7 @@
         <input type="hidden" name="normalizeNodeName" value="true"/>
         <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
         <fmt:formatDate value="${created.time}" type="date" pattern="MMM" var="userCreatedMonth"/>
-        <p class="post-info"><fmt:message key="blog.label.by"/> <a
-                href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
+        <p class="post-info"><fmt:message key="blog.label.by"/> ${createdBy.string}
             - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
         </p>
 
@@ -77,6 +76,8 @@
         </div>
     </form>
 </c:if>
-<c:if test="${not writeable}">
-    blog post is only available in live
+<c:if test="${!currentResource.workspace eq 'live'}">
+    <div class="area-liveOnly dashedArea">
+        blog post is only available in live
+    </div>
 </c:if>

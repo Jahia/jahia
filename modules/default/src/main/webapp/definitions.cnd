@@ -160,17 +160,13 @@
 [jnt:addComment] > jnt:content, jmix:bindedComponent, jmix:socialComponent
 
 [jnt:gotoStudio] > jnt:content, mix:title, jmix:siteComponent
- - picto (weakreference, picker[type='image'])
 
 [jnt:gotoEdit] > jnt:content, mix:title, jmix:siteComponent
- - picto (weakreference, picker[type='image'])
 
 [jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent
- - picto (weakreference, picker[type='image'])
 
 [jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent
- - picto (weakreference, picker[type='image'])
- - type (string, choicelist) = content < content,document
+ - type (string, choicelist) = content < content,document,"united content"
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent
  - type (string, choicelist) = edit < contribute,edit

@@ -131,7 +131,14 @@ public class JahiaGWTParameters {
         }
         baseUrl = getBaseUrl();
         baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/')+1) + language;
+        setNativeLanguage(newLanguage.getLanguage());
     }
+
+    private static native void setNativeLanguage(String newLanguage) /*-{
+        $wnd.jahiaGWTParameters.lang  = newLanguage;
+    }-*/;
+
+
 
     public static String getSiteUUID() {
         if (siteUUID == null) {
@@ -149,7 +156,12 @@ public class JahiaGWTParameters {
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();
         }
+        setNativeSiteUUID(newSiteUUID);
     }
+
+    private static native void setNativeSiteUUID(String newSiteUUID) /*-{
+        $wnd.jahiaGWTParameters.siteUuid  = newSiteUUID;
+    }-*/;
 
     public static String getSiteKey() {
         if (siteKey == null) {
@@ -164,7 +176,12 @@ public class JahiaGWTParameters {
 
     public static void setSiteKey(String newSiteKey) {
         siteKey = newSiteKey;
+        setNativeSiteKey(newSiteKey);
     }
+
+    private static native void setNativeSiteKey(String newSiteKey) /*-{
+        $wnd.jahiaGWTParameters.siteKey  = newSiteKey;
+    }-*/;
 
     public static void setSite(GWTJahiaNode site, Linker linker) {
         setSiteUUID(site.getSiteUUID());
@@ -194,7 +211,12 @@ public class JahiaGWTParameters {
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();
         }
+        setNativeWorkspace(newWorkspace);
     }
+
+    private static native void setNativeWorkspace(String newWorkspace) /*-{
+        $wnd.jahiaGWTParameters.workspace  = newWorkspace;
+    }-*/;
 
     public static String getContextPath() {
         return jahiaParamDictionary.get(CONTEXT_PATH);

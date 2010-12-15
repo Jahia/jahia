@@ -23,21 +23,18 @@
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
+<template:addResources type="javascript" resources="jquery.form.js"/>
+
+<template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="timepicker.js"/>
+<template:addResources type="css" resources="timepicker.css"/>
+
 
 <c:if test="${currentResource.workspace eq 'live'}">
 <div id="tasks${currentNode.identifier}"/>
     <script type="text/javascript">
         $('#tasks${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.tasklist.html.ajax');
     </script>
-
-    <div style="display:none;">
-    <div id="tasks" >
-        <%-- Just load the resources here ! --%>
-        <template:module path="/users/${renderContext.user.username}" template="tasklist" var="temp"/>
-    </div>
-    </div>
-
-
 </c:if>
 <c:if test="${currentResource.workspace ne 'live'}">
 

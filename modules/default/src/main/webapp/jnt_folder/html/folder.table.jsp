@@ -5,6 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -28,7 +29,8 @@
                                                                                          src="${url.currentModule}/images/icons/folder_up.png"></a>
             </c:if>
         </th>
-        <th width="35%"><fmt:message key="label.title"/></th>
+        <th width="25%"><fmt:message key="label.title"/></th>
+        <th width="10%" style="white-space: nowrap;"><fmt:message key="label.download"/></th>
         <th width="15%" style="white-space: nowrap;"><fmt:message key="mix_created.jcr_created"/></th>
         <th width="15%" style="white-space: nowrap;"><fmt:message key="mix_lastModified.jcr_lastModified"/></th>
         <th width="15%"><fmt:message key="jmix_lastPublished.j_lastPublished"/></th>
@@ -39,12 +41,15 @@
     <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}"
                varStatus="status">
         <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
-        <td>
+        <td>${child.properties["jcr:mimeType"].string}
             <c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">
-                <img src="${url.templatesPath}/${child.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_large.png"/>
+                <img src="${url.templatesPath}/${child.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_${functions:fileIcon(child.name)}_large.png"/>
             </c:if>
             <c:if test="${empty child.primaryNodeType.templatePackage.rootFolder}">
-                <img src="${url.templatesPath}/default/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_large.png"/>
+				<c:if test="${functions:fileIcon(child.name) != 'file'}">
+					<c:set var="icon" value="_${functions:fileIcon(child.name)}"/>
+				</c:if>
+                <img src="${url.templatesPath}/default/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}${icon}_large.png"/>
             </c:if>
         </td>
         <td>
@@ -59,12 +64,13 @@
                 </a>
             </div>
         </td>
+		<td><c:if test="${not jcr:isNodeType(child, 'jnt:folder')}"><a href=${child.url}><fmt:message key="label.download"/></a></c:if></td>
         <td>
             <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
         </td>
         <td>
             <fmt:formatDate value="${child.properties['jcr:lastModified'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
-        </td align="center">
+        </td>
         <td>
             <fmt:formatDate value="${child.properties['j:lastPublished'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
         </td>
@@ -85,5 +91,4 @@
 <c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
-
 <template:include template="hidden.footer"/>

@@ -24,6 +24,14 @@
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
 
+<c:if test="${currentResource.workspace eq 'live'}">
+<div id="tasks${currentNode.identifier}"/>
+    <script type="text/javascript">
+        $('#tasks${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.tasklist.html.ajax');
+    </script>
+</c:if>
+<c:if test="${currentResource.workspace ne 'live'}">
+
 <form name="myform" method="post">
     <input type="hidden" name="nodeType" value="jnt:task">
     <input type="hidden" name="redirectTo" value="${url.base}${currentNode.path}.tasklist">
@@ -94,11 +102,12 @@
 
 <jcr:sql var="tasks"
          sql="select * from [jnt:task] as task where task.assignee='${currentNode.identifier}'"/>
+<c:set var="nodes" value="${tasks.nodes}" />
 <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
-<template:initPager pageSize="25" totalSize="${tasks.nodes.size}"
+<template:initPager pageSize="25" totalSize="${nodes.size}"
                     id="${currentNode.identifier}"/>
 
-<c:forEach items="${tasks.nodes}" var="task"
+<c:forEach items="${nodes}" var="task"
            begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
     <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
     <td class="center" headers="Type"><img alt=""
@@ -170,11 +179,9 @@
         <div class="listEditToolbar">
             <c:choose>
                 <c:when test="${not empty task.formResourceName}">
-                    <template:addResources>
                         <script type="text/javascript">
                             animatedcollapse.addDiv('task${node.identifier}-${task.id}', 'fade=1,speed=100');
                         </script>
-                    </template:addResources>
                     <input class="workflowaction" type="button" value="${task.name}"
                            onclick="animatedcollapse.toggle('task${node.identifier}-${task.id}');$('#taskrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
                 </c:when>
@@ -202,7 +209,7 @@
         <td colspan="5">
             <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                 <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                <template:module node="${node}" template="contribute.add">
+                <template:include template="contribute.add">
                     <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                     <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                     <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
@@ -210,7 +217,7 @@
                     <template:param name="workflowTaskFormCallbackURL" value="${url.current}.ajax"/>
                     <template:param name="workflowTaskFormCallbackJS"
                                     value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();"/>
-                </template:module>
+                </template:include>
             </div>
         </td>
         </tr>
@@ -265,14 +272,12 @@
 </tbody>
 </table>
 
-<template:addResources>
     <script type="text/javascript">
         animatedcollapse.init();
     </script>
-</template:addResources>
 <div class="pagination"><!--start pagination-->
 
-    <div class="paginationPosition"><span>Page ${currentPage} of ${nbPages} - ${tasks.nodes.size} results</span>
+    <div class="paginationPosition"><span>Page ${currentPage} of ${nbPages} - ${nodes.size} results</span>
     </div>
     <div class="paginationNavigation">
         <c:if test="${currentPage>1}">
@@ -305,3 +310,4 @@
 </div>
 </div>
 </div>
+</c:if>

@@ -406,6 +406,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 site = i.getName();
                 siteId = (int) ((Node)i).getProperty("j:siteId").getLong();
             } catch (ItemNotFoundException e) {
+            } catch (PathNotFoundException e) {
             }
 
             if (jahiaPrincipal != null) {

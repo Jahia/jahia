@@ -16,6 +16,7 @@
 
 
   <modules>
+    <module>acme</module>
     <module>webtemplates</module>
     <module>webtemplates65</module>
     <module>corpv2demo5x</module>	

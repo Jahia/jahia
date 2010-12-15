@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.jahia.prepackagedsites</groupId>
+        <artifactId>prepackagedSites</artifactId>
+        <version>6.5-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>acme</artifactId>
+    <name>ACME demo 2</name>
+    <packaging>pom</packaging>
+
+    <build>
+        <plugins>
+
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>ACME</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/ACME.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                            <finalName>ACME</finalName>
+                        </configuration>
+
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>shared</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/shared.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                            <finalName>shared</finalName>
+                        </configuration>
+
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>root</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/root.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
+    </build>
+</project>

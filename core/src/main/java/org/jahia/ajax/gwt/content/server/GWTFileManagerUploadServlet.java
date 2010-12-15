@@ -272,6 +272,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             }
             InputStream is = item.getInputStream();
             try {
+                locationFolder.getSession().getWorkspace().getVersionManager().checkout(locationFolder.getPath());
                 JCRNodeWrapper node = locationFolder.uploadFile(filename, is, item.getContentType());
                 node.save();
                 node.checkin();

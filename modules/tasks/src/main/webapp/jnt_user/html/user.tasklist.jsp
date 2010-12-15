@@ -29,6 +29,15 @@
     <script type="text/javascript">
         $('#tasks${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.tasklist.html.ajax');
     </script>
+
+    <div style="display:none;">
+    <div id="tasks" >
+        <%-- Just load the resources here ! --%>
+        <template:module path="/users/${renderContext.user.username}" template="tasklist" var="temp"/>
+    </div>
+    </div>
+
+
 </c:if>
 <c:if test="${currentResource.workspace ne 'live'}">
 

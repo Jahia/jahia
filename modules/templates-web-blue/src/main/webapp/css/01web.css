@@ -2,28 +2,6 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,bloc
 
 img,body,html{border:0;}
 
-#bodywrapper #slider,#bodywrapper #slider li,
-#bodywrapper #slider2,#bodywrapper #slider2 li{
-	height:200px;
-	margin-bottom:0;
-}
-#prevBtn, #nextBtn, #slider1next, #slider1prev {
-	top:62px !important;
-}
-#bodywrapper #banner {
-    height: 200px !important;
-}
-#bodywrapper #banner h2 {
-    background: none;
-	padding-bottom:0;
-	margin-bottom:0;
-		margin-right:500px
-}
-#bodywrapper #banner p {
-	padding-bottom:0;
-	margin-bottom:0;
-	margin-right:550px
-}
 /******************************************************************************
 * Body and GWT .x-border-layout-ct BG
 ******************************************************************************/
@@ -904,6 +882,7 @@ border: 1px solid #fff;
 }
 #bodywrapper .Form label.left {
 	float:left; 
+
 	width:25%;
 	margin:0 1em 0 1em;
 	padding:2px;

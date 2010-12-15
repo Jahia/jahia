@@ -1,14 +1,98 @@
-
-#bodywrapper .shortcuts-inline li{
-	background:none !important;
-	padding-left:0px  !important;
-	border:none !important ;
+/*shortcuts*/
+#bodywrapper #slider,#bodywrapper #slider li,
+#bodywrapper #slider2,#bodywrapper #slider2 li{
+	height:200px;
+	margin-bottom:0;
 }
+#prevBtn, #nextBtn, #slider1next, #slider1prev {
+	top:62px !important;
+}
+#bodywrapper #banner {
+    height: 200px !important;
+	 margin: 0;
+}
+#bodywrapper #banner h2 {
+    background: none;
+	padding-bottom:0;
+	margin-bottom:0;
+		margin-right:500px
+}
+#bodywrapper #banner p {
+	padding-bottom:0;
+	margin-bottom:0;
+	margin-right:550px
+}
+ol#controls {
+	text-align:right;
+    height: 1%;
+    list-style: none outside none;
+    margin: 5px 0;
+    overflow: hidden;
+    text-transform: uppercase;
+}
+
+#bodywrapper ol#controls {
+    list-style: none outside none;
+    margin: 5px 0;
+    padding: 5px 12px;
+	position:absolute;
+	bottom:0;
+	right:0;
+	height:28px;
+	background:none;
+	border:none;
+}
+
+#bodywrapper ol#controls li {
+    list-style: none outside none;
+	 margin: 0 5px 0 0;
+}
+
+ol#controls li {
+	float:left;
+	display:inline;
+    height: 28px;
+    line-height: 28px;
+    list-style: none outside none;
+    margin: 0 10px 0 0;
+    padding: 0;
+}
+
+ol#controls li a {
+    background: none repeat scroll 0 0 #EAEAEA;
+    border: 1px solid #CCCCCC;
+    color: #333333;
+    float: left;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 10px;
+    text-decoration: none;
+}
+
+ol#controls li.current a {
+    background: none repeat scroll 0 0 #333333;
+    color: #FFFFFF;
+}
+
+ol#controls li a:focus, #prevBtn a:focus, #nextBtn a:focus {
+    outline: medium none;
+}
+
+#bodywrapper #slider ul li, #bodywrapper #slider2 ul li {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+
+/*shortcuts*/
 #bodywrapper div.shortcuts-inline {
 	font-size:100%;
 	padding:0px;
 }
-
+#bodywrapper .shortcuts-inline li.shortcuts-login {
+	background:none;
+	border:none
+}
 #bodywrapper p.newsInfo {
 	border-bottom:none;
 	border-top:none;

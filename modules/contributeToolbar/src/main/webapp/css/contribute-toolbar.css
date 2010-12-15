@@ -72,3 +72,14 @@
 	cursor: pointer;
 	text-decoration:none;
 }
+
+#bodywrapper h3.pastelink {
+	color:#333333;
+	font-size:1.8em;
+	padding:5px 0 5px 0;
+	margin:0px;
+}
+#bodywrapper h3.pastelink img {
+	vertical-align: text-bottom;
+	margin-right:5px
+}

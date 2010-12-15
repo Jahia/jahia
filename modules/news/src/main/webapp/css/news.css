@@ -15,6 +15,13 @@
 	padding:0;
 }
 #bodywrapper .newsSummary li {
+    margin: 0;
+    padding:0;
+    background-image: none;
+    width: 100%;
+    list-style: none;
+}
+#bodywrapper div.newsSummary {
     margin: 0 0 0.5em 0;
     padding: 0.5em 0;
     background-image: none;
@@ -22,7 +29,6 @@
     border-bottom: 1px solid #eaeaea;
     list-style: none;
 }
-
 #bodywrapper .newsSummary h4 a,
     #bodywrapper .newsSummary h4 a:link,
     #bodywrapper .newsSummary h4 a:visited {

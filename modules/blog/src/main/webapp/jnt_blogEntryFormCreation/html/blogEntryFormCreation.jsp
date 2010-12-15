@@ -77,7 +77,7 @@
     </form>
 </c:if>
 <c:if test="${!currentResource.workspace eq 'live'}">
-    <div class="area-liveOnly dashedArea">
+    <div class="area-liveOnly">
         blog post is only available in live
     </div>
 </c:if>

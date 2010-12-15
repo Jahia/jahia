@@ -17,7 +17,7 @@
 <c:choose>
     <c:when test="${moduleMap.liveOnly eq 'true' && !renderContext.liveMode}">
         <c:if test="${renderContext.editModeConfigName eq 'studiomode'}">
-            <div class="area-liveOnly dashedArea">
+            <div class="area-liveOnly">
                 <fmt:message key="label.content.creation.only.live"/>
             </div>
         </c:if>

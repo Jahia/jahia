@@ -48,7 +48,7 @@
 <c:if test="${not writeable}">
     <c:choose>
         <c:when test="${!(currentResource.workspace eq 'live')}">
-            <div class="area-liveOnly dashedArea">
+            <div class="area-liveOnly">
                 <fmt:message key="label.page.creation.only.live"/>
             </div>
         </c:when>

@@ -743,7 +743,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         p.load(is);
         Set<Object> keys = p.keySet();
         boolean isMultiLang = true;
-        final Map<Integer, String> languages = new TreeMap<Integer, String>();
+        final Set<String> languages = new HashSet<String>();
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
         for (Object key : keys) {
@@ -755,8 +755,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             if (firstKey.equals("language")) {
                 String lang = st.nextToken();
 
-                if (!languages.containsValue(lang)) {
-                    languages.put(Integer.valueOf(p.getProperty("language." + lang + ".rank", "0")), lang);
+                if (!languages.contains(lang)) {
+                    languages.add(lang);
                     if (Boolean.valueOf(p.getProperty("language." + lang + ".mandatory", "false"))) {
                         mandatoryLanguages.add(lang);
                     }
@@ -769,7 +769,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
         @SuppressWarnings("unchecked")
-        Set<String> siteLangs = ListOrderedSet.decorate(new LinkedList<String>(languages.values()));
+        Set<String> siteLangs = ListOrderedSet.decorate(new LinkedList<String>(languages));
         if (!siteLangs.isEmpty()) {
             if (!isMultiLang) {
                 Set<String> singleLang = new HashSet<String>();

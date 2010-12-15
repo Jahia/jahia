@@ -90,6 +90,7 @@
 
     function showClipboard() {
         $.post("${url.base}${renderContext.mainResource.node.path}.checkclipboard.do", {}, function(result) {
+            $(".titleaddnewcontent").show();
             $(".pastelink").show();
             $("#empty-${currentNode.identifier}").show();
             $("#clipboard-${currentNode.identifier}").html('<fmt:message key="label.clipboard.contains"/> ' + result.size +
@@ -109,6 +110,7 @@
     }
 
     function hideClipboard() {
+        $(".titleaddnewcontent").hide();
         $(".pastelink").hide();
         $("#empty-${currentNode.identifier}").hide();
         $("#clipboard-${currentNode.identifier}").hide();

@@ -4,12 +4,15 @@
 				continuous: true,
 				nextId: "slider1next",
 				prevId: "slider1prev",
-				speed:" 200",
-				pause: "8000"
+				speed: 200,
+				pause: 8000
 			});
 			$("#slider2").easySlider({ 
 				numeric: true,
-				speed:"200"
+				auto: true,
+				continuous: true,
+				speed: 200,
+				pause: 4000
 			});
 		});
 		

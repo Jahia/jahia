@@ -19,7 +19,7 @@
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="listbutton" jcr:primaryType="jnt:translation" />
                 <my-profile j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My profile" jcr:primaryType="jnt:translation" />
-                  <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" j:alternateText="My profile" jcr:primaryType="jnt:imageReference" />
+                  <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" jcr:primaryType="jnt:imageReference" />
                   <bigText jcr:primaryType="jnt:bigText">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " />
                   </bigText>
@@ -33,7 +33,7 @@
                 <j:acl jcr:primaryType="jnt:acl" />
                 <my-profile-1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My profile" jcr:primaryType="jnt:translation" />
-                  <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" j:alternateText="My profile" jcr:primaryType="jnt:imageReference" />
+                  <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" jcr:primaryType="jnt:imageReference" />
                   <bigText jcr:primaryType="jnt:bigText">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " />
                   </bigText>
@@ -46,7 +46,7 @@
                 </my-profile-1>
                 <my-profile-2 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My profile" jcr:primaryType="jnt:translation" />
-                  <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" j:alternateText="My profile" jcr:primaryType="jnt:imageReference" />
+                  <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" jcr:primaryType="jnt:imageReference" />
                   <bigText jcr:primaryType="jnt:bigText">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " />
                   </bigText>
@@ -59,7 +59,7 @@
                 </my-profile-2>
                 <my-profile-3 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My profile" jcr:primaryType="jnt:translation" />
-                  <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" j:alternateText="My profile" jcr:primaryType="jnt:imageReference" />
+                  <photo_portrait.png j:node="/templateSets/templates-system/templates/files/themes/default/photo_portrait.png" jcr:primaryType="jnt:imageReference" />
                   <bigText jcr:primaryType="jnt:bigText">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Descriptif : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non arcu ut enim adipiscing laoreet.&lt;/p&gt; " />
                   </bigText>
@@ -156,7 +156,7 @@
                 </my-bookmarks>
                 <my-portal jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Portal" jcr:primaryType="jnt:translation" />
-                  <my-portal-logo.png j:node="/templateSets/templates-system/templates/files/themes/default/my-portal-logo.png" j:alternateText="My portal logo" jcr:primaryType="jnt:imageReference" />
+                  <my-portal-logo.png j:node="/templateSets/templates-system/templates/files/themes/default/my-portal-logo.png" jcr:primaryType="jnt:imageReference" />
                   <currentUserDisplay j:userView="portal" jcr:primaryType="jnt:currentUserDisplay" />
                 </my-portal>
                 <my-connections jcr:primaryType="jnt:contentList">
@@ -185,7 +185,7 @@
             </bigText>
           </footer-col1>
           <header-col2 jcr:primaryType="jnt:contentList">
-            <logo-xcm-6.5-beta.png j:node="/templateSets/templates-system/templates/files/themes/default/logo-xcm-6.5-beta.png" j:alternateText="logo" jcr:primaryType="jnt:imageReference" />
+            <logo-xcm-6.5-beta.png j:node="/templateSets/templates-system/templates/files/themes/default/logo-xcm-6.5-beta.png" jcr:primaryType="jnt:imageReference" />
           </header-col2>
         </base>
         <files jcr:primaryType="jnt:folder">

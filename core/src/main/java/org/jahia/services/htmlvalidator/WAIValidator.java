@@ -72,8 +72,9 @@ public class WAIValidator {
 
     protected final Map<String, String> linkToDest = new HashMap<String, String>();
 
-    public WAIValidator() {
+    public WAIValidator(Locale uiLocale) {
         super();
+        this.uiLocale = uiLocale;
     }
 
     /**
@@ -817,7 +818,7 @@ public class WAIValidator {
      * @throws DOMException
      *             If something goes wrong with node values
      */
-    public static void print(final Node node, final String indent, final boolean recursive)
+    private static void print(final Node node, final String indent, final boolean recursive)
             throws DOMException {
         final StringBuffer buff = new StringBuffer();
         buff.append(indent).append(node.getClass().getName()).append(": NodeName '")
@@ -969,14 +970,6 @@ public class WAIValidator {
 
         buff.append("</i></span>");
         return buff.toString();
-    }
-
-    public Locale getUiLocale() {
-        return uiLocale;
-    }
-
-    public void setUiLocale(Locale uiLocale) {
-        this.uiLocale = uiLocale;
     }
 
     private static String text2XMLEntityRef(String str) {

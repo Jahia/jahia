@@ -82,8 +82,7 @@ public class WAIValidatorTest {
     private void findAndTestScripts(boolean shouldFail) throws Exception {
         URL scriptsUrl = WAIValidatorTest.class.getResource(shouldFail ? "fail" : "pass");
         File scriptsDirectory = new File(scriptsUrl.toURI());
-        WAIValidator validator = new WAIValidator();
-        validator.setUiLocale(Locale.ENGLISH);
+        WAIValidator validator = new WAIValidator(Locale.ENGLISH);
         for (File file : scriptsDirectory.listFiles()) {
             Scanner scanner = new Scanner(file).useDelimiter("\\Z");
             String content = scanner.next();

@@ -78,6 +78,9 @@
                 <entry key="/export/**">
                     <bean name="org.jahia.bin.Export" class="org.jahia.bin.Export"/>
                 </entry>
+                <entry key="/wcag/**">
+					<bean class="org.jahia.services.htmlvalidator.WCAGController"/>
+                </entry>
             </map>
         </property>
     </bean>

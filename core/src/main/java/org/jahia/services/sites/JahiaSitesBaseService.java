@@ -52,6 +52,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
@@ -512,8 +513,11 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 languages.add(selectedLocale.toString());
                 final List<String> uuids = new ArrayList<String>();
                  try {
-                    uuids.add(sessionFactory.getCurrentUserSession().getNode("/sites").getNodes().nextNode().getIdentifier());
-                    List<PublicationInfo> publicationInfos = JCRPublicationService.getInstance().getPublicationInfo(sessionFactory.getCurrentUserSession().getNode("/sites").getNodes().nextNode().getIdentifier(),languages,true,true,true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+                     JCRNodeWrapper node =(JCRNodeWrapper) sessionFactory.getCurrentUserSession().getNode("/sites").getNodes().nextNode();
+                     node.checkout();
+                     node.changePermissions("g:users","re---");
+                     uuids.add(node.getIdentifier());
+                    List<PublicationInfo> publicationInfos = JCRPublicationService.getInstance().getPublicationInfo(node.getIdentifier(),languages,true,true,true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
                     for (PublicationInfo publicationInfo : publicationInfos) {
                         if (publicationInfo.needPublication(null)) {
                             uuids.addAll(publicationInfo.getAllUuids());

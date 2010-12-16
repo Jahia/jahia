@@ -32,6 +32,7 @@
 
 package org.jahia.portlets;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.pluto.container.driver.*;
 import org.apache.pluto.container.om.portlet.PortletDefinition;
 
@@ -50,16 +51,11 @@ import java.io.IOException;
 
 import java.io.InputStream;
 import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.*;
 import java.net.URL;
 import java.net.MalformedURLException;
 
 import javax.portlet.*;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.*;
 
 import org.apache.pluto.container.FilterManager;
@@ -186,10 +182,17 @@ public class PortletServlet extends HttpServlet {
     protected boolean attemptRegistration(ServletContext context, ClassLoader paClassLoader) {
         if (PlutoServices.getServices() != null) {
             contextService = PlutoServices.getServices().getPortletContextService();
-            File f = new File(getServletContext().getRealPath("/WEB-INF/fragments"));
-            File[] fragments = f.listFiles();
+            File[] fragments = null;
+            String fragmentsPath = getServletContext().getRealPath("/WEB-INF/fragments");
+            if (StringUtils.isNotEmpty(fragmentsPath)) {
+            	try {
+            		fragments = new File(fragmentsPath).listFiles();
+            	} catch (Exception e) {
+            		logger.warn("Unable to list contentr of the /WEB-INF/fragments directory for internal portlets.", e);
+            	}
+            }
 
-            for (int i = 0; i < fragments.length; i++) {
+            for (int i = 0; fragments != null && i < fragments.length; i++) {
                 try {
                     File fragment = fragments[i];
                     log("Processing fragment " + fragment);

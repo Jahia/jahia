@@ -19,7 +19,7 @@
 <c:if test="${!(empty bindedComponent)}">
     <c:set var="writeable" value="${jcr:hasPermission(bindedComponent,'addChildNodes') and currentResource.workspace eq 'live'}" />
 </c:if>
-<c:if test="${!(empty bindedComponent)}">
+<c:if test="${empty bindedComponent}">
     <c:set var="writeable" value="${currentResource.workspace eq 'live'}" />
 </c:if>
 <c:if test='${writeable}'>

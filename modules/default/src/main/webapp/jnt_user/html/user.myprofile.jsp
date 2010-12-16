@@ -65,7 +65,7 @@
             var data = {};
             data[submitId] = value;
             data['methodToCall'] = 'put';
-            $.post("${url.base}${currentNode.path}", data, function(result) {
+            $.post("${url.basePreview}${currentNode.path}", data, function(result) {
                 var j_title = "";
                 if(result && typeof result.j_title != 'undefined')
                 j_title = eval("datas="+titleMap)[result.j_title];
@@ -93,7 +93,7 @@
             var data = {};
             data[submitId] = value;
             data['methodToCall'] = 'put';
-            $.post("${url.base}${currentNode.path}", data, null, "json");
+            $.post("${url.basePreview}${currentNode.path}", data, null, "json");
             if (value == "true")
                 return "Public"; else
                 return "Private";
@@ -106,7 +106,7 @@
             tooltip : '<fmt:message key="label.clickToEdit"/>'
         });
 
-        $(".imageEdit").editable('${url.base}${currentNode.path}', {
+        $(".imageEdit").editable('${url.basePreview}${currentNode.path}', {
             type : 'ajaxupload',
             onblur : 'ignore',
             submit : 'OK',
@@ -121,8 +121,8 @@
             var datas = {};
             datas['j:picture'] = data.uuids[0];
             datas['methodToCall'] = 'put';
-            $.post('${url.base}${currentNode.path}', datas, function(result) {
-                var input = $('<div class="itemImage itemImageRight"><img src="' + result.j_picture + '/avatar_120" width="60" height="60"/></div>');
+            $.post('${url.basePreview}${currentNode.path}', datas, function(result) {
+                var input = $('<div class="itemImage itemImageRight"><img src="' + result.j_picture + '/avatar_120" /></div>');
                 $("#portrait").html(input);
             }, "json");
         }
@@ -132,7 +132,7 @@
             var data = {};
             data[submitId] = value;
             data['methodToCall'] = 'put';
-            $.post("${url.base}${currentNode.path}", data, function(result) {
+            $.post("${url.basePreview}${currentNode.path}", data, function(result) {
             }, "json");
             return(value);
         }, {
@@ -148,7 +148,7 @@
             var data = {};
                 data[submitId] = value;
                 data['methodToCall'] = 'put';
-                $.post("${url.base}${currentNode.path}", data, function(result) {
+                $.post("${url.basePreview}${currentNode.path}", data, function(result) {
                 }, "json");
             return(value);
         }, {
@@ -164,7 +164,7 @@
             var data = {};
             data[submitId] = value;
             data['methodToCall'] = 'put';
-            $.post("${url.base}${currentNode.path}", data, null, "json");
+            $.post("${url.basePreview}${currentNode.path}", data, null, "json");
             return eval("values="+genderMap)[value];
         }, {
             type    : 'select',
@@ -180,7 +180,7 @@
             var data = {};
             data[submitId] = value;
             data['methodToCall'] = 'put';
-            $.post("${url.base}${currentNode.path}", data, function(result) {
+            $.post("${url.basePreview}${currentNode.path}", data, function(result) {
                 var j_title = result.j_title;
                 j_title = eval("datas="+titleMap)[j_title];
                 $("#personDisplay2").html(j_title + " " + result.j_firstName + " " + result.j_lastName);
@@ -275,7 +275,7 @@
                                             var data = {};
                                             data[submitId] = value;
                                             data['methodToCall'] = 'put';
-                                            $.post("${url.base}${currentNode.path}", data, null, "json");
+                                            $.post("${url.basePreview}${currentNode.path}", data, null, "json");
                                             <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
                                                 <c:choose>
                                                     <c:when test="${status.first}">

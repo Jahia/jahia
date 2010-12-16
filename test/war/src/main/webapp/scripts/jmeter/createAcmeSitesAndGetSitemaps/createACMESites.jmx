@@ -62,6 +62,11 @@
             <stringProp name="Argument.value">2</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="PATH" elementType="Argument">
+            <stringProp name="Argument.name">PATH</stringProp>
+            <stringProp name="Argument.value">C:\proj\trunk\test\war\src\main\webapp\scripts\jmeter\createAcmeSitesAndGetSitemaps\sitemaps\</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -199,7 +204,7 @@
           </hashTree>
           <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="loops créations sites" enabled="true">
             <boolProp name="LoopController.continue_forever">true</boolProp>
-            <stringProp name="LoopController.loops">5</stringProp>
+            <stringProp name="LoopController.loops">3</stringProp>
           </LoopController>
           <hashTree>
             <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="counter sites" enabled="true">
@@ -280,8 +285,26 @@
                 </collectionProp>
                 <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
                 <boolProp name="Assertion.assume_success">false</boolProp>
-                <intProp name="Assertion.test_type">2</intProp>
+                <intProp name="Assertion.test_type">16</intProp>
               </ResponseAssertion>
+              <hashTree/>
+              <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Post-Processeur BeanShell" enabled="true">
+                <boolProp name="resetInterpreter">false</boolProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="script">if (prev.isSuccessful()) {
+    String live = vars.get(&quot;LIVE_SITEMAP&quot;);
+    String path = vars.get(&quot;PATH&quot;);
+    try {
+        File f = new File(path + &quot;liveSitemaps.txt&quot;);
+        BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
+        out.write(live +&quot;\n \n&quot;);
+        out.close();
+    } catch (IOException e) {}
+
+    
+}</stringProp>
+              </BeanShellPostProcessor>
               <hashTree/>
             </hashTree>
             <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="get edit sitemap" enabled="true">
@@ -310,7 +333,7 @@
               </UniformRandomTimer>
               <hashTree/>
               <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extracteur Expression régulière" enabled="true">
-                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.useHeaders">unescaped</stringProp>
                 <stringProp name="RegexExtractor.refname">EDIT_SITEMAP</stringProp>
                 <stringProp name="RegexExtractor.regex">(?s)(.+)</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
@@ -327,7 +350,28 @@
                 <intProp name="Assertion.test_type">2</intProp>
               </ResponseAssertion>
               <hashTree/>
+              <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Post-Processeur BeanShell" enabled="true">
+                <boolProp name="resetInterpreter">false</boolProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="script">if (prev.isSuccessful()) {
+    String edit = vars.get(&quot;EDIT_SITEMAP&quot;);
+    String path = vars.get(&quot;PATH&quot;);
+    try {
+        File f = new File(path + &quot;editSitemaps.txt&quot;);
+        BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
+        out.write(edit +&quot;\n \n&quot;);
+        out.close();
+    } catch (IOException e) {}
+}</stringProp>
+              </BeanShellPostProcessor>
+              <hashTree/>
             </hashTree>
+            <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Conteur de temps aléatoire uniforme" enabled="true">
+              <stringProp name="ConstantTimer.delay">${maxOffsetWaitTime}</stringProp>
+              <stringProp name="RandomTimer.range">${maxWaitTime}</stringProp>
+            </UniformRandomTimer>
+            <hashTree/>
           </hashTree>
           <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Arbre de résultats" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>

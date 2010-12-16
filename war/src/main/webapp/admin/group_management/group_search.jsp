@@ -5,7 +5,6 @@
 <%@ page import="org.jahia.params.*" %>
 <%@ page import="org.jahia.services.*" %>
 <%@ page import="org.jahia.exceptions.*" %>
-<%@ page import="org.jahia.utils.JahiaTools"%>
 <%@ page import="org.jahia.services.usermanager.*" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>

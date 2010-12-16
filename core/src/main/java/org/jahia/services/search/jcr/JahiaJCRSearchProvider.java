@@ -49,6 +49,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
@@ -79,7 +80,6 @@ import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.DateUtils;
-import org.jahia.utils.JahiaTools;
 
 /**
  * This is the default search provider used by Jahia and used the index created by Jahia's main
@@ -178,8 +178,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             includeChildren = params.getPagePath().isIncludeChildren();
         } 
         if (path != null) {
-            String[] pathTokens = JahiaTools.getTokens(StringEscapeUtils
-                    .unescapeHtml(path), "/");
+            String[] pathTokens = path != null ? StringEscapeUtils
+                    .unescapeHtml(path).split("/") : ArrayUtils.EMPTY_STRING_ARRAY;
             String lastFolder = null;
             StringBuilder jcrPath = new StringBuilder(64);
             jcrPath.append("/jcr:root/");

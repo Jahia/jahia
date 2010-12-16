@@ -8,7 +8,7 @@
 <%@page import="org.jahia.services.preferences.user.UserPreferencesHelper"%>
 <%@page import="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService" %>
 <%@page import="org.jahia.services.usermanager.JahiaUser,org.jahia.services.usermanager.UserProperties,org.jahia.services.usermanager.UserProperty" %>
-<%@ page import="org.jahia.utils.JahiaTools" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page import="java.security.Principal" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.Locale" %>
@@ -282,7 +282,7 @@
     <td>
         <input class="input" type="password" name="passwd"
                size="40" maxlength="255"
-               value='<%=JahiaTools.nnString(passwd)%>'>
+               value='<%=StringUtils.defaultString(passwd)%>'>
         &nbsp;<span class="text2"><fmt:message key="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
     </td>
 </tr>
@@ -293,7 +293,7 @@
     <td>
         <input class="input" type="password" name="passwdconfirm"
                size="40" maxlength="255"
-               value='<%=JahiaTools.nnString(passwdConfirm)%>'>
+               value='<%=StringUtils.defaultString(passwdConfirm)%>'>
         &nbsp;<span class="text2"><fmt:message key="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
     </td>
 </tr>

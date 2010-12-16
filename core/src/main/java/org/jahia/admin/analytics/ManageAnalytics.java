@@ -34,7 +34,6 @@ package org.jahia.admin.analytics;
 
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.analytics.GoogleAnalyticsService;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
@@ -42,8 +41,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
-
-import org.jahia.utils.JahiaTools;
 
 import org.jahia.admin.AbstractAdministrationModule;
 import org.apache.commons.lang.StringUtils;
@@ -179,12 +176,12 @@ public class ManageAnalytics extends AbstractAdministrationModule {
         if (jData != null) {
             jParams = jData.getProcessingContext();
             site = jParams.getSite();
-            gaUserAccount = StringUtils.left(JahiaTools.getStrParameter(request, "gaUserAccount", "").trim(), 100);
-            gaProfile = StringUtils.left(JahiaTools.getStrParameter(request, "gaProfile", "").trim(), 100);
-            gaLogin = StringUtils.left(JahiaTools.getStrParameter(request, "gaLogin", "").trim(), 100);
-            gaPassword = StringUtils.left(JahiaTools.getStrParameter(request, "gaPassword", "").trim(), 100);
+            gaUserAccount = StringUtils.left(StringUtils.defaultIfEmpty(request.getParameter("gaUserAccount"), "").trim(), 100);
+            gaProfile = StringUtils.left(StringUtils.defaultIfEmpty(request.getParameter("gaProfile"), "").trim(), 100);
+            gaLogin = StringUtils.left(StringUtils.defaultIfEmpty(request.getParameter("gaLogin"), "").trim(), 100);
+            gaPassword = StringUtils.left(StringUtils.defaultIfEmpty(request.getParameter("gaPassword"), "").trim(), 100);
             trackingEnabled = Boolean.valueOf(request.getParameter("trackingEnabled") != null);
-            trackedUrls = StringUtils.left(JahiaTools.getStrParameter(request, "trackedUrls", "").trim(), 100);
+            trackedUrls = StringUtils.left(StringUtils.defaultIfEmpty(request.getParameter("trackedUrls"), "").trim(), 100);
 
             // set as request attribute
             request.setAttribute("gaUserAccount", gaUserAccount);
@@ -294,7 +291,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
 
                 // get tracked rl
                 String newTrackedUrls = "virtual";
-                if (StringUtils.left(JahiaTools.getStrParameter(request, profile + "TrackedUrls", "real").trim(), 100).equals("real")) {
+                if (StringUtils.left(StringUtils.defaultIfEmpty(request.getParameter(profile + "TrackedUrls"), "real").trim(), 100).equals("real")) {
                     newTrackedUrls = "real";
                 }
                 googleAnalyticsProfile.setTypeUrl(newTrackedUrls);

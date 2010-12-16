@@ -12,6 +12,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
@@ -61,8 +62,8 @@
             for (i = 0; i < index; i++) {
                 badName += "- " + usrgrpname[i].substr(1, usrgrpname[i].lastIndexOf(':') - 1) + "\n";
             }
-            alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.users.ManageGroups.alertUsersGroupAlreadyMember.label",
-          jParams.getUILocale()))%>" + badName);
+            <fmt:message key="org.jahia.admin.users.ManageGroups.alertUsersGroupAlreadyMember.label" var="msg"/>
+            alert("${functions:escapeJavaScript(msg)}" + badName);
             index = 0;
         }
     }
@@ -147,6 +148,7 @@
                                                     type="hidden" name="actionType" value="save"/><b><%=groupName %></b>
                                             </td>
                                         </tr>
+                                        <%--
                                         <c:if test="${enforcePasswordPolicyForSite}">
                                         <% if (jParams.getUser().isPermitted(new PermissionIdentity("password-policy", "global", null))) { %>
                                             <tr>
@@ -168,6 +170,7 @@
                                             </tr>
                                         <% } %>
                                         </c:if>
+                                        --%>
                                     </table>
                                     <br>
                                     <table class="text" border="0" cellspacing="0" cellpadding="3">

@@ -44,7 +44,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -180,7 +179,7 @@ public class PrincipalViewHelper implements Serializable {
                 authUserText.append(" ");
             }
         }
-        return JahiaTools.replacePattern(authUserText.toString(), " ", "&nbsp;");
+        return StringUtils.replace(authUserText.toString(), " ", "&nbsp;");
     }
 
     /**

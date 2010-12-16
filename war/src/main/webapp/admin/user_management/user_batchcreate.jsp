@@ -1,5 +1,4 @@
 <%@page language = "java" %>
-<%@page import = "org.jahia.utils.JahiaTools"%>
 <%@page import = "org.jahia.data.JahiaData"%>
 <%@page import = "org.jahia.registries.ServicesRegistry"%>
 <%@page import = "org.jahia.services.usermanager.JahiaUser"%>

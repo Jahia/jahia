@@ -76,7 +76,6 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.*;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
-import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.NodeIterator;
@@ -105,6 +104,10 @@ import java.util.zip.ZipInputStream;
  */
 public class ManageSites extends AbstractAdministrationModule {
 
+    // authorized chars
+    private static final char[] AUTHORIZED_CHARS =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-".toCharArray();
+    
     private static final Map<String, Integer> RANK;
     static {
         RANK = new HashMap<String, Integer>(3);
@@ -406,11 +409,11 @@ public class ManageSites extends AbstractAdministrationModule {
         boolean processError = true;
 
         // get form values...
-        String siteTitle = StringUtils.left(JahiaTools.getStrParameter(request, "siteTitle", "").trim(), 100);
-        String siteServerName = StringUtils.left(JahiaTools.getStrParameter(request, "siteServerName", "").trim(), 200);
-        String siteKey = StringUtils.left(JahiaTools.getStrParameter(request, "siteKey", "").trim(), 50);
-        String siteDescr = StringUtils.left(JahiaTools.getStrParameter(request, "siteDescr", "").trim(), 250);
-        String siteAdmin = JahiaTools.getStrParameter(request, "siteAdmin", "").trim();
+        String siteTitle = StringUtils.left(StringUtils.defaultString(request.getParameter("siteTitle")).trim(), 100);
+        String siteServerName = StringUtils.left(StringUtils.defaultString(request.getParameter("siteServerName")).trim(), 200);
+        String siteKey = StringUtils.left(StringUtils.defaultString(request.getParameter("siteKey")).trim(), 50);
+        String siteDescr = StringUtils.left(StringUtils.defaultString(request.getParameter("siteDescr")).trim(), 250);
+        String siteAdmin = StringUtils.defaultString(request.getParameter("siteAdmin")).trim();
         Boolean defaultSite = Boolean.valueOf(request.getParameter("defaultSite") != null);
 
         request.getSession().setAttribute("siteAdminOption", siteAdmin);
@@ -423,7 +426,7 @@ public class ManageSites extends AbstractAdministrationModule {
             // check validity...
             if (siteTitle != null && (siteTitle.length() > 0) && siteServerName != null &&
                     (siteServerName.length() > 0) && siteKey != null && (siteKey.length() > 0)) {
-                if (!JahiaTools.isAlphaValid(siteKey)) {
+                if (!isSiteKeyValid(siteKey)) {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label");
                 } else if (siteKey.equals("site")) {
@@ -713,13 +716,13 @@ public class ManageSites extends AbstractAdministrationModule {
         boolean processError = true;
 
         // get form values...
-        String adminUsername = JahiaTools.getStrParameter(request, "adminUsername", "").trim();
-        String adminPassword = JahiaTools.getStrParameter(request, "adminPassword", "").trim();
-        String adminConfirm = JahiaTools.getStrParameter(request, "adminConfirm", "").trim();
-        String adminFirstName = JahiaTools.getStrParameter(request, "adminFirstName", "").trim();
-        String adminLastName = JahiaTools.getStrParameter(request, "adminLastName", "").trim();
-        String adminOrganization = JahiaTools.getStrParameter(request, "adminOrganization", "").trim();
-        String adminEmail = JahiaTools.getStrParameter(request, "adminEmail", "").trim();
+        String adminUsername = StringUtils.defaultString(request.getParameter("adminUsername")).trim();
+        String adminPassword = StringUtils.defaultString(request.getParameter("adminPassword")).trim();
+        String adminConfirm = StringUtils.defaultString(request.getParameter("adminConfirm")).trim();
+        String adminFirstName = StringUtils.defaultString(request.getParameter("adminFirstName")).trim();
+        String adminLastName = StringUtils.defaultString(request.getParameter("adminLastName")).trim();
+        String adminOrganization = StringUtils.defaultString(request.getParameter("adminOrganization")).trim();
+        String adminEmail = StringUtils.defaultString(request.getParameter("adminEmail")).trim();
         String warningMsg = "";
         // set request attributes...
         request.setAttribute("adminUsername", adminUsername);
@@ -1066,7 +1069,7 @@ public class ManageSites extends AbstractAdministrationModule {
             }
         }
 
-        String selectedLanguage = JahiaTools.getStrParameter(jParams, "languageList", "").trim();
+        String selectedLanguage = getStrParameter(jParams, "languageList", "").trim();
         if (!selectedLanguage.equals("")) {
             session.setAttribute(CLASS_NAME + "selectedLocale",
                     LanguageCodeConverters.languageCodeToLocale(selectedLanguage));
@@ -1103,7 +1106,7 @@ public class ManageSites extends AbstractAdministrationModule {
         }
 
         // language
-        String selectedLanguage = JahiaTools.getStrParameter(jParams, "languageList", "").trim();
+        String selectedLanguage = getStrParameter(jParams, "languageList", "").trim();
         if (!selectedLanguage.equals("")) {
             session.setAttribute(CLASS_NAME + "selectedLocale",
                     LanguageCodeConverters.languageCodeToLocale(selectedLanguage));
@@ -1136,7 +1139,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
         try {
             // get site...
-            String site_id = JahiaTools.getStrParameter(request, "siteid", "").trim();
+            String site_id = StringUtils.defaultString(request.getParameter("siteid")).trim();
             Integer siteID = new Integer(site_id);
             JahiaSite site = sMgr.getSite(siteID.intValue());
 
@@ -1328,10 +1331,10 @@ public class ManageSites extends AbstractAdministrationModule {
         boolean processError = false;
 
         // get form values...
-        String siteTitle = StringUtils.left(JahiaTools.getStrParameter(request, "siteTitle", "").trim(), 100);
-        String siteServerName = StringUtils.left(JahiaTools.getStrParameter(request, "siteServerName", "").trim(), 200);
-//		String  siteKey			    = JahiaTools.getStrParameter(request,"siteKey","").toLowerCase().trim();
-        String siteDescr = StringUtils.left(JahiaTools.getStrParameter(request, "siteDescr", "").trim(), 250);
+        String siteTitle = StringUtils.left(StringUtils.defaultString(request.getParameter("siteTitle")).trim(), 100);
+        String siteServerName = StringUtils.left(StringUtils.defaultString(request.getParameter("siteServerName")).trim(), 200);
+//		String  siteKey			    = StringUtils.defaultIfEmpty(request.getParameter("siteKey"),"").toLowerCase().trim();
+        String siteDescr = StringUtils.left(StringUtils.defaultString(request.getParameter("siteDescr")).trim(), 250);
 
         String warningMsg = "";
         boolean defaultSite = (request.getParameter("defaultSite") != null);
@@ -1349,7 +1352,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
         try {
             // get site...
-            String site_id = JahiaTools.getStrParameter(request, "siteid", "").trim();
+            String site_id = StringUtils.defaultString(request.getParameter("siteid")).trim();
             Integer siteID = new Integer(site_id);
             JahiaSite site = sMgr.getSite(siteID.intValue());
 
@@ -1429,7 +1432,7 @@ public class ManageSites extends AbstractAdministrationModule {
             session.setMaxInactiveInterval(7200);
 
             // get site...
-            String site_id = JahiaTools.getStrParameter(request, "siteid", "").trim();
+            String site_id = StringUtils.defaultString(request.getParameter("siteid")).trim();
             Integer siteID = new Integer(site_id);
 
             JahiaSite site = sMgr.getSite(siteID.intValue());
@@ -1506,7 +1509,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
         try {
             // get site...
-            String site_id = JahiaTools.getStrParameter(request, "siteid", "").trim();
+            String site_id = StringUtils.defaultString(request.getParameter("siteid")).trim();
             Integer siteID = new Integer(site_id);
             JahiaSite site = sMgr.getSite(siteID.intValue());
 
@@ -2053,4 +2056,54 @@ public class ManageSites extends AbstractAdministrationModule {
             throws IOException, ServletException {
         displayList(request, response, session);
     }
+
+    /**
+     * return a parameter of String type if not null or return the subsitute value
+     *
+     * @param processingContext the request object
+     * @param paramName         the param name
+     * @param nullVal           the subsitute value to return if the parameter is null
+     * @return String the parameter value
+     * @author NK
+     */
+    public static String getStrParameter(ProcessingContext processingContext, String paramName, String nullVal) {
+
+        String val = (String) processingContext.getParameter(paramName);
+        if (val == null) {
+            return nullVal;
+        }
+        return val;
+    }
+
+    private static boolean isSiteKeyValid(String name) {
+        if (name == null) {
+            return false;
+        }
+        if (name.length() == 0) {
+            return false;
+        }
+
+        char[] chars = AUTHORIZED_CHARS;
+        char[] nameBuffer = name.toCharArray();
+
+        boolean badCharFound = false;
+        int i = 0;
+        while ((i < nameBuffer.length) && (!badCharFound)) {
+            int j = 0;
+            boolean ok = false;
+            while ((j < chars.length) && (!ok)) {
+                if (chars[j] == nameBuffer[i]) {
+                    ok = true;
+                }
+                j++;
+            }
+            badCharFound = (!ok);
+            if (badCharFound) {
+            	logger.error("JahiaTools.isAlphaValid", "--/ Bad character found in [" + name + "] at position " + Integer.toString(i));
+            }
+            i++;
+        }
+        return (!badCharFound);
+    } // end isAlphaValid
+
 }

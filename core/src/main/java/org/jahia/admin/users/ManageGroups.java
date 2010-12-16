@@ -51,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
@@ -64,7 +65,6 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.utils.JahiaTools;
 import org.jahia.admin.AbstractAdministrationModule;
 
 /**
@@ -281,7 +281,7 @@ public class ManageGroups extends AbstractAdministrationModule {
     throws IOException, ServletException, JahiaException
     {
         logger.debug("Started");
-        request.setAttribute("groupName", JahiaTools.nnString(request.getParameter("groupName")));
+        request.setAttribute("groupName", StringUtils.defaultString(request.getParameter("groupName")));
 
         request.setAttribute("jspSource", JSP_PATH + "group_management/group_create.jsp");
         request.setAttribute("directMenu", JSP_PATH + "direct_menu.jsp");
@@ -565,7 +565,7 @@ public class ManageGroups extends AbstractAdministrationModule {
     throws IOException, ServletException
     {
         logger.debug("Started");
-        request.setAttribute("newGroup", JahiaTools.nnString(request.getParameter("newGroup")));
+        request.setAttribute("newGroup", StringUtils.defaultString(request.getParameter("newGroup")));
         String selectedGroup = request.getParameter("selectedGroup");
         if (selectedGroup == null) { // Get the last group if none was selected.
             selectedGroup = (String)session.getAttribute("selectedGroup");

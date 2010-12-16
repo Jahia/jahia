@@ -52,8 +52,8 @@ package org.jahia.settings;
 
 import org.apache.commons.collections.FastHashMap;
 import org.slf4j.Logger;
-import org.jahia.utils.JahiaTools;
 import org.jahia.utils.PathResolver;
+import org.jahia.bin.Jahia;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.utils.properties.PropertiesManager;
@@ -240,10 +240,10 @@ public class SettingsBean {
             jahiaEnginesDiskPath = pathResolver.resolvePath (getString("jahiaEnginesDiskPath"));
             jahiaJavaScriptDiskPath = pathResolver.resolvePath (getString("jahiaJavaScriptDiskPath"));
             classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
-            jahiaFilesDiskPath = JahiaTools.convertContexted (getString("jahiaFilesDiskPath"), pathResolver);
-            jahiaEtcDiskPath = JahiaTools.convertContexted (getString("jahiaEtcDiskPath"), pathResolver);
-            jahiaVarDiskPath = JahiaTools.convertContexted (getString("jahiaVarDiskPath"), pathResolver);
-            tmpContentDiskPath = JahiaTools.convertContexted (getString("tmpContentDiskPath"), pathResolver);
+            jahiaFilesDiskPath = convertContexted (getString("jahiaFilesDiskPath"), pathResolver);
+            jahiaEtcDiskPath = convertContexted (getString("jahiaEtcDiskPath"), pathResolver);
+            jahiaVarDiskPath = convertContexted (getString("jahiaVarDiskPath"), pathResolver);
+            tmpContentDiskPath = convertContexted (getString("tmpContentDiskPath"), pathResolver);
             try {
                 File tmpContentDisk = new File(tmpContentDiskPath);
                 if (!tmpContentDisk.exists()) {
@@ -252,15 +252,15 @@ public class SettingsBean {
             } catch (Exception e) {
                 logger.error("Provided folder for tmpContentDiskPath is not valid. Cause: " + e.getMessage(), e);
             }
-            jahiaImportsDiskPath = JahiaTools.convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
-            jahiaSharedTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
-            jahiaCkEditorDiskPath = JahiaTools.convertContexted (getString("jahiaCkEditorDiskPath"), pathResolver);
+            jahiaImportsDiskPath = convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
+            jahiaSharedTemplatesDiskPath = convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
+            jahiaCkEditorDiskPath = convertContexted (getString("jahiaCkEditorDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
 
             jahiaHostHttpPath = getString("jahiaHostHttpPath");
-            jahiaTemplatesHttpPath = JahiaTools.convertWebContexted(getString("jahiaTemplatesHttpPath"));
-            jahiaEnginesHttpPath = JahiaTools.convertWebContexted(getString("jahiaEnginesHttpPath"));
-            jahiaJavaScriptHttpPath = JahiaTools.convertWebContexted(getString("jahiaJavaScriptHttpPath"));
+            jahiaTemplatesHttpPath = convertWebContexted(getString("jahiaTemplatesHttpPath"));
+            jahiaEnginesHttpPath = convertWebContexted(getString("jahiaEnginesHttpPath"));
+            jahiaJavaScriptHttpPath = convertWebContexted(getString("jahiaJavaScriptHttpPath"));
             jspContext = getString("jahiaJspDiskPath");
             templatesContext = getString("jahiaTemplatesDiskPath");
             enginesContext = getString("jahiaEnginesDiskPath");
@@ -1018,4 +1018,35 @@ public class SettingsBean {
 	public boolean isMaintenanceMode() {
 		return maintenanceMode;
 	}
+
+    /**
+     * Convert a String starting with the word "$context" into a real filesystem
+     * path. This method is principally used by JahiaPrivateSettings and to
+     * convert jahia.properties settings.
+     *
+     * @param convert      The string to convert.
+     * @param pathResolver The path resolver used to get the real path.
+     * @author Alexandre Kraft
+     */
+    public static String convertContexted(String convert,
+                                          PathResolver pathResolver) {
+        if (convert.startsWith("$context/")) {
+            convert = pathResolver.resolvePath(convert.substring(8, convert.length()));
+        }
+        return convert;
+    } // end convertContexted
+
+    /**
+     * Convert a string starting with the word "$webContext" into a real
+     * filesystem path.
+     *
+     * @param convert the string to convert
+     * @return converted string
+     */
+    public static String convertWebContexted(String convert) {
+        return convert.startsWith("$webContext/") ? Jahia.getContextPath()
+                + convert.substring("$webContext".length(), convert.length())
+                : convert;
+    }
+
 }

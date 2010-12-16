@@ -8,7 +8,6 @@ Prerequisites :
 <%@ page language = "java" %>
 <%@ page import="java.security.Principal" %>
 <%@ page import = "java.util.*"%>
-<%@ page import="org.jahia.utils.JahiaTools"%>
 <%@ page import="org.jahia.services.usermanager.*" %>
 <%@ page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>

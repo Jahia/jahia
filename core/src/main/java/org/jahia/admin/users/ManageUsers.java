@@ -53,7 +53,6 @@ import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.*;
 import org.jahia.tools.files.FileUpload;
-import org.jahia.utils.JahiaTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -286,14 +285,14 @@ public class ManageUsers extends AbstractAdministrationModule {
     {
         logger.debug("Started");
         Map<String,String> userProperties = new HashMap<String, String>();
-        userProperties.put("username", JahiaTools.nnString(request.getParameter("username")));
-        userProperties.put("passwd", JahiaTools.nnString(request.getParameter("passwd")));
-        userProperties.put("passwdconfirm", JahiaTools.nnString(request.getParameter("passwdconfirm")));
+        userProperties.put("username", StringUtils.defaultString(request.getParameter("username")));
+        userProperties.put("passwd", StringUtils.defaultString(request.getParameter("passwd")));
+        userProperties.put("passwdconfirm", StringUtils.defaultString(request.getParameter("passwdconfirm")));
 
-        //userProperties.put("firstname", JahiaTools.nnString(request.getParameter("firstname")));
-        //userProperties.put("lastname", JahiaTools.nnString(request.getParameter("lastname")));
-        //userProperties.put("email", JahiaTools.nnString(request.getParameter("email")));
-        //userProperties.put("organization", JahiaTools.nnString(request.getParameter("organization")));
+        //userProperties.put("firstname", StringUtils.defaultString(request.getParameter("firstname")));
+        //userProperties.put("lastname", StringUtils.defaultString(request.getParameter("lastname")));
+        //userProperties.put("email", StringUtils.defaultString(request.getParameter("email")));
+        //userProperties.put("organization", StringUtils.defaultString(request.getParameter("organization")));
         Iterator names = new EnumerationIterator(request.getParameterNames ());
         while (names.hasNext()) {
             String name = (String) names.next();
@@ -465,7 +464,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             }
             // Consider actual selected user as the last one and store it in session.
             session.setAttribute("selectedUsers", userToEdit);
-            userToEdit = JahiaTools.replacePattern(userToEdit, "&nbsp;", " ");
+            userToEdit = StringUtils.replace(userToEdit, "&nbsp;", " ");
             theUser = userManager.lookupUserByKey(userToEdit.substring(1));
         }
         request.setAttribute("theUser", theUser);
@@ -645,7 +644,7 @@ public class ManageUsers extends AbstractAdministrationModule {
 
         logger.debug("Started");
         String selectedUsers = request.getParameter("selectedUsers");
-        selectedUsers = JahiaTools.replacePattern(selectedUsers, "&nbsp;", " ");
+        selectedUsers = StringUtils.replace(selectedUsers, "&nbsp;", " ");
         if (selectedUsers == null || "null".equals(selectedUsers)) {
           userMessage = getMessage("org.jahia.admin.userMessage.selectUser.label");
             displayUsers(request, response, session);

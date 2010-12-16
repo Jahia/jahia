@@ -5,7 +5,6 @@
 <%@page import = "org.jahia.bin.Jahia"%>
 <%@page import="org.jahia.params.ProcessingContext"%>
 <%@page import="org.jahia.utils.i18n.JahiaResourceBundle"%>
-<%@page import = "org.jahia.utils.JahiaTools"%>
 <%@page import = "org.jahia.services.sites.JahiaSite"%>
 <%@page import = "org.jahia.data.JahiaData"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
@@ -34,7 +33,7 @@
 
     JahiaSite currentSite = (JahiaSite)request.getAttribute("site");
 
-    boolean isMSIE = JahiaTools.isMSIExplorer(request);
+    boolean isMSIE = request.getHeader("user-agent") != null && request.getHeader("user-agent").indexOf("MSIE") != -1;
     String copyright=Jahia.COPYRIGHT;
     String c = (String) pageContext.getAttribute("i18nCopyright");
     c = c != null && c.indexOf("???") == -1 ? c : "All rights reserved.";

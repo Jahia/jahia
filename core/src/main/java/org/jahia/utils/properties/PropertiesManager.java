@@ -54,7 +54,6 @@ import java.util.Properties;
 import java.util.ArrayList;
 import java.util.regex.PatternSyntaxException;
 
-import org.jahia.utils.JahiaTools;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.slf4j.Logger;
 
@@ -278,7 +277,7 @@ public class PropertiesManager
                                         StringBuffer thisLineBuffer =  new StringBuffer();
                                         thisLineBuffer.append( lineReaded.substring(0,position+1) );
                                         thisLineBuffer.append( "   " );
-                                        thisLineBuffer.append( JahiaTools.string2Property( propvalue ) );
+                                        thisLineBuffer.append( string2Property( propvalue ) );
                                         bufferList.add( thisLineBuffer.toString() );
 
                                         // remove this line from allProperties to affine the search and to find new properties...
@@ -384,5 +383,25 @@ public class PropertiesManager
         return properties;
     } // end getPropertiesObject
 
+    /**
+     * Convert a standard string to a property-compatible string.
+     *
+     * @param originalValue The string that you want to convert.
+     * @return The string converted.
+     * @author Alexandre Kraft
+     */
+    public static String string2Property(String originalValue) {
+        StringBuffer convertedValue = new StringBuffer();
+        for (int i = 0; i < originalValue.length(); i++) {
+            if (originalValue.substring(i, i + 1).equals(":")) {
+                convertedValue.append("\\:");
+            } else if (originalValue.substring(i, i + 1).equals("\\")) {
+                convertedValue.append("\\\\");
+            } else {
+                convertedValue.append(originalValue.substring(i, i + 1));
+            }
+        }
+        return convertedValue.toString();
+    } // end string2Property
 
 }

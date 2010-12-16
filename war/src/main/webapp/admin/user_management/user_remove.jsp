@@ -1,5 +1,4 @@
 <%@page language = "java" %>
-<%@page import = "org.jahia.utils.JahiaTools"%>
 <%@page import = "org.jahia.data.JahiaData"%>
 <%@page import = "java.util.*"%>
 <%@page import="org.jahia.bin.*"%>

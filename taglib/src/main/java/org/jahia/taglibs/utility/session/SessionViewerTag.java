@@ -41,8 +41,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 
+import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.JahiaTools;
 
 /**
  * <p>Title: Debugging tool that displays the content of the current HTTP
@@ -444,7 +444,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
             if (value instanceof Map) {
                 handleMapDisplay(out, (Map<Object, Object>) value, indent + 4);
             } else {
-                out.print(JahiaTools.text2XMLEntityRef(value.toString(), 0));
+                out.print(Util.escapeXml(value.toString()));
             }
             out.println("</li>");
             out.print(getPadding(indent + 2));

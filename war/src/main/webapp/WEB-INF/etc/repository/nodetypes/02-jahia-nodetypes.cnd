@@ -67,6 +67,9 @@
 
 [jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:description mixin
 
+[jmix:autoPublish] > jmix:observable mixin
+
+
 //---------------------------------------------------------
 // Multi language
 //---------------------------------------------------------
@@ -195,7 +198,7 @@
 // Categories
 //---------------------------------------------------------
 
-[jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:nodenameInfo, jmix:publication
+[jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:nodenameInfo, jmix:publication, jmix:autoPublish
 + * (jnt:category) version
 
 //---------------------------------------------------------
@@ -222,7 +225,7 @@
 // Users and groups
 //---------------------------------------------------------
 
-[jnt:usersFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list
+[jnt:usersFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list, jmix:autoPublish
  - j:usersFolderConfig (string) nofulltext
  - j:usersFolderSkeleton (string) nofulltext
  + * (jnt:user)
@@ -256,7 +259,7 @@
 [jnt:passwordPolicy] > nt:base
  - j:policy (string) indexed=no
 
-[jnt:user] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable
+[jnt:user] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:autoPublish
  - j:accountLocked (boolean)=false autocreated
  - j:password (string) indexed=no
  - j:external (boolean)=false autocreated

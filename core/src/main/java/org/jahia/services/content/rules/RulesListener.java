@@ -221,7 +221,7 @@ public class RulesListener extends DefaultEventListener {
                         ruleBase.removePackage(pkg.getName());
                     }
                     ruleBase.addPackage(pkg);
-                    logger.info("Rules for " + pkg.getName() + " updated in "+ (System.currentTimeMillis() - start) + "ms.");
+                    logger.info("Rules for " + pkg.getName() + " updated in " + (System.currentTimeMillis() - start) + "ms.");
                 } else {
                     logger.error("---------------------------------------------------------------------------------");
                     logger.error("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
@@ -289,7 +289,7 @@ public class RulesListener extends DefaultEventListener {
                             if (!event.getPath().startsWith("/jcr:system/")) {
                                 if (event.getType() == Event.NODE_ADDED) {
                                     JCRNodeWrapper n = s.getNode(event.getPath());
-                                    if (n.isNodeType("jmix:observable")) {
+                                    if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
                                         final String identifier = n.getIdentifier();
                                         AddedNodeFact rn = eventsMap.get(identifier);
                                         if (rn == null) {
@@ -304,27 +304,27 @@ public class RulesListener extends DefaultEventListener {
                                     String propertyName = path.substring(path.lastIndexOf('/') + 1);
                                     if (!propertiesToIgnore.contains(propertyName)) {
                                         try {
-                                        JCRPropertyWrapper p = (JCRPropertyWrapper) s.getItem(path);
+                                            JCRPropertyWrapper p = (JCRPropertyWrapper) s.getItem(path);
 
-                                        JCRNodeWrapper parent = p.getParent();
-//                                    if (parent.isNodeType("jnt:translation")) {
-//                                        parent = parent.getParent();
-//                                    }
-                                        if (parent.isNodeType(Constants.NT_RESOURCE) ||
-                                                parent.isNodeType("jmix:observable")) {
-                                            AddedNodeFact rn;
-                                            if (parent.isNodeType(Constants.MIX_REFERENCEABLE)) {
-                                                final String identifier = parent.getIdentifier();
-                                                rn = eventsMap.get(identifier);
-                                                if (rn == null) {
-                                                    rn = new AddedNodeFact(parent);
-                                                    eventsMap.put(identifier, rn);
-                                                }
-                                            } else {
-                                                rn = new AddedNodeFact(parent);
+                                            JCRNodeWrapper parent = p.getParent();
+                                            if (parent.isNodeType("jnt:translation")) {
+                                                parent = parent.getParent();
                                             }
-                                            list.add(new ChangedPropertyFact(rn, p));
-                                        }
+                                            if (parent.isNodeType(Constants.NT_RESOURCE) ||
+                                                    parent.isNodeType("jmix:observable")) {
+                                                AddedNodeFact rn;
+                                                if (parent.isNodeType(Constants.MIX_REFERENCEABLE)) {
+                                                    final String identifier = parent.getIdentifier();
+                                                    rn = eventsMap.get(identifier);
+                                                    if (rn == null) {
+                                                        rn = new AddedNodeFact(parent);
+                                                        eventsMap.put(identifier, rn);
+                                                    }
+                                                } else {
+                                                    rn = new AddedNodeFact(parent);
+                                                }
+                                                list.add(new ChangedPropertyFact(rn, p));
+                                            }
                                         } catch (PathNotFoundException pnfe) {
                                             if (logger.isDebugEnabled()) {
                                                 logger.debug("Path " + path + " not found, might be normal if using VFS", pnfe);

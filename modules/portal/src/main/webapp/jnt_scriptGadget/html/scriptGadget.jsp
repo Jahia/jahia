@@ -21,6 +21,6 @@
         ${currentNode.properties.script.string}
     </c:when>
     <c:otherwise>
-        ${currentNode.displayableName}
+        ${fn:escapeXml(currentNode.displayableName)}
     </c:otherwise>
 </c:choose>

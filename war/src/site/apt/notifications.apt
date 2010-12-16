@@ -1,9 +1,9 @@
 Jahia - Notifications
 
- For notifications Jahia now use {{{http://camel.apache.org} Apache Camel}}.
+ For notifications Jahia now uses {{{http://camel.apache.org} Apache Camel}}.
 
- Camel use routes to define how your messages should be handled across your network. Jahia provides you two ways to
- register your routes from Spring inside the <applicationcontext-camel.xml> file, or using the api through the CamelNotificationService.
+ Camel uses routes to define how your messages should be handled across your network. Jahia provides you two ways to
+ register your routes from Spring inside the <applicationcontext-camel.xml> file, or using the API through the CamelNotificationService.
 
  By default we provide a source to notify users through mails named <seda:users?multipleConsumers=true>
  you need to use the full URI to refer to it.

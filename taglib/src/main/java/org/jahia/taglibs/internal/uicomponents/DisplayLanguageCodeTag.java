@@ -70,9 +70,9 @@
 
 package org.jahia.taglibs.internal.uicomponents;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.TextHtml;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -187,7 +187,7 @@ public class DisplayLanguageCodeTag extends AbstractJahiaTag {
             }
             Locale localeLangToDisplay = LanguageCodeConverters.
                                          languageCodeToLocale(_code);
-            str.append(TextHtml.text2html(localeLangToDisplay.
+            str.append(StringEscapeUtils.escapeHtml(localeLangToDisplay.
                                           getDisplayLanguage(
                 localeLangToDisplay)));
             if (!"".equals(_href)) {

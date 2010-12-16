@@ -43,6 +43,7 @@ import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
@@ -69,7 +70,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.textextraction.TextExtractionService;
-import org.jahia.utils.TextHtml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -394,7 +394,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 internalValue = textExtractor.parse(new ByteArrayInputStream(((String) internalValue)
                         .getBytes(InternalValueFactory.DEFAULT_ENCODING)), metadata);
             } catch (Exception e) {
-                internalValue = TextHtml.html2text((String) internalValue);
+                internalValue = StringEscapeUtils.unescapeHtml((String) internalValue);
             }
         }
 

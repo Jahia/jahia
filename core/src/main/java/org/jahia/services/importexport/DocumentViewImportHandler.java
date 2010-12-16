@@ -288,6 +288,14 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else {
                 nodes.push(child);
             }
+        } catch (NoSuchNodeTypeException e) {
+			if (logger.isDebugEnabled()) {
+				logger.warn("Cannot import " + pathes.pop(), e);
+			} else {
+				logger.warn("Cannot import \"{}\" due to missing node type definition \"{}\"",
+				        pathes.pop(), e.getMessage());
+			}
+            error++;
         } catch (RepositoryException re) {
             logger.error("Cannot import " + pathes.pop(), re);
             error++;

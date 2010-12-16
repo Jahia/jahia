@@ -358,8 +358,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             String versionLabel = getVersionLabel(req);
             resource = urlResolver.getResource(date, versionLabel);
             renderContext.setMainResource(resource);
-            JCRSiteNode site = resource.getNode().getResolveSite();
-            renderContext.setSite(site);
+            try {
+                JCRSiteNode site = resource.getNode().getResolveSite();
+                renderContext.setSite(site);
+            } catch (RepositoryException e) {
+            }
 
             action = templateService.getActions().get(resource.getTemplate());
         } else {

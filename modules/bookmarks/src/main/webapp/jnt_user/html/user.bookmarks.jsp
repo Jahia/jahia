@@ -19,9 +19,26 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="bookmarks.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
-<template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-<div id="${currentNode.identifier}">
+<div id="bookmarkList${currentNode.identifier}">
+
+<c:if test="${currentResource.workspace eq 'live'}">
+    <script type="text/javascript">
+        $('#bookmarkList${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.bookmarks.html.ajax');
+    </script>
+</c:if>
+
+<c:if test="${currentResource.workspace ne 'live'}">
+
+    <script type="text/javascript">
+        function deleteBookmark(source) {
+            $.post('${url.base}' + source, {"methodToCall":"delete"},
+                  function(result) {
+                      $('#bookmarkList${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.bookmarks.html.ajax');
+                  },'json');
+            }
+    </script>
+
     <jcr:sql var="result"
              sql="select * from [jnt:bookmark] as b where isdescendantnode(b,['${currentNode.path}'])"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
@@ -45,7 +62,7 @@
                 &nbsp;<span>&nbsp;<fmt:formatDate
                     value="${bookmark.properties['date'].date.time}" dateStyle="short" type="both"/></span>
                <div class="floatright">
-               &nbsp;<button onclick="deleteNode('${bookmark.path}', '${url.base}', '${currentNode.UUID}', '${url.current}')">
+               &nbsp;<button onclick="deleteBookmark('${bookmark.path}')">
                     <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
                </div>
                <div class="clear"></div>
@@ -54,4 +71,6 @@
     </ul>
     <template:displayPagination nbItemsList="5,10,20,40,60,80,100,200"/>
     <template:removePager id="${currentNode.identifier}"/>
+</c:if>
+
 </div>

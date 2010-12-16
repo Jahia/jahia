@@ -13,7 +13,7 @@
 <%@ page import="org.jahia.bin.Export" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:set var="defaultSet" value="webtemplates65.zip"/>
+<c:set var="defaultSet" value="acme.zip"/>
 <%
     Iterator sitesList = (Iterator) request.getAttribute("sitesList");
     String warningMsg = (String) request.getAttribute("warningMsg");

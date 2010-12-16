@@ -1,39 +1,166 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.HierarchyManager;
+import org.apache.jackrabbit.commons.predicate.Predicate;
 import org.apache.jackrabbit.core.SessionImpl;
-import org.apache.jackrabbit.spi.Name;
-import org.apache.jackrabbit.spi.commons.query.qom.*;
-import org.slf4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
+import org.apache.jackrabbit.core.query.lucene.join.SelectorRow;
 import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
+import org.slf4j.Logger;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.jcr.query.qom.Literal;
-import javax.jcr.query.qom.StaticOperand;
-import java.util.Map;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.Row;
+import javax.jcr.query.qom.*;
+import java.io.IOException;
+import java.util.*;
 
+import static org.apache.lucene.search.BooleanClause.Occur.MUST;
+import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
+
+/**
+ * Override LuceneQueryFactory
+ *
+ * - optimize descendantNode constraint (use index)
+ * - optimize childNode constraint (use index)
+ * - handles rep:facet when executing (todo : might handle that in a constraint, as rep:filter ?)
+ * - handles rep:filter in fulltext constraint  
+ */
 public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaFilterMultiColumnQueryHits.class);
-    private final SessionImpl session;
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaLuceneQueryFactoryImpl.class);
 
-    public JahiaLuceneQueryFactoryImpl(SessionImpl session, HierarchyManager hmgr,
-                                       NamespaceMappings nsMappings, Analyzer analyzer, SynonymProvider synonymProvider,
-                                       IndexFormatVersion version, Map<String, Value> bindVariables) throws RepositoryException {
-        super(session, hmgr, nsMappings, analyzer, synonymProvider, version, bindVariables);
-        this.session = session;
+    public JahiaLuceneQueryFactoryImpl(SessionImpl session, SearchIndex index, Map<String, Value> bindVariables) throws RepositoryException {
+        super(session, index, bindVariables);
     }
 
-    public Query create(FullTextSearchImpl fts) throws RepositoryException {
+    /**
+     * Override LuceneQueryFactory.execute()
+     */
+    public List<Row> execute(
+            Map<String, PropertyValue> columns, Selector selector,
+            final Constraint constraint) throws RepositoryException, IOException {
+        final IndexReader reader = index.getIndexReader(true);
+        try {
+            JackrabbitIndexSearcher searcher = new JackrabbitIndexSearcher(
+                    session, reader, index.getContext().getItemStateManager());
+            searcher.setSimilarity(index.getSimilarity());
+
+            Predicate filter = Predicate.TRUE;
+            BooleanQuery query = new BooleanQuery();
+
+            QueryPair qp = new QueryPair(query);
+
+            query.add(create(selector), MUST);
+            if (constraint != null) {
+                String name = selector.getSelectorName();
+                NodeType type =
+                    ntManager.getNodeType(selector.getNodeTypeName());
+                filter = mapConstraintToQueryAndFilter(qp,
+                        constraint, Collections.singletonMap(name, type),
+                        searcher, reader);
+            }
+
+
+            // Added by jahia
+            Set<String> foundIds = new HashSet<String>();
+            List<ScoreNode> nodes = new ArrayList<ScoreNode>();
+            // End
+
+            List<Row> rows = new ArrayList<Row>();
+            QueryHits hits = searcher.evaluate(qp.mainQuery);
+            ScoreNode node = hits.nextScoreNode();
+            while (node != null) {
+                if (foundIds.add(getId(node, reader))) {  // <-- Added by jahia
+                    try {
+                        Row row = new SelectorRow(
+                                columns, evaluator, selector.getSelectorName(),
+                                session.getNodeById(node.getNodeId()),
+                                node.getScore());
+                        if (filter.evaluate(row)) {
+                            rows.add(row);
+                            nodes.add(node); // <-- Added by jahia
+                        }
+                    } catch (ItemNotFoundException e) {
+                        // skip the node
+                    }
+                }  // <-- Added by jahia
+                node = hits.nextScoreNode();
+            }
+
+            // Added by jahia
+            FacetHandler h = new FacetHandler(columns, selector, nodes, index, session);
+            if (h.hasFacetFunctions()) {
+                h.handleFacets(reader);
+                rows.add(0, h.getFacetsRow());
+            }
+            // End
+
+            return rows;
+        } finally {
+            PerQueryCache.getInstance().dispose();
+            Util.closeOrRelease(reader);
+        }
+    }
+
+    private String getId (ScoreNode sn, IndexReader reader) throws IOException {
+        String id;
+        int docNb = sn.getDoc(reader);
+        Document doc = reader.document(docNb);
+        if (doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT) != null) {
+            id = doc.getField(FieldNames.PARENT).stringValue();
+        } else {
+            id = sn.getNodeId().toString();
+        }
+        return id;
+    }
+
+    protected Query getNodeIdQuery(String field, String path) throws RepositoryException {
+        BooleanQuery or = null;
+        try {
+            if (field.equals(FieldNames.PARENT)) {
+                Query q1 = new JackrabbitTermQuery(
+                        new Term(FieldNames.PARENT, session.getNode(path).getIdentifier()));
+                Query q2 = new JackrabbitTermQuery(
+                        new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(path).getIdentifier()));
+                or = new BooleanQuery();
+                or.add(q1, BooleanClause.Occur.SHOULD);
+                or.add(q2, BooleanClause.Occur.SHOULD);
+            } else {
+                return super.getNodeIdQuery(field, path);
+            }
+        } catch (PathNotFoundException e) {
+            return new JackrabbitTermQuery(new Term(FieldNames.UUID, "invalid-node-id")); // never matches
+        }
+        return or;
+    }
+
+//    protected Query getDescendantNodeQuery(
+//            DescendantNode dn, JackrabbitIndexSearcher searcher)
+//            throws RepositoryException, IOException {
+//
+////        new DescendantSelfAxisQuery()
+//        Query query = null;
+//        try {
+//            query = new JackrabbitTermQuery(
+//                    new Term(JahiaNodeIndexer.ANCESTOR, session.getNode(dn.getAncestorPath()).getIdentifier()));
+//        } catch (PathNotFoundException e) {
+//            query = new JackrabbitTermQuery(new Term(FieldNames.UUID, "invalid-node-id")); // never matches
+//        }
+//        return query;
+////        return super.getDescendantNodeQuery(dn, searcher);
+//    }
+
+    protected Query getFullTextSearchQuery(FullTextSearch fts) throws RepositoryException {
         Query qobj = null;
 
         if (StringUtils.startsWith(fts.getPropertyName(), "rep:filter(")) {
@@ -50,156 +177,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 throw new RepositoryException(e);
             }
         } else {
-            qobj = super.create(fts);
+            qobj = super.getFullTextSearchQuery(fts);
         }
         return qobj;
     }
-
-    public Query create(ChildNodeImpl cn) throws RepositoryException {
-        BooleanQuery or = null;
-        try {
-            Query q1 = new JackrabbitTermQuery(
-                    new Term(FieldNames.PARENT, session.getNode(cn.getParentPath()).getIdentifier()));
-            Query q2 = new JackrabbitTermQuery(
-                    new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(cn.getParentPath()).getIdentifier()));
-            or = new BooleanQuery();
-            or.add(q1, BooleanClause.Occur.SHOULD);
-            or.add(q2, BooleanClause.Occur.SHOULD);
-        } catch (PathNotFoundException e) {
-            logger.debug("Path given in query cannot be found: " + cn.getParentPath(), e);
-        }
-        return or;
-    }
-
-    public Query create(DescendantNodeImpl dn) throws RepositoryException {
-        Query query = null;
-        try {
-            query = new JackrabbitTermQuery(
-                    new Term(JahiaNodeIndexer.ANCESTOR, session.getNode(dn.getAncestorPath()).getIdentifier()));
-        } catch (PathNotFoundException e) {
-            logger.debug("Path given in query cannot be found: " + dn.getAncestorPath(), e);
-        }
-        return query;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public MultiColumnQuery create(SourceImpl source) throws RepositoryException {
-        // source is either selector or join
-        try {
-            return (MultiColumnQuery) source.accept(new DefaultQOMTreeVisitor() {
-                public Object visit(JoinImpl node, Object data) throws Exception {
-                    return create(node);
-                }
-
-                public Object visit(SelectorImpl node, Object data) throws Exception {
-                    return MutableMultiColumnQueryAdapter.adapt(create(node), node.getSelectorQName());
-                }
-            }, null);
-        } catch (RepositoryException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RepositoryException(e);
-        }
-    }
-
-    public MultiColumnQuery create(QueryObjectModelTree tree) throws RepositoryException {
-        final MultiColumnQuery query = create(tree.getSource());
-        if (query instanceof MutableMultiColumnQueryAdapter) {
-            final MutableMultiColumnQueryAdapter adapter = (MutableMultiColumnQueryAdapter) query;
-
-            try {
-                if (tree.getConstraint() != null) {
-                    Query q = (Query) tree.getConstraint().accept(new DefaultQOMTreeVisitor() {
-                        public Object visit(AndImpl node, Object data) throws Exception {
-                            Query q1 = (Query) ((ConstraintImpl) node.getConstraint1()).accept(this, data);
-                            Query q2 = (Query) ((ConstraintImpl) node.getConstraint2()).accept(this, data);
-
-                            if (q1 != null && q2 != null) {
-                                BooleanQuery and = new BooleanQuery();
-                                and.add(q1, areAllClausesProhibited(q1) ? BooleanClause.Occur.SHOULD
-                                        : BooleanClause.Occur.MUST);
-                                and.add(q2, areAllClausesProhibited(q2) ? BooleanClause.Occur.SHOULD
-                                        : BooleanClause.Occur.MUST);
-                                return and;
-                            } else if (q1 != null) {
-                                return q1;
-                            } else {
-                                return q2;
-                            }
-                        }
-
-                        public Object visit(OrImpl node, Object data) throws Exception {
-                            Query q1 = (Query) ((ConstraintImpl) node.getConstraint1()).accept(this, data);
-                            Query q2 = (Query) ((ConstraintImpl) node.getConstraint2()).accept(this, data);
-
-                            if (q1 != null && q2 != null) {
-                                BooleanQuery or = new BooleanQuery();
-                                or.add(q1, BooleanClause.Occur.SHOULD);
-                                or.add(q2, BooleanClause.Occur.SHOULD);
-                                return or;
-                            } else {
-                                return null;
-                            }
-                        }
-
-                        public Object visit(NotImpl node, Object data) throws Exception {
-                            Query q = (Query) ((ConstraintImpl) node.getConstraint()).accept(this, data);
-                            if (q != null) {
-                                BooleanQuery not = new BooleanQuery();
-                                not.add(q, BooleanClause.Occur.MUST_NOT);
-                                return not;
-                            } else {
-                                return null;
-                            }
-                        }
-
-
-                        public Object visit(FullTextSearchImpl node, Object data) throws Exception {
-                            return create(node);
-                        }
-
-                        public Object visit(ChildNodeImpl node, Object data) throws Exception {
-                            return create(node);
-                        }
-
-                        public Object visit(DescendantNodeImpl node, Object data) throws Exception {
-                            return create(node);
-                        }
-
-
-                    }, null);
-
-                    if (q != null) {
-                        BooleanQuery and = new BooleanQuery();
-                        and.add(adapter.getQuery(), BooleanClause.Occur.MUST);
-                        and.add(q, areAllClausesProhibited(q) ? BooleanClause.Occur.SHOULD
-                                : BooleanClause.Occur.MUST);
-                        adapter.setQuery(and);
-                    }
-                }
-            } catch (RepositoryException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new RepositoryException(e);
-            }
-        }
-        return query;
-    }
-
-    private boolean areAllClausesProhibited(Query q) {
-        boolean allClausesProhibited = false;
-        if (q instanceof BooleanQuery) {
-            allClausesProhibited = true;
-            for (BooleanClause clause : ((BooleanQuery) q).getClauses()) {
-                if (!clause.isProhibited()) {
-                    allClausesProhibited = false;
-                    break;
-                }
-            }
-        }
-        return allClausesProhibited;
-    }
-
 }

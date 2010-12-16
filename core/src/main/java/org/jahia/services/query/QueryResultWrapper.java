@@ -48,7 +48,7 @@ import javax.jcr.query.RowIterator;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
-import org.apache.jackrabbit.core.query.lucene.JahiaMultiColumnQueryResult;
+import org.apache.jackrabbit.core.query.FacetedQueryResult;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.jahia.services.content.*;
@@ -194,14 +194,12 @@ public class QueryResultWrapper implements QueryResult {
     }
 
     public List<FacetField> getFacetFields() {
-        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
-                .getFacetFields()
+        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getFacetFields()
                 : null;
     }
 
     public List<FacetField> getFacetDates() {
-        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
-                .getFacetDates()
+        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getFacetDates()
                 : null;
     }
 
@@ -213,26 +211,22 @@ public class QueryResultWrapper implements QueryResult {
      * @return the FacetField by name or null if it does not exist
      */
     public FacetField getFacetField(String name) {
-        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
-                .getFacetField(name)
+        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getFacetField(name)
                 : null;
     }
 
     public FacetField getFacetDate(String name) {
-        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
-                .getFacetDate(name)
+        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getFacetDate(name)
                 : null;
     }
 
     public Map<String, Long> getFacetQuery() {
-        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
-                .getFacetQuery()
+        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getFacetQuery()
                 : null;
     }
 
     public List<FacetField> getLimitingFacets() {
-        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
-                .getLimitingFacets()
+        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getLimitingFacets()
                 : null;
     }
 

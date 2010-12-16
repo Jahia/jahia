@@ -628,35 +628,4 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
         return doc;
     }
-
-    protected void addParentChildRelation(Document doc,
-                                          NodeId parentId)
-            throws ItemStateException, RepositoryException {
-        super.addParentChildRelation(doc, parentId);
-        addAncestorRelation(doc, parentId);
-    }
-    
-    protected void addAncestorRelation(Document doc,
-                                          NodeId parentId)
-            throws ItemStateException, RepositoryException {
-        NodeState parent = (NodeState) stateProvider.getItemState(parentId);
-
-        doc.add(new Field(
-                ANCESTOR, parentId.toString(),
-                Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
-
-        // parent UUID
-        if (parent.getParentId() == null) {
-            // root node
-        } else if (parent.getSharedSet().isEmpty()) {
-            addAncestorRelation(doc, parent.getParentId());
-        } else {
-            // shareable node
-            for (NodeId id : parent.getSharedSet()) {
-                addAncestorRelation(doc, id);
-            }
-        }
-
-    }
-
 }

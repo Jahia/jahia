@@ -13,8 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Filters out all duplicate results, including multiple translation of the same node
- */
+* Filters out all duplicate results, including multiple translation of the same node
+*/
 public class NoDuplicatesConstraint implements Constraint {
     private Set<String> ids = new HashSet<String>();
 

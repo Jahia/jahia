@@ -710,7 +710,6 @@ public class SimpleJahiaJcrFacets {
     /**
      * Macro for getting the numDocs of a ConstantScoreRangeQuery over docs
      * 
-     * @see SolrIndexSearcher#numDocs
      * @see ConstantScoreRangeQuery
      */
     protected int rangeCount(Query rangeQuery) throws IOException {

@@ -14,7 +14,7 @@
               <j:translation_en jcr:language="en" jcr:title="Links" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
               <j:acl jcr:primaryType="jnt:acl" />
               <Introduction jcr:primaryType="jnt:bigText">
-                <j:translation_en jcr:language="en" text="&lt;h1&gt;  &lt;em&gt;What do you want to do on Jahia today ?&lt;/em&gt;&lt;/h1&gt; " jcr:primaryType="jnt:translation" />
+                <j:translation_en jcr:language="en" text="&lt;h1&gt;  &lt;em&gt;What do you want to do with Jahia today ?&lt;/em&gt;&lt;/h1&gt; " jcr:primaryType="jnt:translation" />
               </Introduction>
               <row column="2col610" jcr:primaryType="jnt:row" />
             </pagecontent>

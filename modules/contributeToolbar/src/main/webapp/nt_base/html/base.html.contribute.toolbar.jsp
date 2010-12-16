@@ -152,7 +152,7 @@
             key="label.clipboard.reset"/></a>
     <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><img src="${url.context}/icons/clipboard.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.clipboard.contains"/></a>
-    <a href="${url.base}/users/${renderContext.user.username}.tasklist.html.ajax" class="fancylink"><img src="${url.context}/icons/user.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+    <a href="${url.basePreview}/users/${renderContext.user.username}.tasklist.html.ajax" class="fancylink"><img src="${url.context}/icons/user.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
             key="label.goto.myTasks"/></a>
     <c:choose>
     <c:when test="${jcr:isNodeType(currentNode, 'jnt:folder') || jcr:isNodeType(currentNode, 'nt:file')}">

@@ -81,46 +81,56 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     @Override
     public PropertyIterator getProperties() throws RepositoryException {
-        if(user==null) {
+        if (user == null) {
             user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
         }
-        if(user instanceof JCRUser)
+        if (user == null) {
             return super.getProperties();
-        else
+        }
+        if (user instanceof JCRUser) {
+            return super.getProperties();
+        } else {
             return new UserPropertyIterator(node);
+        }
     }
 
     @Override
     public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
-        if(JCRUser.J_EXTERNAL.equals(s) || Constants.CHECKIN_DATE.equals(s)) {
+        if (JCRUser.J_EXTERNAL.equals(s) || Constants.CHECKIN_DATE.equals(s)) {
             return super.getProperty(s);
         }
-        if(user==null) {
+        if (user == null) {
             user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
         }
-        if(user instanceof JCRUser)
+        if (user == null) {
             return super.getProperty(s);
-        else {
+        }
+        if (user instanceof JCRUser) {
+            return super.getProperty(s);
+        } else {
             String property = user.getProperty(s);
-            if(null == property) return super.getProperty(s);
-            return new JCRPropertyWrapperImpl(node,new JCRUserProperty(s,property), node.getSession(), node.getJCRProvider(),
-                                              propertyDefinitionMap.get(s)!=null?propertyDefinitionMap.get(s):unstructuredPropertyDefinitions.get(PropertyType.STRING));
+            if (null == property) return super.getProperty(s);
+            return new JCRPropertyWrapperImpl(node, new JCRUserProperty(s, property), node.getSession(), node.getJCRProvider(),
+                    propertyDefinitionMap.get(s) != null ? propertyDefinitionMap.get(s) : unstructuredPropertyDefinitions.get(PropertyType.STRING));
         }
     }
 
     @Override
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
-        if(user==null) {
+        if (user == null) {
             user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
         }
-        if(user instanceof JCRUser) {
+        if (user == null) {
+            return super.getPropertiesAsString();
+        }
+        if (user instanceof JCRUser) {
             return super.getPropertiesAsString();
         } else {
             Properties properties = user.getProperties();
             Set<Map.Entry<Object, Object>> entries = properties.entrySet();
-            Map<String,String> map = new HashMap<String, String>();
+            Map<String, String> map = new HashMap<String, String>();
             for (Map.Entry<Object, Object> entry : entries) {
-                map.put(entry.getKey().toString(),entry.getValue().toString());
+                map.put(entry.getKey().toString(), entry.getValue().toString());
             }
             return map;
         }
@@ -155,8 +165,8 @@ public class JCRUserNode extends JCRNodeDecorator {
             index++;
             Object value = properties.get(key);
             try {
-                return new JCRPropertyWrapperImpl(node,new JCRUserProperty(key,value), node.getSession(), node.getJCRProvider(),
-                                                  propertyDefinitionMap.get(key)!=null?propertyDefinitionMap.get(key):unstructuredPropertyDefinitions.get(PropertyType.STRING));
+                return new JCRPropertyWrapperImpl(node, new JCRUserProperty(key, value), node.getSession(), node.getJCRProvider(),
+                        propertyDefinitionMap.get(key) != null ? propertyDefinitionMap.get(key) : unstructuredPropertyDefinitions.get(PropertyType.STRING));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -171,12 +181,13 @@ public class JCRUserNode extends JCRNodeDecorator {
          *          if skipped past the last element in the iterator.
          */
         public void skip(long skipNum) {
-            if(skipNum<stringPropertyNames.size()) {
-                for(long j=0;j<skipNum;j++) {
+            if (skipNum < stringPropertyNames.size()) {
+                for (long j = 0; j < skipNum; j++) {
                     iterator.next();
                     index++;
                 }
-            } else throw new NoSuchElementException(skipNum+" is out of bounds for this properties size : "+stringPropertyNames.size());
+            } else
+                throw new NoSuchElementException(skipNum + " is out of bounds for this properties size : " + stringPropertyNames.size());
         }
 
         /**
@@ -602,7 +613,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs.
          */
         public Value getValue() throws ValueFormatException, RepositoryException {
-            return new ValueImpl(value.toString(),PropertyType.STRING);
+            return new ValueImpl(value.toString(), PropertyType.STRING);
         }
 
         /**

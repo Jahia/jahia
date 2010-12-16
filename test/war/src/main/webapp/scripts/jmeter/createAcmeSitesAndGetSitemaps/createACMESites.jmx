@@ -216,7 +216,7 @@
               <boolProp name="CounterConfig.per_user">false</boolProp>
             </CounterConfig>
             <hashTree/>
-            <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create site ACME" enabled="true"/>
+            <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create site ACME" enabled="false"/>
             <hashTree>
               <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="ACME creation" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
@@ -294,15 +294,15 @@
                 <stringProp name="filename"></stringProp>
                 <stringProp name="script">if (prev.isSuccessful()) {
     String live = vars.get(&quot;LIVE_SITEMAP&quot;);
+    live = live.replaceAll(&quot; &quot;, &quot;&quot;);
+    live = live.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
     String path = vars.get(&quot;PATH&quot;);
     try {
         File f = new File(path + &quot;liveSitemaps.txt&quot;);
         BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
-        out.write(live +&quot;\n \n&quot;);
+        out.write(live+&quot;\n&quot;);
         out.close();
     } catch (IOException e) {}
-
-    
 }</stringProp>
               </BeanShellPostProcessor>
               <hashTree/>
@@ -356,11 +356,13 @@
                 <stringProp name="filename"></stringProp>
                 <stringProp name="script">if (prev.isSuccessful()) {
     String edit = vars.get(&quot;EDIT_SITEMAP&quot;);
+    edit = edit.replaceAll(&quot; &quot;, &quot;&quot;);
+    edit = edit.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
     String path = vars.get(&quot;PATH&quot;);
     try {
         File f = new File(path + &quot;editSitemaps.txt&quot;);
         BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
-        out.write(edit +&quot;\n \n&quot;);
+        out.write(edit+&quot;\n&quot;);
         out.close();
     } catch (IOException e) {}
 }</stringProp>

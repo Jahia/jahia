@@ -187,6 +187,12 @@
               </tabularList>
             </pagecontent>
           </editContent>
+            <viewContent j:requiredMode="normal" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="true">
+              <pagecontent jcr:primaryType="jnt:contentList">
+                <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
+                <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
+              </pagecontent>
+            </viewContent>
           <fileTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:file" j:defaultTemplate="true">
             <pagecontent jcr:primaryType="jnt:contentList">
               <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />

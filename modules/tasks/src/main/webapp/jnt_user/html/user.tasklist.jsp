@@ -215,7 +215,7 @@
         <td colspan="5">
             <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                 <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                <template:include template="contribute.add">
+                <template:module node="${node}" template="contribute.add">
                     <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                     <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                     <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
@@ -223,7 +223,7 @@
                     <template:param name="workflowTaskFormCallbackURL" value="${url.current}.ajax"/>
                     <template:param name="workflowTaskFormCallbackJS"
                                     value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();"/>
-                </template:include>
+                </template:module>
             </div>
         </td>
         </tr>

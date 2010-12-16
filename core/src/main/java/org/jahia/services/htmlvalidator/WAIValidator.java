@@ -45,10 +45,10 @@ import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTagType;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.htmlvalidator.Result.Type;
-import org.jahia.utils.JahiaTools;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -259,8 +259,8 @@ public class WAIValidator {
         if (StringUtils.isBlank(linkValue) && !node.getChildElements().isEmpty()) {
             linkValue = node.getChildElements().get(0).toString();
         }
-        linkValue = linkValue != null ? JahiaTools.text2XMLEntityRef(
-                StringUtils.stripToEmpty(linkValue), 1) : "";
+        linkValue = linkValue != null ? text2XMLEntityRef(
+                StringUtils.stripToEmpty(linkValue)) : "";
         final int length = linkValue.length();
         if (length > 80) {
             return new Result(bundle.getFormatted(
@@ -281,7 +281,7 @@ public class WAIValidator {
 
         // Criteria 6.3 bis
         if (title != null) {
-            final String titleValue = JahiaTools.text2XMLEntityRef(title.getValue(), 1);
+            final String titleValue = text2XMLEntityRef(title.getValue());
             final int length2 = titleValue.length();
             if (length2 > 80) {
                 return new Result(bundle.getFormatted(
@@ -377,7 +377,7 @@ public class WAIValidator {
                             getNearText(node, "<img>", widthValue, heightValue) }));
         }
 
-        final String altValue = JahiaTools.text2XMLEntityRef(alt.getValue(), 1);
+        final String altValue = text2XMLEntityRef(alt.getValue());
         final int length = altValue.length();
 
         if (length == 0) {
@@ -422,7 +422,7 @@ public class WAIValidator {
                                 getNearText(node, "<area>") }));
             }
 
-            final String altValue = JahiaTools.text2XMLEntityRef(alt.getValue(), 1);
+            final String altValue = text2XMLEntityRef(alt.getValue());
             final int length = altValue.length();
             if (length == 0) {
                 return new Result(bundle.getFormatted(
@@ -767,7 +767,7 @@ public class WAIValidator {
             } else {
 
                 // Criteria 2.1 (Remarque)
-                final String nameValue = JahiaTools.text2XMLEntityRef(name.getValue(), 1);
+                final String nameValue = text2XMLEntityRef(name.getValue());
                 if (nameValue.indexOf(' ') > -1) {
                     errors.add(new Result(bundle.getFormatted(
                             "org.jahia.services.htmlvalidator.WAIValidator.2.1.2",
@@ -977,5 +977,18 @@ public class WAIValidator {
 
     public void setUiLocale(Locale uiLocale) {
         this.uiLocale = uiLocale;
+    }
+
+    private static String text2XMLEntityRef(String str) {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        str = StringEscapeUtils.unescapeHtml(str);
+        str = StringUtils.replace(str, "&amp;", "&");
+        str = StringUtils.replace(str, "&lt;", "<");
+        str = StringUtils.replace(str, "&gt;", ">");
+        str = StringUtils.replace(str, "&quot;", "\"");
+        str = StringUtils.replace(str, "&apos;", "'");
+        return str;
     }
 }

@@ -98,11 +98,11 @@ public class MultiplePublishAction implements Action {
         for (Map.Entry<PublicationWorkflow, WorkflowDefinition> entry : workflows.entrySet()) {
             final HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("customWorkflowInfo", entry.getKey());
-
-            workflowService.startProcess(entry.getKey().getAllUuids(),
-                    session, entry.getValue().getKey(),
-                    entry.getValue().getProvider(), map);
-
+            if (entry.getValue() != null) {
+                workflowService.startProcess(entry.getKey().getAllUuids(),
+                        session, entry.getValue().getKey(),
+                        entry.getValue().getProvider(), map);
+            }
         }
         return ActionResult.OK_JSON;
     }

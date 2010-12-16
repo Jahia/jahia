@@ -59,7 +59,9 @@
             <row-col2 jcr:primaryType="jnt:contentList">
               <listbutton jcr:mixinTypes="jmix:renderable jmix:columns jmix:accessControlled" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="1">
                 <j:translation_en jcr:language="en" jcr:title="listbutton" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
-                <j:acl jcr:primaryType="jnt:acl" />
+                <j:acl jcr:primaryType="jnt:acl" >
+                    <GRANT_g_users j:privileges="jcr:read_live jcr:read" j:protected="false" j:principal="g:users" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+                </j:acl>
                 <my-websites-access-in-edit-mode j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:view="unordered" j:className="simple">
                   <j:translation_en jcr:mixinTypes="mix:title" jcr:title="My websites (access in edit mode)" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <websites-list-in-edit-mode type="edit" jcr:primaryType="jnt:listSites">

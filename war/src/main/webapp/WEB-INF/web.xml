@@ -169,7 +169,7 @@
         </init-param>
         <init-param>
             <param-name>contextAttribute</param-name>
-            <param-value>org.springframework.web.context.WebApplicationContext.jahiaTemplates</param-value>
+            <param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
         </init-param>
     </filter>
 <!-- End of shindig filters -->    
@@ -580,11 +580,8 @@
         <servlet-name>ShindigDispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <!-- 
-            <param-value>WEB-INF/etc/spring/servlet-applicationcontext-external.xml,modules/**/META-INF/spring/servlet-*.xml</param-value>
-             -->
-            <param-value>modules/**/META-INF/spring/servlet-*.xml</param-value>
+        	<param-name>contextAttribute</param-name>
+        	<param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
         </init-param>
     </servlet>
     

@@ -45,6 +45,8 @@
               <pagetitle jcr:primaryType="jnt:pageTitle" />
               <pageBreadcrumb jcr:primaryType="jnt:pageBreadcrumb" displayCurrentPage="true" displayHome="true" displayLinkOnCurrentPage="false" />
               <maincontent jcr:primaryType="jnt:area" j:allowedTypes="" />
+              <add-comments jcr:primaryType="jnt:addComment" j:bindedComponent="/templateSets/templates-web-blue/templates/base/simple/content-col1/maincontent" />
+              <comments-list jcr:primaryType="jnt:commentsList" j:bindedComponent="/templateSets/templates-web-blue/templates/base/simple/content-col1/maincontent" />
             </content-col1>
           </simple>
           <pagecontent jcr:primaryType="jnt:contentList">

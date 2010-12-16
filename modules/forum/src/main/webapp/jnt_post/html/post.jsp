@@ -34,18 +34,18 @@
 <div class="forum-postbody">
     <ul class="forum-profile-icons">
         <c:if test="${renderContext.user.name != 'guest'}">
-            <li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="#"><span><fmt:message key='report.post'/></span></a></li>
+            <li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="post.jsp#"><span><fmt:message key='report.post'/></span></a></li>
             <li class="forum-quote-icon">
-                <a title="<fmt:message key='reply.quote'/>" href="#threadPost"
+                <a title="<fmt:message key='reply.quote'/>" href="post.jsp#threadPost"
                    onclick="jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span><fmt:message key='reply.quote'/></span></a>
             </li>
             <li><template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/></li>
         </c:if>
         <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
-            <li class="delete-post-icon"><a title="<fmt:message key='delete.post'/>" href="#"
+            <li class="delete-post-icon"><a title="<fmt:message key='delete.post'/>" href="post.jsp#"
                                             onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"><span><fmt:message key="delete.post"/></span></a>
             </li>
-            <li class="edit-post-icon"><a title="<fmt:message key="edit.post"/>" href="#"><span><fmt:message key="edit.post"/></span></a></li>
+            <li class="edit-post-icon"><a title="<fmt:message key="edit.post"/>" href="post.jsp#"><span><fmt:message key="edit.post"/></span></a></li>
         </c:if>
 
     </ul>
@@ -73,6 +73,6 @@
                                                                                       type="date" dateStyle="medium"/>
     </dd>
 </dl>
-<div class="back2top"><a title="Top" class="top" href="#wrap">Top</a></div>
+<div class="back2top"><a title="Top" class="top" href="post.jsp#wrap">Top</a></div>
 <div class="clear"></div>
 <span class="forum-corners-bottom"><span></span></span>

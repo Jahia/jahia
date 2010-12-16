@@ -40,7 +40,7 @@
         <br/>
         <ul class="forum-profile-icons">
     <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
-        <li class="delete-post-icon"><a title="<fmt:message key="delete.thread"/>" href="#"
+        <li class="delete-post-icon"><a title="<fmt:message key="delete.thread"/>" href="thread.summary.jsp#"
                                         onclick="document.getElementById('jahia-forum-thread-delete-${currentNode.UUID}').submit();"><span><fmt:message key="delete.thread"/></span></a>
         </li>
     </c:if>

@@ -10,4 +10,4 @@
     <c:if test="${property.name == 'j:lastName'}"><c:set var="lastname" value="${property.string}"/></c:if>
 </c:forEach>
 
-<h3>Welcome, ${firstname}&nbsp;${lastname} ${currentNode.name}.</h3>
+<h3>Welcome, ${firstname}&nbsp;${lastname}.</h3>

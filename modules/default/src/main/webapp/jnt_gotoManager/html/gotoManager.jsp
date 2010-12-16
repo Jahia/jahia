@@ -1,6 +1,16 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:if test="${currentNode.properties.type.string eq 'document'}">
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:addResources type="javascript" resources="jquery.min.js"/>
+<c:if test="${currentResource.workspace eq 'live'}">
+<div id="gotoManager${currentNode.identifier}"/>
+    <script type="text/javascript">
+        $('#gotoManager${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax');
+    </script>
+</div>
+</c:if>
+<c:if test="${currentResource.workspace ne 'live'}">
+    <c:if test="${currentNode.properties.type.string eq 'document'}">
     <c:set var="conf" value="filemanager"/>
     <c:set var="label" value="label.filemanager"/>
     <c:set var="icon" value="fileManager"/>
@@ -25,3 +35,4 @@
         <fmt:message key="${label}"/>
     </c:if>
 </a>
+    </c:if>

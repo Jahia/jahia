@@ -419,7 +419,9 @@
                     <DENY_u_publisher j:privileges="jcr:addChildNodes_live jcr:modifyAccessControl" j:principal="u:publisher" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_u_publisher>
                     <GRANT_u_siteadmin j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="u:siteadmin" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_u_siteadmin>
                     <DENY_u_siteadmin j:privileges="jcr:addChildNodes_live" j:principal="u:siteadmin" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_u_siteadmin>
-                </j:acl>
+                    <GRANT_g_users j:privileges="jcr:write_live jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+                    <DENY_g_users j:privileges="jcr:read jcr:modifyAccessControl jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                 </j:acl>
                 <sitemap jcr:uuid="26608b1c-3632-4905-8a44-048a11ea8359" j:published="true" jcr:created="2010-12-15T19:16:41.317+01:00" jcr:primaryType="jnt:page" jcr:lastModifiedBy="root" j:templateNode="/sites/ACME/templates/base/full-page" j:lastPublished="2010-12-15T19:59:13.989+01:00" j:lastPublishedBy=" system root" jcr:createdBy="author" j:fullpath="/sites/ACME/home/sitemap" jcr:lastModified="2010-12-15T19:43:14.609+01:00">
                     <j:translation_fr jcr:lastModifiedBy="author" j:lastPublished="2010-12-15T19:59:32.767+01:00" j:lastPublishedBy=" system root" jcr:language="fr" jcr:uuid="859e3170-591a-4e40-b2a8-e5457f704fc6" jcr:title="Plan de site" jcr:lastModified="2010-12-15T19:16:41.956+01:00" jcr:primaryType="jnt:translation"></j:translation_fr>
                     <j:translation_en jcr:lastModifiedBy="author" j:lastPublished="2010-12-15T19:59:13.989+01:00" j:lastPublishedBy=" system root" jcr:language="en" jcr:uuid="fb71cdd2-466c-4498-a554-d6e5c5a59348" jcr:title="Sitemap" jcr:lastModified="2010-12-15T19:16:42.104+01:00" jcr:primaryType="jnt:translation"></j:translation_en>

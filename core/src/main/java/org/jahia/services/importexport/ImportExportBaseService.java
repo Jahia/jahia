@@ -108,7 +108,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private JCRStoreService jcrStoreService;
     private CategoryService categoryService;
     private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
-    private boolean legacyImport = false;
 
     public static ImportExportBaseService getInstance() {
         if (instance == null) {
@@ -465,6 +464,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException {
+        boolean legacyImport = false;
         CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
         UsersImportHandler usersImportHandler = new UsersImportHandler(site);
 

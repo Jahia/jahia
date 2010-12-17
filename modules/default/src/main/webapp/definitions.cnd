@@ -170,3 +170,5 @@
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent
  - type (string, choicelist) = edit < contribute,edit
+
+[jmix:gadget] mixin

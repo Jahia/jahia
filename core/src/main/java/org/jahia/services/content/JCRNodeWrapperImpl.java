@@ -2383,6 +2383,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @throws RepositoryException
      */
     public static void changePermissions(Node objectNode, String user, Map<String, String> perms) throws RepositoryException {
+        if (objectNode.isNodeType(Constants.MIX_VERSIONABLE)) {
+            objectNode.getSession().getWorkspace().getVersionManager().checkout(objectNode.getPath());
+        }
+
         List<String> gr = new ArrayList<String>();
         List<String> den = new ArrayList<String>();
 

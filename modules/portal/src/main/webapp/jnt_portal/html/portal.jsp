@@ -26,7 +26,7 @@
             data["newName"] = newName;
             $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(data) {
                 window.location.reload();
-            });
+            },'json');
         }
 
         function addRSSWidget() {
@@ -36,7 +36,7 @@
             data["nbEntries"] = $("#nbFeeds").val();
             $.post("${url.base}${currentNode.path}/column1/*", data, function(data) {
                 window.location.reload();
-            });
+            },'json');
         }
 
         function addScriptWidget() {
@@ -45,7 +45,7 @@
             data["script"] = $("#scriptGadget").val();
             $.post("${url.base}${currentNode.path}/column1/*", data, function(data) {
                 window.location.reload();
-            });
+            },'json');
         }
     </script>
 </template:addResources>

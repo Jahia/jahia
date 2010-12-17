@@ -432,9 +432,9 @@ public class SettingsBean {
                 System.setProperty("cluster.tcp.ehcache.hibernate.port",getString("cluster.tcp.ehcache.hibernate.port"));
             }
         } catch (NullPointerException npe) {
-            logger.debug ("Properties file is not valid...!", npe);
+            logger.error("Properties file is not valid...!", npe);
         } catch (NumberFormatException nfe) {
-            logger.debug ("Properties file is not valid...!", nfe);
+            logger.error("Properties file is not valid...!", nfe);
         }
     } // end load
 

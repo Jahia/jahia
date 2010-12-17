@@ -313,9 +313,6 @@ public class NavigationHelper {
                     displayName = JahiaResourceBundle
                             .getJahiaInternalResource("label.personalFolder", uiLocale, "label.personalFolder");
                 }
-                if (path.startsWith("/shared/")) {
-                    displayName = "shared";
-                }
                 if (path.startsWith("/")) {
                     if (path.endsWith("/*")) {
                         NodeIterator ni =

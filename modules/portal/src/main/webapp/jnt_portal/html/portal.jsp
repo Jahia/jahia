@@ -90,5 +90,6 @@
 </c:if>
 </c:if>
 <c:if test="${not writeable}">
-    Portal is only available in live
+    <fmt:message key="label.portal.only.live"/>
+    <template:area path="portalComponents"/>
 </c:if>

@@ -9,6 +9,7 @@
  extends = jmix:list
  itemtype = layout
  - j:classname (string)
+ - j:id (string)
 
 [jmix:skinnable] mixin
  extends = jmix:list

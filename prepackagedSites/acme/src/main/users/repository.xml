@@ -1,158 +1,186 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
-    <users>
-        <author jcr:uuid="0e5339d9-7e1f-44da-894d-76838f64503b" emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-15T16:24:08.010+01:00" jcr:lastModifiedBy="author" j:lastPublishedBy="root" j:lastName="Mac Cormick" j:roles="/sites/Acme2/roles/editor /sites/ACME/roles/editor" jcr:createdBy="root" j:organization="ACME" j:email="" j:firstName="John" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled" password.history.1242739225145="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en" lastLoginDate="1292438303397" email="" jcr:primaryType="jnt:user" j:about="&lt;p&gt;  I began my career working for the Ministry of Defense, in the department of Maritime Affairs, based first in Rotterdam (Netherlands), then in Cap Town (South Africa). I joined Acme in 1988 as head of the commercial department. After being involved in a number of construction projects, I took charge of the Russian subsidiary in 1997. I&amp;#39;m Senior Vice President, Constructions of Acme since my nomination in 2002.&lt;/p&gt; " j:external="false" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:fullpath="/users/author" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-12-15T19:16:41.649+01:00" j:accountLocked="false">
-            <j:addresses jcr:primaryType="jnt:addresses"></j:addresses>
-            <j:phones jcr:primaryType="jnt:phoneNumbers"></j:phones>
-            <files jcr:uuid="43bfa3f0-c73c-4991-9bf4-127c4829e042" j:published="true" jcr:created="2010-12-15T16:24:08.012+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="author" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/author/files" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2009-05-19T15:20:25.372+02:00">
-                <private jcr:uuid="3ab85d36-0da5-4a79-8bbb-0acc774b275f" jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-12-15T16:24:08.013+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/author/files/private" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-12-15T17:45:41.304+01:00">
-                    <j:acl jcr:primaryType="jnt:acl">
-                        <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_guest>
-                        <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_guest>
-                        <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
-                        <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
-                        <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
-                        <DENY_jcr_read_live_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_users>
-                        <DENY_jcr_read_g_users j:privileges="jcr:read" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_users>
-                        <DENY_jcr_write_g_users j:privileges="jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_users>
-                        <DENY_jcr_modifyAccessControl_g_users j:privileges="jcr:modifyAccessControl" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_users>
-                        <DENY_jcr_write_live_g_users j:privileges="jcr:write_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_users>
-                    </j:acl>
-                    <imports jcr:uuid="2ef63008-663d-4dd6-a78f-0a2aebbb624a" j:published="true" jcr:created="2010-12-15T16:24:08.021+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="author" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/author/files/private/imports" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2009-05-19T15:20:25.370+02:00"></imports>
-                </private>
-            </files>
-            <portlets jcr:uuid="dbdcd6ce-b16b-47ba-9c76-10ad4da1c0ed" j:published="true" jcr:created="2010-12-15T16:24:08.022+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="author" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/author/portlets" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2009-05-19T15:20:25.373+02:00"></portlets>
-            <contents jcr:uuid="3138b48f-c49f-4850-9323-8779f53cf6fa" j:published="true" jcr:created="2010-12-15T16:24:08.022+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/author/contents" jcr:lastModified="2010-04-11T14:29:13.818+02:00" j:checkinDate="2010-04-11T14:29:14.439+02:00"></contents>
-            <preferences jcr:uuid="ec345ac5-9ca6-4854-a99a-a959c14b70d1" jcr:mixinTypes="jmix:accessControlled" j:fullpath="/users/author/preferences" jcr:primaryType="jnt:preferences">
-                <j:acl jcr:primaryType="jnt:acl">
-                    <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_guest>
-                    <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_guest>
-                    <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
-                    <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
-                    <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
-                </j:acl>
-            </preferences>
-            <j:acl jcr:primaryType="jnt:acl">
-                <GRANT_u_author j:privileges="jcr:read jcr:write" j:principal="u:author" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_u_author>
-                <GRANT_u_root j:privileges="jcr:read jcr:read_live jcr:write" j:principal="u:author" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_u_root>
-                <DENY_u_author j:privileges="" j:principal="u:author" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_u_author>
-            </j:acl>
-            <tasks jcr:uuid="de5e5e69-68cd-41ec-8aa7-9316c5e231d8" j:published="true" jcr:created="2010-12-15T16:24:08.026+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/author/tasks" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-04-11T14:29:14.053+02:00">
-            </tasks>
-            <activities jcr:uuid="0dc979f9-3ae5-4a53-91be-8d31d25ed3e0" jcr:mixinTypes="jmix:autoSplitFolders" jcr:created="2010-12-15T19:16:41.484+01:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="author" j:splitNodeType="jnt:contentList" jcr:createdBy="author" j:splitConfig="date,jcr:created,yyyy;date,jcr:created,MM" j:fullpath="/users/author/activities" jcr:lastModified="2010-12-15T19:16:41.649+01:00">
-            </activities>
-        </author>
-        <publisher jcr:uuid="67231de5-771d-4db7-a5b8-88f30b3fec76" emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-15T16:24:08.029+01:00" jcr:lastModifiedBy="" j:roles="/sites/Acme2/roles/publisher /sites/ACME/roles/editor /sites/ACME/roles/publisher /sites/ACME/roles/editor-in-chief" j:lastPublishedBy="root" j:lastName="Farell" jcr:createdBy="root" j:organization="ACME" j:email="" j:firstName="Jenifer" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" jcr:mixinTypes="jmix:roleBasedAccessControlled jmix:accessControlled" preferredLanguage="en" lastLoginDate="1233151317240" email="" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-04-11T14:29:23.243+02:00" password.history.1242739225417="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" j:fullpath="/users/publisher" jcr:lastModified="2010-12-15T18:33:24.441+01:00" j:checkinDate="2010-04-11T14:29:23.243+02:00" j:accountLocked="false">
-            <j:addresses jcr:primaryType="jnt:addresses"></j:addresses>
-            <j:phones jcr:primaryType="jnt:phoneNumbers"></j:phones>
-            <files jcr:uuid="2ac7aebf-1fcd-43ae-bb39-2fc9c1f3beba" j:published="true" jcr:created="2010-12-15T16:24:08.031+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="publisher" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/publisher/files" j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2009-05-19T15:20:25.577+02:00">
-                <private jcr:uuid="75ad47c5-e081-4876-ae8e-18ad01bce195" jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-12-15T16:24:08.031+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/publisher/files/private" jcr:lastModified="2010-12-15T17:45:41.304+01:00" j:checkinDate="2010-04-11T14:29:23.243+02:00">
-                    <j:acl jcr:primaryType="jnt:acl">
-                        <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_guest>
-                        <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_guest>
-                        <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
-                        <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
-                        <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
-                        <DENY_jcr_read_live_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_users>
-                        <DENY_jcr_read_g_users j:privileges="jcr:read" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_users>
-                        <DENY_jcr_write_g_users j:privileges="jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_users>
-                        <DENY_jcr_modifyAccessControl_g_users j:privileges="jcr:modifyAccessControl" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_users>
-                        <DENY_jcr_write_live_g_users j:privileges="jcr:write_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_users>
-                    </j:acl>
-                    <imports jcr:uuid="b9c597b3-6a29-4bb1-b304-c202d547b7c2" j:published="true" jcr:created="2010-12-15T16:24:08.036+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="publisher" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/publisher/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.575+02:00" j:checkinDate="2010-04-11T14:29:23.243+02:00"></imports>
-                </private>
-            </files>
-            <portlets jcr:uuid="33babe4a-4bf9-41fc-b645-13bcb1a95530" j:published="true" jcr:created="2010-12-15T16:24:08.037+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="publisher" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/publisher/portlets" jcr:lastModified="2009-05-19T15:20:25.577+02:00" j:checkinDate="2010-04-11T14:29:23.243+02:00"></portlets>
-            <contents jcr:uuid="3ac6c073-63cb-4cdb-9733-ac1365519fce" j:published="true" jcr:created="2010-12-15T16:24:08.037+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/publisher/contents" jcr:lastModified="2010-04-11T14:29:22.871+02:00" j:checkinDate="2010-04-11T14:29:23.243+02:00"></contents>
-            <preferences jcr:uuid="0d4a8971-e3d0-44c0-b0ec-b0292221f7e6" jcr:mixinTypes="jmix:accessControlled" j:fullpath="/users/publisher/preferences" jcr:primaryType="jnt:preferences">
-                <j:acl jcr:primaryType="jnt:acl">
-                    <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_guest>
-                    <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_guest>
-                    <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
-                    <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
-                    <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
-                </j:acl>
-            </preferences>
-            <j:acl jcr:primaryType="jnt:acl">
-                <GRANT_u_publisher j:privileges="jcr:read jcr:read_live jcr:write" j:principal="u:publisher" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_u_publisher>
-            </j:acl>
-            <tasks jcr:uuid="085b5b95-eaff-443a-80a4-a8e2d960a62a" j:published="true" jcr:created="2010-12-15T16:24:08.041+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/publisher/tasks" jcr:lastModified="2010-04-11T14:29:22.969+02:00" j:checkinDate="2010-04-11T14:29:23.243+02:00">
-            </tasks>
-        </publisher>
-        <siteadmin jcr:uuid="9befebbc-4fa4-4aa1-a509-812dc94b321d" password.history.1242739225611="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-15T16:24:08.045+01:00" jcr:lastModifiedBy="" j:lastPublishedBy="root" j:lastName="Dupond" j:roles="/sites/Acme2/roles/site-administrator" jcr:createdBy="root" j:organization="ACME" j:email="" j:firstName="Max" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled" preferredLanguage="en" email="" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:fullpath="/users/siteadmin" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-15T18:33:24.441+01:00" j:accountLocked="false">
-            <j:addresses jcr:primaryType="jnt:addresses"></j:addresses>
-            <j:phones jcr:primaryType="jnt:phoneNumbers"></j:phones>
-            <files jcr:uuid="583011af-9912-428c-83b7-325a31c85df2" j:published="true" jcr:created="2010-12-15T16:24:08.046+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="siteadmin" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/siteadmin/files" jcr:lastModified="2009-05-19T15:20:25.775+02:00" j:checkinDate="2010-04-11T14:29:27.778+02:00">
-                <private jcr:uuid="1387f758-1e46-4d3e-b286-c1d51587946b" jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-12-15T16:24:08.047+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/siteadmin/files/private" jcr:lastModified="2010-12-15T17:45:41.304+01:00" j:checkinDate="2010-04-11T14:29:27.778+02:00">
-                    <j:acl jcr:primaryType="jnt:acl">
-                        <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_guest>
-                        <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_guest>
-                        <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
-                        <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
-                        <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
-                        <DENY_jcr_read_live_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_users>
-                        <DENY_jcr_read_g_users j:privileges="jcr:read" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_users>
-                        <DENY_jcr_write_g_users j:privileges="jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_users>
-                        <DENY_jcr_modifyAccessControl_g_users j:privileges="jcr:modifyAccessControl" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_users>
-                        <DENY_jcr_write_live_g_users j:privileges="jcr:write_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_users>
-                    </j:acl>
-                    <imports jcr:uuid="f2fb0bd5-20d4-417d-8e42-6d74be79270b" j:published="true" jcr:created="2010-12-15T16:24:08.063+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="siteadmin" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/siteadmin/files/private/imports" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2009-05-19T15:20:25.773+02:00"></imports>
-                </private>
-            </files>
-            <portlets jcr:uuid="c15f3bfb-8b9b-4301-8b90-97b94f1cb9dd" j:published="true" jcr:created="2010-12-15T16:24:08.064+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="siteadmin" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/siteadmin/portlets" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2009-05-19T15:20:25.774+02:00"></portlets>
-            <contents jcr:uuid="04fd8ec6-666e-4d3c-9963-c0042eae87a6" j:published="true" jcr:created="2010-12-15T16:24:08.065+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/siteadmin/contents" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-04-11T14:29:27.559+02:00"></contents>
-            <preferences jcr:uuid="3b1117fc-4f13-48c1-a242-690206f9b3a6" jcr:mixinTypes="jmix:accessControlled" j:fullpath="/users/siteadmin/preferences" jcr:primaryType="jnt:preferences">
-                <j:acl jcr:primaryType="jnt:acl">
-                    <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_guest>
-                    <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_guest>
-                    <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
-                    <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
-                    <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
-                </j:acl>
-            </preferences>
-            <j:acl jcr:primaryType="jnt:acl">
-                <GRANT_u_siteadmin j:privileges="jcr:read jcr:read_live jcr:write" j:principal="u:siteadmin" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_u_siteadmin>
-            </j:acl>
-            <tasks jcr:uuid="f85e466f-f6dd-4e87-85fa-8e0431a054b5" j:published="true" jcr:created="2010-12-15T16:24:08.075+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/siteadmin/tasks" jcr:lastModified="2010-04-11T14:29:27.631+02:00" j:checkinDate="2010-04-11T14:29:27.778+02:00">
-            </tasks>
-        </siteadmin>
-        <visitor jcr:uuid="a8f71f42-4251-4487-955c-ca751b2babb4" j:published="true" jcr:created="2010-12-15T16:24:08.079+01:00" jcr:lastModifiedBy="" j:lastPublishedBy="root" j:lastName="Sanders" jcr:createdBy="root" j:organization="ACME" password.history.1242739225800="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" j:firstName="Marc" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" jcr:mixinTypes="jmix:accessControlled" preferredLanguage="en" lastLoginDate="1233238151917" email="" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:fullpath="/users/visitor" jcr:lastModified="2010-12-15T18:33:24.441+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00" j:accountLocked="false">
-            <j:addresses jcr:primaryType="jnt:addresses"></j:addresses>
-            <j:phones jcr:primaryType="jnt:phoneNumbers"></j:phones>
-            <files jcr:uuid="2528ccf1-cbde-4894-9d19-08d4d59dc27e" j:published="true" jcr:created="2010-12-15T16:24:08.081+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="visitor" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/visitor/files" jcr:lastModified="2009-05-19T15:20:25.973+02:00" j:checkinDate="2010-04-11T14:29:31.374+02:00">
-                <private jcr:uuid="511d799a-92e5-41f7-a86c-f9709de5beaa" jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-12-15T16:24:08.081+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/visitor/files/private" j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:lastModified="2010-12-15T17:45:41.304+01:00">
-                    <j:acl jcr:primaryType="jnt:acl">
-                        <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_guest>
-                        <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_guest>
-                        <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
-                        <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
-                        <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
-                        <DENY_jcr_read_live_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_users>
-                        <DENY_jcr_read_g_users j:privileges="jcr:read" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_users>
-                        <DENY_jcr_write_g_users j:privileges="jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_users>
-                        <DENY_jcr_modifyAccessControl_g_users j:privileges="jcr:modifyAccessControl" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_users>
-                        <DENY_jcr_write_live_g_users j:privileges="jcr:write_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_users>
-                    </j:acl>
-                    <imports jcr:uuid="d6a416d4-40b1-4740-9a06-b21e2a4f66eb" j:published="true" jcr:created="2010-12-15T16:24:08.085+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="visitor" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/visitor/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.970+02:00" j:checkinDate="2010-04-11T14:29:31.374+02:00"></imports>
-                </private>
-            </files>
-            <portlets jcr:uuid="329f2485-26c7-4ba1-8f31-7bbb71524cf7" j:published="true" jcr:created="2010-12-15T16:24:08.086+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="visitor" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/visitor/portlets" jcr:lastModified="2009-05-19T15:20:25.972+02:00" j:checkinDate="2010-04-11T14:29:31.374+02:00"></portlets>
-            <contents jcr:uuid="cf9ab893-62a2-4ee3-b2da-143b1ef36469" j:published="true" jcr:created="2010-12-15T16:24:08.086+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/visitor/contents" j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:lastModified="2010-04-11T14:29:31.011+02:00"></contents>
-            <preferences jcr:uuid="abf3ff64-3810-4601-ba47-0188d5a70f8d" jcr:mixinTypes="jmix:accessControlled" j:fullpath="/users/visitor/preferences" jcr:primaryType="jnt:preferences">
-                <j:acl jcr:primaryType="jnt:acl">
-                    <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_live_g_guest>
-                    <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_read_g_guest>
-                    <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
-                    <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
-                    <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
-                </j:acl>
-            </preferences>
-            <j:acl jcr:primaryType="jnt:acl">
-                <GRANT_u_visitor j:privileges="jcr:read jcr:read_live jcr:write" j:principal="u:visitor" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_u_visitor>
-            </j:acl>
-            <tasks jcr:uuid="d83e0036-3b0e-49da-8302-50aefd785ee2" j:published="true" jcr:created="2010-12-15T16:24:08.099+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:fullpath="/users/visitor/tasks" j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:lastModified="2010-04-11T14:29:31.079+02:00">
-            </tasks>
-        </visitor>
-    </users>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+  <users j:usersFolderSkeleton="WEB-INF/etc/repository/user.xml,modules/**/user-skeleton.xml,modules/**/user-skeleton-*.xml" jcr:created="2010-12-17T15:26:41.589+01:00" jcr:primaryType="jnt:usersFolder" jcr:lastModifiedBy="root" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:30:29.534+01:00">
+    <root j:password="B1ZQLtup8YLYX8/MrygHxoKj0n0=" jcr:mixinTypes="jmix:accessControlled" jcr:created="2010-12-17T15:26:41.612+01:00" jcr:primaryType="jnt:user" jcr:lastModifiedBy="root" j:external="false" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:30:06.476+01:00" j:accountLocked="false">
+      <files jcr:created="2010-12-17T15:26:41.669+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00">
+        <private jcr:mixinTypes="jmix:accessControlled" jcr:created="2010-12-17T15:26:41.671+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00">
+          <j:acl jcr:primaryType="jnt:acl">
+            <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          </j:acl>
+          <imports jcr:created="2010-12-17T15:26:41.679+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00" />
+        </private>
+      </files>
+      <portlets jcr:created="2010-12-17T15:26:41.680+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00" />
+      <contents jcr:created="2010-12-17T15:26:41.681+01:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00" />
+      <preferences jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:preferences">
+        <j:acl jcr:primaryType="jnt:acl">
+          <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        </j:acl>
+      </preferences>
+      <j:acl jcr:primaryType="jnt:acl">
+        <GRANT_u_root j:privileges="jcr:read jcr:read_live jcr:write" j:principal="u:root" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      </j:acl>
+      <j:addresses jcr:primaryType="jnt:addresses" />
+      <j:phones jcr:primaryType="jnt:phoneNumbers" />
+    </root>
+    <guest j:password="" jcr:created="2010-12-17T15:26:41.689+01:00" jcr:primaryType="jnt:user" jcr:lastModifiedBy="" j:external="false" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.898+01:00" j:accountLocked="false">
+      <j:addresses jcr:primaryType="jnt:addresses" />
+      <j:phones jcr:primaryType="jnt:phoneNumbers" />
+    </guest>
+    <author emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-17T15:30:26.651+01:00" jcr:lastModifiedBy="" j:lastName="Mac Cormick" j:lastPublishedBy=" system root" j:roles="/sites/ACME/roles/editor" jcr:createdBy="root" j:organization="ACME" j:email="" j:firstName="John" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled" password.history.1242739225145="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en" lastLoginDate="1292438303397" email="" jcr:primaryType="jnt:user" j:about="&lt;p&gt;  I began my career working for the Ministry of Defense, in the department of Maritime Affairs, based first in Rotterdam (Netherlands), then in Cap Town (South Africa). I joined Acme in 1988 as head of the commercial department. After being involved in a number of construction projects, I took charge of the Russian subsidiary in 1997. I&amp;#39;m Senior Vice President, Constructions of Acme since my nomination in 2002.&lt;/p&gt; " j:external="false" j:lastPublished="2010-12-17T15:30:40.376+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-12-17T15:30:40.315+01:00" j:accountLocked="false">
+      <j:addresses jcr:primaryType="jnt:addresses" />
+      <j:phones jcr:primaryType="jnt:phoneNumbers" />
+      <files j:published="true" jcr:created="2010-12-17T15:30:26.668+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00">
+        <private jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-12-17T15:30:26.672+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00">
+          <j:acl jcr:primaryType="jnt:acl">
+            <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_live_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_g_users j:privileges="jcr:read" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_g_users j:privileges="jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_modifyAccessControl_g_users j:privileges="jcr:modifyAccessControl" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_live_g_users j:privileges="jcr:write_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          </j:acl>
+          <imports j:published="true" jcr:created="2010-12-17T15:30:26.719+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
+        </private>
+      </files>
+      <portlets j:published="true" jcr:created="2010-12-17T15:30:26.722+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00" />
+      <contents j:published="true" jcr:created="2010-12-17T15:30:26.725+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00" />
+      <preferences jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:preferences">
+        <j:acl jcr:primaryType="jnt:acl">
+          <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        </j:acl>
+      </preferences>
+      <j:acl jcr:primaryType="jnt:acl">
+        <GRANT_u_author j:privileges="jcr:read jcr:write" j:principal="u:author" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_u_root j:privileges="jcr:read jcr:read_live jcr:write" j:principal="u:author" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_u_author j:privileges="" j:principal="u:author" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+      </j:acl>
+      <tasks j:published="true" jcr:created="2010-12-17T15:30:26.773+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:32.286+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
+    </author>
+    <publisher emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-17T15:30:26.780+01:00" jcr:lastModifiedBy="" j:lastPublishedBy=" system root" j:lastName="Farell" j:roles="/sites/ACME/roles/editor /sites/ACME/roles/editor-in-chief /sites/ACME/roles/publisher" jcr:createdBy="root" j:organization="ACME" j:email="" j:firstName="Jenifer" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled" preferredLanguage="en" email="" lastLoginDate="1233151317240" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-12-17T15:30:41.147+01:00" password.history.1242739225417="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2010-12-17T15:30:41.027+01:00" j:accountLocked="false">
+      <j:addresses jcr:primaryType="jnt:addresses" />
+      <j:phones jcr:primaryType="jnt:phoneNumbers" />
+      <files j:published="true" jcr:created="2010-12-17T15:30:26.798+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:23.243+02:00">
+        <private jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-12-17T15:30:26.803+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00">
+          <j:acl jcr:primaryType="jnt:acl">
+            <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_live_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_g_users j:privileges="jcr:read" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_g_users j:privileges="jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_modifyAccessControl_g_users j:privileges="jcr:modifyAccessControl" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_live_g_users j:privileges="jcr:write_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          </j:acl>
+          <imports j:published="true" jcr:created="2010-12-17T15:30:26.869+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
+        </private>
+      </files>
+      <portlets j:published="true" jcr:created="2010-12-17T15:30:26.874+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:23.243+02:00" />
+      <contents j:published="true" jcr:created="2010-12-17T15:30:26.878+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
+      <preferences jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:preferences">
+        <j:acl jcr:primaryType="jnt:acl">
+          <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        </j:acl>
+      </preferences>
+      <j:acl jcr:primaryType="jnt:acl">
+        <GRANT_u_publisher j:privileges="jcr:read jcr:read_live jcr:write" j:principal="u:publisher" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      </j:acl>
+      <tasks j:published="true" jcr:created="2010-12-17T15:30:26.917+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:30.291+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:23.243+02:00" />
+    </publisher>
+    <siteadmin password.history.1242739225611="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-17T15:30:26.922+01:00" jcr:lastModifiedBy="" j:lastName="Dupond" j:lastPublishedBy=" system root" jcr:createdBy="root" j:organization="ACME" j:email="" j:firstName="Max" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled" preferredLanguage="en" email="" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-12-17T15:30:34.659+01:00" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:34.639+01:00" j:accountLocked="false">
+      <j:addresses jcr:primaryType="jnt:addresses" />
+      <j:phones jcr:primaryType="jnt:phoneNumbers" />
+      <files j:published="true" jcr:created="2010-12-17T15:30:26.934+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:27.778+02:00">
+        <private jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-12-17T15:30:26.939+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:27.778+02:00">
+          <j:acl jcr:primaryType="jnt:acl">
+            <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_live_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_g_users j:privileges="jcr:read" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_g_users j:privileges="jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_modifyAccessControl_g_users j:privileges="jcr:modifyAccessControl" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_live_g_users j:privileges="jcr:write_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          </j:acl>
+          <imports j:published="true" jcr:created="2010-12-17T15:30:26.993+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
+        </private>
+      </files>
+      <portlets j:published="true" jcr:created="2010-12-17T15:30:26.998+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
+      <contents j:published="true" jcr:created="2010-12-17T15:30:27.002+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
+      <preferences jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:preferences">
+        <j:acl jcr:primaryType="jnt:acl">
+          <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        </j:acl>
+      </preferences>
+      <j:acl jcr:primaryType="jnt:acl">
+        <GRANT_u_siteadmin j:privileges="jcr:read jcr:read_live jcr:write" j:principal="u:siteadmin" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      </j:acl>
+      <tasks j:published="true" jcr:created="2010-12-17T15:30:27.045+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:31.289+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
+    </siteadmin>
+    <visitor j:published="true" jcr:created="2010-12-17T15:30:27.051+01:00" jcr:lastModifiedBy="" j:lastName="Sanders" j:lastPublishedBy=" system root" jcr:createdBy="root" j:organization="ACME" password.history.1242739225800="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" j:firstName="Marc" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" jcr:mixinTypes="jmix:accessControlled" preferredLanguage="en" lastLoginDate="1233238151917" email="" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-12-17T15:30:39.046+01:00" jcr:lastModified="2010-12-17T15:30:39.020+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00" j:accountLocked="false">
+      <j:addresses jcr:primaryType="jnt:addresses" />
+      <j:phones jcr:primaryType="jnt:phoneNumbers" />
+      <files j:published="true" jcr:created="2010-12-17T15:30:27.062+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00">
+        <private jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-12-17T15:30:27.065+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00">
+          <j:acl jcr:primaryType="jnt:acl">
+            <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_live_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_read_g_users j:privileges="jcr:read" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_g_users j:privileges="jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_modifyAccessControl_g_users j:privileges="jcr:modifyAccessControl" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <DENY_jcr_write_live_g_users j:privileges="jcr:write_live" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          </j:acl>
+          <imports j:published="true" jcr:created="2010-12-17T15:30:27.109+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00" />
+        </private>
+      </files>
+      <portlets j:published="true" jcr:created="2010-12-17T15:30:27.110+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
+      <contents j:published="true" jcr:created="2010-12-17T15:30:27.113+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00" />
+      <preferences jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:preferences">
+        <j:acl jcr:primaryType="jnt:acl">
+          <DENY_jcr_read_live_g_guest j:privileges="jcr:read_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_read_g_guest j:privileges="jcr:read" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_g_guest j:privileges="jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        </j:acl>
+      </preferences>
+      <j:acl jcr:primaryType="jnt:acl">
+        <GRANT_u_visitor j:privileges="jcr:read jcr:read_live jcr:write" j:principal="u:visitor" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      </j:acl>
+      <tasks j:published="true" jcr:created="2010-12-17T15:30:27.149+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:33.558+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00" />
+    </visitor>
+  </users>
 </content>
 

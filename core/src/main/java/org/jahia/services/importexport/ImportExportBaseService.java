@@ -231,9 +231,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         bw.flush();
 
         // Add system site for export
-        JahiaSite systemSite = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
-        if(!sites.contains(systemSite)) {
-            sites.add(systemSite);
+        boolean systemFound = false;
+        for (JahiaSite jahiaSite : sites) {
+            if (jahiaSite.getSiteKey().equals("systemsite")) {
+                systemFound = true;
+                break;
+            }
+        }
+        if (!systemFound) {
+            anEntry = new ZipEntry("systemsite.zip");
+            zout.putNextEntry(anEntry);
+            exportSystemSite(zout, params);
         }
 
         for (JahiaSite jahiaSite : sites) {
@@ -279,6 +287,25 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         tti.add("jnt:templatesFolder");
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti,
                 params);
+        zout.finish();
+    }
+
+    private void exportSystemSite(OutputStream out, Map<String, Object> params)
+            throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
+        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+
+        ZipOutputStream zout = new ZipOutputStream(out);
+
+        final JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
+        Set<JCRNodeWrapper> nodes = new HashSet<JCRNodeWrapper>();
+        nodes.add(session.getNode("/sites/" + site.getSiteKey() + "/files"));
+        nodes.add(session.getNode("/sites/" + site.getSiteKey() + "/contents"));
+        nodes.add(session.getNode("/sites/" + site.getSiteKey() + "/portlets"));
+        nodes.add(session.getNode("/sites/" + site.getSiteKey() + "/categories"));
+
+        final HashSet<String> tti = new HashSet<String>();
+        tti.add("jnt:templatesFolder");
+        exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti, params);
         zout.finish();
     }
 

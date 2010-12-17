@@ -6,10 +6,14 @@
     <xsl:output method="xml" indent="yes"/>
     <xsl:template match="@*">
         <xsl:choose>
+            <xsl:when test="name()='jcr:primaryType'">
+                <xsl:copy/>
+            </xsl:when>
             <xsl:when test="name()='jcr:uuid'"/>
             <xsl:when test="name()='j:fullpath'"/>
             <xsl:when test="name()='j:movedFrom'"/>
             <xsl:when test="name()='j:siteId'"/>
+            <xsl:when test="../@jcr:primaryType='jnt:virtualsite'"/>
             <xsl:otherwise>
                 <xsl:copy/>
             </xsl:otherwise>

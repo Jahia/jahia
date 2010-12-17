@@ -164,7 +164,7 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
                 params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
                 params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
                 params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
-                params.put(ImportExportService.VIEW_PID, Boolean.TRUE);
+                params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
 
                 ie.exportAll(outputStream, params);
                 outputStream.close();
@@ -193,7 +193,7 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
                     params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
                     params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
                     params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
-                    params.put(ImportExportService.VIEW_PID, Boolean.TRUE);
+                    params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
 
                     ie.exportSites(outputStream, params, sites);
                     outputStream.close();

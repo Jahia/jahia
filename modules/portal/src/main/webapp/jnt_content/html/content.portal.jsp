@@ -17,7 +17,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:choose>
-    <c:when test="${jcr:isNodeType(currentNode, 'jnt:scriptGadget')}"><template:module
+    <c:when test="${jcr:isNodeType(currentNode, 'jmix:gadget')}"><template:module
             node="${currentNode}"/></c:when>
     <c:otherwise>
         <script type="text/javascript">

@@ -8,5 +8,5 @@
  + column4 (jnt:contentList) = jnt:contentList autocreated
  + column5 (jnt:contentList) = jnt:contentList autocreated
 
-[jnt:scriptGadget] > jnt:content, mix:title, jmix:siteComponent
+[jnt:scriptGadget] > jnt:content, mix:title, jmix:siteComponent, jmix:gadget
  - script (string) mandatory indexed=no

@@ -75,7 +75,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
                             int numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
                             TestHelper.createSite("ACME"  + numberOfSites, "localhost"  + numberOfSites, TestHelper.ACME_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
-                                            + "/prepackagedSites/webtemplates65.zip", "ACME.zip");
+                                            + "/prepackagedSites/acme.zip", "ACME.zip");
                             jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME"+ (numberOfSites) +"/home")
                                     .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                             session.save();

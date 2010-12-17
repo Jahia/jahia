@@ -24,7 +24,7 @@
           </elementProp>
           <elementProp name="CONTEXT" elementType="Argument">
             <stringProp name="Argument.name">CONTEXT</stringProp>
-            <stringProp name="Argument.value"></stringProp>
+            <stringProp name="Argument.value">jahia</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="THREADS" elementType="Argument">
@@ -157,7 +157,7 @@
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">jahia/cms/login</stringProp>
+            <stringProp name="HTTPSampler.path">${CONTEXT}/cms/login</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -185,7 +185,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">jahia/cms/createsite?site=delete</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/createsite?site=delete</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -216,7 +216,7 @@
               <boolProp name="CounterConfig.per_user">false</boolProp>
             </CounterConfig>
             <hashTree/>
-            <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create site ACME" enabled="false"/>
+            <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create site ACME" enabled="true"/>
             <hashTree>
               <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="ACME creation" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
@@ -228,7 +228,7 @@
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">jahia/cms/createsite?site=ACME</stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/createsite?site=ACME</stringProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -255,7 +255,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">jahia/cms/render/live/en/sites/ACME${COUNTER_SITES}/home.sitemap.txt</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/live/en/sites/ACME${COUNTER_SITES}/home.sitemap.txt</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -317,7 +317,7 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">jahia/cms/edit/default/en/sites/ACME${COUNTER_SITES}/home.sitemap.txt</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/ACME${COUNTER_SITES}/home.sitemap.txt</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -358,6 +358,7 @@
     String edit = vars.get(&quot;EDIT_SITEMAP&quot;);
     edit = edit.replaceAll(&quot; &quot;, &quot;&quot;);
     edit = edit.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
+    edit = edit.replaceAll(&quot;/edit/&quot;, &quot;/render/&quot;);
     String path = vars.get(&quot;PATH&quot;);
     try {
         File f = new File(path + &quot;editSitemaps.txt&quot;);

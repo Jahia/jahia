@@ -1,0 +1,53 @@
+Create Acme Sites and Get Sitemaps jmeter test
+
+this test create ACME web sites, with call the TestCreateSiteServlet Servlet, do Get with this Url :
+----------------------------------------------------------------------------
+/cms/createsite?site=ACME
+----------------------------------------------------------------------------
+
+after the creation, the test do get on the home.sitemap.txt of the site.
+
+a regex extractor grep all urls in the doget response, after a script beanshell work the variable return by the regexExtractor
+and save it into a file:
+-----------------------------------------------------------------------------
+if (prev.isSuccessful()) {
+    String live = vars.get("LIVE_SITEMAP");                                  // LIVE_SITEMAP is the var return by regex-Extractor
+    live = live.replaceAll(" ", "");
+    live = live.replaceAll("\n\n", "\n");
+    String path = vars.get("PATH");                                          // PATH is the path you want for the sitempas files will be saved
+    try {
+        File f = new File(path + "liveSitemaps.txt");
+        BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
+        out.write(live+"\n");
+        out.close();
+    } catch (IOException e) {}
+}
+-----------------------------------------------------------------------------
+
+the display in the txt file will be look like that:
+-----------------------------------------------------------------------------
+/jahia/cms/render/default/en/sites/ACME1/home.html
+/jahia/cms/render/default/en/sites/ACME1/home/activities.html
+/jahia/cms/render/default/en/sites/ACME1/home/activities/construction-et-projets-civils-d.html
+/jahia/cms/render/default/en/sites/ACME1/home/activities/research-and-innovation.html
+/jahia/cms/render/default/en/sites/ACME1/home/events.html
+/jahia/cms/render/default/en/sites/ACME1/home/publications.html
+/jahia/cms/render/default/en/sites/ACME1/home/news.html
+/jahia/cms/render/default/en/sites/ACME1/home/news/Archives2009.html
+/jahia/cms/render/default/en/sites/ACME1/home/news/Archvies2008.html
+/jahia/cms/render/default/en/sites/ACME1/home/about-us.html
+/jahia/cms/render/default/en/sites/ACME1/home/about-us/management-team.html
+/jahia/cms/render/default/en/sites/ACME1/home/about-us/jobs.html
+/jahia/cms/render/default/en/sites/ACME1/home/sitemap.html
+/jahia/cms/render/default/en/sites/ACME2/home.html
+/jahia/cms/render/default/en/sites/ACME2/home/activities.html
+/jahia/cms/render/default/en/sites/ACME2/home/activities/construction-et-projets-civils-d.html
+/jahia/cms/render/default/en/sites/ACME2/home/activities/research-and-innovation.html
+/jahia/cms/render/default/en/sites/ACME2/home/events.html
+/jahia/cms/render/default/en/sites/ACME2/home/publications.html
+/jahia/cms/render/default/en/sites/ACME2/home/news.html
+-----------------------------------------------------------------------------
+
+
+
+

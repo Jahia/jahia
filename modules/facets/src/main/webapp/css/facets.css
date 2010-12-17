@@ -1,11 +1,21 @@
 /******************************************************************************
+* Facets Area Layout
+******************************************************************************/
+#bodywrapper div.facets {
+margin:2em 0;
+padding:1em;
+border: solid 1px #cecece;
+
+}
+/******************************************************************************
 * Facets List
 ******************************************************************************/
 #bodywrapper div.activefacetsList{
 	background-color:#ffffff ;
 	margin:0;
 	padding:1em 1em 0.5em;
-	border: 1px solid #cecece;
+	border: 1px solid #00ff00;
+	background-color:#CCFFCC ;
 	line-height:normal;
 	margin-bottom:1em;
 }

@@ -126,8 +126,8 @@
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
 
     <div class="facets">
-        <h3><fmt:message key="facets.facets"/></h3>
-        <%@include file="activeFacets.jspf"%>        
+        <%@include file="activeFacets.jspf"%>
+        <h4><fmt:message key="facets.SelectFilter"/></h4> <br/>            
         <c:forEach items="${result.facetFields}" var="currentFacet">
             <%@include file="facetDisplay.jspf"%>
         </c:forEach>

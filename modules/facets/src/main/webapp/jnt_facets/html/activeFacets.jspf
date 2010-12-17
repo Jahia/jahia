@@ -14,28 +14,30 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 
-
-    <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet" varStatus="activeFacetStat">
-        <c:if test="${activeFacetStat.first}">
-		<div class="activefacetsList">
-            <h4><fmt:message key="facets.activeFacets"/></h4>
-            <ul>
-        </c:if>            
-        <c:forEach items="${facet.value}" var="facetValue">        
-            <c:set var="facetParam" value="${facet:getDeleteFacetUrl(facet, facetValue, activeFacetsVars[facetParamVarName])}"/>
-            <c:url var="facetUrl" value="${url.mainResource}" context="/">
-                <c:if test="${not empty facetParam}">
-                    <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facetParam)}"/>
-                </c:if>
-            </c:url>
-            <li>
-                <facet:facetValueLabel currentActiveFacet="${facet}" currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/>
-                &nbsp;<a href="${facetUrl}"><fmt:message key="facets.remove"/></a>                
-            </li>
-        </c:forEach> 
-        <c:if test="${activeFacetStat.last}">        
-            </ul>
-        </c:if> 
-		<div class="clear"></div>
-		</div>             
+<c:if test="${!empty activeFacetsVars[activeFacetMapVarName]}">
+    <div class="activefacetsList">
+    <h4><fmt:message key="facets.activeFacets"/></h4>
+    <ul>
+</c:if>
+<c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet" varStatus="activeFacetStat">
+    <c:forEach items="${facet.value}" var="facetValue">
+        <c:set var="facetParam" value="${facet:getDeleteFacetUrl(facet, facetValue, activeFacetsVars[facetParamVarName])}"/>
+        <c:url var="facetUrl" value="${url.mainResource}" context="/">
+            <c:if test="${not empty facetParam}">
+                <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facetParam)}"/>
+            </c:if>
+        </c:url>
+        <li>
+            <facet:facetValueLabel currentActiveFacet="${facet}" currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/>
+            &nbsp;<a href="${facetUrl}"><fmt:message key="facets.remove"/></a>
+        </li>
     </c:forEach>
+    <c:if test="${activeFacetStat.last}">
+    </c:if>
+    <div class="clear"></div>
+
+</c:forEach>
+<c:if test="${!empty activeFacetsVars[activeFacetMapVarName]}">
+    </ul>
+    </div>
+</c:if>

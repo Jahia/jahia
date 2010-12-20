@@ -5,6 +5,11 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
+[jmix:glossary] > jmix:templateMixin mixin
+ extends = jmix:list
+ itemtype = layout
+ - field (string, choicelist[sortableFieldnames]) indexed=no
+
 [jmix:sandboxContent] > jmix:droppableContent mixin
 
 [jmix:sendAsNewsletter] mixin

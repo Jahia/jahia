@@ -23,17 +23,9 @@
              sql="select * from [jnt:content] as p where p.[jcr:createdBy]='${currentNode.name}' or p.[jcr:lastModifiedBy]='${currentNode.name}' order by p.[jcr:lastModified] desc"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
     <c:set var="listTotalSize" value="${fn:length(result.nodes)}" scope="request"/>
-    <c:choose>
-        <c:when test="${empty param.pagesize}">
-            <c:set var="pageSize" value="40"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="pageSize" value="${param.pagesize}"/>
-        </c:otherwise>
-    </c:choose>
-    <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
+    <template:initPager totalSize="${listTotalSize}" pageSize="20" id="${currentNode.identifier}"/>
     <ul class="userMyContentList">
-        <c:forEach items="${currentList}" var="subchild" varStatus="status">
+        <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
             <li>
                 <a class="userMyContentListIcon" href="${url.base}${subchild.path}.html" target="_blank">
@@ -46,6 +38,6 @@
             </li>
         </c:forEach>
     </ul>
-    <template:displayPagination nbItemsList="5,10,20,40,60,80,100,200"/>
+    <template:displayPagination nbItemsList="10,20,40,60,80,100,200"/>
     <template:removePager id="${currentNode.identifier}"/>
 </div>

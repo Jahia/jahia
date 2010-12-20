@@ -99,6 +99,10 @@ public class InitPagerTag extends TagSupport {
             String beginStr = pageContext.getRequest().getParameter("begin");
             String endStr = pageContext.getRequest().getParameter("end");
 
+            if(pageContext.getRequest().getParameter("pagesize")!=null) {
+                pageSize = Integer.parseInt(pageContext.getRequest().getParameter("pagesize"));
+            }
+
             int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);
             int end = endStr == null ? pageSize - 1 : Integer.parseInt(endStr);
             if(totalSize < pageSize) {

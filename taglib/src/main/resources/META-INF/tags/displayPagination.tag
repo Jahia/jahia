@@ -31,8 +31,17 @@
         <c:set var="searchUrl" value="${url.mainResource}?"/>
     </c:otherwise>
     </c:choose>
-    <c:url value="${searchUrl}" context="/" var="basePaginationUrl"/>
+    <c:url value="${searchUrl}" context="/" var="basePaginationUrl">
+        <c:if test="${not empty param}">
+            <c:forEach items="${param}" var="extraParam">
+                <c:if test="${extraParam.key ne 'begin' and extraParam.key ne 'end' and extraParam.key ne 'pagesize'}">
+                    <c:param name="${extraParam.key}" value="${extraParam.value}"/>
+                </c:if>
+            </c:forEach>
+        </c:if>
+    </c:url>
     <c:set target="${moduleMap}" property="basePaginationUrl" value="${basePaginationUrl}"/>
+    ${extraParams}
     <div class="pagination"><!--start pagination-->
 
         <div class="paginationPosition"><span><fmt:message key="pagination.pageOf.withTotal"><fmt:param value="${moduleMap.currentPage}"/><fmt:param value="${moduleMap.nbPages}"/><fmt:param value="${moduleMap.totalSize}"/></fmt:message></span>
@@ -40,10 +49,10 @@
         <div class="paginationNavigation">
             <label for="pageSizeSelector"><fmt:message key="pagination.itemsPerPage"/>:</label>
             <select id="pageSizeSelector" onchange="window.location='${basePaginationUrl}begin=${moduleMap.begin}&pagesize='+$('#pageSizeSelector').val();">
-                <c:if test="${empty moduleMap.nbItemsList}">
-                    <c:set target="${moduleMap}" property="nbItemsList" value="5,10,25,50,100"/>
+                <c:if test="${empty nbItemsList}">
+                    <c:set var="nbItemsList" value="5,10,25,50,100"/>
                 </c:if>
-                <c:forTokens items="${moduleMap.nbItemsList}" delims="," var="opt">
+                <c:forTokens items="${nbItemsList}" delims="," var="opt">
                     <option value="${opt}" <c:if test="${moduleMap.pageSize eq opt}">selected="true" </c:if>>${opt}</option>
                 </c:forTokens>
             </select>

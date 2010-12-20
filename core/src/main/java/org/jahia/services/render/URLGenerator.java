@@ -126,12 +126,12 @@ public class URLGenerator {
         preview = basePreview + resourcePath;
         baseContribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         contribute = baseContribute + resourcePath;
-        studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
+        studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() ;
         ckeditor = SettingsBean.getInstance().getJahiaCkEditorDiskPath();
         if (context.getSite() != null) {
             try {
                 if (context.getSite().hasProperty("j:templatesSet")) {
-                    studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
+                    studio += context.getSite().getProperty("j:templatesSet").getNode().getPath();
                     if (resource.getNode().hasProperty("j:templateNode")) {
                         try {
                             studio += StringUtils.substringAfter(resource.getNode().getProperty("j:templateNode").getNode().getPath(), context.getSite().getPath());

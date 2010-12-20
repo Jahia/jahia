@@ -866,12 +866,17 @@
         </dependency>
 
         <!-- Quercus dependencies -->
-
-        <dependency>
-            <groupId>com.caucho.quercus</groupId>
-            <artifactId>resin</artifactId>
-            <version>quercus-4.0.3</version>
-        </dependency>
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>resin-quercus</artifactId>
+			<version>4.0.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>resin-kernel</artifactId>
+			<version>4.0.13</version>
+		</dependency>
+        
 
         <!-- Velocity engine for BSF -->
         <dependency>

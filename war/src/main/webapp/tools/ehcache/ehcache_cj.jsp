@@ -78,6 +78,7 @@
 %>
 <body style="background-color: white;">
 <a href="index.html" title="back to the overview of caches">overview</a>&nbsp;
+<a href="?refresh">refresh</a>&nbsp;
 <a href="?flush=true" onclick="return confirm('This will flush the content of the cache. Would you like to continue?')" title="flush the content of the module output cache">flush</a>&nbsp;
 <a href="?viewContent=${param.viewContent ? 'false' : 'true'}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
 <div id="statistics">

@@ -26,11 +26,11 @@
 </div>
 <!--stop bodywrapper-->
 
+</body>
+</html>
+
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>
 <template:addResources type="css" resources="960.css,01web.css,02mod.css,navigationN1.css,navigationN2-2.css"/>
 <template:theme/>
-
-</body>
-</html>

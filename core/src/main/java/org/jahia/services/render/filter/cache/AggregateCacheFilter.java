@@ -86,6 +86,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final Pattern ESI_RESOURCE_STARTTAG_REGEXP = Pattern.compile(
             "<!-- cache:resource type=\\\"(.*)\\\" path=\\\"(.*)\\\" insert=\\\"(.*)\\\" resource=\\\"(.*)\\\" title=\\\"(.*)\\\" key=\\\"(.*)\\\" -->");
     public static final Pattern ESI_RESOURCE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:resource -->");
+    private static final Pattern CLEANUP_RESOURCE_REGEXP = Pattern.compile(
+            "<!-- cache:resource (.*) -->\n|\n<!-- /cache:resource -->");
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
     private static final String RESOURCES = "resources";
     private static final String RESOURCES_OPTIONS = "resources_options";
@@ -452,15 +454,22 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
+            Template oldOne = (Template) renderContext.getRequest().getAttribute("previousTemplate");
+            boolean restoreOldOneIfNeeded = false;
             if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
                 renderContext.getRequest().setAttribute("previousTemplate", new Template(keyAttrbs.get(
                         "templateNodes")));
-            } else {
+            }
+            else {
                 renderContext.getRequest().removeAttribute("previousTemplate");
+                restoreOldOneIfNeeded = true;
             }
             String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get("templateType"),
                     keyAttrbs.get("template"), Resource.CONFIGURATION_MODULE), renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
+            if(restoreOldOneIfNeeded) {
+                renderContext.getRequest().setAttribute("previousTemplate", oldOne);
+            }
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
         } catch (RenderException e) {
@@ -548,7 +557,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     public static String removeEsiTags(String content) {
-        return StringUtils.isNotEmpty(content) ? CLEANUP_REGEXP.matcher(content).replaceAll("") : content;
+        if (StringUtils.isNotEmpty(content)) {
+            String s = CLEANUP_REGEXP.matcher(content).replaceAll("");
+            s = CLEANUP_RESOURCE_REGEXP.matcher(s).replaceAll("");
+            return s;
+        } else {
+            return content;
+        }
     }
 
     @Override

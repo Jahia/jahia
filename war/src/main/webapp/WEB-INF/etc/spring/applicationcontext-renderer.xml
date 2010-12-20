@@ -100,6 +100,7 @@
 			</list>
 		</property>
 	</bean>
+
 	<bean class="org.jahia.services.render.filter.TemplateNodeFilter">
 		<property name="priority" value="22" />
 		<property name="applyOnConfigurations" value="wrappedcontent,page,gwt" />

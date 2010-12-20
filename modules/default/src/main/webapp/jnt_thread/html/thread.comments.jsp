@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
@@ -22,11 +23,27 @@
         $('.timestamp').cuteTime({ refresh: 60000 });
     });
 </script>
-
+<c:choose>
+    <c:when test="${not empty param.pagesize}">
+        <c:set var="pageSize" value="${param.pagesize}"/>
+    </c:when>
+    <c:when test="${not empty param.src_itemsPerPage}">
+        <c:set var="pageSize" value="${param.src_itemsPerPage}"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="pageSize" value="5"/>
+    </c:otherwise>
+</c:choose>
 <ul class="genericListComment" id="${currentNode.UUID}">
-    <c:set target="${moduleMap}" property="commentsList" value="${currentNode.nodes}" />
-    <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(currentNode.nodes)}"/>
-    <c:forEach items="${moduleMap.commentsList}" var="subchild" varStatus="status">
+    <jcr:sql var="numberOfPostsQuery"
+             sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${currentNode.path}']) order by post.[jcr:lastModified] desc"/>
+    <c:set target="${moduleMap}" property="commentsList" value="${numberOfPostsQuery.nodes}"/>
+    <c:set target="${moduleMap}" property="listTotalSize" value="${numberOfPostsQuery.nodes.size}"/>
+    <template:initPager totalSize="${moduleMap.listTotalSize}" id="${currentNode.identifier}" pageSize="${pageSize}"/>
+    <c:forEach items="${moduleMap.commentsList}" var="subchild" varStatus="status" begin="${moduleMap.begin}"
+               end="${moduleMap.end}">
         <template:module node="${subchild}" template="comments"/>
     </c:forEach>
 </ul>
+<template:displayPagination/>
+<template:removePager id="${currentNode.identifier}"/>

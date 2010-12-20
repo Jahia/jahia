@@ -99,7 +99,7 @@ public class JahiaQuercusServletImpl extends QuercusServletImpl {
           // php/6006
           ws.setNewlineString("\n");
 
-          Quercus quercus = getQuercus();
+          QuercusContext quercus = getQuercus();
 
           env = quercus.createEnv(page, ws, request, response);
           quercus.setServletContext(_servletContext);

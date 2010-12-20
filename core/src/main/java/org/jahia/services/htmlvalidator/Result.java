@@ -1,8 +1,5 @@
 package org.jahia.services.htmlvalidator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Result {
     public enum Type {
         ERROR, WARNING, INFO;
@@ -12,23 +9,32 @@ public class Result {
     protected int column;
     protected String context;
     protected String message;
+    protected String example;
     
     public Result() {
         super();
     }
-
+    
     public Result(String message) {
         super();
         this.message = message;
-    }
-    
-    public Result(String message, Type type) {
+    }    
+
+    public Result(String message, String context, String example) {
         super();
         this.message = message;
+        this.context = context;
+        this.example = example;        
+    }
+    
+    public Result(String message, String context, String example, Type type) {
+        super();
+        this.message = message;
+        this.context = context;
+        this.example = example;        
         this.type = type;        
     }
 
-    protected List<String> longMessages;
     protected String errorType;
     protected Integer level;
 
@@ -108,31 +114,8 @@ public class Result {
         return this.message;
     }
     
-    /**
-     * Gets the value of the longMessages property.
-     * 
-     */
-    public List<String> getLongMessages() {
-        if (longMessages == null) {
-            longMessages = new ArrayList<String>();
-        }
-        return this.longMessages;
-    }
-    
-    /**
-     * Adds a message property.
-     * 
-     */
-    public boolean addLongMessage(String message) {
-        return getLongMessages().add(message);
-    }
-
     public void setMessage(String message) {
             this.message = message;
-    }
-
-    public void setLongMessages(List<String> longMessages) {
-            this.longMessages = longMessages;
     }
 
     /**
@@ -189,6 +172,14 @@ public class Result {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public String getExample() {
+        return example;
+    }
+
+    public void setExample(String example) {
+        this.example = example;
     }
 
 }

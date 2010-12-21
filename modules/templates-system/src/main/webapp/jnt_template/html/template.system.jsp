@@ -51,5 +51,5 @@
 </html>
 
 <!--ressources-->
-<template:addResources type="css" resources="960.css,01web.css,navigation.css,navigationN2-1.css" />
+<template:addResources type="css" resources="960-fluid.css,01web.css,navigation.css,navigationN2-1.css" />
 <template:theme/>

@@ -42,6 +42,8 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     private volatile long processedCount = 0;
     private volatile long ignoredCount = 0;
     private volatile long insertedCount = 0;
+    private volatile long processedSinceLastReport = 0;
+    private volatile long timeSinceLastReport = 0;
 
     private static ContentHistoryService instance;
 
@@ -76,6 +78,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     }
 
     public void start() {
+        timeSinceLastReport = System.currentTimeMillis();
     }
 
     public void process(Exchange exchange) throws Exception {
@@ -83,6 +86,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
         final Matcher matcher = PATTERN.matcher(message);
         if (matcher.matches()) {
             processedCount++;
+            processedSinceLastReport++;
             final String dateStr = matcher.group(1);
             final Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS").parse(dateStr);
             final String userKey = matcher.group(2);
@@ -218,7 +222,11 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             }
             
             if (processedCount % 2000 == 0) {
-				logger.info("Total count of processed content history messages: {}. Ignored: {}. Inserted: {}.", new Object[] {processedCount, ignoredCount, insertedCount});
+                long nowTime = System.currentTimeMillis();
+                double rate = processedSinceLastReport / (nowTime - timeSinceLastReport);
+				logger.info("Total count of processed content history messages: {}. Ignored: {}. Inserted: {}. Rate={} msgs/sec.", new Object[] {processedCount, ignoredCount, insertedCount, rate});
+                processedSinceLastReport = 0;
+                timeSinceLastReport = nowTime;
             }
         }
     }

@@ -35,12 +35,14 @@ package org.jahia.admin;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.collections.map.UnmodifiableMap;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Jahia Administration modules registry, which holds all items, displayed in
@@ -60,15 +62,19 @@ public class AdministrationModulesRegistry {
         }
     };
 
+    @SuppressWarnings("unchecked")
     private List<AdministrationModule> serverModules = UnmodifiableList
             .decorate(new LinkedList<AdministrationModule>());
 
+    @SuppressWarnings("unchecked")
     private Map<String, AdministrationModule> serverModulesByUrlKey = UnmodifiableMap
             .decorate(new HashMap<String, AdministrationModule>());
 
+    @SuppressWarnings("unchecked")
     private List<AdministrationModule> siteModules = UnmodifiableList
             .decorate(new LinkedList<AdministrationModule>());
 
+    @SuppressWarnings("unchecked")
     private Map<String, AdministrationModule> siteModulesByUrlKey = UnmodifiableMap
             .decorate(new HashMap<String, AdministrationModule>());
 
@@ -79,26 +85,15 @@ public class AdministrationModulesRegistry {
      *            the module to be added
      */
     public void add(AdministrationModule module) {
+        remove(module.getName(), module.isServerModule());
         if (module.isServerModule()) {
             serverModules = new LinkedList<AdministrationModule>(serverModules);
             serverModules.add(module);
-            Collections.sort(serverModules, MODULE_COMPARATOR);
-            serverModules = UnmodifiableList.decorate(serverModules);
-            serverModulesByUrlKey = new HashMap<String, AdministrationModule>(
-                    serverModulesByUrlKey);
-            serverModulesByUrlKey.put(module.getUrlKey(), module);
-            serverModulesByUrlKey = UnmodifiableMap
-                    .decorate(serverModulesByUrlKey);
         } else {
             siteModules = new LinkedList<AdministrationModule>(siteModules);
             siteModules.add(module);
-            Collections.sort(siteModules, MODULE_COMPARATOR);
-            siteModules = UnmodifiableList.decorate(siteModules);
-            siteModulesByUrlKey = new HashMap<String, AdministrationModule>(
-                    siteModulesByUrlKey);
-            siteModulesByUrlKey.put(module.getUrlKey(), module);
-            siteModulesByUrlKey = UnmodifiableMap.decorate(siteModulesByUrlKey);
         }
+        rebuildRegistry();
     }
 
     public AdministrationModule getServerAdministrationModule(String moduleKey) {
@@ -123,25 +118,41 @@ public class AdministrationModulesRegistry {
      * @param module
      *            the module to be removed
      */
-    public void remove(AdministrationModule module) {
-        if (module.isServerModule()) {
+    public void remove(String moduleName, boolean isServerModule) {
+        if (isServerModule) {
             serverModules = new LinkedList<AdministrationModule>(serverModules);
-            serverModules.remove(module);
-            serverModules = UnmodifiableList.decorate(serverModules);
-            serverModulesByUrlKey = new HashMap<String, AdministrationModule>(
-                    serverModulesByUrlKey);
-            serverModulesByUrlKey.remove(module.getUrlKey());
-            serverModulesByUrlKey = UnmodifiableMap
-                    .decorate(serverModulesByUrlKey);
+            for (Iterator<AdministrationModule> iterator = serverModules.iterator(); iterator.hasNext();) {
+	            AdministrationModule oldModule = iterator.next();
+	            if (StringUtils.equals(oldModule.getName(), moduleName)) {
+	            	iterator.remove();
+	            }
+            }
         } else {
             siteModules = new LinkedList<AdministrationModule>(siteModules);
-            siteModules.remove(module);
-            siteModules = UnmodifiableList.decorate(siteModules);
-            siteModulesByUrlKey = new HashMap<String, AdministrationModule>(
-                    siteModulesByUrlKey);
-            siteModulesByUrlKey.remove(module.getUrlKey());
-            siteModulesByUrlKey = UnmodifiableMap.decorate(siteModulesByUrlKey);
+            for (Iterator<AdministrationModule> iterator = siteModules.iterator(); iterator.hasNext();) {
+	            AdministrationModule oldModule = iterator.next();
+	            if (StringUtils.equals(oldModule.getName(), moduleName)) {
+	            	iterator.remove();
+	            }
+            }
         }
+        rebuildRegistry();
     }
 
+	@SuppressWarnings("unchecked")
+    private void rebuildRegistry() {
+		if (!(serverModules instanceof UnmodifiableList)) {
+			Collections.sort(serverModules, MODULE_COMPARATOR);
+			serverModules = UnmodifiableList.decorate(serverModules);
+			serverModulesByUrlKey = UnmodifiableMap
+			        .decorate(new HashMap<String, AdministrationModule>(serverModulesByUrlKey));
+		}
+		if (!(siteModules instanceof UnmodifiableList)) {
+			siteModules = new LinkedList<AdministrationModule>(siteModules);
+			Collections.sort(siteModules, MODULE_COMPARATOR);
+			siteModules = UnmodifiableList.decorate(siteModules);
+			siteModulesByUrlKey = UnmodifiableMap
+			        .decorate(new HashMap<String, AdministrationModule>(siteModulesByUrlKey));
+		}
+	}
 }

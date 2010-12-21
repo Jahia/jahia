@@ -10,76 +10,76 @@
             </pagecontent>
           </newsletters>
           <home jcr:primaryType="jnt:pageTemplate">
-            <pagecontent jcr:mixinTypes="jmix:style jmix:accessControlled" jcr:primaryType="jnt:contentList">
-              <j:translation_en jcr:language="en" jcr:title="Links" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+            <pagecontent jcr:mixinTypes="jmix:accessControlled jmix:style" jcr:primaryType="jnt:contentList">
+              <j:translation_en jcr:title="Links" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
               <j:acl jcr:primaryType="jnt:acl" />
               <Introduction jcr:primaryType="jnt:bigText">
-                <j:translation_en jcr:language="en" text="&lt;h1&gt;  &lt;em&gt;What do you want to do with Jahia today ?&lt;/em&gt;&lt;/h1&gt; " jcr:primaryType="jnt:translation" />
+                <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h1&gt;  &lt;em&gt;What do you want to do with Jahia today ?&lt;/em&gt;&lt;/h1&gt; " />
               </Introduction>
-              <row column="2col610" jcr:primaryType="jnt:row" />
+              <row column="2col412" jcr:primaryType="jnt:row" />
             </pagecontent>
             <row-col1 jcr:primaryType="jnt:contentList">
               <my-task j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:title="My Tasks" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                <j:translation_en jcr:title="My Tasks" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                 <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="tasklist" />
               </my-task>
-              <application-shortcuts jcr:mixinTypes="jmix:renderable jmix:columns jmix:accessControlled" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="2">
-                <j:translation_en jcr:language="en" jcr:title="Application shortcuts" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
-                <contentList j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:view="unordered" j:className="simple">
+              <application-shortcuts jcr:mixinTypes="jmix:renderable jmix:accessControlled jmix:columns" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="2">
+                <j:translation_en jcr:title="Application shortcuts" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
+                <contentList j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:listOrdered" jcr:primaryType="jnt:contentList" j:className="simple" j:view="unordered">
                   <jahia-studio-200.png j:node="/templateSets/templates-system/templates/files/themes/default/jahia-studio-200.png" jcr:primaryType="jnt:imageReference" />
                   <gotoStudio jcr:primaryType="jnt:gotoStudio">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
                   </gotoStudio>
                 </contentList>
-                <go-to-the-server-administration j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:view="unordered" j:className="simple">
-                  <j:translation_en jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
+                <go-to-the-server-administration j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:className="simple" j:view="unordered">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
                   <jahia-ccp-200.png j:node="/templateSets/templates-system/templates/files/themes/default/jahia-ccp-200.png" jcr:primaryType="jnt:imageReference" />
                   <gotoAdmin jcr:primaryType="jnt:gotoAdmin" />
                 </go-to-the-server-administration>
                 <j:acl jcr:primaryType="jnt:acl">
-                  <GRANT_r_editor-in-chief j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:write" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-                  <DENY_r_editor-in-chief j:privileges="jcr:read_live" j:protected="false" j:principal="r:editor-in-chief" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                  <GRANT_r_seo-manager j:privileges="jcr:read jcr:write" j:protected="false" j:principal="r:seo-manager" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-                  <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl jcr:read_live" j:protected="false" j:principal="r:seo-manager" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                  <DENY_g_guest j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                  <GRANT_r_editor j:privileges="jcr:read jcr:write" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-                  <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl jcr:read_live" j:protected="false" j:principal="r:editor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                  <GRANT_r_translator j:privileges="jcr:read jcr:write" j:protected="false" j:principal="r:translator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-                  <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl jcr:read_live" j:protected="false" j:principal="r:translator" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                  <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:write" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-                  <DENY_r_publisher j:privileges="jcr:modifyAccessControl jcr:read_live" j:protected="false" j:principal="r:publisher" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                  <DENY_g_users j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="g:users" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                  <GRANT_r_editor-in-chief j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:write" j:principal="r:editor-in-chief" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+                  <DENY_r_editor-in-chief j:privileges="jcr:read_live" j:principal="r:editor-in-chief" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                  <GRANT_r_seo-manager j:privileges="jcr:read jcr:write" j:principal="r:seo-manager" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+                  <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl jcr:read_live" j:principal="r:seo-manager" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                  <DENY_g_guest j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                  <GRANT_r_editor j:privileges="jcr:read jcr:write" j:principal="r:editor" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+                  <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl jcr:read_live" j:principal="r:editor" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                  <GRANT_r_translator j:privileges="jcr:read jcr:write" j:principal="r:translator" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+                  <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl jcr:read_live" j:principal="r:translator" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                  <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:write" j:principal="r:publisher" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+                  <DENY_r_publisher j:privileges="jcr:modifyAccessControl jcr:read_live" j:principal="r:publisher" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                  <DENY_g_users j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
                 </j:acl>
-                <go-the-global-united-content-man-1 j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:className="simple" j:view="unordered">
-                  <j:translation_en jcr:mixinTypes="mix:title" jcr:title="United Content Manager" jcr:primaryType="jnt:translation" jcr:language="en" />
+                <go-the-global-united-content-man-1 j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:listOrdered" jcr:primaryType="jnt:contentList" j:className="simple" j:view="unordered">
+                  <j:translation_en jcr:title="United Content Manager" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <gotoManager type="united content" jcr:primaryType="jnt:gotoManager" />
                 </go-the-global-united-content-man-1>
               </application-shortcuts>
             </row-col1>
             <row-col2 jcr:primaryType="jnt:contentList">
-              <listbutton jcr:mixinTypes="jmix:renderable jmix:columns jmix:accessControlled" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="1">
-                <j:translation_en jcr:language="en" jcr:title="listbutton" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
-                <j:acl jcr:primaryType="jnt:acl" >
-                    <GRANT_g_users j:privileges="jcr:read_live jcr:read" j:protected="false" j:principal="g:users" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+              <listbutton jcr:mixinTypes="jmix:renderable jmix:accessControlled jmix:columns" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="1">
+                <j:translation_en jcr:title="listbutton" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
+                <j:acl jcr:primaryType="jnt:acl">
+                  <GRANT_g_users j:privileges="jcr:read_live jcr:read" j:principal="g:users" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                 </j:acl>
                 <my-websites-access-in-edit-mode j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:view="unordered" j:className="simple">
-                  <j:translation_en jcr:mixinTypes="mix:title" jcr:title="My websites (access in edit mode)" jcr:primaryType="jnt:translation" jcr:language="en" />
+                  <j:translation_en jcr:title="My websites (access in edit mode)" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <websites-list-in-edit-mode type="edit" jcr:primaryType="jnt:listSites">
-                    <j:translation_en jcr:mixinTypes="mix:title" jcr:title="websites list in edit mode" jcr:primaryType="jnt:translation" jcr:language="en" />
+                    <j:translation_en jcr:title="websites list in edit mode" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   </websites-list-in-edit-mode>
                 </my-websites-access-in-edit-mode>
-                <my-websites-in-contribute-mode j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:view="unordered" j:className="simple">
-                  <j:translation_en jcr:mixinTypes="mix:title" jcr:title="My websites (access in contribute mode)" jcr:primaryType="jnt:translation" jcr:language="en" />
+                <my-websites-in-contribute-mode j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:listOrdered" jcr:primaryType="jnt:contentList" j:className="simple" j:view="unordered">
+                  <j:translation_en jcr:title="My websites (access in contribute mode)" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <websites-list-in-contribute-mode type="contribute" jcr:primaryType="jnt:listSites">
-                    <j:translation_en jcr:language="en" jcr:title="websites list in contribute mode" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:title="websites list in contribute mode" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   </websites-list-in-contribute-mode>
                 </my-websites-in-contribute-mode>
                 <go-the-global-united-content-man j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:view="unordered" j:className="simple">
-                  <j:translation_en jcr:mixinTypes="mix:title" jcr:title="Manage Files (Document Manager)" jcr:primaryType="jnt:translation" jcr:language="en" />
+                  <j:translation_en jcr:title="Manage Files (Document Manager)" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <gotoManager type="document" jcr:primaryType="jnt:gotoManager" />
                 </go-the-global-united-content-man>
-                <go-the-global-united-content-man-1 j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:view="unordered" j:className="simple">
-                  <j:translation_en jcr:mixinTypes="mix:title" jcr:title="Manage Content (Content Manager)" jcr:primaryType="jnt:translation" jcr:language="en" />
+                <go-the-global-united-content-man-1 j:skin="skins.box6" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:skinnable" jcr:primaryType="jnt:contentList" j:className="simple" j:view="unordered">
+                  <j:translation_en jcr:title="Manage Content (Content Manager)" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <gotoManager type="content" jcr:primaryType="jnt:gotoManager" />
                 </go-the-global-united-content-man-1>
               </listbutton>
@@ -88,7 +88,7 @@
           <simple jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList" />
           </simple>
-          <folderTemplate jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="false" j:applyOn="jnt:folder jnt:contentFolder" j:defaultTemplate="true">
+          <folderTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:folder jnt:contentFolder" j:hiddenTemplate="false" j:defaultTemplate="true">
             <pagecontent jcr:primaryType="jnt:contentList">
               <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-system/templates/base/folderTemplate/pagecontent/mainResourceDisplay">
                 <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" missing="false" facet="tags" offset="0" limit="100">
@@ -99,42 +99,42 @@
               <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" />
             </pagecontent>
           </folderTemplate>
-          <editContent j:requiredPermissions="write" j:requiredMode="contribute" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="true">
+          <editContent j:requiredPermissions="write" j:requiredMode="contribute" jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="true" j:applyOn="jnt:content">
             <pagecontent jcr:primaryType="jnt:contentList">
               <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
               <tabularList jcr:primaryType="jnt:tabularList">
                 <content jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="Content" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="Content" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <mainResourceDisplay-edit j:mainResourceView="contribute.edit" jcr:primaryType="jnt:mainResourceDisplay" />
                 </content>
                 <metadata jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="Metadata" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="Metadata" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <mainResourceDisplay-metadata j:mainResourceView="contribute.editmetadata" jcr:primaryType="jnt:mainResourceDisplay" />
                 </metadata>
                 <tags jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="Tags" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="Tags" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <tag jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table">
-                    <j:translation_en jcr:language="en" jcr:title="Tag" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:title="Tag" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   </tag>
-                  <addTag jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:tagging" j:view="addtag" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table">
-                    <j:translation_en jcr:language="en" jcr:title="Tag" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <addTag jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table" j:view="addtag">
+                    <j:translation_en jcr:title="Tag" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   </addTag>
                 </tags>
                 <categories jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="Classifications" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
-                  <category jcr:mixinTypes="jmix:renderable jmix:accessControlled" jcr:primaryType="jnt:categorizing" j:view="default" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table">
-                    <j:translation_en jcr:language="en" jcr:title="Category" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="Classifications" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
+                  <category jcr:mixinTypes="jmix:accessControlled jmix:renderable" jcr:primaryType="jnt:categorizing" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table" j:view="default">
+                    <j:translation_en jcr:title="Category" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                     <j:acl jcr:primaryType="jnt:acl" />
                   </category>
-                  <category-1 jcr:mixinTypes="jmix:renderable jmix:accessControlled" jcr:primaryType="jnt:categorizing" j:view="addcategory" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table">
-                    <j:translation_en jcr:language="en" jcr:title="Category" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <category-1 jcr:mixinTypes="jmix:accessControlled jmix:renderable" jcr:primaryType="jnt:categorizing" j:view="addcategory" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table">
+                    <j:translation_en jcr:title="Category" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                     <j:acl jcr:primaryType="jnt:acl" />
                   </category-1>
                 </categories>
               </tabularList>
             </pagecontent>
           </editContent>
-          <viewContent j:requiredMode="normal" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="true">
+          <viewContent j:requiredMode="normal" jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="true" j:applyOn="jnt:content">
             <pagecontent jcr:primaryType="jnt:contentList">
               <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
               <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
@@ -150,32 +150,32 @@
             <pagecontent jcr:primaryType="jnt:contentList">
               <tabularList jcr:primaryType="jnt:tabularList">
                 <my-profile jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My Profile" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
-                  <user-profile jcr:primaryType="jnt:currentUserDisplay" j:userView="myprofile" />
+                  <j:translation_en jcr:title="My Profile" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
+                  <user-profile j:userView="myprofile" jcr:primaryType="jnt:currentUserDisplay" />
                 </my-profile>
                 <my-content jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My Content" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Content" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="mycontent" />
                 </my-content>
                 <my-tasks jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My Tasks" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Tasks" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="tasklist" />
                 </my-tasks>
                 <my-bookmarks jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My Bookmarks" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Bookmarks" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="bookmarks" />
                 </my-bookmarks>
                 <my-portal jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My Portal" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Portal" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <my-portal-logo.png j:node="/templateSets/templates-system/templates/files/themes/default/my-portal-logo.png" jcr:primaryType="jnt:imageReference" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="portal" />
                 </my-portal>
                 <my-connections jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My Connections" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Connections" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="myconnections" />
                 </my-connections>
                 <my-messages jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title="My Messages" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Messages" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="mymessages" />
                 </my-messages>
               </tabularList>
@@ -188,15 +188,17 @@
             <footer column="1col16" jcr:primaryType="jnt:row" />
           </footer>
           <header-col1 jcr:primaryType="jnt:contentList">
-            <currentuser jcr:primaryType="jnt:currentUserDisplay" j:userView="welcome" />
+            <currentuser j:userView="welcome" jcr:primaryType="jnt:currentUserDisplay" />
           </header-col1>
           <footer-col1 jcr:primaryType="jnt:contentList">
             <bigText jcr:primaryType="jnt:bigText">
-              <j:translation_en jcr:language="en" text="&lt;p&gt;  &amp;copy; 2002-2010 Jahia Solutions Group - All rights reserved.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  &amp;copy; 2002-2010 Jahia Solutions Group - All rights reserved.&lt;/p&gt; " />
             </bigText>
           </footer-col1>
           <header-col2 jcr:primaryType="jnt:contentList">
-            <logo-xcm-6.5-beta.png j:node="/templateSets/templates-system/templates/files/themes/default/logo-xcm-6.5-beta.png" jcr:primaryType="jnt:imageReference" />
+            <logo-jahia-xcm.png j:node="/templateSets/templates-system/templates/files/themes/default/logo-jahia-xcm.png" jcr:primaryType="jnt:imageReference">
+              <j:translation_fr jcr:language="fr" j:alternateText="logo-jahia-xcm" jcr:primaryType="jnt:translation" />
+            </logo-jahia-xcm.png>
           </header-col2>
         </base>
         <files jcr:primaryType="jnt:folder">
@@ -207,11 +209,6 @@
                 <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
                 <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
               </photo_portrait.png>
-              <logo-xcm-6.5-beta.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="60" j:width="220">
-                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-              </logo-xcm-6.5-beta.png>
               <my-portal-logo.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="50" j:width="129">
                 <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
                 <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
@@ -227,26 +224,31 @@
                 <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
                 <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
               </jahia-ccp-200.png>
+              <logo-jahia-xcm.png jcr:mixinTypes="jmix:image" j:height="60" jcr:primaryType="jnt:file" j:width="115">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </logo-jahia-xcm.png>
             </default>
           </themes>
         </files>
         <contents jcr:primaryType="jnt:contentFolder" />
       </templates>
       <j:acl jcr:primaryType="jnt:acl">
-        <GRANT_g_users j:privileges="jcr:read_live" j:protected="false" j:principal="g:users" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_g_users j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:write" j:protected="false" j:principal="g:users" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:editor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_editor-in-chief j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:read_live jcr:write" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_publisher j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="r:publisher" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_seo-manager j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:seo-manager" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:seo-manager" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_site-administrator j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="r:site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <GRANT_r_translator j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:translator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:translator" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:web-designer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:web-designer" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_g_users j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:write" j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:editor" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:editor" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_editor-in-chief j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="r:editor-in-chief" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:read_live jcr:write" j:principal="r:publisher" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_publisher j:privileges="jcr:modifyAccessControl" j:principal="r:publisher" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_seo-manager j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:seo-manager" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:seo-manager" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_site-administrator j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="r:site-administrator" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_r_translator j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:translator" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:translator" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:web-designer" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:web-designer" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
       </j:acl>
       <j:workflowRules jcr:primaryType="jnt:workflowRules">
         <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule">
@@ -257,10 +259,10 @@
       </j:workflowRules>
       <files jcr:primaryType="jnt:folder" />
       <contents jcr:primaryType="jnt:contentFolder" />
-      <home jcr:mixinTypes="jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:page" changefreq="monthly" j:templateNode="/templateSets/templates-system/templates/base/home" priority="0.5">
-        <j:translation_en jcr:language="en" jcr:title="Home" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" />
+      <home jcr:mixinTypes="jmix:accessControlled jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly" j:templateNode="/templateSets/templates-system/templates/base/home" priority="0.5">
+        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Home" jcr:primaryType="jnt:translation" />
         <j:acl jcr:primaryType="jnt:acl">
-          <DENY_g_guest j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+          <DENY_g_guest j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="g:guest" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
         </j:acl>
       </home>
       <portlets jcr:primaryType="jnt:portletFolder" />

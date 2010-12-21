@@ -167,7 +167,7 @@ public class ManageTemplates extends AbstractAdministrationModule {
      */
     protected void processSynchronize(HttpServletRequest request, HttpServletResponse response, HttpSession session, Locale locale)
             throws Exception {
-        String nodePath = site.getTemplateFolder();
+        String nodePath = "/templateSets/" + site.getTemplateFolder();
 
         try {
             getContentManagementService().deployTemplates(nodePath, site.getJCRLocalPath(), retrieveCurrentSession(request, locale));

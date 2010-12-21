@@ -11,7 +11,6 @@
                     org.jahia.services.preferences.user.UserPreferencesHelper"
         %>
 <%@ page import="org.apache.commons.lang.WordUtils" %>
-<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
 <%
     JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
     JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
@@ -35,7 +34,6 @@
     Integer daysLeft = (Integer) request.getAttribute("daysLeft");
     pageContext.setAttribute("processingContext", Jahia.getThreadParamBean());
     pageContext.setAttribute("theSite", theSite);
-    String studioPath = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/templateSets").getNodes().nextNode().getPath();
 %>
 <div class="dex-TabBar">
     <ul class="dex-TabBarItem-wrapper" style="width: 79%;">
@@ -71,8 +69,7 @@
             <div>
                 <div>
           <span class="tab-icon ico-studio">
-              <c:set var="studioPath"><%=studioPath%></c:set>
-          	<c:url var="studioUrl" value="/cms/studio/default/${processingContext.UILocale}${studioPath}/home.html"/>
+          	<c:url var="studioUrl" value="/cms/studio/default/${processingContext.UILocale}/templateSets/templates-system/home.html"/>
             <a href="${studioUrl}"><fmt:message key="org.jahia.admin.exitToStudio.label"/></a>
           </span>
                 </div>

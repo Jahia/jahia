@@ -1055,7 +1055,7 @@ public class ContentManagerHelper {
                 JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(shortName, "jnt:virtualsite");
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
 
-                JCRContentUtils.importSkeletons(skeletons, templateSet.getPath(), session);
+                JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
 
                 templateSet.getNode("templates/base").setProperty("j:view", shortName);
                 session.save();

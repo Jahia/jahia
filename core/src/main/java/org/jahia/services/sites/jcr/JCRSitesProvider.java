@@ -245,7 +245,7 @@ public class JCRSitesProvider {
                                     siteNode.setProperty("j:languages", languages.toArray(new String[languages.size()]));
                                     siteNode.setProperty("j:mandatoryLanguages", mandatoryLanguages.toArray(new String[mandatoryLanguages
                                             .size()]));
-                                    siteNode.setProperty("j:templatesSet", session.getNode("/templateSets/" + templatePackage));
+                                    siteNode.setProperty("j:templatesSet", templatePackage);
                                     session.save();
 //                                    JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
 //                                            false);

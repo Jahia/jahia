@@ -165,8 +165,10 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             }
 
             enforcePasswordPolicy(theUser);
-            theUser.setProperty(Constants.JCR_LASTLOGINDATE,
-                    String.valueOf(System.currentTimeMillis()));
+            // The following was deactivated for performance reasons. We should instead look at doing this with Camel
+            // or some other asynchronous way.
+            //theUser.setProperty(Constants.JCR_LASTLOGINDATE,
+            //        String.valueOf(System.currentTimeMillis()));
         } else {
             valveContext.invokeNext(context);
         }

@@ -35,6 +35,7 @@
     
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="textConfigurationRealm"/>
+        <property name="rememberMeManager"><null/></property>
     </bean>
     <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 </beans>

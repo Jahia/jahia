@@ -144,15 +144,21 @@ public class AdministrationModulesRegistry {
 		if (!(serverModules instanceof UnmodifiableList)) {
 			Collections.sort(serverModules, MODULE_COMPARATOR);
 			serverModules = UnmodifiableList.decorate(serverModules);
-			serverModulesByUrlKey = UnmodifiableMap
-			        .decorate(new HashMap<String, AdministrationModule>(serverModulesByUrlKey));
+			serverModulesByUrlKey = new HashMap<String, AdministrationModule>(serverModules.size());
+			for (AdministrationModule module : serverModules) {
+				serverModulesByUrlKey.put(module.getUrlKey(), module);
+            }
+			serverModulesByUrlKey = UnmodifiableMap.decorate(serverModulesByUrlKey);
 		}
 		if (!(siteModules instanceof UnmodifiableList)) {
 			siteModules = new LinkedList<AdministrationModule>(siteModules);
 			Collections.sort(siteModules, MODULE_COMPARATOR);
 			siteModules = UnmodifiableList.decorate(siteModules);
-			siteModulesByUrlKey = UnmodifiableMap
-			        .decorate(new HashMap<String, AdministrationModule>(siteModulesByUrlKey));
+			siteModulesByUrlKey = new HashMap<String, AdministrationModule>(siteModules.size());
+			for (AdministrationModule module : siteModules) {
+				siteModulesByUrlKey.put(module.getUrlKey(), module);
+            }
+			siteModulesByUrlKey = UnmodifiableMap.decorate(siteModulesByUrlKey);
 		}
 	}
 }

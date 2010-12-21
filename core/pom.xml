@@ -754,17 +754,11 @@
             	</exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-			<!-- workaround for https://issues.apache.org/jira/browse/TIKA-556 -->
-			<groupId>edu.ucar</groupId>
-			<artifactId>netcdf</artifactId>
-			<version>4.2-min</version>
-        </dependency>
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
-            <version>2.3.0</version>
+            <version>2.3.1</version>
         </dependency>
 
         <dependency>
@@ -1083,7 +1077,7 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
-            <version>1.0.0-incubating</version>
+            <version>1.1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-beanutils</groupId>
@@ -1094,12 +1088,12 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring</artifactId>
-            <version>1.0.0-incubating</version>
+            <version>1.1.0</version>
         </dependency>        
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
-            <version>1.0.0-incubating</version>
+            <version>1.1.0</version>
         </dependency>        
         <!-- end of Apache Shiro -->
         

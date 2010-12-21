@@ -44,10 +44,8 @@
                         <c:set var="result" value="${currentNode.versionHistory.allLinearFrozenNodes}"/>
                         <c:set var="currentList" value="${result}" scope="request"/>
                         <c:set var="listTotalSize" value="${functions:length(result)}" scope="request"/>
-                        <template:initPager pageSize="10" totalSize="${moduleMap.listTotalSize}" id="${currentNode.identifier}"/>
-
-                        <c:forEach items="${moduleMap.currentList}" var="version"
-                                   begin="${begin+1}" end="${moduleMap.end}" varStatus="status">
+                        <template:initPager totalSize="${listTotalSize}" pageSize="3" id="${currentNode.identifier}"/>
+                        <c:forEach items="${currentList}" var="version" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}" >
                             <c:choose>
                                 <c:when test="${status.count % 2 == 0}">
                                     <tr class="odd">

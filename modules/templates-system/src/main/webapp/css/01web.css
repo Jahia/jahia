@@ -74,7 +74,7 @@ body {
 	position:relative;
 	z-index:900;
 	width:100%;
-	color:#99cc00 !important;
+	color:#eaeaea !important;
 }
 #bodywrapper #header h3 {
 	float:right;
@@ -589,7 +589,7 @@ body {
 }
 #body .table, #body .table th, #body .table td
 {
-border: 1px solid #fff;
+border: 1px solid #ccc;
 }
 #body .table caption
 {
@@ -600,21 +600,21 @@ border: 1px solid #fff;
 }
 
 #body .table th {
-    color: #333;
+    color: #fff;
 	white-space:nowrap;
-	background-color:#CCCCCC;
-	padding:5px;
+	background-color:#333;
+	padding:2px;
 }
 #body .table td
 {
 	background-color:#fff;
-	padding:5px;
+	padding:2px;
 }
 #body .table tr:hover{
 	background-color:#ccc
 }
-#body .table .odd td{background-color:#eaeaea}
-#body .table .even td{ background-color:#fff}
+#body .table .odd td{background-color:#fff}
+#body .table .even td{ background-color:#eaeaea}
 #body .col1{}
 #body .col2{}
 #body .col3{}

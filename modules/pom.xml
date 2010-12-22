@@ -94,11 +94,12 @@
         <module>faq</module>
         <module>formbuilder</module>
         <module>forum</module>
+        <module>grid</module>
         <module>job</module>
         <module>location</module>
+        <module>macros</module>
         <module>news</module>
         <module>newsletter</module>
-        <module>grid</module>
         <module>pageHit</module>
         <module>person</module>
         <module>poll</module>
@@ -120,16 +121,16 @@
         <module>tabularList</module>
         <module>tasks</module>
         <module>teasers</module>
-        <module>test</module>
+        <module>templates-apps</module>
+        <module>templates-intranet</module>
+        <module>templates-system</module>
         <module>templates-web</module>
         <module>templates-web-blue</module>
-        <module>templates-intranet</module>
-        <module>templates-apps</module>
+        <module>test</module>
         <module>topstories</module>
         <module>twitter</module>
         <module>userregistration</module>
 		<module>videostreaming</module>
         <module>wiki</module>
-        <module>templates-system</module>
   </modules>
 </project>

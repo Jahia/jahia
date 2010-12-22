@@ -1,0 +1,59 @@
+Jahia Crazy Jane - Macros
+
+ Macros allows you to add some dynamic information in your texts.
+
+* Defining a macro
+
+  All macros are found under the macros directory of your modules. They respect a simple rule: the filename of the macro
+  define its name.
+
+---------------------
+macros/username.groovy
+---------------------
+
+  This define a macro name username.
+
+
+* How to use a macro
+
+  It is as simple as putting in your text a call like this ##macro_name##. Macros does not take any parameters.
+
+----------------------
+Dear ##username##,
+----------------------
+
+  This will render something like, "Dear John Doe," based on the user rendering the page (you have to check the option
+  <<<perUser>>> for the cache in the options panel of your content to be sure that each user see his own name).
+
+* How to write a macro
+
+  For the macro you can use any scripting language JSR-223 compliant deploy on your platform (by default Groovy,
+  Velocity and Freemarker).
+
+---------------------
+username.groovy
+
+if (currentUser.username.trim().equals("guest")) {
+    print "guest"
+} else {
+    print(currentUser.getProperty("j:firstName") + " " + currentUser.getProperty("j:lastName"))
+}
+---------------------
+
+* Default bindings available in your macros
+
+*-----------------+------------------------------------------+----------------------------------------------------+
+|Name             |Class                                     |Description                                         |
+*-----------------+------------------------------------------+----------------------------------------------------+
+ currentNode      |org.jahia.services.content.JCRNodeWrapper |The node we are currently rendering                 |
+*-----------------+------------------------------------------+----------------------------------------------------+
+ currentUser      |org.jahia.services.usermanager.JahiaUser  |The user currently connected                        |
+*-----------------+------------------------------------------+----------------------------------------------------+
+ currentAliasUser |org.jahia.services.usermanager.JahiaUser  |The user currently rendered if not the one connected|
+*-----------------+------------------------------------------+----------------------------------------------------+
+ renderContext    |org.jahia.services.render.RenderContext   |The current context for rendering                   |
+*-----------------+------------------------------------------+----------------------------------------------------+
+ currentResource  |org.jahia.services.render.Resource        |The resource associated with the current node       |
+*-----------------+------------------------------------------+----------------------------------------------------+
+ url              |org.jahia.services.render.URLGenerator    |An url generator allowing to create your own url    |
+*-----------------+------------------------------------------+----------------------------------------------------+

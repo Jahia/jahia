@@ -231,6 +231,21 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         try {
             if (cacheable) {
+                String perUser = (String) renderContext.getRequest().getAttribute("perUser");
+                if (perUser != null) {
+                    // This content must be cached by user as it is defined in the options panel
+                    // The value of the node property from the mixin jmix:cache are only checked in the TemplatesAttributesFilter
+                    // So we need to recalculate the key as we were not aware that this content needed to be cached by user
+                    // We need to store content with the previously calculate dcache to avoid lock up.
+                    cache.put(new Element(perUserKey, null));
+                    if (script != null) {
+                        chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(perUser));
+                    }
+                    key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+                    perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
+                            renderContext.getMainResource().getNode().getPath() +
+                            renderContext.getMainResource().getTemplate());
+                }
                 String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
                 Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
                         script != null ? script.getTemplate().getProperties().getProperty("cache.expiration",
@@ -459,15 +474,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
                 renderContext.getRequest().setAttribute("previousTemplate", new Template(keyAttrbs.get(
                         "templateNodes")));
-            }
-            else {
+            } else {
                 renderContext.getRequest().removeAttribute("previousTemplate");
                 restoreOldOneIfNeeded = true;
             }
             String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get("templateType"),
                     keyAttrbs.get("template"), Resource.CONFIGURATION_MODULE), renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
-            if(restoreOldOneIfNeeded) {
+            if (restoreOldOneIfNeeded) {
                 renderContext.getRequest().setAttribute("previousTemplate", oldOne);
             }
         } catch (ParseException e) {

@@ -947,6 +947,13 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
+            <artifactId>macros</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>news</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>

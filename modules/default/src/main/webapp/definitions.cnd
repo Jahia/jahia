@@ -161,6 +161,9 @@
  + comments (jnt:thread) = jnt:thread autocreated hidden
 
 [jnt:commentsList] > jnt:content, jmix:bindedComponent, jmix:socialComponent
+- premoderated (boolean) = false
+- postmoderated (boolean) = false
+- moderator (weakreference, picker[type='usergrouprole']) i18n multiple
 
 [jnt:addComment] > jnt:content, jmix:bindedComponent, jmix:socialComponent
 

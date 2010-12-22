@@ -536,7 +536,10 @@
 //---------------------------------------------------------
 
 [jmix:cache] mixin
+itemtype=options
+extends = jnt:content
 - j:expiration (long)
+- j:perUser (boolean)
 
 //---------------------------------------------------------
 // Pages, content lists, reusable components

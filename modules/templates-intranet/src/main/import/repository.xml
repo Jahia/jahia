@@ -272,6 +272,11 @@
                             <listB jcr:primaryType="jnt:area" j:allowedTypes="" />
                         </row-col2>
                     </summary>
+                    <contentTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="false" j:defaultTemplate="true">
+                      <pagecontent jcr:primaryType="jnt:contentList">
+                        <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+                      </pagecontent>
+                    </contentTemplate>
                 </base>
             </templates>
             <search-results jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base" priority="0.5">

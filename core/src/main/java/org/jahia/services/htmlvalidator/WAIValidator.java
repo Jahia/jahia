@@ -307,10 +307,10 @@ public class WAIValidator {
                 final String dest = linkToDest.get(linkValue);
 
                 if (!hrefValue.equals(dest)) {
-                    return new Result(bundle.get(
+                    return new Result(bundle.getFormatted(
                             "org.jahia.services.htmlvalidator.WAIValidator.6.5",
                             "All same link values(" + hrefValue
-                                    + ") should point to the same destination"), getNearText(node,
+                                    + ") should point to the same destination", hrefValue), getNearText(node,
                             linkValue), bundle.get(
                             "org.jahia.services.htmlvalidator.WAIValidator.6.5.example", ""));
                 }
@@ -395,7 +395,7 @@ public class WAIValidator {
                             "'alt' attribute for image " + srcText + " is empty",
                             new Object[] { srcText, }), getNearText(node, "<img>", widthValue,
                             heightValue), bundle.get(
-                            "org.jahia.services.htmlvalidator.WAIValidator.1.1.1example", ""),
+                            "org.jahia.services.htmlvalidator.WAIValidator.1.1.1.example", ""),
                     Type.WARNING);
         }
 

@@ -50,10 +50,12 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 
 import java.util.Date;
 import java.util.List;
@@ -334,6 +336,19 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     GWTJahiaFieldInitializer getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getSitePagesWithTargetAreaName(String targetAreaName);
+    
+	/**
+	 * Validates the HTML texts against WCAG rules. This method allows to
+	 * validate multiple texts at once to be able to check WCAG rules for all
+	 * rich text fields in the engine.
+	 * 
+	 * @param richTexts
+	 *            a map of HTML texts to be validated, keyed by field IDs (
+	 *            {@link CKEditorField#getItemId()})
+	 * @return the WCAG validation results, keyed by the original field IDs (
+	 *         {@link CKEditorField#getItemId()})
+	 */
+	Map<String, WCAGValidationResult> validateWCAG(Map<String, String> richTexts);
 
     // -------------------------- INNER CLASSES --------------------------
 

@@ -32,14 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.google.gwt.user.client.Window;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
@@ -49,13 +45,20 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.*;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.button.Button;
 
 /**
  * Content editing widget.
@@ -117,7 +120,11 @@ public class EditContentEngine extends AbstractContentEngine {
         ok = new Button(Messages.get("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
-        ok.addSelectionListener(new SaveSelectionListener());
+		ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			public void componentSelected(ButtonEvent event) {
+				save(true);
+			}
+		});
         ok.setEnabled(false);
         buttonBar.add(ok);
 
@@ -266,180 +273,105 @@ public class EditContentEngine extends AbstractContentEngine {
         }
     }
 
-    /**
-     * Save selection listener
-     */
-    private class SaveSelectionListener extends SelectionListener<ButtonEvent> {
-        public SaveSelectionListener() {
-        }
-
-        public void componentSelected(ButtonEvent event) {
-            mask(Messages.get("label.saving","Saving..."), "x-mask-loading");
-            ok.setEnabled(false);
-            boolean allValid = true;
-            TabItem firstErrorTab = null;
-            Field<?> firstErrorField = null;          
-            GWTJahiaLanguage firstErrorLang = null;
-            
-            // node
-            List<GWTJahiaNode> orderedChildrenNodes = null;
-
-            for (TabItem tab : tabs.getItems()) {
-                EditEngineTabItem item = tab.getData("item");
-                if (item instanceof PropertiesTabItem) {
-                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
-                    PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();
-                    if (pe != null) {
-                        for (Field<?> field : pe.getFields()) {
-                            if (field.isVisible() && field.isEnabled() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
-                                if (allValid || tab.equals(tabs.getSelectedItem())
-                                        && !tab.equals(firstErrorTab)) {
-                                    firstErrorTab = tab;
-                                    firstErrorField = field;
-                                }
-                                allValid = false;
-                            }
-                        }
-                        if (!allValid) {
-                            continue;
-                        }
-                    }
-                    if (pe != null) {                        
-                        //properties.addAll(pe.getProperties());
-                        node.getNodeTypes().removeAll(pe.getRemovedTypes());
-                        node.getNodeTypes().addAll(pe.getAddedTypes());
-                        node.getNodeTypes().addAll(pe.getExternalMixin());
-                    }
-
-                    // handle multilang
-                    if (propertiesTabItem.isMultiLang()) {
-                        // for now only contentTabItem  has multilang. properties
-                        if (getSelectedLanguage() != null) {
-                            final String lang = getSelectedLanguage();
-                            if (!changedI18NProperties.containsKey(lang)) {
-                                changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
-                            }
-
-                            changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
-                            
-                            for (String language : changedI18NProperties.keySet()) {
-                                if (!lang.equals(language)) {
-                                    PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
-                                    if (lpe != null) {
-                                        for (Field<?> field : lpe.getFields()) {
-                                            if (field.isEnabled() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
-                                                if (allValid || tab.equals(tabs.getSelectedItem())
-                                                        && !tab.equals(firstErrorTab)) {
-                                                    firstErrorTab = tab;
-                                                    firstErrorField = field;
-                                                }
-                                                allValid = false;
-                                            }
-                                        }
-                                        if (!allValid) {
-                                            for (GWTJahiaLanguage gwtLang : languageSwitcher.getStore().getModels()) {
-                                                if (language.equals(gwtLang.getLanguage())) {
-                                                    firstErrorLang = gwtLang;
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (pe != null) {
-                            changedProperties.addAll(pe.getProperties(false, true, true));
-                        }
-                    } else {
-                        if (pe != null) {
-                            changedProperties.addAll(pe.getProperties(true, true, true));
-                        }
-                    }
-
-                    // case of contentTabItem
-                    if (item instanceof ContentTabItem) {
-                        if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                            nodeName = ((ContentTabItem) item).getName().getValue();
-                        }
-                    }
-
-                    if (item instanceof ListOrderingContentTabItem) {
-
-                        // if the manual ranking was activated update new ranking
-                        orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
-                    }
-
-
-                }
-                // case of right tab
-                else if (item instanceof RightsTabItem) {
-                    AclEditor acl = ((RightsTabItem) item).getRightsEditor();
-                    if (acl != null) {
-                        newNodeACL = acl.getAcl();
-                    }
-                }
-                // case of classification
-                else if (item instanceof CategoriesTabItem) {
-                    ((CategoriesTabItem) item).updateProperties(changedProperties, node.getNodeTypes());
-                } else if (item instanceof TagsTabItem) {
-                    final TagsTabItem tabItem = (TagsTabItem) item;
-                    if (tabItem.isTagAreI15d()) {
-                        tabItem.updateI18NProperties(changedI18NProperties, node.getNodeTypes());
-                    } else {
-                        tabItem.updateProperties(changedProperties, node.getNodeTypes());
-                    }
-                } else if (item instanceof SeoTabItem) {
-                    ((SeoTabItem) item).doSave(EditContentEngine.this);
-                } else if (item instanceof WorkflowTabItem) {
-                    ((WorkflowTabItem) item).doSave(EditContentEngine.this);
-                }
-            }
-
-            if (!allValid) {
-                if (firstErrorLang != null) {
-                    Window.alert(Messages
-                            .getWithArgs(
-                                    "failure.invalid.constraint.lang.label",
-                                    "There are some validation errors in the content for language {0}! Please switch to that language, click on the information icon next to the highlighted field(s), correct the input and save again.",
-                                    new Object[] { firstErrorLang.getDisplayName() }));
-// Unfortunately automatic switching lead to exceptions
-//                    languageSwitcher.setValue(firstErrorLang);
-                } else {
-                    Window.alert(Messages.get("failure.invalid.constraint.label"));
-                }
-                if (firstErrorTab != null && !tabs.getSelectedItem().equals(firstErrorTab)) {
-                    tabs.setSelection(firstErrorTab);
-                }
-                if (firstErrorField != null) {
-                    firstErrorField.focus();
-                }
-                unmask();
-                ok.setEnabled(true);
-            } else {
-                // Ajax call to update values
-                JahiaContentManagementService.App.getInstance().saveNode(node,
-                        orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
-                        new BaseAsyncCallback<Object>() {
-                            public void onApplicationFailure(Throwable throwable) {
-                                com.google.gwt.user.client.Window.alert(Messages.get(
-                                        "saved_prop_failed", "Properties save failed\n\n")
-                                        + throwable.getLocalizedMessage());
-                                Log.error("failed", throwable);
-                                unmask();
-                                ok.setEnabled(true);
-                            }
-
-                            public void onSuccess(Object o) {
-                                Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
-                                EditContentEngine.this.container.closeEngine();
-                                linker.refresh(Linker.REFRESH_MAIN);
-                            }
-                        });
-            }
-        }
-
+    
+    protected void setButtonsEnabled(final boolean enabled) {
+        ok.setEnabled(enabled);
     }
 
+	@Override
+    protected void prepareAndSave(boolean closeAfterSave) {
+        // node
+        List<GWTJahiaNode> orderedChildrenNodes = null;
+
+        for (TabItem tab : tabs.getItems()) {
+            EditEngineTabItem item = tab.getData("item");
+            if (item instanceof PropertiesTabItem) {
+                PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
+                PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();
+                if (pe != null) {                        
+                    //properties.addAll(pe.getProperties());
+                    node.getNodeTypes().removeAll(pe.getRemovedTypes());
+                    node.getNodeTypes().addAll(pe.getAddedTypes());
+                    node.getNodeTypes().addAll(pe.getExternalMixin());
+                }
+
+                // handle multilang
+                if (propertiesTabItem.isMultiLang()) {
+                    // for now only contentTabItem  has multilang. properties
+                    if (getSelectedLanguage() != null) {
+                        final String lang = getSelectedLanguage();
+                        if (!changedI18NProperties.containsKey(lang)) {
+                            changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
+                        }
+
+                        changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
+                    }
+                    if (pe != null) {
+                        changedProperties.addAll(pe.getProperties(false, true, true));
+                    }
+                } else {
+                    if (pe != null) {
+                        changedProperties.addAll(pe.getProperties(true, true, true));
+                    }
+                }
+
+                // case of contentTabItem
+                if (item instanceof ContentTabItem) {
+                    if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
+                        nodeName = ((ContentTabItem) item).getName().getValue();
+                    }
+                }
+
+                if (item instanceof ListOrderingContentTabItem) {
+
+                    // if the manual ranking was activated update new ranking
+                    orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
+                }
+
+
+            }
+            // case of right tab
+            else if (item instanceof RightsTabItem) {
+                AclEditor acl = ((RightsTabItem) item).getRightsEditor();
+                if (acl != null) {
+                    newNodeACL = acl.getAcl();
+                }
+            }
+            // case of classification
+            else if (item instanceof CategoriesTabItem) {
+                ((CategoriesTabItem) item).updateProperties(changedProperties, node.getNodeTypes());
+            } else if (item instanceof TagsTabItem) {
+                final TagsTabItem tabItem = (TagsTabItem) item;
+                if (tabItem.isTagAreI15d()) {
+                    tabItem.updateI18NProperties(changedI18NProperties, node.getNodeTypes());
+                } else {
+                    tabItem.updateProperties(changedProperties, node.getNodeTypes());
+                }
+            } else if (item instanceof SeoTabItem) {
+                ((SeoTabItem) item).doSave(EditContentEngine.this);
+            } else if (item instanceof WorkflowTabItem) {
+                ((WorkflowTabItem) item).doSave(EditContentEngine.this);
+            }
+        }
+        
+        contentService.saveNode(node,
+                orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
+                new BaseAsyncCallback<Object>() {
+                    public void onApplicationFailure(Throwable throwable) {
+                        com.google.gwt.user.client.Window.alert(Messages.get(
+                                "saved_prop_failed", "Properties save failed\n\n")
+                                + throwable.getLocalizedMessage());
+                        Log.error("failed", throwable);
+                        unmask();
+                        ok.setEnabled(true);
+                    }
+
+                    public void onSuccess(Object o) {
+                        Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
+                        EditContentEngine.this.container.closeEngine();
+                        linker.refresh(Linker.REFRESH_MAIN);
+                    }
+                });
+        
+    }
 }

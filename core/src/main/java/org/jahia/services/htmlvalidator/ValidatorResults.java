@@ -62,5 +62,9 @@ public class ValidatorResults {
      */
     public boolean addInfo(Result result) {
         return infos.add(result);
-    }    
+    }
+    
+	public boolean isEmpty() {
+		return errors.isEmpty() && warnings.isEmpty() && infos.isEmpty();
+	}
 }

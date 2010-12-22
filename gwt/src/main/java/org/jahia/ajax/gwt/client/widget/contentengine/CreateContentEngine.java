@@ -32,15 +32,11 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -50,13 +46,22 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.*;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * User: toto
@@ -218,39 +223,18 @@ public class CreateContentEngine extends AbstractContentEngine {
         }
     }
 
-    protected void save(final boolean closeAfterSave) {
+    protected void prepareAndSave(final boolean closeAfterSave) {
         String nodeName = targetName;
-        final List<String> mixin = new ArrayList<String>();
-        mask(Messages.get("label.saving","Saving..."), "x-mask-loading");
-        setButtonsEnabled(false);
-        boolean allValid = true;
-        TabItem firstErrorTab = null;
-        Field<?> firstErrorField = null;
-        GWTJahiaLanguage firstErrorLang = null;
+        final List<String> mixinNames = new ArrayList<String>();
         for (TabItem tab : tabs.getItems()) {
             EditEngineTabItem item = tab.getData("item");
             if (item instanceof PropertiesTabItem) {
                 PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                 PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
-                if (pe != null) {
-                    for (Field<?> field : pe.getFields()) {
-                        if (field.isVisible() && field.isEnabled() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
-                            if (allValid || tab.equals(tabs.getSelectedItem())
-                                    && !tab.equals(firstErrorTab)) {
-                                firstErrorTab = tab;
-                                firstErrorField = field;
-                            }
-                            allValid = false;
-                        }
-                    }
-                    if (!allValid) {
-                        continue;
-                    }
-                }
                 if (pe != null) {                    
                     // props.addAll(pe.getProperties());
-                    mixin.addAll(pe.getAddedTypes());
-                    mixin.addAll(pe.getExternalMixin());
+                    mixinNames.addAll(pe.getAddedTypes());
+                    mixinNames.addAll(pe.getExternalMixin());
                 }
 
                 // handle multilang
@@ -263,33 +247,6 @@ public class CreateContentEngine extends AbstractContentEngine {
                         }
 
                         changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
-                        
-                        for (String language : changedI18NProperties.keySet()) {
-                            if (!lang.equals(language)) {
-                                PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
-                                if (lpe != null) {
-                                    for (Field<?> field : lpe.getFields()) {
-                                        if (field.isEnabled() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
-                                            if (allValid || tab.equals(tabs.getSelectedItem())
-                                                    && !tab.equals(firstErrorTab)) {
-                                                firstErrorTab = tab;
-                                                firstErrorField = field;
-                                            }
-                                            allValid = false;
-                                        }
-                                    }
-                                    if (!allValid) {
-                                        for (GWTJahiaLanguage gwtLang : languageSwitcher.getStore().getModels()) {
-                                            if (language.equals(gwtLang.getLanguage())) {
-                                                firstErrorLang = gwtLang;
-                                                break;
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                        }
                     }
 
                     if (pe != null) {
@@ -311,44 +268,23 @@ public class CreateContentEngine extends AbstractContentEngine {
                 if (acl != null) {
                     newNodeACL = acl.getAcl();
                     if (newNodeACL.isInheritanceBroken()) {
-                        mixin.add("jmix:accessControlled");
+                        mixinNames.add("jmix:accessControlled");
                     }
                 }
             } else if (item instanceof CategoriesTabItem) {
-                ((CategoriesTabItem) item).updateProperties(changedProperties, mixin);
+                ((CategoriesTabItem) item).updateProperties(changedProperties, mixinNames);
             } else if (item instanceof TagsTabItem) {
                 final TagsTabItem tabItem = (TagsTabItem) item;
                 if(tabItem.isTagAreI15d()) {
-                    tabItem.updateI18NProperties(changedI18NProperties, mixin);
+                    tabItem.updateI18NProperties(changedI18NProperties, mixinNames);
                 } else {
-                    tabItem.updateProperties(changedProperties, mixin);
+                    tabItem.updateProperties(changedProperties, mixinNames);
                 }
             }
         }
-        if (!allValid) {
-            if (firstErrorLang != null) {
-                Window.alert(Messages
-                        .getWithArgs(
-                                "failure.invalid.constraint.lang.label",
-                                "There are some validation errors in the content for language {0}! Please switch to that language, click on the information icon next to the highlighted field(s), correct the input and save again.",
-                                new Object[] { firstErrorLang.getDisplayName() }));
-             // Unfortunately automatic switching lead to exceptions
-             //                languageSwitcher.select(firstErrorLang);                
-            } else {
-                Window.alert(Messages.get("failure.invalid.constraint.label"));                
-            }
-            if (firstErrorTab != null && !tabs.getSelectedItem().equals(firstErrorTab)) {
-                tabs.setSelection(firstErrorTab);
-            }
-            if (firstErrorField != null) {
-                firstErrorField.focus();
-            }
-            unmask();
-            setButtonsEnabled(true);
-        } else {
-            doSave(nodeName, changedProperties, changedI18NProperties, mixin, newNodeACL,
-                    closeAfterSave);
-        }
+        
+		doSave(nodeName, changedProperties, changedI18NProperties, mixinNames, newNodeACL,
+		        closeAfterSave);
     }
     
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
@@ -389,15 +325,14 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         };
         if (createInParentAndMoveBefore) {
-            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(targetNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
+            contentService.createNodeAndMoveBefore(targetNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(parentPath, nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
+            contentService.createNode(parentPath, nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         }
     }
 
-    private void setButtonsEnabled(final boolean enabled) {
+    protected void setButtonsEnabled(final boolean enabled) {
         ok.setEnabled(enabled);
         okAndNew.setEnabled(enabled);
     }
-
 }

@@ -44,17 +44,8 @@ public class StandardIconsProvider {
 
     public static final StandardIconsImageBundle STANDARD_ICONS = GWT.create(StandardIconsImageBundle.class);
 
-    private static StandardIconsProvider iconProvider = new StandardIconsProvider();
-
     private StandardIconsProvider() {
         super();
-    }
-
-    public static StandardIconsProvider getInstance() {
-        if (iconProvider == null) {
-            iconProvider = new StandardIconsProvider();
-        }
-        return iconProvider;
     }
 
 }

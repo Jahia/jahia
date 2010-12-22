@@ -43,7 +43,9 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DualListField;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.google.gwt.user.client.Window;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -56,6 +58,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
+import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -64,6 +67,7 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 
 import java.util.*;
 
@@ -405,7 +409,173 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         }
     }
 
-    /**
+    protected Map<String, CKEditorField> getFieldsForWCAGValidation() {
+    	Map<String, CKEditorField> fieldsToValidate = new HashMap<String, CKEditorField>();
+    	
+        for (TabItem tab : tabs.getItems()) {
+            EditEngineTabItem item = tab.getData("item");
+            if (item instanceof PropertiesTabItem) {
+                Map<String, PropertiesEditor> langPropertiesEditorMap = ((PropertiesTabItem) item).getLangPropertiesEditorMap();
+                for (PropertiesEditor pe : langPropertiesEditorMap.values()) {
+                    if (pe != null) {
+                        for (Field<?> field : pe.getFields()) {
+                            if ((field instanceof CKEditorField) && field.isEnabled() && !field.isReadOnly() && ((FieldSet)field.getParent()).isExpanded()) {
+                            	CKEditorField ckfield = (CKEditorField) field;
+                            	if (ckfield.isIgnoreWcagWarnings()) {
+                            		continue;
+                            	}
+                            	if (ckfield.getItemId() == null) {
+                            		ckfield.setItemId("CKEditorField-" + (fieldsToValidate.size() + 1));
+                            	}
+                            	String text = ckfield.getRawValue();
+                            	if (text != null && text.trim().length() > 0) {
+                            		fieldsToValidate.put(field.getItemId(), ckfield);
+                            	}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return fieldsToValidate;
+    }
+    
+    protected void save(final boolean closeAfterSave) {
+        mask(Messages.get("label.saving","Saving..."), "x-mask-loading");
+        setButtonsEnabled(false);
+        
+    	if (validateData()) {
+    		// validation passes, let's get WCAG texts to validate
+    		final Map<String, CKEditorField> fieldsForValidation = getFieldsForWCAGValidation();
+    		Map<String, String> textForWCAGValidation = new HashMap<String, String>(fieldsForValidation.size());
+    		for (Map.Entry<String, CKEditorField> fieldEntry : fieldsForValidation.entrySet()) {
+    			textForWCAGValidation.put(fieldEntry.getKey(), fieldEntry.getValue().getRawValue());
+            }
+            if (!textForWCAGValidation.isEmpty()) {
+            	// we have texts to validate against WCAG rules
+            	contentService.validateWCAG(textForWCAGValidation, new BaseAsyncCallback<Map<String,WCAGValidationResult>>() {
+    				public void onSuccess(Map<String, WCAGValidationResult> result) {
+    	                boolean wcagOK = true;
+    	                for (Map.Entry<String, WCAGValidationResult> wcagEntry : result.entrySet()) {
+	                        if (!wcagEntry.getValue().isEmpty()) {
+	                        	wcagOK = false;
+	                        	CKEditorField fld = fieldsForValidation.get(wcagEntry.getKey());
+	                        	if (fld != null) {
+	                        		fld.setWcagValidationResult(wcagEntry.getValue());
+	                        	}
+	                        } 
+                        }
+    	                if (wcagOK) {
+    	                	// WCAG checks are OK
+    	                	prepareAndSave(closeAfterSave);
+    	                } else {
+    	                	validateData();
+    	                }
+                    }
+    				@Override
+    				public void onApplicationFailure(Throwable caught) {
+    				    super.onApplicationFailure(caught);
+    				    // unable to do WCAG check, skipping
+	                	prepareAndSave(closeAfterSave);
+    				}
+    			});
+            } else {
+            	prepareAndSave(closeAfterSave);
+            }
+    	}
+    }
+    
+    protected abstract void prepareAndSave(boolean closeAfterSave);
+    
+	protected boolean validateData() {
+        boolean allValid = true;
+        TabItem firstErrorTab = null;
+        Field<?> firstErrorField = null;
+        GWTJahiaLanguage firstErrorLang = null;
+        for (TabItem tab : tabs.getItems()) {
+            EditEngineTabItem item = tab.getData("item");
+            if (item instanceof PropertiesTabItem) {
+                PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
+                PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
+                if (pe != null) {
+                    for (Field<?> field : pe.getFields()) {
+                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
+                            if (allValid || tab.equals(tabs.getSelectedItem())
+                                    && !tab.equals(firstErrorTab)) {
+                                firstErrorTab = tab;
+                                firstErrorField = field;
+                            }
+                            allValid = false;
+                        }
+                    }
+                    if (!allValid) {
+                        continue;
+                    }
+                }
+
+                // handle multilang
+                if (propertiesTabItem.isMultiLang()) {
+                    // for now only contentTabItem  has multilang. properties
+                    if (getSelectedLanguage() != null) {
+                        final String lang = getSelectedLanguage();
+                        for (String language : changedI18NProperties.keySet()) {
+                            if (!lang.equals(language)) {
+                                PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
+                                if (lpe != null) {
+                                    for (Field<?> field : lpe.getFields()) {
+                                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
+                                            if (allValid || tab.equals(tabs.getSelectedItem())
+                                                    && !tab.equals(firstErrorTab)) {
+                                                firstErrorTab = tab;
+                                                firstErrorField = field;
+                                            }
+                                            allValid = false;
+                                        }
+                                    }
+                                    if (!allValid) {
+                                        for (GWTJahiaLanguage gwtLang : languageSwitcher.getStore().getModels()) {
+                                            if (language.equals(gwtLang.getLanguage())) {
+                                                firstErrorLang = gwtLang;
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!allValid) {
+			MessageBox.alert(Messages.get("label.error", "Error"),
+			        Messages.get("failure.invalid.constraint.label",
+			                "There are some validation errors!"
+			                        + " Click on the information icon next to the"
+			                        + " highlighted fields, correct the input and save again."),
+			        null);
+            if (firstErrorLang != null) {
+                languageSwitcher.setValue(firstErrorLang);                
+            }
+            if (firstErrorTab != null && !tabs.getSelectedItem().equals(firstErrorTab)) {
+                tabs.setSelection(firstErrorTab);
+            }
+            if (firstErrorField != null) {
+                firstErrorField.focus();
+            }
+            unmask();
+            setButtonsEnabled(true);
+            return false;
+        } else {
+        	return true;
+        }
+    }
+
+	protected abstract void setButtonsEnabled(boolean doEnable);
+
+	/**
      * LangSwithcing template
      *
      * @return

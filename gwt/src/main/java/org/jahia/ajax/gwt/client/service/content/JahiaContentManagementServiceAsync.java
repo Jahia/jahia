@@ -48,9 +48,11 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 
 import java.util.Date;
 import java.util.List;
@@ -301,4 +303,8 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, AsyncCallback<GWTJahiaFieldInitializer> async);
 
     void getSitePagesWithTargetAreaName(String targetAreaName, AsyncCallback<List<GWTJahiaNode>> asyncCallback);
+
+	void validateWCAG(Map<String, String> richTexts,
+	        AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);
+
 }

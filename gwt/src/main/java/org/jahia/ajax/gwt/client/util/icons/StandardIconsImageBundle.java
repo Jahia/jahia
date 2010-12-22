@@ -38,21 +38,11 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public interface StandardIconsImageBundle extends ImageBundle {
 
+    @Resource("about.png")
+    public AbstractImagePrototype about();
 
-    @Resource("search.png")
-    public AbstractImagePrototype search();
-
-    @Resource("saved-search.png")
-    public AbstractImagePrototype savedSearch();
-
-    @Resource("lock.png")
-    public AbstractImagePrototype lock();
-
-    @Resource("minus.png")
-    public AbstractImagePrototype minusRound();
-
-    @Resource("plus.png")    
-    public AbstractImagePrototype plusRound();
+    @Resource("delete.png")
+    public AbstractImagePrototype delete();
 
     @Resource("engine-button-cancel.png")
     public AbstractImagePrototype engineButtonCancel();
@@ -60,46 +50,70 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("engine-button-ok.png")
     public AbstractImagePrototype engineButtonOK();
 
-    @Resource("text_tree.png")
-    public AbstractImagePrototype navMenu();
+    @Resource("error.png")
+    public AbstractImagePrototype error();
 
-    @Resource("navigate_up2.png")
-    public AbstractImagePrototype moveFirst();
-
-    @Resource("navigate_up.png")
-    public AbstractImagePrototype moveUp();
-
-    @Resource("navigate_down2.png")
-    public AbstractImagePrototype moveLast();
-
-    @Resource("navigate_down.png")
-    public AbstractImagePrototype moveDown();
-
-    @Resource("workflow.png")
-    public AbstractImagePrototype workflow();
-
-    @Resource("workflow_task.png")
-    public AbstractImagePrototype workflowTask();
+    @Resource("lightbulb_on.png")
+    public AbstractImagePrototype example();
 
     @Resource("google-docs-32x32.png")
     public AbstractImagePrototype googleDocsLarge();
 
-    @Resource("user.png")
-    public AbstractImagePrototype user();
-
     @Resource("group.png")
     public AbstractImagePrototype group();
 
-    @Resource("role.png")
-    public AbstractImagePrototype role();
+    @Resource("information.png")
+    public AbstractImagePrototype information();
 
-    @Resource("delete.png")
-    public AbstractImagePrototype delete();
+    @Resource("lock.png")
+    public AbstractImagePrototype lock();
 
-    @Resource("restore.png")
-    public AbstractImagePrototype restore();
+    @Resource("minus.png")
+    public AbstractImagePrototype minusRound();
+
+    @Resource("navigate_down.png")
+    public AbstractImagePrototype moveDown();
+
+    @Resource("navigate_up2.png")
+    public AbstractImagePrototype moveFirst();
+
+    @Resource("navigate_down2.png")
+    public AbstractImagePrototype moveLast();
+
+    @Resource("navigate_up.png")
+    public AbstractImagePrototype moveUp();
+
+    @Resource("text_tree.png")
+    public AbstractImagePrototype navMenu();
+
+    @Resource("plus.png")    
+    public AbstractImagePrototype plusRound();
 
     @Resource("refresh.png")
     public AbstractImagePrototype refresh();
 
+    @Resource("restore.png")
+    public AbstractImagePrototype restore();
+
+    @Resource("role.png")
+    public AbstractImagePrototype role();
+
+    @Resource("saved-search.png")
+    public AbstractImagePrototype savedSearch();
+
+    @Resource("search.png")
+    public AbstractImagePrototype search();
+
+    @Resource("user.png")
+    public AbstractImagePrototype user();
+    
+    @Resource("warning.png")
+    public AbstractImagePrototype warning();
+    
+    @Resource("workflow.png")
+    public AbstractImagePrototype workflow();
+    
+    @Resource("workflow_task.png")
+    public AbstractImagePrototype workflowTask();
+    
 }

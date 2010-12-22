@@ -53,6 +53,8 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
+import org.jahia.ajax.gwt.client.data.wcag.WCAGViolation;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -74,6 +76,9 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.googledocs.GoogleDocsService;
 import org.jahia.services.googledocs.GoogleDocsService.GoogleDocsExportFormats;
 import org.jahia.services.googledocs.GoogleDocsServiceFactory;
+import org.jahia.services.htmlvalidator.Result;
+import org.jahia.services.htmlvalidator.ValidatorResults;
+import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.LanguageCodeConverters;
@@ -1846,5 +1851,44 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.error(e.getMessage(), e);
         }
         return nodes;
+    }
+
+	public Map<String, WCAGValidationResult> validateWCAG(Map<String, String> richTexts) {
+		Map<String, WCAGValidationResult> result = new HashMap<String, WCAGValidationResult>(richTexts.size());
+		Locale locale;
+        try {
+	        locale = getUILocale();
+        } catch (GWTJahiaServiceException e) {
+        	logger.warn("Unable to get UI locale", e);
+        	locale = getRequest().getLocale();
+        }
+        
+		for (Map.Entry<String, String> richText : richTexts.entrySet()) {
+			ValidatorResults validatorResults = new WAIValidator(locale).validate(richText.getValue());
+			result.put(richText.getKey(), toWCAGResult(validatorResults));
+        }
+		
+	    return result;
+    }
+
+	private WCAGValidationResult toWCAGResult(ValidatorResults validatorResults) {
+		if (validatorResults.isEmpty()) {
+			return WCAGValidationResult.OK;
+		}
+		
+		WCAGValidationResult wcagResult = new WCAGValidationResult();
+		for (Result result : validatorResults.getErrors()) {
+	        wcagResult.getErrors().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+        }
+		
+		for (Result result : validatorResults.getWarnings()) {
+	        wcagResult.getWarnings().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+        }
+		
+		for (Result result : validatorResults.getInfos()) {
+	        wcagResult.getInfos().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+        }
+		
+	    return wcagResult;
     }
 }

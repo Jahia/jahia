@@ -89,7 +89,7 @@ public class EditManager extends ContentPanel {
         lang.setDisplayName(JahiaGWTParameters.getLanguageDisplayName());
         editLinker.setLocale(lang);
 
-        Log.info("Edit manager inited : " + (System.currentTimeMillis() - start));
+        Log.debug("Edit manager initiated in " + (System.currentTimeMillis() - start) + " ms");
     }
 
 

@@ -97,6 +97,7 @@ public class ContentTypeWindow extends Window {
         });
 
         add(contentTypeTree);
+        setFocusWidget(contentTypeTree.getFilter());
         contentTypeTree.layout(true);
         layout();
 
@@ -145,6 +146,4 @@ public class ContentTypeWindow extends Window {
         setFooter(true);
         ok.setEnabled(true);
     }
-
-
 }

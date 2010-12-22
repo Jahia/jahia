@@ -46,14 +46,10 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,6 +65,7 @@ import java.util.Map;
 public class ContentTypeTree extends LayoutContainer {
     private TreeGrid<GWTJahiaNodeType> treeGrid;
     private TreeStore<GWTJahiaNodeType> store;
+	private StoreFilterField<GWTJahiaNodeType> filter;
 
     public ContentTypeTree(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types) {
         store = new TreeStore<GWTJahiaNodeType>();
@@ -114,7 +111,7 @@ public class ContentTypeTree extends LayoutContainer {
         
         setBorders(false);
         
-		StoreFilterField<GWTJahiaNodeType> filter = new StoreFilterField<GWTJahiaNodeType>() {
+		filter = new StoreFilterField<GWTJahiaNodeType>() {
 			@Override
 			protected boolean doSelect(Store<GWTJahiaNodeType> store, GWTJahiaNodeType parent,
 			        GWTJahiaNodeType record, String property, String filter) {
@@ -152,6 +149,10 @@ public class ContentTypeTree extends LayoutContainer {
 
     public TreeGrid<GWTJahiaNodeType> getTreeGrid() {
         return treeGrid;
+    }
+
+	public StoreFilterField<GWTJahiaNodeType> getFilter() {
+    	return filter;
     }
 
 }

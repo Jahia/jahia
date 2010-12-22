@@ -39,7 +39,6 @@ import org.apache.jackrabbit.core.query.lucene.NamePathResolverImpl;
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
@@ -105,7 +104,6 @@ public class SimpleJahiaJcrFacets {
     protected SolrParams params;
     /** Searcher to use for all calculations */
     protected IndexSearcher searcher;
-    protected QueryObjectModelTree req;
 
     protected Analyzer defaultAnalyzer;
     /**
@@ -118,9 +116,8 @@ public class SimpleJahiaJcrFacets {
      */
     protected final Session session;    
 
-    public SimpleJahiaJcrFacets(QueryObjectModelTree req, IndexSearcher searcher, OpenBitSet docs,
+    public SimpleJahiaJcrFacets(IndexSearcher searcher, OpenBitSet docs,
             SolrParams params, SearchIndex index, Session session) {
-        this.req = req;
         this.searcher = searcher;
         this.docs = docs;
         this.params = params;

@@ -210,7 +210,7 @@ public class FacetHandler {
                 }
             }
 
-            SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(null, searcher,
+            SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(searcher,
                     transformToDocIdSet(nodes, reader, selectorIndexes), SolrParams
                             .toSolrParams(parameters), index, session);
             extractFacetInfo(facets.getFacetCounts());

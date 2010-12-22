@@ -55,7 +55,7 @@ public class Item implements Serializable, BeanNameAware {
     private Visibility visibility;
     private Selected selected;
     private String layout;
-    private List<Property> properties = new ArrayList();
+    private List<Property> properties = new ArrayList<Property>();
     private ActionItem actionItem;
 
     public String getId() {
@@ -155,10 +155,12 @@ public class Item implements Serializable, BeanNameAware {
     }
 
     public void setParentMenu(Menu menu) {
+    	menu.removeItem(getId());
         menu.addItem(this);
     }
 
     public void setParentToolbar(Toolbar toolbar) {
+    	toolbar.removeItem(getId());
         toolbar.addItem(this);
     }
 }

@@ -37,6 +37,7 @@ import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -119,5 +120,16 @@ public class Toolbar implements Serializable, BeanNameAware {
     public void setBeanName(String name) {
         setName(name);
         setType(name);
+    }
+    
+    public void removeItem(String itemId) {
+    	if (itemId != null && itemId.length() > 0) {
+    		for (Iterator<Item> iterator = getItems().iterator(); iterator.hasNext();) {
+	            Item item = iterator.next();
+	            if (item.getId() != null && item.getId().equals(itemId)) {
+	            	iterator.remove();
+	            }
+            }
+    	}
     }
 }

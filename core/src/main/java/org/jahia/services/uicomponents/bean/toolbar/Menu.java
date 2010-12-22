@@ -32,15 +32,12 @@
 
 package org.jahia.services.uicomponents.bean.toolbar;
 
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.uicomponents.resolver.toolbar.ItemsResolver;
-import org.jahia.services.usermanager.JahiaUser;
 import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * User: jahia
@@ -60,5 +57,16 @@ public class Menu extends Item implements Serializable, BeanNameAware {
 
     public void addItem(Item item) {
         this.items.add(item);
+    }
+    
+    public void removeItem(String itemId) {
+    	if (itemId != null && itemId.length() > 0) {
+    		for (Iterator<Item> iterator = getItems().iterator(); iterator.hasNext();) {
+	            Item item = iterator.next();
+	            if (item.getId() != null && item.getId().equals(itemId)) {
+	            	iterator.remove();
+	            }
+            }
+    	}
     }
 }

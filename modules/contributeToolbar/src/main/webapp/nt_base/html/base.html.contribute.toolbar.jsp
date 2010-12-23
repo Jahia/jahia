@@ -16,6 +16,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fancybox.pack.js"/>
 <template:addResources type="css" resources="contribute-toolbar.css,jquery.fancybox.css"/>
+<template:addResources>
 <script>
     var contributeParams = new Array();
     /*
@@ -134,6 +135,7 @@
     });
 
 </script>
+</template:addResources>
 <div id="contributeToolbar" >
 
     <div id="edit">

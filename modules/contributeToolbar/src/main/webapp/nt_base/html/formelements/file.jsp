@@ -61,6 +61,7 @@
 </div>
 <div id="display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
 </div>
+<template:addResources>
 <script>
     $(document).ready(function() {
         $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('${url.base}${currentNode.path}', {
@@ -78,3 +79,4 @@
         });
     });
 </script>
+</template:addResources>

@@ -35,6 +35,7 @@
                  time="${dateTimePicker}">
     {dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'}
 </ui:dateSelector>
+<template:addResources>
 <script>
     $(document).ready(function() {
         $("#${jsNodeName}${scriptTypeName}").bind('form-pre-serialize',function() {
@@ -45,3 +46,4 @@
         })
     });
 </script>
+</template:addResources>

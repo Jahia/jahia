@@ -9,6 +9,32 @@
         <property name="staticAssetMapping" ref="org.jahia.services.render.StaticAssetMappingRegistry"/>
 	</bean>
 
+    <bean name="managerEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="customEditors">
+            <map>
+                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.ColumnPropertyEditor"/>
+                </entry>
+                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.RepositoryPropertyEditor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="editmodeEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="customEditors">
+            <map>
+                <entry key="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTabPropertyEditor"/>
+                </entry>
+                <entry key="org.jahia.services.uicomponents.bean.Visibility">
+                    <bean class="org.jahia.services.uicomponents.bean.VisibilityPropertyEditor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
     <bean class="org.jahia.modules.defaultmodule.MoveAction">
         <property name="name" value="move"/>
         <property name="contentManager" ref="ContentManagerHelper"/>

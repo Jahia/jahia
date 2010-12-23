@@ -110,7 +110,7 @@ public class WAIValidator {
         // of the HTML fragment.
         linkToDest.clear();
 
-        final List<Result> results = validateHtml(source.getChildElements().get(0));
+        final List<Result> results = validateHtml(source.getChildElements().get(0), source);
         for (Result result : results) {
             if (Result.Type.ERROR.equals(result.getType())) {
                 evh.addError(result);
@@ -127,20 +127,23 @@ public class WAIValidator {
     /**
      * Validates an HTML fragment starting from any Node.
      * 
+     *
      * @param node
      *            The starting Node.
+     * @param source
      * @return A list of Result Objects, the list will be empty in case no errors occurred.
      */
-    protected List<Result> validateHtml(Element node) {
+    protected List<Result> validateHtml(Element node, Source source) {
         final List<Result> errors = new ArrayList<Result>();
         try {
-            validateHtml(node, errors, 0);
+            validateHtml(node, errors, 0, source);
 
         } catch (DOMException de) {
             logger.error("Cannot validate html: " + de.getMessage(), de);
             final Result ve = new Result(bundle.getFormatted(
                     "org.jahia.services.htmlvalidator.WAIValidator.cannotValidate",
                     "Cannot validate html: " + de.getMessage(), new Object[] { de.getMessage() }));
+            setPosition(node, source, ve);
             errors.add(ve);
         }
 
@@ -150,21 +153,23 @@ public class WAIValidator {
     /**
      * Recursive method that goes through all the nodes of the parsed HTML tree.
      * 
+     *
      * @param node
      *            The current Node being processed.
      * @param errors
      *            The List of errors reported so far
      * @param level
      *            The level in the Tree of the node being processed
+     * @param source
      * @throws DOMException
      *             If something goes wrong.
      */
-    private void validateHtml(Element node, List<Result> errors, int level) throws DOMException {
+    private void validateHtml(Element node, List<Result> errors, int level, Source source) throws DOMException {
 
-        if (processNode(node, errors, level)) {
+        if (processNode(node, errors, level, source)) {
             level++;
             for (Element child : node.getChildElements()) {
-                validateHtml(child, errors, level);
+                validateHtml(child, errors, level, source);
             }
         }
     }
@@ -172,17 +177,17 @@ public class WAIValidator {
     /**
      * Method that tests the class of the given node and invokes the proper validation method.
      * 
-     * @param node
-     *            The current Node
+     *
      * @param errors
      *            The List of reported errors so far
      * @param level
      *            The level of the Node in the DOM tree.
+     * @param source
      * @return True if the next Node to process is a Child Node, False if the next Node has to be a Sibling Node.
      * @throws DOMException
      *             If something goes wrong.
      */
-    private boolean processNode(Element element, List<Result> errors, int level)
+    private boolean processNode(Element element, List<Result> errors, int level, Source source)
             throws DOMException {
 
         if (element == null) {
@@ -192,17 +197,17 @@ public class WAIValidator {
         resetIsDataTable(level);
         Result err = null;
         if (HTMLElementName.A.equals(element.getName())) {
-            err = validateLink(element);
+            err = validateLink(element, source);
         } else if (HTMLElementName.IMG.equals(element.getName())) {
-            err = validateImage(element);
+            err = validateImage(element, source);
         } else if (HTMLElementName.AREA.equals(element.getName())) {
-            err = validateAreaShape(element);
+            err = validateAreaShape(element, source);
         } else if (HTMLElementName.FORM.equals(element.getName())) {
-            errors.addAll(validateForm(element, level));
+            errors.addAll(validateForm(element, level, source));
         } else if (HTMLElementName.TABLE.equals(element.getName())) {
-            errors.addAll(validateTable(element, level));
+            errors.addAll(validateTable(element, level, source));
         } else if (HTMLElementName.FRAMESET.equals(element.getName())) {
-            errors.addAll(validateFrameset(element, level));
+            errors.addAll(validateFrameset(element, level, source));
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("Ignoring node of type: " + element.getName());
@@ -246,11 +251,13 @@ public class WAIValidator {
     /**
      * Validates a link Element.
      * 
+     *
      * @param node
      *            The HTMLAnchorElement.
+     * @param source
      * @return Result or null if no error occurred.
      */
-    protected Result validateLink(Element node) throws DOMException {
+    protected Result validateLink(Element node, Source source) throws DOMException {
         final Attribute href = node.getAttributes().get("href");
         if (href == null) {
             return null;
@@ -265,23 +272,27 @@ public class WAIValidator {
                 StringUtils.stripToEmpty(linkValue)) : "";
         final int length = linkValue.length();
         if (length > 80) {
-            return new Result(bundle.getFormatted(
+            Result ve = new Result(bundle.getFormatted(
                     "org.jahia.services.htmlvalidator.WAIValidator.6.1",
                     "Link value should not be longer than 80 characters. Length = " + length,
-                    new Object[] { linkValue, Integer.toString(length) }), getNearText(node,
+                    new Object[]{linkValue, Integer.toString(length)}), getNearText(node,
                     linkValue), bundle.get(
                     "org.jahia.services.htmlvalidator.WAIValidator.6.1.example", ""));
+            setPosition(node, source, ve);
+            return ve;
         }
 
         // Criteria 6.3
         final Attribute title = node.getAttributes().get("title");
         if (title == null) {
             String context = getNearText(node, linkValue);
-            return new Result(
+            Result ve = new Result(
                     bundle.getFormatted("org.jahia.services.htmlvalidator.WAIValidator.6.3",
                             "Missing 'title' attribute for 'hyperlink' element",
-                            new Object[] { linkValue }), context, bundle.get(
-                            "org.jahia.services.htmlvalidator.WAIValidator.6.3.example", ""));
+                            new Object[]{linkValue}), context, bundle.get(
+                    "org.jahia.services.htmlvalidator.WAIValidator.6.3.example", ""));
+            setPosition(node, source, ve);
+            return ve;
         }
 
         // Criteria 6.3 bis
@@ -290,13 +301,15 @@ public class WAIValidator {
             final int length2 = titleValue.length();
             if (length2 > 80) {
                 String context = getNearText(node, linkValue);
-                return new Result(bundle.getFormatted(
+                Result ve = new Result(bundle.getFormatted(
                         "org.jahia.services.htmlvalidator.WAIValidator.6.3.2",
                         "Attribute 'title' should not be longer than 80 characters. Length = "
                                 + length2,
-                        new Object[] { linkValue, titleValue, Integer.toString(length2) }),
+                        new Object[]{linkValue, titleValue, Integer.toString(length2)}),
                         context, bundle.get(
-                                "org.jahia.services.htmlvalidator.WAIValidator.6.3.2.example", ""));
+                        "org.jahia.services.htmlvalidator.WAIValidator.6.3.2.example", ""));
+                setPosition(node, source, ve);
+                return ve;
             }
         }
 
@@ -307,12 +320,14 @@ public class WAIValidator {
                 final String dest = linkToDest.get(linkValue);
 
                 if (!hrefValue.equals(dest)) {
-                    return new Result(bundle.getFormatted(
+                    Result ve = new Result(bundle.getFormatted(
                             "org.jahia.services.htmlvalidator.WAIValidator.6.5",
                             "All same link values(" + hrefValue
                                     + ") should point to the same destination", hrefValue), getNearText(node,
                             linkValue), bundle.get(
                             "org.jahia.services.htmlvalidator.WAIValidator.6.5.example", ""));
+                    setPosition(node, source, ve);
+                    return ve;
                 }
 
             } else {
@@ -326,11 +341,13 @@ public class WAIValidator {
     /**
      * Validates an Img Element.
      * 
+     *
      * @param node
      *            The HTMLImageElement.
+     * @param source
      * @return Result or null if no error occurred.
      */
-    protected Result validateImage(final Element node) {
+    protected Result validateImage(final Element node, Source source) {
         logger.debug("validateImage");
 
         final Attribute src = node.getAttributes().get("src");
@@ -379,35 +396,41 @@ public class WAIValidator {
         // Criteria 1.1
         final Attribute alt = node.getAttributes().get("alt");
         if (alt == null) {
-            return new Result(bundle.getFormatted(
+            Result ve = new Result(bundle.getFormatted(
                     "org.jahia.services.htmlvalidator.WAIValidator.1.1",
-                    "Missing 'alt' attribute for image " + srcText, new Object[] { srcText }),
+                    "Missing 'alt' attribute for image " + srcText, new Object[]{srcText}),
                     getNearText(node, "<img>", widthValue, heightValue), bundle.get(
-                            "org.jahia.services.htmlvalidator.WAIValidator.1.1.example", ""));
+                    "org.jahia.services.htmlvalidator.WAIValidator.1.1.example", ""));
+            setPosition(node, source, ve);
+            return ve;
         }
 
         final String altValue = text2XMLEntityRef(alt.getValue());
         final int length = altValue.length();
 
         if (length == 0) {
-            return new Result(
+            Result ve = new Result(
                     bundle.getFormatted("org.jahia.services.htmlvalidator.WAIValidator.1.1.1",
                             "'alt' attribute for image " + srcText + " is empty",
-                            new Object[] { srcText, }), getNearText(node, "<img>", widthValue,
-                            heightValue), bundle.get(
-                            "org.jahia.services.htmlvalidator.WAIValidator.1.1.1.example", ""),
+                            new Object[]{srcText,}), getNearText(node, "<img>", widthValue,
+                    heightValue), bundle.get(
+                    "org.jahia.services.htmlvalidator.WAIValidator.1.1.1.example", ""),
                     Type.WARNING);
+            setPosition(node, source, ve);
+            return ve;
         }
 
         // Criteria 1.4
         if (length > 60) {
-            return new Result(bundle.getFormatted(
+            Result ve = new Result(bundle.getFormatted(
                     "org.jahia.services.htmlvalidator.WAIValidator.1.4",
                     "Attribute 'alt' should not be longer than 60 characters. Length = " + length
                             + ". Use attribute 'longdesc' if you want a longer description",
-                    new Object[] { altValue, srcText, Integer.toString(length) }), getNearText(
+                    new Object[]{altValue, srcText, Integer.toString(length)}), getNearText(
                     node, "<img>", widthValue, heightValue), bundle.get(
                     "org.jahia.services.htmlvalidator.WAIValidator.1.4.example", ""));
+            setPosition(node, source, ve);
+            return ve;
         }
 
         return null;
@@ -416,11 +439,13 @@ public class WAIValidator {
     /**
      * Validates an Area Element.
      * 
+     *
      * @param node
      *            The HTMLAreaElement.
+     * @param source
      * @return Result or null if no error occurred.
      */
-    protected Result validateAreaShape(final Element node) {
+    protected Result validateAreaShape(final Element node, Source source) {
         logger.debug("validateAreaShape");
 
         // Criteria 1.1
@@ -429,22 +454,26 @@ public class WAIValidator {
             final String shapeValue = shape.getValue();
             final Attribute alt = node.getAttributes().get("alt");
             if (alt == null) {
-                return new Result(bundle.getFormatted(
+                Result ve = new Result(bundle.getFormatted(
                         "org.jahia.services.htmlvalidator.WAIValidator.1.1.2",
-                        "Missing 'alt' attribute for 'area' element", new Object[] { shapeValue }),
+                        "Missing 'alt' attribute for 'area' element", new Object[]{shapeValue}),
                         getNearText(node, "<area>"), bundle.get(
-                                "org.jahia.services.htmlvalidator.WAIValidator.1.1.2.example", ""));
+                        "org.jahia.services.htmlvalidator.WAIValidator.1.1.2.example", ""));
+                setPosition(node, source, ve);
+                return ve;
             }
 
             final String altValue = text2XMLEntityRef(alt.getValue());
             final int length = altValue.length();
             if (length == 0) {
-                return new Result(bundle.getFormatted(
+                Result ve = new Result(bundle.getFormatted(
                         "org.jahia.services.htmlvalidator.WAIValidator.1.1.3",
                         "'alt' attribute for 'area' element " + shapeValue + " is empty",
-                        new Object[] { shapeValue }), getNearText(node, "<area>"), bundle.get(
+                        new Object[]{shapeValue}), getNearText(node, "<area>"), bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.1.1.3.example", ""),
                         Type.WARNING);
+                setPosition(node, source, ve);
+                return ve;
             }
         }
         return null;
@@ -453,11 +482,13 @@ public class WAIValidator {
     /**
      * Validates a Table Element.
      * 
+     *
      * @param node
      *            The HTMLFormElement.
+     * @param source
      * @return A List of Result Objects.
      */
-    protected List<Result> validateTable(final Element node, int level) {
+    protected List<Result> validateTable(final Element node, int level, Source source) {
         logger.debug("validateTable");
 
         final List<Result> errors = new ArrayList<Result>();
@@ -502,6 +533,7 @@ public class WAIValidator {
                         "The first row of a 'table' element should contain 'th' elements only"),
                         getNearText(node, "<table>"), bundle.get(
                                 "org.jahia.services.htmlvalidator.WAIValidator.5.3.example", ""));
+                setPosition(node, source, ve);
                 errors.add(ve);
                 return errors;
             }
@@ -515,6 +547,7 @@ public class WAIValidator {
                                 "'th' elements should have an attribute 'scope', set to 'col', OR an 'id' attribute"),
                         getNearText(node, "<table>"), bundle.get(
                                 "org.jahia.services.htmlvalidator.WAIValidator.5.3.2.example", ""));
+                setPosition(node, source, ve);
                 errors.add(ve);
                 return errors;
             }
@@ -527,6 +560,7 @@ public class WAIValidator {
                             getNearText(node, "<table>"), bundle.get(
                                     "org.jahia.services.htmlvalidator.WAIValidator.5.3.3.example",
                                     ""));
+                    setPosition(node, source, ve);
                     errors.add(ve);
                     return errors;
                 }
@@ -543,6 +577,7 @@ public class WAIValidator {
                             "The 'th' elements of the first row of the table should all use the same attribute"),
                     getNearText(node, "<table>"), bundle.get(
                             "org.jahia.services.htmlvalidator.WAIValidator.5.3.4.example", ""));
+            setPosition(node, source, ve);
             errors.add(ve);
             return errors;
         }
@@ -550,7 +585,7 @@ public class WAIValidator {
         // check the rest of the table cells
         if (!ids.isEmpty()) {
             final Set<String> headers = new HashSet<String>();
-            processTable(node, headers, ids, errors, level);
+            processTable(node, headers, ids, errors, level, source);
 
             final Set<String> ids2 = new HashSet<String>(ids);
             for (String value : ids2) {
@@ -567,6 +602,7 @@ public class WAIValidator {
                         new Object[] { headerAttribute }), getNearText(node, "<table>"),
                         bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.5.example",
                                 ""));
+                setPosition(node, source, ve);
                 errors.add(ve);
             }
         }
@@ -576,16 +612,16 @@ public class WAIValidator {
 
     /**
      * Recursive method to process a Table element and all its children
-     * 
+     *
      * @param node
      *            The current node of the Table.
      * @param headers
      *            The current list of 'headers' attributes (present in tds)
      * @param errors
-     *            The current list of errors
+     * @param source
      */
     protected void processTable(final Element node, final Set<String> headers,
-            final Set<String> ids, final List<Result> errors, int level) {
+                                final Set<String> ids, final List<Result> errors, int level, Source source) {
 
         // Criteria 5.4
         if (HTMLElementName.TD.equals(node.getName().toLowerCase())) {
@@ -597,6 +633,7 @@ public class WAIValidator {
                         "Missing 'headers' attribute for 'td' element"), getNearText(node
                         .getParentElement().getParentElement(), "<table>"), bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.5.4.example", ""));
+                setPosition(node, source, ve);
                 errors.add(ve);
 
             } else {
@@ -613,8 +650,8 @@ public class WAIValidator {
         }
 
         for (Element element : node.getChildElements()) {
-            if (processNode(element, errors, level)) {
-                processTable(element, headers, ids, errors, level);
+            if (processNode(element, errors, level, source)) {
+                processTable(element, headers, ids, errors, level, source);
             }
         }
     }
@@ -622,13 +659,15 @@ public class WAIValidator {
     /**
      * Validates a Form Element.
      * 
+     *
      * @param node
      *            The HTMLFormElement.
      * @param level
      *            The level of the root form node in relation to the top root node of the html fragment.
+     * @param source
      * @return A List of Result Objects.
      */
-    protected List<Result> validateForm(final Element node, final int level) {
+    protected List<Result> validateForm(final Element node, final int level, Source source) {
         logger.debug("validateForm");
         setIsDataTable(level);
 
@@ -638,7 +677,7 @@ public class WAIValidator {
         /*
          * <FORM action="..." method="post"> <LABEL for="firstname">First name: </LABEL> <INPUT type="text" id="firstname">
          */
-        processForm(node, fors, ids, errors, level);
+        processForm(node, fors, ids, errors, level, source);
 
         final List<String> fors2 = new ArrayList<String>(fors);
 
@@ -655,6 +694,7 @@ public class WAIValidator {
                     "There is no 'id' attribute in any 'input' element for attribute 'for' ("
                             + forAtt + "). Check all your 'label' elements in the 'form'",
                     new Object[] { forAtt }));
+            setPosition(node, source, ve);
             errors.add(ve);
         }
 
@@ -664,6 +704,7 @@ public class WAIValidator {
                     "All text 'input' elements should have a corresponding 'label' element."
                             + "'Input' element with id (" + id + ") has no label",
                     new Object[] { id }));
+            setPosition(node, source, ve);
             errors.add(ve);
         }
 
@@ -672,18 +713,18 @@ public class WAIValidator {
 
     /**
      * Recursive method to process a Form element and all its children
-     * 
+     *
      * @param node
      *            The current node of the Form.
      * @param fors
      *            The current list of 'for' attributes (present in labels)
      * @param ids
-     *            The current list of 'id' attributes (present in text inputs)
+ *            The current list of 'id' attributes (present in text inputs)
      * @param errors
-     *            The current list of errors
+     * @param source
      */
     private void processForm(final Element node, final Set<String> fors, final Set<String> ids,
-            final List<Result> errors, int level) {
+                             final List<Result> errors, int level, Source source) {
 
         // Criteria 11.1
         if (HTMLElementName.LABEL.equals(node.getName())) {
@@ -694,6 +735,7 @@ public class WAIValidator {
                         "Missing 'for' attribute for 'label' element"),
                         getNearText(node, "<form>"), bundle.get(
                                 "org.jahia.services.htmlvalidator.WAIValidator.11.1.example", ""));
+                setPosition(node, source, ve);
                 errors.add(ve);
 
             } else {
@@ -709,6 +751,7 @@ public class WAIValidator {
                             "Missing 'id' attribute for 'input' element"), getNearText(node,
                             "<form>"), bundle.get(
                             "org.jahia.services.htmlvalidator.WAIValidator.11.2.example", ""));
+                    setPosition(node, source, ve);
                     errors.add(ve);
 
                 } else {
@@ -718,22 +761,24 @@ public class WAIValidator {
         }
 
         for (Element element : node.getChildElements()) {
-            if (processNode(element, errors, level)) {
-                processForm(element, fors, ids, errors, level);
+            if (processNode(element, errors, level, source)) {
+                processForm(element, fors, ids, errors, level, source);
             }
         }
     }
 
-    protected List<Result> validateFrameset(final Element node, int level) {
+    protected List<Result> validateFrameset(final Element node, int level, Source source) {
         final List<Result> errors = new ArrayList<Result>();
         final Set<String> noframes = new HashSet<String>();
         for (Element childElement : node.getChildElements()) {
-            processFrameset(childElement, noframes, errors, level);
+            processFrameset(childElement, noframes, errors, level, source);
         }
         // Criteria 2.3
         if (noframes.isEmpty()) {
-            errors.add(new Result(bundle.get("org.jahia.services.htmlvalidator.WAIValidator.2.3",
-                    "Missing <NOFRAMES> tag after frameset definition")));
+            Result ve = new Result(bundle.get("org.jahia.services.htmlvalidator.WAIValidator.2.3",
+                    "Missing <NOFRAMES> tag after frameset definition"));
+            setPosition(node, source, ve);
+            errors.add(ve);
         }
 
         return errors;
@@ -742,61 +787,71 @@ public class WAIValidator {
     /**
      * Validates a Frame Element.
      * 
+     *
      * @param node
      *            The HTMLFrameElement.
+     * @param source
      * @return Result or null if no error occurred.
      */
     protected void processFrameset(final Element node, final Set<String> noframes,
-            final List<Result> errors, int level) {
+                                   final List<Result> errors, int level, Source source) {
         if (HTMLElementName.FRAME.equals(node.getName().toLowerCase())) {
             logger.debug("validateFrame");
             // Criteria 2.1
             final Attribute name = node.getAttributes().get("name");
             if (name == null) {
-                errors.add(new Result(bundle.get(
+                Result ve = new Result(bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.2.1",
                         "Missing 'name' attribute for 'frame' element"), getNearText(node,
                         "<frame>"), bundle.get(
-                        "org.jahia.services.htmlvalidator.WAIValidator.2.1.example", "")));
+                        "org.jahia.services.htmlvalidator.WAIValidator.2.1.example", ""));
+                setPosition(node, source, ve);
+                errors.add(ve);
             } else {
 
                 // Criteria 2.1 (Remarque)
                 final String nameValue = text2XMLEntityRef(name.getValue());
                 if (nameValue.indexOf(' ') > -1) {
-                    errors.add(new Result(bundle.getFormatted(
+                    Result ve = new Result(bundle.getFormatted(
                             "org.jahia.services.htmlvalidator.WAIValidator.2.1.2",
                             "Attribute 'name' cannot contain any white space",
-                            new Object[] { nameValue }), getNearText(node, "<frame>"), bundle.get(
-                            "org.jahia.services.htmlvalidator.WAIValidator.2.1.2.example", "")));
+                            new Object[]{nameValue}), getNearText(node, "<frame>"), bundle.get(
+                            "org.jahia.services.htmlvalidator.WAIValidator.2.1.2.example", ""));
+                    setPosition(node, source, ve);
+                    errors.add(ve);
                 } else {
                     // Criteria 2.5
                     final Attribute title = node.getAttributes().get("title");
                     if (title == null) {
-                        errors.add(new Result(bundle.getFormatted(
+                        Result ve = new Result(bundle.getFormatted(
                                 "org.jahia.services.htmlvalidator.WAIValidator.2.5",
                                 "Missing 'title' attribute for 'frame' element",
-                                new Object[] { nameValue }), getNearText(node, "<frame>"), bundle
+                                new Object[]{nameValue}), getNearText(node, "<frame>"), bundle
                                 .get("org.jahia.services.htmlvalidator.WAIValidator.2.5.example",
-                                        "")));
+                                        ""));
+                        setPosition(node, source, ve);
+                        errors.add(ve);
                     }
                 }
 
                 // Criteria 2.10
                 final Attribute scrolling = node.getAttributes().get("scrolling");
                 if (scrolling != null && "no".equals(scrolling.getValue().toLowerCase())) {
-                    errors.add(new Result(bundle.getFormatted(
+                    Result ve = new Result(bundle.getFormatted(
                             "org.jahia.services.htmlvalidator.WAIValidator.2.10",
                             "Scrolling should be set to at least 'auto' for frame " + nameValue,
-                            new Object[] { nameValue }), getNearText(node, "<frame>"), bundle.get(
-                            "org.jahia.services.htmlvalidator.WAIValidator.2.10.example", "")));
+                            new Object[]{nameValue}), getNearText(node, "<frame>"), bundle.get(
+                            "org.jahia.services.htmlvalidator.WAIValidator.2.10.example", ""));
+                    setPosition(node, source, ve);
+                    errors.add(ve);
                 }
             }
         } else if (HTMLElementName.NOFRAMES.equals(node.getName().toLowerCase())) {
             noframes.add(node.getName());
         }
         for (Element element : node.getChildElements()) {
-            if (processNode(element, errors, level)) {
-                processFrameset(element, noframes, errors, level);
+            if (processNode(element, errors, level, source)) {
+                processFrameset(element, noframes, errors, level, source);
             }
         }
 
@@ -967,6 +1022,11 @@ public class WAIValidator {
 
         buff.append("</i></span>");
         return buff.toString();
+    }
+
+    private void setPosition(Element node, Source source, Result result) {
+        result.setColumn(source.getColumn(node.getBegin()));
+        result.setLine(source.getRow(node.getBegin()));
     }
 
     private static String text2XMLEntityRef(String str) {

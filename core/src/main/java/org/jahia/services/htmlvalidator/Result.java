@@ -2,7 +2,7 @@ package org.jahia.services.htmlvalidator;
 
 public class Result {
     public enum Type {
-        ERROR, WARNING, INFO;
+        ERROR, WARNING, INFORMATION;
     }
     protected Type type = Type.ERROR;
     protected int line;

@@ -51,15 +51,11 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -70,13 +66,10 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
-import com.extjs.gxt.ui.client.widget.tips.QuickTip;
-import com.extjs.gxt.ui.client.widget.tips.ToolTip;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -317,9 +310,9 @@ public class CKEditorField extends Field<String> {
 				if ("warning".equalsIgnoreCase(model.getType())) {
 					html = new Html(StandardIconsProvider.STANDARD_ICONS.warning().getHTML());
 					html.setToolTip(Messages.get("label.warning", "Warning"));
-				} else if ("info".equalsIgnoreCase(model.getType())) {
-					html = new Html(StandardIconsProvider.STANDARD_ICONS.about().getHTML());
-					html.setToolTip(Messages.get("label.information", "Error"));
+				} else if ("information".equalsIgnoreCase(model.getType())) {
+					html = new Html(StandardIconsProvider.STANDARD_ICONS.information().getHTML());
+					html.setToolTip(Messages.get("label.information", "Information"));
 				} else {
 					html = new Html(StandardIconsProvider.STANDARD_ICONS.error().getHTML());
 					html.setToolTip(Messages.get("label.error", "Error"));
@@ -373,7 +366,7 @@ public class CKEditorField extends Field<String> {
 				ToolTipConfig tt = new ToolTipConfig();
 				tt.setTitle(Messages.get("label.context", "Context"));
 				tt.setTemplate(new Template(model.getContext()));
-				Html icon = new Html(StandardIconsProvider.STANDARD_ICONS.information().getHTML());
+				Html icon = new Html(StandardIconsProvider.STANDARD_ICONS.about().getHTML());
 				icon.setToolTip(tt);
 				
 	            return icon;

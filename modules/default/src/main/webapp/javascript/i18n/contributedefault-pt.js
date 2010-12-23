@@ -1,3 +1,9 @@
 ﻿contributionI18n = $.extend(contributionI18n,{
-    'cancel': 'Cancelar'
+    'cancel': 'Cancelar',
+    'wcag.context': 'Contexto',
+    'wcag.description': 'Descrição',
+    'wcag.error': 'Erro',
+    'wcag.example': 'Exemplo',
+    'wcag.ignore': 'Ignorar alerta(s)',
+    'wcag.warning': 'Alerta'
 });

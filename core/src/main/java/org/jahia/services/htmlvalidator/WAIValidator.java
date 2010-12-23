@@ -116,7 +116,7 @@ public class WAIValidator {
                 evh.addError(result);
             } else if (Result.Type.WARNING.equals(result.getType())) {
                 evh.addWarning(result);
-            } else if (Result.Type.INFO.equals(result.getType())) {
+            } else if (Result.Type.INFORMATION.equals(result.getType())) {
                 evh.addInfo(result);
             }
         }

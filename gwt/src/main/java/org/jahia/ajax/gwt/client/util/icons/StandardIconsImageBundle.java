@@ -53,9 +53,6 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("error.png")
     public AbstractImagePrototype error();
 
-    @Resource("lightbulb_on.png")
-    public AbstractImagePrototype example();
-
     @Resource("google-docs-32x32.png")
     public AbstractImagePrototype googleDocsLarge();
 

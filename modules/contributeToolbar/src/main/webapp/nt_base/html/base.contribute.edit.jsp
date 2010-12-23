@@ -44,11 +44,13 @@
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
 <c:if test="${!renderContext.ajaxRequest}">
+<template:addResources>
     <script>
         $(document).ready(function() {
             initEditFields("${currentNode.identifier}");
         });
     </script>
+</template:addResources>    
 </c:if>
 
 <c:if test="${empty currentResource.moduleParams.contentType}">

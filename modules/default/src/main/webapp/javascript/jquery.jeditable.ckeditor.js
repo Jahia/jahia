@@ -4,15 +4,23 @@
         return $(element).attr('id') + '_ckeditor';
     }
 
-    var editor = {};
-
     function remove_ck(id) {
-        CKEDITOR.remove(editor[id]);
+    	try {
+	    	var editor = CKEDITOR.instances[id];
+	    	if (editor) {
+	    		try {
+	    			editor.destroy();
+	    		} catch (de) {}
+		        CKEDITOR.remove(editor);
+		    	delete editor;
+	    	}
+    	} catch (e) {};
     }
 
     $.editable.addInputType('ckeditor', {
         element : function(settings, original) {
-            var textarea = $('<textarea id="' + get_id(original) + '"/>');
+        	var id = get_id(original);
+            var textarea = $('<textarea id="' + id + '"/>');
             if (settings.rows) {
                 textarea.attr('rows', settings.rows);
             } else {
@@ -28,11 +36,12 @@
         },
         plugin : function(settings, original) {
             var id = get_id(original);
-            editor[id] = CKEDITOR.replace(id, { toolbar : 'User'});
+            remove_ck(id);
+            CKEDITOR.replace(id, { toolbar : 'User'});
         },
         submit : function(settings, original) {
             var id = get_id(original);
-            $('#' + id).val(editor[id].getData());
+            $('#' + id).val(CKEDITOR.instances[id].getData());
             remove_ck(id);
         },
         reset : function(settings, original) {

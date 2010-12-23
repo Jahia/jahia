@@ -21,15 +21,12 @@
 
 <template:include template="hidden.header"/>
 
-<%--<form id="sendAsNewsletter" method="POST">--%>
-    <%--<input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>--%>
 <p>
     <img src="<c:url value='/images/jahiapp-newsletter-small.png' context='${url.currentModule}'/>"/>
 </p>
 <table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
     <thead>
     <tr>
-        <%--<th width="5%">&nbsp;</th>--%>
         <th width="5%">&nbsp;</th>
         <th width="40%"><fmt:message key="label.title"/></th>
         <th width="13%" style="white-space: nowrap; text-align: center;"><fmt:message
@@ -40,16 +37,12 @@
                 key="jnt_newsletterIssue.j_lastSent"/></th>
         <th width="15%" style="white-space: nowrap; text-align: center;"><fmt:message
                 key="jnt_newsletterIssue.j_scheduled"/></th>
-        <%--<th width="5%">&nbsp;</th>--%>
     </tr>
     </thead>
     <tbody>
     <c:forEach items="${moduleMap.currentList}" var="issue" begin="${moduleMap.begin}" end="${moduleMap.end}"
                varStatus="status">
         <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
-            <%--<td align="center">--%>
-                <%--<input type="radio" name="issueselect" onclick="$('#sendAsNewsletter').attr('action','${url.base}${issue.path}.sendAsNewsletter.do'); $('#submitbutton').removeAttr('disabled',null);"/>--%>
-            <%--</td>--%>
             <td align="center">
                 <c:url value="/icons/jnt_newsletterIssue${empty issue.properties['j:scheduled'] ? (empty issue.properties['j:lastSent'] ? '' : 'Sent') : 'Scheduled'}_large.png"
                        context="${url.currentModule}" var="statusImage"/>
@@ -90,14 +83,6 @@
                     <fmt:message key="label.issueNotPublished"/>
                 </c:if>
             </td>
-            <%--<td align="center">--%>
-                <%--<c:if test="${not empty issue.properties['j:lastPublished']}">--%>
-                    <%--<a class="sendNewsletter" href="#"--%>
-                       <%--onclick="$.post('${url.base}${issue.path}.sendAsNewsletter.do', null, null, 'json'); return false;"><img--%>
-                            <%--src="<c:url value='/icons/jnt_newsletterIssueSent.png' context='${url.currentModule}'/>"--%>
-                            <%--height="24" width="24" alt=" "/></a>--%>
-                <%--</c:if>--%>
-            <%--</td>--%>
         </tr>
     </c:forEach>
 
@@ -116,59 +101,3 @@
 <c:if test="${empty currentNode.properties['j:lastPublished']}">
     <fmt:message key="label.publishToAddSuscribers"/>
 </c:if>
-
-<%--<div>--%>
-        <%--<fieldset>--%>
-            <%--<legend><fmt:message key="label.testSending"/></legend>--%>
-
-            <%--<p>--%>
-                <%--<label class="left" for="testemail"><fmt:message key="label.email"/></label>--%>
-                <%--<input id="testemail" name="testemail">--%>
-            <%--</p>--%>
-
-            <%--<p>--%>
-                <%--<label class="left" for="user"><fmt:message key="label.user"/></label>--%>
-                <%--<input id="user" name="user" value="guest">--%>
-            <%--</p>--%>
-
-            <%--<p>--%>
-                <%--<label class="left" for="type"><fmt:message key="label.format"/></label>--%>
-                <%--<select id="type" name="type">--%>
-                    <%--<option value="html"><fmt:message key="label.html"/></option>--%>
-                    <%--<option value="txt"><fmt:message key="label.text"/></option>--%>
-                <%--</select>--%>
-            <%--</p>--%>
-            <%--<p>--%>
-                <%--<label class="left" for="locale"><fmt:message key="label.locale"/></label>--%>
-                <%--<select id="locale" name="locale">--%>
-                    <%--<c:forEach var="locale" items="${renderContext.site.languagesAsLocales}">--%>
-                        <%--<option value="${locale}">${locale}</option>--%>
-                    <%--</c:forEach>--%>
-                <%--</select>--%>
-            <%--</p>--%>
-            <%--<div class="divButton"><br/>--%>
-                <%--<input id="submitbutton" type="submit" tabindex="28" value="<fmt:message key='label.send'/>" class="button" id="submit" disabled=""/>--%>
-                <%--<input type="reset" tabindex="29" value="<fmt:message key='label.reset'/>" class="button" id="reset"/>--%>
-            <%--</div>--%>
-        <%--</fieldset>--%>
-<%--</div>--%>
-<%--</form>--%>
-
-<%--<script type="text/javascript">--%>
-    <%--$(document).ready(function() {--%>
-        <%--$(".scheduleDate").editable(function (value, settings) {--%>
-            <%--var data = {};--%>
-            <%--data['j:scheduled'] = value;--%>
-            <%--data['methodToCall'] = 'put';--%>
-            <%--$.post("${url.base}" + $(this).attr("path"), data, function(result) {--%>
-            <%--}, "json");--%>
-            <%--return(value);--%>
-        <%--}, {--%>
-            <%--type : 'datetimepicker',--%>
-            <%--onblur : 'ignore',--%>
-            <%--submit : 'OK',--%>
-            <%--cancel : 'Cancel',--%>
-            <%--tooltip : '<fmt:message key="label.clickToEdit"/>'--%>
-        <%--});--%>
-    <%--});--%>
-<%--</script>--%>

@@ -35,6 +35,7 @@ package org.jahia.services.uicomponents.bean.toolbar;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,8 +46,9 @@ import java.util.List;
  * Date: 7 avr. 2008
  * Time: 09:05:20
  */
-public class Item implements Serializable, BeanNameAware {
-    private String id;
+public class Item implements Serializable, BeanNameAware, InitializingBean {
+    private static final long serialVersionUID = -5120594370234680709L;
+	private String id;
     private String icon;
     private String title;
     private String titleKey;
@@ -57,6 +59,8 @@ public class Item implements Serializable, BeanNameAware {
     private String layout;
     private List<Property> properties = new ArrayList<Property>();
     private ActionItem actionItem;
+	private Menu menu;
+	private Toolbar toolbar;
 
     public String getId() {
         return id;
@@ -155,12 +159,23 @@ public class Item implements Serializable, BeanNameAware {
     }
 
     public void setParentMenu(Menu menu) {
-    	menu.removeItem(getId());
-        menu.addItem(this);
+    	this.menu = menu;
     }
 
     public void setParentToolbar(Toolbar toolbar) {
-    	toolbar.removeItem(getId());
-        toolbar.addItem(this);
+    	this.toolbar = toolbar;
+    }
+
+	public void afterPropertiesSet() throws Exception {
+	    if (menu != null) {
+	    	menu.removeItem(getId());
+	        menu.addItem(this);
+	        menu = null;
+	    }
+	    if (toolbar != null) {
+	    	toolbar.removeItem(getId());
+	    	toolbar.addItem(this);
+	    	toolbar = null;
+	    }
     }
 }

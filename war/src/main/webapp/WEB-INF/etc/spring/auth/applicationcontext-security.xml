@@ -14,6 +14,8 @@
                 
                 /precompileServlet = authcBasic, roles[templateManager]
                 
+                /cms/**/*.raw = authcBasic, roles[templateManager]
+                
                 /modules/**/META-INF/** = authcBasic, roles[templateManager]
                 /modules/**/WEB-INF/** = authcBasic, roles[templateManager]
                 /modules/**/*.cnd = authcBasic, roles[templateManager]

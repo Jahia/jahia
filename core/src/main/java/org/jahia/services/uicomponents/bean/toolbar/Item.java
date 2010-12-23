@@ -32,7 +32,10 @@
 
 package org.jahia.services.uicomponents.bean.toolbar;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -59,8 +62,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
     private String layout;
     private List<Property> properties = new ArrayList<Property>();
     private ActionItem actionItem;
-	private Menu menu;
-	private Toolbar toolbar;
+	private Object parent;
 
     public String getId() {
         return id;
@@ -158,24 +160,55 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
         this.layout = layout;
     }
 
+    public void setParent(Object parent) {
+    	this.parent = parent;
+    }
+
     public void setParentMenu(Menu menu) {
-    	this.menu = menu;
+    	setParent(menu);
     }
 
     public void setParentToolbar(Toolbar toolbar) {
-    	this.toolbar = toolbar;
+    	setParent(toolbar);
     }
 
 	public void afterPropertiesSet() throws Exception {
-	    if (menu != null) {
-	    	menu.removeItem(getId());
-	        menu.addItem(this);
-	        menu = null;
-	    }
-	    if (toolbar != null) {
-	    	toolbar.removeItem(getId());
-	    	toolbar.addItem(this);
-	    	toolbar = null;
-	    }
-    }
+		if (parent != null) {
+			if (parent instanceof String) {
+				String parentPath = (String) parent;
+				String beanId = StringUtils.substringBefore(parentPath, ".");
+				Object bean = SpringContextSingleton.getModuleBean(beanId);
+				String propertyPath = StringUtils.substringAfter(parentPath, ".");
+				if (propertyPath.length() > 0) {
+					bean = PropertyUtils.getNestedProperty(bean, propertyPath);
+				}
+				if (bean == null) {
+					throw new IllegalArgumentException("Unable to find target for parent path: "
+					        + parentPath);
+				}
+				if (!(bean instanceof Menu || bean instanceof Toolbar)) {
+					throw new IllegalArgumentException("Target bean for path '" + parentPath
+					        + "' is not of type Menu or Toolbar. Unable to handle beans of type '"
+					        + bean.getClass().getName() + "'");
+				}
+				parent = bean;
+			}
+			if (parent instanceof Menu) {
+				((Menu) parent).removeItem(getId());
+				((Menu) parent).addItem(this);
+			} else if (parent instanceof Toolbar) {
+				((Toolbar) parent).removeItem(getId());
+				((Toolbar) parent).addItem(this);
+			} else {
+				throw new IllegalArgumentException(
+				        "Unknown parent type '"
+				                + parent.getClass().getName()
+				                + "'. Can accept Menu, Toolbar or"
+				                + " a String value with a bean-compliant path to the corresponding menu/toobar bean");
+			}
+
+			// clean the reference
+			parent = null;
+		}
+	}
 }

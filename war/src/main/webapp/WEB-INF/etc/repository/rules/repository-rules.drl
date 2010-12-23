@@ -33,6 +33,14 @@ rule "auto publish node (modify)"
         Publish the node
 end
 
+rule "auto publish node (remove property)"
+    when
+       A property has been removed from a node
+		- the node has the type jmix:autoPublish
+    then
+        Publish the node
+end
+
 #rule "auto publish node (delete)"
 #    when
 #        A node is deleted

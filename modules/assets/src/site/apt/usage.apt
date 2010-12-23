@@ -31,16 +31,20 @@ Usage
 
 +------------------------------------------------
   <template:addResources>
-    $(document).ready(function() { alert('document loaded'); });
+    <script type="text/javascript">
+      $(document).ready(function() { alert('document loaded'); });
+    </script>
   </template:addResources>
 
 or
 
   <template:addResources>
-    div#fancy_div {
-    background: #FFF;
-    color: #000;
-    overflow: auto;
+    <style type="text/css">
+        div#fancy_div {
+        background: #FFF;
+        color: #000;
+        overflow: auto;
+    </style>
   }
   </template:addResources>
 +------------------------------------------------
@@ -57,15 +61,15 @@ or
 
    is searched in the following locations in that order:
   
-    * <<</templates/my-custom-module/javascript/ui/xyz.js>>>
+    * <<</modules/my-custom-module/javascript/ui/xyz.js>>>
 
-    * <<</templates/direct-dependent-module-1/javascript/ui/xyz.js>>>
+    * <<</modules/direct-dependent-module-1/javascript/ui/xyz.js>>>
 
-    * <<</templates/direct-dependent-module-2/javascript/ui/xyz.js>>>
+    * <<</modules/direct-dependent-module-2/javascript/ui/xyz.js>>>
 
-    * <<</templates/indirect-dependent-module-1/javascript/ui/xyz.js>>>
+    * <<</modules/indirect-dependent-module-1/javascript/ui/xyz.js>>>
 
-    * <<</templates/indirect-dependent-module-2/javascript/ui/xyz.js>>>
+    * <<</modules/indirect-dependent-module-2/javascript/ui/xyz.js>>>
     
     []
   i.e. in the current module, its dependent modules (defined by the <<<depends>>>
@@ -95,26 +99,7 @@ or
 * Including declared dependencies
 
   {{{Declaring} Declared}} dependencies are included automatically by the default
-  full page wrapper <<</templates/default/nt_base/html/base.wrapper.fullpage.jsp>>>.
+  asset template  <<</modules/default/nt_base/html/base.html.statics.assets.jsp>>>.
   
   The <<<<template:includeResources/>>>> tag is used to perform the inclusion of all
-  assets declared in the templates into the HTML document's <<<head>>> section:
-
-+------------------------------------------------
-  <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-  
-  <template:template>
-      <template:templateHead>
-          <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-          ...
-          <template:includeResources/>
-          ...
-    </template:templateHead>
-      <template:templateBody>
-          ${wrappedContent}
-      </template:templateBody>
-  </template:template>
-+------------------------------------------------
-
-  If you build your wrappers manually or need higher control, please, take a look at the code of the
-  <<<includeResources.tag>>> tag file for details.
+  assets declared in the templates into the HTML document's <<<head>>> section.

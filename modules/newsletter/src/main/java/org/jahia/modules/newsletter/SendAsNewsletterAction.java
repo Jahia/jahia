@@ -41,7 +41,9 @@ import org.jahia.bin.ActionResult;
 import org.jahia.bin.BaseAction;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.TokenAuthValveImpl;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.mail.MailService;
@@ -49,7 +51,10 @@ import org.jahia.services.notification.HtmlExternalizationService;
 import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.notification.Subscription;
 import org.jahia.services.notification.SubscriptionService;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.*;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PaginatedList;
 import org.json.JSONObject;
@@ -110,12 +115,24 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
                                 session);
                         for (Subscription subscription : l.getData()) {
                             String username = "guest";
+
+                            JahiaSite site = null;
+                            try {
+                                site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(node.getResolveSite().getSiteKey());
+                            } catch (JahiaException e) {
+                            }
+
                             if (personalized && subscription.getSubscriber() != null) {
                                 username = subscription.getSubscriber();
                             }
+
+                            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(subscription.getSubscriber());
+                            RenderContext letterContext = new RenderContext(renderContext.getRequest(), renderContext.getResponse(), user);
+                            Locale language = UserPreferencesHelper.getPreferredLocale(user , site);
+
                             if (subscription.getEmail() != null && subscription.isConfirmed() && !subscription.isSuspended()) {
-                                sendNewsletter(renderContext, node, subscription.getEmail(), username, "html",
-                                        LanguageCodeConverters.languageCodeToLocale(node.getResolveSite().getDefaultLanguage()), "live",
+                                sendNewsletter(letterContext, node, subscription.getEmail(), username, "html",
+                                        language, "live",
                                         newsletterVersions);
                             }
                         }
@@ -150,9 +167,18 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         JCRNodeWrapper node = session.getNodeByIdentifier(id);
-                        String out = renderService.render(new Resource(node, "html", null, "page"), renderContext);
-                        out = htmlExternalizationService.externalize(out, renderContext);
+                        Resource resource = new Resource(node, "html", null, "page");
+                        renderContext.setMainResource(resource);
+                        renderContext.setSite(node.getResolveSite());
 
+                        // Clear attributes
+                        Enumeration attributeNames = renderContext.getRequest().getAttributeNames();
+                        while (attributeNames.hasMoreElements()) {
+                            renderContext.getRequest().removeAttribute((String) attributeNames.nextElement());
+                        }
+
+                        String out = renderService.render(resource, renderContext);
+                        out = htmlExternalizationService.externalize(out, renderContext);
                         newsletterVersions.put(key, out);
 
                         String title = node.getName();
@@ -169,6 +195,10 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
         }
         String out = newsletterVersions.get(key);
         String subject = newsletterVersions.get(key + ".title");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Send newsltter to "+email + " , subject " + subject);
+            logger.debug(out);
+        }
         mailService.sendHtmlMessage(mailService.defaultSender(), email, null,null,subject, out);
     }
 

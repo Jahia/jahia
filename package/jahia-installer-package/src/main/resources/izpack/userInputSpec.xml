@@ -22,18 +22,7 @@
         
     </panel>
     
-    <panel order="1">
-        <field type="title" txt="Server type" id="server.title"/>
-        <field type="radio" variable="server.type" alight="left">
-            <description align="left" txt="Choose target application server type" id="radio.server.type"/>
-            <spec>
-                <choice txt="Apache Tomcat 6.0.x" value="tomcat" set="true"/>
-                <choice txt="Red Hat JBoss 4.2.x" value="jboss"/>
-            </spec>
-        </field>
-    </panel>
-    
-    <panel order="2" topBuffer="0">
+    <panel order="1" topBuffer="0">
         <field type="title" txt="Database connection settings" id="dbSettings.title"/>
         <field type="space" />
         <field type="radio" variable="dbSettings.mode">
@@ -45,7 +34,7 @@
         </field>
     </panel>
     
-    <panel order="3" topBuffer="0">
+    <panel order="2" topBuffer="0">
         <field type="title" txt="Database connection settings" id="dbSettings.title"/>
         <field type="space" />
         <field type="radio" variable="dbSettings.dbms.type" alight="left" conditionid="cnd.db.mode.standalone">
@@ -58,7 +47,7 @@
         </field>
     </panel>
     
-    <panel order="4">
+    <panel order="3">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
         <!-- DB driver and URL fields are for each DB type due to value initialization problem (if the DB type is changed) -->
 
@@ -112,7 +101,7 @@
         </field>
     </panel>
     
-    <panel order="5">
+    <panel order="4">
         <field type="title" txt="System administrator (root) settings" id="superUser.title"/>
         <!-- Allow changing the root username when we will support it
         <field type="text" align="left" variable="superUser.username">
@@ -146,7 +135,7 @@
         <field type="staticText" align="left" txt="(*) - this field is required" id="common.requiredFieldHint"/>
     </panel>
     
-    <panel order="6">
+    <panel order="5">
         <field type="title" txt="Mail settings (optional)" id="mailSettings.title"/>
         <field type="staticText" txt="The settings below are optional. Leave them empty to disable E-Mail notification. Specifying them will enable the E-Mail notification feature." id="mailSettings.description"/>
         <field type="space"/>
@@ -163,7 +152,7 @@
         <field type="staticText" txt="See http://jira.jahia.org/browse/JKB-20 for Mail server configuration options in Jahia 6.5" id="mailSettings.link" align="right"/>
     </panel>
 
-    <panel order="7">
+    <panel order="6">
         <field type="title" txt="Installation" id="afterInstall.title"/>
         <field type="staticText" txt="Installation successful" id="afterInstall.description"/>
         <field type="check" variable="afterInstall.launchJahia" alight="left" conditionid="cnd.pack.tomcat">

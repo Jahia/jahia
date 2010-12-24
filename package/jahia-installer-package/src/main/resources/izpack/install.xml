@@ -38,7 +38,7 @@
         <variable name="jahia.tomcat.pack.selected" value="true" condition="cnd.pack.tomcat"/>
         <variable name="jahia.tomcat.pack.selected" value="false" condition="!cnd.pack.tomcat"/>
         
-        <variable name="server.type" value="tomcat" condition="cnd.installation.type.express|cnd.pack.tomcat"/>
+        <variable name="server.type" value="tomcat"/>
 
         <!-- embedded Derby defaults -->
         <variable name="dbSettings.dbms.type" value="derby_embedded" condition="cnd.installation.type.express|cnd.db.dbms.derby_embedded"/>
@@ -83,21 +83,6 @@
         
         <condition type="packselection" id="cnd.pack.tomcat">
             <packid>tomcat</packid>
-        </condition>
-        
-        <condition type="variable" id="cnd.server.type.jboss">
-            <name>server.type</name>
-            <value>jboss</value>
-        </condition>
-        
-        <condition type="variable" id="cnd.server.type.tomcat">
-            <name>server.type</name>
-            <value>tomcat</value>
-        </condition>
-        
-        <condition type="or" id="cnd.skip.shared.libs">
-            <condition type="ref" refid="cnd.pack.tomcat"/>
-            <condition type="ref" refid="cnd.server.type.jboss"/>
         </condition>
         
         <condition type="variable" id="cnd.db.mode.standalone">
@@ -202,7 +187,6 @@
         <panel classname="TargetPanel"/>
         <panel classname="UserInputPanel" id="installType"/>
         <panel classname="PacksPanel" id="packsPanel" condition="cnd.installation.type.advanced"/>
-        <panel classname="UserInputPanel" condition="cnd.installation.type.advanced+!cnd.pack.tomcat" id="serverType"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="dbMode"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced+cnd.db.mode.standalone" id="dbType"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced+cnd.db.mode.standalone" id="dbSettings">
@@ -272,13 +256,11 @@
                 <include name="jahia.png"/>
             </fileset>
             <singlefile override="true" src="../scripts/openUrl.sh" target="$INSTALL_PATH/bin/openUrl.sh"/>
-            <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss" override="true"/>
             <singlefile override="true" src="install.properties" target="$INSTALL_PATH/logs/install.properties"/>
             <singlefile override="true" src="../dependency/configurators-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
             <singlefile override="true" src="../dependency/archivers-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
-            <singlefile override="true" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
-            <singlefile overrride="true" src="../docs/How-to-install-jboss.html" target="$INSTALL_PATH/How-to-install.html" condition="cnd.server.type.jboss"/>
-            <singlefile overrride="true" src="../docs/How-to-install-tomcat.html" target="$INSTALL_PATH/How-to-install.html" condition="cnd.server.type.tomcat+!cnd.pack.tomcat"/>
+            <singlefile override="true" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.pack.tomcat"/>
+            <singlefile overrride="true" src="../docs/How-to-install-tomcat.html" target="$INSTALL_PATH/How-to-install.html" condition="!cnd.pack.tomcat"/>
             <parsable targetfile="$INSTALL_PATH/logs/install.properties" type="javaprop"/>
             <parsable targetfile="$INSTALL_PATH/docs/Readme.URL" condition="cnd.pack.tomcat"/>
             <parsable targetfile="$INSTALL_PATH/docs/HowToInstall.URL" condition="!cnd.pack.tomcat"/>

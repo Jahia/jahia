@@ -14,11 +14,7 @@
 		<condition property="cnd.no.tomcat">
 			<equals arg1="${use.bundled.tomcat}" arg2="false"/>
 		</condition>
-		<condition property="cnd.jboss">
-			<equals arg1="${server.type}" arg2="jboss"/>
-		</condition>
 		<antcall target="jahia-package"/>
-		<antcall target="jboss-sar"/>
 		<antcall target="cleanup"/>
 	</target>
 
@@ -29,16 +25,6 @@
 			<arg value="${INSTALL_PATH}/build"/>
 			<arg value="${INSTALL_PATH}/ROOT.war"/>
 			<arg value="${server.type}"/>
-		</java>
-		<echo>...packaging done.</echo>
-	</target>
-
-	<target name="jboss-sar" if="cnd.jboss">
-		<echo>JBoss is selected as target application server. Package SAR file...</echo>
-		<java jar="${INSTALL_PATH}/archivers.jar" fork="true" failonerror="true" maxmemory="512m">
-			<arg value="-cm"/>
-			<arg value="${INSTALL_PATH}/jahia-jboss-config"/>
-			<arg value="${INSTALL_PATH}/jahia-jboss-config.sar"/>
 		</java>
 		<echo>...packaging done.</echo>
 	</target>

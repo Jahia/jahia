@@ -78,6 +78,7 @@ public class JahiaGWTParameters {
     private static String languageDisplayName;
     private static String siteUUID;
     private static String siteKey;
+    private static String siteType;
     private static String workspace;
 
     public static String getServiceEntryPoint() {
@@ -186,6 +187,7 @@ public class JahiaGWTParameters {
     public static void setSite(GWTJahiaNode site, Linker linker) {
         setSiteUUID(site.getSiteUUID());
         setSiteKey(site.getSiteKey());
+        setSiteType(site.getSiteType());
         DeployTemplatesActionItem.refreshAllMenus(linker);
         JahiaContentManagementService
                 .App.getInstance().getGrantedPermissions(new BaseAsyncCallback<List<GWTJahiaPermission>>() {
@@ -193,6 +195,14 @@ public class JahiaGWTParameters {
                 PermissionsUtils.loadPermissions(result);
             }
         });
+    }
+
+    public static String getSiteType() {
+        return siteType;
+    }
+
+    public static void setSiteType(String newSiteType) {
+        siteType = newSiteType;
     }
 
     public static String getWorkspace() {

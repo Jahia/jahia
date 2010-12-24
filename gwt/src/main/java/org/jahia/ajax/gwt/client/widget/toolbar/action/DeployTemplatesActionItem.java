@@ -58,7 +58,7 @@ import java.util.Map;
 public class DeployTemplatesActionItem extends BaseActionItem {
     private static List<DeployTemplatesActionItem> instances = new ArrayList<DeployTemplatesActionItem>();
 
-    private transient List<GWTJahiaSite> sites;
+    private transient List<GWTJahiaSite> sites = new ArrayList<GWTJahiaSite>();
 
     private transient Map<String,List<GWTJahiaSite>> sitesMap = new HashMap<String, List<GWTJahiaSite>>();
 
@@ -75,6 +75,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                         sitesMap.put(key, new ArrayList<GWTJahiaSite>());
                     }
                     sitesMap.get(key).add(gwtJahiaSite);
+                    sites.add(gwtJahiaSite);
                 }
 
                 refreshMenu(linker);
@@ -99,6 +100,12 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
         if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
             for (GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
+                MenuItem item = new MenuItem(site.getSiteKey());
+                deploy(item, linker, "/sites/" + site.getSiteKey());
+                menu.add(item);
+            }
+        } else if ("module".equals(JahiaGWTParameters.getSiteType())) {
+            for (GWTJahiaSite site : sites) {
                 MenuItem item = new MenuItem(site.getSiteKey());
                 deploy(item, linker, "/sites/" + site.getSiteKey());
                 menu.add(item);

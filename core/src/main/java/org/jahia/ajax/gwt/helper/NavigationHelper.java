@@ -771,6 +771,7 @@ public class NavigationHelper {
             JCRSiteNode site = node.getResolveSite();
             if (site != null) {
                 n.setSiteUUID(site.getUUID());
+                n.setSiteType(site.hasProperty("j:siteType") ? site.getProperty("j:siteType").getString() : "");
                 n.setAclContext("site:" + site.getName());
                 n.setSiteKey(site.getSiteKey());
             } else {

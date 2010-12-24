@@ -418,8 +418,8 @@
  - j:defaultLanguage (string) nofulltext
  - j:mixLanguage (boolean) = false
  - j:templatesSet (string) hidden
+ - j:siteType (string) protected
  + * (nt:base)
-
 
 //---------------------------------------------------------
 // Imports

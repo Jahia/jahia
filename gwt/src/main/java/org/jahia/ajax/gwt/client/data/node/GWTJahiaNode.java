@@ -70,6 +70,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String PREVIEW = "preview";
     public static final String THUMBNAILS = "thumbnails";
     public static final String SITE_UUID = "siteUUID";
+    public static final String SITE_TYPE = "siteType";
     public static final String SITE_KEY = "siteKey";
     public static final String CURRENT_VERSION = "currentVersion";
     public static final String VERSIONS = "versions";
@@ -314,6 +315,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public String getSiteUUID() {
         return get(SITE_UUID);
+    }
+
+    public void setSiteType(String siteType) {
+        set(SITE_TYPE, siteType);
+    }
+
+    public String getSiteType() {
+        return get(SITE_TYPE);
     }
 
     public void setSiteKey(String siteKey) {

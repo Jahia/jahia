@@ -1,5 +1,7 @@
 package org.jahia.bin;
 
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.render.filter.Template;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -28,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,6 +42,21 @@ import java.io.IOException;
 public class TestCreateSiteServlet extends HttpServlet implements Controller, ServletContextAware {
 
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TestCreateSiteServlet.class);
+    private int numberOfParents = 0;
+    private int numberOfChilds = 0;
+    private int numberOfSubChilds = 0;
+
+    public void setNumberOfParents(int numberOfParents) {
+        this.numberOfParents = numberOfParents;
+    }
+
+    public void setNumberOfChilds(int numberOfChilds) {
+        this.numberOfChilds = numberOfChilds;
+    }
+
+    public void setNumberOfSubChilds(int numberOfSubChilds) {
+        this.numberOfSubChilds = numberOfSubChilds;
+    }
 
     private ServletContext servletContext;
 
@@ -67,20 +85,54 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
         }
 
         if (httpServletRequest.getParameter("site").equals("ACME")) {
+            if (httpServletRequest.getParameter("parents") != null) {
+                this.setNumberOfParents(Integer.valueOf(httpServletRequest.getParameter("parents")));
+            }
+            if (httpServletRequest.getParameter("childs") != null) {
+                this.setNumberOfChilds(Integer.valueOf(httpServletRequest.getParameter("childs")));
+            }
+            if (httpServletRequest.getParameter("subchilds") != null) {
+                this.setNumberOfSubChilds(Integer.valueOf(httpServletRequest.getParameter("subchilds")));
+            }
             final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        int numberOfSites = 0;
                         try {
-                            int numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
-                            TestHelper.createSite("ACME"  + numberOfSites, "localhost"  + numberOfSites, TestHelper.ACME_TEMPLATES,
+                            numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
+                            TestHelper.createSite("ACME" + numberOfSites, "localhost" + numberOfSites, TestHelper.ACME_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
-                                            + "/prepackagedSites/acme.zip", "ACME.zip");
-                            jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME"+ (numberOfSites) +"/home")
+                                            + "/prepackagedSites/webtemplates.zip", "ACME.zip");
+                            JCRNodeWrapper homeNode = session.getRootNode().getNode("sites/ACME" + (numberOfSites) + "/home");
+                            if (numberOfParents != 0) {
+                                for (int i = 0; i < numberOfParents; i++) {
+                                    session.checkout(homeNode);
+                                    homeNode.getNode("news").copy(homeNode, "parents" + i, true);
+                                    session.save();
+                                    if (numberOfChilds != 0) {
+                                        for (int j = 0; j < numberOfChilds; j++) {
+                                            session.checkout(homeNode);
+                                            homeNode.getNode("news").copy(homeNode.getNode("parents" + i), "news" + j, true);
+                                            session.save();
+                                            if (numberOfSubChilds != 0) {
+                                                for (int k = 0; k < numberOfSubChilds; k++) {
+                                                    session.checkout(homeNode);
+                                                    homeNode.getNode("news").copy(homeNode.getNode("parents" + i + "/news" + j), "subnews" + k, true);
+                                                    session.save();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME" + (numberOfSites) + "/home")
                                     .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                             session.save();
+
+
                         } catch (Exception e) {
-                            logger.error("Cannot create or publish site", e);
+                            logger.error("Cannot create site", e);
                         }
                         return null;
                     }
@@ -88,7 +140,6 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         } else if (httpServletRequest.getParameter("site").equals("mySite")) {
             try {
                 int numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
@@ -98,7 +149,13 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
             }
         } else if (httpServletRequest.getParameter("site").equals("delete")) {
             try {
-                TestHelper.removeAllSites(ServicesRegistry.getInstance().getJahiaSitesService());
+                Iterator<JahiaSite> sites = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
+                while (sites.hasNext()) {
+                    JahiaSite siteToDelete = sites.next();
+                    if (siteToDelete.getID() != 1) {
+                        TestHelper.deleteSite(siteToDelete.getSiteKey());
+                    }
+                }
             } catch (Exception e) {
                 logger.warn("Exception during test tearDown", e);
             }

@@ -22,6 +22,7 @@ import org.jahia.services.content.JCRTemplate;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -44,6 +45,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     private volatile long insertedCount = 0;
     private volatile long processedSinceLastReport = 0;
     private volatile long timeSinceLastReport = 0;
+    private volatile long latestTimeProcessed = 0;
 
     private static ContentHistoryService instance;
 
@@ -79,6 +81,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 
     public void start() {
         timeSinceLastReport = System.currentTimeMillis();
+        latestTimeProcessed = getMostRecentTimeInHistory();
     }
 
     public void process(Exchange exchange) throws Exception {
@@ -162,7 +165,10 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             long timer = System.currentTimeMillis();
             Session session = sessionFactoryBean.openSession();
             String whatDidWeDo = "inserted";
+            boolean shouldSkipInsertion = false;
             try {
+
+                /*
                 Criteria criteria = session.createCriteria(HistoryEntry.class);
                 criteria.add(Restrictions.eq("uuid", nodeIdentifier));
                 criteria.add(Restrictions.eq("date", date));
@@ -179,9 +185,40 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                     ignoredCount++;
                     whatDidWeDo = "skipped";
                 }
+                */
+                if (latestTimeProcessed > date.getTime()) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Skipping content history entry since it's date "+date+"is older than last processed date");
+                        ignoredCount++;
+                        whatDidWeDo = "skipped";
+                        shouldSkipInsertion = true;
+                    }
+                } else {
+                    // if the time is the same, we have to check for existing entries (or maybe it would be faster to
+                    // delete and re-create them ?)
+                    if (latestTimeProcessed == date.getTime()) {
+                        Criteria criteria = session.createCriteria(HistoryEntry.class);
+                        criteria.add(Restrictions.eq("uuid", nodeIdentifier));
+                        criteria.add(Restrictions.eq("date", date));
+                        criteria.add(Restrictions.eq("propertyName", propertyName));
+                        criteria.add(Restrictions.eq("action", action));
+
+                        HistoryEntry historyEntry = (HistoryEntry) criteria.uniqueResult();
+                        // Found update object
+                        if (historyEntry != null) {
+                            // history entry already exists, we will not update it.
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Content history entry " + historyEntry + " already exists, ignoring...");
+                            }
+                            ignoredCount++;
+                            whatDidWeDo = "skipped";
+                            shouldSkipInsertion = true;
+                        }
+                    }
+                }
                 // Not found new object
-                else {
-					historyEntry = new HistoryEntry();
+                if (!shouldSkipInsertion) {
+					HistoryEntry historyEntry = new HistoryEntry();
 					historyEntry.setDate(date);
 					historyEntry.setPath(path);
 					historyEntry.setUuid(nodeIdentifier);
@@ -210,6 +247,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 					session.save(historyEntry);
 	                session.flush();
 					insertedCount++;
+                    latestTimeProcessed = date.getTime();
                 }
             } catch (HibernateException e) {
             	whatDidWeDo = "insertion failed";
@@ -223,7 +261,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             
             if (processedCount % 2000 == 0) {
                 long nowTime = System.currentTimeMillis();
-                double rate = processedSinceLastReport / (nowTime - timeSinceLastReport);
+                double rate = ((double)processedSinceLastReport) / ((double)(nowTime - timeSinceLastReport));
 				logger.info("Total count of processed content history messages: {}. Ignored: {}. Inserted: {}. Rate={} msgs/sec.", new Object[] {processedCount, ignoredCount, insertedCount, rate});
                 processedSinceLastReport = 0;
                 timeSinceLastReport = nowTime;
@@ -280,6 +318,31 @@ public class ContentHistoryService implements Processor, CamelContextAware {
         } finally {
             session.close();
         }
+    }
+
+    public long getMostRecentTimeInHistory() {
+        Session session = sessionFactoryBean.openSession();
+
+        try {
+            Transaction tx = session.beginTransaction();
+
+            String hqlSelectMax = "select max(c.date) as latestDate from HistoryEntry c";
+            Iterator resultIter = session.createQuery(hqlSelectMax).list().iterator();
+            while (resultIter.hasNext()) {
+                Timestamp timeStamp = (Timestamp) resultIter.next();
+                if (timeStamp != null) {
+                    return timeStamp.getTime();
+                } else {
+                    return -1;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error while trying to retrieve latest date processed.", e);
+            return -1;
+        } finally {
+            session.close();
+        }
+        return -1;
     }
 
     public void setCamelContext(final CamelContext camelContext) {

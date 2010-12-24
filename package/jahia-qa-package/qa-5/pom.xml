@@ -15,19 +15,21 @@
     <dependencies>
         <dependency>
             <groupId>org.jahia.server</groupId>
-            <artifactId>jahia-ear</artifactId>
+            <artifactId>jahia-war</artifactId>
             <version>${jahia.package.version}</version>
             <classifier>${jahia.war.classifier}</classifier>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>shared-libraries</artifactId>
+            <version>${jahia.package.version}</version>
             <type>pom</type>
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>qa-5</id>
             <build>
                 <plugins>
-                    <!-- first QA server processing -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
@@ -211,6 +213,4 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-    </profiles>
 </project>

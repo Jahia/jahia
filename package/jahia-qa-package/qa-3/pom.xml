@@ -14,27 +14,22 @@
     <packaging>pom</packaging>
     <dependencies>
         <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>apache-tomcat</artifactId>
-            <version>${jahia.tomcat.version}</version>
-            <type>tar.gz</type>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-war</artifactId>
+            <version>${jahia.package.version}</version>
+            <classifier>${jahia.war.classifier}</classifier>
+            <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
-            <artifactId>jahia-ear</artifactId>
+            <artifactId>shared-libraries</artifactId>
             <version>${jahia.package.version}</version>
-            <classifier>${jahia.war.classifier}</classifier>
             <type>pom</type>
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>qa-3</id>
-
             <build>
                 <plugins>
-                    <!-- first QA server processing -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
@@ -219,6 +214,4 @@
 
                 </plugins>
             </build>
-        </profile>
-    </profiles>
 </project>

@@ -910,11 +910,11 @@ public class ContentManagerHelper {
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,
                         Map<String, List<String>> references) throws RepositoryException {
         if (source.isNodeType("jnt:templatesFolder")) {
-            templatesSynchro(source, destinationNode, session, references, true, moduleName);
+            templatesSynchro(source, destinationNode, session, references, true, false, moduleName);
             return;
         }
         if (source.isNodeType("jnt:folder") || source.isNodeType("jnt:contentList")) {
-            templatesSynchro(source, destinationNode, session, references, false, moduleName);
+            templatesSynchro(source, destinationNode, session, references, false, false, moduleName);
             return;
         }
 
@@ -933,13 +933,13 @@ public class ContentManagerHelper {
     }
 
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
-                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doRemove, String moduleName)
+                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doRemove, boolean isModule, String moduleName)
             throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
 
-        boolean isCurrentModule = (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
+        boolean isCurrentModule = isModule || (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
 
         session.checkout(destinationNode);
 
@@ -1028,7 +1028,8 @@ public class ContentManagerHelper {
                         node.setProperty("j:moduleTemplate", moduleName);
                     }
                 }
-                templatesSynchro(child, node, session, references, doRemove, moduleName);
+
+                templatesSynchro(child, node, session, references, doRemove, isCurrentModule, moduleName);
             }
         }
         if (doRemove) {

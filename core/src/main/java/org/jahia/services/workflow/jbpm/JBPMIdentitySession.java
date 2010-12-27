@@ -33,24 +33,36 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.rbac.Role;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.rbac.RoleIdentity;
+import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.jahia.services.usermanager.*;
+import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.settings.SettingsBean;
+import org.jbpm.api.Execution;
 import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
+import org.jbpm.pvm.internal.env.EnvironmentImpl;
+import org.jbpm.pvm.internal.env.ExecutionContext;
 import org.jbpm.pvm.internal.identity.spi.IdentitySession;
+import org.jbpm.pvm.internal.model.ExecutionImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import javax.jcr.RepositoryException;
+import javax.mail.internet.InternetAddress;
+import java.security.Principal;
+import java.util.*;
 
 /**
  * Identity Manager for connecting jBPM to Jahia Users
  */
 public class JBPMIdentitySession implements IdentitySession {
+    private static transient Logger logger = LoggerFactory.getLogger(JBPMIdentitySession.class);
     protected JahiaGroupManagerService groupService;
     protected JahiaUserManagerService userService;
 
@@ -68,13 +80,90 @@ public class JBPMIdentitySession implements IdentitySession {
         JahiaUser user = service.lookupUserByKey(userId);
         if (user != null) {
             Properties properties = user.getProperties();
-            return new UserImpl(userId, properties.getProperty("j:firstName"), properties.getProperty("j:lastName"), properties.getProperty("j:email"));
+            return new UserImpl(userId, properties.getProperty("j:firstName"), properties.getProperty("j:lastName"),
+                    properties.getProperty("j:email"));
         }
         return null;
     }
 
     public List<User> findUsersById(String... strings) {
-        throw new UnsupportedOperationException();
+        SortedSet<User> emails = new TreeSet<User>();
+        try {
+            ExecutionImpl execution = ((ExecutionContext)EnvironmentImpl.getCurrent().getContext("execution")).getExecution();
+            WorkflowDefinition def = (WorkflowDefinition) execution.getVariable("workflow");
+            String id = (String) execution.getVariable("nodeId");
+            for (String userId : strings) {
+                if (userId.equals("previousTaskAssignable")) {
+                    JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
+                    List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
+                            execution.getActivity().getIncomingTransitions().get(0).getSource().getName());
+                    iterateOverPrincipals(emails, userId, principals);
+                } else if (userId.equals("nextTaskAssignable")) {
+                    JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
+                    List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
+                            execution.getActivity().getDefaultOutgoingTransition().getDestination().getName());
+                    iterateOverPrincipals(emails, userId, principals);
+                } else if (userId.equals("currentWorkflowStarter")) {
+                    String jahiaUser = (String) execution.getVariable("user");
+                    JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
+                    JahiaUser user = service.lookupUserByKey(jahiaUser);
+                    addUser(emails, userId, user);
+                } else if (userId.equals("jahiaSettingsProperty")) {
+                    emails.add(new UserImpl(userId, "", "", SettingsBean.getInstance().getMail_from()));
+                } else {
+                    emails.add(findUserById(userId));
+                }
+            }
+
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return new LinkedList<User>(emails);
+    }
+
+    private void iterateOverPrincipals(SortedSet<User> emails, String userId, List<JahiaPrincipal> principals)
+            throws RepositoryException {
+        for (JahiaPrincipal principal : principals) {
+            if (principal instanceof JahiaGroup) {
+                Collection<Principal> members = ((JahiaGroup) principal).getMembers();
+                for (Principal member : members) {
+                    if (member instanceof JahiaUser) {
+                        JahiaUser jahiaUser = (JahiaUser) member;
+                        addUser(emails, userId, jahiaUser);
+                    }
+                }
+            } else if (principal instanceof JahiaUser) {
+                JahiaUser jahiaUser = (JahiaUser) principal;
+                addUser(emails, userId, jahiaUser);
+            } else if (principal instanceof RoleIdentity) {
+                List<JahiaPrincipal> lp = ((RoleBasedAccessControlService) SpringContextSingleton.getBean(
+                        RoleBasedAccessControlService.class.getName())).getPrincipalsInRole(
+                        (RoleIdentity) principal);
+                for (Principal p : lp) {
+                    if (p instanceof JahiaUser) {
+                        JahiaUser jahiaUser = (JahiaUser) p;
+                        addUser(emails, userId, jahiaUser);
+                    } else {
+                        if (p instanceof JahiaGroup) {
+                            Collection<Principal> members = ((JahiaGroup) p).getMembers();
+                            for (Principal member : members) {
+                                if (member instanceof JahiaUser) {
+                                    JahiaUser jahiaUser = (JahiaUser) member;
+                                    addUser(emails, userId, jahiaUser);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void addUser(SortedSet<User> emails, String userId, JahiaUser jahiaUser) {
+        final String property = jahiaUser.getProperty("j:email");
+        if (property != null) {
+            emails.add(new UserImpl(userId, jahiaUser.getProperty("j:firstName"), jahiaUser.getProperty("j:lastName"), jahiaUser.getProperty("j:email")));
+        }
     }
 
     public List<User> findUsers() {
@@ -97,7 +186,7 @@ public class JBPMIdentitySession implements IdentitySession {
         JahiaGroupManagerService service = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         JahiaGroup group = service.lookupGroup(groupId);
         if (group != null) {
-            return new GroupImpl(groupId, group.getName(),"jahia");
+            return new GroupImpl(groupId, group.getName(), "jahia");
         }
         return null;
     }
@@ -116,7 +205,7 @@ public class JBPMIdentitySession implements IdentitySession {
             }
             Set<Role> roleSet = user.getRoles();
             for (Role role : roleSet) {
-                results.add(new GroupImpl("{role}"+role.getName()+":"+role.getSite(),role.getName(),"jahia"));
+                results.add(new GroupImpl("{role}" + role.getName() + ":" + role.getSite(), role.getName(), "jahia"));
             }
         }
         return results;

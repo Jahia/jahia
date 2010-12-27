@@ -32,6 +32,8 @@
 
 package org.jahia.services.templates;
 
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorklowTypeRegistration;
 import org.slf4j.Logger;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -72,7 +74,9 @@ class TemplatePackageRegistry {
         private TemplatePackageRegistry templatePackageRegistry;
         
         private ChoiceListInitializerService choiceListInitializers;
-        
+
+        private WorkflowService workflowService;
+
         private Map<String, String> staticAssetMapping;
 
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -149,6 +153,11 @@ class TemplatePackageRegistry {
                 }
                 templatePackageRegistry.backgroundActions.put(backgroundAction.getName(), backgroundAction);
             }
+
+            if(bean instanceof WorklowTypeRegistration) {
+                WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
+                workflowService.registerWorkflowType(registration.getType(), registration.getDefinition());
+            }
             return bean;
         }
 
@@ -172,6 +181,10 @@ class TemplatePackageRegistry {
          */
         public void setStaticAssetMapping(Map<String, String> staticAssetMapping) {
             this.staticAssetMapping = staticAssetMapping;
+        }
+
+        public void setWorkflowService(WorkflowService workflowService) {
+            this.workflowService = workflowService;
         }
     }
 

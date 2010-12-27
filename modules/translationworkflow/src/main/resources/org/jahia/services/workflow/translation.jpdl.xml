@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="Ask for translation" key="translation-workflow" xmlns="http://jbpm.org/4.4/jpdl">
+    <start g="19,219,80,40" name="start" form="jnt:translationRequest">
+        <transition to="request"/>
+    </start>
+    <task g="227,223,80,40" name="request" form="jnt:translationRequest">
+        <assignment-handler class="org.jahia.services.workflow.jbpm.UserConnectionTaskAssignementListener"/>
+        <transition g="-18,-17" name="accept" to="done"/>
+        <transition g="-26,4" name="reject" to="end"/>
+    </task>
+    <mail name="done">
+        <from users="jahiaSettingsProperty"/>
+        <to users="currentWorkflowStarter"/>
+        <cc users="previousTaskAssignable"/>
+        <subject>Your request for translation has been accepted</subject>
+        <text>Your request for translation has been accepted</text>
+        <transition to="end"/>
+    </mail>
+    <end g="509,227,80,40" name="end"/>
+</process>

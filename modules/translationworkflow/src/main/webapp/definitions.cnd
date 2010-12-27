@@ -1,0 +1,5 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:translationRequest] > mix:title
+- request (string, richtext)
+- translateTo (string, choicelist[siteLocales])

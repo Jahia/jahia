@@ -731,11 +731,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction, final String definitionKey) {
         ResourceBundle resourceBundle = getResourceBundle(displayLocale, definitionKey);
         String rbActionName = workflowAction.getName();
-        try {
-            rbActionName = resourceBundle.getString(workflowAction.getName().replaceAll(" ",
-                    ".").trim().toLowerCase());
-        } catch (MissingResourceException e) {
-            logger.info("Missing ressource : " + key + " in " + resourceBundle);
+        if (resourceBundle != null) {
+            try {
+                rbActionName = resourceBundle.getString(workflowAction.getName().replaceAll(" ",
+                        ".").trim().toLowerCase());
+            } catch (MissingResourceException e) {
+                logger.info("Missing ressource : " + key + " in " + resourceBundle);
+            }
         }
         workflowAction.setDisplayName(rbActionName);
         if (workflowAction instanceof WorkflowTask) {
@@ -745,13 +747,14 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             for (String outcome : outcomes) {
                 String key = workflowAction.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
                         outcome.replaceAll(" ", ".").trim().toLowerCase();
-                String s;
-                try {
+                String s= outcome;
+                if (resourceBundle != null) {
+                    try {
 
-                    s = resourceBundle.getString(key);
-                } catch (Exception e) {
-                    logger.info("Missing ressource : " + key + " in " + resourceBundle);
-                    s = workflowAction.getName();
+                        s = resourceBundle.getString(key);
+                    } catch (Exception e) {
+                        logger.info("Missing ressource : " + key + " in " + resourceBundle);
+                    }
                 }
                 displayOutcomes.add(s);
             }

@@ -1171,6 +1171,13 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
+            <artifactId>translateworkflow</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>userregistration</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>

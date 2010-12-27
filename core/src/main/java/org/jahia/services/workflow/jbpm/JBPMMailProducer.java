@@ -78,7 +78,7 @@ public class JBPMMailProducer extends MailProducerImpl {
     private Bindings bindings;
 
     public Collection<Message> produce(Execution execution) {
-        if (ServicesRegistry.getInstance().getMailService().isEnabled()) {
+        if (ServicesRegistry.getInstance().getMailService().isEnabled() && getTemplate()!=null) {
             try {
                 ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
                 scriptEngine = scriptEngineManager.getEngineByName(getTemplate().getLanguage());
@@ -372,4 +372,6 @@ public class JBPMMailProducer extends MailProducerImpl {
         }
 
     }
+
+
 }

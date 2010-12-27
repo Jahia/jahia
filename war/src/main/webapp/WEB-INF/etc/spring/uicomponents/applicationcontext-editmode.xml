@@ -586,6 +586,13 @@
                                 <list>
                                     <ref bean="Toolbar.Item.WorkflowStatusAction"/>
                                     <ref bean="Toolbar.Item.WorkflowDashboard"/>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CustomWorkflowMenuActionItem"/>
+                                        </property>
+                                        <property name="titleKey" value="label.customWorkflowsMenu"/>
+                                        <property name="icon" value="workflowDashboard"/>
+                                    </bean>
                                 </list>
                             </property>
                             <property name="visibility" value="$site/toolbar/workflow"/>

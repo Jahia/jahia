@@ -67,9 +67,9 @@
             <choice>
                 <when>
                     <method bean="MailService" method="isEnabled"/>
-                    <to uri="log:org.jahia.services.notification.mail?level=DEBUG"/>
                     <!-- send messages using main mail sender -->
                     <to uri="MailService"/>
+                    <to uri="log:org.jahia.services.notification.mail?level=DEBUG"/>
                 </when>
                 <otherwise>
                     <!-- mail service is not activated: log message and stop processing -->

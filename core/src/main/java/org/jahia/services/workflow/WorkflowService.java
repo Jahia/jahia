@@ -86,6 +86,18 @@ public class WorkflowService {
         }
     }
 
+    public void registerWorkflowType(String type, String definition) {
+        List<String> list = workflowTypes.get(type);
+        if(list==null){
+            list = new ArrayList<String>();
+            workflowTypes.put(type,list);
+        }
+        if(!list.contains(definition)) {
+            list.add(definition);
+            workflowTypeByDefinition.put(definition,type);
+        }
+    }
+
     public Map<String, WorkflowProvider> getProviders() {
         return providers;
     }

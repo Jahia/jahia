@@ -93,13 +93,11 @@ public class WorkflowHelper {
             List<Workflow> actives = service.getActiveWorkflows(node,locale);
             for (Workflow workflow : actives) {
                 GWTJahiaWorkflow gwtWf = getGWTJahiaWorkflow(workflow);
-
                 gwtWorkflows.put(getGWTJahiaWorkflowType(service.getWorkflowType(workflow.getWorkflowDefinition())),gwtWf);
                 for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
                     if (workflowAction instanceof WorkflowTask) {
                         WorkflowTask workflowTask = (WorkflowTask) workflowAction;
                         List<WorkflowParticipation> participations = workflowTask.getParticipations();
-
                         if (participations != null) {
                             for (WorkflowParticipation participation : participations) {
                                 JahiaPrincipal principal = participation.getJahiaPrincipal();

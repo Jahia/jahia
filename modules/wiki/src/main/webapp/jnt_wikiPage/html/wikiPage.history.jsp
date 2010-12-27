@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -18,7 +19,13 @@
     <div class="boxwikigrey boxwikipadding16 boxwikimarginbottom16">
         <div class="boxwiki-inner">
             <div class="boxwiki-inner-border"><!--start boxwiki -->
-                <form name="diff" method="get" action="${currentNode.name}.compare.html">
+                <form name="diff" method="get" >
+                    <c:forEach items="${param}" var="p">
+                        <c:if test="${p.key ne 'diff' and p.key ne 'oldid'}">
+                        <input type="hidden" name="${p.key}" value="${p.value}"/>
+                        </c:if>
+                    </c:forEach>
+
                     <h4 class="boxwiki-title"><fmt:message key="jnt_wiki.pageHistoryTitle"/></h4>
                     <table width="100%" class="table tablecompare " summary="Table Compare">
                         <caption class=" hidden">
@@ -44,7 +51,7 @@
                         <c:set var="result" value="${currentNode.versionHistory.allLinearFrozenNodes}"/>
                         <c:set var="currentList" value="${result}" scope="request"/>
                         <c:set var="listTotalSize" value="${functions:length(result)}" scope="request"/>
-                        <template:initPager totalSize="${listTotalSize}" pageSize="3" id="${currentNode.identifier}"/>
+                        <template:initPager totalSize="${listTotalSize}" pageSize="25" id="${currentNode.identifier}"/>
                         <c:forEach items="${currentList}" var="version" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}" >
                             <c:choose>
                                 <c:when test="${status.count % 2 == 0}">

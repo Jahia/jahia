@@ -18,18 +18,18 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="tabularList.css"/>
 <c:set var="displayTab" value="${not empty renderContext.mainResource.moduleParams.displayTab ? renderContext.mainResource.moduleParams.displayTab : param.displayTab}"/>
-<div id="tabs${currentNode.identifier}">
+<div id="tabs${currentNode.name}">
     <div class="idTabsContainer"><!--start idTabsContainer-->
         <ul class="idTabs">
             <c:forEach items="${currentNode.nodes}" var="subList" varStatus="status">
-                <c:if test="${status.first || displayTab eq subList.identifier}">
+                <c:if test="${status.first || displayTab eq subList.name}">
                     <c:set var="displayList" value="${subList}"/>
                 </c:if>
                 <c:set var="tabCssClass" value=''/>
-                <c:if test="${(empty displayTab and status.first) or (displayTab eq subList.identifier)}">
+                <c:if test="${(empty displayTab and status.first) or (displayTab eq subList.name)}">
                     <c:set var="tabCssClass" value=' class="selected"'/>
                 </c:if>
-                <li><a href="${url.mainResource}?displayTab=${subList.identifier}"${tabCssClass}><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a></li>
+                <li><a href="${url.mainResource}?displayTab=${subList.name}"${tabCssClass}><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a></li>
             </c:forEach>
         </ul>
     </div>

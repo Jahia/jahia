@@ -341,6 +341,7 @@
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
  - j:hiddenTemplate (boolean)
+ - j:moduleTemplate (boolean) hidden
  - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'normal', 'contribute'
  - j:requiredPermissions (string, choicelist[resourceBundle]) nofulltext multiple < 'write', 'addChildNodes', 'modifyProperties'
  + * (jnt:template)

@@ -66,7 +66,7 @@ public class NewWikiPageHandler implements ErrorHandler {
                 return false;
             }
             URLResolver urlResolver = new URLResolver(request.getPathInfo(), request.getServerName());
-
+            JCRNodeWrapper pageNode;
             String parentPath = StringUtils.substringBeforeLast(urlResolver.getPath(), "/");
             String newName = StringUtils.substringAfterLast(urlResolver.getPath(), "/");
             newName = StringUtils.substringBefore(newName, ".html");
@@ -74,50 +74,33 @@ public class NewWikiPageHandler implements ErrorHandler {
                     urlResolver.getWorkspace(), urlResolver.getLocale());
             try {
                 JCRNodeWrapper parent = session.getNode(parentPath);
-                JCRNodeWrapper parentOfType = JCRContentUtils.getParentOfType(parent, "jnt:page");
-                if (parentOfType == null) {
+                if (parent.isNodeType("jnt:page")) {
+                    pageNode = parent;
+                } else {
+                    pageNode = JCRContentUtils.getParentOfType(parent, "jnt:page");
+                }
+                if (pageNode == null) {
                     return false;
                 }
-                List<JCRNodeWrapper> nodeIterator = JCRContentUtils.getChildrenOfType(parentOfType, "jnt:template");
-                NodeIterator iterator = JCRContentUtils.getDescendantNodes(parentOfType, "jnt:wikiPageFormCreation");
-                boolean searchForExistingPages = false;
-                JCRNodeWrapper pageForSearch = parentOfType;
-                if (iterator.hasNext()) {
-                    parentOfType = (JCRNodeWrapper) iterator.nextNode();
-                    searchForExistingPages = true;
-                } else {
-                    parentOfType = null;
-                }
-                for (JCRNodeWrapper nodeWrapper : nodeIterator) {
-                    NodeIterator descendantNodes = JCRContentUtils.getDescendantNodes(nodeWrapper,
-                                                                                      "jnt:wikiPageFormCreation");
-                    if (descendantNodes.hasNext()) {
-                        parentOfType = parent;
-                        searchForExistingPages = false;
-                        break;
-                    }
-                }
-                if (searchForExistingPages) {
-                    try {
-                        JCRNodeWrapper node = pageForSearch.getNode(newName);
-                        String link = request.getContextPath() + request.getServletPath() + "/" + StringUtils.substringBefore(
-                                request.getPathInfo().substring(1),
-                                "/") + "/" + urlResolver.getWorkspace() + "/" + urlResolver.getLocale() + node.getPath();
-
-                        link += ".html";
-                        response.sendRedirect(link);
-                    } catch (PathNotFoundException e1) {
-                        logger.debug("Wiki page not found ask for creation",e1);
-                    }
-                }
-                if (null != parentOfType) {
+                try {
+                    JCRNodeWrapper node = pageNode.getNode(newName);
                     String link = request.getContextPath() + request.getServletPath() + "/" + StringUtils.substringBefore(
                             request.getPathInfo().substring(1),
-                            "/") + "/" + urlResolver.getWorkspace() + "/" + urlResolver.getLocale() + parentOfType.getPath();
+                            "/") + "/" + urlResolver.getWorkspace() + "/" + urlResolver.getLocale() + node.getPath();
 
-                    link += ".html?newPageName=" + URLEncoder.encode(newName, "UTF-8");
+                    link += ".html";
                     response.sendRedirect(link);
-                    return true;
+                } catch (PathNotFoundException e1) {
+                    if (null != pageNode) {
+                        String link = request.getContextPath() + request.getServletPath() + "/" + StringUtils.substringBefore(
+                                request.getPathInfo().substring(1),
+                                "/") + "/" + urlResolver.getWorkspace() + "/" + urlResolver.getLocale() + pageNode.getPath();
+
+                        link += ".html?displayTab=create-new-page&newPageName=" + URLEncoder.encode(newName, "UTF-8");
+                        response.sendRedirect(link);
+                        return true;
+                    }
+                    logger.debug("Wiki page not found ask for creation",e1);
                 }
             } catch (PathNotFoundException e1) {
                 return false;

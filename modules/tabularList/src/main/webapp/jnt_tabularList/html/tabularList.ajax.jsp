@@ -19,7 +19,7 @@
 <template:addResources type="css" resources="tabularList.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,ajaxreplace.js"/>
 <c:set var="displayTab" value="${not empty renderContext.mainResource.moduleParams.displayTab ? renderContext.mainResource.moduleParams.displayTab : param.displayTab}"/>
-<div id="tabs${currentNode.identifier}">
+<div id="tabs${currentNode.name}">
     <div class="idTabsContainer"><!--start idTabsContainer-->
 
         <ul class="idTabs">
@@ -28,12 +28,12 @@
                     <c:set var="displayList" value="${subList}"/>
                 </c:if>
                 <c:if test="${not empty displayTab}">
-                    <c:if test="${displayTab eq subList.identifier}">
+                    <c:if test="${displayTab eq subList.name}">
                         <c:set var="displayList" value="${subList}"/>
                     </c:if>
                 </c:if>
                 <c:choose>
-                    <c:when test="${(empty displayTab and status.first) or (displayTab eq subList.identifier)}">
+                    <c:when test="${(empty displayTab and status.first) or (displayTab eq subList.name)}">
                         <li>
                             <a class="selected"><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a>
                         </li>
@@ -42,13 +42,13 @@
                         <c:choose>
                             <c:when test="${renderContext.editMode}">
                                 <li>
-                                    <a href="${url.mainResource}?displayTab=${subList.identifier}"><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a>
+                                    <a href="${url.mainResource}?displayTab=${subList.name}"><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a>
                                 </li>
                             </c:when>
                             <c:otherwise>
                                 <c:set var="res" value="${renderContext.ajaxRequest and not empty renderContext.ajaxResource ? renderContext.ajaxResource.node.path : renderContext.mainResource.node.path}"/>
                                 <li>
-                                    <a onclick="jreplace('tabs${currentNode.identifier}', '${url.base}${currentNode.path}.html',{displayTab:'${subList.identifier}',mainResource:'${res}.html'});"><span>${subList.properties['jcr:title'].string}</span></a>
+                                    <a onclick="jreplace('tabs${currentNode.name}', '${url.base}${currentNode.path}.html',{displayTab:'${subList.name}',mainResource:'${res}.html'});"><span>${subList.properties['jcr:title'].string}</span></a>
                                 </li>
                             </c:otherwise>
                         </c:choose>

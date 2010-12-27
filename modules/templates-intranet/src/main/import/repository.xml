@@ -106,44 +106,6 @@
                             <listC jcr:primaryType="jnt:area" />
                         </row1-col3>
                     </double>
-                    <wiki jcr:primaryType="jnt:pageTemplate">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <tabs jcr:primaryType="jnt:tabularList">
-                                <last-pages jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Latest Wiki Pages" jcr:primaryType="jnt:translation" />
-                                    <contentRetrieval j:criteria="jcr:lastModified" jcr:mixinTypes="jmix:renderable" j:type="jnt:wikiPage" maxItems="20" jcr:primaryType="jnt:contentRetrieval" j:view="linkList" />
-                                </last-pages>
-                                <create-new-page jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Create new page" jcr:primaryType="jnt:translation" />
-                                    <create-a-wiki-page jcr:primaryType="jnt:wikiPageFormCreation">
-                                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Create a wiki page" jcr:primaryType="jnt:translation" />
-                                    </create-a-wiki-page>
-                                </create-new-page>
-                            </tabs>
-                        </pagecontent>
-                    </wiki>
-                    <wiki-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:wikiPage" j:defaultTemplate="true">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="2col124" jcr:primaryType="jnt:row" />
-                        </pagecontent>
-                        <row-col1 jcr:primaryType="jnt:contentList">
-                            <tabularList jcr:primaryType="jnt:tabularList">
-                                <pagecontent jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Content" jcr:primaryType="jnt:translation" />
-                                    <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                                </pagecontent>
-                                <contribute jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Contribute" jcr:primaryType="jnt:translation" />
-                                    <mainResourceDisplay j:mainResourceView="contribute" jcr:primaryType="jnt:mainResourceDisplay" />
-                                </contribute>
-                                <history jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="History" jcr:primaryType="jnt:translation" />
-                                    <mainResourceDisplay j:mainResourceView="history" jcr:primaryType="jnt:mainResourceDisplay" />
-                                </history>
-                            </tabularList>
-                        </row-col1>
-                        <rol-col2 jcr:primaryType="jnt:contentList" />
-                    </wiki-content>
                     <forum jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row" />

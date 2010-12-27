@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.FilenameUtils;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.GWTJahiaContentHistoryEntry;
@@ -1001,12 +1002,21 @@ public class ContentManagerHelper {
 
         NodeIterator ni = source.getNodes();
         names.clear();
+        JCRNodeWrapper siteNode = source.getResolveSite();
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
             names.add(child.getName());
 
-            if (destinationNode.hasNode(child.getName())) {
+            if (destinationNode.hasNode(child.getName()) && !(destinationNode.isNodeType("jnt:template") && destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getBoolean())) {
                 JCRNodeWrapper node = destinationNode.getNode(child.getName());
+                if (siteNode.hasProperty("j:siteType") && !siteNode.getProperty("j:siteType").getString().equals("templateSet")) {
+                    if (node.isNodeType("jnt:template")) {
+                        session.getWorkspace().getVersionManager().checkout(node.getPath());
+                        node.setProperty("j:moduleTemplate",true);
+                        session.save();
+                    }
+                    doRemove = false;
+                }
                 templatesSynchro(child, node, session, references, doRemove);
             } else {
                 child.copy(destinationNode, child.getName(), false);

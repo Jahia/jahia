@@ -67,7 +67,7 @@
 
     <filter>
         <filter-name>JcrSessionFilter</filter-name>
-        <filter-class>org.jahia.bin.filters.jcr.JcrSessionFilter</filter-class>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
     <filter>

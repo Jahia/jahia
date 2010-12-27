@@ -289,4 +289,10 @@
 			<property name="passwordPolicyService" ref="JahiaPasswordPolicyService" />
     </bean>
 
+    <bean id="JcrSessionFilter" class="org.jahia.bin.filters.jcr.JcrSessionFilter">
+    	<property name="authPipeline" ref="authPipeline"/>
+    	<property name="sessionFactory" ref="jcrSessionFactory"/>
+    	<property name="userManagerService" ref="JahiaUserManagerService"/>
+    </bean>
+
 </beans>

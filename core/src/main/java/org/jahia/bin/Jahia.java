@@ -140,7 +140,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     static private ThreadLocal<ProcessingContext> paramBeanThreadLocal = new ThreadLocal<ProcessingContext>();
     static private ThreadLocal<HttpServlet> servletThreadLocal = new ThreadLocal<HttpServlet>();
-    static private Pipeline authPipeline;
 
     private static int BUILD_NUMBER = -1;
 
@@ -264,8 +263,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 factory.enableClusterSync();
             }
 
-            createAuthorizationPipeline(aConfig);
-
             Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(
                     JahiaAfterInitializationService.class);
             for (Object o : map.values()) {
@@ -383,29 +380,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             }
 	}
 
-	private void createAuthorizationPipeline (final ServletConfig aConfig) throws JahiaException {
-        try {
-            authPipeline = (Pipeline) SpringContextSingleton.getInstance().getContext().getBean("authPipeline");
-            authPipeline.initialize();
-        } catch (PipelineException e) {
-            Throwable t = e;
-            if (e.getNested() != null) {
-                t = e.getNested();
-                logger.error("Error while initializing authorization pipeline", t);
-            }
-            throw new JahiaException(
-                "Error while initializing authorization pipeline",
-                t.getMessage(), JahiaException.INITIALIZATION_ERROR,
-                JahiaException.FATAL_SEVERITY, t);
-        } catch (Exception e) {
-            throw new JahiaException(
-                "Error while initializing authorization pipeline",
-                e.getMessage(), JahiaException.INITIALIZATION_ERROR,
-                JahiaException.FATAL_SEVERITY, e);
-        }
-    }
-
-    public void destroy() {
+	public void destroy() {
 
         logger.info("Shutdown requested");
 
@@ -825,10 +800,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         }
 
         return true;
-    }
-
-    static public Pipeline getAuthPipeline() {
-        return authPipeline;
     }
 
     static public ServletConfig getStaticServletConfig() {

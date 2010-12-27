@@ -45,6 +45,7 @@ import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.PropertyType;
 import java.util.*;
 
@@ -104,6 +105,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                                 nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
                     }
                 }
+            } catch (PathNotFoundException e) {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

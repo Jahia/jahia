@@ -33,7 +33,6 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.FilenameUtils;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.GWTJahiaContentHistoryEntry;
@@ -546,7 +545,7 @@ public class ContentManagerHelper {
             }
         }
         if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted",currentUserSession.getLocale()));
+            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", currentUserSession.getLocale()));
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
             }
@@ -885,7 +884,13 @@ public class ContentManagerHelper {
 
                             JCRNodeWrapper originalNode = session.getNode(templatesPath);
                             JCRNodeWrapper destinationNode = session.getNode(sitePath);
-                            synchro(originalNode, destinationNode, session, references);
+
+                            String moduleName = null;
+                            if (originalNode.hasProperty("j:siteType") && originalNode.getProperty("j:siteType").getString().equals("module")) {
+                                moduleName = originalNode.getName();
+                            }
+
+                            synchro(originalNode, destinationNode, session, moduleName, references);
 
                             ReferencesHelper.resolveCrossReferences(session, references);
                             session.save();
@@ -902,14 +907,14 @@ public class ContentManagerHelper {
         }
     }
 
-    public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
+    public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,
                         Map<String, List<String>> references) throws RepositoryException {
         if (source.isNodeType("jnt:templatesFolder")) {
-            templatesSynchro(source, destinationNode, session, references, true);
+            templatesSynchro(source, destinationNode, session, references, true, moduleName);
             return;
         }
         if (source.isNodeType("jnt:folder") || source.isNodeType("jnt:contentList")) {
-            templatesSynchro(source, destinationNode, session, references, false);
+            templatesSynchro(source, destinationNode, session, references, false, moduleName);
             return;
         }
 
@@ -921,18 +926,20 @@ public class ContentManagerHelper {
 
             if (destinationNode.hasNode(child.getName())) {
                 JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                synchro(child, node, session, references);
+                synchro(child, node, session, moduleName, references);
             }
         }
 
     }
 
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
-                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doRemove)
+                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doRemove, String moduleName)
             throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
+
+        boolean isCurrentModule = (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
 
         session.checkout(destinationNode);
 
@@ -944,90 +951,95 @@ public class ContentManagerHelper {
         }
 
         uuidMapping.put(source.getIdentifier(), destinationNode.getIdentifier());
-        if (source.hasProperty("jcr:language") && (!destinationNode.hasProperty("jcr:language") ||
-                (!destinationNode.getProperty("jcr:language").getString().equals(source.getProperty("jcr:language").getString())))) {
-            destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
-        }
-
-        PropertyIterator props = source.getProperties();
 
         List<String> names = new ArrayList<String>();
-        while (props.hasNext()) {
-            Property property = props.nextProperty();
-            names.add(property.getName());
-            try {
-                if (!property.getDefinition().isProtected() &&
-                        !Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
-                    if (property.getType() == PropertyType.REFERENCE ||
-                            property.getType() == PropertyType.WEAKREFERENCE) {
-                        if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                            Value[] values = property.getValues();
-                            for (Value value : values) {
-                                keepReference(destinationNode, references, property, value.getString());
+        if (isCurrentModule) {
+            if (source.hasProperty("jcr:language") && (!destinationNode.hasProperty("jcr:language") ||
+                    (!destinationNode.getProperty("jcr:language").getString().equals(source.getProperty("jcr:language").getString())))) {
+                destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
+            }
+
+            PropertyIterator props = source.getProperties();
+
+            while (props.hasNext()) {
+                Property property = props.nextProperty();
+                names.add(property.getName());
+                try {
+                    if (!property.getDefinition().isProtected() &&
+                            !Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
+                        if (property.getType() == PropertyType.REFERENCE ||
+                                property.getType() == PropertyType.WEAKREFERENCE) {
+                            if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                                Value[] values = property.getValues();
+                                for (Value value : values) {
+                                    keepReference(destinationNode, references, property, value.getString());
+                                }
+                            } else {
+                                keepReference(destinationNode, references, property, property.getValue().getString());
                             }
-                        } else {
-                            keepReference(destinationNode, references, property, property.getValue().getString());
+                        } else if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                            if (!destinationNode.hasProperty(property.getName()) ||
+                                    !Arrays.equals(destinationNode.getProperty(property.getName()).getValues(), property.getValues())) {
+                                destinationNode.setProperty(property.getName(), property.getValues());
+                            }
+                        } else if (!destinationNode.hasProperty(property.getName()) ||
+                                !destinationNode.getProperty(property.getName()).getValue().equals(property.getValue())) {
+                            destinationNode.setProperty(property.getName(), property.getValue());
                         }
-                    } else if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                        if (!destinationNode.hasProperty(property.getName()) ||
-                            !Arrays.equals(destinationNode.getProperty(property.getName()).getValues(), property.getValues())) {
-                            destinationNode.setProperty(property.getName(), property.getValues());
-                        }
-                    } else if (!destinationNode.hasProperty(property.getName()) ||
-                            !destinationNode.getProperty(property.getName()).getValue().equals(property.getValue())) {
-                        destinationNode.setProperty(property.getName(), property.getValue());
+                    }
+                } catch (Exception e) {
+                    logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
+                }
+            }
+
+            PropertyIterator pi = destinationNode.getProperties();
+            while (pi.hasNext()) {
+                JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
+                if (!oldChild.getDefinition().isProtected()) {
+                    if (!names.contains(oldChild.getName()) && !oldChild.getName().equals("j:published")&& !oldChild.getName().equals("j:moduleTemplate")) {
+                        oldChild.remove();
                     }
                 }
-            } catch (Exception e) {
-                logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
             }
-        }
 
-        PropertyIterator pi = destinationNode.getProperties();
-        while (pi.hasNext()) {
-            JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
-            if (!oldChild.getDefinition().isProtected()) {
-                if (!names.contains(oldChild.getName()) && !oldChild.getName().equals("j:published")) {
-                    oldChild.remove();
+            mixin = destinationNode.getMixinNodeTypes();
+            for (NodeType aMixin : mixin) {
+                if (!source.isNodeType(aMixin.getName())) {
+                    destinationNode.removeMixin(aMixin.getName());
                 }
-            }
-        }
-
-        mixin = destinationNode.getMixinNodeTypes();
-        for (NodeType aMixin : mixin) {
-            if (!source.isNodeType(aMixin.getName())) {
-                destinationNode.removeMixin(aMixin.getName());
             }
         }
 
         NodeIterator ni = source.getNodes();
+
         names.clear();
-        JCRNodeWrapper siteNode = source.getResolveSite();
+
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-            names.add(child.getName());
+            if (child.isNodeType("jnt:template") || isCurrentModule) {
+                names.add(child.getName());
 
-            if (destinationNode.hasNode(child.getName()) && !(destinationNode.isNodeType("jnt:template") && destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getBoolean())) {
-                JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                if (siteNode.hasProperty("j:siteType") && !siteNode.getProperty("j:siteType").getString().equals("templateSet")) {
-                    if (node.isNodeType("jnt:template")) {
-                        session.getWorkspace().getVersionManager().checkout(node.getPath());
-                        node.setProperty("j:moduleTemplate",true);
-                        session.save();
+                JCRNodeWrapper node;
+                if (destinationNode.hasNode(child.getName())) {
+                    node = destinationNode.getNode(child.getName());
+                } else {
+                    node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                    if (moduleName != null && node.isNodeType("jnt:template")) {
+                        node.setProperty("j:moduleTemplate", moduleName);
                     }
-                    doRemove = false;
                 }
-                templatesSynchro(child, node, session, references, doRemove);
-            } else {
-                child.copy(destinationNode, child.getName(), false);
+                templatesSynchro(child, node, session, references, doRemove, moduleName);
             }
         }
         if (doRemove) {
             ni = destinationNode.getNodes();
             while (ni.hasNext()) {
-                JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
-                if (!names.contains(oldChild.getName())) {
-                    oldChild.remove();
+                JCRNodeWrapper oldDestChild = (JCRNodeWrapper) ni.next();
+                if (!names.contains(oldDestChild.getName()) &&
+                        ((!oldDestChild.isNodeType("jnt:template") && isCurrentModule) ||
+                                (!oldDestChild.hasProperty("j:moduleTemplate") && moduleName == null) ||
+                                (oldDestChild.hasProperty("j:moduleTemplate") && oldDestChild.getProperty("j:moduleTemplate").getString().equals(moduleName)))) {
+                    oldDestChild.remove();
                 }
             }
         }
@@ -1057,7 +1069,7 @@ public class ContentManagerHelper {
     }
 
 
-    public GWTJahiaNode createTemplateSet(String key, String baseSet, JCRSessionWrapper session) throws  GWTJahiaServiceException {
+    public GWTJahiaNode createTemplateSet(String key, String baseSet, JCRSessionWrapper session) throws GWTJahiaServiceException {
         if (baseSet == null) {
             String shortName = JCRContentUtils.generateNodeName(key, 50);
             String skeletons = "WEB-INF/etc/repository/templatesSet.xml,modules/**/templatesSet-skeleton.xml,modules/**/templatesSet-skeleton-*.xml";
@@ -1190,14 +1202,14 @@ public class ContentManagerHelper {
                     while (r.hasNext()) {
                         JCRPropertyWrapper reference = (JCRPropertyWrapper) r.next();
                         if (!reference.getPath().startsWith("/referencesKeeper")) {
-                            if(!reference.getDefinition().isMandatory()) {
-                                if(reference.getDefinition().isMultiple()) {
+                            if (!reference.getDefinition().isMandatory()) {
+                                if (reference.getDefinition().isMultiple()) {
                                     Value[] values = reference.getValues();
-                                    if(values.length>1) {
-                                        Value[] valuesCopy = new Value[values.length-1];
-                                        int i=0;
+                                    if (values.length > 1) {
+                                        Value[] valuesCopy = new Value[values.length - 1];
+                                        int i = 0;
                                         for (Value value : values) {
-                                            if(!value.getString().equals(referenceToRemove)) {
+                                            if (!value.getString().equals(referenceToRemove)) {
                                                 valuesCopy[i++] = value;
                                             }
                                         }

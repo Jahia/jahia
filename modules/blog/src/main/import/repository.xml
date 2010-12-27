@@ -5,13 +5,13 @@
          xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
         <blog jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:virtualsite" j:installedModules="blog"
-              j:siteType="module" j:templateNode="/templateSets/blog/templates/base/home">
-            <home jcr:primaryType="jnt:page"/>
+              j:siteType="module">
+            <home jcr:primaryType="jnt:page" j:templateNode="/templateSets/blog/templates/base/blog-home"/>
             <contents jcr:primaryType="jnt:contentFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="system">
+                <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
                     <blog-home jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row"/>

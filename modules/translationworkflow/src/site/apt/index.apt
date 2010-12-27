@@ -1,1 +1,23 @@
 Jahia Crazy Jane - Custom Workflow
+
+* How to send a mail form the workflow using the users mapped in jahia for a particular task ?
+
+  Jahia provide some keyword that you can use to deifne to which people you want to send the mail.
+
+--------------------------------
+<mail name="done">
+   <from users="jahiaSettingsProperty"/>
+   <to users="currentWorkflowStarter"/>
+   <cc users="previousTaskAssignable"/>
+   <subject>Your request for translation has been accepted</subject>
+   <text>Your request for translation has been accepted</text>
+   <transition to="end"/>
+</mail>
+--------------------------------
+
+  <<jahiaSettingsProperty>> will return the mail_from property defined in jahia.properties or the administration center.
+
+  <<currentWorkflowStarter>> refer to the person who have started the workflow.
+
+  <<previousTaskAssignable>> or <<nextTaskAssignable>> refer to the people that can participate to the previous task or
+  the next one in your process flow.

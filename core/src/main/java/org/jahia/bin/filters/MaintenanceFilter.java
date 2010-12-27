@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.errors.ErrorServlet;
 
 /**
  * Allows temporary disabling request serving and switching to a maintenance
@@ -57,8 +58,6 @@ import org.jahia.bin.Jahia;
  * 
  */
 public class MaintenanceFilter implements Filter {
-
-	public static final String MAINTENANCE = "Jahia in under maintenance";
 
 	private Set<Pattern> allowedResources = new HashSet<Pattern>();
 
@@ -82,7 +81,7 @@ public class MaintenanceFilter implements Filter {
 		}
 		if (block) {
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-			        MAINTENANCE);
+			        ErrorServlet.MAINTENANCE_MODE);
 		} else {
 			chain.doFilter(request, response);
 		}

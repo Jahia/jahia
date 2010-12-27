@@ -35,7 +35,6 @@ package org.jahia.bin.errors;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.jahia.bin.filters.MaintenanceFilter;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -223,8 +222,10 @@ public class ErrorLoggingFilter implements Filter {
 
 		if (HttpServletResponse.SC_SERVICE_UNAVAILABLE == (Integer) request
 		        .getAttribute("javax.servlet.error.status_code")
-		        && StringUtils.equals(MaintenanceFilter.MAINTENANCE, (String) request
-		                .getAttribute("javax.servlet.error.message"))) {
+		        && (StringUtils.equals(ErrorServlet.MAINTENANCE_MODE,
+		                (String) request.getAttribute("javax.servlet.error.message")) || StringUtils
+		                .equals(ErrorServlet.LICENSE_TERMS_VIOLATION_MODE,
+		                        (String) request.getAttribute("javax.servlet.error.message")))) {
 			return;
 		}
         

@@ -43,7 +43,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.jahia.bin.filters.MaintenanceFilter;
 import org.jahia.bin.filters.ResponseCacheControlFilter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -62,6 +61,10 @@ public class ErrorServlet extends HttpServlet {
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorServlet.class);
 
 	private static final long serialVersionUID = -6990851339777685000L;
+
+	public static final String MAINTENANCE_MODE = "Jahia in under maintenance";
+	
+	public static final String LICENSE_TERMS_VIOLATION_MODE = "Jahia License Violation";
 
 	protected void forwardToErrorPage(String errorPagePath, HttpServletRequest request,
 	        HttpServletResponse response) throws ServletException, IOException {
@@ -212,8 +215,11 @@ public class ErrorServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		} else {
 			if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
-			        && StringUtils.equals(MaintenanceFilter.MAINTENANCE, (String) request.getAttribute("javax.servlet.error.message"))) {
+			        && StringUtils.equals(ErrorServlet.MAINTENANCE_MODE, (String) request.getAttribute("javax.servlet.error.message"))) {
 				forwardToErrorPage("/errors/maintenance.jsp", request, response);
+			} else if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
+			        && StringUtils.equals(ErrorServlet.LICENSE_TERMS_VIOLATION_MODE, (String) request.getAttribute("javax.servlet.error.message"))) {
+				forwardToErrorPage("/errors/license.jsp", request, response);
 			} else {
 				// otherwise continue with processing of the error
 				String method = request.getMethod();

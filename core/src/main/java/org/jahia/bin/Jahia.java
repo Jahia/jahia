@@ -54,14 +54,13 @@ import org.apache.commons.io.IOUtils;
 import org.jahia.params.*;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
-import org.jahia.pipelines.Pipeline;
-import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheService;
@@ -97,8 +96,8 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     private static final long serialVersionUID = -4811687571425897497L;
     
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Jahia.class);
-    private static Logger accessLogger = org.slf4j.LoggerFactory.getLogger("accessLogger");
+    private static Logger logger = LoggerFactory.getLogger(Jahia.class);
+    private static Logger accessLogger = LoggerFactory.getLogger("accessLogger");
 
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
         "supported_jdk_versions";
@@ -142,6 +141,8 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     static private ThreadLocal<HttpServlet> servletThreadLocal = new ThreadLocal<HttpServlet>();
 
     private static int BUILD_NUMBER = -1;
+    
+    private static String EDITION;
 
     /** Jahia server release number */
     private static double RELEASE_NUMBER = 6.5;
@@ -842,5 +843,14 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         Jahia.jahiaContextPath = ctxPath.equals("/") ? "" : ctxPath;
         Jahia.jahiaServletPath = getDefaultServletPath(servletContext);
     }
+
+	public static String getEdition() {
+		if (EDITION == null) {
+			EDITION = Jahia.class.getResource("/META-INF/jahia-ee-impl-marker.txt") != null ? "EE"
+			        : "CE";
+		}
+
+		return EDITION;
+	}
 
 }

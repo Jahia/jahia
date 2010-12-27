@@ -40,6 +40,8 @@ import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.settings.SettingsBean;
+import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.web.context.ContextLoader;
 
 import javax.servlet.ServletContextEvent;
@@ -77,6 +79,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener {
                 } catch (Exception e) {
                     logger.error("Error initializing Jahia modules Spring application context. Cause: " + e.getMessage(), e);
                 }
+                if (Jahia.getEdition().equalsIgnoreCase("EE")) {
+                	requireLicense();
+                }
                 // register listeners after the portal is started
                 ApplicationsManagerServiceImpl.getInstance().registerListeners();
             }
@@ -89,7 +94,21 @@ public class JahiaContextLoaderListener extends PortalStartupListener {
         }
     }
 
-    public void contextDestroyed(ServletContextEvent event) {
+	private void requireLicense() {
+		try {
+			if (!ContextLoader.getCurrentWebApplicationContext().getBean("licenseChecker")
+			        .getClass().getName().equals("org.jahia.security.license.LicenseChecker")
+			        || !ContextLoader.getCurrentWebApplicationContext().getBean("LicenseFilter")
+			                .getClass().getName()
+			                .equals("org.jahia.security.license.LicenseFilter")) {
+				throw new FatalBeanException("Required classes for license manager were not found");
+			}
+		} catch (NoSuchBeanDefinitionException e) {
+			throw new FatalBeanException("Required classes for license manager were not found", e);
+		}
+	}
+
+	public void contextDestroyed(ServletContextEvent event) {
         try {
             if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
                 try {

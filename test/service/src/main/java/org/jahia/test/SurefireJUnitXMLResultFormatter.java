@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
@@ -47,9 +48,8 @@ import java.net.UnknownHostException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.tools.ant.util.DateUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.util.DOMElementWriter;
-import org.apache.tools.ant.util.FileUtils;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -190,8 +190,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
         rootElement.setAttribute(ATTR_NAME, n == null ? UNKNOWN : n);
 
         //add the timestamp
-        final String timestamp = DateUtils.format(new Date(),
-                DateUtils.ISO8601_DATETIME_PATTERN);
+        final String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date());
         rootElement.setAttribute(TIMESTAMP, timestamp);
         //and the hostname.
         rootElement.setAttribute(HOSTNAME, getHostname());
@@ -237,7 +236,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
                     }
                 }
                 if (out != System.out && out != System.err) {
-                    FileUtils.close(wri);
+                    IOUtils.closeQuietly(wri);
                 }
             }
         }

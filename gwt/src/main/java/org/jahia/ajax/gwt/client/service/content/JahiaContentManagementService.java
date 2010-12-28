@@ -350,6 +350,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 	 */
 	Map<String, WCAGValidationResult> validateWCAG(Map<String, String> richTexts);
 
+    int getNumberOfTasksForUser() throws GWTJahiaServiceException;
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

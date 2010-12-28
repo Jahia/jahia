@@ -624,4 +624,24 @@ public class WorkflowHelper {
         permissions.toArray(grs);
         aceNode.setProperty("j:privileges", grs);
     }
+
+    public int getNumberOfTasksForUser(JahiaUser user, Locale locale) throws GWTJahiaServiceException {
+        int total = 0;
+        List<WorkflowTask> tasks = service.getTasksForUser(user, locale);
+        total = tasks.size();
+        List<Workflow> workflows = service.getWorkflowsForUser(user, locale);
+        for (Workflow workflow : workflows) {
+            boolean found = false;
+            for (WorkflowTask task : tasks) {
+                if(workflow.getId().equals(task.getProcessId())) {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) {
+                total++;
+            }
+        }
+        return total;
+    }
 }

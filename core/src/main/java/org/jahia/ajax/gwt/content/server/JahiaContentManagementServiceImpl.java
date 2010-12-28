@@ -1871,7 +1871,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 	    return result;
     }
 
-	private WCAGValidationResult toWCAGResult(ValidatorResults validatorResults) {
+    public int getNumberOfTasksForUser() throws GWTJahiaServiceException {
+        return workflow.getNumberOfTasksForUser(getUser(), getLocale());
+    }
+
+    private WCAGValidationResult toWCAGResult(ValidatorResults validatorResults) {
 		if (validatorResults.isEmpty()) {
 			return WCAGValidationResult.OK;
 		}

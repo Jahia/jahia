@@ -307,4 +307,5 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 	void validateWCAG(Map<String, String> richTexts,
 	        AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);
 
+    void getNumberOfTasksForUser(AsyncCallback<Integer> asyncCallback);
 }

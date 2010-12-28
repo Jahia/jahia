@@ -37,6 +37,7 @@
 //
 package org.jahia.services.sites;
 
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.*;
@@ -89,7 +90,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     private String systemSiteDefaultLanguage = "en";
     private String systemSiteTitle = "System Site";
     private String systemSiteServername = "localhost";
-    private String systemSiteTemplateSetName = "templates-intranet";
+    private String systemSiteTemplateSetName = "templates-system";
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -501,21 +502,36 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
         try {
-            if (getNbSites() == 0) {
+            final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
+                    "root");
+            sessionFactory.setCurrentUser(jahiaUser);
 
-                final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
-                        "root");
-                sessionFactory.setCurrentUser(jahiaUser);
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRPublicationService.getInstance().publishByMainId(session.getNode("/roles").getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+                        JCRPublicationService.getInstance().publishByMainId(session.getNode("/permissions").getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+                        JahiaPrivilegeRegistry.init(session);
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
+
+            if (getNbSites() == 0) {
                 Locale selectedLocale = LanguageCodeConverters.languageCodeToLocale(systemSiteDefaultLanguage);
                 JahiaSite site = addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
                         systemSiteTemplateSetName, "noImport", null, null, false, false, null);
+                site.setMixLanguagesActive(true);
+                updateSite(site);
                 final LinkedHashSet<String> languages = new LinkedHashSet<String>();
                 languages.add(selectedLocale.toString());
                 final List<String> uuids = new ArrayList<String>();
                  try {
                      JCRNodeWrapper node =(JCRNodeWrapper) sessionFactory.getCurrentUserSession().getNode("/sites").getNodes().nextNode();
                      node.checkout();
-                     node.changePermissions("g:users","re---");
+//                     node.changePermissions("g:users","re---");
                      uuids.add(node.getIdentifier());
                     List<PublicationInfo> publicationInfos = JCRPublicationService.getInstance().getPublicationInfo(node.getIdentifier(),languages,true,true,true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
                     for (PublicationInfo publicationInfo : publicationInfos) {
@@ -532,6 +548,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            sessionFactory.setCurrentUser(null);
         }
     }
 

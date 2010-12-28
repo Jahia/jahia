@@ -15,22 +15,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
     <title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
-    <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
 </head>
 
-<body>
+<body id="body">
 
 <div id="bodywrapper"><!--start bodywrapper-->
-    <template:area path="pagecontent"/>
+    <div class="container container_16">
+        <div class="grid_16">
+            <template:area path="pagecontent"/>
+        </div>
+    </div>
 </div>
 <!--stop bodywrapper-->
-
-</body>
-</html>
 
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>
-<template:addResources type="css" resources="960.css,01web.css,02mod.css,navigationN1.css,navigationN2-2.css"/>
+<template:addResources type="css" resources="960.css,01web.css"/>
 <template:theme/>
+
+</body>
+</html>

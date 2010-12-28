@@ -36,6 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class represents a product version, and can be initialized by a String.
  * This is a utility object to compare versions easily.
@@ -54,12 +57,11 @@ import java.util.StringTokenizer;
  * @version 3.0
  */
 
-public class Version implements Comparable {
+public class Version implements Comparable<Version> {
 
-    private static org.slf4j.Logger logger =
-        org.slf4j.LoggerFactory.getLogger(Version.class);
+    private static Logger logger = LoggerFactory.getLogger(Version.class);
 
-    private List orderedVersionNumbers = new ArrayList();
+    private List<Integer> orderedVersionNumbers = new ArrayList<Integer>();
     private int betaNumber = -1;
     private int releaseCandidateNumber = -1;
 
@@ -194,10 +196,10 @@ public class Version implements Comparable {
      * @throws ClassCastException if the passed parameter (o) is not a Version
      * class object.
      */
-    public int compareTo(Object o)
+    public int compareTo(Version o)
     throws ClassCastException {
         Version rightVersion = (Version) o;
-        List rightOrderedVersionNumbers = rightVersion.getOrderedVersionNumbers();
+        List<Integer> rightOrderedVersionNumbers = rightVersion.getOrderedVersionNumbers();
 
         if (this.equals(rightVersion)) {
             return 0;
@@ -205,8 +207,8 @@ public class Version implements Comparable {
 
         if (orderedVersionNumbers.size() == rightOrderedVersionNumbers.size()) {
             for (int i = 0; i < orderedVersionNumbers.size(); i++) {
-                Integer versionNumber = (Integer) orderedVersionNumbers.get(i);
-                Integer rightVersionNumber = (Integer) rightOrderedVersionNumbers.get(i);
+                Integer versionNumber = orderedVersionNumbers.get(i);
+                Integer rightVersionNumber = rightOrderedVersionNumbers.get(i);
                 if (versionNumber.intValue() != rightVersionNumber.intValue()) {
                     return versionNumber.compareTo(rightVersionNumber);
                 }
@@ -272,7 +274,7 @@ public class Version implements Comparable {
      * @return an List containing Integers that represent the version
      * number. The ordered of these are significant
      */
-    public List getOrderedVersionNumbers() {
+    public List<Integer> getOrderedVersionNumbers() {
         return orderedVersionNumbers;
     }
 
@@ -299,7 +301,7 @@ public class Version implements Comparable {
         
         if (obj != null && this.getClass() == obj.getClass()) {
             Version rightVersion = (Version) obj;
-            List rightOrderedVersionNumbers = rightVersion.getOrderedVersionNumbers();
+            List<Integer> rightOrderedVersionNumbers = rightVersion.getOrderedVersionNumbers();
             if (orderedVersionNumbers.size() != rightOrderedVersionNumbers.size()) {
                 return false;
             }
@@ -310,8 +312,8 @@ public class Version implements Comparable {
                 return false;
             }
             for (int i=0; i < orderedVersionNumbers.size(); i++) {
-                Integer leftVersionNumber = (Integer) orderedVersionNumbers.get(i);
-                Integer rightVersionNumber = (Integer) rightOrderedVersionNumbers.get(i);
+                Integer leftVersionNumber = orderedVersionNumbers.get(i);
+                Integer rightVersionNumber = rightOrderedVersionNumbers.get(i);
                 if (leftVersionNumber.intValue() != rightVersionNumber.intValue()) {
                     return false;
                 }

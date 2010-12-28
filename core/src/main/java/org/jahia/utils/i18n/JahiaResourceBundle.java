@@ -295,7 +295,11 @@ public class JahiaResourceBundle extends ResourceBundle {
      * @return
      */
     public String getFormatted(String key, String defaultValue, Object... arguments) {
-        String value = MessageFormat.format(get(key, defaultValue), arguments);
+    	String text = get(key, defaultValue);
+    	if (text != null) {
+    		text = text.replace("'", "''");
+    	}
+        String value = MessageFormat.format(text, arguments);
 
 
         return value;

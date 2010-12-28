@@ -45,7 +45,7 @@ border: solid 1px #cecece;
 }
 #bodywrapper .facetsList li{
 	list-style-type:none;
-	background: url(img/facetsListArrow.png) no-repeat 0.5em 0.6em;
+	background: url(img/facetsListArrow.png) no-repeat  0.5em 50%;
 	padding:0.2em;
 	padding-left:18px;
 }

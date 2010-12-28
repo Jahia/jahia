@@ -141,7 +141,7 @@ function wcagCompliant(id, richTextElement) {
   	  			}
   	        	var myDiv = $('<div class="wcag-warnings" id="wcag-' + id + '">' +
       	        			'<div class="wcag-warnings-ignore"><input type="checkbox" id="wcag-ignore-' + id + '" value="true" name="ignore"/>&nbsp;<label for="wcag-ignore-' + id + '">' + contributionI18n['wcag.ignore'] + '</label></div>' +
-      	        			'<table width="100%" border="1" cellpadding="3" cellspacing="3">' +
+      	        			'<table class="table" width="100%" border="1" cellpadding="0" cellspacing="3">' +
       	        			'<thead><tr><th width="5%">#</th><th width="5%"> </th><th width="75%">' +
       	        			contributionI18n['wcag.description'] + '</th>' + 
       	        			/*

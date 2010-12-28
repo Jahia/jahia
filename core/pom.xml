@@ -732,6 +732,12 @@
             </exclusions>
         </dependency>
 
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.2</version>
+		</dependency>
+		
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
@@ -743,6 +749,10 @@
             <artifactId>tika-parsers</artifactId>
             <version>${apache.tika.version}</version>
             <exclusions>
+            	<exclusion>
+		            <groupId>asm</groupId>
+		            <artifactId>asm</artifactId>
+            	</exclusion>
             	<exclusion>
 		            <groupId>log4j</groupId>
 		            <artifactId>log4j</artifactId>
@@ -1188,6 +1198,12 @@
         </dependency>
         -->
         <!-- End of OSGi dependencies -->
+        
+        <dependency>
+        	<groupId>net.sourceforge.nekohtml</groupId>
+        	<artifactId>nekohtml</artifactId>
+        	<version>1.9.14</version>
+        </dependency>
         
     </dependencies>
     <build>

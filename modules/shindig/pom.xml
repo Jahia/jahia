@@ -229,17 +229,19 @@
                             <groupId>org.apache.shindig</groupId>
                             <artifactId>shindig-server</artifactId>
                             <includes>
-                                <exclude>WEB-INF/lib/aopalliance-*.jar</exclude>
-                                <exclude>WEB-INF/lib/caja-*.jar</exclude>
-                                <exclude>WEB-INF/lib/commons-betwixt-*.jar</exclude>
-                                <exclude>WEB-INF/lib/guice-*.jar</exclude>
-                                <exclude>WEB-INF/lib/htmlparser-*.jar</exclude>
-                                <exclude>WEB-INF/lib/jsecurity-*.jar</exclude>
-                                <exclude>WEB-INF/lib/json-simple-*.jar</exclude>
-                                <exclude>WEB-INF/lib/nekohtml-*.jar</exclude>
-                                <exclude>WEB-INF/lib/oauth-*.jar</exclude>
-                                <exclude>WEB-INF/lib/sanselan-*.jar</exclude>
-                                <exclude>WEB-INF/lib/shindig-*.jar</exclude>
+                                <include>WEB-INF/lib/aopalliance-*.jar</include>
+                                <include>WEB-INF/lib/caja-*.jar</include>
+                                <include>WEB-INF/lib/commons-betwixt-*.jar</include>
+                                <include>WEB-INF/lib/guice-*.jar</include>
+                                <include>WEB-INF/lib/htmlparser-*.jar</include>
+                                <include>WEB-INF/lib/jsecurity-*.jar</include>
+                                <include>WEB-INF/lib/json-simple-*.jar</include>
+                                <!--
+                                <include>WEB-INF/lib/nekohtml-*.jar</include>
+                                -->
+                                <include>WEB-INF/lib/oauth-*.jar</include>
+                                <include>WEB-INF/lib/sanselan-*.jar</include>
+                                <include>WEB-INF/lib/shindig-*.jar</include>
                             </includes>
                         </overlay>
                     </overlays>

@@ -38,13 +38,11 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
+import org.jahia.services.content.*;
 import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.PermissionIdentity;
@@ -153,87 +151,6 @@ public class RoleService {
     }
 
     /**
-     * Grant a role to a specified group.
-     * 
-     * @param group to be modified
-     * @param role the role to be granted
-     * @param drools the rule engine helper class
-     * @throws RepositoryException in case of an error
-     */
-    public void grantRoleToGroup(final String group, final String role, KnowledgeHelper drools)
-            throws RepositoryException {
-        String groupKey = group;
-        if (group != null && !group.contains(":")) {
-            String siteKey = JCRContentUtils.getSiteKey(role);
-            int siteId = 0;
-            try {
-                JahiaSite site = siteKey != null ? siteService.getSiteByKey(siteKey) : null;
-                if (site == null) {
-                	JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-                	if (session != null) {
-                		JCRNodeWrapper siteNode = session.getNode("/sites/" + siteKey);
-                		siteId = (int) siteNode.getProperty("j:siteId").getLong();
-                	}
-                } else {
-                	siteId = site.getID();
-                }
-            } catch (JahiaException e) {
-                logger.warn("Unable to find site for key '" + siteKey + "'", e);
-            }
-            if (siteId != 0) {
-                groupKey = group + ":" + siteId;
-            }
-        }
-        JahiaGroup principal = groupService.lookupGroup(groupKey);
-        if (principal != null) {
-            rbacService.grantRole(principal, getRole(role));
-        } else {
-            logger.warn("Unable to look up the specified group by key '" + groupKey + "'. Skip granting role.");
-        }
-    }
-
-    /**
-     * Grant role to a specified list of principals.
-     * 
-     * @param principals the list of principals to grant a role to
-     * @param role the role to be granted
-     * @param drools the rule engine helper class
-     * @throws RepositoryException in case of an error
-     */
-    public void grantRoleToPrincipals(final List<String> principals, final String role, KnowledgeHelper drools)
-            throws RepositoryException {
-        for (String principal : principals) {
-            if (principal.startsWith("u:")) {
-                grantRoleToUser(principal.substring(2), role, drools);
-            } else if (principal.startsWith("g:")) {
-                grantRoleToGroup(principal.substring(2), role, drools);
-            } else {
-                logger.warn("Unknown principal type '" + principal + "'."
-                        + " Support only users (prefixed with 'u:') and groups (prefixed with 'u:')."
-                        + " Skip granting role.");
-            }
-        }
-    }
-
-    /**
-     * Grant role to a specified user.
-     * 
-     * @param user to be modified
-     * @param role the role to be granted
-     * @param drools the rule engine helper class
-     * @throws RepositoryException in case of an error
-     */
-    public void grantRoleToUser(final String user, final String role, KnowledgeHelper drools)
-            throws RepositoryException {
-        JahiaUser principal = userService.lookupUser(user);
-        if (principal != null) {
-            rbacService.grantRole(principal, getRole(role));
-        } else {
-            logger.warn("Unable to look up the specified user for name '" + user + "'. Skip granting role.");
-        }
-    }
-
-    /**
      * @param groupService the groupService to set
      */
     public void setGroupService(JahiaGroupManagerService groupService) {
@@ -307,6 +224,16 @@ public class RoleService {
      */
     public void setSiteService(JahiaSitesService siteService) {
         this.siteService = siteService;
+    }
+
+    public void refreshPermissions() throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JahiaPrivilegeRegistry.init(session);
+                return null;
+            }
+        });
+
     }
 
 }

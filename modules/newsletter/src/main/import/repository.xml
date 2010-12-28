@@ -33,40 +33,6 @@
                 <files jcr:primaryType="jnt:folder"/>
             </templates>
             <newsletters jcr:primaryType="jnt:newsletters"/>
-            <j:acl jcr:primaryType="jnt:acl">
-                <GRANT_g_users j:privileges="jcr:read_live" j:protected="false" j:principal="g:users" j:aceType="GRANT"
-                               jcr:primaryType="jnt:ace"/>
-                <DENY_g_users j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:write"
-                              j:protected="false" j:principal="g:users" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false"
-                                j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-                <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false"
-                               j:principal="r:editor" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_editor-in-chief
-                        j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write"
-                        j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT"
-                        jcr:primaryType="jnt:ace"/>
-                <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:read_live jcr:write" j:protected="false"
-                                   j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-                <DENY_r_publisher j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="r:publisher"
-                                  j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_seo-manager j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false"
-                                     j:principal="r:seo-manager" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-                <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false"
-                                    j:principal="r:seo-manager" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_site-administrator
-                        j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write"
-                        j:protected="false" j:principal="r:site-administrator" j:aceType="GRANT"
-                        jcr:primaryType="jnt:ace"/>
-                <GRANT_r_translator j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false"
-                                    j:principal="r:translator" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-                <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false"
-                                   j:principal="r:translator" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false"
-                                      j:principal="r:web-designer" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-                <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false"
-                                     j:principal="r:web-designer" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-            </j:acl>
         </newsletter>
     </templateSets>
 </content>

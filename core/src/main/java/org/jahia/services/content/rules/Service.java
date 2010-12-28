@@ -34,6 +34,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.drools.FactException;
@@ -106,7 +107,7 @@ public class Service extends JahiaService {
 
             Node jcrNode = node.getNode();
 //            try {
-//                JCRNodeWrapperImpl.changePermissions(jcrNode, userstring, ace.substring(colon + 1));
+//                JCRNodeWrapperImpl.changeRoles(jcrNode, userstring, ace.substring(colon + 1));
 //            } catch (RepositoryException e) {
 //                logger.error(e.getMessage(), e);
 //            }
@@ -548,10 +549,24 @@ public class Service extends JahiaService {
         if (jcrSessionWrapper.getLocale() != null) {
             languages = Collections.singleton(jcrSessionWrapper.getLocale().toString());
         }
-        JCRPublicationService.getInstance().publishByMainId(nodeWrapper.getIdentifier(), jcrSessionWrapper.getWorkspace().getName(),
-                Constants.LIVE_WORKSPACE,
-                languages,
-                false, new ArrayList<String>());
+
+        boolean resetUser = false;
+        if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
+            final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root");
+            JCRSessionFactory.getInstance().setCurrentUser(jahiaUser);
+            resetUser = true;
+        }
+
+        try {
+            JCRPublicationService.getInstance().publishByMainId(nodeWrapper.getIdentifier(), jcrSessionWrapper.getWorkspace().getName(),
+                    Constants.LIVE_WORKSPACE,
+                    languages,
+                    false, new ArrayList<String>());
+        } finally {
+            if (resetUser) {
+                JCRSessionFactory.getInstance().setCurrentUser(null);
+            }
+        }
     }
 
     public void startWorkflowOnNode(AddedNodeFact node, String processKey, String provider, KnowledgeHelper drools) throws RepositoryException {

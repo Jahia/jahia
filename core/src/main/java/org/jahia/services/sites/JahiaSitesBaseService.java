@@ -506,19 +506,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     "root");
             sessionFactory.setCurrentUser(jahiaUser);
 
-            try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRPublicationService.getInstance().publishByMainId(session.getNode("/roles").getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-                        JCRPublicationService.getInstance().publishByMainId(session.getNode("/permissions").getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-                        JahiaPrivilegeRegistry.init(session);
-                        return null;
-                    }
-                });
-            } catch (RepositoryException e) {
-                e.printStackTrace();
-            }
-
             if (getNbSites() == 0) {
                 Locale selectedLocale = LanguageCodeConverters.languageCodeToLocale(systemSiteDefaultLanguage);
                 JahiaSite site = addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
@@ -531,7 +518,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                  try {
                      JCRNodeWrapper node =(JCRNodeWrapper) sessionFactory.getCurrentUserSession().getNode("/sites").getNodes().nextNode();
                      node.checkout();
-//                     node.changePermissions("g:users","re---");
+//                     node.changeRoles("g:users","re---");
                      uuids.add(node.getIdentifier());
                     List<PublicationInfo> publicationInfos = JCRPublicationService.getInstance().getPublicationInfo(node.getIdentifier(),languages,true,true,true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
                     for (PublicationInfo publicationInfo : publicationInfos) {

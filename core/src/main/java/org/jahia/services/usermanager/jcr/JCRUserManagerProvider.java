@@ -130,9 +130,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     		logger.error("Unable to import data using user skeletons " + skeletons, importEx);
                             throw new RepositoryException("Could not create user due to some import issues", importEx);
                     	}
-//                        JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");
+//                        JCRNodeWrapperImpl.changeRoles(userNode, "u:" + name, "rw");
                     } else {
-//                        JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");
+//                        JCRNodeWrapperImpl.changeRoles(userNode, "u:" + name, "rw");
                     }
                     String l_password;
                     if (!password.startsWith("SHA-1:")) {

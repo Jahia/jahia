@@ -180,14 +180,14 @@ public class PortletHelper {
             JCRPortletNode node = (JCRPortletNode) contentManager.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), null, gwtJahiaNewPortletInstance.getProperties());
 
             node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getApplicationId(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
-            node.revokeAllPermissions();
+            node.revokeAllRoles();
 
             // set modes permissions
             if (gwtJahiaNewPortletInstance.getModes() != null) {
                 for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getModes().getAce()) {
                     String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
                     if (!ace.isInherited()) {
-                        node.changePermissions(user, ace.getPermissions());
+                        node.changeRoles(user, ace.getPermissions());
                     }
                 }
             }
@@ -197,13 +197,13 @@ public class PortletHelper {
                 for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getRoles().getAce()) {
                     String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
                     if (!ace.isInherited()) {
-                        node.changePermissions(user, ace.getPermissions());
+                        node.changeRoles(user, ace.getPermissions());
                     }
                 }
             }
             // todo default permissions .. ?
-//            node.changePermissions("g:users", "rw");
-//            node.changePermissions("g:guest", "r-");
+//            node.changeRoles("g:users", "rw");
+//            node.changeRoles("g:guest", "r-");
             try {
                 parentNode.save();
             } catch (RepositoryException e) {

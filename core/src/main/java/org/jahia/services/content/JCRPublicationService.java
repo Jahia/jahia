@@ -183,9 +183,6 @@ public class JCRPublicationService extends JahiaService {
     public void publishByMainId(final String uuid, final String sourceWorkspace, final String destinationWorkspace,
                         final Set<String> languages, final boolean allSubTree, List<String> comments)
             throws RepositoryException {
-        if (sessionFactory.getCurrentUser() == null) {
-            return;
-        }
         List<PublicationInfo> tree =
                 getPublicationInfo(uuid, languages, true, true, allSubTree, sourceWorkspace, destinationWorkspace);
         publishByInfoList(tree, sourceWorkspace, destinationWorkspace, comments);
@@ -201,7 +198,7 @@ public class JCRPublicationService extends JahiaService {
                 allIds.addAll(subtree.getAllUuids());
             }
         }
-
+        System.out.println("publish : "+allIds);
         publish(new ArrayList<String>(allIds), sourceWorkspace, destinationWorkspace, comments);
     }
 
@@ -359,8 +356,10 @@ public class JCRPublicationService extends JahiaService {
             path = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
         }
         JCRNodeWrapper destinationNode = doClone(node, null, sourceSession, destinationSession);
-        checkin(destinationSession, destinationSession.getNode(path),
-                destinationSession.getWorkspace().getVersionManager());
+        if (node.getParent().isNodeType("mix:versionable")) {
+            checkin(destinationSession, destinationSession.getNode(path),
+                    destinationSession.getWorkspace().getVersionManager());
+        }
     }
 
     private void mergeToDestinationWorkspace(final List<JCRNodeWrapper> toPublish, final List<String> uuids,
@@ -415,10 +414,11 @@ public class JCRPublicationService extends JahiaService {
         for (JCRNodeWrapper node : modified) {
             // Node has been modified, check in now
             if (node.isNodeType("mix:versionable")) {
+                long t = System.currentTimeMillis();
                 sourceVersionManager.checkin(node.getPath());
+                System.out.println("Checkin sources " + node.getPath() + " / " + (System.currentTimeMillis()-t));
             }
         }
-
         for (final JCRNodeWrapper node : modified) {
             try {
                 if (!node.isNodeType("mix:versionable")) {
@@ -484,10 +484,13 @@ public class JCRPublicationService extends JahiaService {
                 }
 
 //                recurseCheckin(destinationSession.getNode(destinationPath), pruneNodes, destinationVersionManager);
+                long t = System.currentTimeMillis();
                 if (destinationNode.isNodeType("mix:versionable") && destinationNode.isCheckedOut() &&
                         !destinationNode.hasProperty("jcr:mergeFailed")) {
                     destinationVersionManager.checkin(destinationPath);
                 }
+                System.out.println("Checkin dest "+destinationPath + " / " + (System.currentTimeMillis()-t));
+
                 destinationSession.save();
                 NodeIterator ni = destinationVersionManager
                         .merge(destinationPath, node.getSession().getWorkspace().getName(), true, true);

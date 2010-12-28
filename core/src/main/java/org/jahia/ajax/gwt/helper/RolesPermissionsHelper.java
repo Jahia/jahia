@@ -290,40 +290,11 @@ public class RolesPermissionsHelper {
 
     public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals)
             throws GWTJahiaServiceException {
-        List<JahiaPrincipal> subjects = new LinkedList<JahiaPrincipal>();
-        for (GWTJahiaPrincipal principal : principals) {
-            subjects.add(lookupPrincipal(principal));
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("grantRoleToPrincipals() ," + role.getName() + "," + principals);
-        }
-        RepositoryException ex = null;
-        for (JahiaPrincipal jahiaPrincipal : subjects) {
-            try {
-                rbacService.grantRole(jahiaPrincipal, new RoleIdentity(role.getName(), role.getSite()));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-                ex = e;
-            }
-        }
-        if (ex != null) {
-            throw new GWTJahiaServiceException(ex.getMessage());
-        }
-        
     }
 
     public void grantRoleToUser(GWTJahiaRole role, boolean isGroup, String principalKey)
             throws GWTJahiaServiceException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("grantRoleToUser() ," + role + "," + principalKey);
-        }
-        try {
-            rbacService.grantRole(lookupPrincipal(principalKey, isGroup), new RoleIdentity(role.getName(), role
-                    .getSite()));
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
+
     }
 
     /**
@@ -378,15 +349,6 @@ public class RolesPermissionsHelper {
     }
 
     public void removeRoleToPrincipal(GWTJahiaRole role, boolean isGroup, String principalKey) throws GWTJahiaServiceException {
-        JahiaPrincipal p = lookupPrincipal(principalKey, isGroup);
-        if (p != null) {
-            try {
-                rbacService.revokeRole(p, new RoleIdentity(role.getName(), role.getSite()));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-                throw new GWTJahiaServiceException(e.getMessage()); 
-            }
-        }
     }
 
     /**
@@ -397,26 +359,6 @@ public class RolesPermissionsHelper {
      * @throws GWTJahiaServiceException in case of an error
      */
     public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException {
-        List<JahiaPrincipal> subjects = new LinkedList<JahiaPrincipal>();
-        for (GWTJahiaPrincipal principal : principals) {
-            subjects.add(lookupPrincipal(principal));
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("removeRoleToPrincipals() ," + role.getName() + "," + principals);
-        }
-        RoleIdentity roleId = new RoleIdentity(role.getName(), role.getSite());
-        RepositoryException ex = null;
-        for (JahiaPrincipal jahiaPrincipal : subjects) {
-            try {
-                rbacService.revokeRole(jahiaPrincipal, roleId);
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-                ex = e;
-            }
-        }
-        if (ex != null) {
-            throw new GWTJahiaServiceException(ex.getMessage());
-        }
     }
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {

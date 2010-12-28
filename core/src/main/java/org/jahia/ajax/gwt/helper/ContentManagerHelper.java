@@ -704,12 +704,12 @@ public class ContentManagerHelper {
         for (GWTJahiaNodeACE ace : acl.getAce()) {
             String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
             if (!ace.isInherited()) {
-                node.changePermissions(user, ace.getPermissions());
+                node.changeRoles(user, ace.getPermissions());
                 existingAclKeys.remove(user);
             }
         }
         for (String user : existingAclKeys) {
-            node.revokePermissions(user);
+            node.revokeRolesForUser(user);
         }
         try {
             currentUserSession.save();

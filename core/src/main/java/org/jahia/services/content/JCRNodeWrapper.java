@@ -293,14 +293,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     boolean hasPermission(String perm);
 
-    /**
-     * Change the permissions of a user on the node.
-     *
-     * @param user The user to update
-     * @param perm the permission to update for the user
-     * @return true if action was successful, or false if not
-     */
-    boolean changePermissions(String user, String perm);
+    boolean grantRoles(String user, Set<String> roles);
+
+    boolean denyRoles(String user, Set<String> roles);
 
     /**
      * Change the permissions of a user on the node.
@@ -309,7 +304,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param perms A map with the name of the permission, and "GRANT" or "DENY" as a value
      * @return true if action was successful, or false if not
      */
-    boolean changePermissions(String user, Map<String, String> perms);
+    boolean changeRoles(String user, Map<String, String> perms);
 
     /**
      * Revoke all permissions for the specified user
@@ -317,14 +312,14 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param user
      * @return true if action was successful, or false if not
      */
-    boolean revokePermissions(String user);
+    boolean revokeRolesForUser(String user);
 
     /**
      * Revoke all permissions for all users
      *
      * @return true if action was successful, or false if not
      */
-    boolean revokeAllPermissions();
+    boolean revokeAllRoles();
 
     /**
      * Check if acl inheritance is broken on this node or not

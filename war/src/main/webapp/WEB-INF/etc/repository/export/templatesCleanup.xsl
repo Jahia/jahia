@@ -26,7 +26,7 @@
     </xsl:template>
     <xsl:template match="node()">
         <xsl:choose>
-            <xsl:when test="@jcr:primaryType='jnt:permissions'"/>
+            <xsl:when test="@jcr:primaryType='jnt:permission'"/>
             <xsl:when test="@jcr:primaryType='jnt:roles'"/>
             <xsl:otherwise>
                 <xsl:copy>

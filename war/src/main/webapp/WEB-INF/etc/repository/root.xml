@@ -48,4 +48,44 @@
 
     <templateSets jcr:primaryType="jnt:templateSets"/>
 
+    <permissions jcr:primaryType="jnt:permission" >
+        <repository-permissions jcr:primaryType="jnt:permission">
+            <jcr:all_default jcr:primaryType="jnt:permission">
+
+                <jcr:read_default jcr:primaryType="jnt:permission"/>
+
+                <jcr:write_default jcr:primaryType="jnt:permission">
+                    <jcr:modifyProperties_default jcr:primaryType="jnt:permission"/>
+                    <jcr:addChildNodes_default jcr:primaryType="jnt:permission"/>
+                    <jcr:removeNode_default jcr:primaryType="jnt:permission"/>
+                    <jcr:removeChildNodes_default jcr:primaryType="jnt:permission"/>
+                </jcr:write_default>
+                <jcr:readAccessControl_default jcr:primaryType="jnt:permission"/>
+                <jcr:modifyAccessControl_default jcr:primaryType="jnt:permission"/>
+                <jcr:lockManagement_default jcr:primaryType="jnt:permission"/>
+                <jcr:versionManagement_default jcr:primaryType="jnt:permission"/>
+                <jcr:nodeTypeManagement_default jcr:primaryType="jnt:permission"/>
+                <jcr:retentionManagement_default jcr:primaryType="jnt:permission"/>
+                <jcr:lifecycleManagement_default jcr:primaryType="jnt:permission"/>
+            </jcr:all_default>
+
+            <jcr:all_live jcr:primaryType="jnt:permission">
+                <jcr:read_live jcr:primaryType="jnt:permission"/>
+                <jcr:write_live jcr:primaryType="jnt:permission">
+                    <jcr:modifyProperties_live jcr:primaryType="jnt:permission"/>
+                    <jcr:addChildNodes_live jcr:primaryType="jnt:permission"/>
+                    <jcr:removeNode_live jcr:primaryType="jnt:permission"/>
+                    <jcr:removeChildNodes_live jcr:primaryType="jnt:permission"/>
+                </jcr:write_live>
+                <jcr:readAccessControl_live jcr:primaryType="jnt:permission"/>
+                <jcr:modifyAccessControl_live jcr:primaryType="jnt:permission"/>
+                <jcr:lockManagement_live jcr:primaryType="jnt:permission"/>
+                <jcr:versionManagement_live jcr:primaryType="jnt:permission"/>
+                <jcr:nodeTypeManagement_live jcr:primaryType="jnt:permission"/>
+                <jcr:retentionManagement_live jcr:primaryType="jnt:permission"/>
+                <jcr:lifecycleManagement_live jcr:primaryType="jnt:permission"/>
+            </jcr:all_live>
+
+        </repository-permissions>
+    </permissions>
 </content>

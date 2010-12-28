@@ -101,20 +101,24 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.hasPermission(perm);
     }
 
-    public boolean changePermissions(String user, String perm) {
-        return node.changePermissions(user, perm);
+    public boolean grantRoles(String user, Set<String> roles) {
+        return node.grantRoles(user, roles);
     }
 
-    public boolean changePermissions(String user, Map<String, String> perm) {
-        return node.changePermissions(user, perm);
+    public boolean denyRoles(String user, Set<String> roles) {
+        return node.denyRoles(user, roles);
     }
 
-    public boolean revokePermissions(String user) {
-        return node.revokePermissions(user);
+    public boolean changeRoles(String user, Map<String, String> perm) {
+        return node.changeRoles(user, perm);
     }
 
-    public boolean revokeAllPermissions() {
-        return node.revokeAllPermissions();
+    public boolean revokeRolesForUser(String user) {
+        return node.revokeRolesForUser(user);
+    }
+
+    public boolean revokeAllRoles() {
+        return node.revokeAllRoles();
     }
 
     public boolean getAclInheritanceBreak() {

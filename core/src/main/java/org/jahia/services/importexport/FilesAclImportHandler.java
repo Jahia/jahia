@@ -137,7 +137,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                         }
 
                         if (value != null) {
-//                            f.changePermissions(value, s
+//                            f.changeRoles(value, s
 //                                    .substring(beginIndex + 1));
                         }
                     }

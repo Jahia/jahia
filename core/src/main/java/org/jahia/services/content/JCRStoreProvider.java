@@ -34,6 +34,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
@@ -398,20 +399,25 @@ public class JCRStoreProvider {
             JCRSessionWrapper session = service.getSessionFactory().getSystemSession();
             FileInputStream stream = null;
             try {
-                Node rootNode = session.getRootNode();
+                JCRNodeWrapper rootNode = session.getRootNode();
                 if (!rootNode.hasNode("sites")) {
                     rootNode.addMixin("mix:referenceable");
-                    initializeAcl(session);
 
                     stream = new FileInputStream(
                             org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml");
                     session.importXML("/", stream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, true);
+
+                    JahiaPrivilegeRegistry.init(session);
+
+                    rootNode.grantRoles("u:guest", Collections.singleton("visitor"));
+                    rootNode.grantRoles("g:users", Collections.singleton("visitor"));
+                    rootNode.grantRoles("g:administrators", Collections.singleton("administrator"));
                     Node userNode = (Node) session.getItem("/users");
                     NodeIterator nodeIterator = userNode.getNodes();
                     while (nodeIterator.hasNext()) {
-                        Node node = (Node) nodeIterator.next();
+                        JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
                         if (!"guest".equals(node.getName())) {
-//                            JCRNodeWrapperImpl.changePermissions(node, "u:" + node.getName(), "rw");
+                            node.grantRoles("u:" + node.getName(), Collections.singleton("owner"));
                         }
                     }
                 }
@@ -735,10 +741,6 @@ public class JCRStoreProvider {
         return;
     }
 
-    protected void initializeAcl(Session session) throws RepositoryException, IOException {
-        return;
-    }
-
 
     public void deployExternalUser(String username, String providerName) throws RepositoryException {
         JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
@@ -777,7 +779,7 @@ public class JCRStoreProvider {
 
                                         userNode.setProperty(JCRUser.J_EXTERNAL, true);
                                         userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, providerName);
-//                                        JCRNodeWrapperImpl.changePermissions(userNode, "u:" + username, "rw");
+//                                        JCRNodeWrapperImpl.changeRoles(userNode, "u:" + username, "rw");
 
                                         session.save();
                                         session.getWorkspace().getVersionManager().checkin(f.getPath());

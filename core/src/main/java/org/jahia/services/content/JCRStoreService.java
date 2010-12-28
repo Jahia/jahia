@@ -32,8 +32,10 @@
 
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.interceptor.PropertyInterceptor;
@@ -59,7 +61,7 @@ import java.util.Set;
  *
  * @author toto
  */
-public class JCRStoreService extends JahiaService  {
+public class JCRStoreService extends JahiaService implements JahiaAfterInitializationService {
     private static org.slf4j.Logger logger =
             org.slf4j.LoggerFactory.getLogger(JCRStoreService.class);
 
@@ -199,5 +201,18 @@ public class JCRStoreService extends JahiaService  {
             logger.error("Error while decorating node", e);
         }
         return w;
+    }
+
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JahiaPrivilegeRegistry.init(session);
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            throw new JahiaInitializationException("Cannot register permissions",e);
+        }
     }
 }

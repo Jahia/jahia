@@ -285,6 +285,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         //        if (isNodeType("jnt:mountPoint")) {
 //            return getUser().isAdminMember(0);
 //        }
+        if (session.isSystem()) {
+            return true;
+        }
         JCRStoreProvider jcrStoreProvider = getProvider();
         if (jcrStoreProvider.isDynamicallyMounted()) {
             try {
@@ -308,9 +311,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             AccessControlManager accessControlManager = providerSession.getAccessControlManager();
             if (accessControlManager != null) {
 //                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
-// todo register privileges with expanded names
-                String name = perm.replace("{http://www.jcp.org/jcr/1.0}", "jcr:") + "_" + getSession().getWorkspace().getName();
-                return accessControlManager.hasPrivileges(localPath, new Privilege[] { accessControlManager.privilegeFromName(name)} );
+
+                return accessControlManager.hasPrivileges(localPath, new Privilege[] { accessControlManager.privilegeFromName(perm)} );
             }
             return true;
         } catch (AccessControlException e) {
@@ -333,12 +335,103 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return privileges;
     }
 
+    public boolean grantRoles(String user, Set<String> roles) {
+        Map m = new HashMap<String, String>();
+        for (String role : roles) {
+            m.put(role, "GRANT");
+        }
+        return changeRoles(user, m);
+    }
+
+    public boolean denyRoles(String user, Set<String> roles) {
+        Map m = new HashMap<String, String>();
+        for (String role : roles) {
+            m.put(role, "DENY");
+        }
+        return changeRoles(user, m);
+    }
+
     /**
      * {@inheritDoc}
      */
-    public boolean changePermissions(String user, String perm) {
+    public boolean changeRoles(String user, Map<String, String> roles) {
         try {
-            changePermissions(objectNode, user, perm);
+            if (!objectNode.isCheckedOut() && objectNode.isNodeType(Constants.MIX_VERSIONABLE)) {
+                objectNode.getSession().getWorkspace().getVersionManager().checkout(objectNode.getPath());
+            }
+
+            List<String> gr = new ArrayList<String>();
+            List<String> den = new ArrayList<String>();
+
+            for (Map.Entry<String, String> entry : roles.entrySet()) {
+                if ("GRANT".equals(entry.getValue())) {
+                    gr.add(entry.getKey());
+                } else if ("DENY".equals(entry.getValue())) {
+                    den.add(entry.getKey());
+                }
+            }
+
+            Node acl = getAcl(objectNode);
+            NodeIterator ni = acl.getNodes();
+            Node aceg = null;
+            Node aced = null;
+            while (ni.hasNext()) {
+                Node ace = ni.nextNode();
+                if (ace.getProperty("j:principal").getString().equals(user)) {
+                    if (ace.getProperty("j:aceType").getString().equals("GRANT")) {
+                        aceg = ace;
+                    } else {
+                        aced = ace;
+                    }
+                }
+            }
+            if (aceg == null) {
+                aceg = acl.addNode("GRANT_" + user.replace(':', '_'), "jnt:ace");
+                aceg.setProperty("j:principal", user);
+                aceg.setProperty("j:protected", false);
+                aceg.setProperty("j:aceType", "GRANT");
+            }
+            if (aced == null) {
+                aced = acl.addNode("DENY_" + user.replace(':', '_'), "jnt:ace");
+                aced.setProperty("j:principal", user);
+                aced.setProperty("j:protected", false);
+                aced.setProperty("j:aceType", "DENY");
+            }
+
+            List<String> grClone = new ArrayList<String>(gr);
+            List<String> denClone = new ArrayList<String>(den);
+            if (aceg.hasProperty(J_ROLES)) {
+                final Value[] values = aceg.getProperty(J_ROLES).getValues();
+                for (Value value : values) {
+                    final String s = value.getString();
+                    if (!gr.contains(s) && !den.contains(s)) {
+                        grClone.add(s);
+                    }
+                }
+            }
+            if (aced.hasProperty(J_ROLES)) {
+                final Value[] values = aced.getProperty(J_ROLES).getValues();
+                for (Value value : values) {
+                    final String s = value.getString();
+                    if (!gr.contains(s) && !den.contains(s)) {
+                        denClone.add(s);
+                    }
+                }
+            }
+            String[] grs = new String[grClone.size()];
+            grClone.toArray(grs);
+            if (grs.length == 0) {
+                aceg.remove();
+            } else {
+                aceg.setProperty(J_ROLES, grs);
+            }
+            String[] dens = new String[denClone.size()];
+            denClone.toArray(dens);
+            if (dens.length == 0) {
+                aced.remove();
+            } else {
+                aced.setProperty(J_ROLES, dens);
+            }
         } catch (RepositoryException e) {
             logger.error("Cannot change acl", e);
             return false;
@@ -347,25 +440,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return true;
     }
 
-
     /**
      * {@inheritDoc}
      */
-    public boolean changePermissions(String user, Map<String, String> perm) {
-        try {
-            changePermissions(objectNode, user, perm);
-        } catch (RepositoryException e) {
-            logger.error("Cannot change acl", e);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean revokePermissions(String user) {
+    public boolean revokeRolesForUser(String user) {
         try {
             revokePermission(objectNode, user);
         } catch (RepositoryException e) {
@@ -379,7 +457,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean revokeAllPermissions() {
+    public boolean revokeAllRoles() {
         try {
             if (objectNode.hasNode("j:acl")) {
                 objectNode.getNode("j:acl").remove();
@@ -2327,147 +2405,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public List<VersionInfo> getVersionInfos() throws RepositoryException {
         return ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(session, this);
-    }
-
-    /**
-     * Change the permissions of a user on the given node.
-     *
-     * @param objectNode The node on which to change permission
-     * @param user       The user to update
-     * @param perm       the permission to update for the user
-     * @throws RepositoryException
-     */
-    public static void changePermissions(Node objectNode, String user, String perm) throws RepositoryException {
-        Map<String, String> permsAsMap = new HashMap<String, String>();
-        perm = perm.toLowerCase();
-        if (perm.length() == 2) {
-            if (perm.charAt(0) == 'r') {
-                permsAsMap.put(Constants.JCR_READ_RIGHTS_LIVE, "GRANT");
-            } else {
-                permsAsMap.put(Constants.JCR_READ_RIGHTS_LIVE, "DENY");
-            }
-            if (perm.charAt(1) == 'w') {
-                permsAsMap.put(Constants.JCR_READ_RIGHTS, "GRANT");
-                permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "GRANT");
-            } else {
-                permsAsMap.put(Constants.JCR_READ_RIGHTS, "DENY");
-                permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "DENY");
-            }
-        } else if (perm.length() == 5) {
-            if (perm.charAt(0) == 'r') {
-                permsAsMap.put(Constants.JCR_READ_RIGHTS_LIVE, "GRANT");
-            } else {
-                permsAsMap.put(Constants.JCR_READ_RIGHTS_LIVE, "DENY");
-            }
-            if (perm.charAt(1) == 'e') {
-                permsAsMap.put(Constants.JCR_READ_RIGHTS, "GRANT");
-            } else {
-                permsAsMap.put(Constants.JCR_READ_RIGHTS, "DENY");
-            }
-            if (perm.charAt(2) == 'w') {
-                permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "GRANT");
-            } else {
-                permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "DENY");
-            }
-            if (perm.charAt(3) == 'a') {
-                permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, "GRANT");
-            } else {
-                permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, "DENY");
-            }
-            if (perm.charAt(4) == 'p') {
-                permsAsMap.put(Constants.JCR_WRITE_RIGHTS_LIVE, "GRANT");
-            } else {
-                permsAsMap.put(Constants.JCR_WRITE_RIGHTS_LIVE, "DENY");
-            }
-        }
-        changePermissions(objectNode, user, permsAsMap);
-    }
-
-    /**
-     * Change the permissions of a user on the given node.
-     *
-     * @param objectNode The node on which to change permissions
-     * @param user       The user to update
-     * @param perms      A map with the name of the permission, and "GRANT" or "DENY" as a value
-     * @throws RepositoryException
-     */
-    public static void changePermissions(Node objectNode, String user, Map<String, String> perms) throws RepositoryException {
-        if (!objectNode.isCheckedOut() && objectNode.isNodeType(Constants.MIX_VERSIONABLE)) {
-            objectNode.getSession().getWorkspace().getVersionManager().checkout(objectNode.getPath());
-        }
-
-        List<String> gr = new ArrayList<String>();
-        List<String> den = new ArrayList<String>();
-
-        for (Map.Entry<String, String> entry : perms.entrySet()) {
-            if ("GRANT".equals(entry.getValue())) {
-                gr.add(entry.getKey());
-            } else if ("DENY".equals(entry.getValue())) {
-                den.add(entry.getKey());
-            }
-        }
-
-        Node acl = getAcl(objectNode);
-        NodeIterator ni = acl.getNodes();
-        Node aceg = null;
-        Node aced = null;
-        while (ni.hasNext()) {
-            Node ace = ni.nextNode();
-            if (ace.getProperty("j:principal").getString().equals(user)) {
-                if (ace.getProperty("j:aceType").getString().equals("GRANT")) {
-                    aceg = ace;
-                } else {
-                    aced = ace;
-                }
-            }
-        }
-        if (aceg == null) {
-            aceg = acl.addNode("GRANT_" + user.replace(':', '_'), "jnt:ace");
-            aceg.setProperty("j:principal", user);
-            aceg.setProperty("j:protected", false);
-            aceg.setProperty("j:aceType", "GRANT");
-        }
-        if (aced == null) {
-            aced = acl.addNode("DENY_" + user.replace(':', '_'), "jnt:ace");
-            aced.setProperty("j:principal", user);
-            aced.setProperty("j:protected", false);
-            aced.setProperty("j:aceType", "DENY");
-        }
-
-        List<String> grClone = new ArrayList<String>(gr);
-        List<String> denClone = new ArrayList<String>(den);
-        if (aceg.hasProperty(J_ROLES)) {
-            final Value[] values = aceg.getProperty(J_ROLES).getValues();
-            for (Value value : values) {
-                final String s = value.getString();
-                if (!gr.contains(s) && !den.contains(s)) {
-                    grClone.add(s);
-                }
-            }
-        }
-        if (aced.hasProperty(J_ROLES)) {
-            final Value[] values = aced.getProperty(J_ROLES).getValues();
-            for (Value value : values) {
-                final String s = value.getString();
-                if (!gr.contains(s) && !den.contains(s)) {
-                    denClone.add(s);
-                }
-            }
-        }
-        String[] grs = new String[grClone.size()];
-        grClone.toArray(grs);
-        if (grs.length == 0) {
-            aceg.remove();
-        } else {
-            aceg.setProperty(J_ROLES, grs);
-        }
-        String[] dens = new String[denClone.size()];
-        denClone.toArray(dens);
-        if (dens.length == 0) {
-            aced.remove();
-        } else {
-            aced.setProperty(J_ROLES, dens);
-        }
     }
 
     /**

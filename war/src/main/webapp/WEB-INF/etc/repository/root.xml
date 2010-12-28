@@ -7,20 +7,7 @@
     <users jcr:primaryType="jnt:usersFolder" j:usersFolderSkeleton="WEB-INF/etc/repository/user.xml,modules/**/user-skeleton.xml,modules/**/user-skeleton-*.xml">
         <ROOT_NAME_PLACEHOLDER jcr:primaryType="jnt:user" j:password="@ROOT_PASSWORD@" j:external="false" jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b">
             <files jcr:primaryType="jnt:folder">
-                <private jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
-                    <j:acl jcr:primaryType="jnt:acl">
-                        <DENY_jcr_read_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                               j:privileges="jcr:read_live" j:aceType="DENY"/>
-                        <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                               j:privileges="jcr:read" j:aceType="DENY"/>
-                        <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                                j:privileges="jcr:write" j:aceType="DENY"/>
-                        <DENY_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                                j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
-                        <DENY_jcr_write_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                                j:privileges="jcr:write_live" j:aceType="DENY"/>
-                    </j:acl>
-
+                <private jcr:primaryType="jnt:folder" >
                     <imports jcr:primaryType="jnt:importDropBox"/>
                 </private>
             </files>
@@ -29,19 +16,7 @@
 
             <contents jcr:primaryType="jnt:contentList"/>
 
-            <preferences jcr:primaryType="jnt:preferences" jcr:mixinTypes="jmix:accessControlled">
-                <j:acl jcr:primaryType="jnt:acl">
-                    <DENY_jcr_read_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                           j:privileges="jcr:read_live" j:aceType="DENY"/>
-                    <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                           j:privileges="jcr:read" j:aceType="DENY"/>
-                    <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                            j:privileges="jcr:write" j:aceType="DENY"/>
-                    <DENY_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                            j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
-                    <DENY_jcr_write_live_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest"
-                                            j:privileges="jcr:write_live" j:aceType="DENY"/>
-                </j:acl>
+            <preferences jcr:primaryType="jnt:preferences" >
             </preferences>
         </ROOT_NAME_PLACEHOLDER>
         <guest jcr:primaryType="jnt:user" j:password="" j:external="false"/>
@@ -67,13 +42,7 @@
     <imports jcr:primaryType="jnt:importDropBox"/>
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper"/>
 
-    <mounts jcr:primaryType="jnt:systemFolder" jcr:mixinTypes="jmix:accessControlled">
-        <j:acl jcr:primaryType="jnt:acl">
-            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
-                                    j:privileges="jcr:read" j:aceType="GRANT"/>
-            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
-                                     j:privileges="jcr:write" j:aceType="GRANT"/>
-        </j:acl>
+    <mounts jcr:primaryType="jnt:systemFolder" >
     </mounts>
     <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>    
 

@@ -368,8 +368,9 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     wrapper.setProperty("j:type", app.getType());
                     wrapper.setProperty("j:isVisible", app.isVisible());
                     wrapper.revokeAllPermissions();
-                    wrapper.changePermissions("g:guest", "r-");
-                    wrapper.changePermissions("u:root", "rw");
+// todo : default permissions ?
+//                    wrapper.changePermissions("g:guest", "r-");
+//                    wrapper.changePermissions("u:root", "rw");
                     session.save();
                     app.setID(wrapper.getIdentifier());
                     return true;

@@ -425,10 +425,6 @@ public class SubscriptionManager extends LayoutContainer {
 				// do nothing
 			}
 
-			public void addRoles(List<GWTJahiaRole> roles) {
-				// do nothing
-			}
-
 			public void addUsers(List<GWTJahiaUser> users) {
 				service.subscribe(source, users, new SubscriptionAsyncCallback<Void>() {
 					public void onSuccess(Void result) {

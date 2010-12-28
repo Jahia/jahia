@@ -88,7 +88,6 @@ public class AclEditor {
     private boolean displayInheritanceColumn = true;
     private String addUsersLabel = getResource("newUsers.label");
     private String addGroupsLabel = getResource("newGroups.label");
-    private String addRolesLabel = getResource("newRoles.label");
 
     public AclEditor(GWTJahiaNodeACL acl, String aclContext) {
         this.originalAcl = acl;
@@ -128,19 +127,8 @@ public class AclEditor {
         return addGroupsLabel;
     }
 
-    public String getAddRolesLabel() {
-        if (addRolesLabel == null) {
-            return getResource("newRoles.label");
-        }
-        return addRolesLabel;
-    }
-
     public void setAddGroupsLabel(String addGroupsLabel) {
         this.addGroupsLabel = addGroupsLabel;
-    }
-
-    public void setAddRolesLabel(String addRolesLabel) {
-        this.addRolesLabel = addRolesLabel;
     }
 
     public void addNewAclPanel(final LayoutContainer c) {
@@ -396,33 +384,6 @@ public class AclEditor {
                 }
             }
 
-            public void addRoles(List<GWTJahiaRole> roles) {
-                for (GWTJahiaRole role : roles) {
-                    GWTJahiaNodeACE ace = aceMap.get('r' + role.getName()+":"+role.getSite());
-                    if (ace == null) {
-                        ace = new GWTJahiaNodeACE();
-                        ace.setPrincipalType('r');
-                        ace.setPrincipal(role.getName());
-                        ace.setPrincipalKey(role.getName()+":"+role.getSite());
-                        ace.setPermissions(new HashMap<String, String>());
-                        boolean first = true;
-                        for (String s : available) {
-                            ace.getPermissions().put(s, first ? "GRANT" : "DENY");
-                            first = false;
-                        }
-                        ace.setInheritedPermissions(new HashMap<String, String>());
-                        ace.setInherited(false);
-                        acl.getAce().add(ace);
-                        aceMap.put('r' + role.getName()+":"+role.getSite(), ace);
-                    } else {
-                        if (acl.isBreakAllInheritance()) {
-                            ace.setInherited(false);
-                        }
-                    }
-                    setDirty();
-                    addTableItem(store, ace, available);
-                }
-            }
         };
 
         ToolBar toolBar = new ToolBar();
@@ -445,15 +406,7 @@ public class AclEditor {
             }
         });
         toolBar.add(addUsersToolItem);
-        addUsersToolItem = new Button(getAddRolesLabel());
-        addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.role());
-        addUsersToolItem.setEnabled(!readOnly);
-        addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_ROLES, context);
-            }
-        });
-        toolBar.add(addUsersToolItem);
+
         breakinheritanceItem = new Button();
         if (canBreakInheritance) {
             setBreakInheritanceLabel();

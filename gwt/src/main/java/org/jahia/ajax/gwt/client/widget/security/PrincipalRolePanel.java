@@ -137,10 +137,6 @@ public class PrincipalRolePanel extends LayoutContainer {
                 }
             }
 
-            public void addRoles(List<GWTJahiaRole> roles) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
             public void addUsers(List<GWTJahiaUser> users) {
                 final List<GWTJahiaPrincipal> pList = new ArrayList<GWTJahiaPrincipal>();
                 for (GWTJahiaPrincipal p : users) {

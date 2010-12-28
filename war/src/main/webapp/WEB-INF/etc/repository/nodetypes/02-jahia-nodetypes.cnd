@@ -88,7 +88,7 @@
 [jnt:ace] > nt:base
  - j:aceType (string) mandatory nofulltext < 'GRANT', 'DENY'
  - j:principal (string) mandatory nofulltext
- - j:privileges (name) mandatory multiple
+ - j:roles (name) mandatory multiple
  - j:protected (boolean) mandatory
 
 [jnt:acl] > nt:base
@@ -104,14 +104,16 @@
 //---------------------------------------------------------
 
 [jnt:role] > nt:base, mix:referenceable, mix:title, jmix:observable
+ - j:nodeTypes (string) protected hidden multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
  - j:assignedPermissions (string) protected hidden multiple indexed=no
- - j:grantToPrincipals (string) protected hidden multiple indexed=no
 
 [jnt:roles] > nt:base, mix:versionable
  + * (jnt:role)
 
 [jnt:permission] > nt:base, mix:referenceable, mix:title, jmix:observable
+ - j:isAbstract (boolean)
+ + * (jnt:permission)
 
 [jnt:permissionGroup] > nt:base, jmix:observable
  + * (jnt:permission)
@@ -152,7 +154,6 @@
 
 [jnt:workflowRule] > nt:base
  - j:workflow (string,choicelist[workflow]) nofulltext
- + * (jnt:ace) = jnt:ace
 
 
 [jmix:worklfowRulesable] mixin

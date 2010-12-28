@@ -50,5 +50,4 @@ public interface UserGroupAdder {
 
     public void addGroups(List<GWTJahiaGroup> groups);
 
-    void addRoles(List<GWTJahiaRole> roles);
 }

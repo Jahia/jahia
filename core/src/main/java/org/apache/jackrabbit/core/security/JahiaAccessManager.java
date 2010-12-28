@@ -100,7 +100,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     protected NamePathResolver resolver;
     private WorkspaceAccessManager wspAccessMgr;
     private AccessControlProvider acProviderMgr;
-    private PrivilegeRegistry privilegeRegistry;
+    private JahiaPrivilegeRegistry privilegeRegistry;
     private boolean initialized;
     protected String workspaceName;
 
@@ -192,7 +192,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         workspaceName = context.getWorkspaceName();
         this.repositoryContext = repositoryContext;
         this.workspaceConfig = workspaceConfig;
-        privilegeRegistry = new PrivilegeRegistry(resolver);
+        privilegeRegistry = new JahiaPrivilegeRegistry();
 
         Set principals = subject.getPrincipals(JahiaPrincipal.class);
         if (!principals.isEmpty()) {
@@ -257,13 +257,31 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
     }
 
+
+    @Override
+    public Privilege privilegeFromName(String privilegeName) throws AccessControlException, RepositoryException {
+        checkInitialized();
+
+        return privilegeRegistry.getPrivilege(privilegeName);
+    }
+
+    @Override
+    public Privilege[] getSupportedPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
+        checkInitialized();
+        checkValidNodePath(absPath);
+
+        // return all known privileges everywhere.
+        return privilegeRegistry.getRegisteredPrivileges();
+    }
+
+
     /**
      * @see AbstractAccessControlManager#getPrivilegeRegistry()
      */
     @Override
     protected PrivilegeRegistry getPrivilegeRegistry() throws RepositoryException {
-        checkInitialized();
-        return privilegeRegistry;
+        // Do not use jackrabbit privileges registry
+        return null;
     }
 
 
@@ -296,36 +314,45 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     * @deprecated
     */
     public boolean isGranted(ItemId id, int actions) throws ItemNotFoundException, RepositoryException {
-        int perm = 0;
+        Set<String> perm = new HashSet<String>();
         if ((actions & READ) == READ) {
-            perm |= Permission.READ;
+            perm.add("jcr:read_"+workspaceName);
         }
         if ((actions & WRITE) == WRITE) {
             if (id.denotesNode()) {
                 // TODO: check again if correct
-                perm |= Permission.SET_PROPERTY;
-                perm |= Permission.ADD_NODE;
+                perm.add("jcr:addChildNodes_"+workspaceName);
+                perm.add("jcr:modifyProperties_"+workspaceName);
             } else {
-                perm |= Permission.SET_PROPERTY;
+                perm.add("jcr:modifyProperties_"+workspaceName);
             }
         }
         if ((actions & REMOVE) == REMOVE) {
-            perm |= (id.denotesNode()) ? Permission.REMOVE_NODE : Permission.REMOVE_PROPERTY;
+            perm.add( (id.denotesNode()) ? "jcr:removeChildNodes_"+workspaceName : "jcr:removeNode_"+workspaceName);
         }
         Path path = hierMgr.getPath(id);
         return isGranted(path, perm);
     }
 
     public boolean isGranted(Path absPath, int permissions) throws RepositoryException {
+        Set<String> privs = new HashSet<String>();
 
+        for (Privilege privilege : privilegeRegistry.getPrivileges(permissions, workspaceName)) {
+            privs.add(privilege.getName());
+        }
+
+        return isGranted(absPath, privs);
+    }
+
+    public boolean isGranted(Path absPath, Set<String> permissions) throws RepositoryException {
         String absPathStr = absPath.toString();
         if (isSystemPrincipal() && deniedPathes.get() == null) {
             return true;
         }
 
-        if (permissions == Permission.READ && absPathStr.equals("{}")) {
-            return true;
-        }
+//        if (permissions == Collections.singleton(Permission.READ) && absPathStr.equals("{}")) {
+//            return true;
+//        }
 
         boolean res = false;
 
@@ -352,7 +379,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             // Always deny write access on system folders
             if (getSecuritySession().itemExists(jcrPath)) {
                 Item i = getSecuritySession().getItem(jcrPath);
-                if (i.isNode() && permissions != Permission.READ) {
+                if (i.isNode() && permissions.contains("jcr_read_"+workspaceName)) {
                     String ntName = ((Node) i).getPrimaryNodeType().getName();
                     if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
                         cache.put(absPathStr + " : " + permissions, false);
@@ -360,14 +387,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                     }
                 }
             }
-            
+
             boolean newItem = !getSecuritySession().itemExists(jcrPath); // Jackrabbit checks the ADD_NODE permission on non-existing nodes
-            if (newItem && permissions != Permission.ADD_NODE) {
+            if (newItem && permissions.contains("jcr:addChildNodes_"+workspaceName)) {
                 // If node is new (local to the session), always grant permission
                 cache.put(absPathStr + " : " + permissions, true);
                 return true;
             }
-           
+
             // Administrators are always granted
             if (jahiaPrincipal != null) {
                 if (isAdmin(jahiaPrincipal.getName(),0)) {
@@ -469,7 +496,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return path;
     }
 
-    private boolean recurseonACPs(String jcrPath, Session s, int permissions, String site) throws RepositoryException {
+    private boolean recurseonACPs(String jcrPath, Session s, Set<String> permissions, String site) throws RepositoryException {
         boolean result = false;
         Set<String> groups = new HashSet<String>();
         while (jcrPath.length() > 0) {
@@ -486,10 +513,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                             Node ace = aces.nextNode();
                             String principal = ace.getProperty("jcr:principal").getString();
                             String type = ace.getProperty("jcr:aceType").getString();
-                            Value[] privileges = ace.getProperty("jcr:privileges").getValues();
-                            for (int j = 0; j < privileges.length; j++) {
-                                Value privilege = privileges[j];
-                                if (match(permissions, privilege.getString())) {
+                            Value[] roles = ace.getProperty("jcr:roles").getValues();
+                            for (int j = 0; j < roles.length; j++) {
+                                Value role = roles[j];
+                                if (match(permissions, role.getString(), s)) {
                                     String principalName = principal.substring(2);
                                     if (principal.charAt(0) == 'u') {
                                         if (principalName.equals(jahiaPrincipal.getName())) {
@@ -523,10 +550,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                             Node ace = aces.nextNode();
                             String principal = ace.getProperty("j:principal").getString();
                             String type = ace.getProperty("j:aceType").getString();
-                            Value[] privileges = ace.getProperty("j:privileges").getValues();
+                            Value[] privileges = ace.getProperty("j:roles").getValues();
                             for (int j = 0; j < privileges.length; j++) {
                                 Value privilege = privileges[j];
-                                if (match(permissions, privilege.getString())) {
+                                if (match(permissions, privilege.getString(), s)) {
                                     final String principalName = principal.substring(2);
                                     if (principal.charAt(0) == 'u') {
                                         if (principalName.equals(jahiaPrincipal.getName())) {
@@ -569,20 +596,28 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
 
-    public boolean match(int permission, String privilege) {
-        String workspace = "default";
-        if (privilege.contains("_")) {
-            workspace = privilege.substring(privilege.lastIndexOf('_') + 1);
-            privilege = privilege.substring(0, privilege.lastIndexOf('_'));
-        }
-        if (!isAliased && !workspace.equals(workspaceName)) {
-            return false;
-        }
-        Integer foundPermission = permissions.get(privilege);
-        return foundPermission != null && (foundPermission & permission) != 0;
-    }
+    public boolean match(Set<String> permissions, String role, Session s) throws RepositoryException {
+        Node node = s.getNode("/roles/" + role);
+        if (node.hasProperty("j:permissions")) {
+            Value[] perms = node.getProperty("j:permissions").getValues();
 
-    // todo : implements methods ..
+            permissions = new HashSet<String>(permissions);
+
+            for (Value value : perms) {
+                Node p = s.getNodeByIdentifier(value.getString());
+
+                if (!p.getParent().getName().startsWith("workspace-") || p.getParent().getName().equals("workspace-" + workspaceName)) {
+                    if (permissions.contains(p.getName())) {
+                        permissions.remove(p.getName());
+                        if (permissions.isEmpty()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     public boolean hasPrivileges(String absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
         checkInitialized();
@@ -592,8 +627,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             logger.debug("No privileges passed -> allowed.");
             return true;
         } else {
-            int privs = PrivilegeRegistry.getBits(privileges);
+            Set<String> privs = new HashSet<String>();
+
+            for (Privilege privilege : privileges) {
+                privs.add(privilege.getName());
+            }
+
             Path p = resolver.getQPath(absPath);
+
             return isGranted(p, privs);
         }
     }

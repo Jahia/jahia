@@ -411,7 +411,7 @@ public class JCRStoreProvider {
                     while (nodeIterator.hasNext()) {
                         Node node = (Node) nodeIterator.next();
                         if (!"guest".equals(node.getName())) {
-                            JCRNodeWrapperImpl.changePermissions(node, "u:" + node.getName(), "rw");
+//                            JCRNodeWrapperImpl.changePermissions(node, "u:" + node.getName(), "rw");
                         }
                     }
                 }
@@ -777,7 +777,7 @@ public class JCRStoreProvider {
 
                                         userNode.setProperty(JCRUser.J_EXTERNAL, true);
                                         userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, providerName);
-                                        JCRNodeWrapperImpl.changePermissions(userNode, "u:" + username, "rw");
+//                                        JCRNodeWrapperImpl.changePermissions(userNode, "u:" + username, "rw");
 
                                         session.save();
                                         session.getWorkspace().getVersionManager().checkin(f.getPath());

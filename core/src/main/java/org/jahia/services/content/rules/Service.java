@@ -105,11 +105,11 @@ public class Service extends JahiaService {
             }
 
             Node jcrNode = node.getNode();
-            try {
-                JCRNodeWrapperImpl.changePermissions(jcrNode, userstring, ace.substring(colon + 1));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+//            try {
+//                JCRNodeWrapperImpl.changePermissions(jcrNode, userstring, ace.substring(colon + 1));
+//            } catch (RepositoryException e) {
+//                logger.error(e.getMessage(), e);
+//            }
         }
     }
 

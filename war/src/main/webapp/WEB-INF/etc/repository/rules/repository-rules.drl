@@ -65,30 +65,6 @@ rule "publish groups"
 end
 
 
-// These 2 rules show how to take some actions based on the user properties
-
-/*
-rule "Assign acl to all my groups"
-    when
-        A new node is created
-        The current user belongs to a group
-    then
-        Log "Assign acl to my group "+groupName
-        Assign permissions "rw" on the node to this group
-end
-*/
-
-/*
-rule "Assign acl to my service"
-    when
-        A new node is created
-        The current user has a property named service
-    then
-        Log "Assign acl to my service " +userProperty.getValue()
-        Assign permissions "rw" on the node to a group matching that property
-end
-*/
-
 // This is an example that shows how to propagate a property to all sub folders and sub files
 // First rule copy the value from the parent when a file is uploaded / modified
 // Second rule propagates a property change to all children

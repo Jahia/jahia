@@ -37,12 +37,12 @@ global Tasks tasks
 #       Create task "New member in the group" with description "A new member was added to the group." for members of group parent.getParent().getName()
 #end
 
-rule "A task has been created"
-    when
-        A new node is created
-        - the node has the type jnt:task
-        The node has a property assignee
-    then
-        Set the property state of the node with the value "active"
-        Assign permissions "rw-" on the node to the user property.getNode().getName()
-end
+#rule "A task has been created"
+#    when
+#        A new node is created
+#        - the node has the type jnt:task
+#        The node has a property assignee
+#    then
+#        Set the property state of the node with the value "active"
+#        Assign permissions "rw-" on the node to the user property.getNode().getName()
+#end

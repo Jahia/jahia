@@ -75,19 +75,19 @@ public class PermissionsUtils {
      * @return
      */
     public static boolean isPermitted(String permissionName, String siteKey) {
-        GWTJahiaPermission perm = new GWTJahiaPermission();
-        String[] splittedName = permissionName.split("/");
-        if (splittedName.length > 1) {
-            perm.setGroup(splittedName[0]);
-            perm.setName(splittedName[1]);            
-        } else {
-            perm.setName(permissionName);            
-        }
-        if (siteKey != null) {
-            perm.setSite(siteKey);
-        }
-        return isPermitted(perm);
-
+//        GWTJahiaPermission perm = new GWTJahiaPermission();
+//        String[] splittedName = permissionName.split("/");
+//        if (splittedName.length > 1) {
+//            perm.setGroup(splittedName[0]);
+//            perm.setName(splittedName[1]);
+//        } else {
+//            perm.setName(permissionName);
+//        }
+//        if (siteKey != null) {
+//            perm.setSite(siteKey);
+//        }
+//        return isPermitted(perm);
+        return true;
     }
     
     
@@ -98,7 +98,8 @@ public class PermissionsUtils {
      * @return
      */
     public static boolean isPermitted(GWTJahiaPermission permission) {
-        return grantedPermissions.contains(permission);
+//        return grantedPermissions.contains(permission);
+        return true;
     }
 
 

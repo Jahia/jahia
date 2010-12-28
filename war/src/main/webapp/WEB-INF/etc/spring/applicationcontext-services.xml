@@ -175,7 +175,7 @@
                 <value>j:nodename</value>
                 <value>j:fullpath</value>
                 <value>j:originWS</value>
-                <value>j:privileges</value>
+                <value>j:roles</value>
                 <value>j:principal</value>
                 <value>j:protected</value>
                 <value>j:external</value>

@@ -137,8 +137,8 @@ public class FilesAclImportHandler extends DefaultHandler {
                         }
 
                         if (value != null) {
-                            f.changePermissions(value, s
-                                    .substring(beginIndex + 1));
+//                            f.changePermissions(value, s
+//                                    .substring(beginIndex + 1));
                         }
                     }
                 }

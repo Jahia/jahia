@@ -161,8 +161,8 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
 
     protected void initializeAcl(Session session) throws RepositoryException, IOException {
         Node rootNode = session.getRootNode();
-        JCRNodeWrapperImpl.changePermissions(rootNode,"g:guest","r----");
-        JCRNodeWrapperImpl.changePermissions(rootNode,"g:users","re---");
+//        JCRNodeWrapperImpl.changePermissions(rootNode,"g:guest","r----");
+//        JCRNodeWrapperImpl.changePermissions(rootNode,"g:users","re---");
     }
 
 }

@@ -4,7 +4,7 @@
          xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
          xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
-        <templates-system jcr:mixinTypes="jmix:accessControlled jmix:sitemap" jcr:primaryType="jnt:virtualsite"
+        <templates-system jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite"
                           changefreq="monthly" j:installedModules="templates-system" priority="0.5">
             <templates jcr:primaryType="jnt:templatesFolder">
                 <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="system">

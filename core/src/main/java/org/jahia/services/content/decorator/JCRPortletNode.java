@@ -34,16 +34,13 @@ package org.jahia.services.content.decorator;
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.applications.EntryPointDefinition;
-import org.jahia.data.applications.WebAppContext;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
-import javax.portlet.PortletMode;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -124,8 +121,8 @@ public class JCRPortletNode extends JCRNodeDecorator {
         return ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(getContextName()).getEntryPointDefinitionByName(getDefinitionName());
     }
 
-    public Map<String, List<String>> getAvailablePermissions() {
-        Map<String, List<String>> results = new HashMap<String, List<String>>(super.getAvailablePermissions());
+    public Map<String, List<JCRNodeWrapper>> getAvailableRoles() throws RepositoryException {
+        Map<String, List<JCRNodeWrapper>> results = new HashMap<String, List<JCRNodeWrapper>>(super.getAvailableRoles());
         try {
             results.putAll(getAvailablePermissions(getContextName(), getDefinitionName()));
         } catch (JahiaException e) {
@@ -136,23 +133,24 @@ public class JCRPortletNode extends JCRNodeDecorator {
         return results;
     }
 
-    public static Map<String, List<String>> getAvailablePermissions(String contextName, String definitionName) throws JahiaException {
-        Map<String, List<String>> results = new HashMap<String, List<String>>();
-        ApplicationBean bean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(contextName);
-        WebAppContext appContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationContext(bean);
-        List<String> roles = appContext.getRoles();
-        results.put("roles", roles);
-
-        List<String> modesStr = new ArrayList<String>();
-        EntryPointDefinition epd = bean.getEntryPointDefinitionByName(definitionName);
-        List<PortletMode> modes = epd.getPortletModes();
-        for (PortletMode mode : modes) {
-            // mode view is mandatory and is garted to all users
-            if (mode != PortletMode.VIEW) {
-                modesStr.add(mode.toString());
-            }
-        }
-        results.put("modes", modesStr);
+    public static Map<String, List<JCRNodeWrapper>> getAvailablePermissions(String contextName, String definitionName) throws JahiaException {
+        Map<String, List<JCRNodeWrapper>> results = new HashMap<String, List<JCRNodeWrapper>>();
+// todo : portlet roles / permissions ?
+//        ApplicationBean bean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(contextName);
+//        WebAppContext appContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationContext(bean);
+//        List<String> roles = appContext.getRoles();
+//        results.put("roles", roles);
+//
+//        List<String> modesStr = new ArrayList<String>();
+//        EntryPointDefinition epd = bean.getEntryPointDefinitionByName(definitionName);
+//        List<PortletMode> modes = epd.getPortletModes();
+//        for (PortletMode mode : modes) {
+//            // mode view is mandatory and is garted to all users
+//            if (mode != PortletMode.VIEW) {
+//                modesStr.add(mode.toString());
+//            }
+//        }
+//        results.put("modes", modesStr);
         return results;
     }
 }

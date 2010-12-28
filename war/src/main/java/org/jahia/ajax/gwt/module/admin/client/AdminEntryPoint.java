@@ -111,10 +111,6 @@ public class AdminEntryPoint extends CommonEntryPoint {
                     });
                 }
             }
-
-            public void addRoles(List<GWTJahiaRole> roles) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
         }, viewMode, "currentSite");
     }
 

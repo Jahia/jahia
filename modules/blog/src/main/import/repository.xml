@@ -4,7 +4,7 @@
          xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
          xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
-        <blog jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:virtualsite" j:installedModules="blog"
+        <blog  jcr:primaryType="jnt:virtualsite" j:installedModules="blog"
               j:siteType="module">
             <home jcr:primaryType="jnt:page" j:templateNode="/templateSets/blog/templates/base/blog-home"/>
             <contents jcr:primaryType="jnt:contentFolder"/>
@@ -29,10 +29,9 @@
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list"
                                                   jcr:primaryType="jnt:translation"/>
                                 <topBlogContent
-                                        jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:columns jmix:accessControlled"
+                                        jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:columns"
                                         j:subNodesView="blogList" jcr:primaryType="jnt:topBlogContent"
                                         j:view="unordered" j:className="simple">
-                                    <j:acl jcr:primaryType="jnt:acl"/>
                                 </topBlogContent>
                                 <topBlogComment jcr:mixinTypes="jmix:renderable jmix:listOrdered"
                                                 j:subNodesView="blogList" jcr:primaryType="jnt:topBlogComment"
@@ -121,41 +120,6 @@
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <files jcr:primaryType="jnt:folder"/>
             </templates>
-            <j:acl jcr:primaryType="jnt:acl">
-                <GRANT_g_users j:privileges="jcr:read_live" j:principal="g:users" j:protected="false" j:aceType="GRANT"
-                               jcr:primaryType="jnt:ace"/>
-                <DENY_g_users j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:write"
-                              j:principal="g:users" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:editor"
-                                j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-                <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:editor"
-                               j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_editor-in-chief
-                        j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write"
-                        j:principal="r:editor-in-chief" j:protected="false" j:aceType="GRANT"
-                        jcr:primaryType="jnt:ace"/>
-                <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:read_live jcr:write"
-                                   j:principal="r:publisher" j:protected="false" j:aceType="GRANT"
-                                   jcr:primaryType="jnt:ace"/>
-                <DENY_r_publisher j:privileges="jcr:modifyAccessControl" j:principal="r:publisher" j:protected="false"
-                                  j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_seo-manager j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:seo-manager"
-                                     j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-                <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:seo-manager"
-                                    j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_site-administrator
-                        j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write"
-                        j:principal="r:site-administrator" j:protected="false" j:aceType="GRANT"
-                        jcr:primaryType="jnt:ace"/>
-                <GRANT_r_translator j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:translator"
-                                    j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-                <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:translator"
-                                   j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-                <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:web-designer"
-                                      j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-                <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:web-designer"
-                                     j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-            </j:acl>
         </blog>
     </templateSets>
 </content>

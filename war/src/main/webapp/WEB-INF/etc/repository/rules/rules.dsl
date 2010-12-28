@@ -35,13 +35,6 @@
 [condition][]- the value is {value}=stringValue == {value}
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Remove the type {type}=node.removeType ( "{type}", drools );
-[consequence][]Assign permissions "{perms}" on the {node} to a group matching that property=service.setPermissions({node},"g:" + propertyValue + ":{perms}", drools);
-[consequence][]Assign permissions "{perms}" on the {node} to the current user=service.setPermissions({node},"u:" + user.getName() + ":{perms}", drools);
-[consequence][]Assign permissions "{perms}" on the {node} to the user {user}=service.setPermissions({node},"u:" + {user} + ":{perms}", drools);
-[consequence][]Assign permissions "{perms}" on the {node} to the group {group}=service.setPermissions({node},"g:" + {group} + ":{perms}", drools);
-[consequence][]Assign permissions "{perms}" on the {node} to this group=service.setPermissions({node},"g:" + groupName + ":{perms}", drools);
-[consequence][]Assign permissions "{perms}" on the {node} to the role {role}=service.setPermissions({node},"r:" + {role}+ ":{perms}", drools);
-[consequence][]Assign permissions on the {node} from the property value=service.setPermissions({node},propertyValue, drools);
 [consequence][]Break all ACL inheritance on the {node}=service.setAclInheritanceBreak({node},true);
 [consequence][]Create a new folder {nodename} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", "jnt:folder", drools);insert ({nodename});
 [consequence][]Create a new node {nodename} of type {type} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", "{type}", drools);insert ({nodename});

@@ -105,7 +105,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         defaultDependencies.put(Constants.JCR_ADD_CHILD_NODES_LIVE, Arrays.asList(Constants.JCR_READ_RIGHTS_LIVE));
     }
 
-    private static final String J_PRIVILEGES = "j:privileges";
+    private static final String J_ROLES = "j:roles";
 
     private transient Map<String, String> propertiesAsString;
     private static final String REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME = "j:referenceNodeIdentifiers";
@@ -230,7 +230,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         if (ace.isNodeType("jnt:ace")) {
                             String principal = ace.getProperty("j:principal").getString();
                             String type = ace.getProperty("j:aceType").getString();
-                            Value[] privileges = ace.getProperty("j:privileges").getValues();
+                            Value[] privileges = ace.getProperty(J_ROLES).getValues();
 
                             if (!current.containsKey(principal)) {
                                 List<String[]> p = localResults.get(principal);
@@ -260,8 +260,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public Map<String, List<String>> getAvailablePermissions() {
-        return Collections.singletonMap("default", Arrays.asList(defaultPerms));
+    public Map<String, List<JCRNodeWrapper>> getAvailableRoles() throws RepositoryException {
+        JCRNodeWrapper roles = session.getNode("/roles");
+        List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
+        NodeIterator ni = roles.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper role = (JCRNodeWrapper) ni.nextNode();
+            res.add(role);
+        }
+        return Collections.singletonMap("default", res);
     }
 
     /**
@@ -301,7 +308,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             AccessControlManager accessControlManager = providerSession.getAccessControlManager();
             if (accessControlManager != null) {
 //                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
-                return accessControlManager.hasPrivileges(localPath, new Privilege[] { accessControlManager.privilegeFromName(perm)} );
+// todo register privileges with expanded names
+                String name = perm.replace("{http://www.jcp.org/jcr/1.0}", "jcr:") + "_" + getSession().getWorkspace().getName();
+                return accessControlManager.hasPrivileges(localPath, new Privilege[] { accessControlManager.privilegeFromName(name)} );
             }
             return true;
         } catch (AccessControlException e) {
@@ -2427,8 +2436,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         List<String> grClone = new ArrayList<String>(gr);
         List<String> denClone = new ArrayList<String>(den);
-        if (aceg.hasProperty(J_PRIVILEGES)) {
-            final Value[] values = aceg.getProperty(J_PRIVILEGES).getValues();
+        if (aceg.hasProperty(J_ROLES)) {
+            final Value[] values = aceg.getProperty(J_ROLES).getValues();
             for (Value value : values) {
                 final String s = value.getString();
                 if (!gr.contains(s) && !den.contains(s)) {
@@ -2436,8 +2445,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
             }
         }
-        if (aced.hasProperty(J_PRIVILEGES)) {
-            final Value[] values = aced.getProperty(J_PRIVILEGES).getValues();
+        if (aced.hasProperty(J_ROLES)) {
+            final Value[] values = aced.getProperty(J_ROLES).getValues();
             for (Value value : values) {
                 final String s = value.getString();
                 if (!gr.contains(s) && !den.contains(s)) {
@@ -2450,14 +2459,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (grs.length == 0) {
             aceg.remove();
         } else {
-            aceg.setProperty(J_PRIVILEGES, grs);
+            aceg.setProperty(J_ROLES, grs);
         }
         String[] dens = new String[denClone.size()];
         denClone.toArray(dens);
         if (dens.length == 0) {
             aced.remove();
         } else {
-            aced.setProperty(J_PRIVILEGES, dens);
+            aced.setProperty(J_ROLES, dens);
         }
     }
 

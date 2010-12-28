@@ -58,7 +58,7 @@ Customizing built-in roles and permissions
                     xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
                     xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
                     
-    <permissions jcr:primaryType="jnt:permissions" jcr:mixinTypes="jmix:accessControlled">
+    <permissions jcr:primaryType="jnt:permissions" >
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
             <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace"
                                               j:principal="g:administrators"
@@ -81,7 +81,7 @@ Customizing built-in roles and permissions
         </global>
     </permissions>
 
-    <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">
+    <roles jcr:primaryType="jnt:roles" >
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
             <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace"
                                               j:principal="g:administrators"

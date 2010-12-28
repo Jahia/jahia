@@ -2,20 +2,7 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <sites jcr:primaryType="jnt:virtualsitesFolder">
     <systemsite jcr:primaryType="jnt:virtualsite">
-      <categories jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-12-17T15:27:34.667+01:00" jcr:primaryType="jnt:category" jcr:lastModifiedBy="root" j:lastPublished="2010-12-15T17:00:17.615+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:28:54.426+01:00">
-        <j:acl jcr:primaryType="jnt:acl">
-          <GRANT_jcr_write_g_administrators j:privileges="jcr:write" j:principal="g:administrators" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <GRANT_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:administrators" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <GRANT_jcr_write_live_g_administrators j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="g:administrators" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <GRANT_u_author j:privileges="jcr:read jcr:read_live" j:principal="u:author" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <DENY_u_author j:privileges="jcr:addChildNodes_live jcr:write_live jcr:modifyAccessControl jcr:write" j:principal="u:author" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-          <GRANT_u_publisher j:privileges="jcr:read jcr:read_live" j:principal="u:publisher" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <DENY_u_publisher j:privileges="jcr:addChildNodes_live jcr:write_live jcr:modifyAccessControl jcr:write" j:principal="u:publisher" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-          <GRANT_u_siteadmin j:privileges="jcr:read jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="u:siteadmin" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <DENY_u_siteadmin j:privileges="jcr:addChildNodes_live jcr:write_live" j:principal="u:siteadmin" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-          <GRANT_u_visitor j:privileges="jcr:read_live" j:principal="u:visitor" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <DENY_u_visitor j:privileges="jcr:read jcr:addChildNodes_live jcr:write_live jcr:modifyAccessControl jcr:write" j:principal="u:visitor" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        </j:acl>
+      <categories  j:published="true" jcr:created="2010-12-17T15:27:34.667+01:00" jcr:primaryType="jnt:category" jcr:lastModifiedBy="root" j:lastPublished="2010-12-15T17:00:17.615+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:28:54.426+01:00">
         <cat1 j:published="true" jcr:created="2010-12-17T15:28:52.722+01:00" jcr:primaryType="jnt:category" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:28:56.293+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:28:54.426+01:00">
           <j:translation_de jcr:title="Kategorie 1" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:28:56.293+01:00" jcr:language="de" j:lastPublishedBy=" system root" jcr:lastModified="2010-12-17T15:28:54.426+01:00" />
           <j:translation_fr jcr:title="Category 1" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:28:56.293+01:00" j:lastPublishedBy=" system root" jcr:language="fr" jcr:lastModified="2010-12-17T15:28:54.426+01:00" />

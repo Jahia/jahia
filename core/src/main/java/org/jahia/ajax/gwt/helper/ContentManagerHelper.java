@@ -660,19 +660,28 @@ public class ContentManagerHelper {
             aces.add(ace);
         }
         acl.setAce(aces);
-        acl.setAvailablePermissions(new HashMap<String, List<String>>(node.getAvailablePermissions()));
-        Map<String, String> labels = new HashMap<String, String>();
-        for (List<String> list : acl.getAvailablePermissions().values()) {
-            for (String s : list) {
-                String k = s;
-                if (k.contains(":")) {
-                    k = k.substring(k.indexOf(':') + 1);
+        try {
+            Map<String, List<JCRNodeWrapper>> roles = node.getAvailableRoles();
+
+            Map<String, List<String>> availablePermissions = new HashMap<String, List<String>>();
+            Map<String, String> labels = new HashMap<String, String>();
+
+            for (Map.Entry<String, List<JCRNodeWrapper>> entry : roles.entrySet()) {
+                availablePermissions.put(entry.getKey(), new ArrayList<String>());
+                for (JCRNodeWrapper nodeWrapper : entry.getValue()) {
+                    availablePermissions.get(entry.getKey()).add(nodeWrapper.getName());
+                    if (nodeWrapper.hasProperty("jcr:title")) {
+                        labels.put(nodeWrapper.getName(), nodeWrapper.getProperty("jcr:title").getString());
+                    } else {
+                        labels.put(nodeWrapper.getName(), nodeWrapper.getName());
+                    }
                 }
-                labels.put(s, JahiaResourceBundle.getJahiaInternalResource(
-                        "org.jahia.engines.rights.ManageRights." + k + ".label", uiLocale, k));
             }
+            acl.setAvailablePermissions(availablePermissions);
+            acl.setPermissionLabels(labels);
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        acl.setPermissionLabels(labels);
         acl.setPermissionsDependencies(new HashMap<String, List<String>>(node.getPermissionsDependencies()));
         return acl;
     }

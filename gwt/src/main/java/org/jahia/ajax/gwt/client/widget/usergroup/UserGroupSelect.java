@@ -83,7 +83,7 @@ public class UserGroupSelect extends Window {
     private String selectedSite;
     private Grid<GWTJahiaUser> userGrid;
     private Grid<GWTJahiaGroup> groupGrid;
-    private Grid<GWTJahiaRole> roleGrid;
+//    private Grid<GWTJahiaRole> roleGrid;
     private String aclContext;
     private boolean singleSelectionMode;
 
@@ -124,9 +124,6 @@ public class UserGroupSelect extends Window {
             case VIEW_GROUPS:
                 add(getGroupsPanel(target, service));
                 break;
-            case VIEW_ROLES:
-                add(getRolesPanel(target, async));
-                break;
         }
         Button add = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -135,9 +132,6 @@ public class UserGroupSelect extends Window {
                 }
                 if (groupGrid != null) {
                     target.addGroups(groupGrid.getSelectionModel().getSelectedItems());
-                }
-                if (roleGrid != null) {
-                    target.addRoles(roleGrid.getSelectionModel().getSelectedItems());
                 }
                 hide();
             }
@@ -340,78 +334,4 @@ public class UserGroupSelect extends Window {
         return null;
     }
 
-    private ContentPanel getRolesPanel(final UserGroupAdder target, final JahiaContentManagementServiceAsync service) {
-        // data proxy
-        RpcProxy<PagingLoadResult<GWTJahiaRole>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaRole>>() {
-            @Override
-            protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaRole>> callback) {
-                String context = aclContext;
-                if ("siteSelector".equals(aclContext)) {
-                    context = "site:"+selectedSite;
-                }
-
-                if (roleSearchField.getText().length()==0)  {
-                    service.searchRolesInContext("*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
-                } else {
-                    service.searchRolesInContext(".*"+roleSearchField.getText()+".*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(), context, callback);
-                }
-            }
-        };
-        final BasePagingLoader loader = new BasePagingLoader<PagingLoadResult<GWTJahiaRole>>(proxy);
-
-        roleSearchField = new SearchField(Messages.get("label.search", "Search: "), false) {
-            public void onFieldValidation(String value) {
-                loader.load();
-            }
-
-            public void onSaveButtonClicked(String value) {
-
-            }
-        };
-        roleSearchField.setWidth(250) ;
-
-        loader.setLimit(15);
-        loader.load();
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.add(roleSearchField);
-        if("siteSelector".equals(aclContext) ){
-            ComboBox<GWTJahiaSite> siteMenu = createMenu(loader);
-            panel.add(siteMenu);
-        }
-        ListStore<GWTJahiaRole> store = new ListStore<GWTJahiaRole>(loader);
-
-        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("name", "Role name", 240));
-        columns.add(new ColumnConfig("site", "Site name", 120));
-
-        ColumnModel cm = new ColumnModel(columns);
-
-        final PagingToolBar toolBar = new PagingToolBar(15);
-        toolBar.bind(loader);
-
-        roleGrid = new Grid<GWTJahiaRole>(store, cm);
-        if (singleSelectionMode) {
-            roleGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        }
-        roleGrid.setLoadMask(true);
-        roleGrid.setBorders(true);
-        roleGrid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
-            public void handleEvent(GridEvent event) {
-                target.addRoles(roleGrid.getSelectionModel().getSelectedItems());
-                if (singleSelectionMode) {
-                    hide();
-                }
-            }
-        });
-
-        ContentPanel groupsPanel = new ContentPanel();
-        groupsPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
-        groupsPanel.setHeading("Select a group");
-        groupsPanel.setLayout(new FitLayout());
-        groupsPanel.add(roleGrid);
-        groupsPanel.setSize(480, 350);
-        groupsPanel.setBottomComponent(toolBar);
-        groupsPanel.setTopComponent(panel);
-        return groupsPanel;
-    }
 }

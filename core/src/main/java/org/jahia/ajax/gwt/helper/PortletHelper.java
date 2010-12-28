@@ -146,7 +146,8 @@ public class PortletHelper {
             portletType = "jnt:portlet";
         }
         GWTJahiaNodeACL gwtJahiaNodeACL = new GWTJahiaNodeACL(new ArrayList<GWTJahiaNodeACE>());
-        gwtJahiaNodeACL.setAvailablePermissions(JCRPortletNode.getAvailablePermissions(appBean.getContext(), entryPointDefinition.getName()));
+// todo : restore portlet permissions
+//        gwtJahiaNodeACL.setAvailablePermissions(JCRPortletNode.getAvailablePermissions(appBean.getContext(), entryPointDefinition.getName()));
         return new GWTJahiaPortletDefinition(appBean.getID(), appBean.getContext(), entryPointDefinition.getName(), entryPointDefinition.getDisplayName(locale), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(locale), expTime, cacheScope);
     }
 
@@ -200,8 +201,9 @@ public class PortletHelper {
                     }
                 }
             }
-            node.changePermissions("g:users", "rw");
-            node.changePermissions("g:guest", "r-");
+            // todo default permissions .. ?
+//            node.changePermissions("g:users", "rw");
+//            node.changePermissions("g:guest", "r-");
             try {
                 parentNode.save();
             } catch (RepositoryException e) {

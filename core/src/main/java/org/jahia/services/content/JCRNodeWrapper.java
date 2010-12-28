@@ -268,7 +268,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return list of permissions applicable to this node
      */
-    Map<String, List<String>> getAvailablePermissions();
+    Map<String, List<JCRNodeWrapper>> getAvailableRoles() throws RepositoryException;
 
     /**
      * Return the list of permission applicable to this node. Permissions are organized by group, result is a map

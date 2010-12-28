@@ -149,13 +149,6 @@ public class UserGroupSelectButton extends InlineHTML {
                         }
                     }
 
-                    public void addRoles(List<GWTJahiaRole> roles) {
-                        for (GWTJahiaRole role : roles) {
-                            add(fieldId, callback, "r", role.getName()+":"+role.getSite(),
-                                    role.getName());
-                        }
-                    }
-
                     public void addUsers(List<GWTJahiaUser> users) {
                         for (final GWTJahiaUser user : users) {
                             add(fieldId, callback, "u", user.getUserKey(), user

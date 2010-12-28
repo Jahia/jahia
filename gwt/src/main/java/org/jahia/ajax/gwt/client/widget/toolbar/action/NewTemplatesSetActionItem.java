@@ -13,11 +13,17 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
  * Action item to create a new templates set
  */
 public class NewTemplatesSetActionItem extends BaseActionItem {
+    private String siteType;
+
+    public void setSiteType(String siteType) {
+        this.siteType = siteType;
+    }
+
     @Override public void onComponentSelection() {
         String name = Window.prompt(Messages.get("newPackageName.label"), "New package name");
         linker.loading("Creating template set...");
         if (name != null) {
-            JahiaContentManagementService.App.getInstance().createTemplateSet(name, null, new BaseAsyncCallback<GWTJahiaNode>() {
+            JahiaContentManagementService.App.getInstance().createTemplateSet(name, null, siteType, new BaseAsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {
                     linker.loaded();
                     Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));

@@ -630,7 +630,6 @@
           <j:translation_en jcr:title="Project" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:10.256+01:00" j:lastPublishedBy=" system root" jcr:language="en" jcr:lastModified="2010-12-17T15:29:59.371+01:00" />
         </project>
       </categories>
-      <newsletters jcr:created="2010-12-17T15:29:06.840+01:00" jcr:primaryType="jnt:newsletters" jcr:lastModifiedBy="" j:lastPublished="2010-12-13T12:03:38.317+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2010-12-13T12:03:36.304+01:00" />
     </ACME>
   </sites>
 </content>

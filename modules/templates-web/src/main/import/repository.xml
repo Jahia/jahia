@@ -111,8 +111,6 @@
                         </row-col1>
                     </news-template>
                 </base>
-                <newsletter-issue jcr:mixinTypes="jmix:renderable" j:requiredPermissions="" jcr:primaryType="jnt:contentTemplate" j:view="newsletter" j:hiddenTemplate="false" j:applyOn="jnt:newsletterIssue" j:defaultTemplate="false">
-                </newsletter-issue>
                 <folderTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:folder jnt:contentFolder" j:hiddenTemplate="false" j:defaultTemplate="true">
                   <pagecontent jcr:primaryType="jnt:contentList">
                     <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-web/templates/base/folderTemplate/pagecontent/mainResourceDisplay">

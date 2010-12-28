@@ -922,7 +922,7 @@ public class ContentManagerHelper {
             templatesSynchro(source, destinationNode, session, references, true, false, moduleName);
             return;
         }
-        if (source.isNodeType("jnt:folder") || source.isNodeType("jnt:contentList")) {
+        if (!source.isNodeType("jnt:virtualsite")) {
             templatesSynchro(source, destinationNode, session, references, false, false, moduleName);
             return;
         }
@@ -932,11 +932,15 @@ public class ContentManagerHelper {
         NodeIterator ni = source.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-
+            JCRNodeWrapper node;
             if (destinationNode.hasNode(child.getName())) {
-                JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                synchro(child, node, session, moduleName, references);
+                node = destinationNode.getNode(child.getName());
+            } else {
+                session.checkout(destinationNode);
+                node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                session.save();
             }
+            synchro(child, node, session, moduleName, references);
         }
 
     }
@@ -1079,16 +1083,16 @@ public class ContentManagerHelper {
     }
 
 
-    public GWTJahiaNode createTemplateSet(String key, String baseSet, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
         if (baseSet == null) {
             String shortName = JCRContentUtils.generateNodeName(key, 50);
             String skeletons = "WEB-INF/etc/repository/templatesSet.xml,modules/**/templatesSet-skeleton.xml,modules/**/templatesSet-skeleton-*.xml";
             try {
                 JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(shortName, "jnt:virtualsite");
+                session.save();
+                templateSet.setProperty("j:siteType",siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
-
                 JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
-
                 templateSet.getNode("templates/base").setProperty("j:view", shortName);
                 session.save();
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName);

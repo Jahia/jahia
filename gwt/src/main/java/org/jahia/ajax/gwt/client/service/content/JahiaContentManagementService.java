@@ -242,7 +242,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException;
 
-    GWTJahiaNode createTemplateSet(String key, String baseSet) throws GWTJahiaServiceException;
+    GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType) throws GWTJahiaServiceException;
 
     GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
 

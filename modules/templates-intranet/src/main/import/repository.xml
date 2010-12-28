@@ -174,14 +174,6 @@
                 </row1-col1>
                 <row1-col2 jcr:primaryType="jnt:contentList" />
             </search-results>
-            <newsletter-confirmation jcr:primaryType="jnt:page" j:templateNode="/templateSets/templates-intranet/templates/base/simple" >
-              <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="Newsletter confirmation" jcr:primaryType="jnt:translation" />
-              <listA jcr:primaryType="jnt:contentList" >
-                <bigText jcr:primaryType="jnt:bigText" >
-                  <j:translation_en jcr:language="en" text="&lt;p&gt;  Your request has been taken into account.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
-                </bigText>
-              </listA>
-            </newsletter-confirmation>
         </templates-intranet>
     </templateSets>
 </content>

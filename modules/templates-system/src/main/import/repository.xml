@@ -4,11 +4,6 @@
     <templates-system jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-system" priority="0.5" j:siteType="templatesSet">
       <templates jcr:primaryType="jnt:templatesFolder">
         <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="system">
-          <newsletters jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletters jnt:newsletter" j:defaultTemplate="true">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-            </pagecontent>
-          </newsletters>
           <home jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:title="Links" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />

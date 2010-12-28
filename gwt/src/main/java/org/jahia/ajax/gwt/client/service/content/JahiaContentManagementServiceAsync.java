@@ -246,7 +246,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void deployTemplates(String templatesPath, String sitePath, AsyncCallback asyncCallback);
 
-    void createTemplateSet(String key, String baseSet, AsyncCallback<GWTJahiaNode> asyncCallback);
+    void createTemplateSet(String key, String baseSet, String siteType, AsyncCallback<GWTJahiaNode> asyncCallback);
 
     void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
 

@@ -364,6 +364,9 @@ public class MainModule extends Module {
         }
         if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
             JahiaGWTParameters.setSite(node, editLinker);
+        } else {
+            JahiaGWTParameters.setSiteType(node.getSiteType());
+            DeployTemplatesActionItem.refreshAllMenus(editLinker);
         }
     }
 

@@ -1,7 +1,7 @@
 Information about module directory structure
 
 
-  * Maven2 directories :
+  * Maven2 directories
 
   Jahia Modules use Maven 2 directory structure (see {{{http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html} Maven Standard Directory Layout}})
 
@@ -14,37 +14,37 @@ Information about module directory structure
    | + site
 +-------------
 
-  * Jahia directory module :
+  * Jahia module directory
 
-    Jahia directory is structured as this :
+    Jahia directory is structured as this:
 
 +-------------
 
     webapps
-     | + javascript : contains all javascripts for the module
-     | + css : contains all css for the module
-     | + resources : contains all resources for the module
-     | + icons : contains all icons for the module content definitions
+     | + javascript - contains all javascripts for the module
+     | + css - contains all css for the module
+     | + resources - contains all resources for the module
+     | + icons - contains all icons for the module content definitions
      | + META-INF
-     |     | + spring : spring xml files
-     | - definitions.cnd : definitions for the module
-     | - rules.drl : module rules
-     | - import.xml : content imported when the module is loaded the first time
+     |     | + spring - Spring XML files
+     | - definitions.cnd - definitions for the module
+     | - rules.drl - module rules
+     | - import.xml - content imported when the module is loaded the first time
 
 +-------------
 
   * Notes
 
-     ** icons naming :
+     ** icons naming:
 
        use the name of the definition replacing ":" by "_". Use png format
 
-       example : jnt:news needs jnt_news.png icon
+       example: jnt:news needs jnt_news.png icon
 
-     ** resources name :
+     ** resources name:
 
        from the pom.xml file, get the module name (in <name/> tag) and remove spaces
 
-       example : for role module, its name is <name>Jahia Roles</name>, its resource files will be named JahiaRoles.properties
+       example: for role module, its name is <Jahia Roles>, its resource files will be named <<<JahiaRoles.properties>>>
 
 

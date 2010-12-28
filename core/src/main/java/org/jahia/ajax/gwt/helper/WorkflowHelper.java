@@ -33,6 +33,8 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRSessionFactory;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -353,6 +355,13 @@ public class WorkflowHelper {
             GWTJahiaWorkflowHistoryProcess gwtWfHistory = gwtWorkflowsMap.get(task.getProcessId());
             if (gwtWfHistory == null) {
                 gwtWfHistory = getGWTJahiaHistoryProcess(service.getHistoryWorkflow(task.getProcessId(), task.getProvider(), locale));
+                try {
+                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByIdentifier(
+                            gwtWfHistory.getNodeId());
+                    gwtWfHistory.set("nodeWrapper", ((NavigationHelper)SpringContextSingleton.getInstance().getContext().getBeansOfType(NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
                 gwtWfHistory.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
                 gwtWorkflowsMap.put(task.getProcessId(), gwtWfHistory);
                 gwtWorkflows.add(gwtWfHistory);

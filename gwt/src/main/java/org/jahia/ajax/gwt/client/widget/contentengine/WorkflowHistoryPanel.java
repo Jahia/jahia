@@ -32,15 +32,26 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
@@ -49,29 +60,17 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
-
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * GWT panel that displays a list of workflow process and task history records.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class WorkflowHistoryPanel extends LayoutContainer {
@@ -86,7 +85,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param nodeId
      * @param locale
      */
@@ -146,12 +145,14 @@ public class WorkflowHistoryPanel extends LayoutContainer {
 
         ColumnConfig column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 100);
         column.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
-            @Override public Widget getWidget(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
-                                              int rowIndex, int colIndex,
-                                              ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
-                                              Grid<GWTJahiaWorkflowHistoryItem> grid) {
+            @Override
+            public Widget getWidget(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
+                                    int rowIndex, int colIndex,
+                                    ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
+                                    Grid<GWTJahiaWorkflowHistoryItem> grid) {
                 if (dashboard && historyItem instanceof GWTJahiaWorkflowHistoryTask) {
-                    final GWTJahiaWorkflowHistoryProcess parent = (GWTJahiaWorkflowHistoryProcess) ((TreeGrid) grid).getTreeStore().getParent(historyItem);
+                    final GWTJahiaWorkflowHistoryProcess parent = (GWTJahiaWorkflowHistoryProcess) ((TreeGrid) grid).getTreeStore().getParent(
+                            historyItem);
                     for (final GWTJahiaWorkflowTask task : parent.getAvailableTasks()) {
                         if (task.getId().equals(historyItem.getId())) {
                             Button b = new Button(historyItem.<String>get("displayName"));
@@ -159,8 +160,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                 public void componentSelected(ButtonEvent ce) {
                                     EngineContainer container = new EnginePanel();
 
-                                    new WorkflowActionDialog(parent.getRunningWorkflow(), task,
-                                            linker, parent.getRunningWorkflow().getCustomWorkflowInfo(), container);
+                                    new WorkflowActionDialog(parent.getRunningWorkflow(), task, linker,
+                                            parent.getRunningWorkflow().getCustomWorkflowInfo(), container);
                                     container.showEngine();
 
                                     engine.hide();
@@ -175,21 +176,81 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         });
         config.add(column);
 
-        column = new ColumnConfig("user", Messages.get("label.user", "User"), 100);
+        column = new ColumnConfig("user", Messages.get("label.user", "User"), 70);
         config.add(column);
 
-        column = new ColumnConfig("startDate", Messages.get("org.jahia.engines.processDisplay.tab.startdate", "Start date"), 100);
-        column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
-        config.add(column);
-
-        column = new ColumnConfig("endDate", Messages.get("org.jahia.engines.processDisplay.tab.enddate", "End date"), 100);
-        column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
-        config.add(column);
-
-        column = new ColumnConfig("duration", Messages.get("org.jahia.engines.processDisplay.column.duration", "Duration"), 100);
+        column = new ColumnConfig("nodeWrapper", Messages.get("label.workflow.start.node", "Workflow Starting Node"),
+                150);
         column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
-            public Object render(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config, int rowIndex,
-                    int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> store, Grid<GWTJahiaWorkflowHistoryItem> grid) {
+
+            /**
+             * Returns the HTML to be used in a grid cell.
+             *
+             * @param model    the model
+             * @param property the model property
+             * @param config   the column config
+             * @param rowIndex the row index
+             * @param colIndex the cell index
+             * @param store    the data store
+             * @param grid     the grid
+             * @return the cell HTML or Component instance
+             */
+            public Object render(GWTJahiaWorkflowHistoryItem model, String property, ColumnData config,
+                                 int rowIndex, int colIndex,
+                                 ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
+                                 Grid<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemGrid) {
+                GWTJahiaNode wrapper = (GWTJahiaNode) model.getProperties().get("nodeWrapper");
+
+                if (wrapper != null) {
+                    return new Label(wrapper.getDisplayName() + " (" + wrapper.getPath() + ")");
+                }
+                List<GWTJahiaWorkflowHistoryItem> models = gwtJahiaWorkflowHistoryItemListStore.getModels();
+                for (final GWTJahiaWorkflowHistoryItem historyItem : models) {
+                    if (historyItem.getProcessId().equals(model.getProcessId()) &&
+                        historyItem instanceof GWTJahiaWorkflowHistoryProcess) {
+                        Button button = new Button(Messages.get("label.preview"));
+                        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            @Override
+                            public void componentSelected(ButtonEvent ce) {
+                                GWTJahiaNode wrapper = (GWTJahiaNode) historyItem.getProperties().get("nodeWrapper");
+                                String path = wrapper.getPath();
+                                String locale = JahiaGWTParameters.getLanguage();
+                                JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
+                                        "default", locale, new BaseAsyncCallback<String>() {
+                                            public void onSuccess(String url) {
+                                                Window window = new Window();
+                                                window.setSize(800,600);
+                                                window.setUrl(url);
+                                                window.show();
+                                            }
+
+                                        });
+                            }
+                        });
+                        return button;
+                    }
+                }
+                return new Label("");
+            }
+        });
+        config.add(column);
+
+        column = new ColumnConfig("startDate", Messages.get("org.jahia.engines.processDisplay.tab.startdate",
+                "Start date"), 90);
+        column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
+        config.add(column);
+
+        column = new ColumnConfig("endDate", Messages.get("org.jahia.engines.processDisplay.tab.enddate", "End date"),
+                90);
+        column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
+        config.add(column);
+
+        column = new ColumnConfig("duration", Messages.get("org.jahia.engines.processDisplay.column.duration",
+                "Duration"), 60);
+        column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
+            public Object render(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
+                                 int rowIndex, int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> store,
+                                 Grid<GWTJahiaWorkflowHistoryItem> grid) {
                 Long duration = historyItem.getDuration();
                 String display = "-";
                 if (duration != null) {
@@ -199,12 +260,12 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                     } else if (time < 1000 * 60L) {
                         display = ((long) (time / 1000)) + " " + Messages.get("label.seconds", "sec");
                     } else if (time < 1000 * 60 * 60L) {
-                        display = ((long) (time / (1000 * 60L))) + " " + Messages.get("label.minutes", "min") + " "
-                                + ((long) ((time % (1000 * 60L)) / 1000)) + " " + Messages.get("label.seconds", "sec");
+                        display = ((long) (time / (1000 * 60L))) + " " + Messages.get("label.minutes", "min") + " " +
+                                  ((long) ((time % (1000 * 60L)) / 1000)) + " " + Messages.get("label.seconds", "sec");
                     } else {
-                        display = ((long) (time / (1000 * 60 * 60L))) + " " + Messages.get("label_hours", "h") + " "
-                                + ((long) ((time % (1000 * 60 * 60L)) / (1000 * 60L))) + " "
-                                + Messages.get("label.minutes", "min");
+                        display = ((long) (time / (1000 * 60 * 60L))) + " " + Messages.get("label_hours", "h") + " " +
+                                  ((long) ((time % (1000 * 60 * 60L)) / (1000 * 60L))) + " " + Messages.get(
+                                "label.minutes", "min");
                     }
                 }
                 return new Label(display);

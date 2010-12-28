@@ -249,11 +249,6 @@
                                                 </span>
                                             </td>
                                         </tr>
-                                        <tr>
-	                                        <td colspan="2">
-		                                        <div id="gwtroleprincipal" siteKey="<%=jParams.getSiteKey()%>" group="true" principalKey="${principalKey}" class="jahia-admin-gxt"></div>
-	                                        </td>
-                                        </tr>
                                     </table>
                                     <br/>
                                     <br/>

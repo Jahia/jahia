@@ -299,12 +299,6 @@
 </tr>
 <% } %>
 <%-- You can add your custom user properties here --%>
-<tr>
-	<td colspan="2">
-		<div id="gwtroleprincipal" siteKey="<%=jParams.getSiteKey()%>"  principalKey="<%=jUser.getUserKey()%>" class="jahia-admin-gxt"></div>
-	</td>
-</tr>
-
 
 <tr>
     <td colspan="2" align="center">&nbsp;

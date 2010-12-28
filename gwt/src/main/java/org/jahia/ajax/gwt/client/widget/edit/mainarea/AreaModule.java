@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.widget.Editor;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -49,8 +50,11 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import com.google.gwt.user.client.Element;
+
+import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -95,15 +99,46 @@ public class AreaModule extends SimpleModule {
     @Override public void onParsed() {
         super.onParsed();
         String headerText = head.getText();
+
         if (missingList) {
-            addStyleName("area-notcreated");
+//            addStyleName("area-notcreated");
+//            addStyleName(moduleType);
             headerText += " (" + Messages.get("label.notCreated", "not created")+ ")";
+            if (mockupStyle != null) {
+                addStyleName(mockupStyle);
+            }
+            removeAll();
+
+            LayoutContainer dash = new LayoutContainer();
+            dash.addStyleName("dashedArea");
+
+            ctn = new LayoutContainer();
+//            ctn.addStyleName(moduleType+"Template");
+            ctn.addText(headerText);
+
+            Button button = new Button("Enable area");
+            button.setStyleName("button-placeholder");
+            button.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    createNode(new BaseAsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode result) {
+                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                        }
+                    });
+                }
+            });
+            ctn.add(button);
+
+//            dash.add(ctn);
+//            dash.add(html);
+            removeAll();
+            add(ctn);
+//            add(dash);
+            setBorders(false);
         } else if (!hasChildren) {
             addStyleName("area-empty");
             headerText += " (" + Messages.get("label.empty", "empty")+ ")";
-        }
-        head.setText(headerText);
-        if (!hasChildren) {
+
             addStyleName(moduleType);
             if (mockupStyle != null) {
                 addStyleName(mockupStyle);
@@ -115,7 +150,21 @@ public class AreaModule extends SimpleModule {
 
             ctn = new LayoutContainer();
             ctn.addStyleName(moduleType+"Template");
-            ctn.addText(head.getText());
+            ctn.addText(headerText);
+
+            Button button = new Button("Disable area");
+            button.setStyleName("button-placeholder");
+            button.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(path), new BaseAsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode result) {
+                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                        }
+                    });
+                }
+            });
+            ctn.add(button);
+
             dash.add(ctn);
             dash.add(html);
 
@@ -126,7 +175,7 @@ public class AreaModule extends SimpleModule {
     }
 
     @Override public void onNodeTypesLoaded() {
-        if (!hasChildren) {
+        if (!hasChildren && !missingList) {
             DropTarget target = new ModuleDropTarget(this, node == null ? EditModeDNDListener.EMPTYAREA_TYPE : EditModeDNDListener.PLACEHOLDER_TYPE);
             target.setOperation(DND.Operation.COPY);
             target.setFeedback(DND.Feedback.INSERT);

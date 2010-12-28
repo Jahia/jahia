@@ -22,7 +22,11 @@
 <body id="body">
 
 <div id="bodywrapper"><!--start bodywrapper-->
-    <template:area path="pagecontent"/>
+    <div class="container container_16">
+        <div class="grid_16">
+            <template:area path="pagecontent"/>
+        </div>
+    </div>
 </div>
 <!--stop bodywrapper-->
 

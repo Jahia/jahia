@@ -153,8 +153,6 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
         
         if ("module".equals(urlType)) {
             return JahiaAdministration.composeActionURL(paramBean.getRequest(),paramBean.getResponse(),urlAction,urlParams);
-        } else if ("struts".equals(urlType)) {
-            return paramBean.composeStrutsUrl(urlAction,urlParams);
         } else if ("link".equals(urlType)) {
             return paramBean.getResponse().encodeURL(
                     paramBean.getContextPath() + urlAction);

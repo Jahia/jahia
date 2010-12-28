@@ -24,5 +24,16 @@
         <property name="urlAction" value="http://www.jahia.org/cms/home/jahiapedia" />
         <property name="rank" value="99"/>
     </bean>
+    <bean id="infoAdministrationModule" class="org.jahia.admin.JspForwardAdministrationModule" parent="abstractAdministrationModule">
+        <property name="urlKey" value="info" />
+        <property name="permissionName" value="global/about" />
+        <property name="name" value="info" />
+        <property name="icon" value="about" />
+        <property name="label" value="label.aboutJahia" />
+        <property name="urlAction" value="info" />
+        <property name="urlParams" value="" />
+        <property name="jspPath" value="/admin/show_info.jsp" />
+        <property name="rank" value="100"/>
+    </bean>
 
 </beans>

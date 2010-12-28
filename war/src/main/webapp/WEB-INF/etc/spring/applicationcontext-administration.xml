@@ -95,17 +95,6 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="infoAdministrationModule" class="org.jahia.admin.info.LicenseInfo" parent="abstractAdministrationModule">
-        <property name="urlKey" value="info" />
-        <property name="permissionName" value="global/about" />
-        <property name="name" value="info" />
-        <property name="icon" value="about" />
-        <property name="label" value="label.aboutJahia" />
-        <property name="urlAction" value="info" />
-        <property name="urlParams" value="" />
-        <property name="rank" value="100"/>
-    </bean>
-
     <!-- Site settings administration modules -->
 
     <bean id="groupsAdministrationModule" class="org.jahia.admin.users.ManageGroups" parent="abstractAdministrationModule">

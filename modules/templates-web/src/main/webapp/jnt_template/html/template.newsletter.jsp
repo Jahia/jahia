@@ -19,9 +19,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
-<body id="body">
+<body id="body" style="background-color:#eaeaea;">
 <div id="bodywrapper">
-    <table style="font-size:80%;background-color:#f0eee4;width:100%;font-family: Arial, Helvetica, sans-serif;line-height:160%;"
+    <table style="font-size:80%;background-color:#eaeaea;width:100%;font-family: Arial, Helvetica, sans-serif;line-height:160%;"
            width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td align="center">
@@ -31,11 +31,11 @@
                         <td style="padding: 8px 0 8px 0;">
                             <p style="font-size: 11px;font-weight: normal;font-style: italic;color: #333;text-align: center;">
                                 <fmt:message key="web_templates_newsletter.intro.1">
-                                    <fmt:param value="<a style='color: #900;text-decoration: none;' href='/' name='top'>${renderContext.site.path}</a>"/>
+                                    <fmt:param value="<a style='color: #0066ff;text-decoration: none;' href='/' name='top'>${renderContext.site.path}</a>"/>
                                 </fmt:message>
                                 <br/>
                                 <fmt:message key="web_templates_newsletter.intro.2"/>
-                                <a href="${currentNode.url}" target="_blank" style="color: #900;text-decoration: none;">
+                                <a href="${currentNode.url}" target="_blank" style="color: #0066ff;text-decoration: none;">
                                     <fmt:message key="web_templates_newsletter.intro.3"/></a>.</p></td>
                     </tr>
                 </table>
@@ -45,7 +45,7 @@
                         <td align="center">
 
                             <table width="579" height="108" border="0" cellspacing="0" cellpadding="0"
-                                   style="background-color:#4f5c79">
+                                   style="background-color:#333333">
                                 <tr>
                                     <td style="width:200px;"><template:area path="logo"/></td>
                                     <td align="right" style="height: 108px; padding-right: 20px;">
@@ -88,7 +88,7 @@
 
                                                     <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
                                                         <a href="#" target="_blank"
-                                                           style="color: #900;text-decoration: none; border: none;margin: 0;padding: 0;">Click
+                                                           style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;">Click
                                                             to instantly unsubscribe from this email</a></p></td>
                                             </tr>
                                             <tr>
@@ -99,7 +99,7 @@
 
                                                     <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
                                                         <a href="#" target="_blank"
-                                                           style="color: #900;text-decoration: none; border: none;margin: 0;padding: 0;">Click
+                                                           style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;">Click
                                                             to forward this email to a friend</a></p></td>
                                             </tr>
                                         </table>--%>
@@ -120,17 +120,16 @@
                 </table>
 
                 <table width="579" height="108" border="0" cellspacing="0" cellpadding="0"
-                       style="padding: 10px;background-color: #eaeaea;">
+                       style="padding: 10px;background-color: #333333;">
                     <tr>
                         <td align="center" valign="middle">
 
                             <table width="559" height="88" border="0" cellspacing="0" cellpadding="0"
-                                   style="font-size: 11px;font-weight: normal;color: #999999;text-align: center;">
+                                   style="font-size: 11px;font-weight: normal;color: #ffffff;text-align: center;">
                                 <tr>
                                     <td align="center" style="height: 88px;">
                                         <template:area path="logoFooter"/>
-                                        <br/>
-                                        &copy; Copyright 2002-2009 - ACME International Corp.
+                                        <p>&copy; Copyright 2002-2011 - ACME International Corp.</p>
                                     </td>
                                 </tr>
                             </table>

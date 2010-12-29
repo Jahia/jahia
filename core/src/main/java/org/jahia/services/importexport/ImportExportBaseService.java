@@ -766,6 +766,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void importSiteProperties(InputStream is, JahiaSite site) throws IOException {
+        if (site.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
+            return;
+        }
         Properties p = new Properties();
         p.load(is);
         Set<Object> keys = p.keySet();

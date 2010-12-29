@@ -428,13 +428,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void exportSiteInfos(OutputStream out, JahiaSite s) throws IOException {
-        Properties p = new Properties();
+        Properties p = new OrderedProperties();
         p.setProperty("sitetitle", s.getTitle());
         p.setProperty("siteservername", s.getServerName());
         p.setProperty("sitekey", s.getSiteKey());
         p.setProperty("description", s.getDescr());
         p.setProperty("templatePackageName", s.getTemplatePackageName());
         p.setProperty("mixLanguage", Boolean.toString(s.isMixLanguagesActive()));
+        p.setProperty("defaultLanguage", s.getDefaultLanguage());
 
 
         // get all jahiaGAprofiles
@@ -486,8 +487,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             p.setProperty("defaultSite", "true");
         }
 
-
-        p.store(out, "");
+        p.save(out, "");
     }
 
     public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException {
@@ -773,6 +773,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final Set<String> languages = new HashSet<String>();
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
+        String defaultLanguage = null;
         for (Object key : keys) {
             String property = (String) key;
             String value = p.getProperty(property);
@@ -788,6 +789,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         mandatoryLanguages.add(lang);
                     }
                 }
+            } else if (firstKey.equals("defaultLanguage")) {
+                defaultLanguage = value;
             } else if (firstKey.equals("mixLanguage")) {
                 site.setMixLanguagesActive(Boolean.getBoolean(value));
             } else if (firstKey.startsWith("defaultSite") && "true".equals(
@@ -807,7 +810,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 site.setLanguages(siteLangs);
                 site.setMandatoryLanguages(mandatoryLanguages);
             }
-            site.setDefaultLanguage(siteLangs.iterator().next());
+            if (defaultLanguage == null) {
+                defaultLanguage = siteLangs.iterator().next();
+            }
+            site.setDefaultLanguage(defaultLanguage);
             try {
                 sitesService.updateSite(site);
                 JahiaSite jahiaSite = sitesService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
@@ -1068,5 +1074,20 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
+    }
+
+    private class OrderedProperties extends Properties {
+        Vector keys = new Vector();
+
+        @Override
+        public Object put(Object key, Object value) {
+            keys.add(key);
+            return super.put(key, value);
+        }
+
+        @Override
+        public Enumeration keys() {
+            return keys.elements();
+        }
     }
 }

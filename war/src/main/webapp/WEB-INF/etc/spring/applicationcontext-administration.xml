@@ -119,17 +119,6 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="sitePermissionsAdministrationModule" class="org.jahia.admin.roles.ManageSiteRoles" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
-        <property name="urlKey" value="sitePermissions" />
-        <property name="permissionName" value="admin/site-permissions" />
-        <property name="name" value="sitePermissions" />
-        <property name="icon" value="security_agent" />
-        <property name="label" value="label.siteroles" />
-        <property name="urlAction" value="sitePermissions" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
-
     <bean id="analyticsAdministrationModule" class="org.jahia.admin.analytics.ManageAnalytics" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="analytics" />

@@ -24,7 +24,7 @@
 
 <c:if test="${!empty currentNode.properties.divID}"> <div id="${currentNode.properties.divID.string}"></c:if>
 <div class="container_${nbCols}">
-<c:if test="${!empty currentNode.properties.divClass}"><div class="${currentNode.properties.divClass.string}"></div></c:if>
+<c:if test="${!empty currentNode.properties.divClass}"><div class="${currentNode.properties.divClass.string}"></c:if>
 
 <c:if test="${editableModule}">
     <div class="grid_${nbCols}">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>

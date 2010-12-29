@@ -395,7 +395,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <description>Type of module, area is the default. Set to absoluteArea for absolute.</description>
             <name>moduleType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

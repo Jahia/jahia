@@ -1410,7 +1410,7 @@
 
     <bean id="Engine.Tab.RolePermissions" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="rolePrincipals"/>
-        <property name="titleKey" value="label.engineTab.rolePrincipals"/>
+        <property name="titleKey" value="label.engineTab.rolePermissions"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolePermissionsTabItem"/>
         </property>

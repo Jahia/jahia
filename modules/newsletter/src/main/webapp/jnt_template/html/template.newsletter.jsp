@@ -17,7 +17,6 @@
 
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body id="body" style="background-color:#eaeaea;">
 <div id="bodywrapper">

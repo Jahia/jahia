@@ -22,10 +22,10 @@
     <c:set var="nbCols" value="${nbCols + col}"/>
 </c:forTokens>
 
-<c:if test="${!empty currentNode.properties.divClass || !empty currentNode.properties.divID}">
-    <c:if test='${!empty currentNode.properties.divID}'><div id="${currentNode.properties.divID.string}"></c:if>
-    <div class='<c:if test="${!empty currentNode.properties.divClass}">${currentNode.properties.divClass.string}"</c:if>'>
-</c:if>
+<c:if test="${!empty currentNode.properties.divID}"> <div id="${currentNode.properties.divID.string}"></c:if>
+<div class="container_${nbCols}">
+<c:if test="${!empty currentNode.properties.divClass}">${currentNode.properties.divClass.string}"</c:if>
+
 <c:if test="${editableModule}">
     <div class="grid_${nbCols}">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
     <div class='clear'></div>
@@ -46,14 +46,14 @@
     </c:if>
     <!--start grid_${column}-->
     <div
-            class='${colCss} grid_${column} <c:if test="${count.first}"> alpha</c:if> <c:if test="${count.last}"> omega</c:if>'>
+            class='grid_${column} ${colCss} <c:if test="${count.first}"> alpha</c:if> <c:if test="${count.last}"> omega</c:if>'>
         <template:area path="${currentNode.name}-${col.key}"/>
         <div class='clear'></div>
     </div>
     <!--stop grid_${column}-->
 </c:forEach>
 <div class='clear'></div>
-<c:if test="${!empty currentNode.properties.divClass || !empty currentNode.properties.divID}">
-    </div>
-    <c:if test='${!empty currentNode.properties.divID}'></div></c:if>    
-</c:if>
+<c:if test="${!empty currentNode.properties.divClass}"></div></c:if>
+</div>
+<c:if test="${!empty currentNode.properties.divID}"></div></c:if>
+

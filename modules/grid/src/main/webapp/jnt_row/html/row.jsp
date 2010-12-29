@@ -71,6 +71,7 @@
         <c:set target="${colMap}" property="col2" value="6"/>
     </c:otherwise>
 </c:choose>
+<div class="container_16">
 <c:if test="${editableModule}">
     <div class="grid_16 alpha omega">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
 </c:if>
@@ -83,4 +84,4 @@
     <!--stop grid_${col.value}-->
 </c:forEach>
 <div class='clear'></div>
-
+</div>

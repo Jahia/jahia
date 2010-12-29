@@ -28,5 +28,46 @@
         <property name="subscriptionService" ref="subscriptionService"/>
         <property name="confirmationPagePath" value="/newsletter-confirmation"/>
     </bean>
+    
+    <!-- toolbar and context menu items -->
+    <bean id="Toolbar.Item.SubscriptionManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" >
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.subscription.SubscriptionManagerActionItem"/>
+        </property>
+        <property name="titleKey" value="label.subscriptionManager"/>
+        <property name="icon" value="subscriptionManager"/>
+        <property name="parent" value="editmode.contextMenu"/>
+    </bean>
+    
+    <bean id="Toolbar.Item.TestNewsletter" class="org.jahia.services.uicomponents.bean.toolbar.Item" >
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.subscription.TestNewsletterActionItem"/>
+        </property>
+        <property name="titleKey" value="label.testNewsletter"/>
+        <property name="icon" value="testMail"/>
+        <property name="parent" value="editmode.contextMenu"/>
+    </bean>
+
+    <bean id="Toolbar.Item.SendNewsletter" class="org.jahia.services.uicomponents.bean.toolbar.Item" >
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.subscription.SendNewsletterActionItem"/>
+        </property>
+        <property name="titleKey" value="label.sendNewsletter"/>
+        <property name="icon" value="sendMail"/>
+        <property name="parent" value="editmode.contextMenu"/>
+    </bean>
+
+    <bean id="Toolbar.Item.NewNewsletter" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:newsletter"/>
+                <property name="parentTypes" value="jnt:newsletters"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.newNewsletter"/>
+        <property name="icon" value="/modules/newsletter/icons/newNewsletter"/>
+        <property name="parent" value="editmode.tabs[0].treeContextMenu"/>
+        <property name="position" value="0"/>
+    </bean>
 
 </beans>

@@ -729,9 +729,6 @@
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
-                        <ref bean="Toolbar.Item.SubscriptionManager"/>
-                        <ref bean="Toolbar.Item.TestNewsletter"/>
-                        <ref bean="Toolbar.Item.SendNewsletter"/>
                     </list>
                 </property>
                 <property name="visibility" value="$site/actions/edit-mode"/>
@@ -796,7 +793,6 @@
                                 <list>
                                     <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.NewContentFolder"/>
-                                    <ref bean="Toolbar.Item.NewNewsletter"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">

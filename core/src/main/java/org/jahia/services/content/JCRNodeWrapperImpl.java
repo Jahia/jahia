@@ -172,19 +172,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public Map<String, List<String[]>> getAclEntries() {
         try {
-            Map<String, List<String[]>> permissions = new HashMap<String, List<String[]>>();
-            Map<String, List<String[]>> inheritedPerms = new HashMap<String, List<String[]>>();
+            Map<String, List<String[]>> roles = new HashMap<String, List<String[]>>();
+            Map<String, List<String[]>> inheritedRoles = new HashMap<String, List<String[]>>();
 
-            recurseonACPs(permissions, inheritedPerms, objectNode);
-            for (Map.Entry<String, List<String[]>> s : inheritedPerms.entrySet()) {
-                if (permissions.containsKey(s.getKey())) {
-                    List<String[]> l = permissions.get(s.getKey());
+            recurseonACPs(roles, inheritedRoles, objectNode);
+            for (Map.Entry<String, List<String[]>> s : inheritedRoles.entrySet()) {
+                if (roles.containsKey(s.getKey())) {
+                    List<String[]> l = roles.get(s.getKey());
                     l.addAll(s.getValue());
                 } else {
-                    permissions.put(s.getKey(), s.getValue());
+                    roles.put(s.getKey(), s.getValue());
                 }
             }
-            return permissions;
+            return roles;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -230,7 +230,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         if (ace.isNodeType("jnt:ace")) {
                             String principal = ace.getProperty("j:principal").getString();
                             String type = ace.getProperty("j:aceType").getString();
-                            Value[] privileges = ace.getProperty(J_ROLES).getValues();
+                            Value[] roles = ace.getProperty(J_ROLES).getValues();
 
                             if (!current.containsKey(principal)) {
                                 List<String[]> p = localResults.get(principal);
@@ -238,7 +238,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                     p = new ArrayList<String[]>();
                                     localResults.put(principal, p);
                                 }
-                                for (Value privilege : privileges) {
+                                for (Value privilege : roles) {
                                     p.add(new String[]{n.getPath(), type, privilege.getString()});
                                 }
                             }

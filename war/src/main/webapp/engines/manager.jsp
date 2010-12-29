@@ -17,9 +17,6 @@ configToPermissionMapping.put("workflowmanager", "workflow-manager");
         pageContext.setAttribute("permission", "managers/" + configToPermissionMapping.get(request.getParameter("conf")));
         %>
         <jcr:node var="siteNode" uuid="${param.site}"/>
-        <c:if test="${not empty siteNode && !functions:isUserPermittedForSite(permission, siteNode.siteKey)}">
-        <% response.sendError(HttpServletResponse.SC_FORBIDDEN);%>
-        </c:if>
         <%
     }
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -27,7 +24,6 @@ configToPermissionMapping.put("workflowmanager", "workflow-manager");
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title><fmt:message key="label.${param.conf}"/></title>

@@ -34,6 +34,10 @@ package org.jahia.services.workflow;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.rbac.PermissionIdentity;
+import org.jahia.services.rbac.jcr.RoleImpl;
+import org.jahia.services.rbac.jcr.RoleManager;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -46,6 +50,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
+import org.springframework.beans.BeansException;
 
 import javax.jcr.*;
 import java.util.*;
@@ -66,6 +71,7 @@ public class WorkflowService {
     public static final String CANDIDATE = "candidate";
     public static final String START_ROLE = "start";
     private Map<String, List<String>> workflowTypes;
+    private Map<String, Map<String,String>> workflowPermissions;
     private Map<String, String> workflowTypeByDefinition;
     public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";
 
@@ -84,6 +90,10 @@ public class WorkflowService {
                 workflowTypeByDefinition.put(s, entry.getKey());
             }
         }
+    }
+
+    public void setWorkflowPermissions(Map<String, Map<String, String>> workflowPermissions) {
+        this.workflowPermissions = workflowPermissions;
     }
 
     public void registerWorkflowType(String type, String definition) {
@@ -202,7 +212,7 @@ public class WorkflowService {
     }
 
     public List<JahiaPrincipal> getAssignedRole(final JCRNodeWrapper node, final WorkflowDefinition definition,
-                                                final String role) throws RepositoryException {
+                                                final String activityName) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
@@ -212,28 +222,49 @@ public class WorkflowService {
 
                 JCRSiteNode site = node.getResolveSite();
 
+                Map<String, List<String[]>> m = node.getAclEntries();
+
                 Collection<WorkflowRule> rules = getWorkflowRules(node, null);
                 for (WorkflowRule rule : rules) {
                     if (rule.getProviderKey().equals(definition.getProvider()) && rule.getWorkflowDefinitionKey().equals(definition.getKey())) {
-                        for (WorkflowRule.Permission permission : rule.getPermissions()) {
-                            String principal = permission.getPrincipal();
-                            String type = permission.getType();
-                            String privilege = permission.getName();
+                        Map<String,String> perms = workflowPermissions.get(rule.getWorkflowDefinitionKey());
+                        if (perms != null) {
+                            String permName = perms.get(activityName);
+                            if (permName != null) {
 
-                            if ("GRANT".equals(type) && role.equals(privilege)) {
-                                final String principalName = principal.substring(2);
-                                if (principal.charAt(0) == 'u') {
-                                    JahiaUser jahiaUser = userService.lookupUser(principalName);
-                                    principals.add(jahiaUser);
-                                } else if (principal.charAt(0) == 'g') {
-                                    JahiaGroup group = groupService.lookupGroup(site.getID(), principalName);
-                                    principals.add(group);
-                                } else if (principal.charAt(0) == 'r') {
-                                    principals.add(new RoleIdentity(principalName));
+                                try {
+                                    PermissionIdentity permission = new PermissionIdentity(permName);
+                                    permission.setPath("/permissions"+permName);
+                                    List<RoleImpl> roles = ((RoleManager) SpringContextSingleton.getInstance().getContext().getBeansOfType(RoleManager.class).values().iterator().next()).getRolesInPermission(permission, session);
+                                    Set<String> s = new HashSet<String>();
+                                    for (RoleImpl role : roles) {
+                                        s.add(role.getName());
+                                    }
+
+                                    for (Map.Entry<String, List<String[]>> entry : m.entrySet()) {
+                                        for (String[] strings : entry.getValue()) {
+                                            if (strings[1].equals("GRANT")) {
+                                                if (s.contains(strings[2])) {
+                                                    String principal = entry.getKey();
+                                                    final String principalName = principal.substring(2);
+                                                    if (principal.charAt(0) == 'u') {
+                                                        JahiaUser jahiaUser = userService.lookupUser(principalName);
+                                                        principals.add(jahiaUser);
+                                                    } else if (principal.charAt(0) == 'g') {
+                                                        JahiaGroup group = groupService.lookupGroup(site.getID(), principalName);
+                                                        principals.add(group);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (RepositoryException e) {
+                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                } catch (BeansException e) {
+                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                                 }
                             }
                         }
-
                     }
                 }
                 return principals;
@@ -602,27 +633,12 @@ public class WorkflowService {
 
         for (WorkflowRule rule : rules) {
             if (action == null || workflowTypeByDefinition.get(rule.getWorkflowDefinitionKey()).equals(action)) {
-                List<WorkflowRule.Permission> l = rule.getPermissions();
-                if (user != null) {
-                    for (WorkflowRule.Permission permission : l) {
-                        String principal = permission.getPrincipal();
-                        String type = permission.getType();
-                        String privilege = permission.getName();
-                        if ("GRANT".equals(type) && START_ROLE.equals(privilege)) {
-                            final String principalName = principal.substring(2);
-                            if (principal.charAt(0) == 'u') {
-                                if (principalName.equals(user.getName())) {
-                                    results.add(rule);
-                                }
-                            } else if (principal.charAt(0) == 'g') {
-                                if (user.isMemberOfGroup(site.getID(), principalName)) {
-                                    results.add(rule);
-                                }
-                            } else if (principal.charAt(0) == 'r') {
-                                if (user.hasRole(new RoleIdentity(principalName))) {
-                                    results.add(rule);
-                                }
-                            }
+                Map<String,String> perms = workflowPermissions.get(rule.getWorkflowDefinitionKey());
+                if (perms != null) {
+                    String permName = perms.get("start");
+                    if (permName != null) {
+                        if (objectNode.hasPermission(permName)) {
+                            results.add(rule);
                         }
                     }
                 } else {
@@ -635,25 +651,8 @@ public class WorkflowService {
 
     public Collection<WorkflowRule> getWorkflowRules(JCRNodeWrapper objectNode, Locale locale) {
         try {
-            Collection<WorkflowRule> rules = new HashSet<WorkflowRule>();
-
-            @SuppressWarnings("unchecked")
-            Map<String, List<WorkflowRule.Permission>> permissions = new ListOrderedMap();
-            @SuppressWarnings("unchecked")
-            Map<String, List<WorkflowRule.Permission>> inheritedPerms = new ListOrderedMap();
-
-            String definitionPath = recurseonRules(permissions, inheritedPerms, objectNode);
-            for (Map.Entry<String, List<WorkflowRule.Permission>> s : inheritedPerms.entrySet()) {
-                if (permissions.containsKey(s.getKey())) {
-                    List<WorkflowRule.Permission> l = permissions.get(s.getKey());
-                    l.addAll(s.getValue());
-                } else {
-                    permissions.put(s.getKey(), s.getValue());
-                }
-            }
-            for (Map.Entry<String, List<WorkflowRule.Permission>> entry : permissions.entrySet()) {
-                rules.add(new WorkflowRule(definitionPath, StringUtils.substringBefore(entry.getKey(),":"), StringUtils.substringAfter(entry.getKey(),":"), entry.getValue()));
-            }
+            List<WorkflowRule> rules = new ArrayList<WorkflowRule>();
+            recurseonRules(rules, objectNode);
             return rules;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -661,14 +660,11 @@ public class WorkflowService {
         return null;
     }
 
-
-    private String recurseonRules(Map<String, List<WorkflowRule.Permission>> results, Map<String, List<WorkflowRule.Permission>> inherited, Node n)
+    private void recurseonRules(List<WorkflowRule> results, Node n)
             throws RepositoryException {
         String defPath = null;
         try {
-            Map<String, List<WorkflowRule.Permission>> current = results;
-            Set<String> changedTypes = new HashSet<String>();
-            Map<String, String> foundTypes = new HashMap<String, String>();
+            Set<String> foundTypes = new HashSet<String>();
             while (true) {
                 if (n.hasNode(WORKFLOWRULES_NODE_NAME)) {
                     Node wfRules = n.getNode(WORKFLOWRULES_NODE_NAME);
@@ -680,53 +676,23 @@ public class WorkflowService {
                         Node rule = rules.nextNode();
                         final String wfName = rule.getProperty("j:workflow").getString();
                         String name = StringUtils.substringAfter(wfName, ":");
+                        String prov = StringUtils.substringBefore(wfName, ":");
                         String wftype = workflowTypeByDefinition.get(name);
-                        if (foundTypes.containsKey(wftype) && !foundTypes.get(wftype).equals(wfName)) {
-                            changedTypes.add(wftype);
-                        }
-                        if (changedTypes.contains(wftype)) {
+                        if (foundTypes.contains(wftype)) {
                             continue;
-                        } else {
-                            foundTypes.put(wftype, wfName);
                         }
-                        Map<String, List<WorkflowRule.Permission>> localResults = new HashMap<String, List<WorkflowRule.Permission>>();
-                        if (!rule.hasNodes()) {
-                            localResults.put(wfName, new LinkedList<WorkflowRule.Permission>());
-                        }
-                        NodeIterator aces = rule.getNodes();
-                        while (aces.hasNext()) {
-                            Node ace = aces.nextNode();
-                            if (ace.isNodeType("jnt:ace")) {
-                                String principal = ace.getProperty("j:principal").getString();
-                                String type = ace.getProperty("j:aceType").getString();
-                                Value[] privileges = ace.getProperty("j:privileges").getValues();
-
-                                if (!current.containsKey(wfName)) {
-                                    List<WorkflowRule.Permission> p = localResults.get(wfName);
-                                    if (p == null) {
-                                        p = new ArrayList<WorkflowRule.Permission>();
-                                        localResults.put(wfName, p);
-                                    }
-                                    for (Value privilege : privileges) {
-//                                        , rule.getProperty("j:nodeType").getString()
-                                        p.add(new WorkflowRule.Permission(n.getPath(), type, privilege.getString(), principal));
-                                    }
-                                }
-                            }
-                        }
-                        current.putAll(localResults);
+                        foundTypes.add(wftype);
+                        results.add(new WorkflowRule(defPath, prov, name));
                         if (rule.hasProperty("j:inherit") && !rule.getProperty("j:inherit").getBoolean()) {
-                            return defPath;
+                            return;
                         }
                     }
                 }
                 n = n.getParent();
-                current = inherited;
             }
         } catch (ItemNotFoundException e) {
             logger.debug(e.getMessage(), e);
         }
-        return defPath;
     }
 
     public Workflow getWorkflow(String provider, String id, Locale locale) {

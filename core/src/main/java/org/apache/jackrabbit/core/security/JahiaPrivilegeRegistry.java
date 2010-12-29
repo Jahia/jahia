@@ -35,10 +35,7 @@ package org.apache.jackrabbit.core.security;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.authorization.Permission;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
+import javax.jcr.*;
 import javax.jcr.security.AccessControlException;
 import javax.jcr.security.Privilege;
 import java.util.*;
@@ -66,6 +63,8 @@ public final class JahiaPrivilegeRegistry {
         STANDARD_PRIVILEGES.put(Permission.RETENTION_MNGMT, Privilege.JCR_RETENTION_MANAGEMENT);
     }
 
+    private NamespaceRegistry ns;
+
     public static void init(Session session) throws RepositoryException {
         Node perms = session.getNode("/permissions");
 
@@ -80,6 +79,10 @@ public final class JahiaPrivilegeRegistry {
         }
     }
 
+    public JahiaPrivilegeRegistry(NamespaceRegistry ns) {
+        this.ns = ns;
+    }
+
     private static Privilege registerPrivileges(Node node, Set<Privilege> privileges) throws RepositoryException {
         Set<Privilege> subPrivileges = new HashSet<Privilege>();
 
@@ -89,20 +92,21 @@ public final class JahiaPrivilegeRegistry {
             subPrivileges.add(registerPrivileges(subNode, privileges));
         }
 
-        String name = getExpandedName(node);
+        String name = getExpandedName(node.getName(), node.getSession().getWorkspace().getNamespaceRegistry());
         boolean isAbstract = node.hasProperty("j:isAbstract") && node.getProperty("j:isAbstract").getBoolean();
         Privilege priv = new PrivilegeImpl(name, isAbstract, subPrivileges);
         privileges.add(priv);
         return priv;
     }
 
-    private static String getExpandedName(Node node) throws RepositoryException {
-        String name = node.getName();
-        if (name.contains(":")) {
-            name = "{" + node.getSession().getNamespaceURI(StringUtils.substringBefore(name, ":")) + "}" +
-                    StringUtils.substringAfter(name, ":");
-        } else {
-            name = "{}" + name;
+    private static String getExpandedName(String name, NamespaceRegistry namespaceRegistry) throws RepositoryException {
+        if (!name.startsWith("{")) {
+            if (name.contains(":")) {
+                name = "{" + namespaceRegistry.getURI(StringUtils.substringBefore(name, ":")) + "}" +
+                        StringUtils.substringAfter(name, ":");
+            } else {
+                name = "{}" + name;
+            }
         }
         return name;
     }
@@ -146,9 +150,9 @@ public final class JahiaPrivilegeRegistry {
         if (!privilegeName.contains("{") && privilegeName.contains("/")) {
             privilegeName = StringUtils.substringAfterLast(privilegeName, "/");
         }
-        if (!privilegeName.startsWith("{")) {
-            privilegeName = "{}" + privilegeName;
-        }
+
+        privilegeName = getExpandedName(privilegeName, ns);
+
         String s = privilegeName + "_" + workspaceName;
         if (map.containsKey(s)) {
             return map.get(s);
@@ -160,7 +164,7 @@ public final class JahiaPrivilegeRegistry {
     }
 
     public Privilege getPrivilege(Node node) throws AccessControlException, RepositoryException {
-        String privilegeName = getExpandedName(node);
+        String privilegeName = getExpandedName(node.getName(), ns);
         if (map.containsKey(privilegeName)) {
             return map.get(privilegeName);
         } else {

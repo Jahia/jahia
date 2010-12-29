@@ -66,12 +66,12 @@ public class WorkflowTabItem extends EditEngineTabItem {
     private transient WorkflowHistoryPanel activePanel;
 
     private transient Map<String, WorkflowHistoryPanel> panelsByLanguage = new HashMap<String, WorkflowHistoryPanel>(1);
-    private transient LayoutContainer aclPanel;
+//    private transient LayoutContainer aclPanel;
 
     private transient GWTJahiaWorkflowType previousType = null;
     private transient GWTJahiaWorkflowDefinition previousSelection = null;
     private transient AclEditor rightsEditor;
-    private transient Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> workflowRules;
+    private transient Map<GWTJahiaWorkflowType, List<GWTJahiaWorkflowDefinition>> workflowRules;
 
     @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         setHandleCreate(false);
@@ -105,8 +105,8 @@ public class WorkflowTabItem extends EditEngineTabItem {
         activePanel = next;
 
         JahiaContentManagementService.App.getInstance().getWorkflowRules(engine.getNode().getPath(),
-                new BaseAsyncCallback<Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>>>() {
-                    public void onSuccess(final Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> result) {
+                new BaseAsyncCallback<Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>>>() {
+                    public void onSuccess(final Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>> result) {
                         HorizontalPanel horizontalPanel = new HorizontalPanel();
                         horizontalPanel.setTableWidth("100%");
                         container.add(horizontalPanel);
@@ -132,12 +132,11 @@ public class WorkflowTabItem extends EditEngineTabItem {
                                 combo.setValue(null);
                                 combo.clearSelections();
                                 states.removeAll();
-                                final Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> map =
-                                        workflowRules.get(se.getSelectedItem());
-                                states.add(new LinkedList<GWTJahiaWorkflowDefinition>(map.keySet()));
+                                final List<GWTJahiaWorkflowDefinition> list = workflowRules.get(se.getSelectedItem());
+                                states.add(list);
                                 states.sort("displayName", Style.SortDir.ASC);
 
-                                for (GWTJahiaWorkflowDefinition definition : map.keySet()) {
+                                for (GWTJahiaWorkflowDefinition definition : list) {
                                     if (Boolean.TRUE.equals(definition.get("active"))) {
                                         combo.setValue(definition);
                                         break;
@@ -155,20 +154,11 @@ public class WorkflowTabItem extends EditEngineTabItem {
                             @Override
                             public void selectionChanged(
                                     SelectionChangedEvent<GWTJahiaWorkflowDefinition> event) {
-                                if (previousSelection != null && rightsEditor != null) {
-                                    workflowRules.get(previousType).remove(previousSelection);
-                                    workflowRules.get(previousType).put(previousSelection, rightsEditor.getAcl());
-                                }
                                 if (event.getSelectedItem() != null) {
                                     if (previousSelection != null) {
                                         previousSelection.set("active", Boolean.FALSE);
                                     }
                                     event.getSelectedItem().set("active", Boolean.TRUE);
-                                    GWTJahiaNodeACL gwtJahiaNodeACL =
-                                            workflowRules.get(typesCombo.getValue()).get(event.getSelectedItem());
-                                    displayACLEditor(gwtJahiaNodeACL, engine.getNode(), combo.getSelection(), engine);
-                                } else {
-                                    aclPanel.removeAll();
                                 }
                                 previousSelection = event.getSelectedItem();
                                 previousType = typesCombo.getValue();
@@ -192,22 +182,22 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
     }
 
-    private void displayACLEditor(final GWTJahiaNodeACL gwtJahiaNodeACL, final GWTJahiaNode node,
-                                  final List<GWTJahiaWorkflowDefinition> selection, NodeHolder engine) {
-        rightsEditor = new AclEditor(gwtJahiaNodeACL, node.getAclContext());
-        rightsEditor.setAclGroup("tasks");
-        if (aclPanel != null) {
-            aclPanel.removeAll();
-        }
-        rightsEditor.setCanBreakInheritance(false);
-        rightsEditor.setReadOnly(!engine.getNode().isWriteable() || engine.getNode().isLocked());
-
-        if (aclPanel == null) {
-            aclPanel = new LayoutContainer(new FitLayout());
-        }
-        aclPanel.add(rightsEditor.renderNewAclPanel());
-        container.add(aclPanel, new RowData(1, 0.43));
-    }
+//    private void displayACLEditor(final GWTJahiaNodeACL gwtJahiaNodeACL, final GWTJahiaNode node,
+//                                  final List<GWTJahiaWorkflowDefinition> selection, NodeHolder engine) {
+//        rightsEditor = new AclEditor(gwtJahiaNodeACL, node.getAclContext());
+//        rightsEditor.setAclGroup("tasks");
+//        if (aclPanel != null) {
+//            aclPanel.removeAll();
+//        }
+//        rightsEditor.setCanBreakInheritance(false);
+//        rightsEditor.setReadOnly(!engine.getNode().isWriteable() || engine.getNode().isLocked());
+//
+//        if (aclPanel == null) {
+//            aclPanel = new LayoutContainer(new FitLayout());
+//        }
+//        aclPanel.add(rightsEditor.renderNewAclPanel());
+//        container.add(aclPanel, new RowData(1, 0.43));
+//    }
 
     private WorkflowHistoryPanel getPanel(String locale, NodeHolder engine) {
         WorkflowHistoryPanel panel = panelsByLanguage.get(locale);
@@ -220,40 +210,26 @@ public class WorkflowTabItem extends EditEngineTabItem {
     }
 
     public void doSave(NodeHolder engine) {
-        Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>  activeWorkflows = new HashMap<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>();
+        Set<GWTJahiaWorkflowDefinition>  activeWorkflows = new HashSet<GWTJahiaWorkflowDefinition>();
         if (workflowRules == null) {
             return;
         }
-        for (Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> map : workflowRules.values()) {
-            for (GWTJahiaWorkflowDefinition definition : map.keySet()) {
+        for (List<GWTJahiaWorkflowDefinition> list : workflowRules.values()) {
+            for (GWTJahiaWorkflowDefinition definition : list) {
                 if (Boolean.TRUE.equals(definition.get("active"))) {
-                    activeWorkflows.put(definition, map.get(definition));
+                    activeWorkflows.add(definition);
                 }
             }
         }
-        final Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> aclMap = activeWorkflows;
 
-        if (previousSelection != null && rightsEditor != null) {
-            aclMap.remove(previousSelection);
-            aclMap.put(previousSelection, rightsEditor.getAcl());
-        }
-
-
-        if (aclMap.isEmpty()) {
-            engine.getNode().getNodeTypes().remove("jmix:worklfowRulesable");
-        } else {
-            if (!engine.getNode().getNodeTypes().contains("jmix:worklfowRulesable")) {
-                engine.getNode().getNodeTypes().add("jmix:worklfowRulesable");
-            }
-        }
-        engine.getNode().set("activeWorkflows", aclMap);
+        engine.getNode().set("activeWorkflows", activeWorkflows);
     }
 
     public void setProcessed(boolean processed) {
         if (!processed) {
             container = null;
             panelsByLanguage = new HashMap<String, WorkflowHistoryPanel>(1);
-            aclPanel = null;
+//            aclPanel = null;
             previousType = null;
             previousSelection = null;
             rightsEditor = null;

@@ -78,9 +78,6 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                 assignable.addCandidateGroup(((JahiaGroup)principal).getGroupKey());
             } else if (principal instanceof JahiaUser) {
                 assignable.addCandidateUser(((JahiaUser)principal).getUserKey());
-            } else if (principal instanceof RoleIdentity) {
-                RoleIdentity roleIdentity = (RoleIdentity) principal;
-                assignable.addCandidateGroup("{role}"+roleIdentity.getName());
             }
         }
         assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(0).getGroupKey());

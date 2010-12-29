@@ -5,7 +5,7 @@
          xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
 
     <permissions jcr:primaryType="jnt:permission">
-        <global jcr:primaryType="jnt:permission">
+        <admin jcr:primaryType="jnt:permission">
             <virtual-sites jcr:primaryType="jnt:permission"/>
             <portlets jcr:primaryType="jnt:permission"/>
             <email-settings jcr:primaryType="jnt:permission"/>
@@ -18,15 +18,6 @@
             <documentation jcr:primaryType="jnt:permission"/>
             <about jcr:primaryType="jnt:permission"/>
             <users jcr:primaryType="jnt:permission"/>
-        </global>
-
-        <modes jcr:primaryType="jnt:permission">
-            <studio-mode jcr:primaryType="jnt:permission"/>
-            <contribute-mode jcr:primaryType="jnt:permission"/>
-            <edit-mode jcr:primaryType="jnt:permission"/>
-        </modes>
-
-        <admin jcr:primaryType="jnt:permission">
             <jahia-administration jcr:primaryType="jnt:permission"/>
             <groups jcr:primaryType="jnt:permission"/>
             <site-languages jcr:primaryType="jnt:permission"/>
@@ -35,6 +26,12 @@
             <urlmapping jcr:primaryType="jnt:permission"/>
             <templates jcr:primaryType="jnt:permission"/>
         </admin>
+
+        <modes jcr:primaryType="jnt:permission">
+            <studio-mode jcr:primaryType="jnt:permission"/>
+            <contribute-mode jcr:primaryType="jnt:permission"/>
+            <edit-mode jcr:primaryType="jnt:permission"/>
+        </modes>
 
         <edit-mode jcr:primaryType="jnt:permission">
             <analytics jcr:primaryType="jnt:permission"/>
@@ -109,26 +106,23 @@
 
     <roles jcr:primaryType="jnt:roles" >
         <visitor jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live /permissions/repository-permissions/jcr:all_default/jcr:read_default" />
+                 j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
 
         <editor jcr:primaryType="jnt:role"
-                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/modes/edit-mode" />
-                <!--j:assignedPermissions="default-workspace/* modes/edit-mode modes/contribute actions/* edit-mode/categories edit-mode/content edit-mode/create-page edit-mode/list-management edit-mode/metadata edit-mode/options edit-mode/seo edit-mode/tags languages/* managers/file-manager managers/portlet-manager managers/site-manager selector/content selector/create selector/files-and-images selector/portlets selector/search selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/new toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/basic"/>-->
-
-        <editor-in-chief jcr:primaryType="jnt:role"
-                         />
+                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/modes/edit-mode /permissions/modes/contribute /permissions/edit-mode/categories /permissions/edit-mode/content /permissions/edit-mode/create-page /permissions/edit-mode/list-management /permissions/edit-mode/metadata /permissions/edit-mode/options /permissions/edit-mode/seo /permissions/edit-mode/tags /permissions/managers/file-manager /permissions/managers/portlet-manager /permissions/managers/site-manager /permissions/selector/content /permissions/selector/create /permissions/selector/files-and-images /permissions/selector/portlets /permissions/selector/search /permissions/selector/sitemap /permissions/toolbar /permissions/wysiwyg-editor-toolbar/full" />
+                <!-- modes/contribute actions/*  languages/* "/>-->
 
         <contributor     jcr:primaryType="jnt:role"
-                         />
+                         j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/modes/contribute-mode"/>
 
         <publisher jcr:primaryType="jnt:role"
-                   />
+                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/modes/edit-mode /permissions/modes/contribute /permissions/toolbar/workflow /permissions/workflow/final-review" />
 
-        <seo-manager jcr:primaryType="jnt:role"
-                     />
+        <!--<seo-manager jcr:primaryType="jnt:role"-->
+                     <!--/>-->
 
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
-
+                            j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/modes/edit-mode /permissions/modes/contribute /permissions/edit-mode /permissions/managers /permissions/selector /permissions/toolbar /permissions/wysiwyg-editor-toolbar"
                             />
 
         <translator jcr:primaryType="jnt:role"/>

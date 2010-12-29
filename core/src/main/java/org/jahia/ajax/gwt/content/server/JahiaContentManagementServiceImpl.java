@@ -614,7 +614,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         if (node.get("activeWorkflows") != null) {
             workflow.updateWorkflowRules(node,
-                    (Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>) node.get("activeWorkflows"), jcrSessionWrapper);
+                    (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
         }
     }
 
@@ -1688,7 +1688,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>> getWorkflowRules(String path)
+    public Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>> getWorkflowRules(String path)
             throws GWTJahiaServiceException {
         JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
         return workflow.getWorkflowRules(path, sessionWrapper, sessionWrapper.getLocale());

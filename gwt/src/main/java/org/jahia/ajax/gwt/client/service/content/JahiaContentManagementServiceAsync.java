@@ -279,7 +279,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> reference, AsyncCallback<Set<String>> async);
 
-    void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>>> async);
+    void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>>> async);
 
     void getGoogleDocsExportFormats(String nodeIdentifier, AsyncCallback<List<String>> async);
 

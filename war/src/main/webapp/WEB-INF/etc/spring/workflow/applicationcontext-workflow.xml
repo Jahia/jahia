@@ -19,24 +19,24 @@
                 </entry>
             </map>
         </property>
-    </bean>
 
-    <!--<bean id="workflow-permissions">-->
-        <!--<map>-->
-            <!--<entry key="1-step-publication">-->
-                <!--<map>-->
-                    <!--<entry key="start" value="default-workspace/jcr:write"/>-->
-                    <!--<entry key="review" value="workflow/final-review" />-->
-                <!--</map>-->
-            <!--</entry>-->
-            <!--<entry key="2-step-publication">-->
-                <!--<map>-->
-                    <!--<entry key="start" value="default-workspace/jcr:write"/>-->
-                    <!--<entry key="first review" value="workflow/first-review" />-->
-                    <!--<entry key="final review" value="workflow/final-review" />-->
-                <!--</map>-->
-            <!--</entry>-->
-        <!--</map>-->
-    <!--</bean>-->
+        <property name="workflowPermissions">
+            <map>
+                <entry key="1-step-publication">
+                    <map>
+                        <entry key="start" value="/repository-permissions/jcr:all_default/jcr:write_default"/>
+                        <entry key="review" value="/workflow/final-review" />
+                    </map>
+                </entry>
+                <entry key="2-step-publication">
+                    <map>
+                        <entry key="start" value="/repository-permissions/jcr:all_default/jcr:write_default"/>
+                        <entry key="first review" value="/workflow/first-review" />
+                        <entry key="final review" value="/workflow/final-review" />
+                    </map>
+                </entry>
+            </map>
+        </property>
+    </bean>
 
 </beans>

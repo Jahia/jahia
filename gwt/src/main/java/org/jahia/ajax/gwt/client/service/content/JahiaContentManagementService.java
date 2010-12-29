@@ -275,7 +275,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context) throws GWTJahiaServiceException;
 
-    public Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>> getWorkflowRules(String path) throws GWTJahiaServiceException;
+    public Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>> getWorkflowRules(String path) throws GWTJahiaServiceException;
 
     List<String> getGoogleDocsExportFormats(String nodeIdentifier) throws GWTJahiaServiceException;
 

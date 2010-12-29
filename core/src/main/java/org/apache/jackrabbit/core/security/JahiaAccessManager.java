@@ -176,7 +176,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         workspaceName = context.getWorkspaceName();
         this.repositoryContext = repositoryContext;
         this.workspaceConfig = workspaceConfig;
-        privilegeRegistry = new JahiaPrivilegeRegistry();
+        privilegeRegistry = new JahiaPrivilegeRegistry(context.getSession().getWorkspace().getNamespaceRegistry());
 
         Set principals = subject.getPrincipals(JahiaPrincipal.class);
         if (!principals.isEmpty()) {
@@ -410,16 +410,20 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
+            Node n = i.isNode() ? (Node) i : i.getParent();
+
             int siteId = 0;
-
-            String site = null;
-
+            String site = null; boolean isTemplate = false;
+            Node s = n;
             try {
-                while (!i.isNode() || !((Node) i).isNodeType("jnt:virtualsite")) {
-                    i = i.getParent();
+                while (!s.isNodeType("jnt:virtualsite")) {
+                    if (s.isNodeType("jnt:templatesFolder")) {
+                        isTemplate = true;
+                    }
+                    s = s.getParent();
                 }
-                site = i.getName();
-                siteId = (int) ((Node)i).getProperty("j:siteId").getLong();
+                site = s.getName();
+                siteId = (int) s.getProperty("j:siteId").getLong();
             } catch (ItemNotFoundException e) {
             } catch (PathNotFoundException e) {
             }
@@ -431,7 +435,16 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
+
             res = recurseonACPs(jcrPath, getSecuritySession(), permissions, site);
+
+            // Staging read access on virtualsite node is granted if live read access is also granted
+            if (!res && (n.isNodeType("jnt:virtualsite") || isTemplate) && permissions.equals(Collections.singleton(Privilege.JCR_READ + "_" + workspaceName))) {
+                permissions.clear();
+                permissions.add(Privilege.JCR_READ + "_live");
+                res = recurseonACPs(jcrPath, getSecuritySession(), permissions, site);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

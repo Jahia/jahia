@@ -60,6 +60,7 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRSessionFactory;
 import org.slf4j.Logger;
 import org.apache.struts.Globals;
 import org.jahia.admin.AdministrationModule;
@@ -719,7 +720,8 @@ public class JahiaAdministration extends HttpServlet {
                 session.setAttribute(CLASS_NAME + "configJahia", Boolean.TRUE);
             }
             session.setAttribute(ProcessingContext.SESSION_USER, theUser);
-            
+            JCRSessionFactory.getInstance().setCurrentUser(theUser);
+
             Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
             session.setAttribute(ProcessingContext.SESSION_UI_LOCALE, sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(theUser, sessionLocale) : UserPreferencesHelper.getPreferredLocale(theUser));
             

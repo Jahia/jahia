@@ -130,7 +130,7 @@ public class RoleBasedAccessControlService {
 
         boolean hasIt = false;
         try {
-            hasIt = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/").hasPermission(permission.getName());
+            hasIt = JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode().hasPermission(permission.getName());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

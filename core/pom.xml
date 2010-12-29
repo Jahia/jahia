@@ -275,11 +275,6 @@
             <version>2.7.7</version>
         </dependency>
 
-        <dependency>
-            <groupId>cas</groupId>
-            <artifactId>casclient</artifactId>
-            <version>2.1.1</version>
-        </dependency>
         <!-- Drools dependencies -->
         <dependency>
             <groupId>org.drools</groupId>

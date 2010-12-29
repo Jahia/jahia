@@ -18,7 +18,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
 
 import java.util.List;
@@ -36,7 +35,7 @@ public class TestNewsletterActionItem extends BaseActionItem {
     }
 
     @Override public void onComponentSelection() {
-        new EmailTestWindow(linker, linker.getSelectionContext().getSingleSelection()).show();
+        new EmailTestWindow(linker.getSelectionContext().getSingleSelection()).show();
     }
 
     @Override public void handleNewLinkerSelection() {
@@ -47,13 +46,9 @@ public class TestNewsletterActionItem extends BaseActionItem {
 
     class EmailTestWindow extends Window {
 
-        private Linker m_linker;
-
-        public EmailTestWindow(final Linker linker, final GWTJahiaNode n) {
+        public EmailTestWindow(final GWTJahiaNode n) {
             super();
             setLayout(new FitLayout());
-
-            m_linker = linker;
 
             setHeading(Messages.get("label.testNewsletter"));
             setSize(500, 170);
@@ -87,7 +82,7 @@ public class TestNewsletterActionItem extends BaseActionItem {
             locale.setTriggerAction(ComboBox.TriggerAction.ALL);
             locale.setForceSelection(true);
             locale.setEditable(false);
-            locale.setFieldLabel(Messages.get("label.locale", "Locale"));
+            locale.setFieldLabel(Messages.get("label.language", "Language"));
             locale.setValue(selectedLang);
             locale.setName("locale");
             form.add(locale);
@@ -95,9 +90,9 @@ public class TestNewsletterActionItem extends BaseActionItem {
             Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                     mask();
-                    String data = "testemail=" + URL.encodeComponent(mail.getValue());
-                    data += "&type=html&user=" + URL.encodeComponent(user.getValue());
-                    data += "&locale=" + URL.encodeComponent(locale.getValue().getLanguage());
+                    String data = "testemail=" + URL.encodeQueryString(mail.getValue());
+                    data += "&type=html&user=" + URL.encodeQueryString(user.getValue());
+                    data += "&locale=" + URL.encodeQueryString(locale.getValue().getLanguage());
                     doAction(linker.getSelectionContext().getSingleSelection(), data);
                 }
             });

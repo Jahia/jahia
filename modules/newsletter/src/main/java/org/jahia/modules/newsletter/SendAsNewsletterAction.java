@@ -32,11 +32,6 @@
 
 package org.jahia.modules.newsletter;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.BaseAction;
 import org.jahia.bin.Jahia;
@@ -57,15 +52,12 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PaginatedList;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -94,7 +86,7 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
             throws Exception {
         final JCRNodeWrapper node = resource.getNode();
 
-        logger.info("Sending content of the node {} as a newsletter", node);
+        logger.info("Sending content of the node {} as a newsletter", node.getPath());
 
         long timer = System.currentTimeMillis();
 
@@ -109,8 +101,8 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
             } else {
                 final boolean personalized = node.hasProperty("j:personalized") && node.getProperty("j:personalized").getBoolean();
 
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live", new JCRCallback() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live", new JCRCallback<Boolean>() {
+                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         PaginatedList<Subscription> l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), null,false,0,0,
                                 session);
                         for (Subscription subscription : l.getData()) {
@@ -136,7 +128,7 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
                                         newsletterVersions);
                             }
                         }
-                        return null;
+                        return Boolean.TRUE;
                     }
                 });
 
@@ -163,7 +155,7 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
 
         final String key = locale + user + type;
         if (!newsletterVersions.containsKey(key)) {
-            JCRTemplate.getInstance().doExecute(false, user, workspace, locale, new JCRCallback() {
+            JCRTemplate.getInstance().doExecute(false, user, workspace, locale, new JCRCallback<String>() {
                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         JCRNodeWrapper node = session.getNodeByIdentifier(id);

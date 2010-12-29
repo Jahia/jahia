@@ -81,13 +81,17 @@ public class RolesPermissionsHelper {
             throws GWTJahiaServiceException {
         List<Permission> permissions = new LinkedList<Permission>();
         for (GWTJahiaPermission perm : gwtPermissions) {
-            permissions.add(new PermissionIdentity(perm.getName()));
+            PermissionIdentity identity = new PermissionIdentity(perm.getName());
+            identity.setPath(perm.getPath());
+            permissions.add(identity);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("addRolePermissions() ," + role.getName() + "," + permissions);
         }
         try {
-            roleService.grantPermissions(new RoleIdentity(role.getName()),permissions);
+            RoleIdentity identity = new RoleIdentity(role.getName());
+            identity.setPath(role.getPath());
+            roleService.grantPermissions(identity,permissions);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -324,13 +328,17 @@ public class RolesPermissionsHelper {
     public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> gwtPermissions) throws GWTJahiaServiceException {
         List<Permission> permissions = new LinkedList<Permission>();
         for (GWTJahiaPermission perm : gwtPermissions) {
-            permissions.add(new PermissionIdentity(perm.getName()));
+            PermissionIdentity identity = new PermissionIdentity(perm.getName());
+            identity.setPath(perm.getPath());
+            permissions.add(identity);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("removeRolePermissions() ," + role.getName() + "," + permissions);
         }
         try {
-            roleService.revokePermissions(new RoleIdentity(role.getName()), permissions);
+            RoleIdentity identity = new RoleIdentity(role.getName());
+            identity.setPath(role.getPath());
+            roleService.revokePermissions(identity, permissions);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -375,7 +383,14 @@ public class RolesPermissionsHelper {
     }
 
     private GWTJahiaPermission toPermission(Permission permission) {
-        return new GWTJahiaPermission(permission.getName());
+        GWTJahiaPermission gwtJahiaPermission = new GWTJahiaPermission(permission.getName());
+        List<Permission> childs = permission.getChilds();
+        for (Permission child : childs) {
+            gwtJahiaPermission.addChild(toPermission(child));
+        }
+        gwtJahiaPermission.setParent(gwtJahiaPermission);
+        gwtJahiaPermission.setPath(permission.getPath());
+        return gwtJahiaPermission;
     }
 
     private GWTJahiaRole toRole(Role role) {
@@ -385,7 +400,7 @@ public class RolesPermissionsHelper {
             gwtPermissions.add(toPermission(perm));
         }
         gwtRole.setPermissions(gwtPermissions);
-
+        gwtRole.setPath(role.getPath());
         return gwtRole;
     }
 

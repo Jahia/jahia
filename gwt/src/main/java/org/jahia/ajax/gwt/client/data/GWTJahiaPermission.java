@@ -33,20 +33,31 @@
 package org.jahia.ajax.gwt.client.data;
 
 
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.TreeModel;
+
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * GWT bean that represents single permission.
  * User: ktlili
  * Date: Feb 2, 2010
  * Time: 11:43:21 AM
  */
-public class GWTJahiaPermission extends GWTJahiaRolePermissionBase {
+public class GWTJahiaPermission extends GWTJahiaRolePermissionBase implements TreeModel {
+
+    private List<GWTJahiaPermission> childs;
+    private GWTJahiaPermission parent;
 
     public GWTJahiaPermission() {
         super();
+        childs = new LinkedList<GWTJahiaPermission>();
     }
 
     public GWTJahiaPermission(String name) {
         super(name);
+        childs = new LinkedList<GWTJahiaPermission>();
     }
     
     @Override
@@ -59,5 +70,115 @@ public class GWTJahiaPermission extends GWTJahiaRolePermissionBase {
         if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
 
         return true;
+    }
+
+    public List<GWTJahiaPermission> getChilds() {
+        return childs;
+    }
+
+    public void addChild(GWTJahiaPermission permission) {
+        childs.add(permission);
+    }
+
+    /**
+     * Adds a child to the model.
+     *
+     * @param child the model to add
+     */
+    public void add(ModelData child) {
+        addChild((GWTJahiaPermission) child);
+    }
+
+    /**
+     * Returns the child at the given index.
+     *
+     * @param index the index
+     * @return the child
+     */
+    public ModelData getChild(int index) {
+        return childs.get(index);
+    }
+
+    /**
+     * Returns the child count.
+     *
+     * @return the child count
+     */
+    public int getChildCount() {
+        return childs.size();
+    }
+
+    /**
+     * Returns the model's children.
+     *
+     * @return the children
+     */
+    public List<ModelData> getChildren() {
+        return new LinkedList<ModelData>(childs);
+    }
+
+    /**
+     * Returns the model's parent.
+     *
+     * @return the parent
+     */
+    public TreeModel getParent() {
+        return parent;
+    }
+
+    /**
+     * Returns the index of the child.
+     *
+     * @param child the child
+     * @return the index
+     */
+    public int indexOf(ModelData child) {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /**
+     * Inserts a child.
+     *
+     * @param child the child to add
+     * @param index the insert location
+     */
+    public void insert(ModelData child, int index) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /**
+     * Returns true if the model is a leaf and has children. The method provides
+     * the ability to mark a model as having children before the children have
+     * been added.
+     *
+     * @return true for leaf
+     */
+    public boolean isLeaf() {
+        return childs.size()==0;
+    }
+
+    /**
+     * Removes a child.
+     *
+     * @param child the child to remove
+     */
+    public void remove(ModelData child) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /**
+     * Removes all the children.
+     */
+    public void removeAll() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /**
+     * Sets the model's parent.
+     *
+     * @param parent the new parent
+     */
+    public void setParent(TreeModel parent) {
+        this.parent = (GWTJahiaPermission) parent;
     }
 }

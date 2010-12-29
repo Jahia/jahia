@@ -442,7 +442,13 @@ public class RoleManager {
         PermissionImpl perm = new PermissionImpl(permissionNode.getName());
 
         populateJCRData(permissionNode, perm);
-
+        NodeIterator nodeIterator = permissionNode.getNodes();
+        while (nodeIterator.hasNext()) {
+            Node node = nodeIterator.nextNode();
+            if(node.isNodeType(JAHIANT_PERMISSION)) {
+                perm.addChild(toPermission(node));
+            }
+        }
         return perm;
     }
 

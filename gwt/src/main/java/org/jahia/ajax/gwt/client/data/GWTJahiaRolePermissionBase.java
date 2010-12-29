@@ -66,4 +66,11 @@ class GWTJahiaRolePermissionBase extends BaseModel {
         set("name", name);
     }
 
+    public String getPath() {
+        return get("path");
+    }
+    public void setPath(String path) {
+        set("path", path);
+    }
+
 }

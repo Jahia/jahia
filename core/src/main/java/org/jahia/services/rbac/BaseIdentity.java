@@ -46,26 +46,16 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 class BaseIdentity implements Serializable {
 
     private String name;
-
+    private String path;
     /**
      * Initializes an instance of this class.
      * 
      * @param name the name of this identity
      */
     public BaseIdentity(String name) {
-        this(name, null);
-    }
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of this identity
-     * @param site the site key of this identity
-     */
-    public BaseIdentity(String name, String site) {
-        super();
         this.name = name;
     }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -79,6 +69,14 @@ class BaseIdentity implements Serializable {
      */
     public String getName() {
         return name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override

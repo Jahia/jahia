@@ -41,7 +41,6 @@ import java.util.List;
  * @author Sergiy Shyrkov
  */
 public class PermissionIdentity extends BaseIdentity implements Permission {
-
     /**
      * Initializes an instance of this class.
      * 
@@ -54,9 +53,5 @@ public class PermissionIdentity extends BaseIdentity implements Permission {
 
     public List<Permission> getChilds() {
         return Collections.emptyList();
-    }
-
-    public String getPath() {
-        return null;
     }
 }

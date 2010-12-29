@@ -32,6 +32,9 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.security.PermissionRolePanel;
@@ -52,6 +55,7 @@ public class RolePermissionsTabItem extends EditEngineTabItem {
         }
         GWTJahiaRole role = new GWTJahiaRole(engine.getNode().getName());
         tab.add(new PermissionRolePanel(role));
+        tab.setLayout(new FitLayout());
         tab.setProcessed(true);
     }
 

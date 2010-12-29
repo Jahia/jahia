@@ -205,7 +205,9 @@ public class RoleService {
                 RoleImpl role = roleManager.loadRole(roleId, session);
                 Set<Permission> finalPermissions = new LinkedHashSet<Permission>(role.getPermissions());
                 for (Permission permission : permissions) {
-                    finalPermissions.add(new PermissionImpl(permission.getName()));
+                    PermissionImpl e = new PermissionImpl(permission.getName());
+                    e.setPath(permission.getPath());
+                    finalPermissions.add(e);
                 }
                 if (finalPermissions.size() != role.getPermissions().size()) {
                     role.setPermissions(finalPermissions);

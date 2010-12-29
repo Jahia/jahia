@@ -68,7 +68,7 @@ public class RoleEditor {
                 }
 
                 public void onSuccess() {
-                    panel.add(new RolesManager(panel.getElement().getAttribute("config"),panel.getElement().getAttribute("siteKey")));
+                    panel.add(new RolesManager(panel.getElement().getAttribute("config")));
                 }
             });        
         }

@@ -54,7 +54,7 @@ public class ContentManager extends TriPanelBrowserLayout {
         // superclass constructor (define linker)
         super(config);
         setWidth("100%");
-        setHeight("700px");
+        setHeight("500px");
         setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, southSize));
 
         if (mimeTypes != null && mimeTypes.size() > 0) {

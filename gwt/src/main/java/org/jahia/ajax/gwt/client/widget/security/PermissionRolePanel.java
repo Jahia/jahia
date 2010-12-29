@@ -35,6 +35,11 @@ package org.jahia.ajax.gwt.client.widget.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.Layout;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
@@ -77,30 +82,18 @@ import com.google.gwt.user.client.Element;
 public class PermissionRolePanel extends LayoutContainer implements LinkerComponent {
     private List<GWTJahiaRole> roles = new ArrayList<GWTJahiaRole>();
     private List<GWTJahiaPermission> permissions = new ArrayList<GWTJahiaPermission>();
-    private String siteKey = null;
-    private Grid<GWTJahiaPermission> grid;
 
-    private ContentPanel mainPanel = new ContentPanel();
     private final JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
-    private final GWTJahiaRole role;
+    private GWTJahiaRole role;
 
     public PermissionRolePanel(GWTJahiaRole role) {
-        //To change body of created methods use File | Settings | File Templates.
         this.role = role;
     }
 
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        setLayout(new FillLayout());
-        mainPanel.setHeaderVisible(false);
-        mainPanel.setHeaderVisible(false);
-        mainPanel.setBodyBorder(false);
-        mainPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
-        mainPanel.setLayout(new FitLayout());
-        mainPanel.setSize(600, 470);
-        mainPanel.setFrame(true);
-        add(mainPanel);
+        setLayout(new FitLayout());
         // refresh data
         refresh();
 
@@ -127,110 +120,24 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
      * Update ui
      */
     public void refreshUI() {
-        mainPanel.removeAll();
-        
-        final GroupingStore<GWTJahiaPermission> store = new GroupingStore<GWTJahiaPermission>();
-        store.add(permissions);
-        store.groupBy("group");
+        removeAll();
+        final TreeStore<GWTJahiaPermission> store = new TreeStore<GWTJahiaPermission>();
+        store.add(permissions, true);
         store.sort("name", SortDir.ASC);
         List<ColumnConfig> configs = createColumnsConfig();
         if (configs != null) {
             final ColumnModel cm = new ColumnModel(configs);
-            cm.addHeaderGroup(0, 1, new HeaderGroupConfig("", 1, 1));
-            for (int i = 2; i < configs.size(); i++) {
-                cm.addHeaderGroup(0, i, new HeaderGroupConfig(createGrantAllCheckbox(i - 2), 1, 1));
-            }
-            
-            grid = new Grid<GWTJahiaPermission>(store, cm);
+            TreeGrid<GWTJahiaPermission> grid = new TreeGrid<GWTJahiaPermission>(store, cm);
+            grid.expandAll();
+            grid.setAutoExpandColumn("name");
             grid.setStyleAttribute("borderTop", "none");
             grid.setBorders(true);
-            
-            GroupingView view = new GroupingView();
-            view.setShowGroupedColumn(false);
-            view.setForceFit(false);
-            view.setGroupRenderer(new GridGroupRenderer() {
-                public String render(GroupColumnData data) {
-                    return data.group;
-                }
-            });
-            grid.setView(view);
-            mainPanel.add(grid);
+            add(grid);
 
         } else {
-            mainPanel.add(new Label("There is no defined roles"));
+            add(new Label("There is no defined roles"));
         }
-        mainPanel.layout();
-    }
-
-    private void updateGrantAllCheckboxState(final int roleIndex) {
-        final CheckBox cb = (CheckBox) grid.getColumnModel().getHeaderGroups().get(roleIndex + 2).getWidget();
-        boolean oldState = cb.getValue();
-        boolean state = roleHasAllPermissions(roleIndex);
-        if (oldState != state) {
-            cb.setFireChangeEventOnSetValue(false);
-            cb.setValue(state);
-            cb.setFireChangeEventOnSetValue(true);
-        }
-    }
-    
-    private boolean roleHasAllPermissions(final int roleIndex) {
-        final GWTJahiaRole role = roles.get(roleIndex); 
-        boolean state = true;
-        for (GWTJahiaPermission perm : permissions) {
-            state = role.hasPermission(perm);
-            if (!state) {
-                break;
-            }
-        }
-        return state;
-    }
-    
-    private CheckBox createGrantAllCheckbox(final int roleIndex) {
-        final GWTJahiaRole role = roles.get(roleIndex); 
-        final CheckBox cb = new CheckBox();
-        cb.setValue(roleHasAllPermissions(roleIndex));
-        
-        cb.addListener(Events.Change, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent event) {
-                if (cb.getValue()) {
-                    // adding a permission
-                    contentService.addRolePermissions(role, permissions, new BaseAsyncCallback<Object>() {
-                        public void onSuccess(Object o) {
-                            Log.debug("permissions added to role " + role.getName());
-                            role.getPermissions().clear();
-                            role.getPermissions().addAll(permissions);
-                            updateState();
-                        }
-                        public void onApplicationFailure(Throwable throwable) {
-                            Log.error("Error while adding a permissions to a role " + role.getName(), throwable);
-                        }
-                    });
-                } else {
-                    // removing a permission
-                    contentService.removeRolePermissions(role, permissions, new BaseAsyncCallback<Object>() {
-                        public void onSuccess(Object o) {
-                            Log.debug("permissions revoked from role " + role.getName());
-                            role.getPermissions().clear();
-                            updateState();
-                        }
-                        public void onApplicationFailure(Throwable throwable) {
-                            Log.error("Error revoking permissions from role " + role.getName(), throwable);
-                        }
-                    });
-                }
-            }
-
-            private void updateState() {
-                for (int i = 0; i < permissions.size(); i++) {
-                    CheckBox rolePemissionCheckBox = (CheckBox) grid.getView().getWidget(i, roleIndex + 2);
-                    rolePemissionCheckBox.setFireChangeEventOnSetValue(false);
-                    rolePemissionCheckBox.setValue(cb.getValue());
-                    rolePemissionCheckBox.setFireChangeEventOnSetValue(true);
-                }
-            }
-        });
-        
-        return cb;
+        layout();
     }
 
     /**
@@ -243,7 +150,8 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         ColumnConfig column = new ColumnConfig();
         column.setId("name");
         column.setHeader("");
-        column.setWidth(200);
+        column.setRenderer(new TreeGridCellRenderer());
+        column.setWidth(350);
         configs.add(column);
 
 
@@ -258,7 +166,6 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                                  final int colIndex, ListStore<GWTJahiaPermission> store, Grid<GWTJahiaPermission> grid) {
 
                 final CheckBox checkbox = new CheckBox();
-                final GWTJahiaRole role = roles.get(colIndex - index);
                 checkbox.setValue(role.hasPermission(currentPermission));
                 checkbox.setToolTip(currentPermission.getName());
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
@@ -273,7 +180,6 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                                     if (!role.getPermissions().contains(currentPermission)) {
                                         role.getPermissions().add(currentPermission);
                                     }
-                                    updateGrantAllCheckboxState(colIndex - index);
                                 }
 
                                 public void onApplicationFailure(Throwable throwable) {
@@ -284,9 +190,8 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                             // removing a permission
                             contentService.removeRolePermissions(role, pList, new BaseAsyncCallback() {
                                 public void onSuccess(Object o) {
-                                    Log.debug("permission removed to role");
+                                    Log.debug("permission removed from role");
                                     role.getPermissions().remove(currentPermission);
-                                    updateGrantAllCheckboxState(colIndex - index);
                                 }
 
                                 public void onApplicationFailure(Throwable throwable) {
@@ -311,6 +216,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                 column.setSortable(false);
                 column.setGroupable(false);
                 configs.add(column);
+                this.role = role;
                 break;
             }
         }

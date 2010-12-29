@@ -37,6 +37,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -56,7 +57,7 @@ public class ProviderKeyColumnVisibility extends Visibility {
     private boolean alsoCountDynamicProviders;
 
     @Override
-    public boolean getRealValue(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
+    public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
         boolean visible = false;
         List<JCRStoreProvider> providers = sessionFactory.getProviderList();
         if (providers.size() > 1) {

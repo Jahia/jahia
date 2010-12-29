@@ -433,7 +433,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         p.setProperty("siteservername", s.getServerName());
         p.setProperty("sitekey", s.getSiteKey());
         p.setProperty("description", s.getDescr());
-        p.setProperty("templatePackageName", s.getTemplatePackageName());
+        p.setProperty("templatePackageName", s.getTemplateFolder());
         p.setProperty("mixLanguage", Boolean.toString(s.isMixLanguagesActive()));
         p.setProperty("defaultLanguage", s.getDefaultLanguage());
 

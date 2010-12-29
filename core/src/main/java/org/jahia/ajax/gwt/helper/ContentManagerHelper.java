@@ -899,7 +899,7 @@ public class ContentManagerHelper {
                                 moduleName = originalNode.getName();
                             }
 
-                            synchro(originalNode, destinationNode, session, moduleName, references);
+                            synchro(originalNode, destinationNode, session, moduleName, references, true);
 
                             ReferencesHelper.resolveCrossReferences(session, references);
                             session.save();
@@ -917,42 +917,43 @@ public class ContentManagerHelper {
     }
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,
-                        Map<String, List<String>> references) throws RepositoryException {
+                        Map<String, List<String>> references, boolean doChildren) throws RepositoryException {
+        if (source.isNodeType("jnt:virtualsite")) {
+            session.getUuidMapping().put(source.getIdentifier(), destinationNode.getIdentifier());
+            NodeIterator ni = source.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+                JCRNodeWrapper node;
+                if (destinationNode.hasNode(child.getName())) {
+                    node = destinationNode.getNode(child.getName());
+                } else {
+                    session.checkout(destinationNode);
+                    node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                    session.save();
+                    doChildren = false;
+                }
+                synchro(child, node, session, moduleName, references, doChildren);
+            }
+        }
+
+        if (source.isNodeType("jnt:folder") || source.isNodeType("jnt:contentList")) {
+            templatesSynchro(source, destinationNode, session, references, false, false, moduleName);
+        } else
         if (source.isNodeType("jnt:templatesFolder")) {
             templatesSynchro(source, destinationNode, session, references, true, false, moduleName);
-            return;
+        } else {
+            templatesSynchro(source, destinationNode, session, references, false, doChildren, moduleName);
         }
-        if (!source.isNodeType("jnt:virtualsite")) {
-            templatesSynchro(source, destinationNode, session, references, false, false, moduleName);
-            return;
-        }
-
-        session.getUuidMapping().put(source.getIdentifier(), destinationNode.getIdentifier());
-
-        NodeIterator ni = source.getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-            JCRNodeWrapper node;
-            if (destinationNode.hasNode(child.getName())) {
-                node = destinationNode.getNode(child.getName());
-            } else {
-                session.checkout(destinationNode);
-                node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
-                session.save();
-            }
-            synchro(child, node, session, moduleName, references);
-        }
-
     }
 
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
-                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doRemove, boolean isModule, String moduleName)
+                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doRemove, boolean doChildren, String moduleName)
             throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
 
-        boolean isCurrentModule = isModule || (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
+        boolean isCurrentModule = doChildren || (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
 
         session.checkout(destinationNode);
 
@@ -1090,7 +1091,7 @@ public class ContentManagerHelper {
             try {
                 JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(shortName, "jnt:virtualsite");
                 session.save();
-                templateSet.setProperty("j:siteType",siteType);
+                templateSet.setProperty("j:siteType", siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
                 JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
                 templateSet.getNode("templates/base").setProperty("j:view", shortName);

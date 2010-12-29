@@ -338,9 +338,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             return true;
         }
 
-//        if (permissions == Collections.singleton(Permission.READ) && absPathStr.equals("{}")) {
-//            return true;
-//        }
+        if (permissions.equals(Collections.singleton(Privilege.JCR_READ + "_ " +workspaceName)) && absPathStr.equals("{}")) {
+            return true;
+        }
 
         boolean res = false;
 
@@ -367,7 +367,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             // Always deny write access on system folders
             if (getSecuritySession().itemExists(jcrPath)) {
                 Item i = getSecuritySession().getItem(jcrPath);
-                if (i.isNode() && permissions.contains("jcr_read_"+workspaceName)) {
+                if (i.isNode() && !permissions.equals(Collections.singleton(Privilege.JCR_READ + "_" + workspaceName))) {
                     String ntName = ((Node) i).getPrimaryNodeType().getName();
                     if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
                         cache.put(absPathStr + " : " + permissions, false);
@@ -377,7 +377,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             boolean newItem = !getSecuritySession().itemExists(jcrPath); // Jackrabbit checks the ADD_NODE permission on non-existing nodes
-            if (newItem && permissions.contains("jcr:addChildNodes_"+workspaceName)) {
+            if (newItem && !permissions.equals(Collections.singleton(Privilege.JCR_ADD_CHILD_NODES + "_" + workspaceName))) {
                 // If node is new (local to the session), always grant permission
                 cache.put(absPathStr + " : " + permissions, true);
                 return true;
@@ -435,7 +435,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        cache.put(absPathStr + " : " + permissions, res);
+        cache.put(absPathStr + " : " + permissions, res);
         return res;
     }
 
@@ -492,36 +492,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 Item i = s.getItem(jcrPath);
                 if (i.isNode()) {
                     Node node = (Node) i;
-                    if (node.isNodeType("mix:accessControlled")) {
-                        // Old JCR-2 specifications
-                        Node acp = node.getProperty("jcr:accessControlPolicy").getNode();
-                        NodeIterator aces = acp.getNode("jcr:acl").getNodes("jcr:ace");
-
-                        while (aces.hasNext()) {
-                            Node ace = aces.nextNode();
-                            String principal = ace.getProperty("jcr:principal").getString();
-                            String type = ace.getProperty("jcr:aceType").getString();
-                            Value[] roles = ace.getProperty("jcr:roles").getValues();
-                            for (int j = 0; j < roles.length; j++) {
-                                Value role = roles[j];
-                                if (match(permissions, role.getString(), s)) {
-                                    String principalName = principal.substring(2);
-                                    if (principal.charAt(0) == 'u') {
-                                        if (principalName.equals(jahiaPrincipal.getName())) {
-                                            return type.equals("GRANT");
-                                        }
-                                    } else if (principal.charAt(0) == 'g') {
-                                        if (principalName.equals("guest") || !jahiaPrincipal.isGuest() && isUserMemberOf(jahiaPrincipal.getName(), principalName, site)) {
-                                            if (!groups.contains(principalName)) {
-                                                result |= type.equals("GRANT");
-                                                groups.add(principalName);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else if (node.hasNode("j:acl")) {
+                    if (node.hasNode("j:acl")) {
                         // Jahia specific ACL
                         Node acl = node.getNode("j:acl");
                         NodeIterator aces = acl.getNodes();

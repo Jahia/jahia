@@ -143,6 +143,9 @@ public final class JahiaPrivilegeRegistry {
      * @throws RepositoryException If another error occurs.
      */
     public Privilege getPrivilege(String privilegeName, String workspaceName) throws AccessControlException, RepositoryException {
+        if (!privilegeName.startsWith("{")) {
+            privilegeName = "{}" + privilegeName;
+        }
         String s = privilegeName + "_" + workspaceName;
         if (map.containsKey(s)) {
             return map.get(s);

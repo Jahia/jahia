@@ -264,8 +264,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="serverActionPermission" value="global/studio-mode"/>
-                <property name="siteActionPermission" value="toolbar/studio-mode"/>
+                <property name="permission" value="toolbar/studio-mode"/>
             </bean>
         </property>
     </bean>
@@ -290,8 +289,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="serverActionPermission" value="global/studio-mode"/>
-                <property name="siteActionPermission" value="toolbar/studio-mode"/>
+                <property name="permission" value="toolbar/studio-mode"/>
             </bean>
         </property>
     </bean>
@@ -347,7 +345,7 @@
         <property name="icon" value="fileManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/file-manager"/>
+                <property name="permission" value="managers/file-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -377,7 +375,7 @@
         <property name="icon" value="contentManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/content-manager"/>
+                <property name="permission" value="managers/content-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -430,7 +428,7 @@
         <property name="icon" value="portletManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/portlet-manager"/>
+                <property name="permission" value="managers/portlet-manager"/>
             </bean>
         </property>
 
@@ -461,7 +459,7 @@
         <property name="icon" value="categoryManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/category-manager"/>
+                <property name="permission" value="managers/category-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -492,7 +490,7 @@
         <property name="icon" value="tagManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/tag-manager"/>
+                <property name="permission" value="managers/tag-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -522,7 +520,7 @@
         <property name="icon" value="siteManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/site-manager"/>
+                <property name="permission" value="managers/site-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -572,15 +570,6 @@
         </property>
         <property name="icon" value="clipboard"/>
     </bean>
-
-    <!-- Notification -->
-    <bean id="Toolbar.Item.Notification" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NotificationActionItem"/>
-        </property>
-        <property name="icon" value="notification"/>
-    </bean>
-
 
     <!-- new edit mode buttons: create -->
     <bean id="Toolbar.Item.NewPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">

@@ -32,8 +32,8 @@
 
 package org.jahia.bin;
 
+import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
-import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -65,7 +65,7 @@ public class Studio extends Render {
 	    return "/cms/studio";
     }
 
-    protected boolean hasAccess(JahiaUser user, String site) {
-        return user != null && user.isPermitted(new PermissionIdentity("global/studio-mode"));
+    protected boolean hasAccess(JCRNodeWrapper node) {
+        return node.hasPermission("studio-mode");
     }
 }

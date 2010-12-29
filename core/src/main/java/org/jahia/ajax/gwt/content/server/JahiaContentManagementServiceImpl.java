@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGViolation;
@@ -134,6 +135,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private GoogleDocsServiceFactory googleDocsServiceFactory;
     private CacheHelper cacheHelper;
     private SchedulerHelper schedulerHelper;
+    private UIConfigHelper uiConfigHelper;
+
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
@@ -221,6 +224,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.schedulerHelper = schedulerHelper;
     }
 
+    public void setUiConfigHelper(UIConfigHelper uiConfigHelper) {
+        this.uiConfigHelper = uiConfigHelper;
+    }
+
+
     // ------------------------ INTERFACE METHODS ------------------------
 
 
@@ -235,7 +243,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException {
         GWTManagerConfiguration config =
-                uiConfig.getGWTManagerConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
+                uiConfig.getGWTManagerConfiguration(getSite(), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                         getRequest(), name);
         config.setPermissions(rolesPermissions.getGrantedPermissions(getSite(), getUser()));
         return config;
@@ -248,11 +256,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTEditConfiguration getEditConfiguration(String name) throws GWTJahiaServiceException {
+    public GWTEditConfiguration getEditConfiguration(String path, String name) throws GWTJahiaServiceException {
         GWTEditConfiguration config =
-                uiConfig.getGWTEditConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
-                        getRequest(), name);
-        config.setPermissions(rolesPermissions.getGrantedPermissions(getSite(), getUser()));
+                null;
+        try {
+            config = uiConfig.getGWTEditConfiguration(retrieveCurrentSession().getNode(path), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
+                    getRequest(), name);
+            config.setPermissions(rolesPermissions.getGrantedPermissions(getSite(), getUser()));
+        } catch (RepositoryException e) {
+            logger.error("Cannot get node", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
         return config;
     }
 
@@ -1894,4 +1908,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 		
 	    return wcagResult;
     }
+
+    public GWTJahiaToolbar getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException {
+        return uiConfigHelper.getGWTToolbarSet(getSite(), getSite(), getRemoteJahiaUser(), getLocale(),getUILocale(), getRequest(), toolbarGroup);
+    }
+
 }

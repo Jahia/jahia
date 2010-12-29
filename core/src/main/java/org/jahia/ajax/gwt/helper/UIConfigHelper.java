@@ -41,10 +41,9 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteLanguageSwitcherActionItem;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -86,14 +85,14 @@ public class UIConfigHelper {
      *
      * @return
      */
-    public GWTJahiaToolbar getGWTToolbarSet(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarGroup) throws GWTJahiaServiceException {
+    public GWTJahiaToolbar getGWTToolbarSet(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarGroup) throws GWTJahiaServiceException {
         try {
             // there is no pref or toolbar are hided
             // get all tool bars
             Toolbar toolbar = (Toolbar) SpringContextSingleton.getBean(toolbarGroup);
             Visibility visibility = toolbar.getVisibility();
-            if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
-                return createGWTToolbar(site, jahiaUser, locale, uiLocale, request, toolbar);
+            if ((visibility != null && visibility.getRealValue(contextNode, jahiaUser, locale, request)) || visibility == null) {
+                return createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, toolbar);
             } else {
                 logger.info("Toolbar are not visible.");
                 return null;
@@ -108,10 +107,12 @@ public class UIConfigHelper {
     /**
      * create gwt toolabr set
      *
+     *
+     * @param contextNode
      * @param toolbarSet
      * @return
      */
-    public List<GWTJahiaToolbar> createGWTToolbarSet(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<Toolbar> toolbarSet) {
+    public List<GWTJahiaToolbar> createGWTToolbarSet(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<Toolbar> toolbarSet) {
         if (toolbarSet == null || toolbarSet.isEmpty()) {
             logger.debug("toolbar set list is empty");
             return null;
@@ -122,8 +123,8 @@ public class UIConfigHelper {
         for (Toolbar toolbar : toolbarSet) {
             // add only tool bar that the user can view
             Visibility visibility = toolbar.getVisibility();
-            if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
-                GWTJahiaToolbar gwtToolbar = createGWTToolbar(site, jahiaUser, locale, uiLocale, request, toolbar);
+            if ((visibility != null && visibility.getRealValue(contextNode, jahiaUser, locale, request)) || visibility == null) {
+                GWTJahiaToolbar gwtToolbar = createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, toolbar);
                 // add toolbar only if not empty
                 if (gwtToolbar != null && gwtToolbar.getGwtToolbarItems() != null && !gwtToolbar.getGwtToolbarItems().isEmpty()) {
                     gwtJahiaToolbarSet.add(gwtToolbar);
@@ -215,10 +216,12 @@ public class UIConfigHelper {
     /**
      * Create gwt toolbar
      *
+     *
+     * @param contextNode
      * @param toolbar
      * @return
      */
-    public GWTJahiaToolbar createGWTToolbar(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Toolbar toolbar) {
+    public GWTJahiaToolbar createGWTToolbar(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Toolbar toolbar) {
         if (toolbar == null) {
             logger.debug("Toolbar parameter is null.");
             return null;
@@ -242,9 +245,9 @@ public class UIConfigHelper {
         for (Item item : toolbar.getItems()) {
             // add only itemsgroup that the user can view
             Visibility visibility = item.getVisibility();
-            if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
+            if ((visibility != null && visibility.getRealValue(contextNode, jahiaUser, locale, request)) || visibility == null) {
                 if (item instanceof Menu) {
-                    GWTJahiaToolbarMenu gwtMenu = createGWTItemsGroup(site, jahiaUser, locale, uiLocale, request, gwtToolbar.getName(), index, (Menu) item);
+                    GWTJahiaToolbarMenu gwtMenu = createGWTItemsGroup(contextNode, site, jahiaUser, locale, uiLocale, request, gwtToolbar.getName(), index, (Menu) item);
                     // add itemsGroup only if not empty
                     if (gwtMenu != null && gwtMenu.getGwtToolbarItems() != null && !gwtMenu.getGwtToolbarItems().isEmpty()) {
                         gwtToolbarItemsGroupList.add(gwtMenu);
@@ -278,6 +281,8 @@ public class UIConfigHelper {
     /**
      * Get manage configuration
      *
+     *
+     * @param contextNode
      * @param site
      * @param jahiaUser
      * @param locale
@@ -287,7 +292,7 @@ public class UIConfigHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTManagerConfiguration getGWTManagerConfiguration(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String name) throws GWTJahiaServiceException {
+    public GWTManagerConfiguration getGWTManagerConfiguration(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String name) throws GWTJahiaServiceException {
         try {
             ManagerConfiguration config = (ManagerConfiguration) SpringContextSingleton.getBean(name);
             if (config != null) {
@@ -314,18 +319,18 @@ public class UIConfigHelper {
                 gwtConfig.setSearchInContent(config.isSearchInContent());                
 
                 // set toolbar
-                gwtConfig.setToolbars(createGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, config.getToolbars()));
-                gwtConfig.setContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
+                gwtConfig.setToolbars(createGWTToolbarSet(contextNode, site, jahiaUser, locale, uiLocale, request, config.getToolbars()));
+                gwtConfig.setContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
 
                 // add table columns
                 for (Column item : config.getTableColumns()) {
-                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
+                    if (checkVisibility(contextNode, jahiaUser, locale, request, item.getVisibility())) {
                         GWTColumn col = createGWTColumn(item, site, locale, uiLocale);
                         gwtConfig.addTableColumn(col);
                     }
                 }
                 for (Column item : config.getTreeColumns()) {
-                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
+                    if (checkVisibility(contextNode, jahiaUser, locale, request, item.getVisibility())) {
                         GWTColumn col = createGWTColumn(item, site, locale, uiLocale);
                         gwtConfig.addTreeColumn(col);
                     }
@@ -333,7 +338,7 @@ public class UIConfigHelper {
 
                 // add accordion panels
                 for (Repository item : config.getRepositories()) {
-                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
+                    if (checkVisibility(contextNode, jahiaUser, locale, request, item.getVisibility())) {
                         GWTRepository repository  = new GWTRepository();
                         repository.setKey(item.getKey());
                         if (item.getTitleKey() != null) {
@@ -349,7 +354,7 @@ public class UIConfigHelper {
                     }
                 }
 
-                List<GWTEngineTab> tabs = createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
+                List<GWTEngineTab> tabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
                 gwtConfig.setEngineTabs(tabs);
                 List<GWTEngineTab> managerTabs = new ArrayList<GWTEngineTab>(tabs.size());
                 for (GWTEngineTab gwtEngineTab : tabs) {
@@ -405,12 +410,14 @@ public class UIConfigHelper {
     /**
      * Create gwt items group
      *
+     *
+     * @param contextNode
      * @param toolbarName
      * @param index
      * @param menu
      * @return
      */
-    private GWTJahiaToolbarMenu createGWTItemsGroup(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarName, int index, Menu menu) {
+    private GWTJahiaToolbarMenu createGWTItemsGroup(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarName, int index, Menu menu) {
         // don't add the items group if  has no items group
         List<Item> list = menu.getItems();
         if (list == null || list.isEmpty()) {
@@ -422,7 +429,7 @@ public class UIConfigHelper {
         List<GWTJahiaToolbarItem> gwtToolbarItemsList = new ArrayList<GWTJahiaToolbarItem>();
         // create items from definition
         for (Item item : list) {
-            addToolbarItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, item);
+            addToolbarItem(contextNode, site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, item);
         }
 
         // don't add the items group if  has no items group
@@ -476,13 +483,14 @@ public class UIConfigHelper {
     /**
      * Add item
      *
+     * @param contextNode
      * @param gwtToolbarItemsList
      * @param item
      */
-    private void addToolbarItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
+    private void addToolbarItem(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
         if (item instanceof Menu) {
             for (Item subItem : ((Menu) item).getItems()) {
-                addToolbarItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, subItem);
+                addToolbarItem(contextNode, site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, subItem);
             }
         } else {
             // add only item that the user can view
@@ -490,7 +498,7 @@ public class UIConfigHelper {
             Visibility visibility = item.getVisibility();
 
             // add only visible items
-            if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
+            if ((visibility != null && visibility.getRealValue(contextNode, jahiaUser, locale, request)) || visibility == null) {
                 GWTJahiaToolbarItem gwtToolbarItem = createGWTItem(site, jahiaUser, locale, uiLocale, request, item);
                 if (gwtToolbarItem != null) {
                     gwtToolbarItemsList.add(gwtToolbarItem);
@@ -562,18 +570,18 @@ public class UIConfigHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTEditConfiguration getGWTEditConfiguration(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String name) throws GWTJahiaServiceException {
+    public GWTEditConfiguration getGWTEditConfiguration(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String name) throws GWTJahiaServiceException {
         try {
             EditConfiguration config = (EditConfiguration) SpringContextSingleton.getBean(name);
             if (config != null) {
                 GWTEditConfiguration gwtConfig = new GWTEditConfiguration();
                 gwtConfig.setName(config.getName());
-                gwtConfig.setTopToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
-                gwtConfig.setSidePanelToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getSidePanelToolbar()));
-                gwtConfig.setMainModuleToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getMainModuleToolbar()));
-                gwtConfig.setContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
-                gwtConfig.setTabs(createGWTSidePanelTabList(site, jahiaUser, locale, uiLocale, request, config.getTabs()));
-                gwtConfig.setEngineTabs(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEngineTabs()));
+                gwtConfig.setTopToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
+                gwtConfig.setSidePanelToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getSidePanelToolbar()));
+                gwtConfig.setMainModuleToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getMainModuleToolbar()));
+                gwtConfig.setContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
+                gwtConfig.setTabs(createGWTSidePanelTabList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTabs()));
+                gwtConfig.setEngineTabs(createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs()));
                 return gwtConfig;
             } else {
                 throw new GWTJahiaServiceException("Bean. 'editconfig'  not found in spring config file");
@@ -587,6 +595,8 @@ public class UIConfigHelper {
     /**
      * Create GWTSidePanelTab list
      *
+     *
+     * @param contextNode
      * @param site
      * @param jahiaUser
      * @param locale
@@ -595,29 +605,29 @@ public class UIConfigHelper {
      * @param tabs
      * @return
      */
-    private List<GWTSidePanelTab> createGWTSidePanelTabList(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<SidePanelTab> tabs) {
+    private List<GWTSidePanelTab> createGWTSidePanelTabList(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<SidePanelTab> tabs) {
         // create side panel tabs
         List<GWTSidePanelTab> gwtSidePanelTabList = new ArrayList<GWTSidePanelTab>();
         for (SidePanelTab sidePanelTab : tabs) {
-            if (checkVisibility(site, jahiaUser, locale, request, sidePanelTab.getVisibility())) {
+            if (checkVisibility(contextNode, jahiaUser, locale, request, sidePanelTab.getVisibility())) {
                 final GWTSidePanelTab gwtSidePanel = new GWTSidePanelTab(sidePanelTab.getKey());
                 gwtSidePanel.setTooltip(getResources("label.selectorTab." + sidePanelTab.getKey(), uiLocale, site,
                         jahiaUser));
-                gwtSidePanel.setTreeContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTreeContextMenu()));
-                gwtSidePanel.setTableContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTableContextMenu()));
+                gwtSidePanel.setTreeContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTreeContextMenu()));
+                gwtSidePanel.setTableContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTableContextMenu()));
                 gwtSidePanel.setIcon(sidePanelTab.getIcon());
 
                 gwtSidePanel.setTabItem(sidePanelTab.getTabItem());
 
                 // add table columns
                 for (Column item : sidePanelTab.getTableColumns()) {
-                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
+                    if (checkVisibility(contextNode, jahiaUser, locale, request, item.getVisibility())) {
                         GWTColumn col = createGWTColumn(item, site, locale, uiLocale);
                         gwtSidePanel.addTableColumn(col);
                     }
                 }
                 for (Column item : sidePanelTab.getTreeColumns()) {
-                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
+                    if (checkVisibility(contextNode, jahiaUser, locale, request, item.getVisibility())) {
                         GWTColumn col = createGWTColumn(item, site, locale, uiLocale);
                         gwtSidePanel.addTreeColumn(col);
                     }
@@ -632,6 +642,8 @@ public class UIConfigHelper {
     /**
      * Create gwt engine list
      *
+     *
+     * @param contextNode
      * @param site
      * @param jahiaUser
      * @param locale
@@ -639,10 +651,10 @@ public class UIConfigHelper {
      * @param engines
      * @return
      */
-    private List<GWTEngineTab> createGWTEngineList(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<EngineTab> engines) {
+    private List<GWTEngineTab> createGWTEngineList(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<EngineTab> engines) {
         final List<GWTEngineTab> engineTabs = new ArrayList<GWTEngineTab>();
         for (EngineTab engineTab : engines) {
-            if (checkVisibility(site, jahiaUser, locale, request, engineTab.getVisibility())) {
+            if (checkVisibility(contextNode, jahiaUser, locale, request, engineTab.getVisibility())) {
                 GWTEngineTab gwtTab = createGWTEngineTab(engineTab, site, locale, uiLocale);
                 engineTabs.add(gwtTab);
             }
@@ -709,11 +721,14 @@ public class UIConfigHelper {
     /**
      * Return tru
      *
+     *
+     *
+     * @param contextNode
      * @param visibility
      * @return
      */
-    private boolean checkVisibility(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request, Visibility visibility) {
-        return visibility == null || (visibility != null && visibility.getRealValue(site, jahiaUser, locale, request));
+    private boolean checkVisibility(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request, Visibility visibility) {
+        return visibility == null || visibility.getRealValue(contextNode, jahiaUser, locale, request);
     }
 
 

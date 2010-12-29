@@ -42,11 +42,7 @@ import java.beans.PropertyEditorSupport;
 public class VisibilityPropertyEditor extends PropertyEditorSupport {
     public void setAsText(String text) throws IllegalArgumentException {
         Visibility v = new Visibility();
-        if (text.startsWith("$site/")) {
-            v.setSiteActionPermission(text.substring("$site/".length()));
-        } else {
-            v.setServerActionPermission(text);
-        }
+        v.setPermission(text);
         setValue(v);
     }
 

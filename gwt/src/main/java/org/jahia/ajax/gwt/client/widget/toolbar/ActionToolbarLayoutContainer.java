@@ -39,7 +39,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
      */
     private void loadToolbars() {
         // load toolbars
-        ToolbarService.App.getInstance().getGWTToolbars(toolbarName, new BaseAsyncCallback<GWTJahiaToolbar>() {
+        JahiaContentManagementService.App.getInstance().getGWTToolbars(toolbarName, new BaseAsyncCallback<GWTJahiaToolbar>() {
             public void onSuccess(GWTJahiaToolbar gwtJahiaToolbar) {
                 long begin = System.currentTimeMillis();
                 if (gwtJahiaToolbar != null) {

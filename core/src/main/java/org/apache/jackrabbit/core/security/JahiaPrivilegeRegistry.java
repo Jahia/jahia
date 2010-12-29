@@ -143,6 +143,9 @@ public final class JahiaPrivilegeRegistry {
      * @throws RepositoryException If another error occurs.
      */
     public Privilege getPrivilege(String privilegeName, String workspaceName) throws AccessControlException, RepositoryException {
+        if (!privilegeName.contains("{") && privilegeName.contains("/")) {
+            privilegeName = StringUtils.substringAfterLast(privilegeName, "/");
+        }
         if (!privilegeName.startsWith("{")) {
             privilegeName = "{}" + privilegeName;
         }

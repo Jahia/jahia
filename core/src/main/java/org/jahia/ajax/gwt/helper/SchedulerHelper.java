@@ -80,10 +80,10 @@ public class SchedulerHelper {
 
             if ((jahiaUser != null) && (!jahiaUser.getUserKey().equals(user))) {
                 // we must check whether the user has the permission to view other users's jobs
-                if (!jahiaUser.isPermitted(new PermissionIdentity("view-all-jobs"))) {
-                    // he doesn't we skip this entry.
-                    continue;
-                }
+//                if (!jahiaUser.isPermitted(new PermissionIdentity("view-all-jobs"))) {
+//                    // he doesn't we skip this entry.
+//                    continue;
+//                }
             }
 
             String description = jobDetail.getDescription();

@@ -73,14 +73,14 @@ public class LanguageHelper {
                     final TreeSet<String> orderedLangs = new TreeSet<String>();
                     orderedLangs.addAll(languageSettings);
                     for (String langCode : orderedLangs) {
-                        if (user.isPermitted(new PermissionIdentity(langCode))) {
+//                        if (user.isPermitted(new PermissionIdentity(langCode))) {
                             GWTJahiaLanguage item = new GWTJahiaLanguage();
                             item.setLanguage(langCode);
                             item.setDisplayName(getDisplayName(langCode));
                             item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
                             item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
                             items.add(item);
-                        }
+//                        }
                     }
                 }
             } else {

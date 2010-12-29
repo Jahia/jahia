@@ -609,7 +609,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             URLResolver urlResolver = new URLResolver(req.getPathInfo(), req.getServerName(), req);
 
             // check permission
-            if (!hasAccess(jcrSessionFactory.getCurrentUser(), urlResolver.getSiteKey())) {
+            if (!hasAccess(urlResolver.getNode())) {
                 if (JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                     throw new JahiaUnauthorizedException();
                 } else {
@@ -650,14 +650,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
                     resource = urlResolver.getResource(date, versionLabel);
                     renderContext.setMainResource(resource);
-                    try {
-                        JCRSiteNode site = resource.getNode().getResolveSite();
-                        if(site!=null && !site.getLanguagesAsLocales().contains(urlResolver.getLocale()) && renderContext.getEditModeConfigName() !=null && !renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
-                            throw new PathNotFoundException("This language does not exist on this site");
-                        }
-                        renderContext.setSite(site);
-                    } catch (PathNotFoundException e) {
+
+                    JCRSiteNode site = resource.getNode().getResolveSite();
+                    if(site!=null && !site.getLanguagesAsLocales().contains(urlResolver.getLocale()) && renderContext.getEditModeConfigName() !=null && !renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
+                        throw new PathNotFoundException("This language does not exist on this site");
                     }
+                    renderContext.setSite(site);
 //                    resource.pushWrapper("wrapper.fullpage");
 //                    resource.pushBodyWrapper();
 
@@ -761,7 +759,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return allowedMethods.isEmpty() || allowedMethods.contains(method);
     }
 
-    protected boolean hasAccess(JahiaUser user, String site) {
+    protected boolean hasAccess(JCRNodeWrapper node) {
         return true;
     }
 

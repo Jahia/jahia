@@ -50,11 +50,7 @@ public class EngineTabPropertyEditor  extends PropertyEditorSupport {
         c.setId(values[0]);
         if (values.length > 1) {
             Visibility v = new Visibility();
-            if (values[1].startsWith("$site/")) {
-                v.setSiteActionPermission(values[1].substring("$site/".length()));
-            } else {
-                v.setServerActionPermission(values[1]);
-            }
+            v.setPermission(values[1]);
             c.setVisibility(v);
         }
         setValue(c);

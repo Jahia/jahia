@@ -118,7 +118,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
         ...
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="contentmanager/filemanager"/>
+                <property name="permission" value="contentmanager/filemanager"/>
             </bean>
         </property>
         ...
@@ -182,7 +182,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="contentmanager/filemanager"/>
+                <property name="permission" value="contentmanager/filemanager"/>
             </bean>
         </property>
     </bean>    
@@ -340,7 +340,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
         ...
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="contentmanager/filemanager"/>
+                <property name="permission" value="contentmanager/filemanager"/>
             </bean>
         </property>
         ...
@@ -357,7 +357,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
         <property name="key" value="websiteRepository"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="contentmanager/website"/>
+                <property name="permission" value="contentmanager/website"/>
             </bean>
         </property>
     </bean>
@@ -367,7 +367,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
 
 
    The bean "visibility" is defined by the following properties:
-     - siteActionPermission: allows to define the site permissions that the user must have
+     - permission: allows to define the site permissions that the user must have
      - serverActionPermission: allows to define the server permissions that the user must have
      - needAuthentication: allows to define if the user must be authenticated or not
      - userAgent: allows to define the userAgent (ie, mozilla, ....)

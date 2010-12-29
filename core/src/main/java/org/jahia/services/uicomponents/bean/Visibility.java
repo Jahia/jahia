@@ -32,7 +32,7 @@
 
 package org.jahia.services.uicomponents.bean;
 
-import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -50,26 +50,18 @@ public class Visibility {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Visibility.class);
 
     //visibility parameter
-    private String siteActionPermission;
+    private String permission;
     private String serverActionPermission;
     private String needAuthentication;
     private String userAgent;
     private String value;
 
-    public String getSiteActionPermission() {
-        return siteActionPermission;
+    public String getPermission() {
+        return permission;
     }
 
-    public void setSiteActionPermission(String siteActionPermission) {
-        this.siteActionPermission = siteActionPermission;
-    }
-
-    public String getServerActionPermission() {
-        return serverActionPermission;
-    }
-
-    public void setServerActionPermission(String serverActionPermission) {
-        this.serverActionPermission = serverActionPermission;
+    public void setPermission(String permission) {
+        this.permission = permission;
     }
 
     public String getNeedAuthentication() {
@@ -96,7 +88,7 @@ public class Visibility {
         this.value = value;
     }
 
-    public boolean getRealValue(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
+    public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
         if (value != null) {
             if (logger.isDebugEnabled()) logger.debug("Value: " + value);
             return Boolean.getBoolean(value);
@@ -115,19 +107,8 @@ public class Visibility {
                         logger.debug("Logging: true");
                     }
 
-                    // check server permission
-                    if (!isAllowedServerPermission(jahiaUser)) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("ServerAction: false");
-                        }
-                        return false;
-                    }
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("ServerPermission:: true");
-                    }
-
                     // check site permission
-                    if (!isAllowedSitePermission(jahiaUser, site)) {
+                    if (!isAllowed(contextNode)) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("SitePermission:: false");
                         }
@@ -161,49 +142,19 @@ public class Visibility {
     }
 
     /**
-     * Get serverPermission
-     *
-     * @param user
-     * @return
-     */
-    private boolean isAllowedServerPermission(JahiaUser user) {
-        if (serverActionPermission != null) {
-//            ProcessingContext processingContext = jData.getProcessingContext();
-//            Object o = processingContext.getAttribute(serverActionPermission);
-//            if (o != null) {
-//                return ((Boolean) o).booleanValue();
-//            } else {
-                boolean isAllowedServerPermission = user.isPermitted(new PermissionIdentity(serverActionPermission));
-//                processingContext.setAttribute(serverActionPermission, new Boolean(isAllowedServerPermission));
-                return isAllowedServerPermission;
-//            }
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * Get sitePermission
      *
      * @return
      */
-    private boolean isAllowedSitePermission(JahiaUser user,JCRSiteNode site) {
-        if (siteActionPermission != null && !user.isRoot()) {
-//            ProcessingContext processingContext = jahiaData.getProcessingContext();
-//            Object o = processingContext.getAttribute(siteActionPermission);
-//            logger.debug("Site action permission value: " + siteActionPermission);
-//            if (o != null) {
-//                logger.debug("Site permission value(from request): " + ((Boolean) o).booleanValue());
-//                return ((Boolean) o).booleanValue();
-//            } else {
-                boolean isAllowedSitePermission = user.isPermitted(new PermissionIdentity(siteActionPermission));
-//                logger.debug("Site permission value: " + isAllowedSitePermission);
-//                processingContext.setAttribute(siteActionPermission, new Boolean(isAllowedSitePermission));
-                return isAllowedSitePermission;
-//            }
-        } else {
-            return true;
+    private boolean isAllowed(JCRNodeWrapper node) {
+        if (permission != null && !node.getUser().isRoot()) {
+            try {
+                return node.hasPermission(permission);
+            } catch (Exception e) {
+                logger.error("Cannot check permission "+permission, e);
+            }
         }
+        return true;
     }
 
     /**

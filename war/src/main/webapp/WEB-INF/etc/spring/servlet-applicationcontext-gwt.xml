@@ -59,6 +59,7 @@
         <property name="sessionPollingFrequency" value="300000"/>
         <property name="cacheHelper" ref="CacheHelper"/>
         <property name="schedulerHelper" ref="SchedulerHelper"/>
+        <property name="uiConfigHelper" ref="UiConfigHelper"/>
         <!--
         <property name="googleDocsExportFormats" ref="GoogleDocsExportFormats"/>
         <property name="googleDocsServiceFactory" ref="GoogleDocsServiceFactory"/>
@@ -68,10 +69,7 @@
     <bean name="toolbarServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtToolbarService"/>
     </bean>
-    <bean name="gwtToolbarService" class="org.jahia.ajax.gwt.templates.components.toolbar.server.ToolbarServiceImpl" scope="prototype">
-        <property name="uiConfigHelper" ref="UiConfigHelper"/>
-    </bean>
-    
+
     <bean name="userManagerServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtUserManagerService"/>
     </bean>

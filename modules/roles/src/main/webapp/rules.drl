@@ -14,14 +14,12 @@ global Logger logger
 global RoleService roleService
 ###############################################################################
 
-rule "Initial permissions-to-role assignment"
+rule "New permission created"
 	when
-		A property j:assignedPermissions has been set on a node
-			- the node has the type jnt:role
+		A new node has been created
+            - the node has the type jnt:permission
 	then
-		Log "Grant permissions " + propertyValue + " to role " + node.getPath()
-		Grant a list of permissions propertyValue to role node.getPath()
-		Remove this property
+		Refresh permissions
 end
 
 #rule "Initial role-to-user assignment"

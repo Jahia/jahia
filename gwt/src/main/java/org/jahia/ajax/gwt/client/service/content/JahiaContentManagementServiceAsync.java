@@ -47,6 +47,7 @@ import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
@@ -69,7 +70,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getManagerConfiguration(String name, AsyncCallback<GWTManagerConfiguration> async);
 
-    void getEditConfiguration(String name, AsyncCallback<GWTEditConfiguration> async);
+    void getEditConfiguration(String path, String name, AsyncCallback<GWTEditConfiguration> async);
 
     void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
@@ -308,4 +309,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 	        AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);
 
     void getNumberOfTasksForUser(AsyncCallback<Integer> asyncCallback);
+
+    void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbar> async);
+
 }

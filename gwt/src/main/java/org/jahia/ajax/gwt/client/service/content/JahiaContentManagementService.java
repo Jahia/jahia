@@ -49,6 +49,7 @@ import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
@@ -76,7 +77,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException;
 
-    public GWTEditConfiguration getEditConfiguration(String name) throws GWTJahiaServiceException;
+    public GWTEditConfiguration getEditConfiguration(String path, String name) throws GWTJahiaServiceException;
 
     public PagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset) throws GWTJahiaServiceException;
 
@@ -351,6 +352,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 	Map<String, WCAGValidationResult> validateWCAG(Map<String, String> richTexts);
 
     int getNumberOfTasksForUser() throws GWTJahiaServiceException;
+
+    public GWTJahiaToolbar getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException;
 
     // -------------------------- INNER CLASSES --------------------------
 

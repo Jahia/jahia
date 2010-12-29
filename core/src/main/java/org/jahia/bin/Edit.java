@@ -32,8 +32,8 @@
 
 package org.jahia.bin;
 
+import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
-import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -64,14 +64,11 @@ public class Edit extends Render {
 	    return "/cms/edit";
     }
 
-    protected boolean hasAccess(JahiaUser user, String site) {
-        if (user == null) {
+    protected boolean hasAccess(JCRNodeWrapper node) {
+        if (node == null) {
+            logger.error("Site key is null.");
             return false;
         }
-
-        if (site == null) {
-            logger.error("Site key is null.");
-        }
-        return user.isPermitted(new PermissionIdentity("edit-mode"));
+        return node.hasPermission("edit-mode");
     }
 }

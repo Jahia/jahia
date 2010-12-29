@@ -32,23 +32,14 @@
 
 package org.jahia.bin;
 
+import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
-import org.jahia.params.ParamBean;
-import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderException;
-import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaUser;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Rendering controller for the edit mode.
@@ -74,15 +65,12 @@ public class Contribute extends Render {
         return "/cms/contribute";
     }
 
-    protected boolean hasAccess(JahiaUser user, String site) {
-        if (user == null) {
+    protected boolean hasAccess(JCRNodeWrapper node) {
+        if (node == null) {
+            logger.error("Site key is null.");
             return false;
         }
-
-        if (site == null) {
-            logger.error("Site key is null.");
-        }
-        return user.isPermitted(new PermissionIdentity("contribute-mode"));
+        return node.hasPermission("contribute-mode");
     }
 
 }

@@ -34,8 +34,10 @@ package org.jahia.services.uicomponents.bean.contentmanager;
 
 import java.util.Locale;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.usermanager.JahiaUser;
@@ -49,9 +51,13 @@ import org.jahia.services.usermanager.JahiaUser;
 public class AnalyticsVisibility extends Visibility {
 
     @Override
-    public boolean getRealValue(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
-        if (site != null) {
-            return site.hasGoogleAnalyticsProfile() && super.getRealValue(site, jahiaUser, locale, request);
+    public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
+        try {
+            if (contextNode.getResolveSite() != null) {
+                return contextNode.getResolveSite().hasGoogleAnalyticsProfile() && super.getRealValue(contextNode, jahiaUser, locale, request);
+            }
+        } catch (RepositoryException e) {
+            return false;
         }
         return false;
     }

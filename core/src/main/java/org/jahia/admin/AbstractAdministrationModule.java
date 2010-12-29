@@ -37,10 +37,12 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
@@ -124,7 +126,16 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     }
 
     public boolean isEnabled(JahiaUser user, String siteKey) {
-        return StringUtils.isEmpty(permissionName) || user.isPermitted(new PermissionIdentity(permissionName));
+        try {
+            if (siteKey == null) {
+                return StringUtils.isEmpty(permissionName) || JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode().hasPermission(permissionName);
+            } else {
+                return StringUtils.isEmpty(permissionName) || JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/"+siteKey).hasPermission(permissionName);
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
     public boolean isSelected(ParamBean ctx) {

@@ -63,7 +63,19 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
     private List<Property> properties = new ArrayList<Property>();
     private ActionItem actionItem;
 	private Object parent;
+	private int position = -1;
+	private String positionAfter;
+	private String positionBefore;
 
+	public Item() {
+	    super();
+    }
+	
+	private Item(String id) {
+	    this();
+	    setId(id);
+    }
+	
     public String getId() {
         return id;
     }
@@ -194,11 +206,49 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
 				parent = bean;
 			}
 			if (parent instanceof Menu) {
-				((Menu) parent).removeItem(getId());
-				((Menu) parent).addItem(this);
+				Menu parentMenu = (Menu) parent;
+				parentMenu.removeItem(getId());
+				int index = -1;
+				if (position >= 0) {
+					index = position;
+				} else if (positionBefore != null) {
+					index = parentMenu.getItems().indexOf(new Item(positionBefore));
+				} else if (positionAfter != null) {
+					index = parentMenu.getItems().indexOf(new Item(positionAfter));
+					if (index != -1) {
+						index++;
+					}
+					if (index >= parentMenu.getItems().size()) {
+						index = -1;
+					}
+				}
+				if (index != -1) {
+					parentMenu.addItem(index, this);					
+				} else {
+					parentMenu.addItem(this);					
+				}
 			} else if (parent instanceof Toolbar) {
-				((Toolbar) parent).removeItem(getId());
-				((Toolbar) parent).addItem(this);
+				Toolbar parentToolbar = (Toolbar) parent;
+				parentToolbar.removeItem(getId());
+				int index = -1;
+				if (position >= 0) {
+					index = position;
+				} else if (positionBefore != null) {
+					index = parentToolbar.getItems().indexOf(new Item(positionBefore));
+				} else if (positionAfter != null) {
+					index = parentToolbar.getItems().indexOf(new Item(positionAfter));
+					if (index != -1) {
+						index++;
+					}
+					if (index >= parentToolbar.getItems().size()) {
+						index = -1;
+					}
+				}
+				if (index != -1) {
+					parentToolbar.addItem(index, this);					
+				} else {
+					parentToolbar.addItem(this);					
+				}
 			} else {
 				throw new IllegalArgumentException(
 				        "Unknown parent type '"
@@ -211,4 +261,29 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
 			parent = null;
 		}
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (super.equals(obj)) {
+			return true;
+		}
+		if (obj instanceof Item && obj != null) {
+			Item other = (Item) obj;
+			return getId() != null ? other.getId() != null && getId().equals(other.getId()) : other.getId() == null; 
+		}
+		
+	    return false;
+	}
+
+	public void setPosition(int position) {
+    	this.position = position;
+    }
+
+	public void setPositionAfter(String positionAfter) {
+    	this.positionAfter = positionAfter;
+    }
+
+	public void setPositionBefore(String positionBefore) {
+    	this.positionBefore = positionBefore;
+    }
 }

@@ -59,6 +59,10 @@ public class Menu extends Item implements Serializable, BeanNameAware {
         this.items.add(item);
     }
     
+    public void addItem(int index, Item item) {
+        this.items.add(index, item);
+    }
+    
     public void removeItem(String itemId) {
     	if (itemId != null && itemId.length() > 0) {
     		for (Iterator<Item> iterator = getItems().iterator(); iterator.hasNext();) {

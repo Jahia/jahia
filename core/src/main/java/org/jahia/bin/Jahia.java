@@ -264,17 +264,19 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 factory.enableClusterSync();
             }
 
-            Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(
-                    JahiaAfterInitializationService.class);
-            for (Object o : map.values()) {
-                JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-                initializationService.initAfterAllServicesAreStarted();
-            }
-            map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
-                    JahiaAfterInitializationService.class);
-            for (Object o : map.values()) {
-                JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-                initializationService.initAfterAllServicesAreStarted();
+            if (SpringContextSingleton.getInstance().isInitialized()) {
+	            Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(
+	                    JahiaAfterInitializationService.class);
+	            for (Object o : map.values()) {
+	                JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+	                initializationService.initAfterAllServicesAreStarted();
+	            }
+	            map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
+	                    JahiaAfterInitializationService.class);
+	            for (Object o : map.values()) {
+	                JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+	                initializationService.initAfterAllServicesAreStarted();
+	            }
             }
             mInitiated = true;
         } catch (Exception je) {

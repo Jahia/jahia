@@ -71,8 +71,6 @@ public class RolesManager extends LayoutContainer {
             public void onSuccess(GWTManagerConfiguration config) {
                 PermissionsUtils.loadPermissions(config.getPermissions());
                 final ContentManager cm = new ContentManager(null, null, null, config, 500);
-                final PermissionRolePanel pr = new PermissionRolePanel(siteKey);
-                cm.getLinker().registerExtraComponent(pr);
 
                 TabPanel tabPanel = new TabPanel();
                 tabPanel.setBorders(false);
@@ -80,10 +78,10 @@ public class RolesManager extends LayoutContainer {
                 TabItem managerItem = new TabItem(Messages.get("label_rolemanager", "Role manager"));
                 managerItem.add(cm);
                 tabPanel.add(managerItem);
-
+/*
                 TabItem rolePermisionItem = new TabItem(Messages.get("label_rolepermissionmapping", "Role/permission mapping"));
                 rolePermisionItem.add(pr);
-                tabPanel.add(rolePermisionItem);
+                tabPanel.add(rolePermisionItem);*/
 
 
                 add(tabPanel);

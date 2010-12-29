@@ -30,33 +30,29 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.rbac;
+package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.Collections;
-import java.util.List;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.security.PermissionRolePanel;
+import org.jahia.ajax.gwt.client.widget.security.PrincipalRolePanel;
 
 /**
- * Permission identifier.
+ * Represents a dedicated tab for viewing and managing role to principal assignment.
  * 
  * @author Sergiy Shyrkov
  */
-public class PermissionIdentity extends BaseIdentity implements Permission {
+public class RolePermissionsTabItem extends EditEngineTabItem {
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of this role
-     */
-    public PermissionIdentity(String name) {
-        super(name);
+
+    @Override
+    public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
+        if (engine.getNode() == null || tab.isProcessed()) {
+            return;
+        }
+        GWTJahiaRole role = new GWTJahiaRole(engine.getNode().getName());
+        tab.add(new PermissionRolePanel(role));
+        tab.setProcessed(true);
     }
 
-
-    public List<Permission> getChilds() {
-        return Collections.emptyList();
-    }
-
-    public String getPath() {
-        return null;
-    }
 }

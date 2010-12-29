@@ -124,15 +124,7 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     }
 
     public boolean isEnabled(JahiaUser user, String siteKey) {
-        if (StringUtils.isEmpty(permissionName)) {
-            // no permission check required
-            return true;
-        }
-        if (isServerModule()) {
-            return user.isPermitted(new PermissionIdentity(permissionName));
-        } else {
-            return user.isPermitted(new PermissionIdentity(permissionName, siteKey));
-        }
+        return StringUtils.isEmpty(permissionName) || user.isPermitted(new PermissionIdentity(permissionName));
     }
     
     public boolean isSelected(ParamBean ctx) {

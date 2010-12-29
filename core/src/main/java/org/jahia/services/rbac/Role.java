@@ -33,6 +33,7 @@
 package org.jahia.services.rbac;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Represents a single role.
@@ -49,12 +50,11 @@ public interface Role extends Serializable {
     String getName();
 
     /**
-     * Returns the site key of this role or <code>null</code> if it a
-     * server-level role.
-     * 
-     * @return the site key of this role or <code>null</code> if it a
-     *         server-level role
+     * Returns a set of permission implied by this role.
+     *
+     * @return a set of permission implied by this role
      */
-    String getSite();
+    Set<Permission> getPermissions();
 
+    String getPath();
 }

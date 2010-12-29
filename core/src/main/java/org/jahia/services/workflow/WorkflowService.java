@@ -229,7 +229,7 @@ public class WorkflowService {
                                     JahiaGroup group = groupService.lookupGroup(site.getID(), principalName);
                                     principals.add(group);
                                 } else if (principal.charAt(0) == 'r') {
-                                    principals.add(new RoleIdentity(principalName, site.getSiteKey()));
+                                    principals.add(new RoleIdentity(principalName));
                                 }
                             }
                         }
@@ -619,7 +619,7 @@ public class WorkflowService {
                                     results.add(rule);
                                 }
                             } else if (principal.charAt(0) == 'r') {
-                                if (user.hasRole(new RoleIdentity(principalName, site.getSiteKey()))) {
+                                if (user.hasRole(new RoleIdentity(principalName))) {
                                     results.add(rule);
                                 }
                             }

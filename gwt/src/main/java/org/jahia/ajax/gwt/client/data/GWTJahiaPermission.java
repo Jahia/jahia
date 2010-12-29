@@ -45,25 +45,8 @@ public class GWTJahiaPermission extends GWTJahiaRolePermissionBase {
         super();
     }
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name
-     * @param group
-     * @param site
-     */
-    public GWTJahiaPermission(String name, String group, String site) {
-        super(name, site);
-        setGroup(group);
-    }
-
-    
-    public String getGroup() {
-        return get("group");
-    }
-
-    public void setGroup(String g) {
-        set("group",g);
+    public GWTJahiaPermission(String name) {
+        super(name);
     }
     
     @Override
@@ -74,8 +57,6 @@ public class GWTJahiaPermission extends GWTJahiaRolePermissionBase {
         GWTJahiaPermission that = (GWTJahiaPermission) o;
 
         if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
-        if (getGroup() != null ? !getGroup().equals(that.getGroup()) : that.getGroup() != null) return false;        
-        if (getSite() != null ? !getSite().equals(that.getSite()) : that.getSite() != null) return false;        
 
         return true;
     }

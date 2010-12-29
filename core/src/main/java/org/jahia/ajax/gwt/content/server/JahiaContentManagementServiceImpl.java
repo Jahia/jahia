@@ -1171,12 +1171,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Get all roles and all permissions
      *
-     * @param site the current site key or {@code null} if the server roles and permissions are requested
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTRolesPermissions getRolesAndPermissions(String site) throws GWTJahiaServiceException {
-        return rolesPermissions.getRolesAndPermissions(site);
+    public GWTRolesPermissions getRolesAndPermissions() throws GWTJahiaServiceException {
+        return rolesPermissions.getRolesAndPermissions();
     }
 
     /**

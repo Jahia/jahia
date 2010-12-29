@@ -54,26 +54,16 @@ class GWTJahiaRolePermissionBase extends BaseModel {
      * @param name
      * @param site
      */
-    public GWTJahiaRolePermissionBase(String name, String site) {
+    public GWTJahiaRolePermissionBase(String name) {
         this();
         setName(name);
-        setSite(site);
     }
 
     public String getName() {
         return get("name");
     }
-
-    public String getSite() {
-        return get("site");
-    }
-
     public void setName(String name) {
         set("name", name);
-    }
-
-    public void setSite(String site) {
-        set("site", site);
     }
 
 }

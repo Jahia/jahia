@@ -72,6 +72,6 @@ public class Edit extends Render {
         if (site == null) {
             logger.error("Site key is null.");
         }
-        return user.isPermitted(new PermissionIdentity("edit-mode","actions", site));
+        return user.isPermitted(new PermissionIdentity("edit-mode"));
     }
 }

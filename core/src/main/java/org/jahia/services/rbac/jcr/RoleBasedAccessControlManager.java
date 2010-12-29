@@ -661,7 +661,7 @@ public class RoleBasedAccessControlManager {
                     JCRNodeWrapper roleNode = ((JCRValueWrapper) roleValue).getNode();
                     if (roleNode != null) { 
                         foundRoles.add(roleValue.getString());
-                        roles.add(new RoleIdentity(roleNode.getName(), JCRContentUtils.getSiteKey(roleNode.getPath())));
+                        roles.add(new RoleIdentity(roleNode.getName()));
                     }
                 }
             }

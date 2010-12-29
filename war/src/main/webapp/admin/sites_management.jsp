@@ -302,7 +302,7 @@
                     </td>
 
                     <td>
-                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", site.getSiteKey()))) { %>
+                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import"))) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
                                                 <a class="ico-import"
@@ -445,7 +445,7 @@ else { %>
                     </td>
 
                     <td>
-                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", null))) { %>
+                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import"))) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
                                                 <a class="ico-import"

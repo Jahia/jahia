@@ -82,7 +82,7 @@ public class Contribute extends Render {
         if (site == null) {
             logger.error("Site key is null.");
         }
-        return user.isPermitted(new PermissionIdentity("contribute-mode","actions", site));
+        return user.isPermitted(new PermissionIdentity("contribute-mode"));
     }
 
 }

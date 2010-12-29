@@ -175,35 +175,6 @@ public class Functions {
     }
 
     /**
-     * Checks if the current user is included in the specified logical role for
-     * the current site or has all specified roles if multiple are specified
-     * (comma-separated).
-     * 
-     * @param role the role identifier to check for. Multiple roles can be
-     *            specified in a comma-separated form. In such case this method
-     *            evaluates to <code>true</code> only if the current user has
-     *            all the specified roles.
-     * @return if the current user is included in the specified logical role for
-     *         current site or has all specified roles if multiple are specified
-     *         (comma-separated)
-     */
-    public static Boolean isUserInRoleForSite(String role, String siteKey) {
-        boolean hasIt = false;
-        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
-        if (user != null) {
-            final String[] roles = StringUtils.split(role, ',');
-            for (String roleToCheck : roles) {
-                hasIt = user.hasRole(new RoleIdentity(roleToCheck.trim(), siteKey));
-                if (!hasIt) {
-                    break;
-                }
-            }
-        }
-
-        return hasIt;
-    }
-
-    /**
      * Checks if the current user has the specified permission or
      * has all specified permissions if multiple are specified (comma-separated).
      * 
@@ -221,34 +192,6 @@ public class Functions {
             final String[] roles = StringUtils.split(permission, ',');
             for (String permissionToCheck : roles) {
                 hasIt = user.isPermitted(new PermissionIdentity(permissionToCheck.trim()));
-                if (!hasIt) {
-                    break;
-                }
-            }
-        }
-
-        return hasIt;
-    }
-
-    /**
-     * Checks if the current user has the specified site-level permission for
-     * the current site or has all specified permissions if multiple are
-     * specified (comma-separated).
-     * 
-     * @param permission the permission identifier to check for. Multiple
-     *            permissions can be specified in a comma-separated form. In
-     *            such case this method evaluates to <code>true</code> only if
-     *            the current user has all the specified permissions.
-     * @return if the current user has the specified permission or has all
-     *         specified permissions if multiple are specified (comma-separated)
-     */
-    public static Boolean isUserPermittedForSite(String permission, String siteKey) {
-        boolean hasIt = false;
-        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
-        if (user != null) {
-            final String[] roles = StringUtils.split(permission, ',');
-            for (String permissionToCheck : roles) {
-                hasIt = user.isPermitted(new PermissionIdentity(permissionToCheck.trim(), siteKey));
                 if (!hasIt) {
                     break;
                 }

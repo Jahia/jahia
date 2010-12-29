@@ -49,13 +49,8 @@ public class RolePrincipalsTabItem extends EditEngineTabItem {
         if (engine.getNode() == null || tab.isProcessed()) {
             return;
         }
-
-        String site = null;
         String path = engine.getNode().getPath();
-        if (path.startsWith("/sites/")) {
-            site = path.substring("/sites/".length(), path.indexOf("/", "/sites/".length()));
-        }
-        GWTJahiaRole role = new GWTJahiaRole(engine.getNode().getName(), site);
+        GWTJahiaRole role = new GWTJahiaRole(engine.getNode().getName());
         tab.add(new PrincipalRolePanel(role));
         tab.setProcessed(true);
     }

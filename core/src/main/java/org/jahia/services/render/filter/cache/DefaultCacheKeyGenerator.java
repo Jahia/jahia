@@ -164,11 +164,11 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
                 Set<Role> aclRoles = getAllAclsRoles();
                 for (Role role : aclRoles) {
-                    if(role!=null && principal.hasRole(role) && role.getSite().equals(renderContext.getSite().getSiteKey())) {
+                    if(role!=null && principal.hasRole(role)) {
                         if (b.length() > 0) {
                             b.append("|");
                         }
-                        b.append(role.getName()).append(":").append(role.getSite());
+                        b.append(role.getName());
                     }
                 }
                 if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
@@ -277,7 +277,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     JCRNodeWrapper row = (JCRNodeWrapper) nodeIterator.next();
                     final String roleName = StringUtils.substringAfter(row.getProperty("j:principal").getString(),
                                                                        ":");
-                    RoleIdentity roleIdentity = new RoleIdentity(roleName, row.getResolveSite().getSiteKey());
+                    RoleIdentity roleIdentity = new RoleIdentity(roleName);
                     if (!aclRoles.contains(roleIdentity)) {
                         aclRoles.add(roleIdentity);
                     }

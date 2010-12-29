@@ -34,6 +34,7 @@ package org.jahia.services.rbac;
 
 import org.jahia.services.usermanager.JahiaPrincipal;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -50,16 +51,6 @@ public class RoleIdentity extends BaseIdentity implements Role, JahiaPrincipal {
      */
     public RoleIdentity(String name) {
         super(name);
-    }
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of this role
-     * @param site the site key
-     */
-    public RoleIdentity(String name, String site) {
-        super(name, site);
     }
 
     /**
@@ -102,5 +93,18 @@ public class RoleIdentity extends BaseIdentity implements Role, JahiaPrincipal {
      */
     public boolean isPermitted(Permission permission) {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /**
+     * Returns a set of permission implied by this role.
+     *
+     * @return a set of permission implied by this role
+     */
+    public Set<Permission> getPermissions() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getPath() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

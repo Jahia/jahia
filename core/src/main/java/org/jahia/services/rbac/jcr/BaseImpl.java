@@ -53,8 +53,6 @@ class BaseImpl implements Serializable {
 
     private String path;
 
-    private String site;
-
     private String title;
 
     /**
@@ -63,25 +61,13 @@ class BaseImpl implements Serializable {
      * @param name the name of this identity
      */
     public BaseImpl(String name) {
-        this(name, null);
-    }
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of this identity
-     * @param site the site key of this identity
-     */
-    public BaseImpl(String name, String site) {
-        super();
         this.name = name;
-        this.site = site;
     }
 
     @Override
     public boolean equals(Object obj) {
         return obj != null && (obj instanceof BaseImpl) ? new EqualsBuilder().append(getName(),
-                ((BaseImpl) obj).getName()).append(getSite(), ((BaseImpl) obj).getSite()).isEquals() : false;
+                ((BaseImpl) obj).getName()).isEquals() : false;
     }
 
     /**
@@ -121,17 +107,6 @@ class BaseImpl implements Serializable {
     }
 
     /**
-     * Returns the site key of this identity or <code>null</code> if it is a
-     * server-level identity.
-     * 
-     * @return the site key of this identity or <code>null</code> if it is a
-     *         server-level identity
-     */
-    public String getSite() {
-        return site;
-    }
-
-    /**
      * Returns the title of the corresponding JCR node.
      * 
      * @return the title of the corresponding JCR node
@@ -142,7 +117,7 @@ class BaseImpl implements Serializable {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getName()).append(getSite()).toHashCode();
+        return new HashCodeBuilder().append(getName()).toHashCode();
     }
 
     /**
@@ -179,15 +154,6 @@ class BaseImpl implements Serializable {
      */
     void setPath(String path) {
         this.path = path;
-    }
-
-    /**
-     * Sets the key of the target virtual site.
-     * 
-     * @param site the key of the target virtual site
-     */
-    public void setSite(String site) {
-        this.site = site;
     }
 
     /**

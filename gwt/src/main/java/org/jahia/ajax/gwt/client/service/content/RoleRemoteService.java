@@ -59,7 +59,7 @@ public interface RoleRemoteService extends RemoteService {
 
     List<GWTJahiaRole> getRoles(String siteKey, boolean isGroup, String principalKey) throws GWTJahiaServiceException;
 
-    GWTRolesPermissions getRolesAndPermissions(String site) throws GWTJahiaServiceException;
+    GWTRolesPermissions getRolesAndPermissions() throws GWTJahiaServiceException;
 
     void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException;
 

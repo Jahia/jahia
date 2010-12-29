@@ -48,8 +48,8 @@ public class GWTJahiaRole extends GWTJahiaRolePermissionBase {
         setPermissions(new ArrayList<GWTJahiaPermission>());
     }
 
-    public GWTJahiaRole(String name, String site) {
-        super(name, site);
+    public GWTJahiaRole(String name) {
+        super(name);
         setPermissions(new ArrayList<GWTJahiaPermission>());
     }
 

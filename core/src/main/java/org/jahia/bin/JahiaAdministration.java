@@ -300,7 +300,7 @@ public class JahiaAdministration extends HttpServlet {
     }
 
     private boolean hasSitePermission(String permissionName, final JahiaUser user, final String siteKey) {
-        return user.isPermitted(new PermissionIdentity(permissionName, siteKey));
+        return user.isPermitted(new PermissionIdentity(permissionName));
     }
 
     //-------------------------------------------------------------------------
@@ -840,8 +840,7 @@ public class JahiaAdministration extends HttpServlet {
                     .getJahiaSitesService().getSite(siteID);
 
             if ((group != null && group.isMember(theUser))
-                    || (theUser.isPermitted(new PermissionIdentity("jahia-administration", "admin",
-                            currentSite.getSiteKey())))) {
+                    || (theUser.isPermitted(new PermissionIdentity("jahia-administration")))) {
                 List<Locale> languageSettingsAsLocales = currentSite
                         .getLanguagesAsLocales();
                 final Locale localeSession = (Locale) session
@@ -944,8 +943,7 @@ public class JahiaAdministration extends HttpServlet {
                     return false; // group might have been deleted
                 }
                 if (theGroup.isMember(theUser) ||
-                        (theUser.isPermitted(new PermissionIdentity("jahia-administration", "admin",
-                                        theSite.getSiteKey())))) {
+                        (theUser.isPermitted(new PermissionIdentity("jahia-administration")))) {
                     // check if the user is a super admin or not...
                     JahiaGroup superAdminGroup = gMgr.getAdministratorGroup(SUPERADMIN_SITE_ID);
                     if (superAdminGroup.isMember(theUser)) {
@@ -1124,7 +1122,7 @@ public class JahiaAdministration extends HttpServlet {
                     JahiaSiteTools.getAdminGroup(jahiaSite).isMember(user)) {
                 logger.debug("granted site for " + jahiaSite.getSiteKey());
                 grantedSites.add(jahiaSite);
-            } else if (user.isPermitted(new PermissionIdentity("jahia-administration", "admin", jahiaSite.getSiteKey()))) {
+            } else if (user.isPermitted(new PermissionIdentity("jahia-administration"))) {
                 logger.debug("granted site for " + jahiaSite.getSiteKey());
                 grantedSites.add(jahiaSite);
             }

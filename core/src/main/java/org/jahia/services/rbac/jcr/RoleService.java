@@ -115,16 +115,17 @@ public class RoleService {
      * Looks up list of permissions with for the specified site. If site is not
      * specified considers server-level permissions.
      * 
+     *
      * @param site the site key or ${@code null} if the global permissions are
      *            requested
      * @return the list of permissions with for the specified site. If site is
      *         not specified considers server-level permissions
      * @throws RepositoryException in case of an error
      */
-    public List<PermissionImpl> getPermissions(final String site) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<PermissionImpl>>() {
-            public List<PermissionImpl> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                return roleManager.getPermissions(site, session);
+    public List<Permission> getPermissions() throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<Permission>>() {
+            public List<Permission> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                return roleManager.getPermissions(session);
             }
         });
     }
@@ -159,10 +160,10 @@ public class RoleService {
      *         site is ${@code null} returns global permissions for the server.
      * @throws RepositoryException in case of an error
      */
-    public List<RoleImpl> getRoles(final String site) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<RoleImpl>>() {
-            public List<RoleImpl> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                return roleManager.getRoles(site, session);
+    public List<Role> getRoles() throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<Role>>() {
+            public List<Role> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                return roleManager.getRoles(session);
             }
         });
     }
@@ -202,10 +203,9 @@ public class RoleService {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<RoleImpl>() {
             public RoleImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 RoleImpl role = roleManager.loadRole(roleId, session);
-                Set<PermissionImpl> finalPermissions = new LinkedHashSet<PermissionImpl>(role.getPermissions());
+                Set<Permission> finalPermissions = new LinkedHashSet<Permission>(role.getPermissions());
                 for (Permission permission : permissions) {
-                    finalPermissions.add(new PermissionImpl(permission.getName(), permission.getGroup(), permission
-                            .getSite()));
+                    finalPermissions.add(new PermissionImpl(permission.getName()));
                 }
                 if (finalPermissions.size() != role.getPermissions().size()) {
                     role.setPermissions(finalPermissions);
@@ -269,10 +269,9 @@ public class RoleService {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<RoleImpl>() {
             public RoleImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 RoleImpl role = roleManager.loadRole(roleId, session);
-                Set<PermissionImpl> finalPermissions = new LinkedHashSet<PermissionImpl>(role.getPermissions());
+                Set<Permission> finalPermissions = new LinkedHashSet<Permission>(role.getPermissions());
                 for (Permission permission : permissions) {
-                    finalPermissions.remove(new PermissionImpl(permission.getName(), permission.getGroup(), permission
-                            .getSite()));
+                    finalPermissions.remove(new PermissionImpl(permission.getName()));
                 }
                 if (finalPermissions.size() != role.getPermissions().size()) {
                     role.setPermissions(finalPermissions);
@@ -309,7 +308,7 @@ public class RoleService {
     public RoleImpl saveRole(final Role role) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<RoleImpl>() {
             public RoleImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                return roleManager.saveRole(new RoleImpl(role.getName(), role.getSite()), false, session);
+                return roleManager.saveRole(new RoleImpl(role.getName()), false, session);
             }
         });
     }

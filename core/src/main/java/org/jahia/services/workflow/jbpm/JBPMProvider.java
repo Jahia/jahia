@@ -428,7 +428,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     String siteName = StringUtils.substringAfter(id, ":");
                     participations
                             .add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                                    new RoleIdentity(roleName, siteName)));
+                                    new RoleIdentity(roleName)));
                 } else {
                     if (participation.getUserId() != null) {
                         participations

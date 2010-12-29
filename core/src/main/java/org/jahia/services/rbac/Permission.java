@@ -33,6 +33,7 @@
 package org.jahia.services.rbac;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Represents a single permission.
@@ -48,20 +49,8 @@ public interface Permission extends Serializable {
      */
     String getName();
 
-    /**
-     * Returns the group of this permission.
-     * 
-     * @return the group of this permission
-     */
-    String getGroup();
+    List<Permission> getChilds();
 
-    /**
-     * Returns the site key of this permission or <code>null</code> if it a
-     * server-level permission.
-     * 
-     * @return the site key of this permission or <code>null</code> if it a
-     *         server-level permission
-     */
-    String getSite();
+    String getPath();
 
 }

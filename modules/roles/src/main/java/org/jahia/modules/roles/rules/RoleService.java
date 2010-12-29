@@ -79,8 +79,7 @@ public class RoleService {
     private JahiaSitesService siteService;
     
     private Role getRole(String role) {
-        return new RoleIdentity(role.contains("/") ? StringUtils.substringAfterLast(role, "/") : role, JCRContentUtils
-                .getSiteKey(role));
+        return new RoleIdentity(role.contains("/") ? StringUtils.substringAfterLast(role, "/") : role);
     }
 
     /**
@@ -93,10 +92,10 @@ public class RoleService {
      */
     public void grantPermissionGroupToRole(final String role, final String permissionGroup, KnowledgeHelper drools)
             throws RepositoryException {
-        List<PermissionImpl> permissions = roleService.getPermissions(JCRContentUtils.getSiteKey(role));
-        for (Iterator<PermissionImpl> iterator = permissions.iterator(); iterator.hasNext();) {
-            PermissionImpl permission = iterator.next();
-            if (!permission.getGroup().equals(permissionGroup)) {
+        List<Permission> permissions = roleService.getPermissions();
+        for (Iterator<Permission> iterator = permissions.iterator(); iterator.hasNext();) {
+            Permission permission = iterator.next();
+            if (!permission.getName().equals(permissionGroup)) {
                 iterator.remove();
             }
         }
@@ -115,21 +114,20 @@ public class RoleService {
      */
     public void grantPermissionsToRole(final String role, final List<String> permissionsToGrant, KnowledgeHelper drools)
             throws RepositoryException {
-        String site = JCRContentUtils.getSiteKey(role);
-        List<PermissionImpl> allSitePermissions = roleService.getPermissions(site);
+        List<Permission> allSitePermissions = roleService.getPermissions();
         List<Permission> permissions = new LinkedList<Permission>();
         
         for (String perm : permissionsToGrant) {
             if (perm.endsWith("/*")) {
                 // granting group
                 String permGroup = StringUtils.substringBeforeLast(perm, "/*");
-                for (PermissionImpl sitePermission : allSitePermissions) {
-                    if (sitePermission.getGroup().equals(permGroup)) {
+                for (Permission sitePermission : allSitePermissions) {
+                    if (sitePermission.getName().equals(permGroup)) {
                         permissions.add(sitePermission);
                     }
                 }
             } else {
-                permissions.add(new PermissionIdentity(perm, site));
+                permissions.add(new PermissionIdentity(perm));
             }
         }
         if (!permissions.isEmpty()) {
@@ -147,7 +145,7 @@ public class RoleService {
      */
     public void grantPermissionToRole(final String role, final String permission, KnowledgeHelper drools)
             throws RepositoryException {
-        roleService.grantPermission(getRole(role), new PermissionIdentity(permission, null, JCRContentUtils.getSiteKey(role)));
+        roleService.grantPermission(getRole(role), new PermissionIdentity(permission));
     }
 
     /**
@@ -189,30 +187,29 @@ public class RoleService {
         final String siteKey = siteNode.getName();
         final Value[] languages = siteNode.getProperty("j:languages").getValues();
         for (Value language : languages) {
-            roleService.savePermission(new PermissionIdentity(language.getString(), "languages", siteKey));
+            roleService.savePermission(new PermissionIdentity(language.getString()));
         }
     }
 
     public void createTranslatorRole(final AddedNodeFact node, String name, String base, KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper siteNode = node.getNode();
         final String siteKey = siteNode.getName();
-        RoleImpl translatorRole = roleService.getRole(new RoleIdentity(base, siteKey));
+        RoleImpl translatorRole = roleService.getRole(new RoleIdentity(base));
         if (translatorRole != null) {
-            Set<PermissionImpl> perms = translatorRole.getPermissions();
+            Set<Permission> perms = translatorRole.getPermissions();
             final Value[] languages = siteNode.getProperty("j:languages").getValues();
             for (Value language : languages) {
-                final RoleImpl role = new RoleImpl(name.replace("*", language.getString()), siteKey);
+                final RoleImpl role = new RoleImpl(name.replace("*", language.getString()));
                 if (roleService.getRole(role) != null) {
                     continue;
                 }
-                final Set<PermissionImpl> permissions = new HashSet<PermissionImpl>(perms);
-                for (PermissionImpl perm : perms) {
-                    if (perm.getGroup().equals("languages")) {
+                final Set<Permission> permissions = new HashSet<Permission>(perms);
+                for (Permission perm : perms) {
+                    if (perm.getPath().contains("languages")) {
                         permissions.remove(perm);
                     }
                 }
-                permissions.add(roleService.getPermission(new PermissionImpl(language.getString(),
-                        "languages", siteKey)));
+                permissions.add(roleService.getPermission(new PermissionImpl(language.getString())));
                 role.setPermissions(permissions);
                 roleService.saveRole(role);
             }

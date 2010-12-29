@@ -36,36 +36,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTRolesPermissions;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.LinkerComponent;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -77,10 +66,7 @@ import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.grid.HeaderGroupConfig;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Panel for managing permission to role assignment.
@@ -96,12 +82,11 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
 
     private ContentPanel mainPanel = new ContentPanel();
     private final JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
+    private final GWTJahiaRole role;
 
-    public PermissionRolePanel() {
-    }
-
-    public PermissionRolePanel(String siteKey) {
-        this.siteKey = siteKey;
+    public PermissionRolePanel(GWTJahiaRole role) {
+        //To change body of created methods use File | Settings | File Templates.
+        this.role = role;
     }
 
     @Override
@@ -125,7 +110,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
      * Refresh data
      */
     public void refresh() {
-        contentService.getRolesAndPermissions(siteKey, new BaseAsyncCallback<GWTRolesPermissions>() {
+        contentService.getRolesAndPermissions(new BaseAsyncCallback<GWTRolesPermissions>() {
             public void onSuccess(GWTRolesPermissions gwtRolesPermissions) {
                 roles = gwtRolesPermissions.getRoles();
                 permissions = gwtRolesPermissions.getPermissions();
@@ -151,7 +136,6 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         List<ColumnConfig> configs = createColumnsConfig();
         if (configs != null) {
             final ColumnModel cm = new ColumnModel(configs);
-            cm.addHeaderGroup(0, 0, new HeaderGroupConfig(createAddPermissionButton(), 1, 1));
             cm.addHeaderGroup(0, 1, new HeaderGroupConfig("", 1, 1));
             for (int i = 2; i < configs.size(); i++) {
                 cm.addHeaderGroup(0, i, new HeaderGroupConfig(createGrantAllCheckbox(i - 2), 1, 1));
@@ -178,73 +162,10 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         mainPanel.layout();
     }
 
-    private Button createAddPermissionButton() {
-        final String label = Messages.get("label.newPermission", "Add permission");
-        Button add = new Button(label);
-        add.setIcon(ToolbarIconProvider.getInstance().getIcon("newContent"));
-        add.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                final Dialog dialog = new Dialog();
-                dialog.setSize(300, 200);
-                dialog.setHeading(label);  
-                dialog.setButtons(Dialog.OKCANCEL);
-                dialog.setHideOnButtonClick(true);
-                LayoutContainer panel = new LayoutContainer(new FormLayout(LabelAlign.LEFT));
-                panel.setStyleAttribute("padding", "10px 30px 10px 10px");
-                
-                final TextField<String> name = new TextField<String>();  
-                name.setFieldLabel(Messages.get("label.name", "Name"));  
-                name.setAllowBlank(false);
-                panel.add(name, new FormData("100%"));                 
-                
-                final ListStore<GWTJahiaBasicDataBean> store = new ListStore<GWTJahiaBasicDataBean>();
-                for (GWTJahiaPermission perm : permissions) {
-                    GWTJahiaBasicDataBean permGroup = new GWTJahiaBasicDataBean(perm.getGroup(), perm.getGroup()); 
-                    if (!store.contains(permGroup)) {
-                        store.add(permGroup);
-                    }
-                }
-
-                final ComboBox<GWTJahiaBasicDataBean> groupSelect = new ComboBox<GWTJahiaBasicDataBean>();
-                groupSelect.setDisplayField(GWTJahiaBasicDataBean.DISPLAY_NAME);
-                groupSelect.setStore(store);
-                groupSelect.setTypeAhead(true);
-                groupSelect.setTriggerAction(ComboBox.TriggerAction.ALL);
-                groupSelect.setFieldLabel(Messages.get("label.group", "Group"));
-
-                panel.add(groupSelect, new FormData("100%"));
-                
-                dialog.add(panel);
-                dialog.addListener(Events.Hide, new Listener<WindowEvent>() {
-                    public void handleEvent(WindowEvent be) {
-                        if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.OK)) {
-                            contentService.createPermission(name.getValue(), groupSelect.getRawValue(), siteKey, new BaseAsyncCallback<GWTJahiaPermission>() {
-                                public void onSuccess(GWTJahiaPermission perm) {
-                                    permissions.add(perm);
-                                    grid.getStore().add(perm);
-                                    for (int i = 0; i < roles.size(); i++) {
-                                        updateGrantAllCheckboxState(i);
-                                    }
-                                }
-                                public void onApplicationFailure(Throwable throwable) {
-                                    Log.error("Error while creating permission " + name.getValue(), throwable);
-                                }
-                            });
-                        }
-                    }
-                });
-                
-                dialog.show();
-            }
-        });
-        
-        return add;
-    }
-
     private void updateGrantAllCheckboxState(final int roleIndex) {
         final CheckBox cb = (CheckBox) grid.getColumnModel().getHeaderGroups().get(roleIndex + 2).getWidget();
         boolean oldState = cb.getValue();
-        boolean state = roleHasAllPemrissions(roleIndex);
+        boolean state = roleHasAllPermissions(roleIndex);
         if (oldState != state) {
             cb.setFireChangeEventOnSetValue(false);
             cb.setValue(state);
@@ -252,7 +173,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         }
     }
     
-    private boolean roleHasAllPemrissions(final int roleIndex) {
+    private boolean roleHasAllPermissions(final int roleIndex) {
         final GWTJahiaRole role = roles.get(roleIndex); 
         boolean state = true;
         for (GWTJahiaPermission perm : permissions) {
@@ -267,7 +188,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
     private CheckBox createGrantAllCheckbox(final int roleIndex) {
         final GWTJahiaRole role = roles.get(roleIndex); 
         final CheckBox cb = new CheckBox();
-        cb.setValue(roleHasAllPemrissions(roleIndex));
+        cb.setValue(roleHasAllPermissions(roleIndex));
         
         cb.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
@@ -381,14 +302,17 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         };
 
         for (GWTJahiaRole role : roles) {
-            column = new ColumnConfig();
-            column.setRenderer(rolePermissionRenderer);
-            column.setId(role.getName());
-            column.setHeader(role.getName());
-            column.setWidth(100);
-            column.setSortable(false);
-            column.setGroupable(false);
-            configs.add(column);
+            if (role.getName().equals(this.role.getName())) {
+                column = new ColumnConfig();
+                column.setRenderer(rolePermissionRenderer);
+                column.setId(role.getName());
+                column.setHeader(role.getName());
+                column.setWidth(100);
+                column.setSortable(false);
+                column.setGroupable(false);
+                configs.add(column);
+                break;
+            }
         }
         return configs;
     }

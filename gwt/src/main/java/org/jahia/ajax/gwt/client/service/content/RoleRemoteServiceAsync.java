@@ -58,7 +58,7 @@ interface RoleRemoteServiceAsync {
 
     void getRoles(String siteKey, boolean isGroup, String principalKey, AsyncCallback<List<GWTJahiaRole>> async);
 
-    void getRolesAndPermissions(String site, AsyncCallback<GWTRolesPermissions> async);
+    void getRolesAndPermissions(AsyncCallback<GWTRolesPermissions> async);
 
     void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals, AsyncCallback async);
 

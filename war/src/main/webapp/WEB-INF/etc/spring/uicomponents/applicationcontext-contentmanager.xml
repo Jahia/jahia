@@ -1094,7 +1094,7 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.RolePrincipals" />
+                <ref bean="Engine.Tab.RolePermissions" />
             </list>
         </property>
         <!-- table columns-->

@@ -196,8 +196,7 @@ public class Visibility {
 //                logger.debug("Site permission value(from request): " + ((Boolean) o).booleanValue());
 //                return ((Boolean) o).booleanValue();
 //            } else {
-                boolean isAllowedSitePermission = user.isPermitted(new PermissionIdentity(siteActionPermission,
-                        site.getSiteKey()));
+                boolean isAllowedSitePermission = user.isPermitted(new PermissionIdentity(siteActionPermission));
 //                logger.debug("Site permission value: " + isAllowedSitePermission);
 //                processingContext.setAttribute(siteActionPermission, new Boolean(isAllowedSitePermission));
                 return isAllowedSitePermission;

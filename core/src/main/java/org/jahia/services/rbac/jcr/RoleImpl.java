@@ -35,6 +35,7 @@ package org.jahia.services.rbac.jcr;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.Role;
 
 /**
@@ -44,7 +45,7 @@ import org.jahia.services.rbac.Role;
  */
 public class RoleImpl extends BaseImpl implements Role {
 
-    private Set<PermissionImpl> permissions = new LinkedHashSet<PermissionImpl>();
+    private Set<Permission> permissions = new LinkedHashSet<Permission>();
 
     /**
      * Initializes an instance of this class.
@@ -55,23 +56,7 @@ public class RoleImpl extends BaseImpl implements Role {
         super(name);
     }
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of the the role
-     * @param site the virtual site key current role is limited to
-     * @param description the description of this role
-     */
-    public RoleImpl(String name, String site) {
-        super(name, site);
-    }
-
-    /**
-     * Returns a set of permission implied by this role.
-     * 
-     * @return a set of permission implied by this role
-     */
-    public Set<PermissionImpl> getPermissions() {
+    public Set<Permission> getPermissions() {
         return permissions;
     }
 
@@ -80,7 +65,7 @@ public class RoleImpl extends BaseImpl implements Role {
      * 
      * @param permissions a set of permissions for this role
      */
-    public void setPermissions(Set<PermissionImpl> permissions) {
+    public void setPermissions(Set<Permission> permissions) {
         this.permissions.clear();
         if (permissions != null) {
             this.permissions.addAll(permissions);

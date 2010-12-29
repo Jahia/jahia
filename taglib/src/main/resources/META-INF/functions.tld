@@ -214,20 +214,6 @@
         </example>
     </function>
 
-    <function>
-        <description>
-			Checks if the current user is included in the specified logical site-level role 
-			for the current site or has all specified roles if multiple are specified (comma-separated)
-        </description>
-        <name>isUserInRoleForSite</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.lang.Boolean isUserInRoleForSite(java.lang.String,java.lang.String)</function-signature>
-        <example>
-            &lt;c:if test="${functions:isUserInRoleForSite('actions/edit-mode', renderContext.site.siteKey)}"&gt;
-            The user is authorized to perform actions in edit mode
-            &lt;/c:if&gt;
-        </example>
-    </function>
 
     <function>
         <description>
@@ -240,21 +226,6 @@
         <example>
             &lt;c:if test="${functions:isUserPermitted('global/password-policy')}"&gt;
             The user is authorized to manage password policies
-            &lt;/c:if&gt;
-        </example>
-    </function>
-    
-    <function>
-        <description>
-			Checks if the current user has the specified site-level permission for current site or
-     		has all specified permissions if multiple are specified (comma-separated)
-        </description>
-        <name>isUserPermittedForSite</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.lang.Boolean isUserPermittedForSite(java.lang.String,java.lang.String)</function-signature>
-        <example>
-            &lt;c:if test="${functions:isUserPermittedForSite('admin/site-languages', renderContext.site.siteKey)}"&gt;
-            The user is authorized to manage languages for the current site
             &lt;/c:if&gt;
         </example>
     </function>

@@ -47,8 +47,6 @@ class BaseIdentity implements Serializable {
 
     private String name;
 
-    private String site;
-
     /**
      * Initializes an instance of this class.
      * 
@@ -67,7 +65,6 @@ class BaseIdentity implements Serializable {
     public BaseIdentity(String name, String site) {
         super();
         this.name = name;
-        this.site = site != null && site.length() == 0 ? null : site;
     }
 
     @Override
@@ -82,17 +79,6 @@ class BaseIdentity implements Serializable {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Returns the site key of this identity or <code>null</code> if it is a
-     * server-level identity.
-     * 
-     * @return the site key of this identity or <code>null</code> if it is a
-     *         server-level identity
-     */
-    public String getSite() {
-        return site;
     }
 
     @Override

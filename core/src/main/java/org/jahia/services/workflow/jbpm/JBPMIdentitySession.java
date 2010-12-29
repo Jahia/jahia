@@ -205,7 +205,7 @@ public class JBPMIdentitySession implements IdentitySession {
             }
             Set<Role> roleSet = user.getRoles();
             for (Role role : roleSet) {
-                results.add(new GroupImpl("{role}" + role.getName() + ":" + role.getSite(), role.getName(), "jahia"));
+                results.add(new GroupImpl("{role}" + role.getName(), role.getName(), "jahia"));
             }
         }
         return results;

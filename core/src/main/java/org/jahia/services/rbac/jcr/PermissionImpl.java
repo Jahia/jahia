@@ -37,6 +37,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jahia.services.rbac.Permission;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Default implementation of a permission in Jahia.
  * 
@@ -44,7 +47,7 @@ import org.jahia.services.rbac.Permission;
  */
 public class PermissionImpl extends BaseImpl implements Permission {
 
-    private String group;
+    private List<Permission> childs;
 
     /**
      * Initializes an instance of this class.
@@ -53,62 +56,30 @@ public class PermissionImpl extends BaseImpl implements Permission {
      */
     public PermissionImpl(String name) {
         super(name);
-    }
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of the the permission
-     * @param group the name of the permission group
-     */
-    public PermissionImpl(String name, String group) {
-        this(name);
-        this.group = group;
-    }
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param name the name of the the permission
-     * @param group the name of the permission group
-     * @param site the virtual site key current permission is limited to
-     */
-    public PermissionImpl(String name, String group, String site) {
-        super(name, site);
-        this.group = group;
+        childs = new LinkedList<Permission>();
     }
 
     @Override
     public boolean equals(Object obj) {
         return obj != null && (obj instanceof PermissionImpl) && super.equals(obj)
-                && new EqualsBuilder().append(getGroup(), ((PermissionImpl) obj).getGroup()).isEquals();
-    }
-
-    /**
-     * Returns the name of the permission group
-     * 
-     * @return the the name of the permission group
-     */
-    public String getGroup() {
-        return group;
+                && new EqualsBuilder().isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getName()).append(getGroup()).append(getSite()).toHashCode();
-    }
-
-    /**
-     * Sets the name of the permission group
-     * 
-     * @param group the name of the permission group
-     */
-    public void setGroup(String group) {
-        this.group = group;
+        return new HashCodeBuilder().append(getName()).toHashCode();
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public List<Permission> getChilds() {
+        return childs;
+    }
+
+    public void addChild(Permission child) {
+        childs.add(child);
     }
 }

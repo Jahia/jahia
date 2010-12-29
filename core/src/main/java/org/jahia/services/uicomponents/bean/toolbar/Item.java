@@ -177,7 +177,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
 			if (parent instanceof String) {
 				String parentPath = (String) parent;
 				String beanId = StringUtils.substringBefore(parentPath, ".");
-				Object bean = SpringContextSingleton.getModuleBean(beanId);
+				Object bean = SpringContextSingleton.getBean(beanId);
 				String propertyPath = StringUtils.substringAfter(parentPath, ".");
 				if (propertyPath.length() > 0) {
 					bean = PropertyUtils.getNestedProperty(bean, propertyPath);

@@ -36,6 +36,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.usermanager.JahiaUser;
@@ -48,7 +49,7 @@ import org.jahia.services.usermanager.JahiaUser;
 public class RootUserVisibility extends Visibility {
 
     @Override
-    public boolean getRealValue(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
+    public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
         return jahiaUser != null && jahiaUser.isRoot();
     }
 }

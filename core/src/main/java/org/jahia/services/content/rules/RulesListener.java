@@ -185,12 +185,17 @@ public class RulesListener extends DefaultEventListener {
         try {
             File pkgFile = new File(dsrlFile.getPath() + ".pkg");
             if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
-                final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(pkgFile));
-                Package pkg = (Package) ois.readObject();
-                if (ruleBase.getPackage(pkg.getName()) != null) {
-                    ruleBase.removePackage(pkg.getName());
+                ObjectInputStream ois = null;
+                try {
+                	ois = new ObjectInputStream(new FileInputStream(pkgFile));
+                	Package pkg = (Package) ois.readObject();
+                    if (ruleBase.getPackage(pkg.getName()) != null) {
+                        ruleBase.removePackage(pkg.getName());
+                    }
+                    ruleBase.addPackage(pkg);
+                } finally {
+                	IOUtils.closeQuietly(ois);
                 }
-                ruleBase.addPackage(pkg);
             } else {
                 drl = new InputStreamReader(new FileInputStream(dsrlFile));
 
@@ -209,12 +214,14 @@ public class RulesListener extends DefaultEventListener {
                 if (errors.getErrors().length == 0) {
                     Package pkg = builder.getPackage();
 
+                    ObjectOutputStream oos = null; 
                     try {
-                        final ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(pkgFile));
+                        oos = new ObjectOutputStream(new FileOutputStream(pkgFile));
                         oos.writeObject(pkg);
-                        oos.close();
                     } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        logger.error("Error writing rule package to a file.", e);
+                    } finally {
+                    	IOUtils.closeQuietly(oos);
                     }
 
                     if (ruleBase.getPackage(pkg.getName()) != null) {

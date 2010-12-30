@@ -32,7 +32,6 @@
 
 package org.jahia.services.workflow;
 
-import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.rbac.PermissionIdentity;
@@ -47,7 +46,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.springframework.beans.BeansException;
@@ -481,13 +479,16 @@ public class WorkflowService {
         lookupProvider(provider).deleteTask(taskId, reason);
     }
 
-    public void addWorkflowRule(final JCRNodeWrapper node, final WorkflowDefinition workflow, final String task,
-                                final String principal) throws RepositoryException {
+    public void addWorkflowRule(final JCRNodeWrapper node, final WorkflowDefinition workflow) throws RepositoryException {
         // store the rule
         JCRNodeWrapper rules = null;
         try {
             rules = node.getNode(WORKFLOWRULES_NODE_NAME);
         } catch (RepositoryException e) {
+            if(!node.isCheckedOut()) {
+                node.checkout();
+            }
+            node.addMixin("jmix:worklfowRulesable");
             rules = node.addNode(WORKFLOWRULES_NODE_NAME, "jnt:workflowRules");
         }
         JCRNodeWrapper n;
@@ -497,31 +498,10 @@ public class WorkflowService {
         } else {
             n = rules.addNode(wfName, "jnt:workflowRule");
         }
+        if(!n.isCheckedOut()) {
+            n.checkout();
+        }
         n.setProperty("j:workflow", workflow.getProvider() + ":" + workflow.getKey());
-        String nodeName = "GRANT_" + principal.replace(':', '_');
-        JCRNodeWrapper ace;
-        if (n.hasNode(nodeName)) {
-            ace = n.getNode(nodeName);
-        } else {
-            ace = n.addNode(nodeName, "jnt:ace");
-        }
-        ace.setProperty("j:principal", principal);
-        ace.setProperty("j:protected", false);
-        ace.setProperty("j:aceType", "GRANT");
-        List<String> grClone = new ArrayList<String>();
-        grClone.add(task);
-        if (ace.hasProperty("j:privileges")) {
-            final Value[] values = ace.getProperty("j:privileges").getValues();
-            for (Value value : values) {
-                final String s = value.getString();
-                if (!task.equals(s)) {
-                    grClone.add(s);
-                }
-            }
-        }
-        String[] grs = new String[grClone.size()];
-        grClone.toArray(grs);
-        ace.setProperty("j:privileges", grs);
     }
 
     public void addComment(String processId, String provider, String comment, String user) {
@@ -607,12 +587,12 @@ public class WorkflowService {
         return false;
     }
 
-    public void addWorkflowRule(JCRNodeWrapper node, String wfName, String task, String principal)
+    public void addWorkflowRule(JCRNodeWrapper node, String wfName)
             throws RepositoryException {
         String provider = StringUtils.substringBefore(wfName, ":");
         String wfKey = StringUtils.substringAfter(wfName, ":");
         WorkflowDefinition definition = providers.get(provider).getWorkflowDefinitionByKey(wfKey, node.getSession().getLocale());
-        addWorkflowRule(node, definition, task, principal);
+        addWorkflowRule(node, definition);
     }
 
     public WorkflowRule getWorkflowRuleForAction(JCRNodeWrapper objectNode, JahiaUser user, String action, Locale locale) throws RepositoryException {

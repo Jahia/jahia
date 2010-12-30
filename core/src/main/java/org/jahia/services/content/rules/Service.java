@@ -574,14 +574,6 @@ public class Service extends JahiaService {
         WorkflowService.getInstance().startProcess(nodeWrapper, processKey, provider, new HashMap<String, Object>());
     }
 
-    public void defineWorkflowRule(AddedNodeFact node, String wfName, String task, String role, KnowledgeHelper drools) {
-        try {
-            WorkflowService.getInstance().addWorkflowRule(node.getNode(), wfName, task, role);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
     public void flushCache(String cacheId, KnowledgeHelper drools) {
         Cache<?, ?> cache = cacheService.getCache(cacheId);
         if (cache != null) {

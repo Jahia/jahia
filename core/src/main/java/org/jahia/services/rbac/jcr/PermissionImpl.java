@@ -48,6 +48,7 @@ import java.util.List;
 public class PermissionImpl extends BaseImpl implements Permission {
 
     private List<Permission> childs;
+    private List<Permission> dependencies;
 
     /**
      * Initializes an instance of this class.
@@ -57,6 +58,7 @@ public class PermissionImpl extends BaseImpl implements Permission {
     public PermissionImpl(String name) {
         super(name);
         childs = new LinkedList<Permission>();
+        dependencies = new LinkedList<Permission>();
     }
 
     @Override
@@ -81,5 +83,13 @@ public class PermissionImpl extends BaseImpl implements Permission {
 
     public void addChild(Permission child) {
         childs.add(child);
+    }
+
+    public List<Permission> getDependencies() {
+        return dependencies;
+    }
+
+    public void addDependency(Permission dependency) {
+        dependencies.add(dependency);
     }
 }

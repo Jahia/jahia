@@ -449,6 +449,17 @@ public class RoleManager {
                 perm.addChild(toPermission(node));
             }
         }
+        try {
+            Property property = permissionNode.getProperty("j:dependencies");
+            Value[] values =  property.getValues();
+            for (Value value : values) {
+                if (value instanceof JCRValueWrapper) {
+                    JCRValueWrapper wrapper = (JCRValueWrapper) value;
+                    perm.addDependency(toPermission(wrapper.getNode()));
+                }
+            }
+        } catch (PathNotFoundException e) {
+        }
         return perm;
     }
 

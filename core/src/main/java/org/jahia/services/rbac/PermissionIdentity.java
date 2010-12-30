@@ -54,4 +54,8 @@ public class PermissionIdentity extends BaseIdentity implements Permission {
     public List<Permission> getChilds() {
         return Collections.emptyList();
     }
+
+    public List<Permission> getDependencies() {
+        return Collections.emptyList();
+    }
 }

@@ -112,9 +112,7 @@
 
 [jnt:permission] > nt:base, mix:referenceable, mix:title, jmix:autoPublish, jmix:observable
  - j:isAbstract (boolean)
- + * (jnt:permission)
-
-[jnt:permissionGroup] > nt:base, jmix:observable
+ - j:dependencies (weakreference) protected hidden multiple < jnt:permission
  + * (jnt:permission)
 
 [jnt:permissions] > nt:base, mix:versionable

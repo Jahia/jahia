@@ -384,6 +384,8 @@ public class RolesPermissionsHelper {
 
     private GWTJahiaPermission toPermission(Permission permission) {
         GWTJahiaPermission gwtJahiaPermission = new GWTJahiaPermission(permission.getName());
+        gwtJahiaPermission.setTitle(permission.getTitle());
+        gwtJahiaPermission.setDescription(permission.getDescription());
         List<Permission> childs = permission.getChilds();
         for (Permission child : childs) {
             GWTJahiaPermission permission1 = toPermission(child);
@@ -391,6 +393,11 @@ public class RolesPermissionsHelper {
             gwtJahiaPermission.addChild(permission1);
         }
         gwtJahiaPermission.setPath(permission.getPath());
+        for (Permission permission1 : permission.getDependencies()) {
+            GWTJahiaPermission jahiaPermission = toPermission(permission1);
+            jahiaPermission.setParent(gwtJahiaPermission);
+            gwtJahiaPermission.addDependency(jahiaPermission);
+        }
         return gwtJahiaPermission;
     }
 

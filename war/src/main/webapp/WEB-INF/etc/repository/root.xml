@@ -64,11 +64,11 @@
 
                 <jcr:read_default jcr:primaryType="jnt:permission"/>
 
-                <jcr:write_default jcr:primaryType="jnt:permission">
-                    <jcr:modifyProperties_default jcr:primaryType="jnt:permission"/>
-                    <jcr:addChildNodes_default jcr:primaryType="jnt:permission"/>
-                    <jcr:removeNode_default jcr:primaryType="jnt:permission"/>
-                    <jcr:removeChildNodes_default jcr:primaryType="jnt:permission"/>
+                <jcr:write_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default">
+                    <jcr:modifyProperties_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                    <jcr:addChildNodes_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                    <jcr:removeNode_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                    <jcr:removeChildNodes_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
                 </jcr:write_default>
                 <jcr:readAccessControl_default jcr:primaryType="jnt:permission"/>
                 <jcr:modifyAccessControl_default jcr:primaryType="jnt:permission"/>

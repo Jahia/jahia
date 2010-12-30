@@ -51,6 +51,11 @@ public interface Permission extends Serializable {
 
     List<Permission> getChilds();
 
+    List<Permission> getDependencies();
+
     String getPath();
 
+    String getTitle();
+
+    String getDescription();
 }

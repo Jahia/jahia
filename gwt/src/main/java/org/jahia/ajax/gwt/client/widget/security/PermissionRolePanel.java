@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.widget.security;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -73,6 +72,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
     private final JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
     private GWTJahiaRole role;
     private TreeGrid<GWTJahiaPermission> grid;
+    private TreeStore<GWTJahiaPermission> store;
 
     public PermissionRolePanel(GWTJahiaRole role) {
         this.role = role;
@@ -109,7 +109,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
      */
     public void refreshUI() {
         removeAll();
-        final TreeStore<GWTJahiaPermission> store = new TreeStore<GWTJahiaPermission>();
+        store = new TreeStore<GWTJahiaPermission>();
         store.add(permissions, true);
         store.sort("name", SortDir.ASC);
         List<ColumnConfig> configs = createColumnsConfig();
@@ -140,7 +140,6 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         column.setRenderer(new TreeGridCellRenderer());
         column.setWidth(350);
         configs.add(column);
-        final PermissionRolePanel panel = this;
         final GridCellRenderer<GWTJahiaPermission> rolePermissionRenderer = new GridCellRenderer<GWTJahiaPermission>() {
             public Object render(final GWTJahiaPermission currentPermission, String property, ColumnData config,
                                  final int rowIndex, final int colIndex, ListStore<GWTJahiaPermission> store,
@@ -154,6 +153,13 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                         final List<GWTJahiaPermission> pList = new ArrayList<GWTJahiaPermission>();
                         pList.add(currentPermission);
                         if (checkbox.getValue()) {
+                            if (currentPermission.getDependencies().size() > 0) {
+                                for (GWTJahiaPermission jahiaPermission : currentPermission.getDependencies()) {
+                                    if (!role.hasPermission(jahiaPermission)) {
+                                        pList.add(jahiaPermission);
+                                    }
+                                }
+                            }
                             if (currentPermission.getChilds().size() > 0) {
                                 List<GWTJahiaPermission> childs = new LinkedList<GWTJahiaPermission>();
                                 removableChilds(childs, currentPermission);
@@ -174,8 +180,11 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                             }
 
                         } else {
-                            GWTJahiaPermission parent = (GWTJahiaPermission) currentPermission.getParent();
                             final List<GWTJahiaPermission> childs = new LinkedList<GWTJahiaPermission>();
+                            for (GWTJahiaPermission permission : permissions) {
+                                resolveDependencies(pList, childs, permission, currentPermission);
+                            }
+                            GWTJahiaPermission parent = (GWTJahiaPermission) currentPermission.getParent();
                             addChilds(pList, parent, childs);
                             if (childs.size() > 0) {
                                 contentService.addRolePermissions(role, childs, new BaseAsyncCallback() {
@@ -221,6 +230,16 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         return configs;
     }
 
+    private void resolveDependencies(List<GWTJahiaPermission> pList, List<GWTJahiaPermission> childs,
+                                     GWTJahiaPermission permission, GWTJahiaPermission currentPermission) {
+        if (permission.getDependencies().contains(currentPermission)) {
+            pList.add(permission);
+        }
+        for (GWTJahiaPermission jahiaPermission : permission.getChilds()) {
+            resolveDependencies(pList, childs, jahiaPermission, currentPermission);
+        }
+    }
+
     private void callRemoveRolePermission(final List<GWTJahiaPermission> pList) {
         // removing a permission
         contentService.removeRolePermissions(role, pList, new BaseAsyncCallback() {
@@ -236,14 +255,12 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
         });
     }
 
-    private void callAddRolePermission(List<GWTJahiaPermission> pList, final GWTJahiaPermission currentPermission) {
+    private void callAddRolePermission(final List<GWTJahiaPermission> pList, final GWTJahiaPermission currentPermission) {
         // adding a permission
         contentService.addRolePermissions(role, pList, new BaseAsyncCallback() {
             public void onSuccess(Object o) {
                 Log.debug("permission added to role");
-                if (!role.getPermissions().contains(currentPermission)) {
-                    role.getPermissions().add(currentPermission);
-                }
+                role.getPermissions().addAll(pList);
                 refreshUI();
             }
 

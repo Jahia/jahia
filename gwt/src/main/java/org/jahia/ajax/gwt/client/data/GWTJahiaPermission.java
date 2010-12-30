@@ -48,6 +48,7 @@ import java.util.List;
 public class GWTJahiaPermission extends GWTJahiaRolePermissionBase implements TreeModel {
 
     private List<GWTJahiaPermission> childs;
+    private List<GWTJahiaPermission> dependencies;
     private GWTJahiaPermission parent;
 
     public GWTJahiaPermission() {
@@ -58,6 +59,7 @@ public class GWTJahiaPermission extends GWTJahiaRolePermissionBase implements Tr
     public GWTJahiaPermission(String name) {
         super(name);
         childs = new LinkedList<GWTJahiaPermission>();
+        dependencies = new LinkedList<GWTJahiaPermission>();
     }
     
     @Override
@@ -180,5 +182,13 @@ public class GWTJahiaPermission extends GWTJahiaRolePermissionBase implements Tr
      */
     public void setParent(TreeModel parent) {
         this.parent = (GWTJahiaPermission) parent;
+    }
+
+    public void addDependency(GWTJahiaPermission permission) {
+        dependencies.add(permission);
+    }
+
+    public List<GWTJahiaPermission> getDependencies() {
+        return dependencies;
     }
 }

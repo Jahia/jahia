@@ -47,6 +47,8 @@ class BaseIdentity implements Serializable {
 
     private String name;
     private String path;
+    private String title;
+    private String description;
     /**
      * Initializes an instance of this class.
      * 
@@ -77,6 +79,22 @@ class BaseIdentity implements Serializable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override

@@ -8,15 +8,15 @@
               changefreq="monthly" j:installedModules="newsletter" priority="0.5">
             <home jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly"
                   j:templateNode="/templateSets/newsletter/templates/base/newsletters" priority="0.5"/>
-            <newsletter-confirmation jcr:primaryType="jnt:page" j:templateNode="/templateSets/templates-intranet/templates/base/simple" >
-              <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="Newsletter confirmation" jcr:primaryType="jnt:translation" />
-              <listA jcr:primaryType="jnt:contentList" >
-                <bigText jcr:primaryType="jnt:bigText" >
+            <newsletter-confirmation jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly" j:templateNode="/templateSets/newsletter/templates/base/newsletter-confirmation" priority="0.5">
+              <j:translation_en jcr:title="Newsletter confirmation" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
+              <pagecontent jcr:primaryType="jnt:contentList">
+                <bigText jcr:primaryType="jnt:bigText">
                   <j:translation_en jcr:language="en" text="&lt;p&gt;  Your request has been taken into account.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
                 </bigText>
-              </listA>
+              </pagecontent>
             </newsletter-confirmation>
-            <contents jcr:primaryType="jnt:contentFolder"/>
+             <contents jcr:primaryType="jnt:contentFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <templates jcr:primaryType="jnt:templatesFolder">
@@ -26,6 +26,7 @@
                         <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
                       </pagecontent>
                     </newsletters>
+                    <newsletter-confirmation j:requiredPermissions="" jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="false" />
                 </base>
                 <newsletter-issue jcr:mixinTypes="jmix:renderable" j:requiredPermissions="" jcr:primaryType="jnt:contentTemplate" j:view="newsletter" j:hiddenTemplate="false" j:applyOn="jnt:newsletterIssue" j:defaultTemplate="false">
                 </newsletter-issue>

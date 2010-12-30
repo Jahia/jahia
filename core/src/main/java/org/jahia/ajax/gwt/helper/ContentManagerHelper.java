@@ -926,6 +926,7 @@ public class ContentManagerHelper {
                 JCRNodeWrapper node;
                 if (destinationNode.hasNode(child.getName())) {
                     node = destinationNode.getNode(child.getName());
+                    doChildren = true;
                 } else {
                     session.checkout(destinationNode);
                     node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());

@@ -198,7 +198,6 @@ public class JCRPublicationService extends JahiaService {
                 allIds.addAll(subtree.getAllUuids());
             }
         }
-        System.out.println("publish : "+allIds);
         publish(new ArrayList<String>(allIds), sourceWorkspace, destinationWorkspace, comments);
     }
 
@@ -414,9 +413,7 @@ public class JCRPublicationService extends JahiaService {
         for (JCRNodeWrapper node : modified) {
             // Node has been modified, check in now
             if (node.isNodeType("mix:versionable")) {
-                long t = System.currentTimeMillis();
                 sourceVersionManager.checkin(node.getPath());
-                System.out.println("Checkin sources " + node.getPath() + " / " + (System.currentTimeMillis()-t));
             }
         }
         for (final JCRNodeWrapper node : modified) {
@@ -484,12 +481,10 @@ public class JCRPublicationService extends JahiaService {
                 }
 
 //                recurseCheckin(destinationSession.getNode(destinationPath), pruneNodes, destinationVersionManager);
-                long t = System.currentTimeMillis();
                 if (destinationNode.isNodeType("mix:versionable") && destinationNode.isCheckedOut() &&
                         !destinationNode.hasProperty("jcr:mergeFailed")) {
                     destinationVersionManager.checkin(destinationPath);
                 }
-                System.out.println("Checkin dest "+destinationPath + " / " + (System.currentTimeMillis()-t));
 
                 destinationSession.save();
                 NodeIterator ni = destinationVersionManager

@@ -128,10 +128,11 @@
         <module>templates-web-blue</module>
         <module>test</module>
         <module>topstories</module>
+        <module>translationworkflow</module>
         <module>twitter</module>
         <module>userregistration</module>
 		<module>videostreaming</module>
-        <module>wiki</module>
         <module>webClipping</module>
+        <module>wiki</module>
   </modules>
 </project>

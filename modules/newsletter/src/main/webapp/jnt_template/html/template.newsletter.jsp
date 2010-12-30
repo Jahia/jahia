@@ -29,13 +29,13 @@
                     <tr>
                         <td style="padding: 8px 0 8px 0;">
                             <p style="font-size: 11px;font-weight: normal;font-style: italic;color: #333;text-align: center;">
-                                <fmt:message key="web_templates_newsletter.intro.1">
-                                    <fmt:param value="<a style='color: #0066ff;text-decoration: none;' href='/' name='top'>${renderContext.site.path}</a>"/>
+                                <fmt:message key="newsletter.intro.1">
+                                    <fmt:param value="<a style='color: #0066ff;text-decoration: none;' href='/' name='top'>${renderContext.site.title}</a>"/>
                                 </fmt:message>
                                 <br/>
-                                <fmt:message key="web_templates_newsletter.intro.2"/>
-                                <a href="${currentNode.url}" target="_blank" style="color: #0066ff;text-decoration: none;">
-                                    <fmt:message key="web_templates_newsletter.intro.3"/></a>.</p></td>
+                                <fmt:message key="newsletter.intro.2"/>
+                                <a href="${renderContext.site.url}" target="_blank" style="color: #0066ff;text-decoration: none;">
+                                    <fmt:message key="newsletter.intro.3"/></a>.</p></td>
                     </tr>
                 </table>
 

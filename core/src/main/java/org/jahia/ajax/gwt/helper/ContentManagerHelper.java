@@ -682,7 +682,7 @@ public class ContentManagerHelper {
         } catch (RepositoryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        acl.setPermissionsDependencies(new HashMap<String, List<String>>(node.getPermissionsDependencies()));
+//        acl.setPermissionsDependencies(new HashMap<String, List<String>>(node.getPermissionsDependencies()));
         return acl;
     }
 

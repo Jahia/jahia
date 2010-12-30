@@ -89,10 +89,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getAvailableRoles();
     }
 
-    public Map<String, List<String>> getPermissionsDependencies() {
-        return node.getPermissionsDependencies();
-    }
-
     public boolean isWriteable() {
         return node.isWriteable();
     }

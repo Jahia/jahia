@@ -93,20 +93,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected Map<Locale, Node> i18NobjectNodes = null;
 
-    protected static String[] defaultPerms = {Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS, Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE, Constants.JCR_ADD_CHILD_NODES_LIVE};
-    protected static Map<String, List<String>> defaultDependencies;
-
-    static {
-        defaultDependencies = new HashMap<String, List<String>>();
-        defaultDependencies.put(Constants.JCR_READ_RIGHTS, Arrays.asList(Constants.JCR_READ_RIGHTS_LIVE));
-        defaultDependencies.put(Constants.JCR_WRITE_RIGHTS, Arrays.asList(Constants.JCR_READ_RIGHTS));
-        defaultDependencies.put(Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Arrays.asList(Constants.JCR_WRITE_RIGHTS));
-        defaultDependencies.put(Constants.JCR_WRITE_RIGHTS_LIVE, Arrays.asList(Constants.JCR_READ_RIGHTS_LIVE));
-        defaultDependencies.put(Constants.JCR_ADD_CHILD_NODES_LIVE, Arrays.asList(Constants.JCR_READ_RIGHTS_LIVE));
-    }
-
-    private static final String J_ROLES = "j:roles";
-
     private transient Map<String, String> propertiesAsString;
     private static final String REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME = "j:referenceNodeIdentifiers";
     private static final String REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:referencePropertyNames";
@@ -230,7 +216,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         if (ace.isNodeType("jnt:ace")) {
                             String principal = ace.getProperty("j:principal").getString();
                             String type = ace.getProperty("j:aceType").getString();
-                            Value[] roles = ace.getProperty(J_ROLES).getValues();
+                            Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
 
                             if (!current.containsKey(principal)) {
                                 List<String[]> p = localResults.get(principal);
@@ -269,13 +255,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             res.add(role);
         }
         return Collections.singletonMap("default", res);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Map<String, List<String>> getPermissionsDependencies() {
-        return defaultDependencies;
     }
 
     /**
@@ -400,8 +379,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             List<String> grClone = new ArrayList<String>(gr);
             List<String> denClone = new ArrayList<String>(den);
-            if (aceg.hasProperty(J_ROLES)) {
-                final Value[] values = aceg.getProperty(J_ROLES).getValues();
+            if (aceg.hasProperty(Constants.J_ROLES)) {
+                final Value[] values = aceg.getProperty(Constants.J_ROLES).getValues();
                 for (Value value : values) {
                     final String s = value.getString();
                     if (!gr.contains(s) && !den.contains(s)) {
@@ -409,8 +388,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                 }
             }
-            if (aced.hasProperty(J_ROLES)) {
-                final Value[] values = aced.getProperty(J_ROLES).getValues();
+            if (aced.hasProperty(Constants.J_ROLES)) {
+                final Value[] values = aced.getProperty(Constants.J_ROLES).getValues();
                 for (Value value : values) {
                     final String s = value.getString();
                     if (!gr.contains(s) && !den.contains(s)) {
@@ -423,14 +402,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (grs.length == 0) {
                 aceg.remove();
             } else {
-                aceg.setProperty(J_ROLES, grs);
+                aceg.setProperty(Constants.J_ROLES, grs);
             }
             String[] dens = new String[denClone.size()];
             denClone.toArray(dens);
             if (dens.length == 0) {
                 aced.remove();
             } else {
-                aced.setProperty(J_ROLES, dens);
+                aced.setProperty(Constants.J_ROLES, dens);
             }
         } catch (RepositoryException e) {
             logger.error("Cannot change acl", e);

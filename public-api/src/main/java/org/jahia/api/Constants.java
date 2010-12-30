@@ -242,4 +242,5 @@ public class Constants {
 
     public static final List<String> forbiddenMixinToCopy = Arrays.asList(JAHIAMIX_WORKFLOW);
     public static final String JCR_LASTLOGINDATE = "lastLoginDate";
+    public static final String J_ROLES = "j:roles";
 }

@@ -28,7 +28,7 @@
                     </newsletters>
                     <newsletter-confirmation j:requiredPermissions="" jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="false" />
                 </base>
-                <newsletter-issue jcr:mixinTypes="jmix:renderable" j:requiredPermissions="" jcr:primaryType="jnt:contentTemplate" j:view="newsletter" j:hiddenTemplate="false" j:applyOn="jnt:newsletterIssue" j:defaultTemplate="false">
+                <newsletter-issue jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:contentTemplate" j:view="newsletter" j:hiddenTemplate="false" j:applyOn="jnt:newsletterIssue" j:defaultTemplate="false">
                 </newsletter-issue>
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <files jcr:primaryType="jnt:folder"/>

@@ -136,6 +136,9 @@ public class TemplateNodeFilter extends AbstractFilter {
                 if (resource.getTemplate().equals("default") && current.hasProperty("j:templateNode")) {
                     // A template node is specified on the current node
                     JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
+                    if (!checkTemplatePermission(resource, templateNode)) {
+                        throw new AccessDeniedException(resource.getTemplate());
+                    }
                     template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             templateName, templateNode.getIdentifier(), template);
                 } else if (templatesNode != null) {
@@ -243,21 +246,26 @@ public class TemplateNodeFilter extends AbstractFilter {
             }
 
         }
-        if (templateNode.hasProperty("j:requiredPermissions")) {
-            Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
-            for (Value value : values) {
-                if (!resource.getNode().hasPermission(value.getString())) {
-                    return;
-                }
-            }
-
-        }
+        if (!checkTemplatePermission(resource, templateNode)) return;
 
         if (ok) {
             templates.put(type,new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             null, templateNode.getIdentifier(), null));
         }
+    }
+
+    private boolean checkTemplatePermission(Resource resource, JCRNodeWrapper templateNode) throws RepositoryException {
+        if (templateNode.hasProperty("j:requiredPermissions")) {
+            Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
+            for (Value value : values) {
+                if (!resource.getNode().hasPermission(((JCRValueWrapperImpl) value).getNode().getName())) {
+                    return false;
+                }
+            }
+
+        }
+        return true;
     }
 
 }

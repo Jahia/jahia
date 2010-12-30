@@ -152,7 +152,7 @@
               <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" />
             </pagecontent>
           </folderTemplate>
-          <editContent j:requiredPermissions="write" j:requiredMode="contribute" jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="true" j:applyOn="jnt:content">
+          <editContent j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" j:requiredMode="contribute" jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="true" j:applyOn="jnt:content">
             <pagecontent jcr:primaryType="jnt:contentList">
               <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
               <tabularList jcr:primaryType="jnt:tabularList">

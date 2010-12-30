@@ -512,26 +512,6 @@ public class WorkflowHelper {
         }
     }
 
-//    private void saveAce(JCRNodeWrapper node, GWTJahiaNodeACE ace, String principal, List<String> permissions, String typeOfPermission)
-//            throws RepositoryException {
-//        String nodeName = typeOfPermission+"_" + ace.getPrincipalType() + "_" + principal;
-//        JCRNodeWrapper aceNode;
-//        if (node.hasNode(nodeName)) {
-//            aceNode = node.getNode(nodeName);
-//            if(!aceNode.isCheckedOut()) {
-//                node.getSession().checkout(aceNode);
-//            }
-//        } else {
-//            aceNode = node.addNode(nodeName, "jnt:ace");
-//        }
-//        aceNode.setProperty("j:principal", ace.getPrincipalType() + ":" + principal);
-//        aceNode.setProperty("j:protected", false);
-//        aceNode.setProperty("j:aceType", typeOfPermission);
-//        String[] grs = new String[permissions.size()];
-//        permissions.toArray(grs);
-//        aceNode.setProperty("j:privileges", grs);
-//    }
-
     public int getNumberOfTasksForUser(JahiaUser user, Locale locale) throws GWTJahiaServiceException {
         int total = 0;
         List<WorkflowTask> tasks = service.getTasksForUser(user, locale);

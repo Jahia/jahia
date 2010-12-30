@@ -246,7 +246,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         if (templateNode.hasProperty("j:requiredPermissions")) {
             Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
             for (Value value : values) {
-                if (!resource.getNode().hasPermission("{http://www.jcp.org/jcr/1.0}" + value.getString())) {
+                if (!resource.getNode().hasPermission(value.getString())) {
                     return;
                 }
             }

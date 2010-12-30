@@ -1,5 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -14,13 +12,14 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<title>${currentNode.properties["jcr:title"].string}</title>
 </head>
-<body id="body" style="background-color:#eaeaea;">
+<body>
 <div id="bodywrapper">
-    <table style="font-size:80%;background-color:#eaeaea;width:100%;font-family: Arial, Helvetica, sans-serif;line-height:160%;"
+    <table style="font-size:11px;background-color:#eaeaea;width:100%;font-family: Arial, Helvetica, sans-serif;line-height:160%;"
            width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td align="center">
@@ -28,7 +27,7 @@
                 <table width="579" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                         <td style="padding: 8px 0 8px 0;">
-                            <p style="font-size: 11px;font-weight: normal;font-style: italic;color: #333;text-align: center;">
+                                                        <p style="font-size: 11px;font-weight: normal;font-style: italic;color: #333;text-align: center;">
                                 <fmt:message key="newsletter.intro.1">
                                     <fmt:param value="<a style='color: #0066ff;text-decoration: none;' href='/' name='top'>${renderContext.site.title}</a>"/>
                                 </fmt:message>
@@ -39,7 +38,7 @@
                     </tr>
                 </table>
 
-                <table width="579" border="0" cellspacing="0" cellpadding="0" style="background-color:#4f5c79">
+                <table width="579" border="0" cellspacing="0" cellpadding="0" style="background-color:#333333;font-family: Arial, Helvetica, sans-serif;line-height:160%;font-size:11px;">
                     <tr>
                         <td align="center">
 
@@ -63,7 +62,7 @@
                     </tr>
                 </table>
 
-                <table width="579" border="0" cellspacing="0" cellpadding="0" style="background-color:#fff">
+                <table width="579" border="0" cellspacing="0" cellpadding="0" style="background-color:#fff;font-family: Arial, Helvetica, sans-serif;line-height:160%;font-size:11px;">
                     <tr>
                         <td width="254" align="center" valign="top"
                             style="background-color: #f8f8f8;border-right: 1px solid #ccc;">
@@ -112,19 +111,20 @@
                                 <tr>
                                     <td align="left" style=" padding: 20px;">
                                         <template:area path="lastNews"/>
+                                    </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
                 </table>
 
-                <table width="579" height="108" border="0" cellspacing="0" cellpadding="0"
-                       style="padding: 10px;background-color: #333333;">
+               <table width="579" height="108" border="0" cellspacing="0" cellpadding="0"
+                       style="padding: 10px;background-color: #333333;font-family: Arial, Helvetica, sans-serif;line-height:160%;font-size:10px;">
                     <tr>
                         <td align="center" valign="middle">
 
                             <table width="559" height="88" border="0" cellspacing="0" cellpadding="0"
-                                   style="font-size: 11px;font-weight: normal;color: #ffffff;text-align: center;">
+                                   style="font-size: 10px;font-weight: normal;color: #ffffff;text-align: center;">
                                 <tr>
                                     <td align="center" style="height: 88px;">
                                         <template:area path="logoFooter"/>
@@ -142,6 +142,6 @@
         </tr>
     </table>
 </div>
+<template:addResources type="css" resources="newsletter.css"/>
 </body>
-
 </html>

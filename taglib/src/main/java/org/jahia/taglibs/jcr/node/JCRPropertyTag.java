@@ -113,7 +113,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                 return returnValue;
             } catch (PathNotFoundException e) {
                 if (!inherited) {
-                    logger.warn("Property : " + name + " not defined in node " + node.getPath());
+                    logger.debug("Property : " + name + " not defined in node " + node.getPath());
                     return returnValue;
                 } else {
                     try {

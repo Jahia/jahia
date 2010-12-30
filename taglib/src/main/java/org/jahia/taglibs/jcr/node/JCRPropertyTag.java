@@ -101,7 +101,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                     }
                     return returnValue;
                 }
-            } catch (PathNotFoundException e) {
+            } catch (ConstraintViolationException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Property : " + name + " not found in node " + node.getPath());
                 }
@@ -111,7 +111,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                     logger.debug("Property : " + name + " not found in node " + node.getPath());
                 }
                 return returnValue;
-            } catch (ConstraintViolationException e) {
+            } catch (PathNotFoundException e) {
                 if (!inherited) {
                     logger.warn("Property : " + name + " not defined in node " + node.getPath());
                     return returnValue;

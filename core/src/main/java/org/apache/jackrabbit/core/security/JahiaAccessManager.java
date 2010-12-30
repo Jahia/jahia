@@ -367,7 +367,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             // Always deny write access on system folders
             if (getSecuritySession().itemExists(jcrPath)) {
                 Item i = getSecuritySession().getItem(jcrPath);
-                if (i.isNode() && !permissions.equals(Collections.singleton(Privilege.JCR_READ + "_" + workspaceName))) {
+                if (i.isNode() && permissions.contains(Collections.singleton(Privilege.JCR_WRITE + "_" + workspaceName))) {
                     String ntName = ((Node) i).getPrimaryNodeType().getName();
                     if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
                         cache.put(absPathStr + " : " + permissions, false);

@@ -1,5 +1,5 @@
 <content jcr:primaryType="jnt:systemFolder"
-
+         jcr:mixinTypes="jmix:accessControlled jmix:worklfowRulesable"
          xmlns:jcr="http://www.jcp.org/jcr/1.0"
          xmlns:j="http://www.jahia.org/jahia/1.0"
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
@@ -47,6 +47,16 @@
     <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>    
 
     <templateSets jcr:primaryType="jnt:templateSets"/>
+
+    <j:acl jcr:primaryType="jnt:acl">
+      <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      <GRANT_g_administrators j:protected="false" j:principal="g:administrators" j:roles="administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+    </j:acl>
+
+    <j:workflowRules jcr:primaryType="jnt:workflowRules">
+      <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule" />
+    </j:workflowRules>
 
     <permissions jcr:primaryType="jnt:permission" >
         <repository-permissions jcr:primaryType="jnt:permission">

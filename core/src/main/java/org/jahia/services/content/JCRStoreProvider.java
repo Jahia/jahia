@@ -409,9 +409,9 @@ public class JCRStoreProvider {
 
                     JahiaPrivilegeRegistry.init(session);
 
-                    rootNode.grantRoles("u:guest", Collections.singleton("visitor"));
-                    rootNode.grantRoles("g:users", Collections.singleton("visitor"));
-                    rootNode.grantRoles("g:administrators", Collections.singleton("administrator"));
+//                    rootNode.grantRoles("u:guest", Collections.singleton("visitor"));
+//                    rootNode.grantRoles("g:users", Collections.singleton("visitor"));
+//                    rootNode.grantRoles("g:administrators", Collections.singleton("administrator"));
                     Node userNode = (Node) session.getItem("/users");
                     NodeIterator nodeIterator = userNode.getNodes();
                     while (nodeIterator.hasNext()) {

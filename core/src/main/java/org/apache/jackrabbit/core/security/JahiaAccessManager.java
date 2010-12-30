@@ -338,7 +338,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             return true;
         }
 
-        if (permissions.equals(Collections.singleton(Privilege.JCR_READ + "_ " +workspaceName)) && absPathStr.equals("{}")) {
+        if (permissions.equals(Collections.singleton(Privilege.JCR_READ + "_" +workspaceName)) && absPathStr.equals("{}")) {
             return true;
         }
 

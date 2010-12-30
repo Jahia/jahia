@@ -34,7 +34,7 @@
                                 </fmt:message>
                                 <br/>
                                 <fmt:message key="newsletter.intro.2"/>
-                                <a href="${renderContext.site.url}" target="_blank" style="color: #0066ff;text-decoration: none;">
+                                <a href="${renderContext.mainResource.node.url}" target="_blank" style="color: #0066ff;text-decoration: none;">
                                     <fmt:message key="newsletter.intro.3"/></a>.</p></td>
                     </tr>
                 </table>

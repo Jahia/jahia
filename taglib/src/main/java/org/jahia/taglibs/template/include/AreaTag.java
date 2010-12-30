@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.security.Privilege;
 import javax.servlet.jsp.JspException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     private void applyContributeModeOptions(JCRNodeWrapper nodeWrapper, boolean nodeAlreadyExist)
             throws RepositoryException {
-        if (nodeWrapper.isNodeType("jmix:contributeMode") && node.getSession().getWorkspace().getName().equals("default") && node.hasPermission("jcr:write_default")) {
+        if (nodeWrapper.isNodeType("jmix:contributeMode") && node.getSession().getWorkspace().getName().equals("default") && node.hasPermission(Privilege.JCR_WRITE)) {
             if (!node.isNodeType("jmix:contributeMode")) {
                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType("jmix:contributeMode");
                 Set<String> propertyNameSet = nodeType.getPropertyDefinitionsAsMap().keySet();

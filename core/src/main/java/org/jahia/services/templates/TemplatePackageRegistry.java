@@ -128,21 +128,26 @@ class TemplatePackageRegistry {
             }
             if (bean instanceof DefaultEventListener) {
                 final DefaultEventListener eventListener = (DefaultEventListener) bean;
-                try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            final Workspace workspace = session.getWorkspace();
-
-                            ObservationManager observationManager = workspace.getObservationManager();
-                            observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), true, null, eventListener.getNodeTypes(), false);
-                            return null;
-                        }
-                    });
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Registering event listener"+eventListener.getClass().getName()+" for workspace '" + eventListener.getWorkspace() + "'");
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
+                if (eventListener.getEventTypes() > 0) {
+	                try {
+	                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
+	                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+	                            final Workspace workspace = session.getWorkspace();
+	
+	                            ObservationManager observationManager = workspace.getObservationManager();
+	                            observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), true, null, eventListener.getNodeTypes(), false);
+	                            return null;
+	                        }
+	                    });
+	                    if (logger.isDebugEnabled()) {
+	                        logger.debug("Registering event listener"+eventListener.getClass().getName()+" for workspace '" + eventListener.getWorkspace() + "'");
+	                    }
+	                } catch (RepositoryException e) {
+	                    logger.error(e.getMessage(), e);
+	                }
+                } else {
+                	logger.info("Skipping listener {} as it has no event types configured.",
+					        eventListener.getClass().getName());                	
                 }
             }
             if (bean instanceof BackgroundAction) {

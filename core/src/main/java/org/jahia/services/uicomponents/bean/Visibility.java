@@ -33,7 +33,6 @@
 package org.jahia.services.uicomponents.bean;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 
@@ -51,7 +50,6 @@ public class Visibility {
 
     //visibility parameter
     private String permission;
-    private String serverActionPermission;
     private String needAuthentication;
     private String userAgent;
     private String value;
@@ -107,7 +105,6 @@ public class Visibility {
                         logger.debug("Logging: true");
                     }
 
-                    // check site permission
                     if (!isAllowed(contextNode)) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("SitePermission:: false");
@@ -118,7 +115,6 @@ public class Visibility {
                         logger.debug("SitePermission: true");
                     }
 
-                    // check site permission
                     if (!isAllowedUserAgent(request)) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("UserAgent: false");

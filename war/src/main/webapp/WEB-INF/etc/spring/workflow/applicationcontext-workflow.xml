@@ -25,14 +25,14 @@
                 <entry key="1-step-publication">
                     <map>
                         <entry key="start" value="/repository-permissions/jcr:all_default/jcr:write_default"/>
-                        <entry key="review" value="/workflow/final-review" />
+                        <entry key="review" value="/workflow-tasks/final-review" />
                     </map>
                 </entry>
                 <entry key="2-step-publication">
                     <map>
                         <entry key="start" value="/repository-permissions/jcr:all_default/jcr:write_default"/>
-                        <entry key="first review" value="/workflow/first-review" />
-                        <entry key="final review" value="/workflow/final-review" />
+                        <entry key="first review" value="/workflow-tasks/first-review" />
+                        <entry key="final review" value="/workflow-tasks/final-review" />
                     </map>
                 </entry>
             </map>

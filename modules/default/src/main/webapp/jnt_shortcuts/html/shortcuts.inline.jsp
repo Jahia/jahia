@@ -31,7 +31,7 @@
                     <a href="${url.base}${url.myProfile}.html"><fmt:message key="userProfile.link"/></a>
                 </li>
             </c:if>--%>
-            <c:if test="${jcr:hasPermission(currentNode, 'write')}">
+            <c:if test="${jcr:hasPermission(currentNode, 'jcr:write')}">
                 <li class="shortcuts-edit">
                     <a href="${url.edit}"><fmt:message key="edit"/></a>
                 </li>

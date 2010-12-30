@@ -127,7 +127,7 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
 
     public boolean isEnabled(JahiaUser user, String siteKey) {
         try {
-            if (siteKey == null) {
+            if (StringUtils.isEmpty(siteKey)) {
                 return StringUtils.isEmpty(permissionName) || JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode().hasPermission(permissionName);
             } else {
                 return StringUtils.isEmpty(permissionName) || JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/"+siteKey).hasPermission(permissionName);

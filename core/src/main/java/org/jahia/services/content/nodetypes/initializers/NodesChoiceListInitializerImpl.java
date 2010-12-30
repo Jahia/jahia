@@ -32,6 +32,7 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -47,6 +48,7 @@ import org.jahia.utils.LanguageCodeConverters;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
@@ -94,22 +96,34 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                             site.getDefaultLanguage()) : null;
                     path = path.replace("$currentSite", site.getPath());
                 }
+                boolean subTree = false;
+                if (path.endsWith("//*")) {
+                    path = StringUtils.substringBeforeLast(path, "//*");
+                    subTree = true;
+                }
                 final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null, locale, fallbackLocale);
                 final JCRNodeWrapper node = jcrSessionWrapper.getNode(path);
-                final NodeIterator nodeIterator = node.getNodes();
-                while (nodeIterator.hasNext()) {
-                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
-                    if (nodeWrapper.isNodeType(nodetype)) {
-                        String displayName = nodeWrapper.getDisplayableName();
-                        listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
-                                nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
-                    }
-                }
+                addSubnodes(listValues, nodetype, node, subTree);
             } catch (PathNotFoundException e) {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         }
         return listValues;
+    }
+
+    private void addSubnodes(ArrayList<ChoiceListValue> listValues, String nodetype, JCRNodeWrapper node, boolean subTree) throws RepositoryException {
+        final NodeIterator nodeIterator = node.getNodes();
+        while (nodeIterator.hasNext()) {
+            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
+            if (nodeWrapper.isNodeType(nodetype)) {
+                String displayName = nodeWrapper.getDisplayableName();
+                listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
+                        nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
+                if (subTree) {
+                    addSubnodes(listValues, nodetype, nodeWrapper, subTree);
+                }
+            }
+        }
     }
 }

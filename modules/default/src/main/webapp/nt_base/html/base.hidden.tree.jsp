@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <li id="treeNode${currentNode.identifier}" class="closed">
-    <c:if test="${jcr:hasPermission(currentNode, 'read')}">
+    <c:if test="${jcr:hasPermission(currentNode, 'jcr:read')}">
         <a href="${url.base}${currentNode.path}.${templateForTree}.html"><span class="folder">${currentNode.name}</span></a>
     </c:if>
     <c:forEach var="node" items="${jcr:getChildrenOfType(currentNode,nodeTypeForTree)}" varStatus="status">

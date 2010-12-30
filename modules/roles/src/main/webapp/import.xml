@@ -88,10 +88,10 @@
             <workflow jcr:primaryType="jnt:permission"/>
         </toolbar>
 
-        <workflow jcr:primaryType="jnt:permission">
+        <workflow-tasks jcr:primaryType="jnt:permission">
             <first-review jcr:primaryType="jnt:permission"/>
             <final-review jcr:primaryType="jnt:permission"/>
-        </workflow>
+        </workflow-tasks>
 
         <wysiwyg-editor-toolbar jcr:primaryType="jnt:permission">
             <full jcr:primaryType="jnt:permission"/>

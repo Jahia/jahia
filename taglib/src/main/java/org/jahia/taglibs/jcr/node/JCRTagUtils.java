@@ -280,7 +280,7 @@ public class JCRTagUtils {
     }
 
     public static boolean hasPermission(JCRNodeWrapper node,String permission) {
-        return node.hasPermission("{http://www.jcp.org/jcr/1.0}"+permission);
+        return node.hasPermission(permission);
     }
 
     public static String humanReadableFileLength(JCRNodeWrapper node) {

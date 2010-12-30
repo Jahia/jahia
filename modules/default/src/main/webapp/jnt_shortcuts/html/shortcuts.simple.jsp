@@ -22,17 +22,15 @@
                     <a href="${url.base}${url.myProfile}.html"><fmt:message key="userProfile.link"/></a>
                 </li>
             </c:if>--%>
-            <c:if test="${jcr:hasPermission(currentNode, 'write')}">
-                <c:if test="${jcr:hasPermission(currentNode, 'edit-mode')}">
+            <c:if test="${jcr:hasPermission(currentNode, 'edit-mode')}">
                 <li class="shortcuts-edit">
                     <a href="${url.edit}"><fmt:message key="edit"/></a>
                 </li>
-                </c:if>
-                <c:if test="${jcr:hasPermission(currentNode, 'contribute-mode')}">
+            </c:if>
+            <c:if test="${jcr:hasPermission(currentNode, 'contribute-mode')}">
                 <li class="shortcuts-contribute">
                     <a href="${url.contribute}"><fmt:message key="contribute"/></a>
                 </li>
-                </c:if>
             </c:if>
         </c:if>
         <li class="shortcuts-print"><a href="#"

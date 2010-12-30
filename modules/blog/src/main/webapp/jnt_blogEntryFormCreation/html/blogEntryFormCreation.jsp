@@ -30,7 +30,7 @@
 </script>
 
 <c:set var="writeable"
-       value="${jcr:hasPermission(currentNode,'addChildNodes') and currentResource.workspace eq 'live'}"/>
+       value="${jcr:hasPermission(currentNode,'jcr:addChildNodes') and currentResource.workspace eq 'live'}"/>
 <%--<c:set var="writeable" value="${jcr:canAddSubNode(renderContext.mainResource.node,'*','jnt:blogContent')}" />--%>
 <c:if test='${writeable}'>
     <form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">

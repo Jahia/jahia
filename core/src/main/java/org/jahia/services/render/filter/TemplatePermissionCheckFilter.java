@@ -55,7 +55,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             if (requirePermissions != null) {
                 String[] perms = requirePermissions.split(" ");
                 for (String perm : perms) {
-                    if (!resource.getNode().hasPermission("{http://www.jcp.org/jcr/1.0}" + perm)) {
+                    if (!resource.getNode().hasPermission(perm)) {
                         throw new AccessDeniedException();
                     }
                 }

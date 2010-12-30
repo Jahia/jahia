@@ -386,9 +386,10 @@ public class RolesPermissionsHelper {
         GWTJahiaPermission gwtJahiaPermission = new GWTJahiaPermission(permission.getName());
         List<Permission> childs = permission.getChilds();
         for (Permission child : childs) {
-            gwtJahiaPermission.addChild(toPermission(child));
+            GWTJahiaPermission permission1 = toPermission(child);
+            permission1.setParent(gwtJahiaPermission);
+            gwtJahiaPermission.addChild(permission1);
         }
-        gwtJahiaPermission.setParent(gwtJahiaPermission);
         gwtJahiaPermission.setPath(permission.getPath());
         return gwtJahiaPermission;
     }

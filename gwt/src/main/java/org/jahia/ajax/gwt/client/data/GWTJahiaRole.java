@@ -62,6 +62,15 @@ public class GWTJahiaRole extends GWTJahiaRolePermissionBase {
     }
 
     public boolean hasPermission(GWTJahiaPermission permission) {
-        return getPermissions() != null && getPermissions().contains(permission);
+        if(permission==null)return false;
+        List<GWTJahiaPermission> permissions = getPermissions();
+        if(permissions != null) {
+            for (GWTJahiaPermission jahiaPermission : permissions) {
+                if(permission.getPath().startsWith(jahiaPermission.getPath())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

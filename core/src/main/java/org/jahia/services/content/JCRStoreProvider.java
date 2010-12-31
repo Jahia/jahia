@@ -779,7 +779,7 @@ public class JCRStoreProvider {
 
                                         userNode.setProperty(JCRUser.J_EXTERNAL, true);
                                         userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, providerName);
-//                                        JCRNodeWrapperImpl.changeRoles(userNode, "u:" + username, "rw");
+                                        ((JCRNodeWrapper)userNode).grantRoles("u:" + username, Collections.singleton("owner"));
 
                                         session.save();
                                         session.getWorkspace().getVersionManager().checkin(f.getPath());

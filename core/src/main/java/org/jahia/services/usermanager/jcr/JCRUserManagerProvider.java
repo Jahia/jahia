@@ -120,7 +120,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode( "/users");
 
                     jcrSessionWrapper.checkout(parentNodeWrapper);
-                    Node userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
+                    JCRNodeWrapper userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
 						String skeletons = parentNodeWrapper.getProperty("j:usersFolderSkeleton")
 						        .getString();
@@ -130,9 +130,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     		logger.error("Unable to import data using user skeletons " + skeletons, importEx);
                             throw new RepositoryException("Could not create user due to some import issues", importEx);
                     	}
-//                        JCRNodeWrapperImpl.changeRoles(userNode, "u:" + name, "rw");
+                        userNode.grantRoles("u:" + name, Collections.singleton("owner"));
                     } else {
-//                        JCRNodeWrapperImpl.changeRoles(userNode, "u:" + name, "rw");
+                        userNode.grantRoles("u:" + name, Collections.singleton("owner"));
                     }
                     String l_password;
                     if (!password.startsWith("SHA-1:")) {

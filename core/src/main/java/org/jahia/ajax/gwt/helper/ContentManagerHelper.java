@@ -926,24 +926,23 @@ public class ContentManagerHelper {
                 JCRNodeWrapper node;
                 if (destinationNode.hasNode(child.getName())) {
                     node = destinationNode.getNode(child.getName());
-                    doChildren = true;
+                    doChildren = false;
                 } else {
                     session.checkout(destinationNode);
                     node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
                     session.save();
-                    doChildren = false;
+                    doChildren = true;
                 }
                 synchro(child, node, session, moduleName, references, doChildren);
             }
-        }
-
-        if (source.isNodeType("jnt:folder") || source.isNodeType("jnt:contentList")) {
-            templatesSynchro(source, destinationNode, session, references, false, false, moduleName);
-        } else
-        if (source.isNodeType("jnt:templatesFolder")) {
-            templatesSynchro(source, destinationNode, session, references, true, false, moduleName);
         } else {
-            templatesSynchro(source, destinationNode, session, references, false, doChildren, moduleName);
+            if (source.isNodeType("jnt:folder") || source.isNodeType("jnt:contentList")) {
+                templatesSynchro(source, destinationNode, session, references, false, false, moduleName);
+            } else if (source.isNodeType("jnt:templatesFolder")) {
+                templatesSynchro(source, destinationNode, session, references, true, false, moduleName);
+            }  else {
+                templatesSynchro(source, destinationNode, session, references, false, doChildren, moduleName);
+            }
         }
     }
 

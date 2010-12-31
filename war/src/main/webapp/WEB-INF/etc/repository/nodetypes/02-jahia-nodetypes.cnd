@@ -106,6 +106,7 @@
 [jnt:role] > nt:base, mix:referenceable, mix:title, jmix:autoPublish, jmix:observable
  - j:nodeTypes (string) protected hidden multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
+ - j:dependencies (weakreference) protected hidden multiple < jnt:role
 
 [jnt:roles] > nt:base, mix:versionable
  + * (jnt:role)

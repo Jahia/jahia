@@ -109,7 +109,9 @@
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
 
         <editor jcr:primaryType="jnt:role"
-                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/modes/edit-mode /permissions/modes/contribute /permissions/edit-mode/categories /permissions/edit-mode/content /permissions/edit-mode/create-page /permissions/edit-mode/list-management /permissions/edit-mode/metadata /permissions/edit-mode/options /permissions/edit-mode/seo /permissions/edit-mode/tags /permissions/managers/file-manager /permissions/managers/portlet-manager /permissions/managers/site-manager /permissions/selector/content /permissions/selector/create /permissions/selector/files-and-images /permissions/selector/portlets /permissions/selector/search /permissions/selector/sitemap /permissions/toolbar /permissions/wysiwyg-editor-toolbar/full" />
+                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/modes/edit-mode /permissions/modes/contribute /permissions/edit-mode/categories /permissions/edit-mode/content /permissions/edit-mode/create-page /permissions/edit-mode/list-management /permissions/edit-mode/metadata /permissions/edit-mode/options /permissions/edit-mode/seo /permissions/edit-mode/tags /permissions/managers/file-manager /permissions/managers/portlet-manager /permissions/managers/site-manager /permissions/selector/content /permissions/selector/create /permissions/selector/files-and-images /permissions/selector/portlets /permissions/selector/search /permissions/selector/sitemap /permissions/toolbar /permissions/wysiwyg-editor-toolbar/full"
+                j:dependencies="/roles/visitor"
+                />
                 <!-- modes/contribute actions/*  languages/* "/>-->
 
         <contributor     jcr:primaryType="jnt:role"

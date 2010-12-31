@@ -206,7 +206,7 @@ public class AclEditor {
                                 List<String> toCheck = acl.getPermissionsDependencies().get(perm);
                                 if (toCheck != null) {
                                     for (String s1 : toCheck) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(perm) + 2);
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(s1) + 2);
                                         if (checkBox!=null && !checkBox.getValue()) {
                                             checkBox.setValue(true,true);
                                         }
@@ -216,7 +216,7 @@ public class AclEditor {
                                 Set<String> toCheck = acl.getPermissionsDependencies().keySet();
                                 for (String s1 : toCheck) {
                                     if (acl.getPermissionsDependencies().get(s1).contains(perm)) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(perm) + 2);
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(s1) + 2);
                                         if (checkBox != null && checkBox.getValue()) {
                                             checkBox.setValue(false,true);
                                         }

@@ -662,6 +662,7 @@ public class ContentManagerHelper {
         acl.setAce(aces);
         try {
             Map<String, List<JCRNodeWrapper>> roles = node.getAvailableRoles();
+            Map<String, List<String>> dependencies = new HashMap<String, List<String>>();
 
             Map<String, List<String>> availablePermissions = new HashMap<String, List<String>>();
             Map<String, String> labels = new HashMap<String, String>();
@@ -675,14 +676,21 @@ public class ContentManagerHelper {
                     } else {
                         labels.put(nodeWrapper.getName(), nodeWrapper.getName());
                     }
+                    List<String> d = new ArrayList<String>();
+                    if (nodeWrapper.hasProperty("j:dependencies")) {
+                        for (Value value : nodeWrapper.getProperty("j:dependencies").getValues()) {
+                            d.add(((JCRValueWrapper)value).getNode().getName());
+                        }
+                    }
+                    dependencies.put(nodeWrapper.getName(), d);
                 }
             }
             acl.setAvailablePermissions(availablePermissions);
             acl.setPermissionLabels(labels);
+            acl.setPermissionsDependencies(dependencies);
         } catch (RepositoryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-//        acl.setPermissionsDependencies(new HashMap<String, List<String>>(node.getPermissionsDependencies()));
         return acl;
     }
 

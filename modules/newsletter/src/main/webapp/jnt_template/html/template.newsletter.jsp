@@ -128,7 +128,6 @@
                                 <tr>
                                     <td align="center" style="height: 88px;">
                                         <template:area path="logoFooter"/>
-                                        <p>&copy; Copyright 2002-2011 - ACME International Corp.</p>
                                     </td>
                                 </tr>
                             </table>

@@ -31,7 +31,7 @@ public final class WebClippingRewriter {
     private URL urlProperties;
 // -------------------------- STATIC METHODS --------------------------
 
-    private static OutputDocument moveScriptInNonTrunkedHtml (OutputDocument outputDocument, String tag) {
+    private static OutputDocument moveScriptInNonTrunkedHtml(OutputDocument outputDocument, String tag) {
         OutputDocument document = outputDocument;
         // Manage the javascript
         Source source = new Source(document.toString());
@@ -47,12 +47,12 @@ public final class WebClippingRewriter {
                 end = startTag.getEnd();
             }
             final List tags = source.findAllStartTags(Tag.BODY);
-            if (tags!=null && tags.size()>0) {
+            if (tags != null && tags.size() > 0) {
                 body = (StartTag) tags.get(0);
                 if (end < body.getBegin()) {
                     document.insert(body.getElement().getContent().getBegin(), startTag.getElement().toString());
                     document.remove(startTag);
-                    document = moveScriptInNonTrunkedHtml(new OutputDocument(new Source(document.toString())),tag);
+                    document = moveScriptInNonTrunkedHtml(new OutputDocument(new Source(document.toString())), tag);
                     break;
                 }
             }
@@ -60,8 +60,8 @@ public final class WebClippingRewriter {
         return document;
     }
 
-    private static OutputDocument moveScriptInTrunkedHtml (Source origin, int startPos, OutputDocument outputDocument,
-                                                           final String text, int endPos) {
+    private static OutputDocument moveScriptInTrunkedHtml(Source origin, int startPos, OutputDocument outputDocument,
+                                                          final String text, int endPos) {
         List scripts = origin.findAllStartTags(text);
         for (int i = scripts.size() - 1; i >= 0; i--) {
             StartTag startTag = (StartTag) scripts.get(i);
@@ -74,14 +74,14 @@ public final class WebClippingRewriter {
             }
             if (end < startPos) {
                 // This script isn't enclose in the trunked tag so we must move it to ensure everything working
-                StartTag body = (StartTag) new Source(outputDocument.toString()).findAllStartTags().get(0);
-                outputDocument.insert(body.getElement().getEnd(), startTag.getElement().toString());
-                outputDocument.remove(startTag);
+                EndTag body = ((StartTag) new Source(outputDocument.toString()).findAllStartTags().get(0)).getElement().getEndTag();
+                outputDocument.insert(body.getElement().getBegin() - 1, startTag.getElement().toString());
             } else if (begin > endPos) {
                 // This script isn't enclose in the trunked tag so we must move it to ensure everything working
                 EndTag body = ((StartTag) new Source(outputDocument.toString()).findAllStartTags().get(0)).getElement().getEndTag();
                 outputDocument.insert(body.getElement().getBegin() - 1, startTag.getElement().toString());
-                outputDocument.remove(startTag);
+
+
             }
         }
         return outputDocument;
@@ -89,10 +89,10 @@ public final class WebClippingRewriter {
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
-    protected WebClippingRewriter () {
+    protected WebClippingRewriter() {
     }
 
-    public WebClippingRewriter (String url) throws MalformedURLException {
+    public WebClippingRewriter(String url) throws MalformedURLException {
         this.url = url;
         urlProperties = new URL(url);
         pattern = Pattern.compile(regex);
@@ -100,14 +100,14 @@ public final class WebClippingRewriter {
 
 // -------------------------- OTHER METHODS --------------------------
 
-     /**
+    /**
      * This method rewrite the url of an html document.
      *
      * @param responseBody Html content of the targeted url
      * @return outpuDocument
      * @throws java.net.MalformedURLException when we encouter a malformed URL
      */
-    public OutputDocument rewriteBody (String responseBody, Resource resource, RenderContext context) throws MalformedURLException {
+    public OutputDocument rewriteBody(String responseBody, Resource resource, RenderContext context) throws MalformedURLException {
         long start = 0;
         Source source = new Source(responseBody);
         OutputDocument document = new OutputDocument(source);
@@ -135,18 +135,18 @@ public final class WebClippingRewriter {
         return document;
     }
 
-    private String getAbsoluteURL (String hrefUrl) throws MalformedURLException {
+    private String getAbsoluteURL(String hrefUrl) throws MalformedURLException {
         final String s = urlProperties.getProtocol() + "://" + urlProperties.getHost() +
-                         ((urlProperties.getPort() >=
-                           0) ? ":" +
-                                urlProperties.getPort() : "");
+                ((urlProperties.getPort() >=
+                        0) ? ":" +
+                        urlProperties.getPort() : "");
         int endIndex = urlProperties.getPath().lastIndexOf("/");
         if (endIndex < 0) {
             final int i = urlProperties.getPath().length();
             endIndex = (i > 0) ? i : 0;
         }
         String absoluteUrl = s + urlProperties.getPath().substring(0, endIndex) + '/' +
-                             hrefUrl;
+                hrefUrl;
         if (hrefUrl.trim().length() > 0) {
             if (hrefUrl.startsWith("//")) {
                 // We have a net_path accordind to RFC_2396 definig URI
@@ -167,23 +167,22 @@ public final class WebClippingRewriter {
     /**
      * Rewrite the specified url to be a webclipping url.
      *
-
      * @param sourceUrl The URL to be rewrited and encoded.
      * @return string
      * @throws java.net.MalformedURLException when we can not rewrite the URL.
      */
-    private String getRewritedUrl (String sourceUrl, RenderContext renderContext)
+    private String getRewritedUrl(String sourceUrl, RenderContext renderContext)
             throws MalformedURLException {
         try {
-            return renderContext.getURLGenerator().getCurrent() + "?" + WebClippingRewriter.URL_PATH_PARAM_NAME + "=" + URLEncoder.encode(getAbsoluteURL(sourceUrl),"UTF-8");
+            return renderContext.getURLGenerator().getCurrent() + "?" + WebClippingRewriter.URL_PATH_PARAM_NAME + "=" + URLEncoder.encode(getAbsoluteURL(sourceUrl), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return null;
         }
     }
 
-    private OutputDocument getTrunkedDocument (String tag, String attributeName, String attributeValue,
-                                               String content) {
+    private OutputDocument getTrunkedDocument(String tag, String attributeName, String attributeValue,
+                                              String content) {
         OutputDocument outputDocument = new OutputDocument(new Source(content));
         Source origin = new Source(content);
         int startPos = 0; // Start position of the trunked tag
@@ -223,7 +222,7 @@ public final class WebClippingRewriter {
         Source source = new Source(outputDocument.toString());
         OutputDocument document = new OutputDocument(source);
         List tags = source.findAllStartTags(Tag.BODY);
-        if (tags!=null && tags.size()>0) {
+        if (tags != null && tags.size() > 0) {
             StartTag body = (StartTag) tags.get(0);
             Attributes attributes = body.getAttributes();
             if (attributes != null && attributes.size() > 0) {
@@ -242,13 +241,13 @@ public final class WebClippingRewriter {
         source = new Source(s);
         tags = source.findAllStartTags(Tag.BODY);
         StartTag body;
-        if(tags != null && tags.size()>0)
-        body = (StartTag) tags.get(0);
+        if (tags != null && tags.size() > 0)
+            body = (StartTag) tags.get(0);
         else body = null;
-        return trunk(s,body);
+        return trunk(s, body);
     }
 
-    private void rewriteATag (Source source, StringBuffer stringBuffer, OutputDocument document, RenderContext context) {
+    private void rewriteATag(Source source, StringBuffer stringBuffer, OutputDocument document, RenderContext context) {
         List aStartTag = source.findAllStartTags(Tag.A);
         for (int i = 0; i < aStartTag.size(); i++) {
             try {
@@ -259,9 +258,9 @@ public final class WebClippingRewriter {
                     String hrefUrl = href.getValue().trim();
                     stringBuffer.setLength(0);
                     if (!hrefUrl.toLowerCase().startsWith("http") && !hrefUrl.toLowerCase().startsWith("javascript")
-                        && !hrefUrl.toLowerCase().startsWith("mailto") && !hrefUrl.toLowerCase().startsWith("ftp")
-                        && !hrefUrl.toLowerCase().startsWith("news") && !hrefUrl.toLowerCase().startsWith("wais")
-                        && !hrefUrl.toLowerCase().startsWith("gopher") && !hrefUrl.startsWith("#")) {
+                            && !hrefUrl.toLowerCase().startsWith("mailto") && !hrefUrl.toLowerCase().startsWith("ftp")
+                            && !hrefUrl.toLowerCase().startsWith("news") && !hrefUrl.toLowerCase().startsWith("wais")
+                            && !hrefUrl.toLowerCase().startsWith("gopher") && !hrefUrl.startsWith("#")) {
                         Matcher matcher = pattern.matcher(hrefUrl);
                         if (!matcher.find()) {
                             String rewritedUrl = getRewritedUrl(hrefUrl, context);
@@ -283,7 +282,7 @@ public final class WebClippingRewriter {
                             while (atList.hasNext()) {
                                 Attribute attribute = (Attribute) atList.next();
                                 if (!"href".equalsIgnoreCase(attribute.getKey()) &&
-                                    !"target".equalsIgnoreCase(attribute.getKey())) {
+                                        !"target".equalsIgnoreCase(attribute.getKey())) {
                                     stringBuffer.append(attribute.getName()).append("=").append(attribute.getQuoteChar()).append(attribute.getValue()).append(attribute.getQuoteChar()).append(' ');
                                 }
                             }
@@ -325,7 +324,7 @@ public final class WebClippingRewriter {
         }
     }
 
-    private void rewriteAreaTag (Source source, StringBuffer stringBuffer, OutputDocument document, RenderContext context) throws MalformedURLException {
+    private void rewriteAreaTag(Source source, StringBuffer stringBuffer, OutputDocument document, RenderContext context) throws MalformedURLException {
         List aStartTag = source.findAllStartTags(Tag.AREA);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
@@ -335,9 +334,9 @@ public final class WebClippingRewriter {
                 String hrefUrl = href.getValue().trim();
                 stringBuffer.setLength(0);
                 if (!hrefUrl.toLowerCase().startsWith("http") && !hrefUrl.toLowerCase().startsWith("javascript")
-                    && !hrefUrl.toLowerCase().startsWith("mailto") && !hrefUrl.toLowerCase().startsWith("ftp")
-                    && !hrefUrl.toLowerCase().startsWith("news") && !hrefUrl.toLowerCase().startsWith("wais")
-                    && !hrefUrl.toLowerCase().startsWith("gopher")) {
+                        && !hrefUrl.toLowerCase().startsWith("mailto") && !hrefUrl.toLowerCase().startsWith("ftp")
+                        && !hrefUrl.toLowerCase().startsWith("news") && !hrefUrl.toLowerCase().startsWith("wais")
+                        && !hrefUrl.toLowerCase().startsWith("gopher")) {
                     Matcher matcher = pattern.matcher(hrefUrl);
                     if (!matcher.find()) {
                         String rewritedUrl = getRewritedUrl(hrefUrl.replaceAll("\\?", "&"), context);
@@ -359,7 +358,7 @@ public final class WebClippingRewriter {
                         while (atList.hasNext()) {
                             Attribute attribute = (Attribute) atList.next();
                             if (!"href".equalsIgnoreCase(attribute.getKey()) &&
-                                !"target".equalsIgnoreCase(attribute.getKey())) {
+                                    !"target".equalsIgnoreCase(attribute.getKey())) {
                                 stringBuffer.append(attribute.getName()).append("=").append(attribute.getQuoteChar()).append(attribute.getValue()).append(attribute.getQuoteChar()).append(' ');
                             }
                         }
@@ -397,7 +396,7 @@ public final class WebClippingRewriter {
         }
     }
 
-    private void rewriteBackgroundAttribute (Source source, StringBuffer stringBuffer, OutputDocument document)
+    private void rewriteBackgroundAttribute(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
         List aStartTag = source.findAllStartTags();
         for (int i = 0; i < aStartTag.size(); i++) {
@@ -425,7 +424,7 @@ public final class WebClippingRewriter {
         }
     }
 
-    private void rewriteFormTag (Source source, StringBuffer stringBuffer,OutputDocument document, RenderContext context) throws MalformedURLException {
+    private void rewriteFormTag(Source source, StringBuffer stringBuffer, OutputDocument document, RenderContext context) throws MalformedURLException {
         List formStartTag = source.findAllStartTags(Tag.FORM);
         for (int i = 0; i < formStartTag.size(); i++) {
             StartTag startTag = (StartTag) formStartTag.get(i);
@@ -451,7 +450,7 @@ public final class WebClippingRewriter {
         }
     }
 
-    private void rewriteFrameTag (Source source, StringBuffer stringBuffer, OutputDocument document)
+    private void rewriteFrameTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
         List aStartTag = source.findAllStartTags(Tag.FRAME);
         for (int i = 0; i < aStartTag.size(); i++) {
@@ -477,7 +476,7 @@ public final class WebClippingRewriter {
         }
     }
 
-    private void rewriteIFrameTag (Source source, StringBuffer stringBuffer, OutputDocument document)
+    private void rewriteIFrameTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
         List aStartTag = source.findAllStartTags(Tag.IFRAME);
         for (int i = 0; i < aStartTag.size(); i++) {
@@ -503,7 +502,7 @@ public final class WebClippingRewriter {
         }
     }
 
-    private void rewriteImgTag (Source source, StringBuffer stringBuffer, OutputDocument document)
+    private void rewriteImgTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
         List aStartTag = source.findAllStartTags(Tag.IMG);
         for (int i = 0; i < aStartTag.size(); i++) {
@@ -529,7 +528,7 @@ public final class WebClippingRewriter {
         }
     }
 
-    private void rewriteObjectTag (Source source, StringBuffer stringBuffer, OutputDocument document)
+    private void rewriteObjectTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
         List aStartTag = source.findAllStartTags(Tag.PARAM);
         for (int i = 0; i < aStartTag.size(); i++) {
@@ -558,7 +557,7 @@ public final class WebClippingRewriter {
         }
     }
 
-    private void rewriteInputImageTag (Source source, StringBuffer stringBuffer, OutputDocument document)
+    private void rewriteInputImageTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
         List aStartTag = source.findAllStartTags(Tag.INPUT);
         for (int i = 0; i < aStartTag.size(); i++) {
@@ -585,7 +584,7 @@ public final class WebClippingRewriter {
         }
     }
 
-    private void rewriteLinkTag (Source source, StringBuffer stringBuffer, OutputDocument document, Resource resource)
+    private void rewriteLinkTag(Source source, StringBuffer stringBuffer, OutputDocument document, Resource resource)
             throws MalformedURLException {
         boolean includeCssLink = Boolean.valueOf(resource.getNode().getPropertyAsString("j:includeCssLink"));
         List aStartTag = source.findAllStartTags(Tag.LINK);
@@ -609,12 +608,12 @@ public final class WebClippingRewriter {
                     document.replace(startTag, stringBuffer.toString());
                 }
             } else {
-                document.replace(startTag,"");
+                document.replace(startTag, "");
             }
         }
     }
 
-    private void rewriteScriptTag (Source source, StringBuffer stringBuffer, OutputDocument document)
+    private void rewriteScriptTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
         List aStartTag = source.findAllStartTags(Tag.SCRIPT);
         for (int i = 0; i < aStartTag.size(); i++) {
@@ -640,15 +639,16 @@ public final class WebClippingRewriter {
         }
     }
 
-    private OutputDocument trunk (String document, StartTag startTag) {
+    private OutputDocument trunk(String document, StartTag startTag) {
         StringBuffer buffer = new StringBuffer(document.length());
-        if(startTag!=null) {
-        buffer.append(startTag.getElement().getContent().toString());
-        isTrunked = true;}
-        else {
+        if (startTag != null) {
+            buffer.append(startTag.getElement().toString());
+            isTrunked = true;
+        } else {
             buffer.append(document);
         }
-        return new OutputDocument(new Source(buffer.toString()));
+        OutputDocument outputDocument = new OutputDocument(new Source(buffer.toString()));
+        return outputDocument;
     }
 
     /**
@@ -656,16 +656,25 @@ public final class WebClippingRewriter {
      * Get the content of a specified tag.
      *
      * @param document The document to be trunked if needed
-     * @param resource  The current resource
+     * @param resource The current resource
      * @return ouputDocument
      */
-    private OutputDocument trunkDocument (OutputDocument document, Resource resource) {
+    private OutputDocument trunkDocument(OutputDocument document, Resource resource) {
         // Get the specified tag
         String tag = "";
+        if (resource.getNode().getPropertyAsString("j:specificTag") != null) {
+            tag = resource.getNode().getPropertyAsString("j:specificTag");
+        }
         // Get the specific attribute name
         String attributeName = "";
+        if (resource.getNode().getPropertyAsString("j:specificAttr") != null) {
+            attributeName = resource.getNode().getPropertyAsString("j:specificAttr");
+        }
         // Get the specific attribute value
         String attributeValue = "";
+        if (resource.getNode().getPropertyAsString("j:specificAttrValue") != null) {
+            attributeValue = resource.getNode().getPropertyAsString("j:specificAttrValue");
+        }
         OutputDocument outputDocument = document;
         outputDocument = getTrunkedDocument(tag, attributeName, attributeValue, outputDocument.toString());
         return outputDocument;

@@ -356,10 +356,9 @@ public class UIConfigHelper {
 
                 List<GWTEngineTab> tabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
                 gwtConfig.setEngineTabs(tabs);
-                List<GWTEngineTab> managerTabs = new ArrayList<GWTEngineTab>(tabs.size());
-                for (GWTEngineTab gwtEngineTab : tabs) {
-	                managerTabs.add((GWTEngineTab) copy(gwtEngineTab));
-                }
+
+                // todo : use eanUtilsBean.getInstance().cloneBean when it works. Actually it does not copy properties of the bean.
+                List<GWTEngineTab> managerTabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
                 gwtConfig.setManagerEngineTabs(managerTabs);
 
                 return gwtConfig;

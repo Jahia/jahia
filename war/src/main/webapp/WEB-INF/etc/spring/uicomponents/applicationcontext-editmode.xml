@@ -1199,19 +1199,6 @@
                         <value>layout</value>
                     </list>
                 </property>
-                <property name="showForTypes">
-                    <list>
-                        <value>jnt:page</value>
-                        <value>jnt:area</value>
-                        <value>jnt:absoluteArea</value>
-                        <value>jnt:levelAbsoluteArea</value>
-                        <value>jnt:mainResourceDisplay</value>
-                        <value>jnt:template</value>
-                        <value>jnt:pageTemplate</value>
-                        <value>jnt:contentTemplate</value>
-                        <value>jnt:newsletterIssue</value>
-                    </list>
-                </property>
             </bean>
         </property>
     </bean>

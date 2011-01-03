@@ -67,7 +67,7 @@
 
     <bean id="statusAdministrationModule" class="org.jahia.admin.status.ManageStatus" parent="abstractAdministrationModule">
         <property name="urlKey" value="status" />
-        <property name="permissionName" value="global/server-and-cache" />
+        <property name="permissionName" value="global/cache" />
         <property name="name" value="status" />
         <property name="icon" value="line-chart" />
         <property name="label" value="org.jahia.admin.serverStatus.label" />

@@ -69,7 +69,7 @@ Customizing built-in roles and permissions
             <portlets jcr:primaryType="jnt:permission"/>
             <email-settings jcr:primaryType="jnt:permission"/>
             <root-user jcr:primaryType="jnt:permission"/>
-            <server-and-cache jcr:primaryType="jnt:permission"/>
+            <cache jcr:primaryType="jnt:permission"/>
             <server-permissions jcr:primaryType="jnt:permission"/>
             <password-policy jcr:primaryType="jnt:permission"/>
             <patches jcr:primaryType="jnt:permission"/>
@@ -89,7 +89,7 @@ Customizing built-in roles and permissions
         </j:acl>
         
         <server-content-manager jcr:primaryType="jnt:role"
-            j:assignedPermissions="global/virtual-sites global/portlets global/server-and-cache"/>
+            j:assignedPermissions="global/virtual-sites global/portlets global/cache"/>
             
         <security-advisor jcr:primaryType="jnt:role"
             j:assignedPermissions="global/server-permissions global/password-policy"/>

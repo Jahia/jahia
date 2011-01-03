@@ -10,7 +10,7 @@
             <portlets jcr:primaryType="jnt:permission"/>
             <email-settings jcr:primaryType="jnt:permission"/>
             <root-user jcr:primaryType="jnt:permission"/>
-            <server-and-cache jcr:primaryType="jnt:permission"/>
+            <cache jcr:primaryType="jnt:permission"/>
             <server-permissions jcr:primaryType="jnt:permission"/>
             <password-policy jcr:primaryType="jnt:permission"/>
             <patches jcr:primaryType="jnt:permission"/>
@@ -49,6 +49,8 @@
             <workflow jcr:primaryType="jnt:permission"/>
             <publication jcr:primaryType="jnt:permission"/>
             <import jcr:primaryType="jnt:permission"/>
+            <history jcr:primaryType="jnt:permission"/>
+            <versioning jcr:primaryType="jnt:permission"/>
         </edit-mode>
 
         <managers jcr:primaryType="jnt:permission">
@@ -107,6 +109,9 @@
     <roles jcr:primaryType="jnt:roles" >
         <visitor jcr:primaryType="jnt:role"
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
+
+        <viewer jcr:primaryType="jnt:role"
+                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default" />
 
         <editor jcr:primaryType="jnt:role"
                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/modes/edit-mode /permissions/modes/contribute /permissions/edit-mode/categories /permissions/edit-mode/content /permissions/edit-mode/create-page /permissions/edit-mode/list-management /permissions/edit-mode/metadata /permissions/edit-mode/options /permissions/edit-mode/seo /permissions/edit-mode/tags /permissions/managers/file-manager /permissions/managers/portlet-manager /permissions/managers/site-manager /permissions/selector/content /permissions/selector/create /permissions/selector/files-and-images /permissions/selector/portlets /permissions/selector/search /permissions/selector/sitemap /permissions/toolbar /permissions/wysiwyg-editor-toolbar/full"

@@ -58,7 +58,7 @@ public class CacheController extends JahiaMultiActionController {
 	private static Logger logger = LoggerFactory.getLogger(CacheController.class);
 
 	private static final Permission REQUERIED_PERMISSION = new PermissionIdentity(
-	        "global/server-and-cache");
+	        "global/cache");
 
 	private CacheService cacheService;
 

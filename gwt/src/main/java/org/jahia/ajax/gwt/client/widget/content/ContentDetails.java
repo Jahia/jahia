@@ -133,7 +133,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        for (GWTEngineTab tabConfig : ((GWTManagerConfiguration)config).getManagerEngineTabs()) {
+        for (GWTEngineTab tabConfig : ((GWTManagerConfiguration)config).getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
             tabs.add(tabItem.create(tabConfig, this));
         }

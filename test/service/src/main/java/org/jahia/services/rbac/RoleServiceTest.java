@@ -148,13 +148,13 @@ public class RoleServiceTest {
     @Test
     public void testServerPermissionCreate() throws Exception {
         String name = getNextPermissionName();
-        Permission permission = new PermissionIdentity(name, "myGroup", null);
+        Permission permission = new PermissionIdentity(name);
         getRoleService().savePermission(permission);
 
         PermissionImpl read = getRoleService().getPermission(permission);
 
         assertNotNull("The permission was not saved", read);
-        assertEquals("The permission group is wrong", "myGroup", read.getGroup());
+        assertEquals("The permission group is wrong", "myGroup");
         assertEquals("The JCR path of the persisted permission is wrong", "/permissions/myGroup/"
                 + permission.getName(), read.getPath());
     }
@@ -168,7 +168,7 @@ public class RoleServiceTest {
         PermissionImpl read = getRoleService().getPermission(permission);
 
         assertNotNull("The permission was not saved", read);
-        assertEquals("The permission group is wrong", "global", read.getGroup());
+        assertEquals("The permission group is wrong", "global");
         assertEquals("The JCR path of the persisted permission is wrong",
                 "/permissions/global/" + permission.getName(), read.getPath());
     }
@@ -184,7 +184,7 @@ public class RoleServiceTest {
     public void testServerPermissionCreateManyWithGroups() throws Exception {
         for (int i = 0; i < PERMISSIONS_TO_CREATE / 20; i++) {
             for (int j = 0; j < 20; j++) {
-                getRoleService().savePermission(new PermissionIdentity(getNextPermissionName(), "group-" + j, null));
+                getRoleService().savePermission(new PermissionIdentity(getNextPermissionName()));
             }
         }
     }
@@ -473,14 +473,12 @@ public class RoleServiceTest {
     @Test
     public void testSitePermissionCreate() throws Exception {
         String name = getNextPermissionName();
-        Permission permission = new PermissionIdentity(name, "myGroup", TESTSITE_NAME);
+        Permission permission = new PermissionIdentity(name);
         getRoleService().savePermission(permission);
 
         PermissionImpl read = getRoleService().getPermission(permission);
 
         assertNotNull("The permission was not saved", read);
-        assertEquals("The permission group is wrong", "myGroup", read.getGroup());
-        assertEquals("The permission site is wrong", TESTSITE_NAME, read.getSite());
         assertEquals("The JCR path of the persisted permission is wrong", "/sites/" + TESTSITE_NAME
                 + "/permissions/myGroup/" + permission.getName(), read.getPath());
     }
@@ -488,14 +486,12 @@ public class RoleServiceTest {
     @Test
     public void testSitePermissionCreateDefGroup() throws Exception {
         String name = getNextPermissionName();
-        Permission permission = new PermissionIdentity(name, null, TESTSITE_NAME);
+        Permission permission = new PermissionIdentity(name);
         getRoleService().savePermission(permission);
 
         PermissionImpl read = getRoleService().getPermission(permission);
 
         assertNotNull("The permission was not saved", read);
-        assertEquals("The permission group is wrong", "global", read.getGroup());
-        assertEquals("The permission site is wrong", TESTSITE_NAME, read.getSite());
         assertEquals("The JCR path of the persisted permission is wrong", "/sites/" + TESTSITE_NAME
                 + "/permissions/global/" + permission.getName(), read.getPath());
     }
@@ -503,7 +499,7 @@ public class RoleServiceTest {
     @Test
     public void testSitePermissionCreateMany() throws Exception {
         for (int i = 0; i < PERMISSIONS_TO_CREATE; i++) {
-            getRoleService().savePermission(new PermissionIdentity(getNextPermissionName(), null, TESTSITE_NAME));
+            getRoleService().savePermission(new PermissionIdentity(getNextPermissionName()));
         }
     }
 
@@ -512,7 +508,7 @@ public class RoleServiceTest {
         for (int i = 0; i < PERMISSIONS_TO_CREATE / 20; i++) {
             for (int j = 0; j < 20; j++) {
                 getRoleService().savePermission(
-                        new PermissionIdentity(getNextPermissionName(), "group-" + j, TESTSITE_NAME));
+                        new PermissionIdentity(getNextPermissionName()));
             }
         }
     }
@@ -520,12 +516,11 @@ public class RoleServiceTest {
     @Test
     public void testSiteRoleCreateEmpty() throws Exception {
         String name = getNextRoleName();
-        Role role = new RoleIdentity(name, TESTSITE_NAME);
+        Role role = new RoleIdentity(name);
         getRoleService().saveRole(role);
         RoleImpl read = getRoleService().getRole(role);
         assertNotNull("The role was not saved", read);
         assertEquals("The role name is wrong", role.getName(), read.getName());
-        assertEquals("The role site is wrong", role.getSite(), read.getSite());
         assertEquals("The JCR path of the persisted role is wrong", "/sites/" + TESTSITE_NAME + "/roles/"
                 + role.getName(), read.getPath());
     }
@@ -533,20 +528,20 @@ public class RoleServiceTest {
     @Test
     public void testSiteRoleCreateMany() throws Exception {
         for (int i = 0; i < ROLES_TO_CREATE; i++) {
-            getRoleService().saveRole(new RoleIdentity(getNextRoleName(), TESTSITE_NAME));
+            getRoleService().saveRole(new RoleIdentity(getNextRoleName()));
         }
     }
 
     @Test
     public void testSiteRoleCreateWithPermissions() throws Exception {
         String name = getNextRoleName();
-        RoleImpl role = new RoleImpl(name, TESTSITE_NAME);
-        role.getPermissions().add(new PermissionImpl(getNextPermissionName(), "myGroup1"));
-        role.getPermissions().add(new PermissionImpl(getNextPermissionName(), "myGroup2"));
+        RoleImpl role = new RoleImpl(name);
         role.getPermissions().add(new PermissionImpl(getNextPermissionName()));
-        role.getPermissions().add(new PermissionImpl(getNextPermissionName(), "myGroup1", TESTSITE_NAME));
-        role.getPermissions().add(new PermissionImpl(getNextPermissionName(), "myGroup2", TESTSITE_NAME));
-        role.getPermissions().add(new PermissionImpl(getNextPermissionName(), null, TESTSITE_NAME));
+        role.getPermissions().add(new PermissionImpl(getNextPermissionName()));
+        role.getPermissions().add(new PermissionImpl(getNextPermissionName()));
+        role.getPermissions().add(new PermissionImpl(getNextPermissionName()));
+        role.getPermissions().add(new PermissionImpl(getNextPermissionName()));
+        role.getPermissions().add(new PermissionImpl(getNextPermissionName()));
 
         getRoleService().saveRole(role);
 
@@ -554,7 +549,6 @@ public class RoleServiceTest {
 
         assertNotNull("The role was not saved", read);
         assertEquals("The role name is wrong", role.getName(), read.getName());
-        assertEquals("The role site is wrong", role.getSite(), read.getSite());
         assertEquals("The permission count in the role is wrong", role.getPermissions().size(), read.getPermissions()
                 .size());
         assertNotNull("The permissions are not persisted in the role", getRoleService().getPermission(

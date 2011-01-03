@@ -70,7 +70,8 @@ public class PropertiesTabItem extends EditEngineTabItem {
     protected transient Map<String, PropertiesEditor> langPropertiesEditorMap;
     protected transient boolean multiLang = false;
 
-    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+    @Override
+    public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         AsyncTabItem tab = super.create(engineTab, engine);
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();
         tab.setLayout(new FitLayout());

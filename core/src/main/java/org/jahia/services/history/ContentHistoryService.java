@@ -46,6 +46,9 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     private volatile long processedSinceLastReport = 0;
     private volatile long timeSinceLastReport = 0;
     private volatile long latestTimeProcessed = 0;
+    private volatile String lastUUIDProcessed = null;
+    private volatile String lastPropertyProcessed = null;
+    private volatile String lastActionProcessed = null;
 
     private static ContentHistoryService instance;
 
@@ -168,24 +171,6 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             boolean shouldSkipInsertion = false;
             try {
 
-                /*
-                Criteria criteria = session.createCriteria(HistoryEntry.class);
-                criteria.add(Restrictions.eq("uuid", nodeIdentifier));
-                criteria.add(Restrictions.eq("date", date));
-                criteria.add(Restrictions.eq("propertyName", propertyName));
-                criteria.add(Restrictions.eq("action", action));
-
-                HistoryEntry historyEntry = (HistoryEntry) criteria.uniqueResult();
-                // Found update object
-                if (historyEntry != null) {
-                    // history entry already exists, we will not update it.
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Content history entry " + historyEntry + " already exists, ignoring...");
-                    }
-                    ignoredCount++;
-                    whatDidWeDo = "skipped";
-                }
-                */
                 if (latestTimeProcessed > date.getTime()) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Skipping content history entry since it's date "+date+"is older than last processed date");
@@ -197,22 +182,38 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                     // if the time is the same, we have to check for existing entries (or maybe it would be faster to
                     // delete and re-create them ?)
                     if (latestTimeProcessed == date.getTime()) {
-                        Criteria criteria = session.createCriteria(HistoryEntry.class);
-                        criteria.add(Restrictions.eq("uuid", nodeIdentifier));
-                        criteria.add(Restrictions.eq("date", date));
-                        criteria.add(Restrictions.eq("propertyName", propertyName));
-                        criteria.add(Restrictions.eq("action", action));
 
-                        HistoryEntry historyEntry = (HistoryEntry) criteria.uniqueResult();
-                        // Found update object
-                        if (historyEntry != null) {
-                            // history entry already exists, we will not update it.
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Content history entry " + historyEntry + " already exists, ignoring...");
+                        // we will now check if the UUID, property name and actions are equal to the last processed
+                        // action, in order to avoid performing duplicate checks in the database if we can avoid them.
+                        boolean mustCheckInDB = false;
+                        if ((lastUUIDProcessed != null) && (lastUUIDProcessed.equals(nodeIdentifier))) {
+                            if ((lastPropertyProcessed != null) && (lastPropertyProcessed.equals(propertyName)) ||
+                                    ((lastPropertyProcessed == null) && (propertyName == null))) {
+                                if (lastActionProcessed.equals(action)) {
+                                    // everything is equal, we will have to check for duplicate in database.
+                                    mustCheckInDB = true;
+                                }
                             }
-                            ignoredCount++;
-                            whatDidWeDo = "skipped";
-                            shouldSkipInsertion = true;
+                        }
+
+                        if (mustCheckInDB) {
+                            Criteria criteria = session.createCriteria(HistoryEntry.class);
+                            criteria.add(Restrictions.eq("uuid", nodeIdentifier));
+                            criteria.add(Restrictions.eq("date", date));
+                            criteria.add(Restrictions.eq("propertyName", propertyName));
+                            criteria.add(Restrictions.eq("action", action));
+
+                            HistoryEntry historyEntry = (HistoryEntry) criteria.uniqueResult();
+                            // Found update object
+                            if (historyEntry != null) {
+                                // history entry already exists, we will not update it.
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("Content history entry " + historyEntry + " already exists, ignoring...");
+                                }
+                                ignoredCount++;
+                                whatDidWeDo = "skipped";
+                                shouldSkipInsertion = true;
+                            }
                         }
                     }
                 }
@@ -248,6 +249,9 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 	                session.flush();
 					insertedCount++;
                     latestTimeProcessed = date.getTime();
+                    lastUUIDProcessed = nodeIdentifier;
+                    lastPropertyProcessed = propertyName;
+                    lastActionProcessed = action;
                 }
             } catch (HibernateException e) {
             	whatDidWeDo = "insertion failed";

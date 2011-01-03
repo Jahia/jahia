@@ -158,19 +158,42 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public Map<String, List<String[]>> getAclEntries() {
         try {
-            Map<String, List<String[]>> roles = new HashMap<String, List<String[]>>();
-            Map<String, List<String[]>> inheritedRoles = new HashMap<String, List<String[]>>();
+            Map<String, List<String[]>> results = new HashMap<String, List<String[]>>();
 
-            recurseonACPs(roles, inheritedRoles, objectNode);
-            for (Map.Entry<String, List<String[]>> s : inheritedRoles.entrySet()) {
-                if (roles.containsKey(s.getKey())) {
-                    List<String[]> l = roles.get(s.getKey());
-                    l.addAll(s.getValue());
-                } else {
-                    roles.put(s.getKey(), s.getValue());
+            Node n = objectNode;
+            try {
+                while (true) {
+                    if (n.hasNode("j:acl")) {
+                        Node acl = n.getNode("j:acl");
+                        NodeIterator aces = acl.getNodes();
+                        while (aces.hasNext()) {
+                            Node ace = aces.nextNode();
+                            if (ace.isNodeType("jnt:ace")) {
+                                String principal = ace.getProperty("j:principal").getString();
+                                String type = ace.getProperty("j:aceType").getString();
+                                Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
+
+                                if (!results.containsKey(principal)) {
+                                    results.put(principal, new ArrayList<String[]>());
+                                }
+
+                                for (Value role : roles) {
+                                    results.get(principal).add(new String[]{n.getPath(), type, role.getString()});
+                                }
+                            }
+                        }
+                        if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
+                            return results;
+                        }
+                    }
+                    n = n.getParent();
                 }
+            } catch (ItemNotFoundException e) {
+                logger.debug(e.getMessage(), e);
             }
-            return roles;
+
+
+            return results;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -203,46 +226,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return actualACLs;
     }
 
-    private void recurseonACPs(Map<String, List<String[]>> results, Map<String, List<String[]>> inherited, Node n) throws RepositoryException {
-        try {
-            Map<String, List<String[]>> current = results;
-            while (true) {
-                if (n.hasNode("j:acl")) {
-                    Node acl = n.getNode("j:acl");
-                    NodeIterator aces = acl.getNodes();
-                    Map<String, List<String[]>> localResults = new HashMap<String, List<String[]>>();
-                    while (aces.hasNext()) {
-                        Node ace = aces.nextNode();
-                        if (ace.isNodeType("jnt:ace")) {
-                            String principal = ace.getProperty("j:principal").getString();
-                            String type = ace.getProperty("j:aceType").getString();
-                            Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
-
-                            if (!current.containsKey(principal)) {
-                                List<String[]> p = localResults.get(principal);
-                                if (p == null) {
-                                    p = new ArrayList<String[]>();
-                                    localResults.put(principal, p);
-                                }
-                                for (Value privilege : roles) {
-                                    p.add(new String[]{n.getPath(), type, privilege.getString()});
-                                }
-                            }
-                        }
-                    }
-                    current.putAll(localResults);
-                    if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
-                        return;
-                    }
-                }
-                n = n.getParent();
-                current = inherited;
-            }
-        } catch (ItemNotFoundException e) {
-            logger.debug(e.getMessage(), e);
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -252,7 +235,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         NodeIterator ni = roles.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper role = (JCRNodeWrapper) ni.nextNode();
-            res.add(role);
+            if (role.hasProperty("j:nodeTypes")) {
+                Value[] values = role.getProperty("j:nodeTypes").getValues();
+                for (Value value : values) {
+                    if (isNodeType(value.getString())) {
+                        res.add(role);
+                        break;
+                    }
+                }
+            } else {
+                res.add(role);
+            }
         }
         return Collections.singletonMap("default", res);
     }

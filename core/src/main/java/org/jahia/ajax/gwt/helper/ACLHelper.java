@@ -67,16 +67,16 @@ public class ACLHelper {
         ace.setPrincipalType('g');
         ace.setPrincipal(usersGroup.getGroupname());
         ace.setPrincipalKey(usersGroup.getGroupKey());
-        Map<String, String> permissionsMap = new HashMap<String, String>();
+        Map<String, Boolean> permissionsMap = new HashMap<String, Boolean>();
         for (String perm : permissions) {
             if (grand) {
-                permissionsMap.put(perm, "GRANT");
+                permissionsMap.put(perm, true);
             } else {
-                permissionsMap.put(perm, "DENY");
+                permissionsMap.put(perm, false);
             }
         }
         ace.setPermissions(permissionsMap);
-        ace.setInheritedPermissions(new HashMap<String,String>());
+        ace.setInheritedPermissions(new HashMap<String,Boolean>());
         ace.setInherited(false);
         return ace;
     }

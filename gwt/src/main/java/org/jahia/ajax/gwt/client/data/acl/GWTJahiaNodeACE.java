@@ -50,8 +50,8 @@ public class GWTJahiaNodeACE implements Serializable {
     private String principalKey;
     private boolean isInherited;
     private String inheritedFrom;
-    private Map<String, String> permissions;
-    private Map<String, String> inheritedPermissions;
+    private Map<String, Boolean> permissions;
+    private Map<String, Boolean> inheritedPermissions;
 
     public GWTJahiaNodeACE() {
     }
@@ -96,19 +96,19 @@ public class GWTJahiaNodeACE implements Serializable {
         this.inheritedFrom = inheritedFrom;
     }
 
-    public Map<String, String> getPermissions() {
+    public Map<String, Boolean> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Map<String, String> permissions) {
+    public void setPermissions(Map<String, Boolean> permissions) {
         this.permissions = permissions;
     }
 
-    public Map<String, String> getInheritedPermissions() {
+    public Map<String, Boolean> getInheritedPermissions() {
         return inheritedPermissions;
     }
 
-    public void setInheritedPermissions(Map<String, String> inheritedPermissions) {
+    public void setInheritedPermissions(Map<String, Boolean> inheritedPermissions) {
         this.inheritedPermissions = inheritedPermissions;
     }
 
@@ -120,13 +120,13 @@ public class GWTJahiaNodeACE implements Serializable {
         clone.setInherited(isInherited);
         clone.setInheritedFrom(inheritedFrom);
 
-        Map<String, String> permsClone = new HashMap<String, String>();
+        Map<String, Boolean> permsClone = new HashMap<String, Boolean>();
         for (String s : permissions.keySet()) {
             permsClone.put(s, permissions.get(s));
         }
         clone.setPermissions(permsClone);
 
-        permsClone = new HashMap<String, String>();
+        permsClone = new HashMap<String, Boolean>();
         for (String s : inheritedPermissions.keySet()) {
             permsClone.put(s, inheritedPermissions.get(s));
         }

@@ -45,14 +45,11 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -191,16 +188,17 @@ public class AclEditor {
                 public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
                                      ListStore listStore, final Grid grid) {
                     final GWTJahiaNodeACE ace = model.get("ace");
-                    String permValue = ace.getPermissions().get(perm);
+                    Boolean permValue = ace.getPermissions().get(perm);
+                    Boolean inPermValue = ace.getInheritedPermissions().get(perm);
                     CheckBox chb = new CheckBox();
                     chb.setTitle(columnName);
-                    chb.setValue("GRANT".equals(permValue));
+                    chb.setValue(Boolean.TRUE.equals(permValue) || (permValue == null && Boolean.TRUE.equals(inPermValue)));
                     chb.setEnabled(!readOnly);
                     chb.addClickHandler(new ClickHandler() {
                         public void onClick(ClickEvent sender) {
                             setDirty();
                             boolean checked = ((CheckBox) sender.getSource()).getValue()!=null?((CheckBox) sender.getSource()).getValue():false;
-                            ace.getPermissions().put(perm, checked ? "GRANT" : "DENY");
+                            ace.getPermissions().put(perm, checked ? Boolean.TRUE : Boolean.FALSE);
                             if (checked) {
                                 grid.getView().getRow(rowIndex);
                                 List<String> toCheck = acl.getPermissionsDependencies().get(perm);
@@ -238,7 +236,7 @@ public class AclEditor {
                                         if (displayInheritanceColumn) {
                                             LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex, available.size() + 2);
                                             ctn.removeAll();
-                                            ctn.add(buildLocalRestoreButton(model, ace));
+                                            ctn.add(buildLocalRestoreInheritanceButton(model, ace));
                                             ctn.layout();
                                         }
                                         ace.setInherited(false);
@@ -265,8 +263,8 @@ public class AclEditor {
                     LayoutContainer widget = new LayoutContainer();
                     if (!readOnly) {
                         if (!ace.getInheritedPermissions().isEmpty() && !acl.isBreakAllInheritance()) {
-                            if (!ace.getPermissions().equals(ace.getInheritedPermissions())) {
-                                widget.add(buildLocalRestoreButton(model, ace));
+                            if (!ace.getPermissions().isEmpty()) {
+                                widget.add(buildLocalRestoreInheritanceButton(model, ace));
                             } else {
                                 widget.add(buildInheritanceLabel(ace));
                             }
@@ -336,13 +334,13 @@ public class AclEditor {
                         ace.setPrincipalType('u');
                         ace.setPrincipal(user.getUsername());
                         ace.setPrincipalKey(user.getUserKey());
-                        ace.setPermissions(new HashMap<String, String>());
-                        boolean first = true;
-                        for (String s : available) {
-                            ace.getPermissions().put(s, first ? "GRANT" : "DENY");
-                            first = false;
-                        }
-                        ace.setInheritedPermissions(new HashMap<String, String>());
+                        ace.setPermissions(new HashMap<String, Boolean>());
+//                        boolean first = true;
+//                        for (String s : available) {
+//                            ace.getPermissions().put(s, first ? Boolean.TRUE : Boolean.FALSE);
+//                            first = false;
+//                        }
+                        ace.setInheritedPermissions(new HashMap<String, Boolean>());
                         ace.setInherited(false);
                         acl.getAce().add(ace);
                         aceMap.put('u' + user.getUserKey(), ace);
@@ -364,13 +362,13 @@ public class AclEditor {
                         ace.setPrincipalType('g');
                         ace.setPrincipal(group.getGroupname());
                         ace.setPrincipalKey(group.getGroupKey());
-                        ace.setPermissions(new HashMap<String, String>());
-                        boolean first = true;
-                        for (String s : available) {
-                            ace.getPermissions().put(s, first ? "GRANT" : "DENY");
-                            first = false;
-                        }
-                        ace.setInheritedPermissions(new HashMap<String, String>());
+                        ace.setPermissions(new HashMap<String, Boolean>());
+//                        boolean first = true;
+//                        for (String s : available) {
+//                            ace.getPermissions().put(s, first ? Boolean.TRUE : Boolean.FALSE);
+//                            first = false;
+//                        }
+                        ace.setInheritedPermissions(new HashMap<String, Boolean>());
                         ace.setInherited(false);
                         acl.getAce().add(ace);
                         aceMap.put('g' + group.getGroupKey(), ace);
@@ -463,7 +461,7 @@ public class AclEditor {
                     acl.getAce().remove(ace);
                 } else {
                     ace.getPermissions().clear();
-                    ace.getPermissions().putAll(ace.getInheritedPermissions());
+//                    ace.getPermissions().putAll(ace.getInheritedPermissions());
                     ace.setInherited(true);
                 }
             }
@@ -496,7 +494,7 @@ public class AclEditor {
      * @param ace
      * @return
      */
-    private Button buildLocalRestoreButton(final ModelData item, final GWTJahiaNodeACE ace) {
+    private Button buildLocalRestoreInheritanceButton(final ModelData item, final GWTJahiaNodeACE ace) {
         Button button = new Button();
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
         button.setToolTip(getResource("org.jahia.engines.rights.ManageRights.restoreInheritance.label"));
@@ -506,13 +504,13 @@ public class AclEditor {
                 setDirty();
                 Log.debug("restore" + ace.getPermissions());
                 ace.getPermissions().clear();
-                ace.getPermissions().putAll(ace.getInheritedPermissions());
+//                ace.getPermissions().putAll(ace.getInheritedPermissions());
                 int row = store.indexOf(item);
                 for (int i = 2; i < available.size() + 2; i++) {
                     CheckBox chb = (CheckBox) grid.getView().getWidget(row,i);
                     String perm = grid.getColumnModel().getColumn(i).getId();
-                    String v = ace.getPermissions().get(perm);
-                    chb.setChecked("GRANT".equals(v));
+                    Boolean v = ace.getInheritedPermissions().get(perm);
+                    chb.setChecked(Boolean.TRUE.equals(v));
                 }
                 ace.setInherited(true);
                 LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(row,available.size() + 2);
@@ -544,9 +542,9 @@ public class AclEditor {
 
         acl = originalAcl.cloneObject();
         for (GWTJahiaNodeACE ace : acl.getAce()) {
-            if (ace.isInherited()) {
-                ace.getPermissions().putAll(ace.getInheritedPermissions());
-            }
+//            if (ace.isInherited()) {
+//                ace.getPermissions().putAll(ace.getInheritedPermissions());
+//            }
         }
     }
 

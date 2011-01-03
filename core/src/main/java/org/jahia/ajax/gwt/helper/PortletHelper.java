@@ -187,7 +187,7 @@ public class PortletHelper {
                 for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getModes().getAce()) {
                     String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
                     if (!ace.isInherited()) {
-                        node.changeRoles(user, ace.getPermissions());
+//                        node.changeRoles(user, ace.getPermissions());
                     }
                 }
             }
@@ -197,7 +197,7 @@ public class PortletHelper {
                 for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getRoles().getAce()) {
                     String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
                     if (!ace.isInherited()) {
-                        node.changeRoles(user, ace.getPermissions());
+//                        node.changeRoles(user, ace.getPermissions());
                     }
                 }
             }

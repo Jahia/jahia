@@ -640,15 +640,20 @@ public class ContentManagerHelper {
             ace.setPrincipal(principal.substring(2));
 
             List<String[]> st = m.get(principal);
-            Map<String, String> perms = new HashMap<String, String>();
-            Map<String, String> inheritedPerms = new HashMap<String, String>();
+            Map<String, Boolean> perms = new HashMap<String, Boolean>();
+            Map<String, Boolean> inheritedPerms = new HashMap<String, Boolean>();
             String inheritedFrom = null;
             for (String[] strings : st) {
-                if (newAcl || !path.equals(strings[0])) {
-                    inheritedFrom = strings[0];
-                    inheritedPerms.put(strings[2], strings[1]);
-                } else {
-                    perms.put(strings[2], strings[1]);
+                String pathFrom = strings[0];
+                String aclType = strings[1];
+                String role = strings[2];
+                if (!newAcl && path.equals(pathFrom)) {
+                    perms.put(role, aclType.equals("GRANT"));
+                } else if (!inheritedPerms.containsKey(role)) {
+                    if (inheritedFrom == null || inheritedFrom.length() < pathFrom.length()) {
+                        inheritedFrom = pathFrom;
+                    }
+                    inheritedPerms.put(role, aclType.equals("GRANT"));
                 }
             }
 
@@ -711,14 +716,20 @@ public class ContentManagerHelper {
         Set<String> existingAclKeys = node.getAclEntries().keySet();
         for (GWTJahiaNodeACE ace : acl.getAce()) {
             String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
-            if (!ace.isInherited()) {
-                node.changeRoles(user, ace.getPermissions());
-                existingAclKeys.remove(user);
+            node.revokeRolesForUser(user);
+            for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
+                if (!entry.getValue().equals(ace.getInheritedPermissions().get(entry.getKey()))) {
+                    if (entry.getValue().equals(Boolean.TRUE) && !Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
+                        node.grantRoles(user, Collections.singleton(entry.getKey()));
+                    } else if (entry.getValue().equals(Boolean.FALSE) && Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
+                        node.denyRoles(user, Collections.singleton(entry.getKey()));
+                    }
+                }
             }
         }
-        for (String user : existingAclKeys) {
-            node.revokeRolesForUser(user);
-        }
+//        for (String user : existingAclKeys) {
+//            node.revokeRolesForUser(user);
+//        }
         try {
             currentUserSession.save();
         } catch (RepositoryException e) {

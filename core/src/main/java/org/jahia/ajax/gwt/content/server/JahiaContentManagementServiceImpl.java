@@ -1574,9 +1574,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             final Set<String> allReadUsers = new HashSet<String>();  // All users having read rights
             for (GWTJahiaNodeACE ace : nodeAcl.getAce()) {
                 if ((ace.getPermissions().containsKey("jcr:read_live") &&
-                        !"DENY".equals(ace.getPermissions().get("jcr:read_live"))) ||
+                        !Boolean.FALSE.equals(ace.getPermissions().get("jcr:read_live"))) ||
                         (ace.getInheritedPermissions().containsKey("jcr:read_live") &&
-                                !"DENY".equals(ace.getInheritedPermissions().get("jcr:read_live")))) {
+                                !Boolean.FALSE.equals(ace.getInheritedPermissions().get("jcr:read_live")))) {
                     allReadUsers.add(ace.getPrincipalType() + ":" + ace.getPrincipal());
                 }
             }
@@ -1584,9 +1584,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             final Set<String> allDeniedUsers = new HashSet<String>();  // All users having read rights
             for (GWTJahiaNodeACE ace : referenceAcl.getAce()) {
                 if ((ace.getPermissions().containsKey("jcr:read_live") &&
-                        !"GRANT".equals(ace.getPermissions().get("jcr:read_live"))) ||
+                        !Boolean.TRUE.equals(ace.getPermissions().get("jcr:read_live"))) ||
                         (ace.getInheritedPermissions().containsKey("jcr:read_live") &&
-                                !"GRANT".equals(ace.getInheritedPermissions().get("jcr:read_live")))) {
+                                !Boolean.TRUE.equals(ace.getInheritedPermissions().get("jcr:read_live")))) {
                     allDeniedUsers.add(ace.getPrincipalType() + ":" + ace.getPrincipal());
                 }
             }

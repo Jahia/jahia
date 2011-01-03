@@ -33,11 +33,6 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRSessionFactory;
-import org.slf4j.Logger;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -48,13 +43,16 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTa
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.rbac.Role;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
+import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;

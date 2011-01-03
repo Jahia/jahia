@@ -16,7 +16,7 @@ global RoleService roleService
 
 rule "New permission created"
 	when
-		A new node has been created
+		A new node is created
             - the node has the type jnt:permission
 	then
 		Refresh permissions

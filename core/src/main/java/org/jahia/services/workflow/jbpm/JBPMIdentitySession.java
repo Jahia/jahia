@@ -43,7 +43,6 @@ import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
-import org.jbpm.api.Execution;
 import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
@@ -54,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import javax.mail.internet.InternetAddress;
 import java.security.Principal;
 import java.util.*;
 
@@ -96,12 +94,12 @@ public class JBPMIdentitySession implements IdentitySession {
                 if (userId.equals("previousTaskAssignable")) {
                     JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
                     List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
-                            execution.getActivity().getIncomingTransitions().get(0).getSource().getName());
+                            execution.getActivity().getIncomingTransitions().get(0).getSource().getName(), execution.getProcessInstance().getId());
                     iterateOverPrincipals(emails, userId, principals);
                 } else if (userId.equals("nextTaskAssignable")) {
                     JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
                     List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
-                            execution.getActivity().getDefaultOutgoingTransition().getDestination().getName());
+                            execution.getActivity().getDefaultOutgoingTransition().getDestination().getName(), execution.getProcessInstance().getId());
                     iterateOverPrincipals(emails, userId, principals);
                 } else if (userId.equals("currentWorkflowStarter")) {
                     String jahiaUser = (String) execution.getVariable("user");

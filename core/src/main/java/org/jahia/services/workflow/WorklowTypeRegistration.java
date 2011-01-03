@@ -34,6 +34,8 @@ package org.jahia.services.workflow;
 
 import org.apache.log4j.Logger;
 
+import java.util.Map;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -45,6 +47,7 @@ public class WorklowTypeRegistration {
     private transient static Logger logger = Logger.getLogger(WorklowTypeRegistration.class);
     private String type;
     private String definition;
+    private Map<String, String> permissions;
 
     public String getDefinition() {
         return definition;
@@ -60,5 +63,13 @@ public class WorklowTypeRegistration {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Map<String, String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Map<String, String> permissions) {
+        this.permissions = permissions;
     }
 }

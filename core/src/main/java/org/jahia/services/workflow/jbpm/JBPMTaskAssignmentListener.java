@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
@@ -72,7 +71,7 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
         if (assignable instanceof TaskImpl) {
             name = ((TaskImpl)assignable).getActivityName();
         }
-        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, name);
+        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, name, execution.getProcessInstance().getId());
         for (JahiaPrincipal principal : principals) {
             if (principal instanceof JahiaGroup) {
                 assignable.addCandidateGroup(((JahiaGroup)principal).getGroupKey());

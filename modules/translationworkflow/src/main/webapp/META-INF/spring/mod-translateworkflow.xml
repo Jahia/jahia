@@ -5,6 +5,12 @@
     <bean name="translationWorkflow" class="org.jahia.services.workflow.WorklowTypeRegistration">
         <property name="type" value="translation"/>
         <property name="definition" value="translation-workflow"/>
+        <property name="permissions" >
+            <map>
+                <entry key="start" value="/repository-permissions/jcr:all_default/jcr:read_default"/>
+                <entry key="request" value="/repository-permissions/jcr:write_default/jcr:modifyProperties_default_$translateTo"/>
+            </map>
+        </property>
     </bean>
     <bean class="org.jahia.modules.translation.initializers.SiteLocaleChoiceListInitializer">
         <property name="key" value="siteLocales"/>

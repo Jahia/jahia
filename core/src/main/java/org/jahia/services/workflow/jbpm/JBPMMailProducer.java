@@ -203,7 +203,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         String id = (String) exe.getVariable("nodeId");
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
         List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
-                exe.getActivity().getDefaultOutgoingTransition().getDestination().getName());
+                exe.getActivity().getDefaultOutgoingTransition().getDestination().getName(), exe.getProcessInstance().getId());
         for (JahiaPrincipal principal : principals) {
             if (principal instanceof JahiaGroup) {
                 Collection<Principal> members = ((JahiaGroup) principal).getMembers();

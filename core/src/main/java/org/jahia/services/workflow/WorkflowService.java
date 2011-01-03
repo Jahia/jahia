@@ -94,7 +94,7 @@ public class WorkflowService {
         this.workflowPermissions = workflowPermissions;
     }
 
-    public void registerWorkflowType(String type, String definition) {
+    public void registerWorkflowType(String type, String definition, Map<String,String> perms) {
         List<String> list = workflowTypes.get(type);
         if(list==null){
             list = new ArrayList<String>();
@@ -104,6 +104,7 @@ public class WorkflowService {
             list.add(definition);
             workflowTypeByDefinition.put(definition,type);
         }
+        this.workflowPermissions.put(definition, perms);
     }
 
     public Map<String, WorkflowProvider> getProviders() {
@@ -210,7 +211,7 @@ public class WorkflowService {
     }
 
     public List<JahiaPrincipal> getAssignedRole(final JCRNodeWrapper node, final WorkflowDefinition definition,
-                                                final String activityName) throws RepositoryException {
+                                                final String activityName, final String processId) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
@@ -228,8 +229,21 @@ public class WorkflowService {
                         Map<String,String> perms = workflowPermissions.get(rule.getWorkflowDefinitionKey());
                         if (perms != null) {
                             String permName = perms.get(activityName);
+                            if (permName.indexOf("$") > -1) {
+                                Workflow w = getWorkflow(definition.getProvider(), processId, null);
+                                for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
+                                    if (entry.getValue() instanceof List) {
+                                        List variable = (List) entry.getValue();
+                                        for (Object workflowVariable : variable) {
+                                            if (workflowVariable instanceof WorkflowVariable) {
+                                                String v = ((WorkflowVariable)workflowVariable).getValue();
+                                                permName = permName.replace("$"+entry.getKey(), v);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             if (permName != null) {
-
                                 try {
                                     PermissionIdentity permission = new PermissionIdentity(permName);
                                     permission.setPath("/permissions"+permName);

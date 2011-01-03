@@ -33,6 +33,7 @@
 package org.jahia.services.sites.jcr;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -333,7 +334,29 @@ public class JCRSitesProvider {
                         siteNode.getProperty("j:gaTypeUrl").remove();
                         siteNode.getProperty("j:gaProfile").remove();
                     }
+
+                    if (siteNode.getName().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
+                        Node n = session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:write_default/jcr:modifyProperties_default");
+                        Set<String> languages = new HashSet<String>();
+
+                        NodeIterator ni = n.getNodes();
+                        while (ni.hasNext()) {
+                            Node next = (Node) ni.next();
+                            if (next.getName().startsWith("jcr:modifyProperties_default_")) {
+                                languages.add(StringUtils.substringAfter(next.getName(),"jcr:modifyProperties_default_"));
+                            }
+                        }
+                        for (String s : site.getLanguages()) {
+                            if (!languages.contains(s)) {
+                                n.addNode("jcr:modifyProperties_default_"+s, "jnt:permission");
+                            }
+                        }
+                    }
+
                     session.save();
+
+
+
                     JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                             false, new ArrayList<String>());
                     return null;

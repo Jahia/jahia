@@ -729,8 +729,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction, final String definitionKey) {
-        ResourceBundle resourceBundle = getResourceBundle(displayLocale, definitionKey);
         String rbActionName = workflowAction.getName();
+        ResourceBundle resourceBundle = null;
+        if (displayLocale != null) {
+            resourceBundle = getResourceBundle(displayLocale, definitionKey);
+        }
         if (resourceBundle != null) {
             try {
                 rbActionName = resourceBundle.getString(workflowAction.getName().replaceAll(" ",

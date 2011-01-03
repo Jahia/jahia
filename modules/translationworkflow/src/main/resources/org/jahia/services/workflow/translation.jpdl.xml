@@ -5,7 +5,7 @@
         <transition to="request"/>
     </start>
     <task g="227,223,80,40" name="request" form="jnt:translationRequest">
-        <assignment-handler class="org.jahia.services.workflow.jbpm.UserConnectionTaskAssignementListener"/>
+        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
         <transition g="-18,-17" name="accept" to="done"/>
         <transition g="-26,4" name="reject" to="end"/>
     </task>

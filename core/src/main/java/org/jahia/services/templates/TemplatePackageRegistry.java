@@ -161,7 +161,7 @@ class TemplatePackageRegistry {
 
             if(bean instanceof WorklowTypeRegistration) {
                 WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
-                workflowService.registerWorkflowType(registration.getType(), registration.getDefinition());
+                workflowService.registerWorkflowType(registration.getType(), registration.getDefinition(), registration.getPermissions());
             }
             return bean;
         }

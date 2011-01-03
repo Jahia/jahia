@@ -360,14 +360,14 @@ public class WorkflowServiceTest {
         group.addMember(johndoe);
         group.addMember(johnsmoe);
 
-        RoleBasedAccessControlService roleService = (RoleBasedAccessControlService) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.rbac.jcr.RoleBasedAccessControlService");
-        if(roleService!=null){
-            try {
-                roleService.grantRole(group,new RoleIdentity("editor-in-chief",site.getSiteKey()));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
+//        RoleBasedAccessControlService roleService = (RoleBasedAccessControlService) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.rbac.jcr.RoleBasedAccessControlService");
+//        if(roleService!=null){
+//            try {
+//                roleService.grantRole(group,new RoleIdentity("editor-in-chief"));
+//            } catch (RepositoryException e) {
+//                logger.error(e.getMessage(), e);
+//            }
+//        }
     }
 
     @Test

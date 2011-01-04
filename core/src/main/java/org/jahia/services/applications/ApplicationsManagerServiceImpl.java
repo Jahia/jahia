@@ -33,6 +33,7 @@
 package org.jahia.services.applications;
 
 import org.apache.commons.digester.Digester;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.container.PortletWindow;
 import org.apache.pluto.container.driver.PlutoServices;
@@ -49,6 +50,9 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
+import org.jahia.services.rbac.PermissionIdentity;
+import org.jahia.services.rbac.jcr.RoleManager;
+import org.jahia.services.rbac.jcr.RoleService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -57,6 +61,7 @@ import org.xml.sax.SAXException;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
@@ -119,6 +124,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     private Cache<String, EntryPointInstance> entryPointCache;
     private static final String ENTRY_POINT_INSTANCE = "EntryPointInstance";
     private PlutoServices plutoServices;
+    private RoleService roleService;
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -142,6 +148,10 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
     public void setPlutoServices(PlutoServices plutoServices) {
         this.plutoServices = plutoServices;
+    }
+
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     /**
@@ -368,11 +378,43 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     wrapper.setProperty("j:type", app.getType());
                     wrapper.setProperty("j:isVisible", app.isVisible());
                     wrapper.revokeAllRoles();
+                    session.save();
+                    app.setID(wrapper.getIdentifier());
+
+                    // we must now create the corresponding permissions for web application roles as well as portlet
+                    // modes, and then assign them to default roles, possibly using some kind of configuration.
+
+                    // first let's check if the portlets node exists.
+                    JCRNodeWrapper portletsNode = getOrCreatePermissionNode("/permissions/portlets", session);
+                    JCRNodeWrapper portletPermNode = getOrCreatePermissionNode("/permissions/portlets/" + app.getName(), session);
+                    JCRNodeWrapper portletRolesPermNode = getOrCreatePermissionNode("/permissions/portlets/" + app.getName() + "/roles", session);
+
+                    try {
+                        WebAppContext appContext = servletContextManager.getApplicationContext(app);
+                        Iterator<String> updatedRoles = appContext.getRoles().iterator();
+                        String role;
+                        while (updatedRoles.hasNext()) {
+                            role = updatedRoles.next();
+                            PermissionIdentity permission = new PermissionIdentity(role);
+                            permission.setPath("/permissions/portlets/" + app.getName() + "/roles/" + role);
+                            roleService.savePermission(permission);
+                        }
+                    } catch (JahiaException e) {
+                        logger.error("Error while retrieving web application roles", e);
+                    }
+
+                    JCRNodeWrapper portletModesPermNode = getOrCreatePermissionNode("/permissions/portlets/" + app.getName() + "/modes", session);
+                    for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
+                        for (PortletMode portletMode : entryPointDefinition.getPortletModes()) {
+                            PermissionIdentity permission = new PermissionIdentity(portletMode.toString());
+                            permission.setPath("/permissions/portlets/" + app.getName() + "/modes/" + portletMode.toString());
+                            roleService.savePermission(permission);
+                        }
+                    }
+
 // todo : default permissions ?
 //                    wrapper.changeRoles("g:guest", "r-");
 //                    wrapper.changeRoles("u:root", "rw");
-                    session.save();
-                    app.setID(wrapper.getIdentifier());
                     return true;
                 }
             });
@@ -381,6 +423,18 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         }
         putInApplicationCache(app);
         return ret;
+    }
+
+    private JCRNodeWrapper getOrCreatePermissionNode(String path, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper node = null;
+        try {
+            node = session.getNode(path);
+        } catch (PathNotFoundException pnfe) {
+            JCRNodeWrapper permissionsNode = session.getNode(StringUtils.substringBeforeLast(path, "/"));
+            node = permissionsNode.addNode(StringUtils.substringAfterLast(path, "/"), RoleManager.JAHIANT_PERMISSION);
+            session.save();
+        }
+        return node;
     }
 
     /**

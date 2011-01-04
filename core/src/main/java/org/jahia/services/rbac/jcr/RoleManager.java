@@ -357,8 +357,6 @@ public class RoleManager {
      * 
      * @param permissionId the permission to be stored
      * @param session current JCR session
-     * @param createIfNotPresent do we need to create corresponding nodes for if
-     *            not yet present?
      * @return the corresponding permission node
      * @throws RepositoryException in case of an error
      */

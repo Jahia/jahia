@@ -57,6 +57,7 @@
 		<property name="groupManagerService" ref="JahiaGroupManagerService" />
 		<property name="servletContextManager" ref="ServletContextManager" />
 		<property name="plutoServices" ref="PlutoServices" />
+        <property name="roleService" ref="org.jahia.services.rbac.jcr.RoleService" />
 	</bean>
     <bean id="JahiaFetcherService" class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate"
                   factory-method="getInstance"/>

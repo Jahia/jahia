@@ -314,6 +314,14 @@ public final class JCRContentUtils {
         return mimeTypes;
     }
 
+    /**
+     * Used by portlet backends to determine if a user is part of a specific role on the portlet, or if we has
+     * permissions to access the different portlet modes.
+     * @param user
+     * @param role
+     * @param nodeUUID
+     * @return
+     */
     public static boolean hasPermission(final JahiaUser user, final String role, final String nodeUUID) {
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {

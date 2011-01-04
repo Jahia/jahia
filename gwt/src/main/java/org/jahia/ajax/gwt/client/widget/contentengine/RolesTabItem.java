@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
  * Time: 7:30:49 PM
  * 
  */
-public class RightsTabItem extends EditEngineTabItem {
+public class RolesTabItem extends EditEngineTabItem {
     private transient AclEditor rightsEditor;
 
     @Override

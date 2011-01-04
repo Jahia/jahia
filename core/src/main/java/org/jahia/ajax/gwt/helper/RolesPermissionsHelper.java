@@ -32,28 +32,20 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import org.slf4j.Logger;
-import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
+import org.jahia.ajax.gwt.client.data.GWTRolesPermissions;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.RoleIdentity;
-import org.jahia.services.rbac.jcr.PermissionImpl;
-import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
-import org.jahia.services.rbac.jcr.RoleImpl;
 import org.jahia.services.rbac.jcr.RoleService;
-import org.jahia.services.usermanager.*;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Roles and permission GWT helper class.
@@ -65,10 +57,7 @@ import java.util.Set;
 public class RolesPermissionsHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(RolesPermissionsHelper.class);
 
-    private JahiaGroupManagerService groupManagerService;
-    private RoleBasedAccessControlService rbacService;
     private RoleService roleService;
-    private JahiaUserManagerService userManagerService;
 
     /**
      * Grants the specified permissions to a role.
@@ -96,47 +85,6 @@ public class RolesPermissionsHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
-    }
-
-    /**
-     * Get list of granted permissions
-     *
-     * @return
-     */
-    public List<GWTJahiaPermission> getGrantedPermissions(final JCRSiteNode site, JahiaUser user)
-            throws GWTJahiaServiceException {
-        final List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
-        try {
-            long timer = System.currentTimeMillis();
-            if (!user.isRoot() && !JahiaUserManagerService.isGuest(user)) {
-                Set<Permission> foundPermissions = new HashSet<Permission>();
-                timer = System.currentTimeMillis();
-                Set<Role> roles = rbacService.getRoles(user);
-                for (Role roleId : roles) {
-                    Set<Permission> rolePermissions = roleService.getRole(roleId).getPermissions();
-                    for (Permission perm : rolePermissions) {
-                        if (!foundPermissions.contains(perm)) {
-                            foundPermissions.add(perm);
-                            permissions.add(toPermission(perm));
-                        }
-                    }
-                }
-            } else {
-                for (Permission permission : roleService.getPermissions()) {
-                    if (user.isPermitted(permission)) {
-                        permissions.add(toPermission(permission));
-                    }
-                }
-            }
-            if (logger.isDebugEnabled()) {
-            	logger.debug("Checking user granted permissions took " + (System.currentTimeMillis() - timer) + " ms");
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-
-        return permissions;
     }
 
     /**
@@ -241,17 +189,6 @@ public class RolesPermissionsHelper {
         }
     }
 
-    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
-        this.groupManagerService = groupManagerService;
-    }
-
-    /**
-     * @param roleBasedAccessControlService the roleBasedAccessControlService to set
-     */
-    public void setRoleBasedAccessControlService(RoleBasedAccessControlService roleBasedAccessControlService) {
-        this.rbacService = roleBasedAccessControlService;
-    }
-
     /**
      * Injects the role management service instance.
      * 
@@ -259,10 +196,6 @@ public class RolesPermissionsHelper {
      */
     public void setRoleService(RoleService roleService) {
         this.roleService = roleService;
-    }
-
-    public void setUserManagerService(JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
     }
 
     private GWTJahiaPermission toPermission(Permission permission) {

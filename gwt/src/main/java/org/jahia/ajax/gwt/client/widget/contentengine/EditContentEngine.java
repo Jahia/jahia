@@ -331,8 +331,8 @@ public class EditContentEngine extends AbstractContentEngine {
 
             }
             // case of right tab
-            else if (item instanceof RightsTabItem) {
-                AclEditor acl = ((RightsTabItem) item).getRightsEditor();
+            else if (item instanceof RolesTabItem) {
+                AclEditor acl = ((RolesTabItem) item).getRightsEditor();
                 if (acl != null) {
                     newNodeACL = acl.getAcl();
                 }

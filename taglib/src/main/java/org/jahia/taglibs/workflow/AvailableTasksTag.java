@@ -77,8 +77,7 @@ public class AvailableTasksTag extends AbstractJahiaTag {
                             for (WorkflowParticipation participation : participations) {
                                 JahiaPrincipal principal = participation.getJahiaPrincipal();
                                 if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(getUser())) ||
-                                    (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey())) ||
-                                    (principal instanceof Role && (getUser().hasRole((Role) principal)))) {
+                                    (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey()))) {
                                     tasks.add(workflowTask);
                                     break;
                                 }

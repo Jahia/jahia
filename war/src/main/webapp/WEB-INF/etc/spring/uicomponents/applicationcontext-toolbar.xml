@@ -10,7 +10,6 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem"/>
         </property>
         <property name="titleKey" value="label.languages"/>
-        <property name="visibility" value="$site/toolbar/language-switcher"/>
     </bean>
 
     <!-- site language switcher -->
@@ -181,7 +180,6 @@
                 </bean>
             </list>
         </property>
-        <property name="visibility" value="$site/toolbar/live-mode"/>
     </bean>
 
 
@@ -264,7 +262,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="toolbar/studio-mode"/>
+                <property name="permission" value="studioModeAccess"/>
             </bean>
         </property>
     </bean>
@@ -289,7 +287,7 @@
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="toolbar/studio-mode"/>
+                <property name="permission" value="studioModeAccess"/>
             </bean>
         </property>
     </bean>
@@ -325,7 +323,7 @@
         </property>
         <property name="titleKey" value="label.administration"/>
         <property name="icon" value="admin"/>
-        <property name="visibility" value="$site/admin/jahia-administration"/>
+        <property name="visibility" value="administrationAccess"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
@@ -345,7 +343,7 @@
         <property name="icon" value="fileManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="managers/file-manager"/>
+                <property name="permission" value="fileManager"/>
             </bean>
         </property>
         <property name="properties">
@@ -375,7 +373,7 @@
         <property name="icon" value="contentManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="managers/content-manager"/>
+                <property name="permission" value="contentManager"/>
             </bean>
         </property>
         <property name="properties">
@@ -428,7 +426,7 @@
         <property name="icon" value="portletManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="managers/portlet-manager"/>
+                <property name="permission" value="portletManager"/>
             </bean>
         </property>
 
@@ -459,7 +457,7 @@
         <property name="icon" value="categoryManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="managers/category-manager"/>
+                <property name="permission" value="categoryManager"/>
             </bean>
         </property>
         <property name="properties">
@@ -490,7 +488,7 @@
         <property name="icon" value="tagManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="managers/tag-manager"/>
+                <property name="permission" value="tagManager"/>
             </bean>
         </property>
         <property name="properties">
@@ -520,7 +518,7 @@
         <property name="icon" value="siteManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="managers/site-manager"/>
+                <property name="permission" value="siteManager"/>
             </bean>
         </property>
         <property name="properties">

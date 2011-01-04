@@ -34,7 +34,6 @@ package org.jahia.services.rbac;
 
 import org.jahia.services.usermanager.JahiaPrincipal;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,48 +50,6 @@ public class RoleIdentity extends BaseIdentity implements Role, JahiaPrincipal {
      */
     public RoleIdentity(String name) {
         super(name);
-    }
-
-    /**
-     * Returns a set of all roles this principal has also considering
-     * membership. An empty set is returned if this principal has no roles
-     * assigned.
-     *
-     * @return a set of all roles this principal has also considering
-     *         membership; an empty set is returned if this principal has no
-     *         roles assigned
-     * @since 6.5
-     */
-    public Set<Role> getRoles() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * Returns {@code true} if this principal has the specified role, {@code
-     * false} otherwise.
-     *
-     * @param role the application-specific role
-     * @return {@code true} if this principal has the specified role, {@code
-     *         false} otherwise
-     * @since 6.5
-     */
-    public boolean hasRole(Role role) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * Returns {@code true} if this principal is permitted to perform a server
-     * action or access a resource summarized by the specified permission string
-     * ("<group>/<name>").
-     *
-     * @param permission a permission that is being checked
-     * @return {@code true} if this principal is permitted to perform a server
-     *         action or access a resource summarized by the specified
-     *         permission string
-     * @since 6.5
-     */
-    public boolean isPermitted(Permission permission) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**

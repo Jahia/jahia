@@ -6,7 +6,7 @@
 
     <bean id="communityJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="community-jira" />
-        <property name="permissionName" value="global/issue-tracking" />        
+        <property name="permissionName" value="adminIssueTracking" />
         <property name="name" value="community-jira" />
         <property name="icon" value="debug_view" />
         <property name="label" value="label.jira" />
@@ -16,7 +16,7 @@
     </bean>
     <bean id="jahiaPediaAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="pedia" />
-        <property name="permissionName" value="global/documentation" />        
+        <property name="permissionName" value="adminDocumentation" />
         <property name="name" value="pedia" />
         <property name="icon" value="books" />
         <property name="label" value="Jahiapedia" />
@@ -26,7 +26,7 @@
     </bean>
     <bean id="infoAdministrationModule" class="org.jahia.admin.JspForwardAdministrationModule" parent="abstractAdministrationModule">
         <property name="urlKey" value="info" />
-        <property name="permissionName" value="global/about" />
+        <property name="permissionName" value="adminAbout" />
         <property name="name" value="info" />
         <property name="icon" value="about" />
         <property name="label" value="label.aboutJahia" />

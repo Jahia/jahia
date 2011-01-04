@@ -34,10 +34,7 @@ package org.jahia.ajax.gwt.client.core;
 
 import com.google.gwt.i18n.client.Dictionary;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
 
@@ -189,12 +186,6 @@ public class JahiaGWTParameters {
         setSiteKey(site.getSiteKey());
         setSiteType(site.getSiteType());
         DeployTemplatesActionItem.refreshAllMenus(linker);
-        JahiaContentManagementService
-                .App.getInstance().getGrantedPermissions(new BaseAsyncCallback<List<GWTJahiaPermission>>() {
-            public void onSuccess(List<GWTJahiaPermission> result) {
-                PermissionsUtils.loadPermissions(result);
-            }
-        });
     }
 
     public static String getSiteType() {

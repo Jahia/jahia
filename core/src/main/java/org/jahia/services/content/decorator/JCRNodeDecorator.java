@@ -97,6 +97,14 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.hasPermission(perm);
     }
 
+    public Set<String> getPermissions() {
+        return node.getPermissions();
+    }
+
+    public BitSet getPermissionsAsBitSet() {
+        return node.getPermissionsAsBitSet();
+    }
+
     public boolean grantRoles(String user, Set<String> roles) {
         return node.grantRoles(user, roles);
     }

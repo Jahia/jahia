@@ -96,6 +96,7 @@
                 <jcr:lifecycleManagement_live jcr:primaryType="jnt:permission"/>
             </jcr:all_live>
 
+            <publish jcr:primaryType="jnt:permission"/>
         </repository-permissions>
     </permissions>
 </content>

@@ -285,6 +285,10 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     boolean hasPermission(String perm);
 
+    Set<String> getPermissions();
+
+    BitSet getPermissionsAsBitSet();
+
     boolean grantRoles(String user, Set<String> roles);
 
     boolean denyRoles(String user, Set<String> roles);

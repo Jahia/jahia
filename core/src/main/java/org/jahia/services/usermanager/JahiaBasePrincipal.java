@@ -32,13 +32,6 @@
 
 package org.jahia.services.usermanager;
 
-import java.util.Set;
-
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.rbac.Permission;
-import org.jahia.services.rbac.Role;
-import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
-
 /**
  * Abstract implementation of the {@link JahiaPrincipal} that adds role and
  * permission checking.
@@ -47,26 +40,5 @@ import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
  */
 public abstract class JahiaBasePrincipal implements JahiaPrincipal {
 
-    private transient RoleBasedAccessControlService service;
-
-    protected RoleBasedAccessControlService getRoleBasedAccessControlService() {
-        if (service == null) {
-            service = (RoleBasedAccessControlService) SpringContextSingleton
-                    .getBean(RoleBasedAccessControlService.class.getName());
-        }
-        return service;
-    }
-    
-    public Set<Role> getRoles() {
-        return getRoleBasedAccessControlService().getRoles(this);
-    }
-
-    public boolean hasRole(Role role) {
-        return getRoleBasedAccessControlService().hasRole(this, role);
-    }
-
-    public boolean isPermitted(Permission permission) {
-        return getRoleBasedAccessControlService().isPermitted(this, permission);
-    }
 
 }

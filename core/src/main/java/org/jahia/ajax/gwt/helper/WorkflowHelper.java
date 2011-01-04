@@ -102,8 +102,7 @@ public class WorkflowHelper {
                             for (WorkflowParticipation participation : participations) {
                                 JahiaPrincipal principal = participation.getJahiaPrincipal();
                                 if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(session.getUser())) ||
-                                    (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getUserKey())) ||
-                                    (principal instanceof Role && (session.getUser().hasRole((Role) principal)))) {
+                                    (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getUserKey()))) {
                                     gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
                                     break;
                                 }

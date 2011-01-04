@@ -162,15 +162,15 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                         b.append(g.getGroupname());
                     }
                 }
-                Set<Role> aclRoles = getAllAclsRoles();
-                for (Role role : aclRoles) {
-                    if(role!=null && principal.hasRole(role)) {
-                        if (b.length() > 0) {
-                            b.append("|");
-                        }
-                        b.append(role.getName());
-                    }
-                }
+//                Set<Role> aclRoles = getAllAclsRoles();
+//                for (Role role : aclRoles) {
+//                    if(role!=null && principal.hasRole(role)) {
+//                        if (b.length() > 0) {
+//                            b.append("|");
+//                        }
+//                        b.append(role.getName());
+//                    }
+//                }
                 if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
                         JahiaUserManagerService.GUEST_USERNAME)) {
                     b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);

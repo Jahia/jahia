@@ -33,13 +33,9 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.WordUtils;
-import org.slf4j.Logger;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
-import org.jahia.services.rbac.RoleIdentity;
-import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
@@ -53,6 +49,7 @@ import org.jbpm.pvm.internal.email.impl.AttachmentTemplate;
 import org.jbpm.pvm.internal.email.impl.MailProducerImpl;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.mail.*;

@@ -66,6 +66,6 @@ public class Studio extends Render {
     }
 
     protected boolean hasAccess(JCRNodeWrapper node) {
-        return node.hasPermission("studio-mode");
+        return node.hasPermission("studioModeAccess");
     }
 }

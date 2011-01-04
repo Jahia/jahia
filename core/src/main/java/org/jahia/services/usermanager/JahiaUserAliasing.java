@@ -33,10 +33,6 @@
 package org.jahia.services.usermanager;
 
 import java.util.Properties;
-import java.util.Set;
-
-import org.jahia.services.rbac.Permission;
-import org.jahia.services.rbac.Role;
 
 /**
  * This user wrapper always returns true for its method <code>byPassUserAliasing()</code>
@@ -127,15 +123,4 @@ public class JahiaUserAliasing implements JahiaUser {
         return user;
     }
 
-    public boolean hasRole(Role role) {
-        return getUser().hasRole(role);
-    }
-
-    public boolean isPermitted(Permission permission) {
-        return getUser().isPermitted(permission);
-    }
-
-    public Set<Role> getRoles() {
-        return getUser().getRoles();
-    }
 }

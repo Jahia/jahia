@@ -51,7 +51,6 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -536,17 +535,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                                 if (type.equals("DENY")) {
                                     continue;
                                 }
-                                if (match(permissions, role, s)) {
-                                    final String principalName = principal.substring(2);
-                                    if (principal.charAt(0) == 'u') {
-                                        if ((jahiaPrincipal.isGuest() && principalName.equals("guest")) || principalName.equals(jahiaPrincipal.getName())) {
-                                            return true;
-                                        }
-                                    } else if (principal.charAt(0) == 'g') {
-                                        if (principalName.equals("guest") || !jahiaPrincipal.isGuest() && isUserMemberOf(jahiaPrincipal.getName(), principalName, site)) {
-                                            return true;
-                                        }
-                                    }
+                                if (matchPermission(permissions, role, s) && matchUser(principal, site)) {
+                                    return true;
                                 }
                             }
                         }
@@ -568,7 +558,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
 
-    public boolean match(Set<String> permissions, String role, Session s) throws RepositoryException {
+    public boolean matchPermission(Set<String> permissions, String role, Session s) throws RepositoryException {
         Node node = s.getNode("/roles/" + role);
         if (node.hasProperty("j:permissions")) {
             Value[] perms = node.getProperty("j:permissions").getValues();
@@ -599,6 +589,21 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return false;
     }
 
+    private boolean matchUser(String principal, String site) {
+        final String principalName = principal.substring(2);
+        if (principal.charAt(0) == 'u') {
+            if ((jahiaPrincipal.isGuest() && principalName.equals("guest")) || principalName.equals(jahiaPrincipal.getName())) {
+                return true;
+            }
+        } else if (principal.charAt(0) == 'g') {
+            if (principalName.equals("guest") || !jahiaPrincipal.isGuest() && isUserMemberOf(jahiaPrincipal.getName(), principalName, site)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public boolean hasPrivileges(String absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
         checkInitialized();
         checkValidNodePath(absPath);
@@ -620,7 +625,78 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
-        return new Privilege[0];  
+        Set<Privilege> results = new HashSet<Privilege>();
+        try {
+            Set<String> grantedRoles = new HashSet<String>();
+            Set<String> deniedRoles = new HashSet<String>();
+            Session s = getSecuritySession();
+            Node n = s.getNode(absPath);
+
+            String site = null;
+            Node c = n;
+            try {
+                while (!c.isNodeType("jnt:virtualsite")) {
+                    c = c.getParent();
+                }
+                site = c.getName();
+            } catch (ItemNotFoundException e) {
+            } catch (PathNotFoundException e) {
+            }
+
+            try {
+                while (true) {
+                    if (n.hasNode("j:acl")) {
+                        Node acl = n.getNode("j:acl");
+                        NodeIterator aces = acl.getNodes();
+                        while (aces.hasNext()) {
+                            Node ace = aces.nextNode();
+                            if (ace.isNodeType("jnt:ace")) {
+                                String principal = ace.getProperty("j:principal").getString();
+
+                                if (matchUser(principal, site)) {
+                                    boolean granted = ace.getProperty("j:aceType").getString().equals("GRANT");
+
+                                    Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
+                                    for (Value r : roles) {
+                                        String role = r.getString();
+                                        if (!grantedRoles.contains(role) && !deniedRoles.contains(role)) {
+                                            if (granted) {
+                                                grantedRoles.add(role);
+                                            } else {
+                                                deniedRoles.add(role);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
+                            return results.toArray(new Privilege[results.size()]);
+                        }
+                    }
+                    n = n.getParent();
+                }
+            } catch (ItemNotFoundException e) {
+                logger.debug(e.getMessage(), e);
+            }
+
+            for (String role : grantedRoles) {
+                Node node = s.getNode("/roles/" + role);
+                if (node.hasProperty("j:permissions")) {
+                    Value[] perms = node.getProperty("j:permissions").getValues();
+
+                    for (Value value : perms) {
+                        Node p = s.getNodeByIdentifier(value.getString());
+                        Privilege privilege = privilegeRegistry.getPrivilege(p);
+                        results.add(privilege);
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return results.toArray(new Privilege[results.size()]);
     }
 
     public AccessControlPolicy[] getEffectivePolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {

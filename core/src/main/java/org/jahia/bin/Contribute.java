@@ -70,7 +70,7 @@ public class Contribute extends Render {
             logger.error("Site key is null.");
             return false;
         }
-        return node.hasPermission("contribute-mode");
+        return node.hasPermission("contributeModeAccess");
     }
 
 }

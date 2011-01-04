@@ -313,7 +313,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
 
-    void getGrantedPermissions(AsyncCallback<List<GWTJahiaPermission>> async);
+//    void getGrantedPermissions(AsyncCallback<List<GWTJahiaPermission>> async);
 
     void getRolesAndPermissions(AsyncCallback<GWTRolesPermissions> async);
 

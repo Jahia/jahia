@@ -42,6 +42,7 @@ import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -55,6 +56,7 @@ import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -99,6 +101,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
@@ -249,13 +252,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException {
-        GWTManagerConfiguration config =
-                uiConfig.getGWTManagerConfiguration(getSite(), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
-                        getRequest(), name);
-        config.setPermissions(rolesPermissions.getGrantedPermissions(getSite(), getUser()));
+        GWTManagerConfiguration config = null;
+        try {
+            config = uiConfig.getGWTManagerConfiguration(getSite(), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
+                            getRequest(), name);
+            setAvailablePermissions(config);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get node", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
         return config;
     }
-
 
     /**
      * Get edit configuration
@@ -264,17 +271,26 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTEditConfiguration getEditConfiguration(String path, String name) throws GWTJahiaServiceException {
-        GWTEditConfiguration config =
-                null;
+        GWTEditConfiguration config = null;
         try {
             config = uiConfig.getGWTEditConfiguration(retrieveCurrentSession().getNode(path), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), name);
-            config.setPermissions(rolesPermissions.getGrantedPermissions(getSite(), getUser()));
+            setAvailablePermissions(config);
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
         return config;
+    }
+
+
+    private void setAvailablePermissions(GWTConfiguration config) throws RepositoryException, GWTJahiaServiceException {
+        Privilege[] p = new JahiaPrivilegeRegistry(retrieveCurrentSession().getWorkspace().getNamespaceRegistry()).getRegisteredPrivileges();
+        List<String> l = new ArrayList<String>();
+        for (Privilege privilege : p) {
+            l.add(privilege.getName());
+        }
+        config.setPermissions(l);
     }
 
     public BasePagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
@@ -1155,15 +1171,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale());
     }
 
-    /**
-     * Get granted permission to the current user
-     *
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException {
-        return rolesPermissions.getGrantedPermissions(getSite(), getRemoteJahiaUser());
-    }
+//    /**
+//     * Get granted permission to the current user
+//     *
+//     * @return
+//     * @throws GWTJahiaServiceException
+//     */
+//    public List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException {
+//        return rolesPermissions.getGrantedPermissions(getSite(), getRemoteJahiaUser());
+//    }
 
 
 

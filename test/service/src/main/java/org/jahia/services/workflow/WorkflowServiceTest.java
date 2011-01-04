@@ -32,33 +32,27 @@
 
 package org.jahia.services.workflow;
 
-import static org.junit.Assert.*;
-
-import org.slf4j.Logger;
+import com.google.common.collect.Sets;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.rbac.RoleIdentity;
-import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
 import org.jbpm.api.JbpmException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.google.common.collect.Sets;
+import org.junit.*;
+import org.slf4j.Logger;
 
 import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
 import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for the {@link WorkflowService}.

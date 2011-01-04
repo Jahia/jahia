@@ -359,7 +359,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
 
-    List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException;
+//    List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException;
 
     GWTRolesPermissions getRolesAndPermissions() throws GWTJahiaServiceException;
 

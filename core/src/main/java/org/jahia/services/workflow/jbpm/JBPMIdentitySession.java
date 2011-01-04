@@ -33,12 +33,8 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.rbac.Role;
-import org.jahia.services.rbac.RoleIdentity;
-import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;

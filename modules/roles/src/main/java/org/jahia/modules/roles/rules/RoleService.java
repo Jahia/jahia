@@ -32,31 +32,16 @@
 
 package org.jahia.modules.roles.rules;
 
-import java.util.*;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
-import org.jahia.services.content.*;
-import org.slf4j.Logger;
-import org.drools.spi.KnowledgeHelper;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.content.rules.AddedNodeFact;
-import org.jahia.services.rbac.Permission;
-import org.jahia.services.rbac.PermissionIdentity;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.RoleIdentity;
-import org.jahia.services.rbac.jcr.PermissionImpl;
-import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
-import org.jahia.services.rbac.jcr.RoleImpl;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
+
+import javax.jcr.RepositoryException;
 
 /**
  * Roles/permissions service class that is used in right-hand-side

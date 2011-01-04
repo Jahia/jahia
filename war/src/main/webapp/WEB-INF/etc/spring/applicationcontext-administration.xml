@@ -15,7 +15,7 @@
 
     <bean id="sitesAdministrationModule" class="org.jahia.admin.sites.ManageSites" parent="abstractAdministrationModule">
         <property name="urlKey" value="sites" />
-        <property name="permissionName" value="global/virtual-sites" />
+        <property name="permissionName" value="adminVirtualSites" />
         <property name="name" value="sites" />
         <property name="icon" value="environment" />
         <property name="label" value="label.virtualSitesManagement" />
@@ -26,7 +26,7 @@
     <bean id="usersAdministrationModule" class="org.jahia.admin.users.ManageUsers" parent="abstractAdministrationModule">
         <property name="serverModule" value="true"/>
         <property name="urlKey" value="users" />
-        <property name="permissionName" value="global/users" />
+        <property name="permissionName" value="adminUsers" />
         <property name="name" value="users" />
         <property name="icon" value="user1_into" />
         <property name="label" value="label.manageUsers" />
@@ -36,7 +36,7 @@
 
     <bean id="serverAdministrationModule" class="org.jahia.admin.server.ManageServer" parent="abstractAdministrationModule">
         <property name="urlKey" value="server" />
-        <property name="permissionName" value="global/email-settings" />
+        <property name="permissionName" value="adminEmailSettings" />
         <property name="name" value="server" />
         <property name="icon" value="mail" />
         <property name="label" value="org.jahia.admin.emailSettings.label" />
@@ -46,7 +46,7 @@
 
     <bean id="componentsAdministrationModule" class="org.jahia.admin.components.ManageComponents" parent="abstractAdministrationModule">
         <property name="urlKey" value="sharecomponents" />
-        <property name="permissionName" value="global/portlets" />
+        <property name="permissionName" value="adminPortlets" />
         <property name="name" value="components" />
         <property name="icon" value="application" />
         <property name="label" value="org.jahia.admin.manageComponents.label" />
@@ -56,7 +56,7 @@
 
     <bean id="rootUserAdministrationModule" class="org.jahia.admin.users.ManageUsers" parent="abstractAdministrationModule">
         <property name="urlKey" value="profile" />
-        <property name="permissionName" value="global/root-user" />
+        <property name="permissionName" value="adminRootUser" />
         <property name="name" value="profile" />
         <property name="icon" value="businessman2" />
         <property name="label" value="label.editSuperAdminProperties" />
@@ -67,7 +67,7 @@
 
     <bean id="statusAdministrationModule" class="org.jahia.admin.status.ManageStatus" parent="abstractAdministrationModule">
         <property name="urlKey" value="status" />
-        <property name="permissionName" value="global/cache" />
+        <property name="permissionName" value="adminCache" />
         <property name="name" value="status" />
         <property name="icon" value="line-chart" />
         <property name="label" value="org.jahia.admin.serverStatus.label" />
@@ -77,7 +77,7 @@
 
     <bean id="serverPermissionsAdministrationModule" class="org.jahia.admin.roles.ManageServerRoles" parent="abstractAdministrationModule">
         <property name="urlKey" value="serverPermissions" />
-        <property name="permissionName" value="global/server-permissions" />
+        <property name="permissionName" value="adminServerPermissions" />
         <property name="name" value="serverPermissions" />
         <property name="icon" value="policeman_usa" />
         <property name="label" value="label.serverroles" />
@@ -87,7 +87,7 @@
 
     <bean id="passwordPoliciesAdministrationModule" class="org.jahia.admin.pwdpolicy.ManagePasswordPolicies" parent="abstractAdministrationModule">
         <property name="urlKey" value="passwordPolicies" />
-        <property name="permissionName" value="global/password-policy" />
+        <property name="permissionName" value="adminPasswordPolicy" />
         <property name="name" value="passwordPolicies" />
         <property name="icon" value="key1" />
         <property name="label" value="org.jahia.admin.passwordPolicies.mainMenu.label" />
@@ -100,7 +100,7 @@
     <bean id="groupsAdministrationModule" class="org.jahia.admin.users.ManageGroups" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="groups" />
-        <property name="permissionName" value="admin/groups" />
+        <property name="permissionName" value="adminGroups" />
         <property name="name" value="groups" />
         <property name="icon" value="users_into" />
         <property name="label" value="label.manageGroups" />
@@ -111,7 +111,7 @@
     <bean id="siteLanguagesAdministrationModule" class="org.jahia.admin.languages.ManageSiteLanguages" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="siteLanguages" />
-        <property name="permissionName" value="admin/site-languages" />
+        <property name="permissionName" value="adminSiteLanguages" />
         <property name="name" value="languages" />
         <property name="icon" value="signpost" />
         <property name="label" value="label.manageLanguages" />
@@ -122,7 +122,7 @@
     <bean id="analyticsAdministrationModule" class="org.jahia.admin.analytics.ManageAnalytics" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="analytics" />
-        <property name="permissionName" value="admin/analytics" />
+        <property name="permissionName" value="adminAnalytics" />
         <property name="name" value="analytics" />
         <property name="icon" value="column-chart" />
         <property name="label" value="org.jahia.admin.manageanalytics.label" />
@@ -133,7 +133,7 @@
     <bean id="urlmappingAdministrationModule" class="org.jahia.admin.urlmapping.Urlmapping" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="urlmapping" />
-        <property name="permissionName" value="admin/urlmapping" />
+        <property name="permissionName" value="adminUrlmapping" />
         <property name="name" value="urlmapping" />
         <property name="icon" value="urlmapping" />
         <property name="label" value="label.urlmapping.menuLabel" />
@@ -146,7 +146,7 @@
     <bean id="templatesAdministrationModule" class="org.jahia.admin.templates.ManageTemplates" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="templates" />
-        <property name="permissionName" value="admin/templates" />
+        <property name="permissionName" value="adminTemplates" />
         <property name="name" value="templates" />
         <property name="icon" value="briefcase_document" />
         <property name="label" value="label.manageTemplates" />

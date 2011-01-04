@@ -32,11 +32,13 @@
 
 package org.jahia.bin;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.usermanager.JahiaUser;
@@ -94,15 +96,21 @@ public abstract class JahiaMultiActionController extends MultiActionController {
 
 	protected void checkUserAuthorized() throws JahiaForbiddenAccessException {
 		JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
-		if (JahiaUserManagerService.isGuest(user)) {
-			throw new JahiaUnauthorizedException(
-			        "You need to euthenticate yourself to use this service");
-		} else if (!user.isPermitted(getRequiredPermission())) {
-			throw new JahiaForbiddenAccessException(
-			        "You have not enough permissions to use this service");
-		}
-	}
+        try {
+            if (JahiaUserManagerService.isGuest(user)) {
+                throw new JahiaUnauthorizedException(
+                        "You need to euthenticate yourself to use this service");
+            } else if (getRequiredPermission() == null || !JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode().hasPermission(getRequiredPermission())) {
+                throw new JahiaForbiddenAccessException(
+                        "You have not enough permissions to use this service");
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get permission",e);
+            throw new JahiaForbiddenAccessException(
+                    "You have not enough permissions to use this service");
+        }
+    }
 
-	protected abstract Permission getRequiredPermission();
+	protected abstract String getRequiredPermission();
 
 }

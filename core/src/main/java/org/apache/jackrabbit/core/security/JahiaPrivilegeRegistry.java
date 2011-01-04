@@ -63,6 +63,13 @@ public final class JahiaPrivilegeRegistry {
         STANDARD_PRIVILEGES.put(Permission.RETENTION_MNGMT, Privilege.JCR_RETENTION_MANAGEMENT);
     }
 
+    /**
+     * Per instance map containing the instance specific representation of
+     * the registered privileges.
+     */
+    private static final Map<String, Privilege> map = new HashMap<String, Privilege>();
+    private static final List<Privilege> allPrivileges = new ArrayList<Privilege>();
+
     private NamespaceRegistry ns;
 
     public static void init(Session session) throws RepositoryException {
@@ -75,6 +82,9 @@ public final class JahiaPrivilegeRegistry {
         for (Privilege p : privileges) {
             if (!map.containsKey(p.getName())) {
                 map.put(p.getName(), p);
+            }
+            if (!allPrivileges.contains(p)) {
+                allPrivileges.add(p);
             }
         }
     }
@@ -111,12 +121,6 @@ public final class JahiaPrivilegeRegistry {
         return name;
     }
 
-    /**
-     * Per instance map containing the instance specific representation of
-     * the registered privileges.
-     */
-    private static final Map<String, Privilege> map = new HashMap<String, Privilege>();
-
     public Set<Privilege> getPrivileges(int permissions, String workspace) throws AccessControlException, RepositoryException {
         Set<Privilege> r = new HashSet<Privilege>();
 
@@ -135,7 +139,7 @@ public final class JahiaPrivilegeRegistry {
      * @return all registered privileges.
      */
     public Privilege[] getRegisteredPrivileges() {
-        return map.values().toArray(new Privilege[map.size()]);
+        return allPrivileges.toArray(new Privilege[allPrivileges.size()]);
     }
 
     /**

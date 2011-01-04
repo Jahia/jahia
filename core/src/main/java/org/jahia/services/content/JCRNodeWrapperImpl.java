@@ -295,6 +295,49 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    public Set<String> getPermissions() {
+        Set<String>  result = new HashSet<String>();
+        try {
+            Session providerSession = session.getProviderSession(provider);
+            // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
+            AccessControlManager accessControlManager = providerSession.getAccessControlManager();
+            if (accessControlManager != null) {
+                Privilege[] p = accessControlManager.getPrivileges(localPath);
+                for (Privilege privilege : p) {
+                    result.add(privilege.getName());
+                    for (Privilege privilege1 : privilege.getAggregatePrivileges()) {
+                        result.add(privilege1.getName());
+                    }
+                }
+            }
+        } catch (RepositoryException re) {
+            logger.error("Cannot check perm ", re);
+        }
+        return result;
+    }
+
+    public BitSet getPermissionsAsBitSet() {
+        BitSet b = null;
+        try {
+            Session providerSession = session.getProviderSession(provider);
+            // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
+            AccessControlManager accessControlManager = providerSession.getAccessControlManager();
+            List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPath));
+            List<Privilege> app = Arrays.asList(accessControlManager.getPrivileges(localPath));
+            b = new BitSet(pr.size());
+            for (Privilege privilege : app) {
+                b.set(pr.indexOf(privilege));
+                for (Privilege privilege1 : privilege.getAggregatePrivileges()) {
+                    b.set(pr.indexOf(privilege1));
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot check perm ", e);
+        }
+        return b;
+    }
+
+
     private List<Privilege> convertPermToPrivileges(String perm, AccessControlManager accessControlManager) throws RepositoryException {
         List<Privilege> privileges = new ArrayList<Privilege>();
         if (Constants.JCR_READ_RIGHTS.equals(perm) || Constants.JCR_READ_RIGHTS_LIVE.equals(perm)) {

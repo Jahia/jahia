@@ -54,9 +54,9 @@ public class CKEditor extends Component {
         if (config == null) {
             config = new CKEditorConfig();
             String site = JahiaGWTParameters.getSiteKey();
-            if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/full", site) || PermissionsUtils.isPermitted("global/studio-mode")) {
+            if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/full") || PermissionsUtils.isPermitted("studioModeAccess")) {
                 config.setToolbarSet("Full");
-            } else if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/basic", site)) {
+            } else if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/basic")) {
                 config.setToolbarSet("Basic");
             } else {
                 config.setToolbarSet("Light");

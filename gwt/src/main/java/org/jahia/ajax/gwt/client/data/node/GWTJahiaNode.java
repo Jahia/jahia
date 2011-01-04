@@ -56,7 +56,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String ICON = "icon";
     public static final String LOCKED = "locked";
     public static final String LOCKABLE = "lockable";
-    public static final String WRITEABLE = "writeable";
+    public static final String PERMISSIONS = "permissions";
     public static final String DELETEABLE = "deleteable";
     public static final String ACL = "hasACL";
     public static final String UUID = "uuid";
@@ -90,7 +90,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
             Arrays.asList(ICON, COUNT, CHILDREN_INFO,NAME,DISPLAY_NAME);
 
     public static final List<String> RESERVED_FIELDS =
-            Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, WRITEABLE, DELETEABLE, UUID, DISPLAY_NAME, FILE,
+            Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,
                     SIZE, NODE_TYPES, INHERITED_NODE_TYPES, ACL_CONTEXT, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,
                     CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT, AVAILABLE_WORKKFLOWS);
 
@@ -111,6 +111,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private Map<String, Boolean> languageLocked = new HashMap<String, Boolean>();
     private GWTJahiaNode referencedNode;
     private GWTJahiaWorkflowInfo workflowInfo;
+    private GWTBitSet permissions;
 
     // in case of a folder, it allows to know if the node is selectable or not
     private boolean matchFilters = false;
@@ -169,24 +170,16 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return languageLocked.containsKey(language) && languageLocked.get(language);
     }
 
-    public void setWriteable(Boolean writeable) {
-        set(WRITEABLE, writeable);
+    public void setPermissions(GWTBitSet permissions) {
+        this.permissions = permissions;
+    }
+
+    public GWTBitSet getPermissions() {
+        return permissions;
     }
 
     public Boolean isWriteable() {
-        return get(WRITEABLE);
-    }
-
-    public Boolean isLanguageWriteable(String language) {
-        return get(WRITEABLE);
-    }
-
-    public void setDeleteable(Boolean deleteable) {
-        set(DELETEABLE, deleteable);
-    }
-
-    public Boolean isDeleteable() {
-        return get(DELETEABLE);
+        return true;
     }
 
     public void setName(String name) {

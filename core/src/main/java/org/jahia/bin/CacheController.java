@@ -44,7 +44,6 @@ import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.rbac.Permission;
-import org.jahia.services.rbac.PermissionIdentity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +56,7 @@ public class CacheController extends JahiaMultiActionController {
 
 	private static Logger logger = LoggerFactory.getLogger(CacheController.class);
 
-	private static final Permission REQUERIED_PERMISSION = new PermissionIdentity(
-	        "global/cache");
+	private static final String REQUIRED_PERMISSION = "adminCache";
 
 	private CacheService cacheService;
 
@@ -88,8 +86,8 @@ public class CacheController extends JahiaMultiActionController {
 	}
 
 	@Override
-	protected Permission getRequiredPermission() {
-		return REQUERIED_PERMISSION;
+	protected String getRequiredPermission() {
+		return REQUIRED_PERMISSION;
 	}
 
 	public void setCacheService(CacheService cacheService) {

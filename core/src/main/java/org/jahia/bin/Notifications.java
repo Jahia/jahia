@@ -59,8 +59,7 @@ public class Notifications extends JahiaMultiActionController {
 
 	private static Logger logger = LoggerFactory.getLogger(Notifications.class);
 
-	private static final Permission REQUERIED_PERMISSION = new PermissionIdentity(
-	        "global/email-settings");
+	private static final String REQUIRED_PERMISSION = "adminEmailSettings";
 
 	private MailServiceImpl mailService;
 
@@ -129,8 +128,8 @@ public class Notifications extends JahiaMultiActionController {
 	}
 
 	@Override
-    protected Permission getRequiredPermission() {
-	    return REQUERIED_PERMISSION;
+    protected String getRequiredPermission() {
+	    return REQUIRED_PERMISSION;
     }
 
 }

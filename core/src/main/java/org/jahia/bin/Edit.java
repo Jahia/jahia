@@ -69,6 +69,6 @@ public class Edit extends Render {
             logger.error("Site key is null.");
             return false;
         }
-        return node.hasPermission("edit-mode");
+        return node.hasPermission("editModeAccess");
     }
 }

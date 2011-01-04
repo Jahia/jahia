@@ -32,12 +32,10 @@
 
 package org.jahia.ajax.gwt.client.data.toolbar;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.List;
-
-import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * User: toto
@@ -47,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class GWTConfiguration implements IsSerializable, Serializable {
     protected String name;
     private List<GWTEngineTab> engineTabs;
-    private List<GWTJahiaPermission> permissions;
+    private List<String> permissions;
 
     public GWTConfiguration() {
     	super();
@@ -69,11 +67,11 @@ public class GWTConfiguration implements IsSerializable, Serializable {
         this.engineTabs = engineTabs;
     }
 
-    public List<GWTJahiaPermission> getPermissions() {
+    public List<String> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(List<GWTJahiaPermission> permissions) {
+    public void setPermissions(List<String> permissions) {
         this.permissions = permissions;
     }
 }

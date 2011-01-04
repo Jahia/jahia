@@ -89,6 +89,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -296,12 +297,22 @@ public class JahiaAdministration extends HttpServlet {
     }
 
 
-    private boolean hasServerPermission(String permissionName, final JahiaUser user) {
-        return user.isPermitted(new PermissionIdentity(permissionName));
+    private boolean hasServerPermission(String permissionName) {
+        try {
+            return JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode().hasPermission(permissionName);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    private boolean hasSitePermission(String permissionName, final JahiaUser user, final String siteKey) {
-        return user.isPermitted(new PermissionIdentity(permissionName));
+    private boolean hasSitePermission(String permissionName, final String siteKey) {
+        try {
+            return JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/"+siteKey).hasPermission(permissionName);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     //-------------------------------------------------------------------------
@@ -348,7 +359,7 @@ public class JahiaAdministration extends HttpServlet {
                     AdministrationModulesRegistry modulesRegistry = (AdministrationModulesRegistry) SpringContextSingleton.getInstance().getContext().getBean("administrationModulesRegistry");
                     AdministrationModule currentModule = modulesRegistry.getServerAdministrationModule(operation);
                     if (currentModule != null) {
-                        if (hasServerPermission(currentModule.getPermissionName(), user)) {
+                        if (hasServerPermission(currentModule.getPermissionName())) {
                             session.setAttribute(CLASS_NAME + "configJahia", Boolean.TRUE);
                             /** todo clean up this hardcoded mess. Is it even used anymore ? */
                             if ("sharecomponents".equals(operation) && user.isRoot()) {
@@ -363,7 +374,7 @@ public class JahiaAdministration extends HttpServlet {
                     } else {
                         currentModule = modulesRegistry.getSiteAdministrationModule(operation);
                         if (currentModule != null) {
-                            if (hasSitePermission(currentModule.getPermissionName(), user, site.getSiteKey())) {
+                            if (hasSitePermission(currentModule.getPermissionName(), site.getSiteKey())) {
                                 session.setAttribute(CLASS_NAME + "configJahia", Boolean.FALSE);
                                 if ("search".equals(operation)) {
                                     // Use response response wrapper to ensure correct handling of Application fields output to the response
@@ -750,7 +761,7 @@ public class JahiaAdministration extends HttpServlet {
      * @param response Servlet response.
      * @param session  Servlet session for the current user.
      */
-    public static void displayMenu(HttpServletRequest request,
+    public void displayMenu(HttpServletRequest request,
                                    HttpServletResponse response,
                                    HttpSession session)
             throws IOException, ServletException {
@@ -826,7 +837,7 @@ public class JahiaAdministration extends HttpServlet {
      * @param response Servlet response.
      * @param session  Servlet session for the current user.
      */
-    public static void changeSite(HttpServletRequest request,
+    public void changeSite(HttpServletRequest request,
                                   HttpServletResponse response,
                                   HttpSession session)
             throws IOException, ServletException {
@@ -842,7 +853,7 @@ public class JahiaAdministration extends HttpServlet {
                     .getJahiaSitesService().getSite(siteID);
 
             if ((group != null && group.isMember(theUser))
-                    || (theUser.isPermitted(new PermissionIdentity("jahia-administration")))) {
+                    || (hasServerPermission("administrationAccess"))) {
                 List<Locale> languageSettingsAsLocales = currentSite
                         .getLanguagesAsLocales();
                 final Locale localeSession = (Locale) session
@@ -888,7 +899,7 @@ public class JahiaAdministration extends HttpServlet {
      * @param response Servlet response.
      * @param session  Servlet session for the current user.
      */
-    public static void switchModeAction(HttpServletRequest request,
+    public void switchModeAction(HttpServletRequest request,
                                         HttpServletResponse response,
                                         HttpSession session)
             throws IOException, ServletException {
@@ -917,7 +928,7 @@ public class JahiaAdministration extends HttpServlet {
      * @param session the HttpSession object
      * @return <code>true</code> if the user can access to administration, <code>false</code> otherwise.
      */
-    static boolean isValidLoginSession(HttpSession session) {
+    private boolean isValidLoginSession(HttpSession session) {
 
         logger.debug("isValidatingLoginSession started");
 
@@ -945,7 +956,7 @@ public class JahiaAdministration extends HttpServlet {
                     return false; // group might have been deleted
                 }
                 if (theGroup.isMember(theUser) ||
-                        (theUser.isPermitted(new PermissionIdentity("jahia-administration")))) {
+                        (hasServerPermission("administrationAccess"))) {
                     // check if the user is a super admin or not...
                     JahiaGroup superAdminGroup = gMgr.getAdministratorGroup(SUPERADMIN_SITE_ID);
                     if (superAdminGroup.isMember(theUser)) {
@@ -1109,7 +1120,7 @@ public class JahiaAdministration extends HttpServlet {
      * @param user the user you want to get his access grantes sites list.
      * @return Return a List containing all JahiaSite objects where the user has an access.
      */
-    public static List<JahiaSite> getAdminGrantedSites(JahiaUser user)
+    public List<JahiaSite> getAdminGrantedSites(JahiaUser user)
             throws JahiaException {
 
         List<JahiaSite> grantedSites = new ArrayList<JahiaSite>();
@@ -1124,7 +1135,7 @@ public class JahiaAdministration extends HttpServlet {
                     JahiaSiteTools.getAdminGroup(jahiaSite).isMember(user)) {
                 logger.debug("granted site for " + jahiaSite.getSiteKey());
                 grantedSites.add(jahiaSite);
-            } else if (user.isPermitted(new PermissionIdentity("jahia-administration"))) {
+            } else if (hasSitePermission("administrationAccess", jahiaSite.getSiteKey())) {
                 logger.debug("granted site for " + jahiaSite.getSiteKey());
                 grantedSites.add(jahiaSite);
             }

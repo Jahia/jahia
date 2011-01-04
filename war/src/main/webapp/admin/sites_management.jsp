@@ -302,14 +302,12 @@
                     </td>
 
                     <td>
-                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import"))) { %>
-                                            <span class="dex-PushButton">
-                                              <span class="first-child">
-                                                <a class="ico-import"
-                                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
-                                              </span>
-                                            </span><%
-                        } %>
+                        <span class="dex-PushButton">
+                            <span class="first-child">
+                                <a class="ico-import"
+                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
+                            </span>
+                        </span>
                     </td>
 
                 </tr>
@@ -445,14 +443,12 @@ else { %>
                     </td>
 
                     <td>
-                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import"))) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
                                                 <a class="ico-import"
                                                    href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
                                               </span>
-                                            </span><%
-                        } %>
+                                            </span>
                     </td>
 
                 </tr>

@@ -69,7 +69,7 @@ public class WCAGController extends JahiaMultiActionController {
 	private static Logger logger = LoggerFactory.getLogger(WCAGController.class);
 
 	@Override
-	protected Permission getRequiredPermission() {
+	protected String getRequiredPermission() {
 		return null;
 	}
 

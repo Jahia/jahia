@@ -116,12 +116,6 @@
  - j:dependencies (weakreference) protected hidden multiple < jnt:permission
  + * (jnt:permission)
 
-[jnt:permissions] > nt:base, mix:versionable
- + * (jnt:permission)
-
-[jmix:roleBasedAccessControlled] mixin
- - j:roles (weakreference) protected hidden multiple < jnt:role
-
 //---------------------------------------------------------
 // Publication
 //---------------------------------------------------------

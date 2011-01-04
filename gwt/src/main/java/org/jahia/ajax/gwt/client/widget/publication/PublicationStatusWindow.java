@@ -88,7 +88,7 @@ public class PublicationStatusWindow extends LayoutContainer {
         ButtonBar bar = new ButtonBar();
         bar.setAlignment(Style.HorizontalAlignment.CENTER);
 
-        if (PermissionsUtils.isPermitted("edit-mode/publication", JahiaGWTParameters.getSiteKey())) {
+        if (PermissionsUtils.isPermitted("publish", linker.getSelectionContext().getSingleSelection())) {
             noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
             noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids));
             bar.add(noWorkflow);

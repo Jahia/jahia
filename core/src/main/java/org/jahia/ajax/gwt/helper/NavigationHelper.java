@@ -36,9 +36,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
@@ -739,8 +737,16 @@ public class NavigationHelper {
         n.setNodeTypes(nodeTypes);
         n.setInheritedNodeTypes(inheritedTypes);
         n.setProviderKey(node.getProvider().getKey());
-        n.setWriteable(node.isWriteable());
-        n.setDeleteable(node.isWriteable());
+
+        BitSet bs = node.getPermissionsAsBitSet();
+        GWTBitSet gwtBs = new GWTBitSet(bs.size());
+
+        for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
+            gwtBs.set(i);
+        }
+
+        n.setPermissions(gwtBs);
+
         n.setLockable(node.isLockable());
         try {
             n.setHasAcl(node.hasNode("j:acl"));
@@ -810,9 +816,6 @@ public class NavigationHelper {
             logger.error("Error when getting locks", e);
         }
 
-        if (sessionFactory.getMountPoints().containsKey(node.getPath())) {
-            n.setDeleteable(false);
-        }
         if (fields.contains(GWTJahiaNode.CHILDREN_INFO)) {
             boolean hasChildren = false;
             if (node instanceof JCRMountPointNode) {

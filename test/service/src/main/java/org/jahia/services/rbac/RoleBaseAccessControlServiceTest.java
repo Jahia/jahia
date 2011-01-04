@@ -32,41 +32,28 @@
 
 package org.jahia.services.rbac;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-
-import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.rbac.jcr.RoleService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.test.TestHelper;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.slf4j.Logger;
+
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import java.util.Properties;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit test for the role and permission management features.
@@ -151,11 +138,6 @@ public class RoleBaseAccessControlServiceTest {
         return ROLE_PREFIX + roleCounter++;
     }
 
-    private RoleBasedAccessControlService getRBACService() {
-        return (RoleBasedAccessControlService) SpringContextSingleton.getBean(RoleBasedAccessControlService.class
-                .getName());
-    }
-
     private RoleService getRoleService() {
         return (RoleService) SpringContextSingleton.getBean(RoleService.class.getName());
     }
@@ -209,7 +191,6 @@ public class RoleBaseAccessControlServiceTest {
     @Test
     public void testLookupService() throws Exception {
         assertNotNull("Unable to lookup RoleService instance", getRoleService());
-        assertNotNull("Unable to lookup RoleBasedAccessControlService instance", getRBACService());
     }
 
 

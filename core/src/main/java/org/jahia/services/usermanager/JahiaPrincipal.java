@@ -48,40 +48,4 @@ import org.jahia.services.rbac.Role;
  */
 public interface JahiaPrincipal extends Principal, Serializable {
 
-    /**
-     * Returns a set of all roles this principal has also considering
-     * membership. An empty set is returned if this principal has no roles
-     * assigned.
-     * 
-     * @return a set of all roles this principal has also considering
-     *         membership; an empty set is returned if this principal has no
-     *         roles assigned
-     * @since 6.5
-     */
-    Set<Role> getRoles();
-
-    /**
-     * Returns {@code true} if this principal has the specified role, {@code
-     * false} otherwise.
-     * 
-     * @param role the application-specific role
-     * @return {@code true} if this principal has the specified role, {@code
-     *         false} otherwise
-     * @since 6.5
-     */
-    boolean hasRole(Role role);
-
-    /**
-     * Returns {@code true} if this principal is permitted to perform a server
-     * action or access a resource summarized by the specified permission string
-     * ("<group>/<name>").
-     * 
-     * @param permission a permission that is being checked
-     * @return {@code true} if this principal is permitted to perform a server
-     *         action or access a resource summarized by the specified
-     *         permission string
-     * @since 6.5
-     */
-    boolean isPermitted(Permission permission);
-
 }

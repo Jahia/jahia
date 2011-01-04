@@ -97,7 +97,7 @@ public class PublicationWorkflow implements CustomWorkflow {
     public Button getBypassWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
         final Button button = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
 
-        if (PermissionsUtils.isPermitted("edit-mode/publication", JahiaGWTParameters.getSiteKey())) {
+        if (PermissionsUtils.isPermitted("publish", dialog.getLinker().getSelectionContext().getSingleSelection())) {
             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
                 @Override

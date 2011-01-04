@@ -33,7 +33,9 @@
 package org.jahia.ajax.gwt.client.util.security;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +48,12 @@ import java.util.List;
  * 
  */
 public class PermissionsUtils {
-    private static List<GWTJahiaPermission> grantedPermissions = new ArrayList<GWTJahiaPermission>();
+    private static List<String> grantedPermissions = new ArrayList<String>();
 
     /**
      * load permission. Implemented thanks to an ajax call or read from a javascript object
      */
-    public static void loadPermissions(List<GWTJahiaPermission> permissions) {
+    public static void loadPermissions(List<String> permissions) {
            grantedPermissions = permissions;       
     }
 
@@ -71,10 +73,21 @@ public class PermissionsUtils {
      * Check if a site based permission is granted to the current user
      *
      * @param permissionName permission name
-     * @param siteKey site key 
      * @return
      */
-    public static boolean isPermitted(String permissionName, String siteKey) {
+    public static boolean isPermitted(String permissionName, GWTJahiaNode node) {
+        if (node == null) {
+            // todo !
+            return true;
+        }
+
+        int i = grantedPermissions.indexOf(permissionName);
+        if (i == -1) {
+            Window.alert("Unknown permission " + permissionName);
+            return false;
+        }
+        return node.getPermissions().get(i);
+
 //        GWTJahiaPermission perm = new GWTJahiaPermission();
 //        String[] splittedName = permissionName.split("/");
 //        if (splittedName.length > 1) {
@@ -87,19 +100,7 @@ public class PermissionsUtils {
 //            perm.setSite(siteKey);
 //        }
 //        return isPermitted(perm);
-        return true;
-    }
-    
-    
-    /**
-     * Check if a permission is granted to the current user
-     *
-     * @param permission
-     * @return
-     */
-    public static boolean isPermitted(GWTJahiaPermission permission) {
-//        return grantedPermissions.contains(permission);
-        return true;
+//        return true;
     }
 
 

@@ -72,8 +72,6 @@ public class RoleManager {
 
     public static final String JAHIANT_PERMISSION = "jnt:permission";
 
-    public static final String JAHIANT_PERMISSIONS = "jnt:permissions";
-
     public static final String JAHIANT_ROLE = "jnt:role";
 
     public static final String JAHIANT_ROLES = "jnt:roles";
@@ -178,7 +176,7 @@ public class RoleManager {
                 // create it
                 JCRNodeWrapper parentNode = session.getNode("/");
                 session.checkout(parentNode);
-                permissionsNode = parentNode.addNode(permissionsNodeName, JAHIANT_PERMISSIONS);
+                permissionsNode = parentNode.addNode(permissionsNodeName, JAHIANT_PERMISSION);
                 session.save();
             } else {
                 throw ex;

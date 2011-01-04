@@ -84,6 +84,7 @@ public class ContentImport extends Window {
 
         Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
+                mask();
                 doImport(n.getPath(), field.getValue(), checkbox.getValue());
             }
         });
@@ -108,6 +109,7 @@ public class ContentImport extends Window {
             public void onApplicationFailure(Throwable caught) {
                 com.google.gwt.user.client.Window.alert(Messages.get("fm_fail") + "\n" + caught.getLocalizedMessage());
                 Log.error(Messages.get("fm_fail"), caught);
+                hide();
             }
 
             public void onSuccess(Object result) {

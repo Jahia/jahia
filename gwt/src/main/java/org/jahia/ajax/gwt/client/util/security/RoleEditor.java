@@ -32,13 +32,11 @@
 
 package org.jahia.ajax.gwt.client.util.security;
 
-import org.jahia.ajax.gwt.client.widget.security.RolePrincipalPanel;
-import org.jahia.ajax.gwt.client.widget.security.RolesManager;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.widget.security.RolesManager;
 
 /**
  * User: ktlili
@@ -52,7 +50,6 @@ public class RoleEditor {
 
     public static void init(){
         initPermissionRole();
-        initPrincipalRole();
     }
 
     /**
@@ -73,24 +70,6 @@ public class RoleEditor {
             });        
         }
 
-    }
-
-    /**
-     * init Principal role
-     */
-    public static void initPrincipalRole() {
-        final RootPanel panel = RootPanel.get(ROLE_PRINCIPAL);
-        if (panel != null) {
-            GWT.runAsync(new RunAsyncCallback() {
-                public void onFailure(Throwable reason) {
-                	Window.alert("Error loading role principal panel: " + reason.getMessage());
-                }
-
-                public void onSuccess() {
-                    panel.add(new RolePrincipalPanel(panel.getElement().getAttribute("siteKey"), Boolean.parseBoolean(panel.getElement().getAttribute("group")), panel.getElement().getAttribute("principalKey")));
-                }
-            });        
-        }
     }
 
 

@@ -72,7 +72,7 @@ public class RolesPermissionsHelper {
 
     /**
      * Grants the specified permissions to a role.
-     * 
+     *
      * @param role the role to grant permissions
      * @param gwtPermissions permissions to be granted
      * @throws GWTJahiaServiceException in case of an error
@@ -92,16 +92,6 @@ public class RolesPermissionsHelper {
             RoleIdentity identity = new RoleIdentity(role.getName());
             identity.setPath(role.getPath());
             roleService.grantPermissions(identity,permissions);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-    }
-
-    public GWTJahiaPermission createPermission(String name, String group, String siteKey)
-            throws GWTJahiaServiceException {
-        try {
-            return toPermission(roleService.savePermission(new PermissionIdentity(name)));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -152,9 +142,7 @@ public class RolesPermissionsHelper {
     /**
      * Get all permissions for the specified site or for the server if the site
      * is not specified.
-     * 
-     * @param site target site key or {@code null} if the server level
-     *            permissions are requested
+     *
      * @return all permissions for the specified site or for the server if the
      *         site is not specified
      * @throws GWTJahiaServiceException in case of an error
@@ -178,149 +166,57 @@ public class RolesPermissionsHelper {
         return permissions;
     }
 
-    public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role) throws GWTJahiaServiceException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getPrincipalsInRole() ," + role.getName());
-        }
-
-        List<GWTJahiaPrincipal> p = new LinkedList<GWTJahiaPrincipal>();
-        try {
-            for (JahiaPrincipal jahiaPrincipal : rbacService.getPrincipalsInRole(new RoleIdentity(role.getName()))) {
-                GWTJahiaPrincipal gwtPrincipal = null;
-                if (jahiaPrincipal instanceof JahiaUser) {
-                    JahiaUser user = (JahiaUser) jahiaPrincipal;
-                    GWTJahiaUser gwtUser = new GWTJahiaUser(user.getUsername(), user.getUserKey());
-                    gwtUser.setProvider(user.getProviderName());
-                    gwtPrincipal = gwtUser;
-                } else if (jahiaPrincipal instanceof JahiaGroup) {
-                    JahiaGroup group = (JahiaGroup) jahiaPrincipal;
-                    GWTJahiaGroup gwtGroup = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey());
-                    gwtGroup.setProvider(group.getProviderName());
-                    gwtPrincipal = gwtGroup;
-                } else {
-                    logger.warn("Unknown principal type for principal " + jahiaPrincipal);
-                }
-                if (gwtPrincipal != null) {
-                    p.add(gwtPrincipal);
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-        
-        return p;
-    }
-
     /**
-     * Get all roles for the specified site or for the server if the site is not
-     * specified.
-     * 
-     * @param site target site key or {@code null} if the server level roles are
-     *            requested
-     * @return all roles for the specified site or for the server if the site is
-     *         not specified
-     * @throws GWTJahiaServiceException in case of an error
-     */
-    private List<GWTJahiaRole> getRoles(String search) throws GWTJahiaServiceException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieving roles server");
-        }
+       * Get all roles for the specified site or for the server if the site is not
+       * specified.
+       *
+       * @return all roles for the specified site or for the server if the site is
+       *         not specified
+       * @throws GWTJahiaServiceException in case of an error
+       */
+      private List<GWTJahiaRole> getRoles(String search) throws GWTJahiaServiceException {
+          if (logger.isDebugEnabled()) {
+              logger.debug("Retrieving roles server");
+          }
 
-        List<GWTJahiaRole> roles = new LinkedList<GWTJahiaRole>();
-        try {
-            for (Role role : roleService.getRoles()) {
-                if("*".equals(search))
-                    roles.add(toRole(role));
-                else if(role.getName().matches(search)){
-                    roles.add(toRole(role));
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
+          List<GWTJahiaRole> roles = new LinkedList<GWTJahiaRole>();
+          try {
+              for (Role role : roleService.getRoles()) {
+                  if("*".equals(search))
+                      roles.add(toRole(role));
+                  else if(role.getName().matches(search)){
+                      roles.add(toRole(role));
+                  }
+              }
+          } catch (RepositoryException e) {
+              logger.error(e.getMessage(), e);
+              throw new GWTJahiaServiceException(e.getMessage());
+          }
 
-        return roles;
-    }
+          return roles;
+      }
 
-    public List<GWTJahiaRole> getRoles(String siteKey, boolean isGroup, String principalKey)
-            throws GWTJahiaServiceException {
-        // get all roles for the site first
-        List<GWTJahiaRole> roles =  getRoles("*");
-        
-        // add server-level roles
-        roles.addAll(getRoles("*"));
+      /**
+       * Get all roles and all permissions
+       *
+       * @return all roles and all permissions
+       * @throws GWTJahiaServiceException in case of an error
+       */
+      public GWTRolesPermissions getRolesAndPermissions()
+              throws GWTJahiaServiceException {
+          if (logger.isDebugEnabled()) {
+              logger.debug("getting roles and permission");
+          }
 
-
-        for(GWTJahiaRole role: roles){
-            // add the check to know of the role is granted or not to the principal
-            if(isGrant(role,isGroup,principalKey)){
-                role.set("grant","true");
-            }
-        }
-
-        return roles;
-    }
-
-    /**
-     * Get all roles and all permissions
-     * 
-     * @return all roles and all permissions
-     * @throws GWTJahiaServiceException in case of an error
-     */
-    public GWTRolesPermissions getRolesAndPermissions()
-            throws GWTJahiaServiceException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getting roles and permission");
-        }
-
-        GWTRolesPermissions rp = new GWTRolesPermissions();
-        rp.setRoles(getRoles("*"));
-        rp.setPermissions(getPermissions());
-        return rp;
-    }
-
-    public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals)
-            throws GWTJahiaServiceException {
-    }
-
-    public void grantRoleToUser(GWTJahiaRole role, boolean isGroup, String principalKey)
-            throws GWTJahiaServiceException {
-
-    }
-
-    /**
-     * Check if the role is granted to the user
-     * 
-     * @param role
-     * @param isGroup
-     * @param principalKey
-     * @return
-     */
-    public boolean isGrant(GWTJahiaRole role, boolean isGroup, String principalKey) {
-        JahiaPrincipal p = lookupPrincipal(principalKey, isGroup);
-        return p != null && p.hasRole(new RoleIdentity(role.getName()));
-    }
-
-    private JahiaPrincipal lookupPrincipal(GWTJahiaPrincipal principal) {
-        if (principal instanceof GWTJahiaUser) {
-            return userManagerService.lookupUserByKey(((GWTJahiaUser) principal).getKey());
-        } else if (principal instanceof GWTJahiaGroup) {
-            return groupManagerService.lookupGroup(((GWTJahiaGroup) principal).getGroupKey());
-        } else {
-            logger.warn("Unknown principal type " + principal);
-        }
-        return null;
-    }
-
-    private JahiaPrincipal lookupPrincipal(String principalKey, boolean isGroup) {
-        return isGroup ? groupManagerService.lookupGroup(principalKey) : userManagerService.lookupUserByKey(principalKey);
-    }
+          GWTRolesPermissions rp = new GWTRolesPermissions();
+          rp.setRoles(getRoles("*"));
+          rp.setPermissions(getPermissions());
+          return rp;
+      }
 
     /**
      * Revokes specified permissions from a role.
-     * 
+     *
      * @param role the role to revoke permissions from
      * @param gwtPermissions permissions to be revoked
      * @throws GWTJahiaServiceException in case of an error
@@ -343,19 +239,6 @@ public class RolesPermissionsHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
-    }
-
-    public void removeRoleToPrincipal(GWTJahiaRole role, boolean isGroup, String principalKey) throws GWTJahiaServiceException {
-    }
-
-    /**
-     * REmove role to principals
-     * 
-     * @param role
-     * @param principals
-     * @throws GWTJahiaServiceException in case of an error
-     */
-    public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException {
     }
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
@@ -412,21 +295,4 @@ public class RolesPermissionsHelper {
         return gwtRole;
     }
 
-    public BasePagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context,
-                                                               JCRSiteNode currentSite)
-            throws GWTJahiaServiceException {
-        if (context != null) {
-            String site = null;
-            if (context.equals("currentSite")) {
-                site = currentSite.getSiteKey();
-            } else if (context.startsWith("site:")) {
-                site = context.substring(5);
-            }
-                List<GWTJahiaRole> result = getRoles(search);
-                int size = result.size();
-                result = new ArrayList<GWTJahiaRole>(result.subList(offset, Math.min(size, offset + limit)));
-                return new BasePagingLoadResult<GWTJahiaRole>(result, offset, size);
-        }
-        return null;
-    }
 }

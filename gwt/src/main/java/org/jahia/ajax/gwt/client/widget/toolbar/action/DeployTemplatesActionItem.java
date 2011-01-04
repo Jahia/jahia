@@ -43,7 +43,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
@@ -67,7 +66,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
         instances.add(this);
         setEnabled(false);
 
-        JahiaService.App.getInstance().getAvailableSites(new BaseAsyncCallback<List<GWTJahiaSite>>() {
+        JahiaContentManagementService.App.getInstance().getAvailableSites(new BaseAsyncCallback<List<GWTJahiaSite>>() {
             public void onSuccess(List<GWTJahiaSite> result) {
                 for (GWTJahiaSite gwtJahiaSite : result) {
                     final String key = (String) gwtJahiaSite.get("templateFolder");

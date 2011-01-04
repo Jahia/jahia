@@ -32,13 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.security.PermissionRolePanel;
-import org.jahia.ajax.gwt.client.widget.security.PrincipalRolePanel;
 
 /**
  * Represents a dedicated tab for viewing and managing role to principal assignment.

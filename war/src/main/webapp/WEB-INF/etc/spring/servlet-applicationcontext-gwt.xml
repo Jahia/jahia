@@ -7,7 +7,6 @@
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <value>
-                /**/base.gwt=baseServiceController
                 /**/contentDefinition.gwt=contentDefinitionServiceController
                 /**/contentManager.gwt=contentManagerServiceController
                 /**/subscription.gwt=subscriptionServiceController
@@ -20,11 +19,6 @@
     <bean name="abstractServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController"  abstract="true">
         <property name="sessionExpiryTime" value="30" />
     </bean>
-
-    <bean name="baseServiceController" parent="abstractServiceController">
-        <property name="remoteServiceName" value="gwtJahiaService"/>
-    </bean>
-    <bean name="gwtJahiaService" class="org.jahia.ajax.gwt.commons.server.rpc.JahiaServiceImpl" scope="prototype"/>
 
     <bean name="contentDefinitionServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtJahiaContentDefinitionService"/>

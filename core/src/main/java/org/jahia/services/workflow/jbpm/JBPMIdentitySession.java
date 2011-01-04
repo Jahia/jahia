@@ -133,26 +133,6 @@ public class JBPMIdentitySession implements IdentitySession {
             } else if (principal instanceof JahiaUser) {
                 JahiaUser jahiaUser = (JahiaUser) principal;
                 addUser(emails, userId, jahiaUser);
-            } else if (principal instanceof RoleIdentity) {
-                List<JahiaPrincipal> lp = ((RoleBasedAccessControlService) SpringContextSingleton.getBean(
-                        RoleBasedAccessControlService.class.getName())).getPrincipalsInRole(
-                        (RoleIdentity) principal);
-                for (Principal p : lp) {
-                    if (p instanceof JahiaUser) {
-                        JahiaUser jahiaUser = (JahiaUser) p;
-                        addUser(emails, userId, jahiaUser);
-                    } else {
-                        if (p instanceof JahiaGroup) {
-                            Collection<Principal> members = ((JahiaGroup) p).getMembers();
-                            for (Principal member : members) {
-                                if (member instanceof JahiaUser) {
-                                    JahiaUser jahiaUser = (JahiaUser) member;
-                                    addUser(emails, userId, jahiaUser);
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }
@@ -200,10 +180,6 @@ public class JBPMIdentitySession implements IdentitySession {
             List<String> l = groupService.getUserMembership(user);
             for (String groupKey : l) {
                 results.add(findGroupById(groupKey));
-            }
-            Set<Role> roleSet = user.getRoles();
-            for (Role role : roleSet) {
-                results.add(new GroupImpl("{role}" + role.getName(), role.getName(), "jahia"));
             }
         }
         return results;

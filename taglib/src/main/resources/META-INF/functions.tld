@@ -201,37 +201,6 @@
     
     <function>
         <description>
-			Checks if the current user is included in the specified logical role or
-			has all specified roles if multiple are specified (comma-separated)
-        </description>
-        <name>isUserInRole</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.lang.Boolean isUserInRole(java.lang.String)</function-signature>
-        <example>
-            &lt;c:if test="${functions:isUserInRole('user-manager')}"&gt;
-            The user is authorized to manage users
-            &lt;/c:if&gt;
-        </example>
-    </function>
-
-
-    <function>
-        <description>
-			Checks if the current user has the specified permission or
-     		has all specified permissions if multiple are specified (comma-separated)
-        </description>
-        <name>isUserPermitted</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.lang.Boolean isUserPermitted(java.lang.String)</function-signature>
-        <example>
-            &lt;c:if test="${functions:isUserPermitted('global/password-policy')}"&gt;
-            The user is authorized to manage password policies
-            &lt;/c:if&gt;
-        </example>
-    </function>
-
-    <function>
-        <description>
 			Extends the standard JSTL's fn:length() function with JCR's RangeIterator support
         </description>
         <name>length</name>

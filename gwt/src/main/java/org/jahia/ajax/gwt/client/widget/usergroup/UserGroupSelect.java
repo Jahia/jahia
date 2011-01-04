@@ -38,23 +38,19 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.JahiaService;
-import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -75,7 +71,7 @@ public class UserGroupSelect extends Window {
     public static final int VIEW_GROUPS = 2;
     public static final int VIEW_TABS = 3;
     public static final int VIEW_ROLES = 4;
-    private JahiaServiceAsync service = JahiaService.App.getInstance();
+    private JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
     private SearchField userSearchField;
     private SearchField groupSearchField;
     private SearchField roleSearchField;
@@ -98,7 +94,7 @@ public class UserGroupSelect extends Window {
         setSize(500, 500);
         setLayout(new FitLayout());
         final UserManagerServiceAsync service = UserManagerService.App.getInstance();
-        final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+
         switch (viewMode) {
             case VIEW_TABS:
                 ContentPanel userPanel = getUserPanel(target, service);

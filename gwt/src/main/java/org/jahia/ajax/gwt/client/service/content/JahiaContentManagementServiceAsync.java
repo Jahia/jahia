@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -53,7 +52,6 @@ import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 
 import java.util.Date;
 import java.util.List;
@@ -66,7 +64,11 @@ import java.util.Set;
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
  */
-public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsync {
+public interface JahiaContentManagementServiceAsync {
+
+    void drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
+
+    void getAvailableSites(AsyncCallback<List<GWTJahiaSite>> asyncCallback);
 
     void getManagerConfiguration(String name, AsyncCallback<GWTManagerConfiguration> async);
 
@@ -178,11 +180,11 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void importContent(String parentPath, String fileKey, Boolean asynchronously, AsyncCallback async);
 
-    void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String,GWTJahiaWorkflowDefinition>> async); 
+    void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String,GWTJahiaWorkflowDefinition>> async);
 
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
 
-    void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def, 
+    void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
                               List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args, AsyncCallback async);
 
     void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
@@ -264,9 +266,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void isValidSession(AsyncCallback<Integer> async) throws GWTJahiaServiceException;
 
-    void searchRolesInContext(String search, int offset, int limit, String context,
-                              AsyncCallback<PagingLoadResult<GWTJahiaRole>> asyncCallback);
-
     void initializeCreateEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreateEngineInitBean> async);
 
     void initializeCreatePortletEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreatePortletInitBean> async);
@@ -300,7 +299,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getContentHistory(String nodeIdentifier, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaContentHistoryEntry>> async);
 
     void cleanReferences(String path, AsyncCallback callback);
-    
+
     void getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, AsyncCallback<GWTJahiaFieldInitializer> async);
 
     void getSitePagesWithTargetAreaName(String targetAreaName, AsyncCallback<List<GWTJahiaNode>> asyncCallback);
@@ -311,5 +310,13 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getNumberOfTasksForUser(AsyncCallback<Integer> asyncCallback);
 
     void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbar> async);
+
+    void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
+
+    void getGrantedPermissions(AsyncCallback<List<GWTJahiaPermission>> async);
+
+    void getRolesAndPermissions(AsyncCallback<GWTRolesPermissions> async);
+
+    void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
 
 }

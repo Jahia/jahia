@@ -65,19 +65,6 @@ public class RoleBasedAccessControlService {
 
 
     /**
-     * Returns a list of principals having the specified role or an empty list
-     * if the role is not granted to anyone.
-     * 
-     * @param role the role
-     * @return a list of principals having the specified role or an empty list
-     *         if the role is not granted to anyone
-     * @throws RepositoryException in case of an error
-     */
-    public List<JahiaPrincipal> getPrincipalsInRole(final Role role) throws RepositoryException {
-        return new ArrayList<JahiaPrincipal>();
-    }
-
-    /**
      * Returns a set of all roles this principal has also considering
      * membership. An empty set is returned if this principal has no roles
      * assigned.
@@ -145,15 +132,6 @@ public class RoleBasedAccessControlService {
      */
     protected void setEnformcementPolicy(EnforcementPolicy policy) {
         this.policy = policy;
-    }
-
-    /**
-     * Injects the dependency to {@link RoleBasedAccessControlManager}.
-     * 
-     * @param roleBasedAccessControlManager the dependency to
-     *            {@link RoleBasedAccessControlManager}
-     */
-    public void setRoleBasedAccessControlManager(RoleBasedAccessControlManager roleBasedAccessControlManager) {
     }
 
 }

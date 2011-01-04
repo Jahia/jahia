@@ -216,25 +216,6 @@ public class JBPMMailProducer extends MailProducerImpl {
             } else if (principal instanceof JahiaUser) {
                 final String property = ((JahiaUser) principal).getProperty("j:email");
                 if (property != null) emails.add(property);
-            } else if (principal instanceof RoleIdentity) {
-                List<JahiaPrincipal> lp = ((RoleBasedAccessControlService) SpringContextSingleton.getBean(
-                        RoleBasedAccessControlService.class.getName())).getPrincipalsInRole((RoleIdentity) principal);
-                for (Principal p : lp) {
-                    if (p instanceof JahiaUser) {
-                        final String property = ((JahiaUser) p).getProperty("j:email");
-                        if (property != null) emails.add(property);
-                    } else {
-                        if (p instanceof JahiaGroup) {
-                            Collection<Principal> members = ((JahiaGroup) p).getMembers();
-                            for (Principal member : members) {
-                                if (member instanceof JahiaUser) {
-                                    final String property = ((JahiaUser) member).getProperty("j:email");
-                                    if (property != null) emails.add(property);
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
         return emails;

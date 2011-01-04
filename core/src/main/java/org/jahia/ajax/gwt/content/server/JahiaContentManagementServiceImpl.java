@@ -36,6 +36,10 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
+import net.htmlparser.jericho.HTMLElementName;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.SourceFormatter;
+import net.htmlparser.jericho.StartTag;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.*;
@@ -66,7 +70,9 @@ import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.googledocs.GoogleDocsEditor;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -80,6 +86,7 @@ import org.jahia.services.googledocs.GoogleDocsServiceFactory;
 import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.LanguageCodeConverters;
@@ -1159,28 +1166,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-    /**
-     * Get roles with permission
-     *
-     * @param principalKey
-     * @return
-     */
-    public List<GWTJahiaRole> getRoles(String siteKey, boolean isGroup, String principalKey)
-            throws GWTJahiaServiceException {
-        return rolesPermissions.getRoles(siteKey, isGroup, principalKey);
-    }
-
-    /**
-     * Get principal in role
-     *
-     * @param role
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public List<GWTJahiaPrincipal> getPrincipalsInRole(GWTJahiaRole role) throws GWTJahiaServiceException {
-        return rolesPermissions.getPrincipalsInRole(role);
-    }
-
 
     /**
      * Get all roles and all permissions
@@ -1216,51 +1201,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-     * Grant role toe users
-     *
-     * @param role
-     */
-    public void grantRoleToUser(GWTJahiaRole role, boolean isGroup, String principalKey)
-            throws GWTJahiaServiceException {
-        rolesPermissions.grantRoleToUser(role, isGroup, principalKey);
-    }
-
-    /**
-     * Remove role to user
-     *
-     * @param role
-     * @throws GWTJahiaServiceException
-     */
-    public void removeRoleToPrincipal(GWTJahiaRole role, boolean isGroup, String principalKey)
-            throws GWTJahiaServiceException {
-        rolesPermissions.removeRoleToPrincipal(role, isGroup, principalKey);
-    }
-
-    /**
-     * Grant role to principals
-     *
-     * @param role
-     * @param principals
-     * @throws GWTJahiaServiceException in case of an error
-     */
-    public void grantRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals)
-            throws GWTJahiaServiceException {
-        rolesPermissions.grantRoleToPrincipals(role, principals);
-    }
-
-    /**
-     * remove role to principals
-     *
-     * @param role
-     * @param principals
-     * @throws GWTJahiaServiceException in case of an error
-     */
-    public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals)
-            throws GWTJahiaServiceException {
-        rolesPermissions.removeRoleToPrincipals(role, principals);
-    }
-
-    /**
      * Gwt Highlighted
      *
      * @param original
@@ -1278,11 +1218,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     private JahiaUser getUser() {
         return getRemoteJahiaUser();
-    }
-
-    public GWTJahiaPermission createPermission(String name, String group, String siteKey)
-            throws GWTJahiaServiceException {
-        return rolesPermissions.createPermission(name, group, siteKey);
     }
 
     /* (non-Javadoc)
@@ -1392,11 +1327,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider, String processId, String locale)
             throws GWTJahiaServiceException {
         return workflow.getWorkflowHistoryTasks(provider, processId, getUILocale());
-    }
-
-    public BasePagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context)
-            throws GWTJahiaServiceException {
-        return rolesPermissions.searchRolesInContext(search, offset, limit, context, getSite());
     }
 
     public Integer isValidSession() throws GWTJahiaServiceException {
@@ -1911,6 +1841,69 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public GWTJahiaToolbar getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException {
         return uiConfigHelper.getGWTToolbarSet(getSite(), getSite(), getRemoteJahiaUser(), getLocale(),getUILocale(), getRequest(), toolbarGroup);
+    }
+
+    public GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString) {
+        GWTJahiaPortletOutputBean result = new GWTJahiaPortletOutputBean();
+        try {
+            int fieldId = Integer.parseInt(windowID);
+            String portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, getRemoteJahiaUser(), getRequest(), getResponse(), getServletContext());
+            try {
+                JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(entryPointIDStr);
+                String nodeTypeName = node.getPrimaryNodeTypeName();
+                /** todo cleanup the hardcoded value here */
+                if ("jnt:htmlPortlet".equals(nodeTypeName)) {
+                    result.setInIFrame(false);
+                }
+                if ("jnt:contentPortlet".equals(nodeTypeName) || "jnt:rssPortlet".equals(nodeTypeName)) {
+                    result.setInContentPortlet(true);
+                }
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
+            result.setHtmlOutput(portletOutput);
+
+            // what we need to do now is to do special processing for <script> tags, and on the client side we will
+            // create them dynamically.
+            Source source = new Source(portletOutput);
+            source = new Source((new SourceFormatter(source)).toString());
+            List<StartTag> scriptTags = source.getAllStartTags(HTMLElementName.SCRIPT);
+            for (StartTag curScriptTag : scriptTags) {
+                if ((curScriptTag.getAttributeValue("src") != null) &&
+                        (!curScriptTag.getAttributeValue("src").equals(""))) {
+                    result.getScriptsWithSrc().add(curScriptTag.getAttributeValue("src"));
+                } else {
+                    result.getScriptsWithCode().add(curScriptTag.getElement().getContent().toString());
+                }
+            }
+
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+
+    public List<GWTJahiaSite> getAvailableSites() {
+        final Iterator<JahiaSite> sites;
+        final List<GWTJahiaSite> returnedSites = new ArrayList<GWTJahiaSite>();
+        try {
+            sites = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
+            while (sites.hasNext()) {
+                JahiaSite jahiaSite = sites.next();
+                GWTJahiaSite gwtJahiaSite = new GWTJahiaSite();
+                gwtJahiaSite.setSiteId(jahiaSite.getID());
+                gwtJahiaSite.setSiteName(jahiaSite.getTitle());
+                gwtJahiaSite.setSiteKey(jahiaSite.getSiteKey());
+                gwtJahiaSite.set("templateFolder",jahiaSite.getTemplateFolder());
+                gwtJahiaSite.set("templatePackageName",jahiaSite.getTemplatePackageName());
+                returnedSites.add(gwtJahiaSite);
+            }
+        } catch (JahiaException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return returnedSites;
     }
 
 }

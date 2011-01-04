@@ -35,11 +35,10 @@ package org.jahia.ajax.gwt.client.widget.portlet;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPortletOutputBean;
-import org.jahia.ajax.gwt.client.service.JahiaService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,7 +52,7 @@ public class PortletRender extends HTML {
 
     public PortletRender(String windowID, String entryPointInstanceID, String pathInfo, String queryString) {
         setHTML("Loading...");
-        JahiaService.App.getInstance().drawPortletInstanceOutput(windowID, entryPointInstanceID, pathInfo, queryString, new BaseAsyncCallback<GWTJahiaPortletOutputBean>() {
+        JahiaContentManagementService.App.getInstance().drawPortletInstanceOutput(windowID, entryPointInstanceID, pathInfo, queryString, new BaseAsyncCallback<GWTJahiaPortletOutputBean>() {
             public void onSuccess(GWTJahiaPortletOutputBean result) {
                 gwtPortletOutputBean = result;
                 if (gwtPortletOutputBean.isInIFrame()) {

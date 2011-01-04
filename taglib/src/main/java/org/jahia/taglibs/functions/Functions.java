@@ -148,60 +148,6 @@ public class Functions {
     }
 
     /**
-     * Checks if the current user is included in the specified logical role or
-     * has all specified roles if multiple are specified (comma-separated).
-     * 
-     * @param role the role identifier to check for. Multiple roles can be
-     *            specified in a comma-separated form. In such case this method
-     *            evaluates to <code>true</code> only if the current user has
-     *            all the specified roles.
-     * @return if the current user is included in the specified logical role or
-     *         has all specified roles if multiple are specified (comma-separated)
-     */
-    public static Boolean isUserInRole(String role) {
-        boolean hasIt = false;
-        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
-        if (user != null) {
-            final String[] roles = StringUtils.split(role, ',');
-            for (String roleToCheck : roles) {
-                hasIt = user.hasRole(new RoleIdentity(roleToCheck.trim()));
-                if (!hasIt) {
-                    break;
-                }
-            }
-        }
-
-        return hasIt;
-    }
-
-    /**
-     * Checks if the current user has the specified permission or
-     * has all specified permissions if multiple are specified (comma-separated).
-     * 
-     * @param permission the permission identifier to check for. Multiple permissions can be
-     *            specified in a comma-separated form. In such case this method
-     *            evaluates to <code>true</code> only if the current user has
-     *            all the specified permissions.
-     * @return if the current user has the specified permission or
-     * has all specified permissions if multiple are specified (comma-separated)
-     */
-    public static Boolean isUserPermitted(String permission) {
-        boolean hasIt = false;
-        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
-        if (user != null) {
-            final String[] roles = StringUtils.split(permission, ',');
-            for (String permissionToCheck : roles) {
-                hasIt = user.isPermitted(new PermissionIdentity(permissionToCheck.trim()));
-                if (!hasIt) {
-                    break;
-                }
-            }
-        }
-
-        return hasIt;
-    }
-
-    /**
      * Checks if the provided target object can be found in the source. The
      * search is done, depending on the source parameter type. It can be either
      * {@link String}, {@link Collection} or an array of objects.

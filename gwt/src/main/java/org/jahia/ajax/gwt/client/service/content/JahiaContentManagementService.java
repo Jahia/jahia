@@ -69,11 +69,15 @@ import java.util.Set;
  * @author rfelden
  * @version 5 mai 2008 - 17:23:39
  */
-public interface JahiaContentManagementService extends RemoteService, RoleRemoteService {
+public interface JahiaContentManagementService extends RemoteService {
 // ------------------------ INTERFACE METHODS ------------------------
 
 
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
+
+    public GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString);
+
+    public List<GWTJahiaSite> getAvailableSites ();
 
     public GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException;
 
@@ -273,8 +277,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     Set<String> compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> reference) throws GWTJahiaServiceException;
 
-    public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context) throws GWTJahiaServiceException;
-
     public Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>> getWorkflowRules(String path) throws GWTJahiaServiceException;
 
     List<String> getGoogleDocsExportFormats(String nodeIdentifier) throws GWTJahiaServiceException;
@@ -354,6 +356,14 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     int getNumberOfTasksForUser() throws GWTJahiaServiceException;
 
     public GWTJahiaToolbar getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException;
+
+    void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
+
+    List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException;
+
+    GWTRolesPermissions getRolesAndPermissions() throws GWTJahiaServiceException;
+
+    void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
 
     // -------------------------- INNER CLASSES --------------------------
 

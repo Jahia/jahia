@@ -68,96 +68,57 @@ public class RoleService {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(RoleService.class);
 
-    private JahiaGroupManagerService groupService;
-
-    private RoleBasedAccessControlService rbacService;
-
     private org.jahia.services.rbac.jcr.RoleService roleService;
 
-    private JahiaUserManagerService userService;
-    
-    private JahiaSitesService siteService;
-    
+
     private Role getRole(String role) {
         return new RoleIdentity(role.contains("/") ? StringUtils.substringAfterLast(role, "/") : role);
     }
 
-    /**
-     * Assign a group of permissions to a specified role.
-     * 
-     * @param role the role to be modified
-     * @param permissionGroup the name of the group of permission to be granted
-     * @param drools the rule engine helper class
-     * @throws RepositoryException in case of an error
-     */
-    public void grantPermissionGroupToRole(final String role, final String permissionGroup, KnowledgeHelper drools)
-            throws RepositoryException {
-        List<Permission> permissions = roleService.getPermissions();
-        for (Iterator<Permission> iterator = permissions.iterator(); iterator.hasNext();) {
-            Permission permission = iterator.next();
-            if (!permission.getName().equals(permissionGroup)) {
-                iterator.remove();
-            }
-        }
-        if (!permissions.isEmpty()) {
-            roleService.grantPermissions(getRole(role), permissions);
-        }
-    }
+//    /**
+//     * Assign provided permissions to a specified role.
+//     *
+//     * @param role the role to be modified
+//     * @param permissionsToGrant the list of permissions to be granted
+//     * @param drools the rule engine helper class
+//     * @throws RepositoryException in case of an error
+//     */
+//    public void grantPermissionsToRole(final String role, final List<String> permissionsToGrant, KnowledgeHelper drools)
+//            throws RepositoryException {
+//        List<Permission> allSitePermissions = roleService.getPermissions();
+//        List<Permission> permissions = new LinkedList<Permission>();
+//
+//        for (String perm : permissionsToGrant) {
+//            if (perm.endsWith("/*")) {
+//                // granting group
+//                String permGroup = StringUtils.substringBeforeLast(perm, "/*");
+//                for (Permission sitePermission : allSitePermissions) {
+//                    if (sitePermission.getName().equals(permGroup)) {
+//                        permissions.add(sitePermission);
+//                    }
+//                }
+//            } else {
+//                permissions.add(new PermissionIdentity(perm));
+//            }
+//        }
+//        if (!permissions.isEmpty()) {
+//            roleService.grantPermissions(getRole(role), permissions);
+//        }
+//    }
 
-    /**
-     * Assign provided permissions to a specified role.
-     * 
-     * @param role the role to be modified
-     * @param permissionsToGrant the list of permissions to be granted
-     * @param drools the rule engine helper class
-     * @throws RepositoryException in case of an error
-     */
-    public void grantPermissionsToRole(final String role, final List<String> permissionsToGrant, KnowledgeHelper drools)
-            throws RepositoryException {
-        List<Permission> allSitePermissions = roleService.getPermissions();
-        List<Permission> permissions = new LinkedList<Permission>();
-        
-        for (String perm : permissionsToGrant) {
-            if (perm.endsWith("/*")) {
-                // granting group
-                String permGroup = StringUtils.substringBeforeLast(perm, "/*");
-                for (Permission sitePermission : allSitePermissions) {
-                    if (sitePermission.getName().equals(permGroup)) {
-                        permissions.add(sitePermission);
-                    }
-                }
-            } else {
-                permissions.add(new PermissionIdentity(perm));
-            }
-        }
-        if (!permissions.isEmpty()) {
-            roleService.grantPermissions(getRole(role), permissions);
-        }
-    }
-
-    /**
-     * Assign permission to a specified role.
-     * 
-     * @param role the role to be modified
-     * @param permission permission to be granted
-     * @param drools the rule engine helper class
-     * @throws RepositoryException in case of an error
-     */
-    public void grantPermissionToRole(final String role, final String permission, KnowledgeHelper drools)
-            throws RepositoryException {
-        roleService.grantPermission(getRole(role), new PermissionIdentity(permission));
-    }
-
-    /**
-     * @param groupService the groupService to set
-     */
-    public void setGroupService(JahiaGroupManagerService groupService) {
-        this.groupService = groupService;
-    }
-
-    public void setRoleBasedAccessControlService(RoleBasedAccessControlService rbacService) {
-        this.rbacService = rbacService;
-    }
+//    /**
+//     * Assign permission to a specified role.
+//     *
+//     * @param role the role to be modified
+//     * @param permission permission to be granted
+//     * @param drools the rule engine helper class
+//     * @throws RepositoryException in case of an error
+//     */
+//    public void grantPermissionToRole(final String role, final String permission, KnowledgeHelper drools)
+//            throws RepositoryException {
+//        roleService.grantPermission(getRole(role), new PermissionIdentity(permission));
+//    }
+//
 
     /**
      * Injects an instance of the role manager service.
@@ -168,61 +129,47 @@ public class RoleService {
         this.roleService = roleService;
     }
 
-    /**
-     * @param userService the userService to set
-     */
-    public void setUserService(JahiaUserManagerService userService) {
-        this.userService = userService;
-    }
-
-    /**
-     * Creates permissions for site languages.
-     * 
-     * @param node the site node
-     * @param drools the rule engine helper class
-     * @throws RepositoryException in case of an error
-     */
-    public void updateSiteLangPermissions(final AddedNodeFact node, KnowledgeHelper drools) throws RepositoryException {
-        JCRNodeWrapper siteNode = node.getNode();
-        final String siteKey = siteNode.getName();
-        final Value[] languages = siteNode.getProperty("j:languages").getValues();
-        for (Value language : languages) {
-            roleService.savePermission(new PermissionIdentity(language.getString()));
-        }
-    }
-
-    public void createTranslatorRole(final AddedNodeFact node, String name, String base, KnowledgeHelper drools) throws RepositoryException {
-        JCRNodeWrapper siteNode = node.getNode();
-        final String siteKey = siteNode.getName();
-        RoleImpl translatorRole = roleService.getRole(new RoleIdentity(base));
-        if (translatorRole != null) {
-            Set<Permission> perms = translatorRole.getPermissions();
-            final Value[] languages = siteNode.getProperty("j:languages").getValues();
-            for (Value language : languages) {
-                final RoleImpl role = new RoleImpl(name.replace("*", language.getString()));
-                if (roleService.getRole(role) != null) {
-                    continue;
-                }
-                final Set<Permission> permissions = new HashSet<Permission>(perms);
-                for (Permission perm : perms) {
-                    if (perm.getPath().contains("languages")) {
-                        permissions.remove(perm);
-                    }
-                }
-                permissions.add(roleService.getPermission(new PermissionImpl(language.getString())));
-                role.setPermissions(permissions);
-                roleService.saveRole(role);
-            }
-        }
-    }
-
-    /**
-     * @param siteService the siteService to set
-     */
-    public void setSiteService(JahiaSitesService siteService) {
-        this.siteService = siteService;
-    }
-
+//    /**
+//     * Creates permissions for site languages.
+//     *
+//     * @param node the site node
+//     * @param drools the rule engine helper class
+//     * @throws RepositoryException in case of an error
+//     */
+//    public void updateSiteLangPermissions(final AddedNodeFact node, KnowledgeHelper drools) throws RepositoryException {
+//        JCRNodeWrapper siteNode = node.getNode();
+//        final String siteKey = siteNode.getName();
+//        final Value[] languages = siteNode.getProperty("j:languages").getValues();
+//        for (Value language : languages) {
+//            roleService.savePermission(new PermissionIdentity(language.getString()));
+//        }
+//    }
+//
+//    public void createTranslatorRole(final AddedNodeFact node, String name, String base, KnowledgeHelper drools) throws RepositoryException {
+//        JCRNodeWrapper siteNode = node.getNode();
+//        final String siteKey = siteNode.getName();
+//        RoleImpl translatorRole = roleService.getRole(new RoleIdentity(base));
+//        if (translatorRole != null) {
+//            Set<Permission> perms = translatorRole.getPermissions();
+//            final Value[] languages = siteNode.getProperty("j:languages").getValues();
+//            for (Value language : languages) {
+//                final RoleImpl role = new RoleImpl(name.replace("*", language.getString()));
+//                if (roleService.getRole(role) != null) {
+//                    continue;
+//                }
+//                final Set<Permission> permissions = new HashSet<Permission>(perms);
+//                for (Permission perm : perms) {
+//                    if (perm.getPath().contains("languages")) {
+//                        permissions.remove(perm);
+//                    }
+//                }
+//                permissions.add(roleService.getPermission(new PermissionImpl(language.getString())));
+//                role.setPermissions(permissions);
+//                roleService.saveRole(role);
+//            }
+//        }
+//    }
+//
     public void refreshPermissions() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

@@ -162,7 +162,7 @@ public class URLResolver {
      * trying to find mapping for URLs in outgoing requests.
      *
      * @param url   URL in HTML links of outgoing requests
-     * @param request  The current request in order to obtain the context path
+     * @param context  The current request in order to obtain the context path
      */
     public URLResolver(String url, RenderContext context) {
         renderContext = context;
@@ -384,12 +384,12 @@ public class URLResolver {
             logger.debug("Resolving node for workspace '" + workspace
                     + "' locale '" + locale + "' and path '" + path + "'");
         }
-
+        final String computePath = path.endsWith("/*")?path.substring(0,path.lastIndexOf("/*"))+".html":path;
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null,
                 workspace, new JCRCallback<JCRNodeWrapper>() {
                     public JCRNodeWrapper doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
-                        String nodePath = path;
+                        String nodePath = computePath;
                         JCRNodeWrapper node;
                         while (true) {
                             int i = nodePath.lastIndexOf('.');
@@ -422,7 +422,7 @@ public class URLResolver {
                         try {
                             node = userSession.getNode(nodePath);
                         } catch (PathNotFoundException e) {
-                            throw new AccessDeniedException(path);
+                            throw new AccessDeniedException(computePath);
                         }
 
                         return node;

@@ -53,7 +53,7 @@ public class AnalyticsVisibility extends Visibility {
     @Override
     public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
         try {
-            if (contextNode.getResolveSite() != null) {
+            if (contextNode != null && contextNode.getResolveSite() != null) {
                 return contextNode.getResolveSite().hasGoogleAnalyticsProfile() && super.getRealValue(contextNode, jahiaUser, locale, request);
             }
         } catch (RepositoryException e) {

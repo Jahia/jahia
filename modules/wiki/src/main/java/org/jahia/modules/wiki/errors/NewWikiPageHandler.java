@@ -41,6 +41,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.URLResolver;
 
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.servlet.ServletException;
@@ -79,7 +80,16 @@ public class NewWikiPageHandler implements ErrorHandler {
                 } else {
                     pageNode = JCRContentUtils.getParentOfType(parent, "jnt:page");
                 }
-                if (pageNode == null) {
+                // test if pageNode is wiki
+                boolean isWiki = false;
+                if (pageNode.hasProperty("j:templateNode")) {
+                    NodeIterator iterator = JCRContentUtils.getDescendantNodes((JCRNodeWrapper) pageNode.getProperty("j:templateNode").getNode(), "jnt:wikiPageFormCreation");
+                    if (iterator.hasNext()) {
+                        isWiki = true;
+                    }
+
+                }
+                if (pageNode == null || !isWiki) {
                     return false;
                 }
                 try {

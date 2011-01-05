@@ -336,21 +336,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (acl != null) {
                     newNodeACL = acl.getAcl();
                 }
-            }
-            // case of classification
-            else if (item instanceof CategoriesTabItem) {
-                ((CategoriesTabItem) item).updateProperties(changedProperties, node.getNodeTypes());
-            } else if (item instanceof TagsTabItem) {
-                final TagsTabItem tabItem = (TagsTabItem) item;
-                if (tabItem.isTagAreI15d()) {
-                    tabItem.updateI18NProperties(changedI18NProperties, node.getNodeTypes());
-                } else {
-                    tabItem.updateProperties(changedProperties, node.getNodeTypes());
-                }
-            } else if (item instanceof SeoTabItem) {
-                ((SeoTabItem) item).doSave(EditContentEngine.this);
-            } else if (item instanceof WorkflowTabItem) {
-                ((WorkflowTabItem) item).doSave(EditContentEngine.this);
+            } else {
+                item.doSave(node, changedProperties, changedI18NProperties);
             }
         }
         

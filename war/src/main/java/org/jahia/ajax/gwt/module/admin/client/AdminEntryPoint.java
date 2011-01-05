@@ -32,12 +32,10 @@
 
 package org.jahia.ajax.gwt.module.admin.client;
 
-import java.util.List;
-
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.util.security.RoleEditor;
@@ -45,7 +43,7 @@ import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 
-import com.extjs.gxt.ui.client.widget.MessageBox;
+import java.util.List;
 
 /**
  * Entry point class for GWT integration into Jahia Administration.

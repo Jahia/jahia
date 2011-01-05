@@ -132,7 +132,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ContentHubHelper contentHub;
     private PropertiesHelper properties;
     private LanguageHelper languages;
-    private RolesPermissionsHelper rolesPermissions;
     private TemplateHelper template;
     private ZipHelper zip;
     private ACLHelper acl;
@@ -196,10 +195,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setLanguages(LanguageHelper languages) {
         this.languages = languages;
-    }
-
-    public void setRolesPermissions(RolesPermissionsHelper rolesPermissions) {
-        this.rolesPermissions = rolesPermissions;
     }
 
     public void setDiff(DiffHelper diff) {
@@ -1169,51 +1164,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException {
         return languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale());
-    }
-
-//    /**
-//     * Get granted permission to the current user
-//     *
-//     * @return
-//     * @throws GWTJahiaServiceException
-//     */
-//    public List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException {
-//        return rolesPermissions.getGrantedPermissions(getSite(), getRemoteJahiaUser());
-//    }
-
-
-
-    /**
-     * Get all roles and all permissions
-     *
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public GWTRolesPermissions getRolesAndPermissions() throws GWTJahiaServiceException {
-        return rolesPermissions.getRolesAndPermissions();
-    }
-
-    /**
-     * add permission to role
-     *
-     * @param role
-     * @throws GWTJahiaServiceException
-     */
-    public void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions)
-            throws GWTJahiaServiceException {
-        rolesPermissions.addRolePermissions(role, permissions);
-    }
-
-    /**
-     * remove permissin from role
-     *
-     * @param role
-     * @param permissions
-     * @throws GWTJahiaServiceException
-     */
-    public void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions)
-            throws GWTJahiaServiceException {
-        rolesPermissions.removeRolePermissions(role, permissions);
     }
 
     /**

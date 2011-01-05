@@ -79,7 +79,6 @@ public class UserGroupSelect extends Window {
     private String selectedSite;
     private Grid<GWTJahiaUser> userGrid;
     private Grid<GWTJahiaGroup> groupGrid;
-//    private Grid<GWTJahiaRole> roleGrid;
     private String aclContext;
     private boolean singleSelectionMode;
 

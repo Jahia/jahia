@@ -64,6 +64,7 @@ import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -206,6 +207,11 @@ public class CategoriesTabItem extends EditEngineTabItem {
 
 
         return catGrid;
+    }
+
+    @Override
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
+        updateProperties(changedProperties, node.getNodeTypes());
     }
 
     public void updateProperties(List<GWTJahiaNodeProperty> newProperties, List<String> mixin) {

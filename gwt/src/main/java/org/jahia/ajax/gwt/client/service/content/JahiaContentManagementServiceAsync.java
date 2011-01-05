@@ -310,13 +310,4 @@ public interface JahiaContentManagementServiceAsync {
     void getNumberOfTasksForUser(AsyncCallback<Integer> asyncCallback);
 
     void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbar> async);
-
-    void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
-
-//    void getGrantedPermissions(AsyncCallback<List<GWTJahiaPermission>> async);
-
-    void getRolesAndPermissions(AsyncCallback<GWTRolesPermissions> async);
-
-    void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions, AsyncCallback async);
-
 }

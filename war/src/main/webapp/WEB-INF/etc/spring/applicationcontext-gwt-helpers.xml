@@ -65,11 +65,6 @@
         <property name="service" ref="workflowService"/>
     </bean>
 
-    <bean name="RolesPermissionsHelper" class="org.jahia.ajax.gwt.helper.RolesPermissionsHelper">
-        <property name="roleService" ref="org.jahia.services.rbac.jcr.RoleService"/>
-    </bean>
-
-
     <bean name="SearchHelper" class="org.jahia.ajax.gwt.helper.SearchHelper">
         <property name="navigation" ref="NavigationHelper"/>
         <property name="contentManager" ref="ContentManagerHelper"/>

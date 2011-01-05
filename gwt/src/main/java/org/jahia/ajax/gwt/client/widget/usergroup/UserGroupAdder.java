@@ -32,9 +32,8 @@
 
 package org.jahia.ajax.gwt.client.widget.usergroup;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 
 import java.util.List;
 

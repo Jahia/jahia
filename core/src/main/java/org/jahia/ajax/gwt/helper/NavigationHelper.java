@@ -1018,13 +1018,14 @@ public class NavigationHelper {
                         final JCRPropertyWrapper property = node.getProperty(field);
                         if (property.isMultiple()) {
                             Value[] values = property.getValues();
+                            List<Object> l = new ArrayList<Object>();
                             for (Value value : values) {
-                                setPropertyValue(n, value, field, node.getSession());
+                                l.add(getPropertyValue(value, node.getSession()));
                             }
-
+                            n.set(field, l);
                         } else {
                             Value value = property.getValue();
-                            setPropertyValue(n, value, field, node.getSession());
+                            n.set(field, getPropertyValue(value, node.getSession()));
                         }
                     }
                 } catch (RepositoryException e) {
@@ -1083,22 +1084,19 @@ public class NavigationHelper {
         return n;
     }
 
-    private void setPropertyValue(GWTJahiaNode n, Value value, String field, JCRSessionWrapper session)
+    private Object getPropertyValue(Value value, JCRSessionWrapper session)
             throws RepositoryException {
         switch (value.getType()) {
             case PropertyType.DATE:
-                n.set(field, value.getDate().getTime());
-                break;
+                return value.getDate().getTime();
             case PropertyType.REFERENCE:
             case PropertyType.WEAKREFERENCE:
                 try {
-                    n.set(field, session.getNodeByUUID(value.getString()).getPath());
+                    return session.getNodeByUUID(value.getString()).getPath();
                 } catch (ItemNotFoundException e) {
                 }
-                break;
             default:
-                n.set(field, value.getString());
-                break;
+                return value.getString();
         }
     }
 

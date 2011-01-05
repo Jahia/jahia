@@ -521,6 +521,10 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        return getPath() != null ? getPath().hashCode() : 0;
+    }
 
     public void setAggregatedPublicationInfos(Map<String, GWTJahiaPublicationInfo> publicationInfos) {
         this.publicationInfos = publicationInfos;

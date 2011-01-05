@@ -1118,6 +1118,7 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <ref bean="Engine.Tab.Content" />
                 <ref bean="Engine.Tab.RolePermissions" />
             </list>
         </property>

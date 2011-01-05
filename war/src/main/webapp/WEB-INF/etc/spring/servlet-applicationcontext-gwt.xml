@@ -40,7 +40,6 @@
         <property name="navigation" ref="NavigationHelper"/>
         <property name="properties" ref="PropertiesHelper"/>
         <property name="languages" ref="LanguagesHelper"/>
-        <property name="rolesPermissions" ref="RolesPermissionsHelper"/>
         <property name="publication" ref="PublicationHelper"/>
         <property name="workflow" ref="WorkflowHelper"/>
         <property name="search" ref="SearchHelper"/>

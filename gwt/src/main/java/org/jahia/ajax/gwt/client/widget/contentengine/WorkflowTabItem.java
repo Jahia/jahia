@@ -39,11 +39,10 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
@@ -209,7 +208,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
         return panel;
     }
 
-    public void doSave(NodeHolder engine) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
         Set<GWTJahiaWorkflowDefinition>  activeWorkflows = new HashSet<GWTJahiaWorkflowDefinition>();
         if (workflowRules == null) {
             return;
@@ -222,7 +221,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
             }
         }
 
-        engine.getNode().set("activeWorkflows", activeWorkflows);
+        node.set("activeWorkflows", activeWorkflows);
     }
 
     public void setProcessed(boolean processed) {

@@ -351,23 +351,14 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                     }
 
 
-                }
-                // case of right tab
-                else if (item instanceof RolesTabItem) {
+                } else if (item instanceof RolesTabItem) {
+                    // case of right tab
                     AclEditor acl = ((RolesTabItem) item).getRightsEditor();
                     if (acl != null) {
                         newNodeACL = acl.getAcl();
                     }
-                }
-                // case of classification
-                else if (item instanceof CategoriesTabItem) {
-                    ((CategoriesTabItem) item).updateProperties(changedProperties, getNode().getNodeTypes());
-                } else if (item instanceof TagsTabItem) {
-                        ((TagsTabItem) item).updateI18NProperties(changedI18NProperties, getNode().getNodeTypes());
-                } else if (item instanceof SeoTabItem) {
-                    ((SeoTabItem) item).doSave(ContentDetails.this);
-                } else if (item instanceof WorkflowTabItem) {
-                    ((WorkflowTabItem) item).doSave(ContentDetails.this);
+                } else {
+                    item.doSave(getNode(), changedProperties, changedI18NProperties);
                 }
             }
             // Ajax call to update values

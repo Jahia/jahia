@@ -32,18 +32,16 @@
 
 package org.jahia.ajax.gwt.client.widget.usergroup;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
-
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
+import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Renders a button for opening user/group picker.

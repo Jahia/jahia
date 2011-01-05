@@ -64,7 +64,6 @@ public class ManagerLinker implements Linker {
     private DNDListener dndListener;
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private GWTJahiaNode leftPanelSelectionWhenHidden;
-    private List<LinkerComponent> extraComponents = new ArrayList<LinkerComponent>();
     private GWTManagerConfiguration config;
 
     public ManagerLinker(GWTManagerConfiguration configuration) {
@@ -322,19 +321,11 @@ public class ManagerLinker implements Linker {
 
     public void refresh() {
         refreshAll();
-        // refresh also extra components
-        for (LinkerComponent l : extraComponents) {
-            l.refresh();
-        }
     }
 
     public void refresh(int flag) {
         refresh();
 
-    }
-
-    public void registerExtraComponent(LinkerComponent l) {
-        extraComponents.add(l);
     }
 
     public void select(Object o) {

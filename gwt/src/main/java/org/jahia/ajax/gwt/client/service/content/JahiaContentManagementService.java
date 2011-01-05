@@ -357,14 +357,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public GWTJahiaToolbar getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException;
 
-    void addRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
-
-//    List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException;
-
-    GWTRolesPermissions getRolesAndPermissions() throws GWTJahiaServiceException;
-
-    void removeRolePermissions(GWTJahiaRole role, List<GWTJahiaPermission> permissions) throws GWTJahiaServiceException;
-
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

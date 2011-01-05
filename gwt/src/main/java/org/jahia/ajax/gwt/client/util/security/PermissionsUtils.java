@@ -32,9 +32,7 @@
 
 package org.jahia.ajax.gwt.client.util.security;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
-import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.ArrayList;
@@ -87,20 +85,6 @@ public class PermissionsUtils {
             return false;
         }
         return node.getPermissions().get(i);
-
-//        GWTJahiaPermission perm = new GWTJahiaPermission();
-//        String[] splittedName = permissionName.split("/");
-//        if (splittedName.length > 1) {
-//            perm.setGroup(splittedName[0]);
-//            perm.setName(splittedName[1]);
-//        } else {
-//            perm.setName(permissionName);
-//        }
-//        if (siteKey != null) {
-//            perm.setSite(siteKey);
-//        }
-//        return isPermitted(perm);
-//        return true;
     }
 
 

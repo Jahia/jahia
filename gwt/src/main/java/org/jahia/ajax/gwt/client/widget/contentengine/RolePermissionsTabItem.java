@@ -32,10 +32,29 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.LoadListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.security.PermissionRolePanel;
+import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
+
+import java.util.*;
 
 /**
  * Represents a dedicated tab for viewing and managing role to principal assignment.
@@ -44,16 +63,199 @@ import org.jahia.ajax.gwt.client.widget.security.PermissionRolePanel;
  */
 public class RolePermissionsTabItem extends EditEngineTabItem {
 
-
+    private transient TreeStore<GWTJahiaNode> store;
+    private transient Set<GWTJahiaNode> selection;
+    private transient Map<String, List<String>> dependencies;
+    private transient Map<String, CheckBox> boxes;
     @Override
     public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
         if (engine.getNode() == null || tab.isProcessed()) {
             return;
         }
-        GWTJahiaRole role = new GWTJahiaRole(engine.getNode().getName());
-        tab.add(new PermissionRolePanel(role));
+        GWTJahiaNodeProperty p = engine.getProperties().get("j:permissions");
+
+        selection = new HashSet<GWTJahiaNode>();
+        List<String> openPath = new ArrayList<String>();
+        for (GWTJahiaNodePropertyValue value : p.getValues()) {
+            selection.add(value.getNode());
+            openPath.add(value.getNode().getPath());
+        }
+        dependencies = new HashMap<String, List<String>>();
+        boxes = new HashMap<String, CheckBox>();
+
+        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(Arrays.asList("/permissions"), Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.CHILDREN_INFO, "j:dependencies"));
+        treeGridFactory.setOpenPath(openPath);
+        treeGridFactory.setNodeTypes(Arrays.asList("jnt:permission"));
+
+        BaseTreeLoader<GWTJahiaNode> loader = treeGridFactory.getLoader();
+        store = treeGridFactory.getStore();
+        final List<ColumnConfig> configs1 = new ArrayList<ColumnConfig>();
+        ColumnConfig column = new ColumnConfig();
+        column.setId("name");
+        column.setHeader("");
+        column.setRenderer(new TreeGridCellRenderer());
+        column.setWidth(350);
+        configs1.add(column);
+        final GridCellRenderer<GWTJahiaNode> rolePermissionRenderer = new GridCellRenderer<GWTJahiaNode>() {
+            public Object render(final GWTJahiaNode currentNode, String property, ColumnData config,
+                                 final int rowIndex, final int colIndex, ListStore<GWTJahiaNode> s,
+                                 final Grid<GWTJahiaNode> grid) {
+
+                final CheckBox checkbox = new CheckBox();
+                checkbox.setValue(selection.contains(currentNode));
+
+                final GWTJahiaNode parentItem = store.getParent(currentNode);
+
+                checkbox.setToolTip(currentNode.getName());
+                boxes.put(currentNode.getPath(), checkbox);
+                checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent event) {
+                        if (checkbox.getValue()) {
+                            selection.add(currentNode);
+
+                            // Update dependencies
+                            List<String> toCheck = dependencies.get(currentNode.getPath());
+                            if (toCheck != null) {
+                                for (String s1 : toCheck) {
+                                    CheckBox checkBox = boxes.get(s1);
+                                    if (checkBox!=null && !checkBox.getValue()) {
+                                        checkBox.setValue(true);
+                                    }
+                                }
+                            }
+
+                            // Update children
+                            checkbox.setData("partial", null);
+                            List<GWTJahiaNode> l = store.getChildren(currentNode, true);
+                            for (GWTJahiaNode node : l) {
+                                CheckBox b = boxes.get(node.getPath());
+                                b.setValue(true);
+                                selection.remove(node);
+                            }
+
+                            // If all siblings set, set parent
+                            if (parentItem != null) {
+                                CheckBox parentBox = boxes.get(parentItem.getPath());
+                                if (!parentBox.getValue()) {
+                                    List<GWTJahiaNode> siblings = store.getChildren(parentItem);
+                                    boolean checkParent = true;
+                                    for (GWTJahiaNode sibling : siblings) {
+                                        checkParent &= boxes.get(sibling.getPath()).getValue();
+                                    }
+                                    if (checkParent) {
+                                        parentBox.setData("partial", null);
+                                        parentBox.setValue(true);
+                                    }
+                                }
+                            }
+                        } else {
+                            selection.remove(currentNode);
+
+                            // Update dependencies
+                            Set<String> toCheck = dependencies.keySet();
+                            for (String s1 : toCheck) {
+                                if (dependencies.get(s1).contains(currentNode.getPath())) {
+                                    CheckBox checkBox = boxes.get(s1);
+                                    if (checkBox != null && checkBox.getValue()) {
+                                        checkBox.setValue(false);
+                                    }
+                                }
+                            }
+
+                            // Uncheck parent
+                            if (parentItem != null) {
+                                CheckBox parentBox = boxes.get(parentItem.getPath());
+                                if (parentBox.getValue()) {
+                                    parentBox.setData("partial", Boolean.TRUE);
+                                    parentBox.setValue(false);
+
+                                    List<GWTJahiaNode> siblings = store.getChildren(parentItem);
+                                    for (GWTJahiaNode node : siblings) {
+                                        if (boxes.get(node.getPath()).getValue()) {
+                                            selection.add(node);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Update children
+                            if (checkbox.getData("partial") == null) {
+                                checkbox.setData("partial", null);
+                                List<GWTJahiaNode> l = store.getChildren(currentNode, true);
+                                for (GWTJahiaNode node : l) {
+                                    CheckBox b = boxes.get(node.getPath());
+                                    b.setValue(false);
+                                }
+                            }
+                        }
+                    }
+                });
+
+                if (parentItem != null) {
+                    CheckBox parentBox = boxes.get(parentItem.getPath());
+                    if (parentBox.getValue()) {
+                        checkbox.setValue(true);
+                    }
+                }
+
+                return checkbox;
+            }
+        };
+
+        column = new ColumnConfig();
+        column.setRenderer(rolePermissionRenderer);
+        column.setId(engine.getNode().getName());
+        column.setHeader(engine.getNode().getName());
+        column.setWidth(100);
+        column.setSortable(false);
+        column.setGroupable(false);
+        configs1.add(column);
+
+        List<ColumnConfig> configs = configs1;
+        TreeGrid<GWTJahiaNode> treeGrid = treeGridFactory.getTreeGrid(new ColumnModel(configs));
+
+        treeGrid.setIconProvider(ContentModelIconProvider.getInstance());
+        treeGrid.setBorders(true);
+        treeGrid.setAutoExpandColumn("name");
+        treeGrid.setAutoExpandMax(1000);
+        treeGrid.getTreeView().setRowHeight(25);
+        treeGrid.getTreeView().setForceFit(true);
+
         tab.setLayout(new FitLayout());
+        tab.add(treeGrid);
+
+        loader.addLoadListener(new LoadListener() {
+            @Override
+            public void loaderLoad(LoadEvent le) {
+                List<GWTJahiaNode> data = (List<GWTJahiaNode>) le.getData();
+                for (GWTJahiaNode node : data) {
+                    List<String> paths = node.get("j:dependencies");
+                    if (paths != null) {
+                        dependencies.put(node.getPath(), paths);
+                    }
+                }
+            }
+        });
+
+        loader.load();
+
         tab.setProcessed(true);
+        tab.layout();
     }
+
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
+        Window.alert("doSave : "+selection);
+
+        List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>(selection.size());
+        for (GWTJahiaNode gwtJahiaNode : selection) {
+            values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode, GWTJahiaNodePropertyType.WEAKREFERENCE));
+        }
+        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+        gwtJahiaNodeProperty.setMultiple(true);
+        gwtJahiaNodeProperty.setValues(values);
+        gwtJahiaNodeProperty.setName("j:permissions");
+        changedProperties.add(gwtJahiaNodeProperty);
+    }
+
 
 }

@@ -45,8 +45,6 @@ import org.jahia.ajax.gwt.client.widget.security.RolesManager;
  */
 public class RoleEditor {
     public static final String PERMISSION_ROLE = "gwtpermissionrole";
-    public static final String ROLE_PRINCIPAL = "gwtroleprincipal";
-
 
     public static void init(){
         initPermissionRole();

@@ -265,6 +265,16 @@ public class TagsTabItem extends EditEngineTabItem {
         }
     }
 
+    @Override
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
+        if (isTagAreI15d()) {
+            updateI18NProperties(changedI18NProperties, node.getNodeTypes());
+        } else {
+            updateProperties(changedProperties, node.getNodeTypes());
+        }
+
+    }
+
     public void updateProperties(List<GWTJahiaNodeProperty> list, List<String> mixin) {
         boolean noTag = true;
         if (newValues != null) {

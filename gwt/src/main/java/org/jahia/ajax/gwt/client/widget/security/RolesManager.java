@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -63,19 +64,13 @@ public class RolesManager extends LayoutContainer {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        setLayout(new FillLayout());
+        setLayout(new FitLayout());
 
         JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new BaseAsyncCallback<GWTManagerConfiguration>() {
             public void onSuccess(GWTManagerConfiguration config) {
                 PermissionsUtils.loadPermissions(config.getPermissions());
                 final ContentManager cm = new ContentManager(null, null, null, config, 350);
-                TabPanel tabPanel = new TabPanel();
-                tabPanel.setBorders(false);
-                tabPanel.setSize(600, 500);
-                TabItem managerItem = new TabItem(Messages.get("label_rolemanager", "Role manager"));
-                managerItem.add(cm);
-                tabPanel.add(managerItem);
-                add(tabPanel);
+                add(cm);
                 layout();
             }
 

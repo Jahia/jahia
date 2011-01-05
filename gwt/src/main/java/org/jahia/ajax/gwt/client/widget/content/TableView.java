@@ -86,6 +86,7 @@ public class TableView extends AbstractView {
         m_grid.setBorders(true);
         if (columns.getAutoExpand() != null) {
             m_grid.setAutoExpandColumn(columns.getAutoExpand());
+            m_grid.setAutoExpandMax(1000);
         }
 
         if (checkboxSelectionModel != null) {

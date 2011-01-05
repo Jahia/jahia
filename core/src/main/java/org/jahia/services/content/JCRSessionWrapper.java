@@ -412,7 +412,13 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
-
+    /**
+     * Applies the namespace prefix to the appropriate sessions, including the underlying provider sessions.
+     * @param prefix
+     * @param uri
+     * @throws NamespaceException
+     * @throws RepositoryException
+     */
     public void setNamespacePrefix(String prefix, String uri) throws NamespaceException, RepositoryException {
         nsToPrefix.put(uri, prefix);
         prefixToNs.put(prefix, uri);

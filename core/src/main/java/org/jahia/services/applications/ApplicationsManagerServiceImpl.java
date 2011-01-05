@@ -32,8 +32,8 @@
 
 package org.jahia.services.applications;
 
+import com.google.common.collect.ImmutableSet;
 import org.apache.commons.digester.Digester;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.container.PortletWindow;
 import org.apache.pluto.container.driver.PlutoServices;
@@ -59,10 +59,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.InsertionSortedMap;
 import org.xml.sax.SAXException;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.portlet.PortletMode;
@@ -350,6 +347,38 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         return false;
     }
 
+    private String getCompactName(final String name) {
+        String appName = name;
+        appName = appName.replace("-", "");
+        appName = appName.replace("_", "");
+        appName = appName.replace(".", "");
+        return appName;
+    }
+
+    private String getWebAppNamespaceURI(final ApplicationBean app) {
+        return "http://www.jahia.org/portlets/" + app.getName();
+    }
+
+    private String getWebAppPrefix(final ApplicationBean app) {
+        return JCRContentUtils.encodeJCRNamePrefix(getCompactName(app.getName()));
+    }
+
+    private String getEntryPointNamespaceURI(final ApplicationBean app, final EntryPointDefinition entryPointDefinition) {
+        return getWebAppNamespaceURI(app) + "/" + entryPointDefinition.getName();
+    }
+
+    private String getEntryPointPrefix(final ApplicationBean app, final EntryPointDefinition entryPointDefinition) {
+        return JCRContentUtils.encodeJCRNamePrefix(getCompactName(app.getName() + "_" + entryPointDefinition.getName()));
+    }
+
+    private String getWebAppQualifiedNodeName(final ApplicationBean app, String localName) {
+        return getWebAppPrefix(app) + ":" + localName;
+    }
+
+    private String getPortletQualifiedNodeName(final ApplicationBean app, EntryPointDefinition entryPointDefinition, String localName) {
+        return getEntryPointPrefix(app, entryPointDefinition) + ":" + localName;
+    }
+
     /**
      * Add a new Application Definition.
      * both in ApplicationsRegistry and in Persistance
@@ -384,30 +413,35 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     // we must now create the corresponding permissions for web application roles as well as portlet
                     // modes, and then assign them to default roles, possibly using some kind of configuration.
 
-                    // first let's check if the portlets node exists.
-                    JCRNodeWrapper portletsNode = getOrCreatePermissionNode("/permissions/portlets", session);
-                    JCRNodeWrapper portletPermNode = getOrCreatePermissionNode("/permissions/portlets/" + app.getName(), session);
-                    JCRNodeWrapper portletRolesPermNode = getOrCreatePermissionNode("/permissions/portlets/" + app.getName() + "/roles", session);
+                    JCRContentUtils.registerNamespace(session, getWebAppPrefix(app), getWebAppNamespaceURI(app));
 
+                    // first let's check if the portlets node exists.
+                    String webappRolesPath = "/permissions/webapps/" + app.getName() + "/"+ getWebAppQualifiedNodeName(app, "roles");
+                    JCRNodeWrapper webappRolesPermNode = getOrCreatePermissionNode(webappRolesPath, session);
+                    session.save();
                     try {
                         WebAppContext appContext = servletContextManager.getApplicationContext(app);
                         Iterator<String> updatedRoles = appContext.getRoles().iterator();
                         String role;
                         while (updatedRoles.hasNext()) {
                             role = updatedRoles.next();
-                            PermissionIdentity permission = new PermissionIdentity(role);
-                            permission.setPath("/permissions/portlets/" + app.getName() + "/roles/" + role);
+                            PermissionIdentity permission = new PermissionIdentity(getWebAppQualifiedNodeName(app, role));
+                            permission.setPath(webappRolesPath + "/" + permission.getName());
                             roleService.savePermission(permission);
                         }
                     } catch (JahiaException e) {
                         logger.error("Error while retrieving web application roles", e);
                     }
 
-                    JCRNodeWrapper portletModesPermNode = getOrCreatePermissionNode("/permissions/portlets/" + app.getName() + "/modes", session);
                     for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
+                        JCRContentUtils.registerNamespace(session, getEntryPointPrefix(app, entryPointDefinition), getEntryPointNamespaceURI(app, entryPointDefinition));
+
+                        String portletModePath = "/permissions/webapps/" + app.getName() + "/" + getWebAppQualifiedNodeName(app, "portlets") + "/" + getPortletQualifiedNodeName(app, entryPointDefinition, "modes");
+                        JCRNodeWrapper portletModePermNode = getOrCreatePermissionNode(portletModePath, session);
+                        session.save();
                         for (PortletMode portletMode : entryPointDefinition.getPortletModes()) {
-                            PermissionIdentity permission = new PermissionIdentity(portletMode.toString());
-                            permission.setPath("/permissions/portlets/" + app.getName() + "/modes/" + portletMode.toString());
+                            PermissionIdentity permission = new PermissionIdentity(getPortletQualifiedNodeName(app, entryPointDefinition, portletMode.toString()));
+                            permission.setPath(portletModePath + "/" + permission.getName());
                             roleService.savePermission(permission);
                         }
                     }
@@ -426,15 +460,9 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     private JCRNodeWrapper getOrCreatePermissionNode(String path, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper node = null;
-        try {
-            node = session.getNode(path);
-        } catch (PathNotFoundException pnfe) {
-            JCRNodeWrapper permissionsNode = session.getNode(StringUtils.substringBeforeLast(path, "/"));
-            node = permissionsNode.addNode(StringUtils.substringAfterLast(path, "/"), RoleManager.JAHIANT_PERMISSION);
-            session.save();
-        }
-        return node;
+        JCRNodeWrapper parentNode = session.getRootNode();
+
+        return JCRContentUtils.getOrAddPath(session, parentNode, path, RoleManager.JAHIANT_PERMISSION);
     }
 
     /**

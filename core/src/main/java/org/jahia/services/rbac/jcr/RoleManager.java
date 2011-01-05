@@ -360,7 +360,7 @@ public class RoleManager {
      */
     public PermissionImpl savePermission(Permission permissionId, JCRSessionWrapper session)
             throws PathNotFoundException, RepositoryException {
-        JCRNodeWrapper permissionsNode = session.getNode(StringUtils.substringBeforeLast(permissionId.getPath(),"/"));
+        JCRNodeWrapper permissionsNode = session.getNode(JCRContentUtils.getParentJCRPath(permissionId.getPath()));
         JCRNodeWrapper permissionNode = null;
         try {
             permissionNode = permissionsNode.getNode(permissionId.getName());

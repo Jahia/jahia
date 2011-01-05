@@ -32,6 +32,7 @@
 
 package org.jahia.services.content;
 
+import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.CharUtils;
@@ -101,6 +102,89 @@ public final class JCRContentUtils {
         name = name.replace("\\5C","]");
         name = name.replace("\\27","'");
         return name;
+    }
+
+    /**
+     * Encode a local name according to limitations in specification, section 3.2.2
+     * http://www.day.com/specs/jcr/2.0/3_Repository_Model.html#Names
+     * Note : this implementation is not yet complete as it does not handle the XML
+     * restrictions yet, only the JCR ones.
+     * @param originalLocalName
+     * @return
+     */
+    public static String encodeJCRLocalName(final String originalLocalName) {
+        String encodedName = originalLocalName;
+        if ((encodedName.equals(".")) || (encodedName.equals(".."))) {
+            return encodedName.replace("\\.", "\\2E");
+        }
+        encodedName = encodedName.replace("[", "\\5B");
+        encodedName = encodedName.replace("]", "\\5C");
+        encodedName = encodedName.replace("/", "\\2F");
+        encodedName = encodedName.replace(":", "\\3A");
+        encodedName = encodedName.replace("*", "\\2A");
+        encodedName = encodedName.replace("|", "\\7C");
+        return encodedName;
+    }
+
+    /**
+     * Decode an encoded JCR local name encoded with the encodeJCRLocalName method
+     * Note : this implementation is not yet complete as it does not handle the XML
+     * restrictions yet, only the JCR ones.
+     * @param encodedLocalName
+     * @return
+     */
+    public static String decodeJCRLocalName(final String encodedLocalName) {
+        String originalLocalName = encodedLocalName;
+        originalLocalName = originalLocalName.replace("\\7C", "|");
+        originalLocalName = originalLocalName.replace("\\2A", "*");
+        originalLocalName = originalLocalName.replace("\\3A", ":");
+        originalLocalName = originalLocalName.replace("\\2F", "/");
+        originalLocalName = originalLocalName.replace("\\5C", "]");
+        originalLocalName = originalLocalName.replace("\\5B", "[");
+        originalLocalName = originalLocalName.replace("\\2E", ".");
+        return originalLocalName;
+    }
+
+    /**
+     * Encode a JCR qualified form name prefix, according to the grammar defined in section 3.2.5.2
+     * of the JCR 2.0 specification http://www.day.com/specs/jcr/2.0/3_Repository_Model.html#Names
+     * Note : this is not yet complete as it depends on the restrictions imposed on XML namespaces as
+     * defined here http://www.w3.org/TR/REC-xml-names/
+     * @param originalPrefix
+     * @return
+     */
+    public static String encodeJCRNamePrefix(final String originalPrefix) {
+        String encodedPrefix = originalPrefix.replace(":", "\\3A");
+        return encodedPrefix;
+    }
+
+    /**
+     * Reverse operation of encodeJCRNamePrefix.
+     * Note : this is not yet complete as it depends on the restrictions imposed on XML namespaces as
+     * defined here http://www.w3.org/TR/REC-xml-names/
+     * @param encodedPrefix
+     * @return
+     */
+    public static String decodeJCRNamePrefix(final String encodedPrefix) {
+        String originalPrefix = encodedPrefix.replace("\\3A", ":");
+        return originalPrefix;
+    }
+
+    /**
+     * Small utility method to help with proper namespace registration in all JCR providers.
+     * @param session
+     * @param prefix
+     * @param uri
+     * @throws RepositoryException
+     */
+    public static void registerNamespace(Session session, String prefix, String uri) throws RepositoryException {
+        NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
+        Set<String> prefixes = ImmutableSet.of(namespaceRegistry.getPrefixes());
+        if (!prefixes.contains(prefix)) {
+            namespaceRegistry.registerNamespace(prefix, uri);
+            session.setNamespacePrefix(prefix, uri);
+        }
+
     }
 
     /**
@@ -328,6 +412,8 @@ public final class JCRContentUtils {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNodeByUUID(nodeUUID);
                     JCRSiteNode site = node.getResolveSite();
+
+                    node.hasPermission(role);
                     Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
 
                     Set<Map.Entry<String,List<String[]>>> principalSet = aclEntriesMap.entrySet();
@@ -616,6 +702,63 @@ public final class JCRContentUtils {
     }
 
     /**
+     * Utility method to split a JCR path into names. Note that this method supports expanded name notation (using
+     * URIs), such as {http://www.jcp.org/jcr/1.0}read, as it is tricky to split simply using the "/" character when
+     * URIs are present.
+     * @param path a relative or absolute path, with node names in qualified or expanded form
+     * @return an array of String instances that contain the node names in order of the path.
+     */
+    public static String[] splitJCRPath(String path) {
+        List<String> result = new ArrayList<String>();
+        int pathPos = 0;
+
+        if (path.startsWith("/")) {
+            pathPos++;
+        }
+
+        int nextSlashPos = -1;
+        do {
+            StringBuffer currentName = new StringBuffer();
+            if (path.indexOf('{', pathPos) == pathPos) {
+                int endingBracketPos = path.indexOf('}', pathPos+1);
+                currentName.append(path.substring(pathPos, endingBracketPos+1));
+                pathPos = endingBracketPos + 1;
+            }
+            nextSlashPos = path.indexOf('/', pathPos);
+            if (nextSlashPos > -1) {
+                currentName.append(path.substring(pathPos, nextSlashPos));
+                pathPos = nextSlashPos + 1;
+            } else {
+                currentName.append(path.substring(pathPos));
+            }
+            result.add(currentName.toString());
+        } while (nextSlashPos > -1);
+
+        return result.toArray(new String[result.size()]);
+    }
+
+    /**
+     * A small utility method to retrieve the parent path of a path that contains expanded form names.
+     * @param path the path for which we want to retrieve the parent path.
+     * @return the parent path including all names in expanded or qualified form.
+     */
+    public static String getParentJCRPath(String path) {
+        String[] pathNames = splitJCRPath(path);
+        StringBuffer parentPath = new StringBuffer();
+        // if we are dealing with an absolute path, we add the initial separator
+        if (path.startsWith("/")) {
+            parentPath.append("/");
+        }
+        for (int i=0; i < pathNames.length -1; i++) {
+            parentPath.append(pathNames[i]);
+            if (i < pathNames.length -2) {
+                parentPath.append("/");
+            }
+        }
+        return parentPath.toString();
+    }
+
+    /**
      * Little utility method to retrieve or create a path, building it if necessary. For example let's say that we want
      * to get or create the path from a parentNode : messages/inbox . We can simply pass the parent node, the session
      * and the path to check, and it will either retrieve it if it exists, or create it if it doesn't.
@@ -630,7 +773,7 @@ public final class JCRContentUtils {
      * @throws RepositoryException occurs if there is any problem accessing content or creating the nodes.
      */
     public static JCRNodeWrapper getOrAddPath(JCRSessionWrapper session, JCRNodeWrapper parentNode, String path, String pathNodeType) throws RepositoryException {
-        String[] subPaths = path.split("/");
+        String[] subPaths = splitJCRPath(path);
         JCRNodeWrapper node = parentNode;
         for (String subPath : subPaths) {
             if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath)) {

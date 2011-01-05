@@ -350,7 +350,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return privileges;
     }
 
-    public boolean grantRoles(String user, Set<String> roles) {
+    public boolean grantRoles(String user, Set<String> roles) throws RepositoryException {
         Map m = new HashMap<String, String>();
         for (String role : roles) {
             m.put(role, "GRANT");
@@ -358,7 +358,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return changeRoles(user, m);
     }
 
-    public boolean denyRoles(String user, Set<String> roles) {
+    public boolean denyRoles(String user, Set<String> roles) throws RepositoryException {
         Map m = new HashMap<String, String>();
         for (String role : roles) {
             m.put(role, "DENY");
@@ -369,8 +369,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean changeRoles(String user, Map<String, String> roles) {
-        try {
+    public boolean changeRoles(String user, Map<String, String> roles)  throws RepositoryException {
             if (!objectNode.isCheckedOut() && objectNode.isNodeType(Constants.MIX_VERSIONABLE)) {
                 objectNode.getSession().getWorkspace().getVersionManager().checkout(objectNode.getPath());
             }
@@ -386,7 +385,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
             }
 
-            Node acl = getAcl(objectNode);
+            Node acl = getAcl();
             NodeIterator ni = acl.getNodes();
             Node aceg = null;
             Node aced = null;
@@ -447,10 +446,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             } else {
                 aced.setProperty(Constants.J_ROLES, dens);
             }
-        } catch (RepositoryException e) {
-            logger.error("Cannot change acl", e);
-            return false;
-        }
 
         return true;
     }
@@ -458,58 +453,74 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean revokeRolesForUser(String user) {
-        try {
-            revokePermission(objectNode, user);
-        } catch (RepositoryException e) {
-            logger.error("Cannot change acl", e);
-            return false;
-        }
+    public boolean revokeRolesForUser(String user) throws RepositoryException {
+        Node acl = getAcl();
 
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean revokeAllRoles() {
-        try {
-            if (objectNode.hasNode("j:acl")) {
-                objectNode.getNode("j:acl").remove();
-                objectNode.removeMixin("jmix:accessControlled");
-                return true;
+        NodeIterator ni = acl.getNodes();
+        while (ni.hasNext()) {
+            Node ace = ni.nextNode();
+            if (ace.getProperty("j:principal").getString().equals(user)) {
+                ace.remove();
             }
-        } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean revokeAllRoles() throws RepositoryException {
+        if (objectNode.hasNode("j:acl")) {
+            objectNode.getNode("j:acl").remove();
+            objectNode.removeMixin("jmix:accessControlled");
+            return true;
         }
         return false;
     }
 
-
     /**
      * {@inheritDoc}
      */
-    public boolean getAclInheritanceBreak() {
+    public boolean setAclInheritanceBreak(boolean inheritance) throws RepositoryException {
         try {
-            return getAclInheritanceBreak(objectNode);
-        } catch (RepositoryException e) {
-            logger.error("Cannot get acl", e);
-            return false;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean setAclInheritanceBreak(boolean inheritance) {
-        try {
-            setAclInheritanceBreak(objectNode, inheritance);
+            getAcl().setProperty("j:inherit", !inheritance);
         } catch (RepositoryException e) {
             logger.error("Cannot change acl", e);
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Check if acl inheritance is broken on the given node or not
+     *
+     * @return true if ACL inheritance is broken
+     * @throws RepositoryException
+     */
+    public boolean getAclInheritanceBreak() throws RepositoryException {
+        if (!getAcl().hasProperty("j:inherit")) {
+            return false;
+        }
+        return !getAcl().getProperty("j:inherit").getBoolean();
+    }
+
+    /**
+     * Returns the ACL node of the given node or creates one
+     *
+     * @return the ACL <code>Node</code> for the given node
+     * @throws RepositoryException
+     */
+    public Node getAcl() throws RepositoryException {
+        if (objectNode.hasNode("j:acl")) {
+            return objectNode.getNode("j:acl");
+        } else {
+            if (!objectNode.isCheckedOut()) {
+                objectNode.checkout();
+            }
+            objectNode.addMixin("jmix:accessControlled");
+            return objectNode.addNode("j:acl", "jnt:acl");
+        }
     }
 
     /**
@@ -2420,85 +2431,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public List<VersionInfo> getVersionInfos() throws RepositoryException {
         return ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(session, this);
-    }
-
-    /**
-     * Revoke all permissions for the specified user
-     *
-     * @param objectNode The node on which to revoke permissions
-     * @param user
-     * @throws RepositoryException
-     */
-    public static void revokePermission(Node objectNode, String user) throws RepositoryException {
-        Node acl = getAcl(objectNode);
-
-        NodeIterator ni = acl.getNodes();
-        while (ni.hasNext()) {
-            Node ace = ni.nextNode();
-            if (ace.getProperty("j:principal").getString().equals(user)) {
-                ace.remove();
-            }
-        }
-    }
-
-    /**
-     * Revoke all permissions for all users on given node
-     *
-     * @param objectNode The node on which to revoke all permission
-     * @throws RepositoryException
-     */
-    public static void revokeAllPermissions(Node objectNode) throws RepositoryException {
-        Node acl = getAcl(objectNode);
-
-        NodeIterator ni = acl.getNodes();
-        while (ni.hasNext()) {
-            Node ace = ni.nextNode();
-            ace.remove();
-        }
-    }
-
-    /**
-     * Check if acl inheritance is broken on the given node or not
-     *
-     * @param objectNode The node on which to check ACL inheritance break
-     * @return true if ACL inheritance is broken
-     * @throws RepositoryException
-     */
-    public static boolean getAclInheritanceBreak(Node objectNode) throws RepositoryException {
-        if (!getAcl(objectNode).hasProperty("j:inherit")) {
-            return false;
-        }
-        return !getAcl(objectNode).getProperty("j:inherit").getBoolean();
-    }
-
-    /**
-     * Breaks the ACL inheritance on a given object node
-     *
-     * @param objectNode  The node on which to set ACL inheritance
-     * @param inheritance true if ACL inheritance should be broken and false to inherit ACL from parent
-     * @throws RepositoryException
-     */
-    public static void setAclInheritanceBreak(Node objectNode, boolean inheritance) throws RepositoryException {
-        getAcl(objectNode).setProperty("j:inherit", !inheritance);
-    }
-
-    /**
-     * Returns the ACL node of the given node or creates one
-     *
-     * @param objectNode The node to get the ACL node from
-     * @return the ACL <code>Node</code> for the given node
-     * @throws RepositoryException
-     */
-    public static Node getAcl(Node objectNode) throws RepositoryException {
-        if (objectNode.hasNode("j:acl")) {
-            return objectNode.getNode("j:acl");
-        } else {
-            if (!objectNode.isCheckedOut()) {
-                objectNode.checkout();
-            }
-            objectNode.addMixin("jmix:accessControlled");
-            return objectNode.addNode("j:acl", "jnt:acl");
-        }
     }
 
     /**

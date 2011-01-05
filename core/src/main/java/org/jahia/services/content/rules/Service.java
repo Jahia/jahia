@@ -116,7 +116,7 @@ public class Service extends JahiaService {
 
     public void revokeAllPermissions(AddedNodeFact node) {
         try {
-            JCRNodeWrapperImpl.revokeAllPermissions(node.getNode());
+            node.getNode().revokeAllRoles();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -124,7 +124,7 @@ public class Service extends JahiaService {
 
     public void setAclInheritanceBreak(AddedNodeFact node, boolean aclInheritanceBreak) {
         try {
-            JCRNodeWrapperImpl.setAclInheritanceBreak(node.getNode(), aclInheritanceBreak);
+            node.getNode().setAclInheritanceBreak(aclInheritanceBreak);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

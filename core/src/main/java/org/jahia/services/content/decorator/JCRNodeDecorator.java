@@ -105,31 +105,31 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getPermissionsAsBitSet();
     }
 
-    public boolean grantRoles(String user, Set<String> roles) {
+    public boolean grantRoles(String user, Set<String> roles) throws RepositoryException {
         return node.grantRoles(user, roles);
     }
 
-    public boolean denyRoles(String user, Set<String> roles) {
+    public boolean denyRoles(String user, Set<String> roles) throws RepositoryException {
         return node.denyRoles(user, roles);
     }
 
-    public boolean changeRoles(String user, Map<String, String> perm) {
+    public boolean changeRoles(String user, Map<String, String> perm) throws RepositoryException {
         return node.changeRoles(user, perm);
     }
 
-    public boolean revokeRolesForUser(String user) {
+    public boolean revokeRolesForUser(String user) throws RepositoryException {
         return node.revokeRolesForUser(user);
     }
 
-    public boolean revokeAllRoles() {
+    public boolean revokeAllRoles()  throws RepositoryException{
         return node.revokeAllRoles();
     }
 
-    public boolean getAclInheritanceBreak() {
+    public boolean getAclInheritanceBreak() throws RepositoryException {
         return node.getAclInheritanceBreak();
     }
 
-    public boolean setAclInheritanceBreak(boolean inheritance) {
+    public boolean setAclInheritanceBreak(boolean inheritance) throws RepositoryException {
         return node.setAclInheritanceBreak(inheritance);
     }
 

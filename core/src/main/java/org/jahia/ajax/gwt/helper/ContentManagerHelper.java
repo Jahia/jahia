@@ -631,41 +631,81 @@ public class ContentManagerHelper {
         Map<String, List<String[]>> m = node.getAclEntries();
 
         GWTJahiaNodeACL acl = new GWTJahiaNodeACL();
-        List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
+        try {
 
-        for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
-            String principal = iterator.next();
-            GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
-            ace.setPrincipalType(principal.charAt(0));
-            ace.setPrincipal(principal.substring(2));
+            List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
+            Map<String, GWTJahiaNodeACE> map = new HashMap<String, GWTJahiaNodeACE>();
 
-            List<String[]> st = m.get(principal);
-            Map<String, Boolean> perms = new HashMap<String, Boolean>();
-            Map<String, Boolean> inheritedPerms = new HashMap<String, Boolean>();
-            String inheritedFrom = null;
-            for (String[] strings : st) {
-                String pathFrom = strings[0];
-                String aclType = strings[1];
-                String role = strings[2];
-                if (!newAcl && path.equals(pathFrom)) {
-                    perms.put(role, aclType.equals("GRANT"));
-                } else if (!inheritedPerms.containsKey(role)) {
-                    if (inheritedFrom == null || inheritedFrom.length() < pathFrom.length()) {
-                        inheritedFrom = pathFrom;
+            for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
+                String principal = iterator.next();
+                GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
+                map.put(principal, ace);
+                aces.add(ace);
+                ace.setPrincipalType(principal.charAt(0));
+                ace.setPrincipal(principal.substring(2));
+
+                List<String[]> st = m.get(principal);
+                Map<String, Boolean> perms = new HashMap<String, Boolean>();
+                Map<String, Boolean> inheritedPerms = new HashMap<String, Boolean>();
+                String inheritedFrom = null;
+                for (String[] strings : st) {
+                    String pathFrom = strings[0];
+                    String aclType = strings[1];
+                    String role = strings[2];
+                    if (!newAcl && path.equals(pathFrom)) {
+                        perms.put(role, aclType.equals("GRANT"));
+                    } else if (!inheritedPerms.containsKey(role)) {
+                        if (inheritedFrom == null || inheritedFrom.length() < pathFrom.length()) {
+                            inheritedFrom = pathFrom;
+                        }
+                        inheritedPerms.put(role, aclType.equals("GRANT"));
                     }
-                    inheritedPerms.put(role, aclType.equals("GRANT"));
                 }
+
+                ace.setInheritedFrom(inheritedFrom);
+                ace.setInheritedPermissions(inheritedPerms);
+                ace.setPermissions(perms);
+                ace.setInherited(perms.isEmpty());
             }
 
-            ace.setInheritedFrom(inheritedFrom);
-            ace.setInheritedPermissions(inheritedPerms);
-            ace.setPermissions(perms);
-            ace.setInherited(perms.isEmpty());
+            boolean aclInheritanceBreak = node.getAclInheritanceBreak();
+            acl.setBreakAllInheritance(aclInheritanceBreak);
 
-            aces.add(ace);
-        }
-        acl.setAce(aces);
-        try {
+            if (aclInheritanceBreak) {
+                m = node.getParent().getAclEntries();
+                for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
+                    String principal = iterator.next();
+                    GWTJahiaNodeACE ace = map.get(principal);
+                    if (ace == null) {
+                        ace = new GWTJahiaNodeACE();
+                        map.put(principal, ace);
+                        aces.add(ace);
+                        ace.setPrincipalType(principal.charAt(0));
+                        ace.setPrincipal(principal.substring(2));
+                        ace.setPermissions(new HashMap<String, Boolean>());
+                    }
+                    Map<String, Boolean> inheritedPerms = new HashMap<String, Boolean>();
+
+                    List<String[]> st = m.get(principal);
+                    String inheritedFrom = null;
+                    for (String[] strings : st) {
+                        String pathFrom = strings[0];
+                        String aclType = strings[1];
+                        String role = strings[2];
+                        if (!inheritedPerms.containsKey(role)) {
+                            if (inheritedFrom == null || inheritedFrom.length() < pathFrom.length()) {
+                                inheritedFrom = pathFrom;
+                            }
+                            inheritedPerms.put(role, aclType.equals("GRANT"));
+                        }
+                    }
+
+                    ace.setInheritedFrom(inheritedFrom);
+                    ace.setInheritedPermissions(inheritedPerms);
+                }
+            }
+            acl.setAce(aces);
+
             Map<String, List<JCRNodeWrapper>> roles = node.getAvailableRoles();
             Map<String, List<String>> dependencies = new HashMap<String, List<String>>();
 
@@ -684,7 +724,7 @@ public class ContentManagerHelper {
                     List<String> d = new ArrayList<String>();
                     if (nodeWrapper.hasProperty("j:dependencies")) {
                         for (Value value : nodeWrapper.getProperty("j:dependencies").getValues()) {
-                            d.add(((JCRValueWrapper)value).getNode().getName());
+                            d.add(((JCRValueWrapper) value).getNode().getName());
                         }
                     }
                     dependencies.put(nodeWrapper.getName(), d);
@@ -713,24 +753,25 @@ public class ContentManagerHelper {
                     new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
 
-        Set<String> existingAclKeys = node.getAclEntries().keySet();
-        for (GWTJahiaNodeACE ace : acl.getAce()) {
-            String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
-            node.revokeRolesForUser(user);
-            for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
-                if (!entry.getValue().equals(ace.getInheritedPermissions().get(entry.getKey()))) {
-                    if (entry.getValue().equals(Boolean.TRUE) && !Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
-                        node.grantRoles(user, Collections.singleton(entry.getKey()));
-                    } else if (entry.getValue().equals(Boolean.FALSE) && Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
-                        node.denyRoles(user, Collections.singleton(entry.getKey()));
+        try {
+            Set<String> existingAclKeys = node.getAclEntries().keySet();
+            node.setAclInheritanceBreak(acl.isBreakAllInheritance());
+            for (GWTJahiaNodeACE ace : acl.getAce()) {
+                String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
+                node.revokeRolesForUser(user);
+                for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
+                    if (!entry.getValue().equals(ace.getInheritedPermissions().get(entry.getKey()))) {
+                        if (entry.getValue().equals(Boolean.TRUE) && !Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
+                            node.grantRoles(user, Collections.singleton(entry.getKey()));
+                        } else if (entry.getValue().equals(Boolean.FALSE) && Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
+                            node.denyRoles(user, Collections.singleton(entry.getKey()));
+                        }
                     }
                 }
             }
-        }
 //        for (String user : existingAclKeys) {
 //            node.revokeRolesForUser(user);
 //        }
-        try {
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error("error", e);
@@ -959,7 +1000,7 @@ public class ContentManagerHelper {
                 templatesSynchro(source, destinationNode, session, references, false, false, moduleName);
             } else if (source.isNodeType("jnt:templatesFolder")) {
                 templatesSynchro(source, destinationNode, session, references, true, false, moduleName);
-            }  else {
+            } else {
                 templatesSynchro(source, destinationNode, session, references, false, doChildren, moduleName);
             }
         }
@@ -1029,7 +1070,7 @@ public class ContentManagerHelper {
             while (pi.hasNext()) {
                 JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
                 if (!oldChild.getDefinition().isProtected()) {
-                    if (!names.contains(oldChild.getName()) && !oldChild.getName().equals("j:published")&& !oldChild.getName().equals("j:moduleTemplate")) {
+                    if (!names.contains(oldChild.getName()) && !oldChild.getName().equals("j:published") && !oldChild.getName().equals("j:moduleTemplate")) {
                         oldChild.remove();
                     }
                 }

@@ -189,7 +189,7 @@ public class AclEditor {
                                      ListStore listStore, final Grid grid) {
                     final GWTJahiaNodeACE ace = model.get("ace");
                     Boolean permValue = ace.getPermissions().get(perm);
-                    Boolean inPermValue = ace.getInheritedPermissions().get(perm);
+                    Boolean inPermValue = Boolean.TRUE.equals(ace.getInheritedPermissions().get(perm)) && !acl.isBreakAllInheritance();
                     CheckBox chb = new CheckBox();
                     chb.setTitle(columnName);
                     chb.setValue(Boolean.TRUE.equals(permValue) || (permValue == null && Boolean.TRUE.equals(inPermValue)));
@@ -583,9 +583,9 @@ public class AclEditor {
      * @param available
      */
     private void addTableItem(ListStore<ModelData> store, GWTJahiaNodeACE ace, List<String> available) {
-        if (ace.isInherited() && acl.isBreakAllInheritance()) {
-            return;
-        }
+//        if (ace.getPermissions().isEmpty() && !ace.getInheritedPermissions().isEmpty() && acl.isBreakAllInheritance()) {
+//            return;
+//        }
         BaseModelData value = new BaseModelData();//Object[3 + available.size()];
         value.set("principal", ace.getPrincipal());
 

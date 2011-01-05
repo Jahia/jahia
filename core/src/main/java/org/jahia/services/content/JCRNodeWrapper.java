@@ -289,9 +289,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     BitSet getPermissionsAsBitSet();
 
-    boolean grantRoles(String user, Set<String> roles);
+    boolean grantRoles(String user, Set<String> roles) throws RepositoryException;
 
-    boolean denyRoles(String user, Set<String> roles);
+    boolean denyRoles(String user, Set<String> roles) throws RepositoryException;
 
     /**
      * Change the permissions of a user on the node.
@@ -300,7 +300,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param perms A map with the name of the permission, and "GRANT" or "DENY" as a value
      * @return true if action was successful, or false if not
      */
-    boolean changeRoles(String user, Map<String, String> perms);
+    boolean changeRoles(String user, Map<String, String> perms) throws RepositoryException;
 
     /**
      * Revoke all permissions for the specified user
@@ -308,21 +308,21 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param user
      * @return true if action was successful, or false if not
      */
-    boolean revokeRolesForUser(String user);
+    boolean revokeRolesForUser(String user) throws RepositoryException;
 
     /**
      * Revoke all permissions for all users
      *
      * @return true if action was successful, or false if not
      */
-    boolean revokeAllRoles();
+    boolean revokeAllRoles() throws RepositoryException;
 
     /**
      * Check if acl inheritance is broken on this node or not
      *
      * @return true if ACL inheritance is broken
      */
-    boolean getAclInheritanceBreak();
+    boolean getAclInheritanceBreak() throws RepositoryException;
 
     /**
      * Set acl break inheritance - if true, no acls will be inherited from parent nodes.
@@ -330,7 +330,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param inheritance
      * @return true if action was successful, or false if not
      */
-    boolean setAclInheritanceBreak(boolean inheritance);
+    boolean setAclInheritanceBreak(boolean inheritance) throws RepositoryException;
 
     /**
      * Create a sub folder of type jnt:folder

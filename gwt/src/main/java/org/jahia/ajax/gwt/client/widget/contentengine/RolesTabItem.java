@@ -62,7 +62,7 @@ public class RolesTabItem extends EditEngineTabItem {
 
             rightsEditor = new AclEditor(engine.getAcl(), node.getAclContext());
             rightsEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL); //todo parameterize
-            rightsEditor.setCanBreakInheritance(false);
+            rightsEditor.setCanBreakInheritance(true);
             if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
                 rightsEditor.setReadOnly(true);
             } else {

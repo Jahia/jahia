@@ -104,7 +104,7 @@
 //---------------------------------------------------------
 
 [jnt:role] > nt:base, mix:referenceable, mix:title, jmix:autoPublish, jmix:observable
- - jcr:description (string, richtext) i18n itemtype = content
+ - jcr:description (string) i18n itemtype = content
  - j:nodeTypes (string) protected hidden multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
  - j:dependencies (weakreference) protected hidden multiple < jnt:role

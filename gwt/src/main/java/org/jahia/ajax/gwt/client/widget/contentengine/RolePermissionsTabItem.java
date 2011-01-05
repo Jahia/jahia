@@ -195,6 +195,7 @@ public class RolePermissionsTabItem extends EditEngineTabItem {
                     CheckBox parentBox = boxes.get(parentItem.getPath());
                     if (parentBox.getValue()) {
                         checkbox.setValue(true);
+                        selection.remove(currentNode);
                     }
                 }
 
@@ -244,8 +245,6 @@ public class RolePermissionsTabItem extends EditEngineTabItem {
     }
 
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
-        Window.alert("doSave : "+selection);
-
         List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>(selection.size());
         for (GWTJahiaNode gwtJahiaNode : selection) {
             values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode, GWTJahiaNodePropertyType.WEAKREFERENCE));

@@ -12,7 +12,7 @@
     var contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")} = {
         contributeTarget: "${currentNode.path}",
         contributeReplaceTarget: "${currentNode.UUID}",
-        contributeReplaceUrl: "${url.base}${currentNode.path}.${currentResource.template}.html.ajax"
+        contributeReplaceUrl: "${url.base}${currentNode.path}.${currentResource.resolvedTemplate}.html.ajax"
     };
     contributeParams[contributeParams.length] = contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")};
 </script>

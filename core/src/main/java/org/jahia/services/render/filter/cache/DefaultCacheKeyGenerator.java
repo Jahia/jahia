@@ -114,9 +114,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 args.add(s.toString());
             } else if ("template".equals(field)) {
                 if(resource.getContextConfiguration().equals("page") && resource.getNode().getPath().equals(renderContext.getMainResource().getNode().getPath())) {
-                    args.add(renderContext.getMainResource().getTemplate());
+                    args.add(renderContext.getMainResource().getResolvedTemplate());
                 } else {
-                    args.add(resource.getTemplate());
+                    args.add(resource.getResolvedTemplate());
                 }
             } else if ("templateType".equals(field)) {
                 args.add(resource.getTemplateType());

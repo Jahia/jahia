@@ -146,17 +146,25 @@ public class Resource {
 //        return l;
 //    }
 
-    public String getTemplate() {
-        if (StringUtils.isEmpty(template)) {
+    public String getResolvedTemplate() {
+        String resolvedTemplate = template;
+        if (StringUtils.isEmpty(resolvedTemplate)) {
             try {
                 if (node.isNodeType("jmix:renderable") && node.hasProperty("j:view")) {
-                    template = node.getProperty("j:view").getString();
+                    resolvedTemplate = node.getProperty("j:view").getString();
                 } else {
-                    template = "default";
+                    resolvedTemplate = "default";
                 }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
+        }
+        return resolvedTemplate;
+    }
+
+    public String getTemplate() {
+        if (StringUtils.isEmpty(template)) {
+            template = "default";
         }
         return template;
     }

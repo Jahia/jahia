@@ -58,7 +58,7 @@ public class TemplateScriptFilter extends AbstractFilter {
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         Profiler profiler = (Profiler) renderContext.getRequest().getAttribute("profiler");
         if (profiler != null) {
-            profiler.start("render template " + resource.getTemplate());
+            profiler.start("render template " + resource.getResolvedTemplate());
         }
 
         HttpServletRequest request = renderContext.getRequest();

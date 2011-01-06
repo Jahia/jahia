@@ -91,7 +91,7 @@ public class StaticAssetsFilter extends AbstractFilter {
                         "\n" + "<div class=\"jahia-template-gxt editmode-gxt\" jahiatype=\"editmode\" id=\"editmode\"" +
                                 " config=\""+renderContext.getEditModeConfigName()+"\"" +
                                 " path=\""+resource.getNode().getPath()+"\" locale=\""+resource.getLocale()+"\"" +
-                                " template=\""+resource.getTemplate()+"\"" +
+                                " template=\""+resource.getResolvedTemplate()+"\"" +
                                 " nodetypes=\""+  ConstraintsHelper.getConstraints(renderContext.getMainResource().getNode()) + "\"" +
                                 ">");
                 }

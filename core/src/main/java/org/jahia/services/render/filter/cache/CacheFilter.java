@@ -34,11 +34,9 @@ package org.jahia.services.render.filter.cache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.BlockingCache;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.slf4j.Logger;
 import org.jahia.services.cache.CacheEntry;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -47,7 +45,6 @@ import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.RepositoryException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -75,7 +72,7 @@ public class CacheFilter extends AbstractFilter {
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
-            String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
+            String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getResolvedTemplate());
             if (debugEnabled) {
                 logger.debug("Cache filter for key " + key);
             }
@@ -130,7 +127,7 @@ public class CacheFilter extends AbstractFilter {
                     }
                 }
             }
-            String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
+            String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getResolvedTemplate());
             if (debugEnabled) {
                 logger.debug("Generating content for node : " + perUserKey);
             }

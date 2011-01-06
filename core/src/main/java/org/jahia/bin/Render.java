@@ -364,13 +364,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             } catch (RepositoryException e) {
             }
 
-            action = templateService.getActions().get(resource.getTemplate());
+            action = templateService.getActions().get(resource.getResolvedTemplate());
         } else {
             action = defaultPostAction;
         }
         if (action == null) {
             if (urlResolver.getPath().endsWith(".do")) {
-                logger.error("Couldn't resolve action named [" + resource.getTemplate() + "]");
+                logger.error("Couldn't resolve action named [" + resource.getResolvedTemplate() + "]");
             }
             resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
         } else {
@@ -660,7 +660,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 //                    resource.pushBodyWrapper();
 
                     if (urlResolver.getPath().endsWith(".do")) {
-                        Action action = templateService.getActions().get(resource.getTemplate());
+                        Action action = templateService.getActions().get(resource.getResolvedTemplate());
                         Map<String, List<String>> parameters = toParameterMapOfListOfString(req);
                         doAction(req, resp, urlResolver, renderContext, resource, action, parameters);
                     } else {

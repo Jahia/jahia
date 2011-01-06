@@ -209,7 +209,7 @@ public class URLGenerator {
     }
 
     public String getCurrent() {
-        return buildURL(resource.getNode(), resource.getTemplate(), resource.getTemplateType());
+        return buildURL(resource.getNode(), resource.getResolvedTemplate(), resource.getTemplateType());
     }
 
     @SuppressWarnings("unchecked")
@@ -242,7 +242,7 @@ public class URLGenerator {
         if (templateTypes == null) {
             templateTypes = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
                 public Object transform(Object templateType) {
-                    return buildURL(resource.getNode(), resource.getTemplate(), (String) templateType);
+                    return buildURL(resource.getNode(), resource.getResolvedTemplate(), (String) templateType);
                 }
             });
         }
@@ -272,8 +272,8 @@ public class URLGenerator {
             }
             return getEdit();
         } else if (context.isContributionMode()) {
-            if(context.getMainResource().getTemplate()!=null) {
-                return baseContribute+context.getMainResource().getNode().getPath()+"."+context.getMainResource().getTemplate()+".html";
+            if(context.getMainResource().getResolvedTemplate()!=null) {
+                return baseContribute+context.getMainResource().getNode().getPath()+"."+context.getMainResource().getResolvedTemplate()+".html";
             }
             return contribute;
         } else {

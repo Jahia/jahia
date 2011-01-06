@@ -130,7 +130,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         final Cache cache = cacheProvider.getCache();
         final boolean cacheable = !notCacheableFragment.contains(key);
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
-                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
+                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getResolvedTemplate());
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList == null) {
             userKeysLinkedList = new LinkedList<String>();
@@ -225,7 +225,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
-                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
+                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getResolvedTemplate());
         if (debugEnabled) {
             logger.debug("Generating content for node : " + perUserKey);
         }
@@ -244,7 +244,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
                     perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
                             renderContext.getMainResource().getNode().getPath() +
-                            renderContext.getMainResource().getTemplate());
+                            renderContext.getMainResource().getResolvedTemplate());
                 }
                 String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
                 Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
@@ -407,7 +407,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 String cacheKey = segment.getAttributeValue("src").replaceAll("_perUser_",
                         renderContext.getUser().getUsername());
                 String mrCacheKey = cacheKey.replaceAll("_mr_", renderContext.getMainResource().getNode().getPath() +
-                                                                renderContext.getMainResource().getTemplate());
+                                                                renderContext.getMainResource().getResolvedTemplate());
                 logger.debug("Check if " + cacheKey + " is in cache");
                 if (cache.isKeyInCache(mrCacheKey)) {
                     final Element element = cache.get(mrCacheKey);

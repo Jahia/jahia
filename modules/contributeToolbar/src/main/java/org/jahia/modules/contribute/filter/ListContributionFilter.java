@@ -61,9 +61,9 @@ public class ListContributionFilter extends AbstractFilter {
                     && node.hasProperty("j:editableInContribution")
                     && node.getProperty("j:editableInContribution").getBoolean()
                     && !context.isAjaxRequest()
-                    && !resource.getTemplate().startsWith("contribute.")
+                    && !resource.getResolvedTemplate().startsWith("contribute.")
                     ) {
-                resource.setTemplate("contribute." + resource.getTemplate());
+                resource.setTemplate("contribute." + resource.getResolvedTemplate());
                 try {
                     final Script script = service.resolveScript(resource, context);
                 } catch (TemplateNotFoundException e) {

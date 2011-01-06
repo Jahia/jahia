@@ -40,7 +40,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -120,7 +119,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 
     private Template resolveTemplate(Resource resource, RenderContext context, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations) {
 //        for (String template : resource.getTemplates()) {
-        String template = resource.getTemplate();
+        String template = resource.getResolvedTemplate();
             for (ExtendedNodeType st : nodeTypeList) {
                 SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
                         st.getAlias().replace(":", "_"), context);

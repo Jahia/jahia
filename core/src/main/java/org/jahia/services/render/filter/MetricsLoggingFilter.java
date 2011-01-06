@@ -76,7 +76,7 @@ public class MetricsLoggingFilter extends AbstractFilter {
         if (session != null) {
             sessionID = session.getId();
         }
-        loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getTemplate());
+        loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getResolvedTemplate());
 
         loggingService.stopNestedProfiler("MAIN", profilerName);
 

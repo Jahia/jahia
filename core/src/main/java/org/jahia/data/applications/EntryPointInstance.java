@@ -127,7 +127,7 @@ public class EntryPointInstance implements Serializable {
 
     public boolean isUserInRole(JahiaUser user, String role) {
         // This method maps servlet roles on Jahia's groups
-        return JCRContentUtils.hasPermission(user, role,ID);
+        return JCRContentUtils.hasPermission(role,ID);
     }
 
     public boolean isModeAllowed(JahiaUser user, String mode) {
@@ -135,7 +135,7 @@ public class EntryPointInstance implements Serializable {
         if(mode != null && mode.equalsIgnoreCase(PortletMode.VIEW.toString())){
             return true;
         }
-        return JCRContentUtils.hasPermission(user, mode,ID);
+        return JCRContentUtils.hasPermission(mode,ID);
     }
 
     @Override

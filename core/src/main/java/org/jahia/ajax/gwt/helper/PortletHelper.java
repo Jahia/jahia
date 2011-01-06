@@ -109,7 +109,7 @@ public class PortletHelper {
                 appList.addAll(applicationsManager.getApplications());
             }
             for (ApplicationBean appBean : appList) {
-                if (JCRContentUtils.hasPermission(user, Constants.JCR_READ_RIGHTS, appBean.getID())) {
+                if (JCRContentUtils.hasPermission(Constants.JCR_READ_RIGHTS, appBean.getID())) {
                     List<EntryPointDefinition> l = appBean.getEntryPointDefinitions();
                     for (EntryPointDefinition aL : l) {
                         results.add(createGWTJahiaPortletDefinition(appBean, aL, locale));
@@ -367,7 +367,7 @@ public class PortletHelper {
                 // TO DO: replace this part of the method by a more perfoming one
                 List<ApplicationBean> appList = applicationsManager.getApplications();
                 for (ApplicationBean anAppList : appList) {
-                    if (JCRContentUtils.hasPermission(user, Constants.JCR_READ_RIGHTS, anAppList.getID())) {
+                    if (JCRContentUtils.hasPermission(Constants.JCR_READ_RIGHTS, anAppList.getID())) {
                         List<EntryPointDefinition> l = anAppList.getEntryPointDefinitions();
                         for (EntryPointDefinition aL : l) {
                             boolean foundEntryPointDefinition = appName.equalsIgnoreCase(anAppList.getName()) && aL.getName().equalsIgnoreCase(entryPointName);

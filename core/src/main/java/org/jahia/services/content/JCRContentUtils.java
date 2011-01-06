@@ -44,11 +44,9 @@ import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
 import org.jahia.api.Constants;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.usermanager.JahiaUser;
 
 import com.ibm.icu.text.Normalizer;
 
@@ -411,50 +409,22 @@ public final class JCRContentUtils {
     }
 
     /**
-     * Used by portlet backends to determine if a user is part of a specific role on the portlet, or if we has
-     * permissions to access the different portlet modes.
-     * @param user
-     * @param role
+     * Used by portlet backends to determine if a user is part of a specific permissionName on a node specified by it's
+     * UUID
+     *
+     * @param permissionName
      * @param nodeUUID
      * @return
      */
-    public static boolean hasPermission(final JahiaUser user, final String role, final String nodeUUID) {
+    public static boolean hasPermission(final String permissionName, final String nodeUUID) {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRNodeWrapper node = session.getNodeByUUID(nodeUUID);
-                    JCRSiteNode site = node.getResolveSite();
-
-                    node.hasPermission(role);
-                    Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
-
-                    Set<Map.Entry<String,List<String[]>>> principalSet = aclEntriesMap.entrySet();
-                    for (Map.Entry<String,List<String[]>> currentPrincipal : principalSet) {
-                        boolean isUser = currentPrincipal.getKey().indexOf("u:") == 0;
-                        String principalName = currentPrincipal.getKey().substring(2);
-
-                        // test if the principal is the user or if the user belongs to the principal (group)
-                        if ((isUser && principalName.equalsIgnoreCase(user.getUsername())) || user.isMemberOfGroup(site != null ? site.getID() : 0, principalName)) {
-                            List<String[]> principalPermValues = currentPrincipal.getValue();
-                            for (String[] currentPrincipalPerm : principalPermValues) {
-                                String currentPrincipalPermValue = currentPrincipalPerm[1];
-                                String currentPrincipalPermName = currentPrincipalPerm[2];
-                                if (currentPrincipalPermName != null && currentPrincipalPermName.equalsIgnoreCase(role)) {
-                                    if (currentPrincipalPermValue != null && currentPrincipalPermValue.equalsIgnoreCase("GRANT")) {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                    return false;
-                }
-            });
+            JCRSessionWrapper session = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession();
+            JCRNodeWrapper node = session.getNodeByIdentifier(nodeUUID);
+            return node.hasPermission(permissionName);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return false;
+            logger.error("Error while checking permission "+ permissionName +" for node UUID " + nodeUUID, e);
         }
+        return false;
     }
 
     /**

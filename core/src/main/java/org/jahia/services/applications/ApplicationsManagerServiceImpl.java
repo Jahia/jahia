@@ -51,7 +51,6 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.RoleIdentity;
-import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.jcr.RoleImpl;
 import org.jahia.services.rbac.jcr.RoleManager;
 import org.jahia.services.rbac.jcr.RoleService;
@@ -435,7 +434,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     wrapper.setProperty("j:description", app.getDescription());
                     wrapper.setProperty("j:type", app.getType());
                     wrapper.setProperty("j:isVisible", app.isVisible());
-                    // wrapper.revokeAllRoles(); deactivated for the moment, will try to do better with the new roles.
                     session.save();
                     app.setID(wrapper.getIdentifier());
 
@@ -511,6 +509,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
                         }
                     }
+
+                    session.save();
 
                     return true;
                 }

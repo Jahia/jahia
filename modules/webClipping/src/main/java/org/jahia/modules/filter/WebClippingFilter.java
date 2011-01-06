@@ -7,6 +7,8 @@ import au.id.jericho.lib.html.OutputDocument;
 import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.StartTag;
 import au.id.jericho.lib.html.Tag;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -14,10 +16,12 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.log4j.Logger;
 import org.jahia.modules.Rewriter.WebClippingRewriter;
+import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import ucar.nc2.util.net.EasySSLProtocolSocketFactory;
 
 import java.io.*;
@@ -25,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +44,13 @@ public class WebClippingFilter extends AbstractFilter {
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (resource.getNode().hasProperty("url") && resource.getNode().isNodeType("jnt:webClipping")) {
-            return getResponse(renderContext, resource, chain);
+            String url;
+            if (renderContext.getRequest().getParameter("jahia_url_web_clipping") != null && renderContext.getRequest().getParameter("jahia_url_web_clipping").length() > 0) {
+                url = renderContext.getRequest().getParameter("jahia_url_web_clipping");
+            } else {
+                url = resource.getNode().getPropertyAsString("url");
+            }
+            return getResponse(url, renderContext, resource, chain);
         } else {
             return null;
         }
@@ -51,13 +62,12 @@ public class WebClippingFilter extends AbstractFilter {
         return document.toString();
     }
 
-    private String getResponse(RenderContext renderContext, Resource resource, RenderChain chain) {
+    private String getResponse(String urlToClip, RenderContext renderContext, Resource resource, RenderChain chain) {
         HttpClient httpClient = new HttpClient();
         Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
         httpClient.getParams().setContentCharset("UTF-8");
 
-        String url = resource.getNode().getPropertyAsString("url");
-        HttpMethodBase httpMethod = new GetMethod(url);
+        HttpMethodBase httpMethod = new GetMethod(urlToClip);
         httpMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
         httpClient.getParams().getContentCharset();
 
@@ -77,7 +87,7 @@ public class WebClippingFilter extends AbstractFilter {
                 if (locationHeader != null) {
                     redirectLocation = locationHeader.getValue();
                     if (!redirectLocation.startsWith("http")) {
-                        URL siteURL = new URL(url);
+                        URL siteURL = new URL(urlToClip);
                         String tmpURL = siteURL.getProtocol() + "://" + siteURL.getHost() + ((siteURL.getPort() > 0) ? ":" + siteURL.getPort() : "") + "/" + redirectLocation;
                         httpMethod = new GetMethod(tmpURL);
                         // Set a default retry handler (see httpclient doc).
@@ -92,7 +102,7 @@ public class WebClippingFilter extends AbstractFilter {
             }
             if (statusCode != HttpStatus.SC_OK) {
                 StringBuffer buffer = new StringBuffer("<html>\n<body>");
-                buffer.append('\n' + "Error getting ").append(url).append(" failed with error code ").append(statusCode);
+                buffer.append('\n' + "Error getting ").append(urlToClip).append(" failed with error code ").append(statusCode);
                 buffer.append("\n</body>\n</html>");
                 return buffer.toString();
             }
@@ -128,7 +138,7 @@ public class WebClippingFilter extends AbstractFilter {
                     }
                 }
                 final String s = contentCharset.toUpperCase();
-                return rewriteBody(new String(responseBodyAsBytes, s), resource.getNode().getPropertyAsString("url"), s, resource, renderContext);
+                return rewriteBody(new String(responseBodyAsBytes, s), urlToClip, s, resource, renderContext);
             }
         } catch (Exception e) {
             e.printStackTrace();

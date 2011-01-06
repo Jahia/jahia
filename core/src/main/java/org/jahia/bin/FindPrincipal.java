@@ -295,7 +295,6 @@ public class FindPrincipal extends HttpServlet implements Controller {
 
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
             IOException, RepositoryException {
-        URLResolver urlResolver = new URLResolver(request.getPathInfo(), request.getServerName());
         try {
             String principalType = retrieveParameter(request, response, PRINCIPALTYPE_PARAMNAME, true);
             if (principalType == null) {

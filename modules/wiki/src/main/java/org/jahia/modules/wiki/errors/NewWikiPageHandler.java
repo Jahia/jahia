@@ -66,7 +66,7 @@ public class NewWikiPageHandler implements ErrorHandler {
             if (!(e instanceof PathNotFoundException)) {
                 return false;
             }
-            URLResolver urlResolver = new URLResolver(request.getPathInfo(), request.getServerName());
+            URLResolver urlResolver = new URLResolver(request.getPathInfo(), request.getServerName(), request);
             JCRNodeWrapper pageNode;
             String parentPath = StringUtils.substringBeforeLast(urlResolver.getPath(), "/");
             String newName = StringUtils.substringAfterLast(urlResolver.getPath(), "/");
@@ -82,7 +82,7 @@ public class NewWikiPageHandler implements ErrorHandler {
                 }
                 // test if pageNode is wiki
                 boolean isWiki = false;
-                if (pageNode.hasProperty("j:templateNode")) {
+                if (pageNode != null && pageNode.hasProperty("j:templateNode")) {
                     NodeIterator iterator = JCRContentUtils.getDescendantNodes((JCRNodeWrapper) pageNode.getProperty("j:templateNode").getNode(), "jnt:wikiPageFormCreation");
                     if (iterator.hasNext()) {
                         isWiki = true;

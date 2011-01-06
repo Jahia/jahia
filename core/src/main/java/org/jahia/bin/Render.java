@@ -87,13 +87,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      */
     private static final long serialVersionUID = 5377039107890340659L;
 
-    protected static final String METHOD_DELETE = "DELETE";
-    protected static final String METHOD_HEAD = "HEAD";
-    protected static final String METHOD_GET = "GET";
-    protected static final String METHOD_OPTIONS = "OPTIONS";
-    protected static final String METHOD_POST = "POST";
-    protected static final String METHOD_PUT = "PUT";
-    protected static final String METHOD_TRACE = "TRACE";
+    public static final String METHOD_DELETE = "DELETE";
+    public static final String METHOD_HEAD = "HEAD";
+    public static final String METHOD_GET = "GET";
+    public static final String METHOD_OPTIONS = "OPTIONS";
+    public static final String METHOD_POST = "POST";
+    public static final String METHOD_PUT = "PUT";
+    public static final String METHOD_TRACE = "TRACE";
 
     protected static final String HEADER_IFMODSINCE = "If-Modified-Since";
     protected static final String HEADER_LASTMOD = "Last-Modified";

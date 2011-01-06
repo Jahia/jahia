@@ -175,7 +175,7 @@ public class Find extends HttpServlet implements Controller {
 
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
             IOException, RepositoryException {
-        URLResolver urlResolver = new URLResolver(request.getPathInfo(), request.getServerName());
+        URLResolver urlResolver = new URLResolver(request.getPathInfo(), request.getServerName(), request);
         try {
             Query query = getQuery(request, response, urlResolver.getWorkspace(), urlResolver.getLocale());
             if (query == null) {

@@ -79,25 +79,26 @@ public class URLResolver {
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     private static final String DEFAULT_WORKSPACE = LIVE_WORKSPACE;
-    
-    private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";    
+
+    private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLResolver.class);
-    
+
     private static String[] servletsAllowingUrlMapping = new String[] {
             StringUtils.substringAfterLast(Render.getRenderServletPath(), "/")
     };
 
     private String urlPathInfo = null;
-    private String servletPart;    
+    private String servletPart;
     private String workspace;
     private Locale locale;
     private String path;
     private String siteKey;
     private boolean mappable = false;
-    
+
     private String redirectUrl;
     private String vanityUrl;
+    private String method;
 
     public void setRenderContext(RenderContext renderContext) {
         this.renderContext = renderContext;
@@ -110,22 +111,12 @@ public class URLResolver {
      * resolving URLs of incoming requests.
      *
      * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
-     * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName()) 
-     */
-    public URLResolver(String urlPathInfo, String serverName) {
-        this(urlPathInfo, serverName, null);
-    }
-    
-    /**
-     * Initializes an instance of this class. This constructor is mainly used when
-     * resolving URLs of incoming requests.
-     *
-     * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
      * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
      * @param request  the current HTTP servlet request object 
-     */    
+     */
     public URLResolver(String urlPathInfo, String serverName, HttpServletRequest request) {
         super();
+        this.method = request.getMethod();
         this.urlPathInfo = urlPathInfo;
         servletPart = StringUtils.substring(getUrlPathInfo(), 1,
                 StringUtils.indexOf(getUrlPathInfo(), "/", 1));
@@ -143,7 +134,7 @@ public class URLResolver {
                         if (request == null || StringUtils.isEmpty(request.getQueryString())) {
                             setRedirectUrl(defaultVanityUrl.getUrl());
                         } else {
-                            setRedirectUrl(defaultVanityUrl.getUrl() + "?" + request.getQueryString());                            
+                            setRedirectUrl(defaultVanityUrl.getUrl() + "?" + request.getQueryString());
                         }
                     }
                 } catch (PathNotFoundException e) {
@@ -207,7 +198,7 @@ public class URLResolver {
         }
         return isServletAllowingUrlMapping;
     }
-    
+
     protected boolean resolveUrlMapping(String serverName) {
         boolean mappingResolved = false;
         if (getSiteKey() == null) {
@@ -240,7 +231,7 @@ public class URLResolver {
                 for (VanityUrl vanityUrl : vanityUrls) {
                     if (vanityUrl.isActive()
                             && (StringUtils.isEmpty(getSiteKey()) || getSiteKey().equals(
-                                    vanityUrl.getSite()))) {
+                            vanityUrl.getSite()))) {
                         resolvedVanityUrl = vanityUrl;
                         break;
                     }
@@ -250,8 +241,8 @@ public class URLResolver {
                     locale = StringUtils.isEmpty(resolvedVanityUrl
                             .getLanguage()) ? DEFAULT_LOCALE
                             : LanguageCodeConverters
-                                    .languageCodeToLocale(resolvedVanityUrl
-                                            .getLanguage());
+                            .languageCodeToLocale(resolvedVanityUrl
+                                    .getLanguage());
                     path = StringUtils.substringBefore(resolvedVanityUrl
                             .getPath(), VANITY_URL_NODE_PATH_SEGMENT)
                             + ".html";
@@ -379,50 +370,57 @@ public class URLResolver {
      * @throws RepositoryException
      */
     protected JCRNodeWrapper resolveNode(final String workspace,
-            final Locale locale, final String path) throws RepositoryException {
+                                         final Locale locale, final String path) throws RepositoryException {
         if (logger.isDebugEnabled()) {
             logger.debug("Resolving node for workspace '" + workspace
                     + "' locale '" + locale + "' and path '" + path + "'");
         }
-        final String computePath = path.endsWith("/*")?path.substring(0,path.lastIndexOf("/*"))+".html":path;
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null,
                 workspace, new JCRCallback<JCRNodeWrapper>() {
                     public JCRNodeWrapper doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
-                        String nodePath = computePath;
-                        JCRNodeWrapper node;
-                        while (true) {
-                            int i = nodePath.lastIndexOf('.');
-                            if (i > nodePath.lastIndexOf('/')) {
-                                nodePath = nodePath.substring(0, i);
-                            } else {
-                                throw new PathNotFoundException("'" + nodePath + "'not found");
-                            }
-                            try {
+                        String nodePath = path.endsWith("/*")?path.substring(0,path.lastIndexOf("/*")):path;
+                        JCRNodeWrapper node = null;
+                        if (nodePath.indexOf(".") > 0 && nodePath.lastIndexOf("/") < nodePath.lastIndexOf(".")) {
+                            nodePath = nodePath.substring(0, nodePath.indexOf(".",nodePath.lastIndexOf('/')));
+                        }
+                        try {
+                            if (method.equals(Render.METHOD_GET)) {
                                 node = session.getNode(nodePath);
-                                break;
-                            } catch (PathNotFoundException ex) {
-                                // ignore it
                             }
+                            else {
+                                while (nodePath.lastIndexOf("/") > 0) {
+                                    try {
+                                        node = session.getNode(nodePath);
+                                        break;
+                                    } catch (PathNotFoundException ex) {
+                                        nodePath = nodePath.substring(0,nodePath.lastIndexOf("/"));
+                                    }
+                                }
+                            }
+                        } catch (PathNotFoundException ex) {
+                            throw new PathNotFoundException("'" + nodePath + "'not found");
+                        }
+                        if (node == null) {
+                            throw new PathNotFoundException("'" + nodePath + "'not found");
                         }
                         JCRSiteNode site = node.getResolveSite();
-
                         JCRSessionWrapper userSession = site != null
                                 && site.getDefaultLanguage() != null
                                 && site.isMixLanguagesActive() ? JCRSessionFactory
                                 .getInstance().getCurrentUserSession(workspace,
                                         locale)
                                 : JCRSessionFactory
-                                        .getInstance()
-                                        .getCurrentUserSession(
-                                                workspace,
-                                                locale,
-                                                null);
+                                .getInstance()
+                                .getCurrentUserSession(
+                                        workspace,
+                                        locale,
+                                        null);
 
                         try {
                             node = userSession.getNode(nodePath);
                         } catch (PathNotFoundException e) {
-                            throw new AccessDeniedException(computePath);
+                            throw new AccessDeniedException(path);
                         }
 
                         return node;

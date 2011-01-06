@@ -759,6 +759,17 @@ public final class JCRContentUtils {
     }
 
     /**
+     * Returns the last part of a path, so the last name. This method supports expanded form names in the path, so the
+     * last slash detection will be properly handled.
+     * @param path the path to get the name from
+     * @return the name of the leaf in the path.
+     */
+    public static String getNameFromPath(String path) {
+        String[] pathNames = splitJCRPath(path);
+        return pathNames[pathNames.length-1];
+    }
+
+    /**
      * Little utility method to retrieve or create a path, building it if necessary. For example let's say that we want
      * to get or create the path from a parentNode : messages/inbox . We can simply pass the parent node, the session
      * and the path to check, and it will either retrieve it if it exists, or create it if it doesn't.

@@ -44,6 +44,7 @@ public class GWTJahiaNodeSelectorType {
     public static final int RICHTEXT = 2;
     public static final int DATETIMEPICKER = 3;
     public static final int DATEPICKER = 4;
+    public static final int TEXTAREA = 5;
     public static final int PICKER = 9;
     public static final int CHECKBOX = 11;
     public static final int COLOR = 12;

@@ -95,13 +95,12 @@ public class FormFieldCreator {
                             ((NumberField) field).setAllowDecimals(true);
                             break;
                         default:
-                            if (propDefinition.getSelectorOptions().get("multiline") != null) {
-                                field = new TextArea();
-                            } else {
-                                field = new TextField<String>();
-                            }
+                            field = new TextField<String>();
                             break;
                     }
+                    break;
+                case GWTJahiaNodeSelectorType.TEXTAREA:
+                    field = new TextArea();
                     break;
                 case GWTJahiaNodeSelectorType.RICHTEXT:
                     field = new CKEditorField();

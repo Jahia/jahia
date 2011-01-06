@@ -194,6 +194,7 @@ public class Lexer {
 
     public static final String[] SMALLTEXT = {"text", "Text", "TEXT"};
     public static final String[] RICHTEXT = {"richtext", "RichText", "RICHTEXT"};
+    public static final String[] TEXTAREA = {"textarea", "TextArea", "TEXTAREA"};
     public static final String[] CHOICELIST = {"choicelist", "Choicelist", "CHOICELIST"};
     public static final String[] DATETIMEPICKER = {"datetimepicker", "DateTimePicker", "DATETIMEPICKER"};
     public static final String[] DATEPICKER = {"datepicker", "DatePicker", "DATEPICKER"};

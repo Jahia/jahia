@@ -37,7 +37,7 @@
 
 [jmix:description] mixin
  itemtype = metadata
-  - jcr:description (string) i18n itemtype = metadata
+  - jcr:description (string,textarea) i18n itemtype = metadata
 
 [jmix:keywords] mixin
  extends = nt:hierarchyNode, jnt:content, jnt:page
@@ -104,10 +104,11 @@
 //---------------------------------------------------------
 
 [jnt:role] > nt:base, mix:referenceable, mix:title, jmix:autoPublish, jmix:observable
- - jcr:description (string) i18n itemtype = content
- - j:nodeTypes (string) protected hidden multiple
+ - jcr:description (string,textarea) i18n itemtype = content
+ - j:nodeTypes (string,choicelist[nodetypes=nt:base,resourceBundle]) multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
  - j:dependencies (weakreference) protected hidden multiple < jnt:role
+ - j:hidden (boolean) protected hidden
 
 [jnt:roles] > nt:base, mix:versionable
  + * (jnt:role)

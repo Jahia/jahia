@@ -17,7 +17,7 @@
 - string (string)
 - stringWithDefault (string) = 'string test'
 - stringText (string, text) indexed=no
-- stringTextMultiline (string, text[multiline]) indexed=no
+- stringTextMultiline (string, textarea) indexed=no
 - stringRichText (string, richtext) i18n
 - mandatoryString (string) mandatory
 - alphanumericString (string) < '[a-zA-Z1-9]*'
@@ -77,7 +77,7 @@ orderable
 - alphanumericString (string) i18n < '[a-zA-Z0-9]*'
 - longBetween1and10 (long) < '[1,10]'
 - stringText (string, text) indexed=no
-- stringTextMultiline (string, text[multiline]) indexed=no
+- stringTextMultiline (string, textarea) indexed=no
 - stringRichText (string, richtext) i18n
 - mandatoryString (string) mandatory
 - nofulltextString (string) nofulltext

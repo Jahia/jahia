@@ -48,6 +48,7 @@ public class SelectorType {
     public static final int RICHTEXT = 2;
     public static final int DATETIMEPICKER = 3;
     public static final int DATEPICKER = 4;
+    public static final int TEXTAREA = 5;
     public static final int CONTENTPICKER = 9;
     public static final int FILEUPLOAD = 10;
     public static final int CHECKBOX = 11;
@@ -61,6 +62,7 @@ public class SelectorType {
     public static final String SELECTORNAME_RICHTEXT = "RichText";
     public static final String SELECTORNAME_DATETIMEPICKER = "DateTimePicker";
     public static final String SELECTORNAME_DATEPICKER = "DatePicker";
+    public static final String SELECTORNAME_TEXTAREA = "TextArea";
     public static final String SELECTORNAME_CONTENTPICKER = "ContentPicker";
     public static final String SELECTORNAME_FILEUPLOAD = "FileUpload";
     public static final String SELECTORNAME_CHECKBOX = "Checkbox";
@@ -77,6 +79,7 @@ public class SelectorType {
         nameToValue.put(SELECTORNAME_RICHTEXT, RICHTEXT);
         nameToValue.put(SELECTORNAME_DATETIMEPICKER, DATETIMEPICKER);
         nameToValue.put(SELECTORNAME_DATEPICKER, DATEPICKER);
+        nameToValue.put(SELECTORNAME_TEXTAREA, TEXTAREA);
         nameToValue.put(SELECTORNAME_CONTENTPICKER, CONTENTPICKER);
         nameToValue.put(SELECTORNAME_FILEUPLOAD, FILEUPLOAD);
         nameToValue.put(SELECTORNAME_CHECKBOX, CHECKBOX);
@@ -88,6 +91,7 @@ public class SelectorType {
         valueToName.put(RICHTEXT, SELECTORNAME_RICHTEXT);
         valueToName.put(DATETIMEPICKER, SELECTORNAME_DATETIMEPICKER);
         valueToName.put(DATEPICKER, SELECTORNAME_DATEPICKER);
+        valueToName.put(TEXTAREA, SELECTORNAME_TEXTAREA);
         valueToName.put(CONTENTPICKER, SELECTORNAME_CONTENTPICKER);
         valueToName.put(FILEUPLOAD, SELECTORNAME_FILEUPLOAD);
         valueToName.put(CHECKBOX, SELECTORNAME_CHECKBOX);

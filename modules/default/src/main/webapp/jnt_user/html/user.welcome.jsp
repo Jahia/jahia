@@ -4,10 +4,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<jcr:nodeProperty node="${currentNode}" name="j:firstName" var="firstname"/>
+<jcr:nodeProperty node="${currentNode}" name="j:lastname" var="lastname"/>
 
-<c:forEach items="${currentNode.properties}" var="property">
-    <c:if test="${property.name == 'j:firstName'}"><c:set var="firstname" value="${property.string}"/></c:if>
-    <c:if test="${property.name == 'j:lastName'}"><c:set var="lastname" value="${property.string}"/></c:if>
-</c:forEach>
-
-<h3>Welcome, ${firstname}&nbsp;${lastname}.</h3>
+<h3><fmt:message key="welcome"/>
+<c:choose>
+        <c:when test="${empty firstname || empty lastname}">
+           , ${currentNode.name}
+        </c:when>
+        <c:otherwise>
+            , ${firstname}&nbsp;${lastname}.
+        </c:otherwise>
+</c:choose>
+</h3>

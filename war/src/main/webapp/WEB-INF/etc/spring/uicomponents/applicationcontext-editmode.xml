@@ -177,7 +177,6 @@
         <property name="engineTabs">
             <list>
                 <ref bean="Engine.Tab.Content"/>
-                <ref bean="Engine.Tab.ContentAndLayout"/>
                 <ref bean="Engine.Tab.ListOrdering"/>
                 <ref bean="Engine.Tab.Layout"/>
                 <ref bean="Engine.Tab.Options"/>
@@ -722,7 +721,6 @@
         <property name="engineTabs">
             <list>
                 <ref bean="Engine.Tab.Content"/>
-                <ref bean="Engine.Tab.ContentAndLayout"/>
                 <ref bean="Engine.Tab.ListOrdering"/>
                 <ref bean="Engine.Tab.Layout"/>
                 <ref bean="Engine.Tab.Metadata"/>

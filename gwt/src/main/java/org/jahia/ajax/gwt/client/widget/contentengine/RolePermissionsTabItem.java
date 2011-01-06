@@ -32,12 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.LoadListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -110,83 +108,91 @@ public class RolePermissionsTabItem extends EditEngineTabItem {
                 boxes.put(currentNode.getPath(), checkbox);
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {
-                        if (checkbox.getValue()) {
-                            selection.add(currentNode);
+                        try {
+                            if ((Boolean) ((FieldEvent) event).getValue()) {
+                                selection.add(currentNode);
 
-                            // Update dependencies
-                            List<String> toCheck = dependencies.get(currentNode.getPath());
-                            if (toCheck != null) {
-                                for (String s1 : toCheck) {
-                                    CheckBox checkBox = boxes.get(s1);
-                                    if (checkBox!=null && !checkBox.getValue()) {
-                                        checkBox.setValue(true);
-                                    }
-                                }
-                            }
-
-                            // Update children
-                            checkbox.setData("partial", null);
-                            List<GWTJahiaNode> l = store.getChildren(currentNode, true);
-                            for (GWTJahiaNode node : l) {
-                                CheckBox b = boxes.get(node.getPath());
-                                b.setValue(true);
-                                selection.remove(node);
-                            }
-
-                            // If all siblings set, set parent
-                            if (parentItem != null) {
-                                CheckBox parentBox = boxes.get(parentItem.getPath());
-                                if (!parentBox.getValue()) {
-                                    List<GWTJahiaNode> siblings = store.getChildren(parentItem);
-                                    boolean checkParent = true;
-                                    for (GWTJahiaNode sibling : siblings) {
-                                        checkParent &= boxes.get(sibling.getPath()).getValue();
-                                    }
-                                    if (checkParent) {
-                                        parentBox.setData("partial", null);
-                                        parentBox.setValue(true);
-                                    }
-                                }
-                            }
-                        } else {
-                            selection.remove(currentNode);
-
-                            // Update dependencies
-                            Set<String> toCheck = dependencies.keySet();
-                            for (String s1 : toCheck) {
-                                if (dependencies.get(s1).contains(currentNode.getPath())) {
-                                    CheckBox checkBox = boxes.get(s1);
-                                    if (checkBox != null && checkBox.getValue()) {
-                                        checkBox.setValue(false);
-                                    }
-                                }
-                            }
-
-                            // Uncheck parent
-                            if (parentItem != null) {
-                                CheckBox parentBox = boxes.get(parentItem.getPath());
-                                if (parentBox.getValue()) {
-                                    parentBox.setData("partial", Boolean.TRUE);
-                                    parentBox.setValue(false);
-
-                                    List<GWTJahiaNode> siblings = store.getChildren(parentItem);
-                                    for (GWTJahiaNode node : siblings) {
-                                        if (boxes.get(node.getPath()).getValue()) {
-                                            selection.add(node);
+                                // Update dependencies
+                                List<String> toCheck = dependencies.get(currentNode.getPath());
+                                if (toCheck != null) {
+                                    for (String s1 : toCheck) {
+                                        CheckBox checkBox = boxes.get(s1);
+                                        if (checkBox!=null && !checkBox.getValue()) {
+                                            checkBox.setValue(true);
                                         }
                                     }
                                 }
-                            }
 
-                            // Update children
-                            if (checkbox.getData("partial") == null) {
+                                // Update children
                                 checkbox.setData("partial", null);
                                 List<GWTJahiaNode> l = store.getChildren(currentNode, true);
                                 for (GWTJahiaNode node : l) {
                                     CheckBox b = boxes.get(node.getPath());
-                                    b.setValue(false);
+                                    if (b != null) {
+                                        b.setValue(true);
+                                    }
+                                    selection.remove(node);
+                                }
+
+                                // If all siblings set, set parent
+                                if (parentItem != null) {
+                                    CheckBox parentBox = boxes.get(parentItem.getPath());
+                                    if (!parentBox.getValue()) {
+                                        List<GWTJahiaNode> siblings = store.getChildren(parentItem);
+                                        boolean checkParent = true;
+                                        for (GWTJahiaNode sibling : siblings) {
+                                            checkParent &= selection.contains(sibling);
+                                        }
+                                        if (checkParent) {
+                                            parentBox.setData("partial", null);
+                                            parentBox.setValue(true);
+                                        }
+                                    }
+                                }
+                            } else {
+                                selection.remove(currentNode);
+
+                                // Update dependencies
+                                Set<String> toCheck = dependencies.keySet();
+                                for (String s1 : toCheck) {
+                                    if (dependencies.get(s1).contains(currentNode.getPath())) {
+                                        CheckBox checkBox = boxes.get(s1);
+                                        if (checkBox != null && checkBox.getValue()) {
+                                            checkBox.setValue(false);
+                                        }
+                                    }
+                                }
+
+                                // Uncheck parent
+                                if (parentItem != null) {
+                                    CheckBox parentBox = boxes.get(parentItem.getPath());
+                                    if (parentBox.getValue()) {
+                                        parentBox.setData("partial", Boolean.TRUE);
+                                        parentBox.setValue(false);
+
+                                        List<GWTJahiaNode> siblings = store.getChildren(parentItem);
+                                        for (GWTJahiaNode node : siblings) {
+                                                if (!node.getPath().equals(currentNode.getPath())) {
+                                                    selection.add(node);
+                                                }
+                                        }
+                                    }
+                                }
+
+                                // Update children
+                                if (checkbox.getData("partial") == null) {
+                                    checkbox.setData("partial", null);
+                                    List<GWTJahiaNode> l = store.getChildren(currentNode, true);
+                                    for (GWTJahiaNode node : l) {
+                                        CheckBox b = boxes.get(node.getPath());
+                                        if (b != null) {
+                                            b.setValue(false);
+                                        }
+                                    }
                                 }
                             }
+                        } catch (Exception e) {
+                            Log.debug("Exception on "+currentNode.getPath(), e);
                         }
                     }
                 });

@@ -56,7 +56,8 @@ public class GWTBitSet implements Cloneable, Serializable {
 
     public Object clone() {
         GWTBitSet result = new GWTBitSet();
-        result.words = words.clone();
+        result.words = new long[words.length];
+        System.arraycopy(words, 0, result.words, 0, words.length);
         return result;
     }
 

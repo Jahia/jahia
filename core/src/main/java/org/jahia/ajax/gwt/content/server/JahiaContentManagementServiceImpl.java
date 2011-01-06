@@ -43,6 +43,7 @@ import net.htmlparser.jericho.StartTag;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
+import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -283,7 +284,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         Privilege[] p = new JahiaPrivilegeRegistry(retrieveCurrentSession().getWorkspace().getNamespaceRegistry()).getRegisteredPrivileges();
         List<String> l = new ArrayList<String>();
         for (Privilege privilege : p) {
-            l.add(privilege.getName());
+            l.add(((PrivilegeImpl)privilege).getPrefixedName());
         }
         config.setPermissions(l);
     }

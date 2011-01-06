@@ -387,6 +387,18 @@ public final class JCRContentUtils {
         this.fileExtensionIcons = UnmodifiableMap.decorate(fileExtensionIcons);
     }
 
+    public static String getExpandedName(String name, NamespaceRegistry namespaceRegistry) throws RepositoryException {
+        if (!name.startsWith("{")) {
+            if (name.contains(":")) {
+                name = "{" + namespaceRegistry.getURI(StringUtils.substringBefore(name, ":")) + "}" +
+                        StringUtils.substringAfter(name, ":");
+            } else {
+                name = "{}" + name;
+            }
+        }
+        return name;
+    }
+
     /**
      * Return a map of mime types (file formats) to be available in the
      * advanced search form.

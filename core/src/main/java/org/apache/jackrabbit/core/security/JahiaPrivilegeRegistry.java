@@ -34,6 +34,7 @@ package org.apache.jackrabbit.core.security;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.authorization.Permission;
+import org.jahia.services.content.JCRContentUtils;
 
 import javax.jcr.*;
 import javax.jcr.security.AccessControlException;
@@ -102,23 +103,11 @@ public final class JahiaPrivilegeRegistry {
             subPrivileges.add(registerPrivileges(subNode, privileges));
         }
 
-        String name = getExpandedName(node.getName(), node.getSession().getWorkspace().getNamespaceRegistry());
+        String expandedName = JCRContentUtils.getExpandedName(node.getName(), node.getSession().getWorkspace().getNamespaceRegistry());
         boolean isAbstract = node.hasProperty("j:isAbstract") && node.getProperty("j:isAbstract").getBoolean();
-        Privilege priv = new PrivilegeImpl(name, isAbstract, subPrivileges);
+        Privilege priv = new PrivilegeImpl(node.getName(), expandedName, isAbstract, subPrivileges);
         privileges.add(priv);
         return priv;
-    }
-
-    private static String getExpandedName(String name, NamespaceRegistry namespaceRegistry) throws RepositoryException {
-        if (!name.startsWith("{")) {
-            if (name.contains(":")) {
-                name = "{" + namespaceRegistry.getURI(StringUtils.substringBefore(name, ":")) + "}" +
-                        StringUtils.substringAfter(name, ":");
-            } else {
-                name = "{}" + name;
-            }
-        }
-        return name;
     }
 
     public Set<Privilege> getPrivileges(int permissions, String workspace) throws AccessControlException, RepositoryException {
@@ -155,7 +144,7 @@ public final class JahiaPrivilegeRegistry {
             privilegeName = StringUtils.substringAfterLast(privilegeName, "/");
         }
 
-        privilegeName = getExpandedName(privilegeName, ns);
+        privilegeName = JCRContentUtils.getExpandedName(privilegeName, ns);
 
         String s = privilegeName + "_" + workspaceName;
         if (map.containsKey(s)) {
@@ -168,7 +157,7 @@ public final class JahiaPrivilegeRegistry {
     }
 
     public Privilege getPrivilege(Node node) throws AccessControlException, RepositoryException {
-        String privilegeName = getExpandedName(node.getName(), ns);
+        String privilegeName = JCRContentUtils.getExpandedName(node.getName(), ns);
         if (map.containsKey(privilegeName)) {
             return map.get(privilegeName);
         } else {
@@ -176,61 +165,5 @@ public final class JahiaPrivilegeRegistry {
         }
     }
 
-
-    static class PrivilegeImpl implements Privilege {
-        private String name;
-        private boolean isAbstract;
-        private Set<Privilege> declaredAggregates;
-        private Set<Privilege> aggregates;
-
-        PrivilegeImpl(String name, boolean anAbstract, Set<Privilege> declaredAggregates) {
-            this.name = name;
-            isAbstract = anAbstract;
-            this.declaredAggregates = declaredAggregates;
-            this.aggregates = new HashSet<Privilege>(declaredAggregates);
-            for (Privilege priv : declaredAggregates) {
-                for (Privilege privilege : priv.getAggregatePrivileges()) {
-                    aggregates.add(privilege);
-                }
-            }
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public boolean isAbstract() {
-            return isAbstract;
-        }
-
-        public boolean isAggregate() {
-            return !declaredAggregates.isEmpty();
-        }
-
-        public Privilege[] getDeclaredAggregatePrivileges() {
-            return declaredAggregates.toArray(new Privilege[declaredAggregates.size()]);
-        }
-
-        public Privilege[] getAggregatePrivileges() {
-            return aggregates.toArray(new Privilege[aggregates.size()]);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            PrivilegeImpl that = (PrivilegeImpl) o;
-
-            if (name != null ? !name.equals(that.name) : that.name != null) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return name != null ? name.hashCode() : 0;
-        }
-    }
 
 }

@@ -38,7 +38,7 @@ public class WebClippingFilter extends AbstractFilter {
     static private final MultiThreadedHttpConnectionManager HTPP_CONNECTION_MANAGER = new MultiThreadedHttpConnectionManager();
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (resource.getNode().hasProperty("j:url") && resource.getNode().isNodeType("jnt:webClipping")) {
+        if (resource.getNode().hasProperty("url") && resource.getNode().isNodeType("jnt:webClipping")) {
             return getResponse(renderContext, resource, chain);
         } else {
             return null;
@@ -56,14 +56,14 @@ public class WebClippingFilter extends AbstractFilter {
         Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
         httpClient.getParams().setContentCharset("UTF-8");
 
-        String url = resource.getNode().getPropertyAsString("j:url");
+        String url = resource.getNode().getPropertyAsString("url");
         HttpMethodBase httpMethod = new GetMethod(url);
         httpMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
         httpClient.getParams().getContentCharset();
 
         try {
-            httpMethod.getParams().setParameter("http.connection.timeout", resource.getNode().getPropertyAsString("j:connectionTimeout"));
-            httpMethod.getParams().setParameter("http.protocol.expect-continue", resource.getNode().getPropertyAsString("j:expectContinue"));
+            httpMethod.getParams().setParameter("http.connection.timeout", resource.getNode().getPropertyAsString("connectionTimeout"));
+            httpMethod.getParams().setParameter("http.protocol.expect-continue", resource.getNode().getPropertyAsString("expectContinue"));
             httpMethod.getParams().setCookiePolicy(CookiePolicy.RFC_2965);
             int statusCode = httpClient.executeMethod(httpMethod);
 
@@ -82,8 +82,8 @@ public class WebClippingFilter extends AbstractFilter {
                         httpMethod = new GetMethod(tmpURL);
                         // Set a default retry handler (see httpclient doc).
                         httpMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-                        httpMethod.getParams().setParameter("http.connection.timeout", resource.getNode().getPropertyAsString("j:connectionTimeout"));
-                        httpMethod.getParams().setParameter("http.protocol.expect-continue", resource.getNode().getPropertyAsString("j:expectContinue"));
+                        httpMethod.getParams().setParameter("http.connection.timeout", resource.getNode().getPropertyAsString("connectionTimeout"));
+                        httpMethod.getParams().setParameter("http.protocol.expect-continue", resource.getNode().getPropertyAsString("expectContinue"));
                         httpMethod.getParams().setCookiePolicy(CookiePolicy.RFC_2965);
                     } else {
                         httpMethod = new GetMethod(redirectLocation);
@@ -128,7 +128,7 @@ public class WebClippingFilter extends AbstractFilter {
                     }
                 }
                 final String s = contentCharset.toUpperCase();
-                return rewriteBody(new String(responseBodyAsBytes, s), resource.getNode().getPropertyAsString("j:url"), s, resource, renderContext);
+                return rewriteBody(new String(responseBodyAsBytes, s), resource.getNode().getPropertyAsString("url"), s, resource, renderContext);
             }
         } catch (Exception e) {
             e.printStackTrace();

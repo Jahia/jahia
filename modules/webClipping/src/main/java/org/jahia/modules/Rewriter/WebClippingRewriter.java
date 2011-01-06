@@ -586,7 +586,7 @@ public final class WebClippingRewriter {
 
     private void rewriteLinkTag(Source source, StringBuffer stringBuffer, OutputDocument document, Resource resource)
             throws MalformedURLException {
-        boolean includeCssLink = Boolean.valueOf(resource.getNode().getPropertyAsString("j:includeCssLink"));
+        boolean includeCssLink = Boolean.valueOf(resource.getNode().getPropertyAsString("includeCssLink"));
         List aStartTag = source.findAllStartTags(Tag.LINK);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
@@ -662,18 +662,18 @@ public final class WebClippingRewriter {
     private OutputDocument trunkDocument(OutputDocument document, Resource resource) {
         // Get the specified tag
         String tag = "";
-        if (resource.getNode().getPropertyAsString("j:specificTag") != null) {
-            tag = resource.getNode().getPropertyAsString("j:specificTag");
+        if (resource.getNode().getPropertyAsString("specificTag") != null) {
+            tag = resource.getNode().getPropertyAsString("specificTag");
         }
         // Get the specific attribute name
         String attributeName = "";
-        if (resource.getNode().getPropertyAsString("j:specificAttr") != null) {
-            attributeName = resource.getNode().getPropertyAsString("j:specificAttr");
+        if (resource.getNode().getPropertyAsString("specificAttr") != null) {
+            attributeName = resource.getNode().getPropertyAsString("specificAttr");
         }
         // Get the specific attribute value
         String attributeValue = "";
-        if (resource.getNode().getPropertyAsString("j:specificAttrValue") != null) {
-            attributeValue = resource.getNode().getPropertyAsString("j:specificAttrValue");
+        if (resource.getNode().getPropertyAsString("specificAttrValue") != null) {
+            attributeValue = resource.getNode().getPropertyAsString("specificAttrValue");
         }
         OutputDocument outputDocument = document;
         outputDocument = getTrunkedDocument(tag, attributeName, attributeValue, outputDocument.toString());

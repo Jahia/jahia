@@ -32,7 +32,6 @@
 
 package org.jahia.services.applications;
 
-import com.google.common.collect.ImmutableSet;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.container.PortletWindow;
@@ -51,6 +50,9 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.rbac.PermissionIdentity;
+import org.jahia.services.rbac.RoleIdentity;
+import org.jahia.services.rbac.Role;
+import org.jahia.services.rbac.jcr.RoleImpl;
 import org.jahia.services.rbac.jcr.RoleManager;
 import org.jahia.services.rbac.jcr.RoleService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -123,6 +125,21 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     private PlutoServices plutoServices;
     private RoleService roleService;
 
+    /**
+     * This next map is used to map portlet permissions to Jahia's default roles.
+     */
+    private Map<String, String> defaultPortletPermissionMappings;
+
+    /**
+     * This next map is used to map web application roles to Jahia's default roles.
+     */
+    private Map<String, String> defaultWebAppRoleMappings;
+
+    /**
+     * This next map is used to map portlet modes to Jahia's default roles.
+     */
+    private Map<String, String> defaultPortletModeMappings;
+
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
     }
@@ -149,6 +166,18 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
     public void setRoleService(RoleService roleService) {
         this.roleService = roleService;
+    }
+
+    public void setDefaultPortletPermissionMappings(Map<String, String> defaultPortletPermissionMappings) {
+        this.defaultPortletPermissionMappings = defaultPortletPermissionMappings;
+    }
+
+    public void setDefaultWebAppRoleMappings(Map<String, String> defaultWebAppRoleMappings) {
+        this.defaultWebAppRoleMappings = defaultWebAppRoleMappings;
+    }
+
+    public void setDefaultPortletModeMappings(Map<String, String> defaultPortletModeMappings) {
+        this.defaultPortletModeMappings = defaultPortletModeMappings;
     }
 
     /**
@@ -406,7 +435,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     wrapper.setProperty("j:description", app.getDescription());
                     wrapper.setProperty("j:type", app.getType());
                     wrapper.setProperty("j:isVisible", app.isVisible());
-                    wrapper.revokeAllRoles();
+                    // wrapper.revokeAllRoles(); deactivated for the moment, will try to do better with the new roles.
                     session.save();
                     app.setID(wrapper.getIdentifier());
 
@@ -415,26 +444,54 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
                     JCRContentUtils.registerNamespace(session, getWebAppPrefix(app), getWebAppNamespaceURI(app));
 
-                    // first let's check if the portlets node exists.
+                    // now let's add the web application roles as Jahia permissions, that we will map to Jahia roles
+                    // if a default mapping is provided in the service's configuration.
+
                     String webappRolesPath = "/permissions/webapps/" + app.getName() + "/"+ getWebAppQualifiedNodeName(app, "roles");
                     JCRNodeWrapper webappRolesPermNode = getOrCreatePermissionNode(webappRolesPath, session);
                     session.save();
+
                     try {
                         WebAppContext appContext = servletContextManager.getApplicationContext(app);
                         Iterator<String> updatedRoles = appContext.getRoles().iterator();
-                        String role;
+                        String webAppRoleName;
                         while (updatedRoles.hasNext()) {
-                            role = updatedRoles.next();
-                            PermissionIdentity permission = new PermissionIdentity(getWebAppQualifiedNodeName(app, role));
+                            webAppRoleName = updatedRoles.next();
+                            PermissionIdentity permission = new PermissionIdentity(getWebAppQualifiedNodeName(app, webAppRoleName));
                             permission.setPath(webappRolesPath + "/" + permission.getName());
                             roleService.savePermission(permission);
+
+                            // if a mapping to a Jahia role is defined, let's add it.
+                            if (defaultWebAppRoleMappings != null) {
+                                String jahiaRolePath = defaultWebAppRoleMappings.get(webAppRoleName);
+                                if (jahiaRolePath != null) {
+                                    grantPermissionToRole(permission, jahiaRolePath);
+                                }
+                            }
+
                         }
                     } catch (JahiaException e) {
                         logger.error("Error while retrieving web application roles", e);
                     }
 
+                    // now let's iterate over the portlets and setup the appropriate permission nodes for the default
+                    // permissions and portlet modes. Mappings to role if defined in the service's configuration will
+                    // also be done.
+
                     for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
                         JCRContentUtils.registerNamespace(session, getEntryPointPrefix(app, entryPointDefinition), getEntryPointNamespaceURI(app, entryPointDefinition));
+
+                        // let's add the default portlet permissions
+
+                        String createInstancesPermPath = "/permissions/webapps/" + app.getName() + "/" + getWebAppQualifiedNodeName(app, "portlets") + "/" + getPortletQualifiedNodeName(app, entryPointDefinition, "createInstance");
+                        JCRNodeWrapper createInstancesPermNode = getOrCreatePermissionNode(createInstancesPermPath, session);
+                        session.save();
+                        if (defaultPortletPermissionMappings != null) {
+                            String jahiaRolePath = defaultPortletPermissionMappings.get("createInstance");
+                            PermissionIdentity permission = new PermissionIdentity(getPortletQualifiedNodeName(app, entryPointDefinition, "createInstance"));
+                            permission.setPath(createInstancesPermPath);
+                            grantPermissionToRole(permission, jahiaRolePath);
+                        }
 
                         String portletModePath = "/permissions/webapps/" + app.getName() + "/" + getWebAppQualifiedNodeName(app, "portlets") + "/" + getPortletQualifiedNodeName(app, entryPointDefinition, "modes");
                         JCRNodeWrapper portletModePermNode = getOrCreatePermissionNode(portletModePath, session);
@@ -443,12 +500,18 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                             PermissionIdentity permission = new PermissionIdentity(getPortletQualifiedNodeName(app, entryPointDefinition, portletMode.toString()));
                             permission.setPath(portletModePath + "/" + permission.getName());
                             roleService.savePermission(permission);
+
+                            // if a mapping to a Jahia role is defined, let's add it.
+                            if (defaultPortletModeMappings != null) {
+                                String jahiaRolePath = defaultPortletModeMappings.get(portletMode.toString());
+                                if (jahiaRolePath != null) {
+                                    grantPermissionToRole(permission, jahiaRolePath);
+                                }
+                            }
+
                         }
                     }
 
-// todo : default permissions ?
-//                    wrapper.changeRoles("g:guest", "r-");
-//                    wrapper.changeRoles("u:root", "rw");
                     return true;
                 }
             });
@@ -457,6 +520,17 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         }
         putInApplicationCache(app);
         return ret;
+    }
+
+    private void grantPermissionToRole(PermissionIdentity permission, String jahiaRolePath) throws RepositoryException {
+        RoleIdentity role = new RoleIdentity(JCRContentUtils.getNameFromPath(jahiaRolePath));
+        role.setPath(jahiaRolePath);
+        RoleImpl roleImpl = roleService.getRole(role);
+        if (roleImpl != null) {
+            roleService.grantPermission(role, permission);
+        } else {
+            logger.warn("Couldn't find Jahia role " + jahiaRolePath + " to map permission " + permission.getName() + ", will not map the role");
+        }
     }
 
     private JCRNodeWrapper getOrCreatePermissionNode(String path, JCRSessionWrapper session) throws RepositoryException {

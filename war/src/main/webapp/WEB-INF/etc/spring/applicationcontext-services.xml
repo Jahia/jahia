@@ -58,6 +58,23 @@
 		<property name="servletContextManager" ref="ServletContextManager" />
 		<property name="plutoServices" ref="PlutoServices" />
         <property name="roleService" ref="org.jahia.services.rbac.jcr.RoleService" />
+        <property name="defaultPortletPermissionMappings">
+            <map>
+                <entry key="createInstance" value="/roles/editor" />
+            </map>
+        </property>
+        <property name="defaultWebAppRoleMappings">
+            <map>
+                <entry key="tomcat" value="/roles/administrator" />
+            </map>
+        </property>
+        <property name="defaultPortletModeMappings">
+            <map>
+                <entry key="view" value="/roles/visitor" />
+                <entry key="edit" value="/roles/editor" />
+                <entry key="help" value="/roles/editor" />
+            </map>
+        </property>
 	</bean>
     <bean id="JahiaFetcherService" class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate"
                   factory-method="getInstance"/>

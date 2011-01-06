@@ -66,6 +66,8 @@ public class GWTSidePanelTab  implements Serializable {
     private List<String> tableColumnKeys;
     private String icon;
 
+    private String requiredPermission;
+
     public GWTSidePanelTab() {
         treeColumns = new ArrayList<GWTColumn>();
         treeColumnKeys = new ArrayList<String>();
@@ -102,16 +104,6 @@ public class GWTSidePanelTab  implements Serializable {
     public void setTabItem(SidePanelTabItem tabItem) {
         this.tabItem = tabItem;
     }
-
-
-
-
-
-
-
-
-
-
 
     public GWTJahiaToolbar getTreeContextMenu() {
         return treeContextMenu;
@@ -173,5 +165,13 @@ public class GWTSidePanelTab  implements Serializable {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
     }
 }

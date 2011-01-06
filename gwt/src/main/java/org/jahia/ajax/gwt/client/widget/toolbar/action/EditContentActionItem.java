@@ -33,7 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
@@ -49,7 +49,8 @@ public class EditContentActionItem extends BaseActionItem {
     }
 
     public void handleNewLinkerSelection() {
-        final GWTJahiaNode singleSelection = linker.getSelectionContext().getSingleSelection();
-        setEnabled(singleSelection != null && linker.getSelectionContext().isWriteable());
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        final GWTJahiaNode singleSelection = lh.getSingleSelection();
+        setEnabled(singleSelection != null && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));
     }
 }

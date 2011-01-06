@@ -260,7 +260,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="templatesSelector"/>
+                    <property name="requiredPermission" value="templatesSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="createContent"/>
@@ -270,7 +270,7 @@
                         </bean>
                     </property>
 
-                    <property name="visibility" value="createSelector"/>
+                    <property name="requiredPermission" value="createSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="content"/>
@@ -327,7 +327,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="contentSelector"/>
+                    <property name="requiredPermission" value="contentSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="filesimagesthemes"/>
@@ -384,7 +384,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="filesAndImagesSelector"/>
+                    <property name="requiredPermission" value="filesAndImagesSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="portlets"/>
@@ -437,7 +437,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="portletsSelector"/>
+                    <property name="requiredPermission" value="portletsSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="pages"/>
@@ -517,7 +517,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="sitemapSelector"/>
+                    <property name="requiredPermission" value="sitemapSelector"/>
                 </bean>
                 <ref bean="sidePanelTab.search"/>
             </list>
@@ -822,7 +822,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="sitemapSelector"/>
+                    <property name="requiredPermission" value="sitemapSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="createContent"/>
@@ -831,7 +831,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateContentTabItem">
                         </bean>
                     </property>
-                    <property name="visibility" value="createSelector"/>
+                    <property name="requiredPermission" value="createSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="content"/>
@@ -897,7 +897,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="contentSelector"/>
+                    <property name="requiredPermission" value="contentSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="filesimages"/>
@@ -956,7 +956,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="filesAndImagesSelector"/>
+                    <property name="requiredPermission" value="filesAndImagesSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="portlets"/>
@@ -1012,7 +1012,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="portletsSelector"/>
+                    <property name="requiredPermission" value="portletsSelector"/>
                 </bean>
                 <ref bean="sidePanelTab.search"/>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -1033,7 +1033,7 @@
                             <value>publicationInfo,20</value>
                         </list>
                     </property>
-                    <property name="visibility" value="categoriesSelector"/>
+                    <property name="requiredPermission" value="categoriesSelector"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="lastContent"/>
@@ -1074,7 +1074,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="visibility" value="latestSelector"/>
+                    <property name="requiredPermission" value="latestSelector"/>
                 </bean>
             </list>
         </property>
@@ -1111,7 +1111,7 @@
                 <property name="numberResults" value="20"/>
             </bean>
         </property>
-        <property name="visibility" value="searchSelector"/>
+        <property name="requiredPermission" value="searchSelector"/>
         <property name="tableContextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -1146,6 +1146,7 @@
     <bean id="Engine.Tab.Content" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="content"/>
         <property name="titleKey" value="label.engineTab.content"/>
+        <property name="requiredPermission" value="viewContentTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
                 <property name="hideForTypes">
@@ -1169,6 +1170,7 @@
     <bean id="Engine.Tab.ContentAndLayout" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="content"/>
         <property name="titleKey" value="label.engineTab.content"/>
+        <property name="requiredPermission" value="viewContentTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
                 <property name="dataType">
@@ -1184,6 +1186,7 @@
     <bean id="Engine.Tab.ListOrdering" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="listOrdering"/>
         <property name="titleKey" value="label.engineTab.content"/>
+        <property name="requiredPermission" value="viewContentTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ListOrderingContentTabItem">
                 <property name="showForTypes">
@@ -1198,6 +1201,7 @@
     <bean id="Engine.Tab.Layout" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="layout"/>
         <property name="titleKey" value="label.engineTab.layout"/>
+        <property name="requiredPermission" value="viewLayoutTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.LayoutTabItem">
                 <property name="hideForTypes">
@@ -1219,6 +1223,7 @@
     <bean id="Engine.Tab.Metadata" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="metadata"/>
         <property name="titleKey" value="label.engineTab.metadata"/>
+        <property name="requiredPermission" value="viewMetadataTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
                 <property name="dataType">
@@ -1239,6 +1244,7 @@
     <bean id="Engine.Tab.Options" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="options"/>
         <property name="titleKey" value="label.engineTab.options"/>
+        <property name="requiredPermission" value="viewOptionsTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
                 <property name="dataType">
@@ -1253,6 +1259,7 @@
     <bean id="Engine.Tab.Tags" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="tags"/>
         <property name="titleKey" value="label.engineTab.tags"/>
+        <property name="requiredPermission" value="viewTagsTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.TagsTabItem">
                 <property name="hideForTypes">
@@ -1269,6 +1276,7 @@
     <bean id="Engine.Tab.Categories" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="categories"/>
         <property name="titleKey" value="label.engineTab.categories"/>
+        <property name="requiredPermission" value="viewCategoriesTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CategoriesTabItem">
                 <property name="hideForTypes">
@@ -1284,6 +1292,7 @@
     <bean id="Engine.Tab.Versioning" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="versioning"/>
         <property name="titleKey" value="label.engineTab.versioning"/>
+        <property name="requiredPermission" value="viewVersioningTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.VersioningTabItem"/>
         </property>
@@ -1292,6 +1301,7 @@
     <bean id="Engine.Tab.History" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="history"/>
         <property name="titleKey" value="label.engineTab.history"/>
+        <property name="requiredPermission" value="viewHistoryTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.HistoryTabItem"/>
         </property>
@@ -1300,6 +1310,7 @@
     <bean id="Engine.Tab.Usages" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="usages"/>
         <property name="titleKey" value="label.engineTab.usages"/>
+        <property name="requiredPermission" value="viewUsagesTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.UsagesTabItem"/>
         </property>
@@ -1308,6 +1319,7 @@
     <bean id="Engine.Tab.Seo" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="seo"/>
         <property name="titleKey" value="label.engineTab.seo"/>
+        <property name="requiredPermission" value="viewSeoTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.SeoTabItem"/>
         </property>
@@ -1316,6 +1328,7 @@
     <bean id="Engine.Tab.Workflow" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="workflow"/>
         <property name="titleKey" value="label.engineTab.workflow"/>
+        <property name="requiredPermission" value="viewWorkflowTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.WorkflowTabItem">
                 <property name="hideForTypes">
@@ -1346,6 +1359,7 @@
     <bean id="Engine.Tab.Rights" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="roles"/>
         <property name="titleKey" value="label.engineTab.roles"/>
+        <property name="requiredPermission" value="viewRightsTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolesTabItem"/>
         </property>
@@ -1354,6 +1368,7 @@
     <bean id="Engine.Tab.RolePermissions" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="rolePrincipals"/>
         <property name="titleKey" value="label.engineTab.rolePermissions"/>
+        <property name="requiredPermission" value="viewRolesTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolePermissionsTabItem"/>
         </property>
@@ -1362,6 +1377,7 @@
     <bean id="Engine.Tab.Analytics" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="analytics"/>
         <property name="titleKey" value="label.engineTab.analytics"/>
+        <property name="requiredPermission" value="viewAnalyticsTab"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.contentmanager.AnalyticsVisibility"/>
         </property>

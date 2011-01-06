@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -85,6 +86,6 @@ public class RenameActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && !lh.isSecondarySelection() && !lh.getSingleSelection().getPath().equals("/sites/"+lh.getSingleSelection().getSiteKey()+"/"+lh.getSingleSelection().getName()) && !lh.getSingleSelection().getPath().equals("/"+lh.getSingleSelection().getName()));
+        setEnabled(lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions()) && !lh.isSecondarySelection() && !lh.getSingleSelection().getPath().equals("/sites/"+lh.getSingleSelection().getSiteKey()+"/"+lh.getSingleSelection().getName()) && !lh.getSingleSelection().getPath().equals("/"+lh.getSingleSelection().getName()));
     }
 }

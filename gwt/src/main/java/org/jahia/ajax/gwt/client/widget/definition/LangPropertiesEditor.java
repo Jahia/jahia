@@ -58,6 +58,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
 import java.util.*;
 
@@ -178,7 +179,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                 langPropertiesEditor.setMixin(mixin);
                 langPropertiesEditor.setInitializersValues(initializersValues);
                 langPropertiesEditor.setI18NWriteable(false);
-                langPropertiesEditor.setWriteable(editable && node.isWriteable() && !node.isLanguageLocked(locale));
+                langPropertiesEditor.setWriteable(editable && PermissionsUtils.isPermitted("jcr:modifyProperties", node) && !node.isLanguageLocked(locale));
                 langPropertiesEditor.setFieldSetGrouping(true);
                 langPropertiesEditor.setExcludedTypes(excludedTypes);
                 langPropertiesEditor.renderNewFormPanel();

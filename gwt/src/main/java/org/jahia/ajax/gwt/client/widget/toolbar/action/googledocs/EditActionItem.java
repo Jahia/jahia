@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
@@ -148,7 +149,7 @@ public class EditActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         final LinkerSelectionContext lh = linker.getSelectionContext();
         final GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection != null && lh.isWriteable() && lh.isFile());
+        setEnabled(singleSelection != null && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions()) && lh.isFile());
     }
 
     @Override

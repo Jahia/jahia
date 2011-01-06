@@ -54,6 +54,7 @@ public class EngineTab implements Serializable, Comparable {
     private Visibility visibility;
     private EditEngineTabItem tabItem;
     private int order;
+    private String requiredPermission;
 
     public EngineTab() {
     }
@@ -112,6 +113,14 @@ public class EngineTab implements Serializable, Comparable {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
     }
 
     public int compareTo(Object o) {

@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.*;
@@ -135,6 +136,7 @@ public class PagesTabItem extends SidePanelTabItem {
                 pageTree.getSelectionModel().getSelectedItem().getPath()))) {
             pageFactory.setSelectedPath(Arrays.asList(path));
         }
+        super.handleNewMainSelection(path);
     }
 
     private void initDND() {
@@ -242,7 +244,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             final GWTJahiaNode node = PagesTabItem.this.pageTree.getSelectionModel().getSelectedItem();
-            if (node.getInheritedNodeTypes().contains("jmix:navMenuItem") && node.isWriteable() && !node.isLocked()) {
+            if (node.getInheritedNodeTypes().contains("jmix:navMenuItem") && PermissionsUtils.isPermitted("jcr:removeNode", node) && !node.isLocked()) {
                 l.add(node);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);

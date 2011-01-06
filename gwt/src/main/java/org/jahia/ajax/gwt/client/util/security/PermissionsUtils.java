@@ -33,6 +33,8 @@
 package org.jahia.ajax.gwt.client.util.security;
 
 import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.ArrayList;
@@ -63,8 +65,8 @@ public class PermissionsUtils {
      * @return
      */
     public static boolean isPermitted(String permissionName) {
-        return isPermitted(permissionName, null);
-
+        // todo !
+        return true;
     }
 
     /**
@@ -79,12 +81,21 @@ public class PermissionsUtils {
             return true;
         }
 
+        return isPermitted(permissionName, node.getPermissions());
+    }
+
+    public static boolean isPermitted(String permissionName, GWTBitSet permissions) {
         int i = grantedPermissions.indexOf(permissionName);
+
+        if (i == -1) {
+            i = grantedPermissions.indexOf(permissionName + "_" + JahiaGWTParameters.getWorkspace());
+        }
+
         if (i == -1) {
             Window.alert("Unknown permission " + permissionName);
             return false;
         }
-        return node.getPermissions().get(i);
+        return permissions.get(i);
     }
 
 

@@ -596,7 +596,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 return true;
             }
         } else if (principal.charAt(0) == 'g') {
-            if (principalName.equals("guest") || !jahiaPrincipal.isGuest() && isUserMemberOf(jahiaPrincipal.getName(), principalName, site)) {
+            if (principalName.equals("guest") || !jahiaPrincipal.isGuest() &&
+                    (isUserMemberOf(jahiaPrincipal.getName(), principalName, site) || isUserMemberOf(jahiaPrincipal.getName(), principalName, null))) {
                 return true;
             }
         }
@@ -627,6 +628,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
         Set<Privilege> results = new HashSet<Privilege>();
         try {
+            if (isAdmin(jahiaPrincipal.getName(),0)) {
+                return getSupportedPrivileges(absPath);
+            }
+
             Set<String> grantedRoles = new HashSet<String>();
             Set<String> deniedRoles = new HashSet<String>();
             Session s = getSecuritySession();

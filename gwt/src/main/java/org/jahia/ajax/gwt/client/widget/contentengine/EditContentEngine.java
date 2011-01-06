@@ -47,6 +47,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
@@ -104,9 +105,11 @@ public class EditContentEngine extends AbstractContentEngine {
     protected void initTabs() {
         for (GWTEngineTab tabConfig : config) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
-            if ((tabItem.getHideForTypes().isEmpty() || !tabItem.getHideForTypes().contains(node.getNodeTypes().get(0))) &&
-                    (tabItem.getShowForTypes().isEmpty() || tabItem.getShowForTypes().contains(node.getNodeTypes().get(0)))) {
-                tabs.add(tabItem.create(tabConfig, this));
+            if (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), node)) {
+                if ((tabItem.getHideForTypes().isEmpty() || !tabItem.getHideForTypes().contains(node.getNodeTypes().get(0))) &&
+                        (tabItem.getShowForTypes().isEmpty() || tabItem.getShowForTypes().contains(node.getNodeTypes().get(0)))) {
+                    tabs.add(tabItem.create(tabConfig, this));
+                }
             }
         }
         tabs.setSelection(tabs.getItem(0));
@@ -194,7 +197,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 defaultLanguageBean = result.getCurrentLocale();
                 acl = result.getAcl();
                 referencesWarnings = result.getReferencesWarnings();
-                if(!node.isWriteable()) {
+                if(!PermissionsUtils.isPermitted("jcr:modifyProperties", node)) {
                     heading = Messages.getWithArgs("label.edit.engine.heading.read.only","Read {0} ({1})",new String[]{nodeName, nodeTypes.get(0).getLabel()});
                 } else {
                     heading = Messages.getWithArgs("label.edit.engine.heading.edit","Edit {0} ({1})",new String[]{nodeName, nodeTypes.get(0).getLabel()});
@@ -227,7 +230,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
                 fillCurrentTab();
 
-                if (node.isWriteable() && !node.isLocked()) {
+                if (PermissionsUtils.isPermitted("jcr:modifyProperties",node) && !node.isLocked()) {
                     ok.setEnabled(true);
                 }
                 unmask();

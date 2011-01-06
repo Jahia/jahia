@@ -32,11 +32,12 @@
 
 package org.jahia.ajax.gwt.client.widget;
 
+import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,7 +62,7 @@ public class LinkerSelectionContext {
 
     private boolean pasteAllowed;
 
-    private boolean writeable;
+    private GWTBitSet permissions;
     private boolean parentWriteable;
     private boolean lockable;
     private boolean locked;
@@ -116,7 +117,7 @@ public class LinkerSelectionContext {
         }
 
 
-        writeable = true;
+        permissions = null;
         parentWriteable = true;
         lockable = true;
         locked = true;
@@ -125,10 +126,15 @@ public class LinkerSelectionContext {
         image = true;
 
         for (GWTJahiaNode node : multipleSelection) {
-            writeable &= node.isWriteable();
+            if (permissions == null) {
+                permissions = node.getPermissions();
+            } else {
+                permissions = (GWTBitSet) permissions.clone();
+                permissions.and(node.getPermissions());
+            }
             if (node.getParent() != null) {
                 if (parent == null) {
-                    parentWriteable = ((GWTJahiaNode) node.getParent()).isWriteable();
+                    parentWriteable = PermissionsUtils.isPermitted("jcr:addChildNodes", (GWTJahiaNode) node.getParent());
                     parent = ((GWTJahiaNode) node.getParent());
                 }
             }
@@ -176,8 +182,8 @@ public class LinkerSelectionContext {
         return pasteAllowed;
     }
 
-    public boolean isWriteable() {
-        return writeable;
+    public GWTBitSet getSelectionPermissions() {
+        return permissions;
     }
 
     public boolean isParentWriteable() {

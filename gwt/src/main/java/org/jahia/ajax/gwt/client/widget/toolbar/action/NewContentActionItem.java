@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -102,7 +103,7 @@ public class NewContentActionItem extends BaseActionItem  {
                     break;
                 }
             }
-            setEnabled(isValidParent && lh.isWriteable());
+            setEnabled(isValidParent && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
         } else {
             setEnabled(false);
         }

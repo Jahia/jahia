@@ -168,6 +168,12 @@ public class EditLinker implements Linker {
         sidePanel.handleNewMainSelection(mainPath);
     }
 
+    public void handleNewMainNodeLoaded() {
+        syncSelectionContext();
+        toolbar.handleNewMainNodeLoaded(mainModule.getNode());
+        sidePanel.handleNewMainNodeLoaded(mainModule.getNode());
+    }
+
     /**
      * Set up linker (callback for each member).
      */

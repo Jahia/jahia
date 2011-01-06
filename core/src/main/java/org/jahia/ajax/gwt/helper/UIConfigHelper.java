@@ -615,6 +615,7 @@ public class UIConfigHelper {
                 gwtSidePanel.setTreeContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTreeContextMenu()));
                 gwtSidePanel.setTableContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTableContextMenu()));
                 gwtSidePanel.setIcon(sidePanelTab.getIcon());
+                gwtSidePanel.setRequiredPermission(sidePanelTab.getRequiredPermission());
 
                 gwtSidePanel.setTabItem(sidePanelTab.getTabItem());
 
@@ -670,6 +671,7 @@ public class UIConfigHelper {
             gwtTab.setTitle(engineTab.getTitle());
         }
         gwtTab.setTabItem(engineTab.getTabItem());
+        gwtTab.setRequiredPermission(engineTab.getRequiredPermission());
         return gwtTab;
     }
 

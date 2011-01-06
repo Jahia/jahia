@@ -111,6 +111,13 @@ public class SidePanel extends ContentPanel {
         ((ToolbarHeader)head).handleNewModuleSelection(selectedModule);
     }
 
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        for (SidePanelTabItem tab : tabs) {
+            tab.handleNewMainNodeLoaded(node);
+        }
+        ((ToolbarHeader)head).handleNewMainNodeLoaded(node);
+    }
+
     public void handleNewMainSelection(String path) {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewMainSelection(path);

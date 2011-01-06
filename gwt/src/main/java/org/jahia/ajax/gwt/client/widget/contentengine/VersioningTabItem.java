@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.content.ImagePopup;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -117,7 +118,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                 column.setHeader("Version");
                 column.setWidth(50);
                 configs.add(column);
-                if (engine.getNode().isWriteable() && !engine.getNode().isLocked()) {
+                if (PermissionsUtils.isPermitted("jcr:write", engine.getNode()) && !engine.getNode().isLocked()) {
                     column = new ColumnConfig();
                     column.setSortable(false);
                     column.setHeader("Action");

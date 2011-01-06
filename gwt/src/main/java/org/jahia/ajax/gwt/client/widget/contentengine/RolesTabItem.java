@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
@@ -66,7 +67,7 @@ public class RolesTabItem extends EditEngineTabItem {
             if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
                 rightsEditor.setReadOnly(true);
             } else {
-                rightsEditor.setReadOnly(!node.isWriteable() || node.isLocked());
+                rightsEditor.setReadOnly(!PermissionsUtils.isPermitted("jcr:modifyAccessControl", node) || node.isLocked());
             }
 
             tab.setLayout(new FitLayout());

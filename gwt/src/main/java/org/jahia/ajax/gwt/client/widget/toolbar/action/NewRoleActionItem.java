@@ -32,8 +32,8 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 /**
@@ -50,6 +50,6 @@ public class NewRoleActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
+        setEnabled(lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
     }
 }

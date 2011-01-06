@@ -58,6 +58,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -84,7 +85,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
             tab.setLayout(new BorderLayout());
             final GWTJahiaNode node = engine.getNode();
             initCategoriesStoreA(node, engine);
-            if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
+            if (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties",node) && !node.isLocked())) {
                 tab.add(createCategoriedPickerPanel(), new BorderLayoutData(Style.LayoutRegion.NORTH, 250));
             }
             tab.add(createSelectedCategoriesPanel(engine), new BorderLayoutData(Style.LayoutRegion.CENTER));
@@ -193,7 +194,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
 
         List<ColumnConfig> configs;
         final GWTJahiaNode node = engine.getNode();
-        if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
+        if (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties",node) && !node.isLocked())) {
             configs = Arrays.asList(columnConfig, action);
         } else {
             configs = Arrays.asList(columnConfig);

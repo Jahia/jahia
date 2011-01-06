@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.util.Formatter;
@@ -282,6 +283,10 @@ public abstract class BaseActionItem implements ActionItem {
      *  Called when there is a new liker selection. Override this method to provide custom behaviour
      */
     public  void handleNewLinkerSelection(){
+
+    }
+
+    public  void handleNewMainNodeLoaded(GWTJahiaNode node){
 
     }
 

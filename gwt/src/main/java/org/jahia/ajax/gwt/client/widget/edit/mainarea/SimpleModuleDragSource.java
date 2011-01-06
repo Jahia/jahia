@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.google.gwt.user.client.DOM;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDragSource;
 
@@ -79,7 +80,7 @@ public class SimpleModuleDragSource extends EditModeDragSource {
     protected void onDragStart(DNDEvent e) {
         if (module.isDraggable()) {
             super.onDragStart(e);
-            if (module.getNode().isWriteable() && !module.getNode().isLocked()) {
+            if (PermissionsUtils.isPermitted("jcr:removeNode", module.getNode()) && !module.getNode().isLocked()) {
                 e.setCancelled(false);
                 e.setData(this);
                 e.setOperation(DND.Operation.COPY);

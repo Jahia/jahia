@@ -368,6 +368,8 @@ public class MainModule extends Module {
             JahiaGWTParameters.setSiteType(node.getSiteType());
             DeployTemplatesActionItem.refreshAllMenus(editLinker);
         }
+
+        editLinker.handleNewMainNodeLoaded();
     }
 
     public GWTEditConfiguration getConfig() {

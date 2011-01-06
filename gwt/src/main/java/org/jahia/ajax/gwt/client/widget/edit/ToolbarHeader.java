@@ -3,6 +3,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -65,6 +66,15 @@ public class ToolbarHeader extends Header {
         for (ActionItem item : actionItems) {
             try {
                 item.handleNewLinkerSelection();
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        for (ActionItem item : actionItems) {
+            try {
+                item.handleNewMainNodeLoaded(node);
             } catch (Exception e) {
             }
         }

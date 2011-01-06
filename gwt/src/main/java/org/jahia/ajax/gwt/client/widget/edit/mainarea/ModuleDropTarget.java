@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.util.Rectangle;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class ModuleDropTarget extends DropTarget {
 //                Element parent = DOM.getParent(row);
 //                parent.insertBefore(toDrag, row);
 //            }
-        if (module.getParentModule().getNode().isWriteable() && !module.getParentModule().getNode().isLocked()) {
+        if (PermissionsUtils.isPermitted("jcr:addChildNodes", module.getParentModule().getNode()) && !module.getParentModule().getNode().isLocked()) {
             Insert insert = Insert.get();
             insert.setVisible(true);
             Rectangle rect = El.fly(row).getBounds();
@@ -139,7 +140,7 @@ public class ModuleDropTarget extends DropTarget {
 //        }
 
         final GWTJahiaNode jahiaNode = module.getParentModule().getNode();
-        if (jahiaNode.isWriteable() && !jahiaNode.isLocked()) {
+        if (PermissionsUtils.isPermitted("jcr:addChildNodes", jahiaNode) && !jahiaNode.isLocked()) {
             String nodetypes = module.getParentModule().getNodeTypes();
             if (EditModeDNDListener.EMPTYAREA_TYPE.equals(targetType)) {
                 nodetypes = module.getNodeTypes();

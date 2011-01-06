@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import com.google.gwt.user.client.Element;
@@ -191,7 +192,7 @@ public class AreaModule extends SimpleModule {
                         public void onClick(ClickEvent event) {
                             createNode(new BaseAsyncCallback<GWTJahiaNode>() {
                                 public void onSuccess(GWTJahiaNode result) {
-                                    if (node != null && node.isWriteable() && !node.isLocked()) {
+                                    if (node != null && PermissionsUtils.isPermitted("jcr:addChildNodes", node) && !node.isLocked()) {
                                         ContentActions.showContentWizard(mainModule.getEditLinker(), s, node);
                                     }
                                 }

@@ -1374,7 +1374,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
             final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
-            if (tryToLockNode && !nodeWrapper.isLocked() && node.isWriteable()) {
+            if (tryToLockNode && !nodeWrapper.isLocked() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                 nodeWrapper.checkout();
                 nodeWrapper.lockAndStoreToken("engine");
             }

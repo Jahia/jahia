@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
 
@@ -61,7 +62,7 @@ public class TranslateActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
+        setEnabled(lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));
     }
 }
 

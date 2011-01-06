@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -52,7 +53,7 @@ public class UnlockActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection!=null && singleSelection.isLockable() && singleSelection.isWriteable() && singleSelection.getLockOwner() != null && singleSelection.getLockOwner().equals(
+        setEnabled(singleSelection!=null && singleSelection.isLockable() && PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions()) && singleSelection.getLockOwner() != null && singleSelection.getLockOwner().equals(
                 JahiaGWTParameters.getCurrentUser()) && !lh.isSecondarySelection());
     }
 }

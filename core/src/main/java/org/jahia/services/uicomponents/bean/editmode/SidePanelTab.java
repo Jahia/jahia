@@ -61,6 +61,7 @@ public class SidePanelTab implements Serializable, BeanNameAware {
     private List<Column> tableColumns;
     private String icon;
     private SidePanelTabItem tabItem;
+    private String requiredPermission;
 
     public SidePanelTab() {
         tableColumns = new ArrayList<Column>();
@@ -117,6 +118,14 @@ public class SidePanelTab implements Serializable, BeanNameAware {
 
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
+    }
+
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
     }
 
     public List<Column> getTableColumns() {

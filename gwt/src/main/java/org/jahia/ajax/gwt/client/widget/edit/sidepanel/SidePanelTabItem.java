@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
@@ -99,6 +100,10 @@ public class SidePanelTabItem implements Serializable {
 
     public void handleNewMainSelection(String path) {
         // do nothing by default
+    }
+
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        tab.setEnabled(config.getRequiredPermission() == null || PermissionsUtils.isPermitted(config.getRequiredPermission(), node));
     }
 
     /**

@@ -49,6 +49,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.util.*;
@@ -170,7 +171,8 @@ public class WorkflowTabItem extends EditEngineTabItem {
                         typesCombo.setValue(types.getAt(0));
                         horizontalPanel.add(combo);
 
-                        if (!engine.getNode().isWriteable() || engine.getNode().isLocked()) {
+                        // todo : use specific permission to manage workflows ?
+                        if (!PermissionsUtils.isPermitted("jcr:write", engine.getNode()) || engine.getNode().isLocked()) {
                             combo.setReadOnly(true);
                             typesCombo.setReadOnly(true);
                         }
@@ -189,7 +191,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
 //            aclPanel.removeAll();
 //        }
 //        rightsEditor.setCanBreakInheritance(false);
-//        rightsEditor.setReadOnly(!engine.getNode().isWriteable() || engine.getNode().isLocked());
+//        rightsEditor.setReadOnly(!engine.getNode().getPermissions() || engine.getNode().isLocked());
 //
 //        if (aclPanel == null) {
 //            aclPanel = new LayoutContainer(new FitLayout());

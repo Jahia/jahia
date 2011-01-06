@@ -39,6 +39,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -86,7 +87,7 @@ public class PasteActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        boolean b = lh.getSingleSelection() != null && lh.isWriteable() && lh.isPasteAllowed();
+        boolean b = lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.isPasteAllowed();
 
         if (linker instanceof EditLinker) {
             b = b && checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), ((EditLinker)linker).getSelectedModule().getNodeTypes());

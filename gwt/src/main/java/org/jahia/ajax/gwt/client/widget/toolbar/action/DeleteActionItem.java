@@ -44,6 +44,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -182,7 +183,7 @@ public class DeleteActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getMultipleSelection() != null
                 && lh.getMultipleSelection().size() > 0
-                && lh.isWriteable()
+                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && !lh.isSecondarySelection());
     }
 }

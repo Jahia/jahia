@@ -35,11 +35,10 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
-
-import java.util.List;
 
 /**
  * Action item for displaying new Google Gadget portlet creation form.
@@ -72,6 +71,6 @@ public class NewGadgetActionItem extends BaseActionItem   {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && lh.getSingleSelection().getNodeTypes().contains("jnt:portletFolder"));
+        setEnabled(lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.getSingleSelection().getNodeTypes().contains("jnt:portletFolder"));
     }
 }

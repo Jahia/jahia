@@ -51,7 +51,7 @@
                 <viewLayoutTab jcr:primaryType="jnt:permission"/>
                 <viewMetadataTab jcr:primaryType="jnt:permission"/>
                 <viewOptionsTab jcr:primaryType="jnt:permission"/>
-                <viewRightsTab jcr:primaryType="jnt:permission"/>
+                <viewRolesTab jcr:primaryType="jnt:permission"/>
                 <viewSeoTab jcr:primaryType="jnt:permission"/>
                 <viewTagsTab jcr:primaryType="jnt:permission"/>
                 <viewUsagesTab jcr:primaryType="jnt:permission"/>
@@ -116,17 +116,17 @@
                             j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers /permissions/wysiwyg-editor-toolbar"
                             />
 
-        <translator jcr:primaryType="jnt:role"/>
+        <!--<translator jcr:primaryType="jnt:role"/>-->
 
-        <web-designer jcr:primaryType="jnt:role"/>
-        <server-content-manager jcr:primaryType="jnt:role"/>
+        <!--<web-designer jcr:primaryType="jnt:role"/>-->
+        <!--<server-content-manager jcr:primaryType="jnt:role"/>-->
 
-        <security-advisor jcr:primaryType="jnt:role" />
+        <!--<security-advisor jcr:primaryType="jnt:role" />-->
 
-        <webmaster jcr:primaryType="jnt:role" />
+        <!--<webmaster jcr:primaryType="jnt:role" />-->
 
-        <administrator jcr:primaryType="jnt:role"
-                 j:permissions="/permissions" />
+        <!--<administrator jcr:primaryType="jnt:role" j:nodeTypes="rep:root"-->
+                 <!--j:permissions="/permissions" />-->
 
         <owner jcr:primaryType="jnt:role"
                  j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live" />

@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.form.AutoCompleteComboBox;
 
@@ -197,7 +198,7 @@ public class TagsTabItem extends EditEngineTabItem {
                     }
                 });
 
-                if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
+                if (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !node.isLocked())) {
                     ButtonBar bar = new ButtonBar();
                     bar.add(new FillToolItem());
                     bar.add(new Text(Messages.get("label.add", "Add Tag") + ":"));
@@ -208,7 +209,7 @@ public class TagsTabItem extends EditEngineTabItem {
 
                 // Sub grid
                 List<ColumnConfig> configs;
-                if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
+                if (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !node.isLocked())) {
                     configs = Arrays.asList(columnConfig, action);
                 } else {
                     configs = Arrays.asList(columnConfig);

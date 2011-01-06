@@ -84,9 +84,6 @@ public class ContentTabItem extends PropertiesTabItem {
             fSet.setLayout(fl);
             fSet.add(name,fd);
             isNodeNameFieldDisplayed = true;
-            if (engine instanceof EditContentEngine) {
-                fSet.disable();
-            }
             propertiesEditor.insert(fSet,0);
         } else {
         	isNodeNameFieldDisplayed = false;
@@ -113,9 +110,7 @@ public class ContentTabItem extends PropertiesTabItem {
         if (engine.isExistingNode()) {
             name.setValue(engine.getNode().getName());
             tab.setData("NodeName", engine.getNode().getName());
-            if(!engine.getNode().isWriteable()) {
-                name.setReadOnly(true);
-            }
+            name.setReadOnly(true);
         } else {
             name.setValue(Messages.get("label.nodeAutoName", "Automatically Created (you can type your name here if you want)"));
         }

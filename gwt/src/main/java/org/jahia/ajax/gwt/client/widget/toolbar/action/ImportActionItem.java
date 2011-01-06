@@ -32,11 +32,9 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.ContentImport;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,6 +50,6 @@ public class ImportActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
+        setEnabled(lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions()));
     }
 }

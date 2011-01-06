@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
@@ -74,31 +75,37 @@ public class TranslateMenuActionItem extends BaseActionItem {
 
                         menu.removeAll();
                         final String uiLanguage = JahiaGWTParameters.getUILanguage();
+                        boolean notEmpty = false;
                         if (languages != null) {
                             for (final GWTJahiaLanguage language : languages) {
                                 for (final GWTJahiaLanguage jahiaLanguage : languages) {
                                     if (!jahiaLanguage.getDisplayName().equals(language.getDisplayName()) &&
                                         (jahiaLanguage.getLanguage().equals(uiLanguage) ||
                                          language.getLanguage().equals(uiLanguage))) {
-                                        MenuItem item = new MenuItem(
-                                                language.getDisplayName() + "->" + jahiaLanguage.getDisplayName());
-                                        item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                                            @Override
-                                            public void componentSelected(MenuEvent ce) {
-                                                LinkerSelectionContext lh = linker.getSelectionContext();
-                                                if (lh.getSingleSelection() != null) {
-                                                    new TranslateContentEngine(lh.getSingleSelection(), linker,
-                                                            language, jahiaLanguage).show();
+                                        final LinkerSelectionContext lh = linker.getSelectionContext();
+
+                                        if (PermissionsUtils.isPermitted("jcr:modifyProperties_"+JahiaGWTParameters.getWorkspace()+"_"+jahiaLanguage.getLanguage(), lh.getSelectionPermissions())) {
+                                            MenuItem item = new MenuItem(
+                                                    language.getDisplayName() + "->" + jahiaLanguage.getDisplayName());
+
+                                            item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                                                @Override
+                                                public void componentSelected(MenuEvent ce) {
+                                                    if (lh.getSingleSelection() != null) {
+                                                        new TranslateContentEngine(lh.getSingleSelection(), linker,
+                                                                language, jahiaLanguage).show();
+                                                    }
                                                 }
-                                            }
-                                        });
-                                        menu.add(item);
+                                            });
+                                            menu.add(item);
+                                            notEmpty = true;
+                                        }
                                     }
                                 }
                             }
                         }
                         setSubMenu(menu);
-                        setEnabled(true);
+                        setEnabled(notEmpty);
                     }
 
                     public void onApplicationFailure(Throwable caught) {
@@ -109,7 +116,7 @@ public class TranslateMenuActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
+        setEnabled(lh.getSingleSelection() != null);
         if(!JahiaGWTParameters.getSiteKey().equals(siteKey)){
             siteKey=JahiaGWTParameters.getSiteKey();
             initMenu(linker);

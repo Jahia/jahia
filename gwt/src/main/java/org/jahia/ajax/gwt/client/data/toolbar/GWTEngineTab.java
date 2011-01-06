@@ -11,6 +11,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
  */
 public class GWTEngineTab implements Serializable {
     private String title;
+    private String requiredPermission;
 
     private EditEngineTabItem tabItem;
 
@@ -29,4 +30,13 @@ public class GWTEngineTab implements Serializable {
     public void setTabItem(EditEngineTabItem tabItem) {
         this.tabItem = tabItem;
     }
+
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
+    }
+
 }

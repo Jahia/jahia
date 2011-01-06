@@ -34,10 +34,10 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -82,84 +82,80 @@ public class LinkerModule extends Module {
         panel.addStyleName("x-small-editor");
         panel.addStyleName("x-panel-header");
         panel.addStyleName("x-panel-linker");
+
+
 //        html = new HTML("<img src=\""+JahiaGWTParameters.getContextPath() + "/modules/default/images/add.png"+"\" /> Add new content here");
-        html = new HTML("<p class=\"linkAction\">Click this to link<br/></p>");
-        panel.add(html);
+//        html = new HTML("<p class=\"linkAction\">Click this to link<br/></p>");
+//        panel.add(html);
+
+        final Label label = new Label("Not linked");
+        panel.add(label);
+
+        final Button button = new Button("Click this to link");
+        button.setStyleName("button-placeholder");
+        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override public void componentSelected(ButtonEvent ce) {
+                String s = JahiaGWTParameters.getContextPath();
+                if (s.equals("/")) {
+                    s = "";
+                }
+                mainModule.setStyleAttribute("cursor",
+                        "url('" + s + "/gwt/resources/images/xtheme-jahia-andromeda/panel/link.cur'), pointer");
+
+                mainModule.getEditLinker().setSelectionListener(new ModuleSelectionListener() {
+                    public void onModuleSelection(Module selection) {
+                        if (selection.getNode() != node) {
+                        mainModule.setStyleAttribute("cursor", "");
+                        mainModule.getEditLinker().setSelectionListener(null);
+
+                        if (mixinType != null && !mixinType.equals("")) {
+                            selection.getNode().getNodeTypes().add(mixinType);
+                            JahiaContentManagementService.App.getInstance()
+                                    .saveProperties(Arrays.asList(selection.getNode()),
+                                            new ArrayList<GWTJahiaNodeProperty>(), new BaseAsyncCallback() {
+                                                public void onSuccess(Object o) {
+                                                }
+                                            });
+                        }
+                        List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
+//                            final List<GWTJahiaNode> srcNodes = e.getStatus().getData(SOURCE_NODES);
+                        final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property,
+                                new GWTJahiaNodePropertyValue(selection.getNode(),
+                                        GWTJahiaNodePropertyType.WEAKREFERENCE));
+                        properties.add(gwtJahiaNodeProperty);
+                        JahiaContentManagementService.App.getInstance()
+                                .saveProperties(Arrays.asList(node), properties, new BaseAsyncCallback() {
+                                    public void onSuccess(Object o) {
+                                        EngineLoader.showEditEngine(mainModule.getEditLinker(), node);
+                                    }
+
+                                    public void onApplicationFailure(Throwable throwable) {
+                                        Window.alert("Failed : " + throwable);
+                                    }
+                                });
+                        }
+                        LinkerModule.this.setSelectable(true);
+                    }
+                });
+            }
+        });
+
+        panel.add(button);
+
+        final Button button2 = new Button("Click this to link to main resource");
+        button2.setStyleName("button-placeholder");
+        panel.add(button2);
+
+        final Button button3 = new Button("Clear");
+        button3.setStyleName("button-placeholder");
+        panel.add(button3);
+
+
         add(panel);
     }
 
     @Override
     public void onParsed() {
-        sinkEvents(Event.ONCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT + Event.ONCONTEXTMENU);
-
-        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                if (selectable) {
-                    String s = JahiaGWTParameters.getContextPath();
-                    if (s.equals("/")) {
-                        s = "";
-                    }
-                    mainModule.setStyleAttribute("cursor",
-                            "url('" + s + "/gwt/resources/images/xtheme-jahia-andromeda/panel/link.cur'), pointer");
-                    mainModule.getEditLinker().setSelectionListener(new ModuleSelectionListener() {
-                        public void onModuleSelection(Module selection) {
-                            mainModule.setStyleAttribute("cursor", "");
-                            mainModule.getEditLinker().setSelectionListener(null);
-
-                            if (mixinType != null && !mixinType.equals("")) {
-                                selection.getNode().getNodeTypes().add(mixinType);
-                                JahiaContentManagementService.App.getInstance()
-                                        .saveProperties(Arrays.asList(selection.getNode()),
-                                                new ArrayList<GWTJahiaNodeProperty>(), new BaseAsyncCallback() {
-                                                    public void onSuccess(Object o) {
-                                                    }
-                                                });
-                            }
-                            List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-//                            final List<GWTJahiaNode> srcNodes = e.getStatus().getData(SOURCE_NODES);
-                            final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property,
-                                    new GWTJahiaNodePropertyValue(selection.getNode(),
-                                            GWTJahiaNodePropertyType.WEAKREFERENCE));
-                            properties.add(gwtJahiaNodeProperty);
-                            JahiaContentManagementService.App.getInstance()
-                                    .saveProperties(Arrays.asList(node), properties, new BaseAsyncCallback() {
-                                        public void onSuccess(Object o) {
-                                            EngineLoader.showEditEngine(mainModule.getEditLinker(), node);
-                                        }
-
-                                        public void onApplicationFailure(Throwable throwable) {
-                                            Window.alert("Failed : " + throwable);
-                                        }
-                                    });
-
-                        }
-                    });
-                }
-            }
-        };
-        addListener(Events.OnClick, listener);
-        addListener(Events.OnContextMenu, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                if (selectable) {
-                    Log.info("click" + path + " : " + scriptInfo);
-                    mainModule.getEditLinker().onModuleSelection(LinkerModule.this);
-                }
-            }});
-//        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, mainModule.getEditLinker()));
-
-        Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().addHover(LinkerModule.this);
-            }
-        };
-        Listener<ComponentEvent> outListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().removeHover(LinkerModule.this);
-            }
-        };
-
-        addListener(Events.OnMouseOver, hoverListener);
-        addListener(Events.OnMouseOut, outListener);
     }
 
     @Override
@@ -170,11 +166,11 @@ public class LinkerModule extends Module {
             public void onSuccess(GWTJahiaGetPropertiesResult gwtJahiaGetPropertiesResult) {
                 if (gwtJahiaGetPropertiesResult.getProperties().containsKey(property)) {
                     final GWTJahiaNodeProperty o = gwtJahiaGetPropertiesResult.getProperties().get(property);
-                    panel.removeAll();
-                    html = new HTML("<p class=\"linkPath\">Linked to: " + o.getValues().get(0).getNode().getName() +
-                            "</p><p class=\"linkAction\">Click this to link</p>");
-                    panel.add(html);
-                    panel.layout();
+//                    panel.removeAll();
+//                    html = new HTML("<p class=\"linkPath\">Linked to: " + o.getValues().get(0).getNode().getName() +
+//                            "</p><p class=\"linkAction\">Click this to link</p>");
+//                    panel.add(html);
+//                    panel.layout();
                 }
             }
         });

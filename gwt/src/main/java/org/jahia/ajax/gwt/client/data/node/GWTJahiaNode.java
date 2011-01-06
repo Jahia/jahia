@@ -178,10 +178,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return permissions;
     }
 
-    public Boolean isWriteable() {
-        return true;
-    }
-
     public void setName(String name) {
         set(NAME, name);
     }

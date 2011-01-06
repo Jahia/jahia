@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 
@@ -105,7 +106,7 @@ public class PlaceholderModule extends Module {
                 button.addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
-                        if (parentNode != null && parentNode.isWriteable() && !parentNode.isLocked()) {
+                        if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
                             ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode);
                         }
                     }

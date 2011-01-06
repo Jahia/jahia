@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Time: 17:44
  * To change this template use File | Settings | File Templates.
  */
-public class GWTBitSet implements Serializable {
+public class GWTBitSet implements Cloneable, Serializable {
     private final static int ADDRESS_BITS_PER_WORD = 6;
     private final static int BITS_PER_WORD = 1 << ADDRESS_BITS_PER_WORD;
     private final static int BIT_INDEX_MASK = BITS_PER_WORD - 1;
@@ -45,5 +45,19 @@ public class GWTBitSet implements Serializable {
         return bitIndex >> ADDRESS_BITS_PER_WORD;
     }
 
+    public void and(GWTBitSet set) {
+        if (this == set)
+            return;
+
+        // Perform logical AND on words in common
+        for (int i = 0; i < words.length; i++)
+            words[i] &= set.words[i];
+    }
+
+    public Object clone() {
+        GWTBitSet result = new GWTBitSet();
+        result.words = words.clone();
+        return result;
+    }
 
 }

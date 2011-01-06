@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -163,7 +164,8 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType);
                 propertiesEditor.setMixin(engine.getMixin());
                 propertiesEditor.setInitializersValues(engine.getInitializersValues());
-                propertiesEditor.setWriteable(!engine.isExistingNode() || (engine.getNode().isWriteable() && !engine.getNode().isLocked()));
+                // todo : handle translation permission for i18n fields ?
+                propertiesEditor.setWriteable(!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !engine.getNode().isLocked()));
                 propertiesEditor.setFieldSetGrouping(true);
                 propertiesEditor.setExcludedTypes(excludedTypes);
                 propertiesEditor.setMultipleEdit(engine.isMultipleSelection());

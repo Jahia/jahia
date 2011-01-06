@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
@@ -72,6 +73,8 @@ public interface ActionItem extends Serializable {
     public void onComponentSelection();
 
     public void handleNewLinkerSelection();
+
+    public void handleNewMainNodeLoaded(GWTJahiaNode node);
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker);
 

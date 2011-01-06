@@ -39,6 +39,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class CutActionItem extends BaseActionItem  {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getMultipleSelection() != null
                 && lh.getMultipleSelection().size() > 0
-                && lh.isWriteable()
+                && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && !lh.isSecondarySelection()
                 && !lh.getMultipleSelection()
                         .get(0)

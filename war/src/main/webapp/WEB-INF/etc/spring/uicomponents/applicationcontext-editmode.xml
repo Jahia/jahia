@@ -1359,7 +1359,7 @@
     <bean id="Engine.Tab.Rights" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="roles"/>
         <property name="titleKey" value="label.engineTab.roles"/>
-        <property name="requiredPermission" value="viewRightsTab"/>
+        <property name="requiredPermission" value="viewRolesTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolesTabItem"/>
         </property>

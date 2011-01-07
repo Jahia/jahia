@@ -8,6 +8,7 @@ import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.StartTag;
 import au.id.jericho.lib.html.Tag;
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
@@ -16,20 +17,18 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.log4j.Logger;
 import org.jahia.modules.Rewriter.WebClippingRewriter;
-import org.jahia.services.cache.CacheEntry;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
+import org.springframework.beans.factory.InitializingBean;
 import ucar.nc2.util.net.EasySSLProtocolSocketFactory;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,17 +39,53 @@ import java.util.Set;
  */
 public class WebClippingFilter extends AbstractFilter {
     static private final Logger log = Logger.getLogger(WebClippingFilter.class);
-    static private final MultiThreadedHttpConnectionManager HTPP_CONNECTION_MANAGER = new MultiThreadedHttpConnectionManager();
+    private EhCacheProvider cacheProviders;
+    private boolean cacheable;
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (resource.getNode().hasProperty("url") && resource.getNode().isNodeType("jnt:webClipping")) {
-            String url;
-            if (renderContext.getRequest().getParameter("jahia_url_web_clipping") != null && renderContext.getRequest().getParameter("jahia_url_web_clipping").length() > 0) {
-                url = renderContext.getRequest().getParameter("jahia_url_web_clipping");
+            if (!renderContext.isEditMode()) {
+                String url;
+                if (renderContext.getRequest().getParameter("jahia_url_web_clipping") != null && renderContext.getRequest().getParameter("jahia_url_web_clipping").length() > 0) {
+                    //todo encode this url, for users can't tape directly url.
+                    url = renderContext.getRequest().getParameter("jahia_url_web_clipping");
+                } else {
+                    url = resource.getNode().getPropertyAsString("url");
+                }
+                //cache content, the response is cache if properties of the currentNode haven't change since the last version in cache
+                //every url are change and they have a timeToLive in the cache equal to the property cacheDelay.
+                CacheManager cacheManager = cacheProviders.getCacheManager();
+                if (!cacheManager.cacheExists("WebClipModuleCache")) {
+                    cacheManager.addCache("WebClipModuleCache");
+                }
+                Cache cache = cacheManager.getCache("WebClipModuleCache");
+                final Element element = cache.get(url);
+                final Element elementDate = cache.get("lastModificationDate");
+                String propertieLastModified = null;
+                if (elementDate != null) {
+                    propertieLastModified = elementDate.getObjectValue().toString();
+                }
+                if (element != null && element.getValue() != null && propertieLastModified.equals(resource.getNode().getPropertyAsString("jcr:lastModified"))) {
+                    //the content is already in cache, then return it
+                    return element.getObjectValue().toString();
+                } else {
+                    //get response content and cache it
+                    this.cacheable = true;
+                    String response = getResponse(url, renderContext, resource, chain);
+                    if (Integer.valueOf(resource.getNode().getPropertyAsString("cacheDelay")) != 0 && cacheable) {
+                        Element elementToPut = new Element(url, response);
+                        //cache lastmodified date of the node, for know if properties have changes.
+                        Element propertieToPut = new Element("lastModificationDate", resource.getNode().getPropertyAsString("jcr:lastModified"));
+                        elementToPut.setTimeToLive(Integer.valueOf(resource.getNode().getPropertyAsString("cacheDelay")));
+                        propertieToPut.setTimeToLive(Integer.valueOf(resource.getNode().getPropertyAsString("cacheDelay")));
+                        cache.put(elementToPut);
+                        cache.put(propertieToPut);
+                    }
+                    return response;
+                }
             } else {
-                url = resource.getNode().getPropertyAsString("url");
+                return "WebClip module is only available in live";
             }
-            return getResponse(url, renderContext, resource, chain);
         } else {
             return null;
         }
@@ -101,6 +136,7 @@ public class WebClippingFilter extends AbstractFilter {
                 }
             }
             if (statusCode != HttpStatus.SC_OK) {
+                this.cacheable = false;
                 StringBuffer buffer = new StringBuffer("<html>\n<body>");
                 buffer.append('\n' + "Error getting ").append(urlToClip).append(" failed with error code ").append(statusCode);
                 buffer.append("\n</body>\n</html>");
@@ -142,7 +178,16 @@ public class WebClippingFilter extends AbstractFilter {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            this.cacheable = false;
+            StringBuffer buffer = new StringBuffer("<html>\n<body>");
+            buffer.append('\n' + "Error getting ").append(urlToClip).append(" failed with error : ").append(e.toString());
+            buffer.append("\n</body>\n</html>");
+            return buffer.toString();
         }
         return null;
+    }
+
+    public void setCacheProviders(EhCacheProvider cacheProviders) {
+        this.cacheProviders = cacheProviders;
     }
 }

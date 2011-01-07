@@ -18,19 +18,20 @@
                         </pagecontent>
                         <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable"
                                   jcr:primaryType="jnt:contentList">
-                            <new-blog templateNode="/templateSets/blog/templates/base/blog"
-                                      buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
-                                <j:translation_en jcr:title="New Blog" jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation" jcr:language="en"/>
+                            <new-blog templateNode="/templateSets/blog/templates/base/blog" buttonLabel="create"
+                                      jcr:mixinTypes="jmix:requiredPermissions"
+                                      j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live"
+                                      jcr:primaryType="jnt:pageFormCreation">
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog"
+                                                  jcr:primaryType="jnt:translation"/>
                             </new-blog>
                             <topBlog j:subNodesView="blogList" jcr:primaryType="jnt:topBlog"/>
                             <list jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList"
                                   j:view="columns" j:columns="2">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list"
                                                   jcr:primaryType="jnt:translation"/>
-                                <topBlogContent
-                                        jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:columns"
-                                        j:subNodesView="blogList" jcr:primaryType="jnt:topBlogContent"
+                                <topBlogContent jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:columns"
+                                                j:subNodesView="blogList" jcr:primaryType="jnt:topBlogContent"
                                         j:view="unordered" j:className="simple">
                                 </topBlogContent>
                                 <topBlogComment jcr:mixinTypes="jmix:renderable jmix:listOrdered"
@@ -49,7 +50,9 @@
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList">
                             <Welcome-message jcr:primaryType="jnt:area" j:allowedTypes="jnt:bigText"/>
-                            <addBlogLink jcr:primaryType="jnt:addBlogLink"/>
+                            <addBlogLink jcr:mixinTypes="jmix:requiredPermissions"
+                                         j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live"
+                                         jcr:primaryType="jnt:addBlogLink"/>
                             <calendar startDateProperty="jcr:created" endDateProperty="jcr:created"
                                       jcr:primaryType="jnt:calendar"
                                       j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content"/>

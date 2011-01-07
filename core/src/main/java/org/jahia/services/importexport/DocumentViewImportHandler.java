@@ -176,7 +176,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
             boolean isValid = true;
             try {
                 child = session.getNode(path);
-                if (child.isWriteable() && child.isVersioned() && !child.isCheckedOut()) {
+                if (child.hasPermission("jcr:versionManagement") && child.isVersioned() && !child.isCheckedOut()) {
                     session.getWorkspace().getVersionManager().checkout(child.getPath());
                 }
 
@@ -184,7 +184,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 isValid = false;
             }
             if (!isValid || child.getDefinition().allowsSameNameSiblings()) {
-                if (nodes.peek().isWriteable()) {
+                if (nodes.peek().hasPermission("jcr:addChildNodes")) {
                     if ("jnt:acl".equals(pt) && !nodes.peek().isNodeType("jmix:accessControlled")) {
                         nodes.peek().addMixin("jmix:accessControlled");
                     }
@@ -278,7 +278,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 //                    }
                 }
             } else {
-                if (child.isWriteable() && child.isCheckedOut()) {
+                if (child.hasPermission("jcr:modifyProperties") && child.isCheckedOut()) {
                     addMixins(child, atts);
                     setAttributes(child, atts);
                 }

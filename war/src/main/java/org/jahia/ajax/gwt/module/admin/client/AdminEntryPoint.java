@@ -38,7 +38,6 @@ import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
-import org.jahia.ajax.gwt.client.util.security.RoleEditor;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
@@ -55,7 +54,6 @@ public class AdminEntryPoint extends CommonEntryPoint {
 	public void onModuleLoad() {
         super.onModuleLoad();
         WorkInProgress.init();
-        RoleEditor.init();
         exposeFunctions();
     }
 

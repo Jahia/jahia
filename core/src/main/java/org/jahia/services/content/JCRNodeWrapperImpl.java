@@ -253,31 +253,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean isWriteable() {
-        //        if (isNodeType("jnt:mountPoint")) {
-//            return getUser().isAdminMember(0);
-//        }
-        if (session.isSystem()) {
-            return true;
-        }
-        JCRStoreProvider jcrStoreProvider = getProvider();
-        if (jcrStoreProvider.isDynamicallyMounted()) {
-            try {
-                return ((JCRNodeWrapper) session.getItem(jcrStoreProvider.getMountPoint())).hasPermission(
-                        Privilege.JCR_WRITE);
-            } catch (RepositoryException e) {
-                logger.error("Cannot get node", e);
-                return false;
-            }
-        }
-        return hasPermission(Privilege.JCR_WRITE);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasPermission(String perm) {
         try {
+            if (session.isSystem()) {
+                return true;
+            }
+
             Session providerSession = session.getProviderSession(provider);
             // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
             AccessControlManager accessControlManager = providerSession.getAccessControlManager();

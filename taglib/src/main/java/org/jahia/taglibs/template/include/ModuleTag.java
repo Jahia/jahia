@@ -470,7 +470,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
         if (canEdit(renderContext)) {
-            if (currentResource.getNode().isWriteable()) {
+            if (currentResource.getNode().hasPermission("jcr:addChildNodes")) {
                 printModuleStart("placeholder", path, null, null, null);
                 printModuleEnd();
             }

@@ -120,7 +120,7 @@ public class ContentManagerHelper {
                     new StringBuilder(parentNode.getPath()).append(" - ACCESS DENIED").toString());
         }
         JCRNodeWrapper childNode = null;
-        if (!parentNode.isFile() && parentNode.isWriteable() && !parentNode.isLocked()) {
+        if (!parentNode.isFile() && parentNode.hasPermission("jcr:addChildNodes") && !parentNode.isLocked()) {
             try {
                 if (!parentNode.isCheckedOut()) {
                     parentNode.checkout();
@@ -435,7 +435,7 @@ public class ContentManagerHelper {
                 String name = newName != null ? newName : node.getName();
                 try {
                     name = findAvailableName(targetParent, name, currentUserSession);
-                    if (targetParent.isWriteable() && !targetParent.isLocked()) {
+                    if (targetParent.hasPermission("jcr:addChildNodes") && !targetParent.isLocked()) {
                         final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
 
                         if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {

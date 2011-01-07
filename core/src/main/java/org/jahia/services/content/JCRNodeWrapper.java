@@ -271,13 +271,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     Map<String, List<JCRNodeWrapper>> getAvailableRoles() throws RepositoryException;
 
     /**
-     * Return whether the node is writeable by the current user or not
-     *
-     * @return true if the node is writable by current user or false if not
-     */
-    boolean isWriteable();
-
-    /**
      * Checks if the current user has a permission or not
      *
      * @param perm The permission to check

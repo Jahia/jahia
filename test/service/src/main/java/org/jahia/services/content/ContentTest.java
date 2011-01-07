@@ -156,7 +156,7 @@ public class ContentTest {
 
             final String name = "test" + System.currentTimeMillis();
 
-            assertTrue("Root node should be writeable !", rootNode.isWriteable());
+            assertTrue("Root node should be writeable !", rootNode.hasPermission("jcr:addChildNodes"));
 
             JCRNodeWrapper testCollection = rootNode.createCollection(name);
             session.save();
@@ -195,7 +195,7 @@ public class ContentTest {
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
 
-            assertTrue("Root node should be writeable !", rootNode.isWriteable());
+            assertTrue("Root node should be writeable !", rootNode.hasPermission("jcr:addChildNodes"));
 
             String value = "This is a test";
             String mimeType = "text/plain";
@@ -248,7 +248,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
-            assertTrue("Root node should be writeable !", rootNode.isWriteable());
+            assertTrue("Root node should be writeable !", rootNode.hasPermission("jcr:addChildNodes"));
 
             final String name = "test" + System.currentTimeMillis();
 
@@ -306,7 +306,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
-            assertTrue("Root node should be writeable !", rootNode.isWriteable());
+            assertTrue("Root node should be writeable !", rootNode.hasPermission("jcr:addChildNodes"));
 
             String value = "This is a test";
             String mimeType = "text/plain";

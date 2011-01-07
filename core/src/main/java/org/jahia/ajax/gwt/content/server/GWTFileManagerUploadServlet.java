@@ -262,7 +262,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             return BAD_LOCATION;
         }
 
-        if (!locationFolder.isWriteable() || locationFolder.isLocked()) {
+        if (!locationFolder.hasPermission("jcr:addChildNodes") || locationFolder.isLocked()) {
             logger.debug("destination is not writable for user " + user.getName());
             return READONLY;
         }

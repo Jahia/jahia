@@ -82,6 +82,10 @@ public class SidePanel extends ContentPanel {
         for (GWTSidePanelTab tabConfig : config.getTabs()) {
             SidePanelTabItem tabItem = tabConfig.getTabItem();
             tabs.add(tabItem);
+            if (tabItem instanceof TemplatesTabItem) {
+                templatesTabItem = tabItem;
+            }
+
             tabPanel.add(tabItem.create(tabConfig));
         }
 

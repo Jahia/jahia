@@ -15,7 +15,7 @@ final String selectUsrGrp = (String) request.getAttribute("selectUsrGrp"); %>
 <%
 stretcherToOpen   = 0; %>
 <internal:gwtGenerateDictionary/>        
-<internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />
 <div id="topTitle">
   <h1>Jahia</h1>
   <h2 class="edit"><fmt:message key="label.serverroles"/></h2>
@@ -36,7 +36,14 @@ stretcherToOpen   = 0; %>
                     <jsp:param name="mode" value="server"/>
                 </jsp:include>
               <div id="content" class="fit">
-                  <div id="gwtpermissionrole" config="rolesmanager"  class="jahia-admin-gxt"></div>
+                  <div class="head headtop">
+                      <div class="object-title">
+                          <fmt:message key="label.serverroles"/>
+                      </div>
+                  </div>
+                  <div class="content-item-noborder">
+                      <internal:contentManager embedded="true" conf="rolesmanager"/>
+                  </div>
               </div>
             </div>
             </div>

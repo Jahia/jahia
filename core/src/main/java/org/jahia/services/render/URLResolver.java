@@ -156,6 +156,7 @@ public class URLResolver {
      * @param context  The current request in order to obtain the context path
      */
     public URLResolver(String url, RenderContext context) {
+        method = context.getRequest().getMethod();
         renderContext = context;
         String contextPath = context.getRequest().getContextPath();
 

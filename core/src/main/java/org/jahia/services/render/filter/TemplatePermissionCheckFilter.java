@@ -32,12 +32,15 @@
 
 package org.jahia.services.render.filter;
 
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRValueWrapperImpl;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.AccessDeniedException;
+import javax.jcr.Value;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,18 +53,38 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         Script script = (Script) renderContext.getRequest().getAttribute("script");
+        JCRNodeWrapper node = resource.getNode();
         if (script != null) {
             String requirePermissions = script.getTemplate().getProperties().getProperty("requirePermissions");
             if (requirePermissions != null) {
                 String[] perms = requirePermissions.split(" ");
                 for (String perm : perms) {
-                    if (!resource.getNode().hasPermission(perm)) {
+                    if (!node.hasPermission(perm)) {
                         throw new AccessDeniedException();
                     }
                 }
             }
         } else {
             throw new TemplateNotFoundException("Unable to resolve script: "+resource.getResolvedTemplate()+" asked template was "+renderContext.getMainResource().getResolvedTemplate());
+        }
+        if (!"studiomode".equals(renderContext.getEditModeConfigName())) {
+            if (node.hasProperty("j:requiredMode")) {
+                String req = node.getProperty("j:requiredMode").getString();
+                if (renderContext.isContributionMode() && !req.equals("contribute")) {
+                    throw new AccessDeniedException();
+                } else if (!renderContext.isContributionMode() && !req.equals("normal")) {
+                    throw new AccessDeniedException();
+                }
+
+            }
+            if (node.hasProperty("j:requiredPermissions")) {
+                Value[] values = node.getProperty("j:requiredPermissions").getValues();
+                for (Value value : values) {
+                    if (!node.hasPermission(((JCRValueWrapperImpl) value).getNode().getName())) {
+                        throw new AccessDeniedException();
+                    }
+                }
+            }
         }
         return null;
     }

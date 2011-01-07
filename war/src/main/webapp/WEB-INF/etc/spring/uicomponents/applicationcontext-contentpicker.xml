@@ -568,7 +568,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
                 <ref bean="Engine.Tab.Content" />
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
             </list>
         </property>

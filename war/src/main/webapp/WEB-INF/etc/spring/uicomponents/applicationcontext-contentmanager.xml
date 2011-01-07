@@ -29,7 +29,7 @@
                 <ref bean="Engine.Tab.Tags" />
                 <ref bean="Engine.Tab.Categories" />
                 <ref bean="Engine.Tab.Options" />
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
                 <ref bean="Engine.Tab.Workflow" />
                 <ref bean="Engine.Tab.Seo" />
@@ -180,7 +180,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
                 <ref bean="Engine.Tab.Metadata" />
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
                 <ref bean="Engine.Tab.Tags" />
                 <ref bean="Engine.Tab.Categories" />
@@ -306,7 +306,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
                 <ref bean="Engine.Tab.Content" />
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
             </list>
         </property>
@@ -420,7 +420,7 @@
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Content" />
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
             </list>
         </property>
@@ -525,7 +525,7 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
             </list>
         </property>
@@ -594,7 +594,7 @@
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Portlets" />
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
             </list>
         </property>
@@ -739,12 +739,12 @@
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
-                <ref bean="Engine.Tab.ContentAndLayout"/>
+                <ref bean="Engine.Tab.Content"/>
                 <ref bean="Engine.Tab.Metadata"/>
                 <ref bean="Engine.Tab.Tags" />
                 <ref bean="Engine.Tab.Categories" />
                 <ref bean="Engine.Tab.Options" />
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
                 <ref bean="Engine.Tab.Workflow" />
                 <ref bean="Engine.Tab.Versioning" />
@@ -891,7 +891,7 @@
                 <ref bean="Engine.Tab.Tags" />
                 <ref bean="Engine.Tab.Categories" />
                 <ref bean="Engine.Tab.Options" />
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
                 <ref bean="Engine.Tab.Workflow" />
                 <ref bean="Engine.Tab.Versioning" />
@@ -1027,7 +1027,7 @@
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
-                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
                 <ref bean="Engine.Tab.Versioning" />
                 <ref bean="Engine.Tab.Analytics" />

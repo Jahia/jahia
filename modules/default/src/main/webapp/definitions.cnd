@@ -34,15 +34,6 @@
  - pageSize (long) = 10 autocreated
  - displayPager (boolean) = true autocreated
 
-[jmix:orderedList] mixin
- extends = jnt:contentList
- - firstField (string, choicelist[sortableFieldnames]) indexed=no
- - firstDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
- - secondField (string, choicelist[sortableFieldnames]) indexed=no
- - secondDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
- - thirdField (string, choicelist[sortableFieldnames]) indexed=no
- - thirdDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
-
 [jnt:fileList] > jnt:content, jmix:structuredContent, jmix:editorialContent
  - folder (weakreference, picker[type='folder'])
 

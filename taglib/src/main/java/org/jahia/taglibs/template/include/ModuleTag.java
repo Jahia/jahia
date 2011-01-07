@@ -33,6 +33,7 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRValueWrapperImpl;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.bin.Studio;

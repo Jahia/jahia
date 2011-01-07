@@ -176,12 +176,11 @@
         <!-- edit engine -->
         <property name="engineTabs">
             <list>
-                <ref bean="Engine.Tab.ContentAndLayout"/>
                 <ref bean="Engine.Tab.Content"/>
                 <ref bean="Engine.Tab.ListOrdering"/>
                 <ref bean="Engine.Tab.Layout"/>
                 <ref bean="Engine.Tab.Options"/>
-                <ref bean="Engine.Tab.Rights"/>
+                <ref bean="Engine.Tab.RequiredPermissions"/>
                 <ref bean="Engine.Tab.Usages"/>
             </list>
         </property>
@@ -721,7 +720,7 @@
         <!-- edit engine -->
         <property name="engineTabs">
             <list>
-                <ref bean="Engine.Tab.ContentAndLayout"/>
+                <!--<ref bean="Engine.Tab.ContentAndLayout"/>-->
                 <ref bean="Engine.Tab.Content"/>
                 <ref bean="Engine.Tab.ListOrdering"/>
                 <ref bean="Engine.Tab.Layout"/>
@@ -729,7 +728,7 @@
                 <ref bean="Engine.Tab.Tags"/>
                 <ref bean="Engine.Tab.Categories"/>
                 <ref bean="Engine.Tab.Options"/>
-                <ref bean="Engine.Tab.Rights"/>
+                <ref bean="Engine.Tab.Roles"/>
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.Workflow"/>
                 <ref bean="Engine.Tab.History"/>
@@ -1150,60 +1149,17 @@
         <property name="titleKey" value="label.engineTab.content"/>
         <property name="requiredPermission" value="viewContentTab"/>
         <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
-                <property name="hideForTypes">
-                    <list>
-                        <value>jnt:contentList</value>
-                        <value>jnt:page</value>
-                        <value>jnt:area</value>
-                        <value>jnt:absoluteArea</value>
-                        <value>jnt:levelAbsoluteArea</value>
-                        <value>jnt:mainResourceDisplay</value>
-                        <value>jnt:template</value>
-                        <value>jnt:pageTemplate</value>
-                        <value>jnt:contentTemplate</value>
-                        <value>jnt:newsletterIssue</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="Engine.Tab.ContentAndLayout" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="id" value="content"/>
-        <property name="titleKey" value="label.engineTab.content"/>
-        <property name="requiredPermission" value="viewContentTab"/>
-        <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
-                <property name="showForTypes">
-                    <list>
-                        <value>jnt:page</value>
-                        <value>jnt:area</value>
-                        <value>jnt:absoluteArea</value>
-                        <value>jnt:levelAbsoluteArea</value>
-                        <value>jnt:mainResourceDisplay</value>
-                        <value>jnt:template</value>
-                        <value>jnt:pageTemplate</value>
-                        <value>jnt:contentTemplate</value>
-                        <value>jnt:newsletterIssue</value>
-                    </list>
-                </property>
-                <property name="dataType">
-                    <list>
-                        <value>content</value>
-                        <value>layout</value>
-                    </list>
-                </property>
-            </bean>
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem"/>
         </property>
     </bean>
 
     <bean id="Engine.Tab.ListOrdering" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="listOrdering"/>
-        <property name="titleKey" value="label.engineTab.content"/>
+        <property name="titleKey" value="label.engineTab.listOrdering"/>
         <property name="requiredPermission" value="viewContentTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ListOrderingContentTabItem">
+                <property name="dataType" value="listOrdering"/>
                 <property name="showForTypes">
                     <list>
                         <value>jnt:contentList</value>
@@ -1371,12 +1327,26 @@
         </property>
     </bean>
 
-    <bean id="Engine.Tab.Rights" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+    <bean id="Engine.Tab.Roles" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="roles"/>
         <property name="titleKey" value="label.engineTab.roles"/>
         <property name="requiredPermission" value="viewRolesTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolesTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.RequiredPermissions" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="permissions"/>
+        <property name="titleKey" value="label.engineTab.permissions"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
+                <property name="dataType">
+                    <list>
+                        <value>permissions</value>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 

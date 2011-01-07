@@ -136,7 +136,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                 if (resource.getTemplate().equals("default") && current.hasProperty("j:templateNode")) {
                     // A template node is specified on the current node
                     JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
-                    if (!checkTemplatePermission(resource, templateNode)) {
+                    if (!checkTemplatePermission(resource, renderContext, templateNode)) {
                         throw new AccessDeniedException(resource.getTemplate());
                     }
                     template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
@@ -237,16 +237,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                 ok = true;
             }
         }
-        if (templateNode.hasProperty("j:requiredMode")) {
-            String req = templateNode.getProperty("j:requiredMode").getString();
-            if (renderContext.isContributionMode() && !req.equals("contribute")) {
-                return;
-            } else if (!renderContext.isContributionMode() && !req.equals("normal")) {
-                return;
-            }
-
-        }
-        if (!checkTemplatePermission(resource, templateNode)) return;
+        if (!checkTemplatePermission(resource, renderContext, templateNode)) return;
 
         if (ok) {
             templates.put(type,new Template(
@@ -255,7 +246,16 @@ public class TemplateNodeFilter extends AbstractFilter {
         }
     }
 
-    private boolean checkTemplatePermission(Resource resource, JCRNodeWrapper templateNode) throws RepositoryException {
+    private boolean checkTemplatePermission(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {
+        if (templateNode.hasProperty("j:requiredMode")) {
+            String req = templateNode.getProperty("j:requiredMode").getString();
+            if (renderContext.isContributionMode() && !req.equals("contribute")) {
+                return false;
+            } else if (!renderContext.isContributionMode() && !req.equals("normal")) {
+                return false;
+            }
+
+        }
         if (templateNode.hasProperty("j:requiredPermissions")) {
             Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
             for (Value value : values) {

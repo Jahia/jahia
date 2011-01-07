@@ -326,7 +326,7 @@
 //---------------------------------------------------------
 
 [jmix:renderable] mixin
- extends = jnt:content, jnt:template, jnt:query
+ extends = jnt:content, jnt:query
  itemtype = layout
  - j:view (string, choicelist[templates,resourceBundle,image]) nofulltext mandatory
 
@@ -334,13 +334,18 @@
  itemtype = layout
  - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
 
-[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
+[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden
- - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'normal', 'contribute'
- - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) nofulltext multiple
+ - j:view (string, choicelist[templates,resourceBundle,image]) nofulltext
  + * (jnt:template)
  + * (jnt:content)
+
+[jmix:requiredPermissions] mixin
+ extends = jnt:content
+ itemtype = permissions
+ - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'normal', 'contribute'
+ - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) nofulltext multiple
 
 [jnt:pageTemplate] > jnt:template
 
@@ -349,7 +354,6 @@
  - j:defaultTemplate (boolean) = false
 
 [jmix:mockupStyle] mixin
- itemtype = layout
  - j:mockupStyle (string)
 
 [jnt:mainResourceDisplay] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableMainResource, jmix:layoutComponentContent, jmix:mockupStyle
@@ -368,11 +372,9 @@
 [jnt:authorDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponent, jmix:mockupStyle
 
 [jmix:renderableMainResource] mixin
- itemtype = layout
  - j:mainResourceView (string, choicelist[templates=mainresource,resourceBundle,image]) nofulltext
 
 [jmix:renderableUser] mixin
- itemtype = layout
  - j:userView (string, choicelist[templates=jnt:user,resourceBundle,image]) nofulltext
 
 [jmix:renderableList] mixin
@@ -380,8 +382,8 @@
  - j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,image,dependentProperties='j:allowedTypes']) nofulltext
 
 [jmix:renderableArea] > jmix:renderableList mixin
- itemtype = layout
  - j:areaView (string, choicelist[templates=jnt:contentList,resourceBundle,image]) nofulltext
+ - j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,image,dependentProperties='j:allowedTypes']) nofulltext
 
 [jmix:renderableReference] mixin
  extends = jmix:nodeReference
@@ -390,7 +392,6 @@
 
 [jmix:theme] mixin
  extends = jnt:page, jnt:template
- itemtype = layout
  - j:theme (weakreference,choicelist[nodes='$currentSite/templates/files/themes;jnt:folder'])
 
 //---------------------------------------------------------
@@ -551,6 +552,7 @@ extends = jnt:content
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
  orderable
  - jcr:title (string) i18n mandatory
+ - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
  + * (nt:base) = nt:base version
  + * (jmix:navMenuItem)
 
@@ -559,6 +561,17 @@ extends = jnt:content
 [jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list, jmix:renderableList
  orderable
  + * (jmix:droppableContent) = jmix:droppableContent version
+
+[jmix:orderedList] mixin
+ itemtype = listOrdering
+ extends = jnt:contentList
+ - firstField (string, choicelist[sortableFieldnames]) indexed=no
+ - firstDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
+ - secondField (string, choicelist[sortableFieldnames]) indexed=no
+ - secondDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
+ - thirdField (string, choicelist[sortableFieldnames]) indexed=no
+ - thirdDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
+
 
 [jnt:contentFolder] > jnt:content, mix:title, jmix:list, jmix:publication
  + * (jmix:droppableContent) = jmix:droppableContent version

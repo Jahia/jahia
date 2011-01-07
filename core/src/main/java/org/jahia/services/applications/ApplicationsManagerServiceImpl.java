@@ -34,11 +34,15 @@ package org.jahia.services.applications;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.LogFactory;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.pluto.container.PortletWindow;
 import org.apache.pluto.container.driver.PlutoServices;
 import org.apache.pluto.container.driver.PortletRegistryEvent;
 import org.apache.pluto.container.driver.PortletRegistryListener;
 import org.apache.pluto.container.driver.PortletRegistryService;
+import org.apache.pluto.container.om.portlet.PortletApplicationDefinition;
+import org.apache.pluto.container.om.portlet.PortletDefinition;
+import org.apache.pluto.container.om.portlet.impl.PortletType;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
@@ -383,28 +387,28 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         return appName;
     }
 
-    private String getWebAppNamespaceURI(final ApplicationBean app) {
-        return "http://www.jahia.org/portlets/" + app.getName();
+    private String getWebAppNamespaceURI(String appName) {
+        return "http://www.jahia.org/portlets/" + appName;
     }
 
-    private String getWebAppPrefix(final ApplicationBean app) {
-        return JCRContentUtils.encodeJCRNamePrefix(getCompactName(app.getName()));
+    private String getWebAppPrefix(final String appName) {
+        return JCRContentUtils.encodeJCRNamePrefix(getCompactName(appName));
     }
 
-    private String getEntryPointNamespaceURI(final ApplicationBean app, final EntryPointDefinition entryPointDefinition) {
-        return getWebAppNamespaceURI(app) + "/" + entryPointDefinition.getName();
+    private String getEntryPointNamespaceURI(final String appName, final String entryPointDefinitionName) {
+        return getWebAppNamespaceURI(appName) + "/" + entryPointDefinitionName;
     }
 
-    private String getEntryPointPrefix(final ApplicationBean app, final EntryPointDefinition entryPointDefinition) {
-        return JCRContentUtils.encodeJCRNamePrefix(getCompactName(app.getName() + "_" + entryPointDefinition.getName()));
+    private String getEntryPointPrefix(final String appName, final String entryPointDefinitionName) {
+        return JCRContentUtils.encodeJCRNamePrefix(getCompactName(appName + "_" + entryPointDefinitionName));
     }
 
-    private String getWebAppQualifiedNodeName(final ApplicationBean app, String localName) {
-        return getWebAppPrefix(app) + ":" + localName;
+    private String getWebAppQualifiedNodeName(final String appName, final String localName) {
+        return getWebAppPrefix(appName) + ":" + localName;
     }
 
-    private String getPortletQualifiedNodeName(final ApplicationBean app, EntryPointDefinition entryPointDefinition, String localName) {
-        return getEntryPointPrefix(app, entryPointDefinition) + ":" + localName;
+    private String getPortletQualifiedNodeName(final String appName, final String entryPointDefinitionName, final String localName) {
+        return getEntryPointPrefix(appName, entryPointDefinitionName) + ":" + localName;
     }
 
     /**
@@ -440,12 +444,12 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     // we must now create the corresponding permissions for web application roles as well as portlet
                     // modes, and then assign them to default roles, possibly using some kind of configuration.
 
-                    JCRContentUtils.registerNamespace(session, getWebAppPrefix(app), getWebAppNamespaceURI(app));
+                    JCRContentUtils.registerNamespace(session, getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
 
                     // now let's add the web application roles as Jahia permissions, that we will map to Jahia roles
                     // if a default mapping is provided in the service's configuration.
 
-                    String webappRolesPath = "/permissions/webapps/" + app.getName() + "/"+ getWebAppQualifiedNodeName(app, "roles");
+                    String webappRolesPath = "/permissions/webapps/" + app.getName() + "/"+ getWebAppQualifiedNodeName(app.getName(), "roles");
                     JCRNodeWrapper webappRolesPermNode = getOrCreatePermissionNode(webappRolesPath, session);
                     session.save();
 
@@ -455,7 +459,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                         String webAppRoleName;
                         while (updatedRoles.hasNext()) {
                             webAppRoleName = updatedRoles.next();
-                            PermissionIdentity permission = new PermissionIdentity(getWebAppQualifiedNodeName(app, webAppRoleName));
+                            PermissionIdentity permission = new PermissionIdentity(getWebAppQualifiedNodeName(app.getName(), webAppRoleName));
                             permission.setPath(webappRolesPath + "/" + permission.getName());
                             roleService.savePermission(permission);
 
@@ -477,25 +481,25 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     // also be done.
 
                     for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
-                        JCRContentUtils.registerNamespace(session, getEntryPointPrefix(app, entryPointDefinition), getEntryPointNamespaceURI(app, entryPointDefinition));
+                        JCRContentUtils.registerNamespace(session, getEntryPointPrefix(app.getName(), entryPointDefinition.getName()), getEntryPointNamespaceURI(app.getName(), entryPointDefinition.getName()));
 
                         // let's add the default portlet permissions
 
-                        String createInstancesPermPath = "/permissions/webapps/" + app.getName() + "/" + getWebAppQualifiedNodeName(app, "portlets") + "/" + getPortletQualifiedNodeName(app, entryPointDefinition, "createInstance");
+                        String createInstancesPermPath = "/permissions/webapps/" + app.getName() + "/" + getWebAppQualifiedNodeName(app.getName(), "portlets") + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), "createInstance");
                         JCRNodeWrapper createInstancesPermNode = getOrCreatePermissionNode(createInstancesPermPath, session);
                         session.save();
                         if (defaultPortletPermissionMappings != null) {
                             String jahiaRolePath = defaultPortletPermissionMappings.get("createInstance");
-                            PermissionIdentity permission = new PermissionIdentity(getPortletQualifiedNodeName(app, entryPointDefinition, "createInstance"));
+                            PermissionIdentity permission = new PermissionIdentity(getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), "createInstance"));
                             permission.setPath(createInstancesPermPath);
                             grantPermissionToRole(permission, jahiaRolePath);
                         }
 
-                        String portletModePath = "/permissions/webapps/" + app.getName() + "/" + getWebAppQualifiedNodeName(app, "portlets") + "/" + getPortletQualifiedNodeName(app, entryPointDefinition, "modes");
+                        String portletModePath = "/permissions/webapps/" + app.getName() + "/" + getWebAppQualifiedNodeName(app.getName(), "portlets") + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), "modes");
                         JCRNodeWrapper portletModePermNode = getOrCreatePermissionNode(portletModePath, session);
                         session.save();
                         for (PortletMode portletMode : entryPointDefinition.getPortletModes()) {
-                            PermissionIdentity permission = new PermissionIdentity(getPortletQualifiedNodeName(app, entryPointDefinition, portletMode.toString()));
+                            PermissionIdentity permission = new PermissionIdentity(getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), portletMode.toString()));
                             permission.setPath(portletModePath + "/" + permission.getName());
                             roleService.savePermission(permission);
 
@@ -1070,7 +1074,10 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         plutoServices.getPortletRegistryService().addPortletRegistryListener(new PortletRegistryListener() {
             public void portletApplicationRegistered(PortletRegistryEvent evt) {
                 servletContextManager.removeContextFromCache(evt.getApplicationName());
+
                 try {
+                    loadApplicationPrivileges(evt);
+
                     syncPlutoWithDB();
                 } catch (Exception e) {
                     logger.error(
@@ -1090,6 +1097,35 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     "Error synchronizing deployed portlets state with the internal registry. Cause: " + e.getMessage(),
                     e);
         }
+    }
+
+    private void loadApplicationPrivileges(PortletRegistryEvent evt) throws RepositoryException {
+        // we must now register the namespace for the portlet, as well as refresh the privileges, to make sure
+        // we load all the privileges attached to portlets.
+        final PortletApplicationDefinition portletApplication = evt.getPortletApplication();
+        String applicationName = portletApplication.getName();
+        if (applicationName.startsWith("/")) {
+            applicationName = applicationName.substring(1);
+        }
+        final String appName = applicationName;
+
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                // first we register the namespaces.
+
+                JCRContentUtils.registerNamespace(session, getWebAppPrefix(appName), getWebAppNamespaceURI(appName));
+
+                List<? extends PortletDefinition> portlets = portletApplication.getPortlets();
+                for (PortletDefinition portlet : portlets) {
+                    JCRContentUtils.registerNamespace(session, getEntryPointPrefix(appName, portlet.getPortletName()), getEntryPointNamespaceURI(appName, portlet.getPortletName()));
+                }
+
+                // now let's reload the privileges
+
+                JahiaPrivilegeRegistry.init(session);
+                return null;
+            }
+        });
     }
 
 } // end JahiaApplicationsService

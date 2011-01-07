@@ -100,14 +100,24 @@ public final class JahiaPrivilegeRegistry {
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node subNode = (Node) ni.next();
-            subPrivileges.add(registerPrivileges(subNode, privileges));
+            Privilege subPriv = registerPrivileges(subNode, privileges);
+            if (subPriv != null) {
+                subPrivileges.add(subPriv);
+            }
         }
 
-        String expandedName = JCRContentUtils.getExpandedName(node.getName(), node.getSession().getWorkspace().getNamespaceRegistry());
-        boolean isAbstract = node.hasProperty("j:isAbstract") && node.getProperty("j:isAbstract").getBoolean();
-        Privilege priv = new PrivilegeImpl(node.getName(), expandedName, isAbstract, subPrivileges);
-        privileges.add(priv);
-        return priv;
+        try {
+            String expandedName = JCRContentUtils.getExpandedName(node.getName(), node.getSession().getWorkspace().getNamespaceRegistry());
+            boolean isAbstract = node.hasProperty("j:isAbstract") && node.getProperty("j:isAbstract").getBoolean();
+            Privilege priv = new PrivilegeImpl(node.getName(), expandedName, isAbstract, subPrivileges);
+            privileges.add(priv);
+            return priv;
+        } catch (NamespaceException ne) {
+            // this can happen if we are trying to register a privilege who's namespace is not yet registered, as this
+            // can be the case for portlet privileges. In this case we will simply ignore it for now and register it
+            // at portlet registration time.
+        }
+        return null;
     }
 
     public Set<Privilege> getPrivileges(int permissions, String workspace) throws AccessControlException, RepositoryException {

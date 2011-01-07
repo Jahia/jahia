@@ -84,7 +84,7 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
                 public void onSuccess(GWTManagerConfiguration config) {
                     PermissionsUtils.loadPermissions(config.getPermissions());
                     if (embedded) {
-                        panel.add(new ContentManager(filters, mimeTypes, selectedPaths, config, 500));
+                        panel.add(new ContentManager(filters, mimeTypes, selectedPaths, config, 250));
                     } else {
                         panel.add(new ContentManagerViewPort(filters, mimeTypes, selectedPaths, config));
                     }

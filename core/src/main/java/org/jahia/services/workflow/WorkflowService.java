@@ -229,21 +229,21 @@ public class WorkflowService {
                         Map<String,String> perms = workflowPermissions.get(rule.getWorkflowDefinitionKey());
                         if (perms != null) {
                             String permName = perms.get(activityName);
-                            if (permName.indexOf("$") > -1) {
-                                Workflow w = getWorkflow(definition.getProvider(), processId, null);
-                                for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
-                                    if (entry.getValue() instanceof List) {
-                                        List variable = (List) entry.getValue();
-                                        for (Object workflowVariable : variable) {
-                                            if (workflowVariable instanceof WorkflowVariable) {
-                                                String v = ((WorkflowVariable)workflowVariable).getValue();
-                                                permName = permName.replace("$"+entry.getKey(), v);
+                            if (permName != null) {
+                                if (permName.indexOf("$") > -1) {
+                                    Workflow w = getWorkflow(definition.getProvider(), processId, null);
+                                    for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
+                                        if (entry.getValue() instanceof List) {
+                                            List variable = (List) entry.getValue();
+                                            for (Object workflowVariable : variable) {
+                                                if (workflowVariable instanceof WorkflowVariable) {
+                                                    String v = ((WorkflowVariable)workflowVariable).getValue();
+                                                    permName = permName.replace("$"+entry.getKey(), v);
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            if (permName != null) {
                                 try {
                                     PermissionIdentity permission = new PermissionIdentity(permName);
                                     permission.setPath("/permissions"+permName);

@@ -521,11 +521,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                         while (aces.hasNext()) {
                             Node ace = aces.nextNode();
                             String principal = ace.getProperty("j:principal").getString();
-                            String type = ace.getProperty("j:aceType").getString();
-                            Value[] roles = ace.getProperty("j:roles").getValues();
-                            for (int j = 0; j < roles.length; j++) {
-                                String role = roles[j].getString();
-                                if (matchUser(principal, site)) {
+                            if (matchUser(principal, site)) {
+                                String type = ace.getProperty("j:aceType").getString();
+                                Value[] roles = ace.getProperty("j:roles").getValues();
+                                for (int j = 0; j < roles.length; j++) {
+                                    String role = roles[j].getString();
                                     if (foundRoles.contains(role)) {
                                         continue;
                                     }

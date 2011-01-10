@@ -526,11 +526,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                                 Value[] roles = ace.getProperty("j:roles").getValues();
                                 for (int j = 0; j < roles.length; j++) {
                                     String role = roles[j].getString();
-                                    if (foundRoles.contains(role)) {
+                                    if (foundRoles.contains(principal + ":" + role)) {
                                         continue;
                                     }
 
-                                    foundRoles.add(role);
+                                    foundRoles.add(principal + ":" + role);
 
                                     if (type.equals("DENY")) {
                                         continue;
@@ -593,7 +593,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean matchUser(String principal, String site) {
         final String principalName = principal.substring(2);
         if (principal.charAt(0) == 'u') {
-            if (principalName.equals("guest") || (!jahiaPrincipal.isGuest() && principalName.equals(jahiaPrincipal.getName()))) {
+            if ((jahiaPrincipal.isGuest() && principalName.equals("guest")) || (principalName.equals(jahiaPrincipal.getName()))) {
                 return true;
             }
         } else if (principal.charAt(0) == 'g') {

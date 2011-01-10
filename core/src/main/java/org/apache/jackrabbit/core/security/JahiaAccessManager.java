@@ -525,18 +525,19 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                             Value[] roles = ace.getProperty("j:roles").getValues();
                             for (int j = 0; j < roles.length; j++) {
                                 String role = roles[j].getString();
+                                if (matchUser(principal, site)) {
+                                    if (foundRoles.contains(role)) {
+                                        continue;
+                                    }
 
-                                if (foundRoles.contains(role)) {
-                                    continue;
-                                }
+                                    foundRoles.add(role);
 
-                                foundRoles.add(role);
-
-                                if (type.equals("DENY")) {
-                                    continue;
-                                }
-                                if (matchPermission(permissions, role, s) && matchUser(principal, site)) {
-                                    return true;
+                                    if (type.equals("DENY")) {
+                                        continue;
+                                    }
+                                    if (matchPermission(permissions, role, s)) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -592,12 +593,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean matchUser(String principal, String site) {
         final String principalName = principal.substring(2);
         if (principal.charAt(0) == 'u') {
-            if ((jahiaPrincipal.isGuest() && principalName.equals("guest")) || principalName.equals(jahiaPrincipal.getName())) {
+            if ((jahiaPrincipal.isGuest() || (!principalName.equals("guest")) && principalName.equals(jahiaPrincipal.getName()))) {
                 return true;
             }
         } else if (principal.charAt(0) == 'g') {
-            if (principalName.equals("guest") || !jahiaPrincipal.isGuest() &&
-                    (isUserMemberOf(jahiaPrincipal.getName(), principalName, site) || isUserMemberOf(jahiaPrincipal.getName(), principalName, null))) {
+            if (principalName.equals("guest") || (!jahiaPrincipal.isGuest() &&
+                    (isUserMemberOf(jahiaPrincipal.getName(), principalName, site) || isUserMemberOf(jahiaPrincipal.getName(), principalName, null)))) {
                 return true;
             }
         }

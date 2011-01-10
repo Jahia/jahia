@@ -74,9 +74,11 @@ public class RolePermissionsTabItem extends EditEngineTabItem {
 
         selection = new HashSet<GWTJahiaNode>();
         List<String> openPath = new ArrayList<String>();
-        for (GWTJahiaNodePropertyValue value : p.getValues()) {
-            selection.add(value.getNode());
-            openPath.add(value.getNode().getPath());
+        if (p != null) {
+            for (GWTJahiaNodePropertyValue value : p.getValues()) {
+                selection.add(value.getNode());
+                openPath.add(value.getNode().getPath());
+            }
         }
         dependencies = new HashMap<String, List<String>>();
         boxes = new HashMap<String, CheckBox>();

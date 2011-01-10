@@ -14,6 +14,7 @@
 <form class="pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/" name="${formid}">
     <input type="hidden" name="nodeType" value="jnt:page">
     <input type="hidden" name="normalizeNodeName" value="true"/>
+    <input type="hidden" name="autoAssignRole" value="owner"/>
     <input type="hidden" name="jcr:mixinTypes" value="jmix:hasTemplateNode"/>
     <input type="hidden" name="j:templateNode" value="${currentNode.properties['templateNode'].string}"/>
     <h3>${currentNode.properties['jcr:title'].string}</h3>

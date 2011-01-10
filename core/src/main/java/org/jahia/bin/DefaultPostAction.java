@@ -34,12 +34,9 @@ package org.jahia.bin;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.*;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.logging.MetricsLoggingService;
@@ -91,8 +88,8 @@ public class DefaultPostAction implements Action {
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
+                                  final Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
                 urlResolver.getLocale());
         JCRNodeWrapper newNode = null;
         String[] subPaths = urlResolver.getPath().split("/");
@@ -140,6 +137,21 @@ public class DefaultPostAction implements Action {
                 }
             }
             session.save();
+
+            final String nodeId = newNode.getIdentifier();
+            if (parameters.containsKey(Render.AUTO_ASSIGN_ROLE)) {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(session.getUser().getUsername(),session.getWorkspace().getName(),new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper rootSession) throws RepositoryException {
+                        JCRNodeWrapper createdNode = rootSession.getNodeByUUID(nodeId);
+                        List<String> roles = parameters.get(Render.AUTO_ASSIGN_ROLE);
+                        createdNode.grantRoles("u:"+session.getUser().getUsername(), new HashSet<String>(roles));
+                        rootSession.save();
+                        return null;
+                    }
+                });
+            }
+
+
             if (parameters.containsKey(Render.AUTO_CHECKIN) && ((String) ((List) parameters.get(Render.AUTO_CHECKIN)).get(
                     0)).length() > 0) {
                 newNode.checkin();

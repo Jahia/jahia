@@ -116,6 +116,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String NORMALIZE_NODE_NAME = "normalizeNodeName";
     public static final String VERSION = "version";
     public static final String SUBMIT = "submit";
+    public static final String AUTO_ASSIGN_ROLE = "autoAssignRole";
     public static final String ALIAS_USER = "alias";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
@@ -149,6 +150,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(NORMALIZE_NODE_NAME);
         reservedParameters.add(VERSION);
         reservedParameters.add(SUBMIT);
+        reservedParameters.add(AUTO_ASSIGN_ROLE);
     }
 
     private transient ServletConfig servletConfig;

@@ -1933,7 +1933,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         while (props.hasNext()) {
             Property property = props.nextProperty();
             try {
-                if (!property.getDefinition().isProtected() && !Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
+                if (!Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
                     if (property.getType() == PropertyType.REFERENCE || property.getType() == PropertyType.WEAKREFERENCE) {
                         if (property.getDefinition().isMultiple() && (property.isMultiple())) {
                             Value[] values = property.getValues();

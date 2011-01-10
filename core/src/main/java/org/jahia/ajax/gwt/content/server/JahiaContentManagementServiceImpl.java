@@ -81,6 +81,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.googledocs.GoogleDocsService;
@@ -251,7 +252,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTManagerConfiguration config = null;
         try {
             config = uiConfig.getGWTManagerConfiguration(getSite(), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
-                            getRequest(), name);
+                    getRequest(), name);
             setAvailablePermissions(config);
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
@@ -290,7 +291,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public BasePagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
-                                               List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset)
+                                                     List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset)
             throws GWTJahiaServiceException {
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : navigation
@@ -655,16 +656,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                    Map<String, List<GWTJahiaNodeProperty>> langCodeProperties)
             throws GWTJahiaServiceException {
         if (name == null) {
-            String defaultLanguage = getLocale().toString();
-            if (getSite() != null) {
-                defaultLanguage = getSite().getDefaultLanguage();
-            }
-            List<GWTJahiaNodeProperty> l = langCodeProperties.get(defaultLanguage);
-            if (l == null && langCodeProperties.size() > 0) {
-                l = langCodeProperties.values().iterator().next();
-            }
-            if (l != null) {
-                name = contentManager.generateNameFromTitle(l);
+            if (langCodeProperties != null) {
+                String defaultLanguage = getLocale().toString();
+                if (getSite() != null) {
+                    defaultLanguage = getSite().getDefaultLanguage();
+                }
+                List<GWTJahiaNodeProperty> l = langCodeProperties.get(defaultLanguage);
+                if (l == null && langCodeProperties.size() > 0) {
+                    l = langCodeProperties.values().iterator().next();
+                }
+                if (l != null) {
+                    name = contentManager.generateNameFromTitle(l);
+                }
             }
         }
 
@@ -1414,13 +1417,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setAcl(gwtJahiaNodeACL);
             Map<String,Set<String>> referencesWarnings = new HashMap<String, Set<String>>();
             for (GWTJahiaNodeProperty property : props.values()) {
-            	try {
-	                if (property.getName().equals("*") || nodeWrapper.getProperty(property.getName()).getDefinition().isProtected()) {
-	                    continue;
-	                }
-            	} catch (PathNotFoundException e) {
-            		// ignore
-            	}
+                try {
+                    if (property.getName().equals("*") || nodeWrapper.getProperty(property.getName()).getDefinition().isProtected()) {
+                        continue;
+                    }
+                } catch (PathNotFoundException e) {
+                    // ignore
+                }
                 List<GWTJahiaNode> refs = new ArrayList<GWTJahiaNode>();
                 for (GWTJahiaNodePropertyValue value : (property.getValues())) {
                     if ((value.getType() == GWTJahiaNodePropertyType.REFERENCE ||
@@ -1763,22 +1766,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return nodes;
     }
 
-	public Map<String, WCAGValidationResult> validateWCAG(Map<String, String> richTexts) {
-		Map<String, WCAGValidationResult> result = new HashMap<String, WCAGValidationResult>(richTexts.size());
-		Locale locale;
+    public Map<String, WCAGValidationResult> validateWCAG(Map<String, String> richTexts) {
+        Map<String, WCAGValidationResult> result = new HashMap<String, WCAGValidationResult>(richTexts.size());
+        Locale locale;
         try {
-	        locale = getUILocale();
+            locale = getUILocale();
         } catch (GWTJahiaServiceException e) {
-        	logger.warn("Unable to get UI locale", e);
-        	locale = getRequest().getLocale();
+            logger.warn("Unable to get UI locale", e);
+            locale = getRequest().getLocale();
         }
-        
-		for (Map.Entry<String, String> richText : richTexts.entrySet()) {
-			ValidatorResults validatorResults = new WAIValidator(locale).validate(richText.getValue());
-			result.put(richText.getKey(), toWCAGResult(validatorResults));
+
+        for (Map.Entry<String, String> richText : richTexts.entrySet()) {
+            ValidatorResults validatorResults = new WAIValidator(locale).validate(richText.getValue());
+            result.put(richText.getKey(), toWCAGResult(validatorResults));
         }
-		
-	    return result;
+
+        return result;
     }
 
     public int getNumberOfTasksForUser() throws GWTJahiaServiceException {
@@ -1786,24 +1789,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     private WCAGValidationResult toWCAGResult(ValidatorResults validatorResults) {
-		if (validatorResults.isEmpty()) {
-			return WCAGValidationResult.OK;
-		}
-		
-		WCAGValidationResult wcagResult = new WCAGValidationResult();
-		for (Result result : validatorResults.getErrors()) {
-	        wcagResult.getErrors().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+        if (validatorResults.isEmpty()) {
+            return WCAGValidationResult.OK;
         }
-		
-		for (Result result : validatorResults.getWarnings()) {
-	        wcagResult.getWarnings().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+
+        WCAGValidationResult wcagResult = new WCAGValidationResult();
+        for (Result result : validatorResults.getErrors()) {
+            wcagResult.getErrors().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
         }
-		
-		for (Result result : validatorResults.getInfos()) {
-	        wcagResult.getInfos().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+
+        for (Result result : validatorResults.getWarnings()) {
+            wcagResult.getWarnings().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
         }
-		
-	    return wcagResult;
+
+        for (Result result : validatorResults.getInfos()) {
+            wcagResult.getInfos().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+        }
+
+        return wcagResult;
     }
 
     public GWTJahiaToolbar getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException {

@@ -65,62 +65,6 @@
           <simple jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList" />
           </simple>
-          <folderTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:folder jnt:contentFolder" j:hiddenTemplate="false" j:defaultTemplate="true">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-system/templates/base/folderTemplate/pagecontent/mainResourceDisplay">
-                <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" missing="false" facet="tags" offset="0" limit="100">
-                  <j:translation_en label="Tags" jcr:language="en" jcr:primaryType="jnt:translation" />
-                </fieldFacet>
-              </facets>
-              <pager pageSize="10" jcr:primaryType="jnt:pager" j:bindedComponent="/templateSets/templates-system/templates/base/folderTemplate/pagecontent/mainResourceDisplay" displayPager="true" />
-              <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" />
-            </pagecontent>
-          </folderTemplate>
-          <editContent j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" j:requiredMode="contribute" jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="true" j:applyOn="jnt:content">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
-              <tabularList jcr:primaryType="jnt:tabularList">
-                <content jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="Content" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <mainResourceDisplay-edit j:mainResourceView="contribute.edit" jcr:primaryType="jnt:mainResourceDisplay" />
-                </content>
-                <metadata jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="Metadata" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <mainResourceDisplay-metadata j:mainResourceView="contribute.editmetadata" jcr:primaryType="jnt:mainResourceDisplay" />
-                </metadata>
-                <tags jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="Tags" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <tag jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table">
-                    <j:translation_en jcr:title="Tag" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  </tag>
-                  <addTag jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table" j:view="addtag">
-                    <j:translation_en jcr:title="Tag" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  </addTag>
-                </tags>
-                <categories jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="Classifications" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <category jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:categorizing" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table" j:view="default">
-                    <j:translation_en jcr:title="Category" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  </category>
-                  <category-1 jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:categorizing" j:view="addcategory" j:bindedComponent="/templateSets/templates-system/templates/base/editContent/pagecontent/mainResourceDisplay-table">
-                    <j:translation_en jcr:title="Category" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  </category-1>
-                </categories>
-              </tabularList>
-            </pagecontent>
-          </editContent>
-          <viewContent j:requiredMode="normal" jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="true" j:applyOn="jnt:content">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
-              <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-            </pagecontent>
-          </viewContent>
-          <fileTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:file" j:defaultTemplate="true">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
-              <mainResourceDisplay j:mainResourceView="detail" jcr:primaryType="jnt:mainResourceDisplay" />
-            </pagecontent>
-          </fileTemplate>
           <my-profile jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList">
               <tabularList jcr:primaryType="jnt:tabularList">

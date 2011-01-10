@@ -34,6 +34,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.ajax.gwt.helper.ContentManagerHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -607,6 +608,15 @@ public class Service extends JahiaService {
 			        + ". Skip updating user password history.");
 		}
 	}
+
+    public void deployModule(String moduleName, AddedNodeFact site, KnowledgeHelper drools) {
+        User user = (User) drools.getWorkingMemory().getGlobal("user");
+        try {
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates("/templateSets/" + moduleName, site.getPath(), user.getName() );
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void setTaggingService(TaggingService taggingService) {
         this.taggingService = taggingService;

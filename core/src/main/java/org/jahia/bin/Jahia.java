@@ -53,6 +53,8 @@ package org.jahia.bin;
 import org.apache.commons.io.IOUtils;
 import org.jahia.params.*;
 import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -264,6 +266,10 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 factory.enableClusterSync();
             }
 
+            final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
+                    "root");
+            JCRSessionFactory.getInstance().setCurrentUser(jahiaUser);
+
             if (SpringContextSingleton.getInstance().isInitialized()) {
 	            Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(
 	                    JahiaAfterInitializationService.class);
@@ -287,6 +293,8 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             } else {
             	throw new ServletException(je);
             }
+        } finally {
+            JCRSessionFactory.getInstance().setCurrentUser(null);
         }
     } // end init
 

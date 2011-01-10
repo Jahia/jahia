@@ -40,6 +40,7 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;

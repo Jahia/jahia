@@ -184,3 +184,12 @@ rule "User password is set"
     then
         Store password history for user node.getName()
 end
+
+rule "Deploy initial modules for new site"
+    when
+       A new node is created
+            - the node has the type jnt:virtualsite
+            - it is in /sites
+    then
+        Deploy module content-browser on site node
+end

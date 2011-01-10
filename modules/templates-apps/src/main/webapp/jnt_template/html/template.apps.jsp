@@ -25,7 +25,7 @@
   <div id="header" class="colorResource1 imgResource1">
     <div class="container container_16">
       <div class="grid_16">
-        <template:area path="header" nodeTypes="jnt:row" />
+        --- Site header ---
       </div>
     </div>
     <div class="clear"></div>
@@ -41,7 +41,7 @@
   <div id="footer" class="colorResource2 imgResource2 noprint">
     <div class="container container_16">
       <div class="grid_16">
-        <template:area path="footer" nodeTypes="jnt:row" />
+          --- Site footer ---
         <div class="clear"></div>
       </div>
       <div class="clear"></div>

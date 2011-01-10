@@ -24,7 +24,7 @@
 [condition][]- it has the extension type {type}=types contains "{type}"
 [condition][]- it has the type {type}=node.types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
-[condition][]- it is in {path}=path matches "{path}/*"
+[condition][]- it is in {path}=node.path matches "{path}/*"
 [condition][]- its name is not {name}=name != "{name}"
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
@@ -85,3 +85,4 @@
 [consequence][]Notify {user} with mail template "{template}" from "{fromMail}" copy to "{ccList}" blind copy to "{bccList}"=notificationService.notifyUser({user},"{template}","{fromMail}","{ccList}","{bccList}",drools);
 [consequence][]Notify {user} user with mail template "{template}" from "{fromMail}"=notificationService.notifyUser({user},"{template}","{fromMail}",drools);
 [consequence][]Store password history for user {user}=service.storeUserPasswordHistory({user}, drools);
+[consequence][]Deploy module {module} on site {site}=service.deployModule("{module}",{site}, drools);

@@ -39,6 +39,7 @@ package org.jahia.services.sites;
 
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
+import org.jahia.api.user.JahiaUserService;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
@@ -502,10 +503,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
         try {
-            final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
-                    "root");
-            sessionFactory.setCurrentUser(jahiaUser);
-
+            JahiaUser jahiaUser = JCRSessionFactory.getInstance().getCurrentUser();
             if (getNbSites() == 0) {
                 Locale selectedLocale = LanguageCodeConverters.languageCodeToLocale(systemSiteDefaultLanguage);
                 JahiaSite site = addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
@@ -535,8 +533,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            sessionFactory.setCurrentUser(null);
         }
     }
 

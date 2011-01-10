@@ -32,12 +32,8 @@
 
 package org.jahia.services.templates;
 
-import java.io.*;
-import java.util.*;
-
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -46,13 +42,11 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaTemplateServiceException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
+import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
@@ -61,11 +55,16 @@ import org.jahia.services.templates.TemplatePackageApplicationContextLoader.Cont
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jdom.JDOMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.xml.sax.SAXException;
 
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
+import java.io.*;
+import java.util.*;
 
 /**
  * Template and template set deployment and management service.
@@ -372,7 +371,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 	    }
     }
 
-    public void createModule(String moduleName) {
+    public void createModule(String moduleName, boolean isModule) {
         File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
         if (tmplRootFolder.exists()) {
             return;
@@ -386,14 +385,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             new File(tmplRootFolder, "WEB-INF").mkdirs();
             new File(tmplRootFolder, "resources").mkdirs();
             new File(tmplRootFolder, "css").mkdirs();
-            new File(tmplRootFolder, "jnt_template/html").mkdirs();
-            File defaultTpl = new File(settingsBean.getJahiaTemplatesDiskPath() + "/default/jnt_template/html/template.jsp");
-            if (defaultTpl.exists()) {
-                File out = new File(tmplRootFolder, "jnt_template/html/template."+moduleName+".jsp");
-                try {
-                    IOUtils.copy(new FileInputStream(defaultTpl), new FileOutputStream(out));
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (!isModule) {
+                new File(tmplRootFolder, "jnt_template/html").mkdirs();
+                File defaultTpl = new File(settingsBean.getJahiaTemplatesDiskPath() + "/default/jnt_template/html/template.jsp");
+                if (defaultTpl.exists()) {
+                    File out = new File(tmplRootFolder, "jnt_template/html/template."+moduleName+".jsp");
+                    try {
+                        IOUtils.copy(new FileInputStream(defaultTpl), new FileOutputStream(out));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             try {
@@ -457,5 +458,198 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         });
     }
 
+    public void deployTemplates(final String templatesPath, final String sitePath, String username)
+            throws RepositoryException {
+            JCRTemplate.getInstance()
+                    .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            HashMap<String, List<String>> references = new HashMap<String, List<String>>();
+
+                            JCRNodeWrapper originalNode = session.getNode(templatesPath);
+                            JCRNodeWrapper destinationNode = session.getNode(sitePath);
+
+                            String moduleName = null;
+                            if (originalNode.hasProperty("j:siteType") && originalNode.getProperty("j:siteType").getString().equals("module")) {
+                                moduleName = originalNode.getName();
+                            }
+
+                            synchro(originalNode, destinationNode, session, moduleName, references, true);
+
+                            ReferencesHelper.resolveCrossReferences(session, references);
+                            session.save();
+
+                            JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getUUID(), "default", "live", null, true, null);
+
+                            return null;
+                        }
+                    });
+    }
+
+    public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,
+                        Map<String, List<String>> references, boolean doChildren) throws RepositoryException {
+        if (source.isNodeType("jnt:virtualsite")) {
+            session.getUuidMapping().put(source.getIdentifier(), destinationNode.getIdentifier());
+            NodeIterator ni = source.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+                JCRNodeWrapper node;
+                if (destinationNode.hasNode(child.getName())) {
+                    node = destinationNode.getNode(child.getName());
+                    doChildren = false;
+                } else {
+                    session.checkout(destinationNode);
+                    node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                    session.save();
+                    doChildren = true;
+                }
+                synchro(child, node, session, moduleName, references, doChildren);
+            }
+        } else {
+            if (source.isNodeType("jnt:folder") || source.isNodeType("jnt:contentList")) {
+                templatesSynchro(source, destinationNode, session, references, false, false, moduleName);
+            } else if (source.isNodeType("jnt:templatesFolder")) {
+                templatesSynchro(source, destinationNode, session, references, true, false, moduleName);
+            } else {
+                templatesSynchro(source, destinationNode, session, references, false, doChildren, moduleName);
+            }
+        }
+    }
+
+    public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
+                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doRemove, boolean doChildren, String moduleName)
+            throws RepositoryException {
+        if ("j:acl".equals(destinationNode.getName())) {
+            return;
+        }
+
+        boolean isCurrentModule = doChildren || (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
+
+        session.checkout(destinationNode);
+
+        final Map<String, String> uuidMapping = session.getUuidMapping();
+
+        NodeType[] mixin = source.getMixinNodeTypes();
+        for (NodeType aMixin : mixin) {
+            destinationNode.addMixin(aMixin.getName());
+        }
+
+        uuidMapping.put(source.getIdentifier(), destinationNode.getIdentifier());
+
+        List<String> names = new ArrayList<String>();
+        if (isCurrentModule) {
+            if (source.hasProperty("jcr:language") && (!destinationNode.hasProperty("jcr:language") ||
+                    (!destinationNode.getProperty("jcr:language").getString().equals(source.getProperty("jcr:language").getString())))) {
+                destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
+            }
+
+            PropertyIterator props = source.getProperties();
+
+            while (props.hasNext()) {
+                Property property = props.nextProperty();
+                names.add(property.getName());
+                try {
+                    if (!property.getDefinition().isProtected() &&
+                            !Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
+                        if (property.getType() == PropertyType.REFERENCE ||
+                                property.getType() == PropertyType.WEAKREFERENCE) {
+                            if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                                Value[] values = property.getValues();
+                                for (Value value : values) {
+                                    keepReference(destinationNode, references, property, value.getString());
+                                }
+                            } else {
+                                keepReference(destinationNode, references, property, property.getValue().getString());
+                            }
+                        } else if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                            if (!destinationNode.hasProperty(property.getName()) ||
+                                    !Arrays.equals(destinationNode.getProperty(property.getName()).getValues(), property.getValues())) {
+                                destinationNode.setProperty(property.getName(), property.getValues());
+                            }
+                        } else if (!destinationNode.hasProperty(property.getName()) ||
+                                !destinationNode.getProperty(property.getName()).getValue().equals(property.getValue())) {
+                            destinationNode.setProperty(property.getName(), property.getValue());
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
+                }
+            }
+
+            PropertyIterator pi = destinationNode.getProperties();
+            while (pi.hasNext()) {
+                JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
+                if (!oldChild.getDefinition().isProtected()) {
+                    if (!names.contains(oldChild.getName()) && !oldChild.getName().equals("j:published") && !oldChild.getName().equals("j:moduleTemplate")) {
+                        oldChild.remove();
+                    }
+                }
+            }
+
+            mixin = destinationNode.getMixinNodeTypes();
+            for (NodeType aMixin : mixin) {
+                if (!source.isNodeType(aMixin.getName())) {
+                    destinationNode.removeMixin(aMixin.getName());
+                }
+            }
+        }
+
+        NodeIterator ni = source.getNodes();
+
+        names.clear();
+
+        while (ni.hasNext()) {
+            JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+            if (child.isNodeType("jnt:template") || isCurrentModule) {
+                names.add(child.getName());
+
+                JCRNodeWrapper node;
+                if (destinationNode.hasNode(child.getName())) {
+                    node = destinationNode.getNode(child.getName());
+                } else {
+                    node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                    if (moduleName != null && node.isNodeType("jnt:template")) {
+                        node.setProperty("j:moduleTemplate", moduleName);
+                    }
+                }
+
+                templatesSynchro(child, node, session, references, doRemove, isCurrentModule, moduleName);
+            }
+        }
+        if (doRemove) {
+            ni = destinationNode.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper oldDestChild = (JCRNodeWrapper) ni.next();
+                if (!names.contains(oldDestChild.getName()) &&
+                        ((!oldDestChild.isNodeType("jnt:template") && isCurrentModule) ||
+                                (!oldDestChild.hasProperty("j:moduleTemplate") && moduleName == null) ||
+                                (oldDestChild.hasProperty("j:moduleTemplate") && oldDestChild.getProperty("j:moduleTemplate").getString().equals(moduleName)))) {
+                    oldDestChild.remove();
+                }
+            }
+        }
+
+        List<String> destNames = new ArrayList<String>();
+        ni = destinationNode.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
+            destNames.add(oldChild.getName());
+        }
+        if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes() && !names.equals(destNames)) {
+            Collections.reverse(names);
+            String previous = null;
+            for (String name : names) {
+                destinationNode.orderBefore(name, previous);
+                previous = name;
+            }
+        }
+    }
+
+    private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property,
+                               String value) throws RepositoryException {
+        if (!references.containsKey(value)) {
+            references.put(value, new ArrayList<String>());
+        }
+        references.get(value).add(destinationNode.getIdentifier() + "/" + property.getName());
+    }
 
 }

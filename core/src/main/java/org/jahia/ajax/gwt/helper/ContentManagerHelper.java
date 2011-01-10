@@ -752,11 +752,10 @@ public class ContentManagerHelper {
         }
 
         try {
-            Set<String> existingAclKeys = node.getAclEntries().keySet();
             node.setAclInheritanceBreak(acl.isBreakAllInheritance());
+            node.revokeAllRoles();
             for (GWTJahiaNodeACE ace : acl.getAce()) {
                 String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
-                node.revokeRolesForUser(user);
                 for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
                     if (!entry.getValue().equals(ace.getInheritedPermissions().get(entry.getKey()))) {
                         if (entry.getValue().equals(Boolean.TRUE) && !Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey()))) {
@@ -767,9 +766,6 @@ public class ContentManagerHelper {
                     }
                 }
             }
-//        for (String user : existingAclKeys) {
-//            node.revokeRolesForUser(user);
-//        }
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error("error", e);

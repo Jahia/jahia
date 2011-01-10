@@ -379,7 +379,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         return false;
     }
 
-    private String getCompactName(final String name) {
+    private static String getCompactName(final String name) {
         String appName = name;
         appName = appName.replace("-", "");
         appName = appName.replace("_", "");
@@ -387,27 +387,27 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         return appName;
     }
 
-    private String getWebAppNamespaceURI(String appName) {
+    public static String getWebAppNamespaceURI(String appName) {
         return "http://www.jahia.org/portlets/" + appName;
     }
 
-    private String getWebAppPrefix(final String appName) {
+    public static String getWebAppPrefix(final String appName) {
         return JCRContentUtils.encodeJCRNamePrefix(getCompactName(appName));
     }
 
-    private String getEntryPointNamespaceURI(final String appName, final String entryPointDefinitionName) {
+    public static String getEntryPointNamespaceURI(final String appName, final String entryPointDefinitionName) {
         return getWebAppNamespaceURI(appName) + "/" + entryPointDefinitionName;
     }
 
-    private String getEntryPointPrefix(final String appName, final String entryPointDefinitionName) {
+    public static String getEntryPointPrefix(final String appName, final String entryPointDefinitionName) {
         return JCRContentUtils.encodeJCRNamePrefix(getCompactName(appName + "_" + entryPointDefinitionName));
     }
 
-    private String getWebAppQualifiedNodeName(final String appName, final String localName) {
+    public static String getWebAppQualifiedNodeName(final String appName, final String localName) {
         return getWebAppPrefix(appName) + ":" + localName;
     }
 
-    private String getPortletQualifiedNodeName(final String appName, final String entryPointDefinitionName, final String localName) {
+    public static String getPortletQualifiedNodeName(final String appName, final String entryPointDefinitionName, final String localName) {
         return getEntryPointPrefix(appName, entryPointDefinitionName) + ":" + localName;
     }
 

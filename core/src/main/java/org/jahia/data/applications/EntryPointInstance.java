@@ -32,6 +32,7 @@
 
 package org.jahia.data.applications;
 
+import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
@@ -127,7 +128,7 @@ public class EntryPointInstance implements Serializable {
 
     public boolean isUserInRole(JahiaUser user, String role) {
         // This method maps servlet roles on Jahia's groups
-        return JCRContentUtils.hasPermission(role,ID);
+        return JCRContentUtils.hasPermission(ApplicationsManagerServiceImpl.getWebAppQualifiedNodeName(contextName,role),ID);
     }
 
     public boolean isModeAllowed(JahiaUser user, String mode) {
@@ -135,7 +136,7 @@ public class EntryPointInstance implements Serializable {
         if(mode != null && mode.equalsIgnoreCase(PortletMode.VIEW.toString())){
             return true;
         }
-        return JCRContentUtils.hasPermission(mode,ID);
+        return JCRContentUtils.hasPermission(ApplicationsManagerServiceImpl.getPortletQualifiedNodeName(contextName, defName,mode),ID);
     }
 
     @Override

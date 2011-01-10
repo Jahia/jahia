@@ -593,7 +593,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean matchUser(String principal, String site) {
         final String principalName = principal.substring(2);
         if (principal.charAt(0) == 'u') {
-            if ((jahiaPrincipal.isGuest() || (!principalName.equals("guest")) && principalName.equals(jahiaPrincipal.getName()))) {
+            if (principalName.equals("guest") || (!jahiaPrincipal.isGuest() && principalName.equals(jahiaPrincipal.getName()))) {
                 return true;
             }
         } else if (principal.charAt(0) == 'g') {

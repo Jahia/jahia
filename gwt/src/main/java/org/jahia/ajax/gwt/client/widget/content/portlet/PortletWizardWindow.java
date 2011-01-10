@@ -56,9 +56,7 @@ public class PortletWizardWindow extends AddContentWizardWindow {
     }
 
     protected void createCards() {
-        addCard(new PortletDefinitionCard()).addCard(new PortletFormCard())
-                .addCard(new PortletRoleCard()).addCard(new PortletModesCard())
-                .addCard(new PortletSaveAsCard());
+        addCard(new PortletDefinitionCard()).addCard(new PortletFormCard()).addCard(new PortletSaveAsCard());
     }
 
     public GWTJahiaNewPortletInstance getGwtJahiaNewPortletInstance() {

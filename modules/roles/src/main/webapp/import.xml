@@ -111,6 +111,9 @@
 
         <!--<seo-manager jcr:primaryType="jnt:role"-->
                      <!--/>-->
+        <live-contributor jcr:primaryType="jnt:role"
+                          j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:versionManagement_live /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live /permissions/repository-permissions/jcr:all_live/jcr:nodeTypeManagement_live" />
+
 
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
                             j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers /permissions/wysiwyg-editor-toolbar"

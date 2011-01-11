@@ -37,11 +37,14 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -71,30 +74,31 @@ public class LinkerModule extends Module {
     private HorizontalPanel panel;
     private String property;
     private String mixinType;
+    private Label label;
 
     public LinkerModule(String id, String path, Element divElement, MainModule m) {
-        super(id, path, divElement, m);
+        super(id, path, divElement, m, new FlowLayout());
         property = DOM.getElementAttribute(divElement, "property");
         mixinType = DOM.getElementAttribute(divElement, "mixinType");
         setBorders(false);
         panel = new HorizontalPanel();
         panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
-        panel.addStyleName("x-small-editor");
-        panel.addStyleName("x-panel-header");
-        panel.addStyleName("x-panel-linker");
+//        panel.addStyleName("x-small-editor");
+//        panel.addStyleName("x-panel-header");
+        addStyleName("x-panel-linker");
 
 
 //        html = new HTML("<img src=\""+JahiaGWTParameters.getContextPath() + "/modules/default/images/add.png"+"\" /> Add new content here");
 //        html = new HTML("<p class=\"linkAction\">Click this to link<br/></p>");
 //        panel.add(html);
 
-        final Label label = new Label("Not linked");
-        panel.add(label);
+        label = new Label("Not linked");
+        add(label);
 
         final Button button = new Button("Click this to link");
         button.setStyleName("button-placeholder");
-        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override public void componentSelected(ButtonEvent ce) {
+        button.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 String s = JahiaGWTParameters.getContextPath();
                 if (s.equals("/")) {
                     s = "";
@@ -142,9 +146,9 @@ public class LinkerModule extends Module {
 
         panel.add(button);
 
-        final Button button2 = new Button("Click this to link to main resource");
-        button2.setStyleName("button-placeholder");
-        panel.add(button2);
+//        final Button button2 = new Button("Click this to link to main resource");
+//        button2.setStyleName("button-placeholder");
+//        panel.add(button2);
 
         final Button button3 = new Button("Clear");
         button3.setStyleName("button-placeholder");
@@ -166,6 +170,7 @@ public class LinkerModule extends Module {
             public void onSuccess(GWTJahiaGetPropertiesResult gwtJahiaGetPropertiesResult) {
                 if (gwtJahiaGetPropertiesResult.getProperties().containsKey(property)) {
                     final GWTJahiaNodeProperty o = gwtJahiaGetPropertiesResult.getProperties().get(property);
+                    label.setText("Linked to: " + o.getValues().get(0).getNode().getName());
 //                    panel.removeAll();
 //                    html = new HTML("<p class=\"linkPath\">Linked to: " + o.getValues().get(0).getNode().getName() +
 //                            "</p><p class=\"linkAction\">Click this to link</p>");

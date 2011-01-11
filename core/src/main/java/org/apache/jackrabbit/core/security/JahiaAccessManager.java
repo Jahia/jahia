@@ -524,8 +524,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                             if (matchUser(principal, site)) {
                                 String type = ace.getProperty("j:aceType").getString();
                                 Value[] roles = ace.getProperty("j:roles").getValues();
-                                for (int j = 0; j < roles.length; j++) {
-                                    String role = roles[j].getString();
+                                for (Value role1 : roles) {
+                                    String role = role1.getString();
                                     if (foundRoles.contains(principal + ":" + role)) {
                                         continue;
                                     }
@@ -570,21 +570,31 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 Node p = s.getNodeByIdentifier(value.getString());
                 Privilege privilege = privilegeRegistry.getPrivilege(p);
 
-                if (permissions.contains(privilege.getName())) {
-                    permissions.remove(privilege.getName());
-                    if (permissions.isEmpty()) {
+                String privilegeName = privilege.getName();
+                if (checkPrivilege(permissions, privilegeName)) {
+                    return true;
+                }
+                if(isAliased && privilegeName.contains("_"+Constants.LIVE_WORKSPACE)) {
+                    if (checkPrivilege(permissions, privilegeName.replaceAll("_"+Constants.LIVE_WORKSPACE,"_"+workspaceName))) {
                         return true;
                     }
                 }
 
                 for (Privilege sub : privilege.getAggregatePrivileges()) {
-                    if (permissions.contains(sub.getName())) {
-                        permissions.remove(sub.getName());
-                        if (permissions.isEmpty()) {
-                            return true;
-                        }
+                    if (checkPrivilege(permissions, sub.getName())) {
+                        return true;
                     }
                 }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkPrivilege(Set<String> permissions, String privilegeName) {
+        if (permissions.contains(privilegeName)) {
+            permissions.remove(privilegeName);
+            if (permissions.isEmpty()) {
+                return true;
             }
         }
         return false;
@@ -632,58 +642,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (isAdmin(jahiaPrincipal.getName(),0)) {
                 return getSupportedPrivileges(absPath);
             }
-
-            Set<String> grantedRoles = new HashSet<String>();
-            Set<String> foundRoles = new HashSet<String>();
             Session s = getSecuritySession();
-            Node n = s.getNode(absPath);
-
-            String site = null;
-            Node c = n;
-            try {
-                while (!c.isNodeType("jnt:virtualsite")) {
-                    c = c.getParent();
-                }
-                site = c.getName();
-            } catch (ItemNotFoundException e) {
-            } catch (PathNotFoundException e) {
-            }
-
-            try {
-                while (true) {
-                    if (n.hasNode("j:acl")) {
-                        Node acl = n.getNode("j:acl");
-                        NodeIterator aces = acl.getNodes();
-                        while (aces.hasNext()) {
-                            Node ace = aces.nextNode();
-                            if (ace.isNodeType("jnt:ace")) {
-                                String principal = ace.getProperty("j:principal").getString();
-
-                                if (matchUser(principal, site)) {
-                                    boolean granted = ace.getProperty("j:aceType").getString().equals("GRANT");
-
-                                    Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
-                                    for (Value r : roles) {
-                                        String role = r.getString();
-                                        if (!foundRoles.contains(principal+":"+role)) {
-                                            if (granted) {
-                                                grantedRoles.add(role);
-                                            }
-                                            foundRoles.add(principal+":"+role);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
-                            return results.toArray(new Privilege[results.size()]);
-                        }
-                    }
-                    n = n.getParent();
-                }
-            } catch (ItemNotFoundException e) {
-                logger.debug(e.getMessage(), e);
-            }
+            Set<String> grantedRoles = getRoles(absPath);
 
             for (String role : grantedRoles) {
                 Node node = s.getNode("/roles/" + role);
@@ -750,7 +710,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {
         try {
             Set<String> grantedRoles = new HashSet<String>();
-            Set<String> deniedRoles = new HashSet<String>();
+            Set<String> foundRoles = new HashSet<String>();
             Session s = getSecuritySession();
             Node n = s.getNode(absPath);
 
@@ -781,12 +741,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                                     Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
                                     for (Value r : roles) {
                                         String role = r.getString();
-                                        if (!grantedRoles.contains(role) && !deniedRoles.contains(role)) {
+                                        if (!foundRoles.contains(principal+":"+role)) {
                                             if (granted) {
                                                 grantedRoles.add(role);
-                                            } else {
-                                                deniedRoles.add(role);
                                             }
+                                            foundRoles.add(principal+":"+role);
                                         }
                                     }
                                 }

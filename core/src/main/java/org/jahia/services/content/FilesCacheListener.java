@@ -112,7 +112,7 @@ public class FilesCacheListener extends DefaultEventListener {
         }
         if (!nodes.isEmpty()) {
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             for (String s : nodes) {

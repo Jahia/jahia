@@ -73,6 +73,6 @@
                                                                                       type="date" dateStyle="medium"/>
     </dd>
 </dl>
-<div class="back2top"><a title="Top" class="top" href="post.jsp#wrap">Top</a></div>
+<div class="back2top"><a title="Top" class="top" href="post.forum.jsp#wrap">Top</a></div>
 <div class="clear"></div>
 <span class="forum-corners-bottom"><span></span></span>

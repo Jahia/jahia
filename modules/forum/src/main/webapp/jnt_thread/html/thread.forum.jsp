@@ -44,7 +44,7 @@
         <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(currentNode.nodes)}" />
         <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status">
             <div class="forum-box forum-box-style${(status.index mod 2)+1}">
-                <template:module node="${subchild}" template="default"/>
+                <template:module node="${subchild}" template="forum"/>
             </div>
         </c:forEach>
         <template:include template="newPostForm"/>

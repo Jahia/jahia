@@ -42,7 +42,7 @@
     <template:initPager totalSize="${moduleMap.listTotalSize}" id="${currentNode.identifier}" pageSize="${pageSize}"/>
     <c:forEach items="${moduleMap.commentsList}" var="subchild" varStatus="status" begin="${moduleMap.begin}"
                end="${moduleMap.end}">
-        <template:module node="${subchild}" template="comments"/>
+        <template:module node="${subchild}" />
     </c:forEach>
 </ul>
 <template:displayPagination/>

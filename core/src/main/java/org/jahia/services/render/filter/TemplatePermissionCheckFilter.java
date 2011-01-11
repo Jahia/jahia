@@ -80,7 +80,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             if (node.hasProperty("j:requiredPermissions")) {
                 Value[] values = node.getProperty("j:requiredPermissions").getValues();
                 for (Value value : values) {
-                    if (!node.hasPermission(((JCRValueWrapperImpl) value).getNode().getName())) {
+                    if (!renderContext.getMainResource().getNode().hasPermission(((JCRValueWrapperImpl) value).getNode().getName())) {
                         throw new AccessDeniedException();
                     }
                 }

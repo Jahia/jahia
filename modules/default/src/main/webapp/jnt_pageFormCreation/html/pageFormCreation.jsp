@@ -9,7 +9,7 @@
 <c:set var="formid" value="form" />
 <c:set var="nodeType" value="jnt:page" />
 
-<c:set var="writeable" value="${jcr:hasPermission(currentNode,'jcr:addChildNodes') and currentResource.workspace eq 'live'}" />
+<c:set var="writeable" value="${jcr:hasPermission(renderContext.mainResource.node,'jcr:addChildNodes') and currentResource.workspace eq 'live'}" />
 <c:if test='${writeable}'>
 <form class="pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/" name="${formid}">
     <input type="hidden" name="nodeType" value="jnt:page">

@@ -634,7 +634,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             Set<String> grantedRoles = new HashSet<String>();
-            Set<String> deniedRoles = new HashSet<String>();
+            Set<String> foundRoles = new HashSet<String>();
             Session s = getSecuritySession();
             Node n = s.getNode(absPath);
 
@@ -665,12 +665,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                                     Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
                                     for (Value r : roles) {
                                         String role = r.getString();
-                                        if (!grantedRoles.contains(role) && !deniedRoles.contains(role)) {
+                                        if (!foundRoles.contains(principal+":"+role)) {
                                             if (granted) {
                                                 grantedRoles.add(role);
-                                            } else {
-                                                deniedRoles.add(role);
                                             }
+                                            foundRoles.add(principal+":"+role);
                                         }
                                     }
                                 }

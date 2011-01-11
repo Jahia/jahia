@@ -6,6 +6,7 @@
 [condition][]A property has been removed from a node=property : DeletedPropertyFact ( propertyName : name, node : node )
 [condition][]A property {property} has been set on a node=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
 [condition][]A property {property} has been removed from a node=property : DeletedPropertyFact ( name == "{property}", propertyName : name, node : node )
+[condition][]A new page is created with template {template}=page : AddedNodeFact() ; property : ChangedPropertyFact ( name == "j:templateNode", stringValue matches "/.*/{template}", node == page )
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
 [condition][]The metadata field "{name}" has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {name} : value )
 [condition][]The metadata field "{name}" identified by {field} has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {field} : value )
@@ -71,7 +72,7 @@
 [consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeRuleLater(node, "{property}",{ruleName}, drools);
 [consequence][]Execute the action {actionName} at {property} on the {node}=service.executeActionLater(node, "{property}",{actionName}, drools);
 [consequence][]Cancel execution of action {actionName} on the {node}=service.cancelActionExecution(node, {actionName}, drools);
-[consequence][]Publish the {node}=service.publishNode(node, drools);
+[consequence][]Publish the {node}=service.publishNode({node}, drools);
 [consequence][]Start the workflow {processKey} from {provider} on the {node}=service.startWorkflowOnNode(node,{processKey},{provider}, drools);
 [consequence][]Enable auto-splitting for subnodes of the {node} into folders of type {folderNodeType} using configuration "{config}"=service.enableAutoSplitting(node, "{config}", "{folderNodeType}",drools);
 [consequence][]Move to split folder {node}=service.moveToSplitFolder(node, drools);
@@ -86,3 +87,7 @@
 [consequence][]Notify {user} user with mail template "{template}" from "{fromMail}"=notificationService.notifyUser({user},"{template}","{fromMail}",drools);
 [consequence][]Store password history for user {user}=service.storeUserPasswordHistory({user}, drools);
 [consequence][]Deploy module {module} on site {site}=service.deployModule("{module}",{site}, drools);
+[consequence][]Grant role {role} on the {node} to the current user=service.grantRoleToUser({node}, user.getName(), "{role}", drools);
+[consequence][]Grant role {role} on the {node} to the user {user}=service.grantRoleToUser({node}, "{user}", "{role}", drools);
+[consequence][]Grant role {role} on the {node} to the group {group}=service.grantRoleToGroup({node}, "{group}", "{role}", drools);
+[consequence][]Revoke role {role} from everybody on the {node}=service.revokeRoleFromEverybody({node}, "{role}", drools);

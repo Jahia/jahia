@@ -589,6 +589,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 contentManager.setACL(node.getPath(), acl, retrieveCurrentSession());
             }
         }
+
     }
 
     /**
@@ -676,13 +677,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
         res = contentManager.createNode(parentPath, name, nodeType, mixin, props, jcrSessionWrapper);
 
-        try {
-            jcrSessionWrapper.save();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
-        }
-
         GWTJahiaNode node = res;
         // save shared properties
         if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
@@ -700,6 +694,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (acl != null) {
             contentManager.setACL(res.getPath(), acl, jcrSessionWrapper);
         }
+
+        try {
+            jcrSessionWrapper.save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
+        }
+
 
         return node;
     }

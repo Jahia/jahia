@@ -94,30 +94,39 @@ public class Service extends JahiaService {
         return instance;
     }
 
-    public void setPermissions(AddedNodeFact node, String acl, KnowledgeHelper drools) {
-        User user = (User) drools.getWorkingMemory().getGlobal("user");
-        StringTokenizer st = new StringTokenizer(acl, "|");
-        while (st.hasMoreTokens()) {
-            String ace = st.nextToken();
-            int colon = ace.lastIndexOf(':');
-            String userstring = ace.substring(0, colon);
+    public void grantRoleToUser(AddedNodeFact node, String user, String role, KnowledgeHelper drools) {
+        try {
+            node.getNode().grantRoles("u:"+user,Collections.singleton(role));
+            node.getNode().getSession().save();
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+    }
 
-            if (userstring.equals("self")) {
-                userstring = "u:" + user.getName();
+    public void grantRoleToGroup(AddedNodeFact node, String group, String role, KnowledgeHelper drools) {
+        try {
+            node.getNode().grantRoles("g:"+group,Collections.singleton(role));
+            node.getNode().getSession().save();
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void revokeRoleFromEverybody(AddedNodeFact node, String role, KnowledgeHelper drools) {
+        for (String s : node.getNode().getAclEntries().keySet()) {
+            try {
+                node.getNode().denyRoles(s, Collections.singleton(role));
+                node.getNode().getSession().save();
+            } catch (RepositoryException e) {
+                e.printStackTrace();
             }
-
-            Node jcrNode = node.getNode();
-//            try {
-//                JCRNodeWrapperImpl.changeRoles(jcrNode, userstring, ace.substring(colon + 1));
-//            } catch (RepositoryException e) {
-//                logger.error(e.getMessage(), e);
-//            }
         }
     }
 
     public void revokeAllPermissions(AddedNodeFact node) {
         try {
             node.getNode().revokeAllRoles();
+            node.getNode().getSession().save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

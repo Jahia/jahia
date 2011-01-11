@@ -240,21 +240,8 @@ public class PropertiesHelper {
                         objectNode.addMixin(type);
                     }
                 }
-                int mixinCount = objectNode.getMixinNodeTypes().length;
                 setProperties(objectNode, newProps);
                 objectNode.saveSession();
-                if (!aNode.getName().equals(objectNode.getName())) {
-                    contentManager.rename(objectNode.getPath(), aNode.getName(), currentUserSession);
-                }
-                ExtendedNodeType[] mixins = objectNode.getMixinNodeTypes();
-                if (mixinCount != mixins.length) {
-                    // we got added mixins
-                    for (ExtendedNodeType newMixin : mixins) {
-                        if (!types.contains(newMixin.getName())) {
-                            types.add(newMixin.getName());
-                        }
-                    }
-                }
             } catch (RepositoryException e) {
                 logger.error("error", e);
                 throw new GWTJahiaServiceException("Could not save file " + objectNode.getName());

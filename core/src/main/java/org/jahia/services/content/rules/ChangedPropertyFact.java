@@ -34,10 +34,7 @@ package org.jahia.services.content.rules;
 
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.categories.Category;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -236,7 +233,15 @@ public class ChangedPropertyFact implements Updateable {
             if (property.getDefinition().isMultiple()) {
                 return getStringValues().toString();
             }
-            return property.getString();
+            JCRValueWrapper v = (JCRValueWrapper) property.getValue();
+            if (v.getType() == PropertyType.WEAKREFERENCE || v.getType() == PropertyType.REFERENCE) {
+                JCRNodeWrapper node = ((JCRValueWrapper) v).getNode();
+                if (node != null ) {
+                    return node.getPath();
+                }
+            } else {
+                return v.getString();
+            }
         }
         return null;
     }
@@ -246,7 +251,14 @@ public class ChangedPropertyFact implements Updateable {
         if (property != null && property.getDefinition().isMultiple()) {
             Value[] vs = property.getValues();
             for (Value v : vs) {
-                r.add(v.getString());
+                if (v.getType() == PropertyType.WEAKREFERENCE || v.getType() == PropertyType.REFERENCE) {
+                    JCRNodeWrapper node = ((JCRValueWrapper) v).getNode();
+                    if (node != null ) {
+                        r.add(node.getPath());
+                    }
+                } else {
+                    r.add(v.getString());
+                }
             }
         } else {
             r.add(getStringValue());

@@ -1,0 +1,28 @@
+###############################################################################
+package org.jahia.modules.blog.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.*
+import javax.jcr.observation.Event
+import org.slf4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global ImageService imageService
+global ExtractionService extractionService
+global Logger logger
+global JCRStoreProvider provider
+###############################################################################
+
+rule "new blog"
+    when
+       A new page is created with template blog
+    then
+       Grant role owner on the page to the current user
+       Revoke role live-contributor from everybody on the page
+end
+

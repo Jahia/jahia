@@ -46,10 +46,10 @@
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList">
                             <Welcome-message jcr:primaryType="jnt:area" j:allowedTypes="jnt:bigText"/>
-                            <addBlogLink
-                                    j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live"
-                                    jcr:mixinTypes="jmix:requiredPermissions" j:requiredMode="live"
-                                    jcr:primaryType="jnt:addBlogLink"/>
+                            <authorDisplay jcr:primaryType="jnt:authorDisplay" j:userView="blog"/>
+                            <addBlogLink jcr:mixinTypes="jmix:requiredPermissions"
+                                         j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live"
+                                         j:requiredMode="live" jcr:primaryType="jnt:addBlogLink"/>
                             <calendar startDateProperty="jcr:created" endDateProperty="jcr:created"
                                       jcr:primaryType="jnt:calendar"
                                       j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content"/>

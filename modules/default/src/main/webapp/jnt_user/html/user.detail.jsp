@@ -16,8 +16,10 @@
     </div>
     <div class="user-body">
         <h5><template:isPublic userKey="${currentNode.name}" property="j:firstName">${fn:escapeXml(person)}&nbsp;</template:isPublic>(logged as: ${currentNode.name})</h5>
+    </div>
+    <div>
         <p><span class="user-label"><fmt:message key="jnt_user.j_organization"/>:</span>&nbsp;${fn:escapeXml(fields['j:organization'])}</p>
-        <p><span class="user-label">v<fmt:message key="jnt_user.j_function"/>:</span>&nbsp;${fn:escapeXml(fields['j:function'])}</p>
+        <p><span class="user-label"><fmt:message key="jnt_user.j_function"/>:</span>&nbsp;${fn:escapeXml(fields['j:function'])}</p>
         <p><span class="user-label"><fmt:message key="jnt_user.j_phoneNumber"/>:</span>&nbsp;${fn:escapeXml(fields['j:phoneNumber'])}</p>
         <p><span class="user-label"><fmt:message key="jnt_user.j_faxNumber"/>:</span>&nbsp;${fn:escapeXml(fields['j:faxNumber'])}</p>
         <template:isPublic userKey="${currentNode.name}" property="j:email">
@@ -35,11 +37,11 @@
        	</p>
         <p><span class="user-label"><fmt:message key="jnt_user.j_linkedinID"/>:</span>&nbsp;<a href="http://www.linkedin.com/in/{fields['j:linkedinID']}">${fields['j:linkedinID']}</a></p>
     </div>
-    <div class="user-body">
+    <div>
         <h5><fmt:message key="label.aboutMe"/></h5>
         <p>${fields['j:about']}</p>
     </div>
-    <div class="user-body">
+    <div>
         <jcr:sql var="result" sql="select * from [jnt:page] as p where p.[jcr:createdBy]='${currentNode.name}'"/>
         <h5><fmt:message key="label.myPages"/></h5>
         <c:if test="${result.nodes.size == 0}">

@@ -188,7 +188,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             JackrabbitIndexSearcher searcher, IndexReader reader)
             throws RepositoryException, IOException {
         if (constraint instanceof DescendantNode) {
-            System.out.println("descendant ");
             query.subQuery.add(new TermQuery(new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(((DescendantNode) constraint).getAncestorPath()).getParent().getIdentifier())),
                     BooleanClause.Occur.MUST_NOT);
         } else if (constraint instanceof ChildNode) {

@@ -13,6 +13,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
-import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 
 /**
  * Override LuceneQueryFactory
@@ -181,4 +181,22 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         }
         return qobj;
     }
+
+    protected Predicate mapConstraintToQueryAndFilter(
+            QueryPair query, Constraint constraint,
+            Map<String, NodeType> selectorMap,
+            JackrabbitIndexSearcher searcher, IndexReader reader)
+            throws RepositoryException, IOException {
+        if (constraint instanceof DescendantNode) {
+            System.out.println("descendant ");
+            query.subQuery.add(new TermQuery(new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(((DescendantNode) constraint).getAncestorPath()).getParent().getIdentifier())),
+                    BooleanClause.Occur.MUST_NOT);
+        } else if (constraint instanceof ChildNode) {
+            query.subQuery.add(new TermQuery(new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(((ChildNode)constraint).getParentPath()).getParent().getIdentifier())),
+                    BooleanClause.Occur.MUST_NOT);
+        }
+        return super.mapConstraintToQueryAndFilter(query,constraint, selectorMap, searcher, reader);
+    }
+
+
 }

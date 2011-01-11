@@ -64,7 +64,7 @@
 </c:if>
 <c:if test="${not writeable}">
     <c:choose>
-        <c:when test="${jcr:hasPermission(currentNode,'jcr:addChildNodes')}">
+        <c:when test="${jcr:hasPermission(bindedComponent,'jcr:addChildNodes')}">
             <div class="area-liveOnly">
                 <fmt:message key="label.comments.only.live"/>
             </div>

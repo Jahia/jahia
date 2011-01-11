@@ -28,7 +28,7 @@ Customization of User Dashboard
     <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
     <ul class="docspacelist">
         <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
-            <c:if test="${jcr:hasPermission(subchild, 'write') and (not empty jcr:getParentOfType(subchild, 'jnt:page'))}">
+            <c:if test="${jcr:hasPermission(subchild, 'jcr:write') and (not empty jcr:getParentOfType(subchild, 'jnt:page'))}">
                 <li>
                     <a class="adocspace" href="${url.basePreview}${subchild.path}.html"
                        title="${subchild.name}">${functions:abbreviate(subchild.name,20,30,'...')}</a>

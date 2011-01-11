@@ -439,8 +439,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             if (!(e.getCause() instanceof AccessDeniedException)) {
                 logger.error(e.getMessage(), e);
             }
-            if((e.getCause() instanceof TemplateNotFoundException)){
-                buffer.append(e.getMessage());
+            if(renderContext.isEditMode() && ((e.getCause() instanceof TemplateNotFoundException) || (e.getCause() instanceof AccessDeniedException))){
+                buffer.append(e.getCause().getMessage());
                 if (var == null) {
                     pageContext.getOut().print(buffer);
                     buffer.delete(0, buffer.length());

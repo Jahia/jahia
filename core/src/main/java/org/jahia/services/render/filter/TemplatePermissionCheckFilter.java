@@ -70,18 +70,19 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         if (!"studiomode".equals(renderContext.getEditModeConfigName())) {
             if (node.hasProperty("j:requiredMode")) {
                 String req = node.getProperty("j:requiredMode").getString();
-                if (renderContext.isContributionMode() && !req.equals("contribute")) {
-                    throw new AccessDeniedException();
-                } else if (!renderContext.isContributionMode() && !req.equals("normal")) {
-                    throw new AccessDeniedException();
+                if (!renderContext.isContributionMode() && req.equals("contribute")) {
+                    throw new AccessDeniedException("Content can only be accessed in contribute");
+                } else if (!renderContext.isEditMode() && req.equals("edit")) {
+                    throw new AccessDeniedException("Content can only be accessed in edit");
+                } else if (!renderContext.isLiveMode() && req.equals("live")) {
+                    throw new AccessDeniedException("Content can only be accessed in live");
                 }
-
             }
             if (node.hasProperty("j:requiredPermissions")) {
                 Value[] values = node.getProperty("j:requiredPermissions").getValues();
                 for (Value value : values) {
                     if (!renderContext.getMainResource().getNode().hasPermission(((JCRValueWrapperImpl) value).getNode().getName())) {
-                        throw new AccessDeniedException();
+                        throw new AccessDeniedException("Content require permission "+((JCRValueWrapperImpl) value).getNode().getName());
                     }
                 }
             }

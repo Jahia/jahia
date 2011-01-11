@@ -342,9 +342,9 @@
  + * (jnt:content)
 
 [jmix:requiredPermissions] mixin
- extends = jnt:content
+ extends = jnt:content, jnt:area
  itemtype = permissions
- - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'normal', 'contribute'
+ - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'live', 'edit', 'contribute'
  - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) nofulltext multiple
 
 [jnt:pageTemplate] > jnt:template

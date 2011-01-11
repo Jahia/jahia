@@ -259,9 +259,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return true;
             }
 
-            Session providerSession = session.getProviderSession(provider);
-            // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
-            AccessControlManager accessControlManager = providerSession.getAccessControlManager();
+            AccessControlManager accessControlManager = getAccessControlManager();
             if (accessControlManager != null) {
 //                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
 
@@ -276,12 +274,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    public AccessControlManager getAccessControlManager() throws RepositoryException {
+        Session providerSession = session.getProviderSession(provider);
+        // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
+        return providerSession.getAccessControlManager();
+    }
+
     public Set<String> getPermissions() {
         Set<String> result = new HashSet<String>();
         try {
-            Session providerSession = session.getProviderSession(provider);
-            // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
-            AccessControlManager accessControlManager = providerSession.getAccessControlManager();
+            AccessControlManager accessControlManager = getAccessControlManager();
             if (accessControlManager != null) {
                 Privilege[] p = accessControlManager.getPrivileges(localPath);
                 for (Privilege privilege : p) {
@@ -300,9 +302,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public BitSet getPermissionsAsBitSet() {
         BitSet b = null;
         try {
-            Session providerSession = session.getProviderSession(provider);
-            // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
-            AccessControlManager accessControlManager = providerSession.getAccessControlManager();
+            AccessControlManager accessControlManager = getAccessControlManager();
             List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPath));
             List<Privilege> app = Arrays.asList(accessControlManager.getPrivileges(localPath));
             b = new BitSet(pr.size());

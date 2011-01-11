@@ -747,5 +747,64 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return (user != null) && (group != null) && group.isMember(user);
     }
 
+    public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {
+        try {
+            Set<String> grantedRoles = new HashSet<String>();
+            Set<String> deniedRoles = new HashSet<String>();
+            Session s = getSecuritySession();
+            Node n = s.getNode(absPath);
 
+            String site = null;
+            Node c = n;
+            try {
+                while (!c.isNodeType("jnt:virtualsite")) {
+                    c = c.getParent();
+                }
+                site = c.getName();
+            } catch (ItemNotFoundException e) {
+            } catch (PathNotFoundException e) {
+            }
+
+            try {
+                while (true) {
+                    if (n.hasNode("j:acl")) {
+                        Node acl = n.getNode("j:acl");
+                        NodeIterator aces = acl.getNodes();
+                        while (aces.hasNext()) {
+                            Node ace = aces.nextNode();
+                            if (ace.isNodeType("jnt:ace")) {
+                                String principal = ace.getProperty("j:principal").getString();
+
+                                if (matchUser(principal, site)) {
+                                    boolean granted = ace.getProperty("j:aceType").getString().equals("GRANT");
+
+                                    Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
+                                    for (Value r : roles) {
+                                        String role = r.getString();
+                                        if (!grantedRoles.contains(role) && !deniedRoles.contains(role)) {
+                                            if (granted) {
+                                                grantedRoles.add(role);
+                                            } else {
+                                                deniedRoles.add(role);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
+                            return grantedRoles;
+                        }
+                    }
+                    n = n.getParent();
+                }
+            } catch (ItemNotFoundException e) {
+                logger.debug(e.getMessage(), e);
+            }
+            return grantedRoles;
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return Collections.emptySet();
+    }
 }

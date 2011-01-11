@@ -38,8 +38,7 @@ import net.sf.ehcache.Element;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.render.filter.Template;
-import org.slf4j.Logger;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -49,17 +48,22 @@ import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.Template;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.jcr.query.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
 import java.text.FieldPosition;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -75,24 +79,15 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
 
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
-                                                                                            "path", "template",
-                                                                                            "templateType", "acls",
-                                                                                            "context","wrapped", "custom", "queryString", "templateNodes"));
+            "path", "template", "templateType", "acls", "context", "wrapped", "custom", "queryString",
+            "templateNodes"));
     private static final String CACHE_NAME = "nodeusersacls";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
     private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}");
 
-    private JahiaGroupManagerService groupManagerService;
-    private Set<JahiaGroup> aclGroups = null;
-    private Set<Role> aclRoles = null;
     private EhCacheProvider cacheProvider;
     private Cache cache;
-    private JCRTemplate template;
-
-    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
-        this.groupManagerService = groupManagerService;
-    }
 
     public String generate(Resource resource, RenderContext renderContext) {
         return format.format(getArguments(resource, renderContext), new StringBuffer(32), new FieldPosition(
@@ -113,7 +108,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
                 args.add(s.toString());
             } else if ("template".equals(field)) {
-                if(resource.getContextConfiguration().equals("page") && resource.getNode().getPath().equals(renderContext.getMainResource().getNode().getPath())) {
+                if (resource.getContextConfiguration().equals("page") && resource.getNode().getPath().equals(
+                        renderContext.getMainResource().getNode().getPath())) {
                     args.add(renderContext.getMainResource().getResolvedTemplate());
                 } else {
                     args.add(resource.getResolvedTemplate());
@@ -127,7 +123,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 args.add(appendAcls(resource, renderContext));
             } else if ("wrapped".equals(field)) {
                 args.add(String.valueOf(resource.hasWrapper()));
-            } else if("context".equals(field)) {
+            } else if ("context".equals(field)) {
                 args.add(String.valueOf(resource.getContextConfiguration()));
             } else if ("custom".equals(field)) {
                 args.add((String) resource.getModuleParams().get("module.cache.additional.key"));
@@ -144,151 +140,36 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
                 return "_perUser_";
             }
+
             // Search for user specific acl
             JahiaUser principal = renderContext.getUser();
             final String userName = principal.getUsername();
-            if (hasUserAcl(userName)) {
-                return (String) cache.get(userName).getValue();
+            Set<String> roles = ((JahiaAccessManager) resource.getNode().getAccessControlManager()).getRoles(
+                    resource.getNode().getPath());
+            StringBuilder b = new StringBuilder();
+            for (String g : roles) {
+                if (b.length() > 0) {
+                    b.append("|");
+                }
+                b.append(g);
             }
-            // else use user groupmembership
-            else {
-                Set<JahiaGroup> aclGroups = getAllAclsGroups();
-                StringBuilder b = new StringBuilder();
-                for (JahiaGroup g : aclGroups) {
-                    if (g != null && g.isMember(principal)) {
-                        if (b.length() > 0) {
-                            b.append("|");
-                        }
-                        b.append(g.getGroupname());
-                    }
-                }
-//                Set<Role> aclRoles = getAllAclsRoles();
-//                for (Role role : aclRoles) {
-//                    if(role!=null && principal.hasRole(role)) {
-//                        if (b.length() > 0) {
-//                            b.append("|");
-//                        }
-//                        b.append(role.getName());
-//                    }
-//                }
-                if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
-                        JahiaUserManagerService.GUEST_USERNAME)) {
-                    b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
-                }
-                String userKey = b.toString();
-                if ("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
-                    userKey = userName;
-                }
-                final Element element = new Element(userName, userKey);
-                element.setEternal(true);
-                cache.put(element);
-                return userKey;
+            if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
+                    JahiaUserManagerService.GUEST_USERNAME)) {
+                b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
             }
+            String userKey = b.toString();
+            if ("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
+                userKey = userName;
+            }
+            return userKey;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
         return "";
     }
 
-    private boolean hasUserAcl(final String userName) throws RepositoryException {
-        if (cache.getSize() == 0) {
-            initCache(userName);
-        }
-        return cache.isKeyInCache(userName);
-    }
-
-    private synchronized void initCache(final String userName) throws RepositoryException {
-        if (cache.getSize() > 0) {
-            return;
-        }
-        template.doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                Query query = session.getWorkspace().getQueryManager().createQuery(
-                        "select * from [jnt:ace] as ace where ace.[j:principal] like 'u%" + userName + "'",
-                        Query.JCR_SQL2);
-                QueryResult queryResult = query.execute();
-                NodeIterator rowIterator = queryResult.getNodes();
-                while (rowIterator.hasNext()) {
-                    Node node = (Node) rowIterator.next();
-                    String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
-                    if (!cache.isKeyInCache(s) && !node.getPath().startsWith("/users/" + s + "/j:acl")) {
-                        final Element element = new Element(s, s);
-                        element.setEternal(true);
-                        cache.put(element);
-                    }
-                }
-                return null;
-            }
-        });
-    }
-
-    private Set<JahiaGroup> getAllAclsGroups() throws RepositoryException {
-        if (aclGroups == null) {
-            initAclGroups();
-        }
-        return aclGroups;
-    }
-
-    private synchronized void initAclGroups() throws RepositoryException {
-        if(aclGroups!=null) {
-            return;
-        }
-        aclGroups = new LinkedHashSet<JahiaGroup>();
-        template.doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
-                "select u.[j:principal] as name from [jnt:ace] as u where u.[j:principal] like 'g%'",
-                Query.JCR_SQL2);
-        QueryResult groupQueryResult = groupQuery.execute();
-        final RowIterator nodeIterator = groupQueryResult.getRows();
-        while (nodeIterator.hasNext()) {
-            Row row = (Row) nodeIterator.next();
-            final Value value = row.getValues()[0];
-            final String groupName = StringUtils.substringAfter(value.getString(), ":");
-            final JahiaGroup group = groupManagerService.lookupGroup(groupName);
-            if (!aclGroups.contains(group)) {
-                aclGroups.add(group);
-            }
-        }
-                return null;
-            }
-        });
-    }
-
-    private Set<Role> getAllAclsRoles() throws RepositoryException {
-        if (aclRoles == null) {
-            initAclRoles();
-        }
-        return aclRoles;
-    }
-
-    private synchronized void initAclRoles() throws RepositoryException {
-        if(aclRoles!=null) {
-            return;
-        }
-        aclRoles = new LinkedHashSet<Role>();
-        template.doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
-                        "select u from [jnt:ace] as u where u.[j:principal] like 'r%'", Query.JCR_SQL2);
-                QueryResult groupQueryResult = groupQuery.execute();
-                final NodeIterator nodeIterator = groupQueryResult.getNodes();
-                while (nodeIterator.hasNext()) {
-                    JCRNodeWrapper row = (JCRNodeWrapper) nodeIterator.next();
-                    final String roleName = StringUtils.substringAfter(row.getProperty("j:principal").getString(),
-                                                                       ":");
-                    RoleIdentity roleIdentity = new RoleIdentity(roleName);
-                    if (!aclRoles.contains(roleIdentity)) {
-                        aclRoles.add(roleIdentity);
-                    }
-                }
-                return null;
-            }
-        });
-    }
-
     public String getPath(String key) throws ParseException {
-        return parse(key).get("path").replaceAll("_mr_","");
+        return parse(key).get("path").replaceAll("_mr_", "");
     }
 
     public Map<String, String> parse(String key) throws ParseException {
@@ -296,7 +177,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         Map<String, String> result = new LinkedHashMap<String, String>(fields.size());
         for (int i = 0; i < values.length; i++) {
             String value = (String) values[i];
-            result.put(fields.get(i), value == null || value.equals("null") ? null : value.replaceAll("_mr_",""));
+            result.put(fields.get(i), value == null || value.equals("null") ? null : value.replaceAll("_mr_", ""));
         }
         return result;
     }
@@ -305,7 +186,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         Map<String, String> args = parse(key);
         args.put(fieldName, newValue);
         return format.format(args.values().toArray(new String[KNOWN_FIELDS.size()]), new StringBuffer(32),
-                             new FieldPosition(0)).toString();
+                new FieldPosition(0)).toString();
     }
 
     @SuppressWarnings("unchecked")
@@ -322,10 +203,10 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     }
 
     public void flushUsersGroupsKey() {
-        this.aclGroups = null;
-        this.aclRoles = null;
-        cache.removeAll();
-        cache.flush();
+        if (cache != null) {
+            cache.removeAll();
+            cache.flush();
+        }
     }
 
     public void setCacheProvider(EhCacheProvider cacheProvider) {
@@ -343,14 +224,10 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
      *                   as failure to set an essential property) or if initialization fails.
      */
     public void afterPropertiesSet() throws Exception {
-        CacheManager cacheManager = cacheProvider.getCacheManager();
+        /*CacheManager cacheManager = cacheProvider.getCacheManager();
         if (!cacheManager.cacheExists(CACHE_NAME)) {
             cacheManager.addCache(CACHE_NAME);
         }
-        cache = cacheManager.getCache(CACHE_NAME);
-    }
-
-    public void setTemplate(JCRTemplate template) {
-        this.template = template;
+        cache = cacheManager.getCache(CACHE_NAME);*/
     }
 }

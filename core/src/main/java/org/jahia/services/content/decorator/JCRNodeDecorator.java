@@ -43,6 +43,7 @@ import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
@@ -743,5 +744,9 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public String getDisplayableName() {
         return node.getDisplayableName();
+    }
+
+    public AccessControlManager getAccessControlManager() throws RepositoryException {
+        return node.getAccessControlManager();
     }
 }

@@ -45,6 +45,7 @@ import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.servlet.ServletRequest;
@@ -787,4 +788,5 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     String getDisplayableName();
 
+    AccessControlManager getAccessControlManager() throws RepositoryException;
 }

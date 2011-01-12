@@ -16,19 +16,16 @@
             <row-col1 jcr:primaryType="jnt:contentList">
               <lists jcr:primaryType="jnt:tabularList">
                 <welcome jcr:primaryType="jnt:contentList">
-                  <j:translation_fr jcr:language="fr" jcr:title="Welcome" jcr:primaryType="jnt:translation" />
                   <welcome jcr:primaryType="jnt:area" j:allowedTypes="" />
                   <j:translation_en jcr:language="en" jcr:title="Welcome" jcr:primaryType="jnt:translation" />
                 </welcome>
                 <create-new-page jcr:primaryType="jnt:contentList">
-                  <j:translation_fr jcr:language="fr" jcr:title="Create New Page" jcr:primaryType="jnt:translation" />
                   <new-article jcr:primaryType="jnt:wikiPageFormCreation">
-                    <j:translation_fr jcr:language="fr" jcr:title="New Article" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:title="New Article" jcr:primaryType="jnt:translation" />
                   </new-article>
                   <j:translation_en jcr:language="en" jcr:title="Create New Article" jcr:primaryType="jnt:translation" />
                 </create-new-page>
                 <latest-articles jcr:primaryType="jnt:contentList">
-                  <j:translation_fr jcr:language="fr" jcr:title="Latest Articles" jcr:primaryType="jnt:translation" />
                   <j:translation_en jcr:language="en" jcr:title="Latest Articles" jcr:primaryType="jnt:translation" />
                   <wikiContentRetrieval j:criteria="jcr:lastModified" maxItems="20" jcr:mixinTypes="jmix:renderable" j:type="jnt:wikiPage" jcr:primaryType="jnt:wikiContentRetrieval" j:view="linkList" j:filter="" j:sortDirection="asc">
                     <j:translation_en jcr:language="en" jcr:title="Last wiki articles" jcr:primaryType="jnt:translation" />

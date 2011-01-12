@@ -2,8 +2,10 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
+[jmix:retrievableContent] mixin
+
 [jnt:contentRetrieval] > jnt:content, jmix:list, jmix:renderableList, jmix:queryContent, mix:title, jmix:cache
-- j:type (string, choicelist[subnodetypes = 'jnt:page,jmix:basicContent,jmix:editorialContent',resourceBundle]) indexed=no mandatory
+- j:type (string, choicelist[subnodetypes = 'jnt:page,jmix:basicContent,jmix:editorialContent,jmix:retrievableContent',resourceBundle]) indexed=no mandatory
 - j:criteria (string,choicelist[resourceBundle]) = 'jcr:created' autocreated indexed=no < 'jcr:created','jcr:lastModified','j:lastPublished'
 - j:sortDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
 - maxItems (long) = 10 indexed=no

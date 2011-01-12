@@ -1,11 +1,9 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:wikiPage] > jnt:content, mix:title
+[jnt:wikiPage] > jnt:content, mix:title, jmix:retrievableContent
  - lastComment (string)
  - text (string, richtext)
  + * (jnt:wikiPage)
 
 [jnt:wikiPageFormCreation] > jnt:content, jmix:siteComponent, mix:title
 
-[jnt:wikiContentRetrieval] > jnt:contentRetrieval, jmix:queryContent
-- j:type (string)  = jnt:wikiPage hidden indexed=no

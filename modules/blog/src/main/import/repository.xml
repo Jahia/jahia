@@ -4,7 +4,7 @@
          xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
          xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
-        <blog jcr:primaryType="jnt:virtualsite">
+        <blog jcr:primaryType="jnt:virtualsite" j:installedModules="blog" j:siteType="module">
             <templates jcr:primaryType="jnt:templatesFolder">
                 <base jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
                     <blog-home jcr:primaryType="jnt:pageTemplate">

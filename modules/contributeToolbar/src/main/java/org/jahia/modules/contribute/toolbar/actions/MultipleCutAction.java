@@ -36,6 +36,7 @@ import org.apache.commons.collections.list.SetUniqueList;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.bin.BaseAction;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -51,17 +52,9 @@ import java.util.Map;
  * @since : JAHIA 6.1
  *        Created : 24 nov. 2010
  */
-public class MultipleCutAction implements Action {
+public class MultipleCutAction extends BaseAction {
     private transient static Logger logger = Logger.getLogger(MultipleCutAction.class);
-    private String name;
     public static final String UUIDS_TO_CUT="org.jahia.uuids.to.cut";
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {

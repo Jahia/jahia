@@ -32,10 +32,7 @@
 
 package org.jahia.modules.defaultmodule.actions;
 
-import org.jahia.bin.Action;
-import org.jahia.bin.ActionResult;
-import org.jahia.bin.DefaultPostAction;
-import org.jahia.bin.Render;
+import org.jahia.bin.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -55,15 +52,15 @@ import java.util.Map;
  * @since JAHIA 6.5
  * Created : 11 mars 2010
  */
-public class ChainAction implements Action, InitializingBean {
+public class ChainAction extends BaseAction implements InitializingBean {
 
     private JahiaTemplateManagerService templateService;
     private DefaultPostAction defaultPostAction;
     public static final String ACTION_NAME = "chain";
     public static final String CHAIN_OF_ACTION = "chainOfAction";
 
-    public String getName() {
-        return ACTION_NAME;
+    public ChainAction() {
+        setName(ACTION_NAME);
     }
 
     public void setTemplateService(JahiaTemplateManagerService templateService) {

@@ -54,4 +54,6 @@ public interface Action {
     public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext,
                                            Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
 
+    public abstract String getRequiredPermission();
+
 }

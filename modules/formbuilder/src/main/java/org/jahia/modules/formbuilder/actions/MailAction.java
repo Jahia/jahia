@@ -32,6 +32,7 @@
 
 package org.jahia.modules.formbuilder.actions;
 
+import org.jahia.bin.BaseAction;
 import org.slf4j.Logger;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.bin.Action;
@@ -58,20 +59,11 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 9 mars 2010
  */
-public class MailAction implements Action {
+public class MailAction extends BaseAction {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(MailAction.class);
-    private String name;
     private MailService mailService;
     private JahiaUserManagerService userManagerService;
     private String mailTemplatePath;
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
 
     public void setMailService(MailService mailService) {
         this.mailService = mailService;

@@ -58,16 +58,6 @@ import java.util.Map;
 public class AddComment extends DefaultPostAction {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddComment.class);
 
-    private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();

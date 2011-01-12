@@ -34,6 +34,7 @@ package org.jahia.modules.defaultmodule;
 
 import org.jahia.ajax.gwt.helper.ContentManagerHelper;
 import org.jahia.bin.ActionResult;
+import org.jahia.bin.BaseAction;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
@@ -54,20 +55,11 @@ import java.util.Map;
  * Time: 6:09:21 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MoveAction implements org.jahia.bin.Action {
-    private String name;
+public class MoveAction extends BaseAction {
     private ContentManagerHelper contentManager;
 
     public void setContentManager(ContentManagerHelper contentManager) {
         this.contentManager = contentManager;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,

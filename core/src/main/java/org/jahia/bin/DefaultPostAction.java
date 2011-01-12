@@ -64,7 +64,7 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 11 mars 2010
  */
-public class DefaultPostAction implements Action {
+public class DefaultPostAction extends BaseAction {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultPostAction.class);
 
@@ -73,6 +73,7 @@ public class DefaultPostAction implements Action {
     private MetricsLoggingService loggingService;
 
     public DefaultPostAction() {
+        setName(ACTION_NAME);
     }
 
     public MetricsLoggingService getLoggingService() {
@@ -81,10 +82,6 @@ public class DefaultPostAction implements Action {
 
     public void setLoggingService(MetricsLoggingService loggingService) {
         this.loggingService = loggingService;
-    }
-
-    public String getName() {
-        return ACTION_NAME;
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,

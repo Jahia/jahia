@@ -35,6 +35,7 @@ package org.jahia.modules.defaultmodule;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.bin.BaseAction;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.render.RenderContext;
@@ -55,21 +56,12 @@ import java.util.*;
  * Time: 12:16:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class StartWorkflowAction implements Action {
-    private String name;
+public class StartWorkflowAction extends BaseAction {
     private WorkflowService workflowService;
     private JCRPublicationService publicationService;
 
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setPublicationService(JCRPublicationService publicationService) {

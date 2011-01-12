@@ -37,6 +37,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.artofsolving.jodconverter.office.OfficeException;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.bin.BaseAction;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
@@ -61,19 +62,9 @@ import java.util.Map;
  * Date: Apr 20, 2010
  * Time: 11:14:20 AM
  */
-public class DocumentConverterAction implements Action {
-    private String name;
+public class DocumentConverterAction extends BaseAction {
 
     private DocumentConverterService converterService;
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {

@@ -77,6 +77,8 @@ public abstract class BaseAction implements Action {
 
     private String name;
 
+    private String requiredPermission = null;
+
     /*
      * (non-Javadoc)
      * 
@@ -95,4 +97,11 @@ public abstract class BaseAction implements Action {
         this.name = name;
     }
 
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
+    }
 }

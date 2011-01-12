@@ -738,6 +738,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private void doAction(HttpServletRequest req, HttpServletResponse resp, URLResolver urlResolver,
                           RenderContext renderContext, Resource resource, Action action,
                           Map<String, List<String>> parameters) throws Exception {
+        if (action.getRequiredPermission() != null && !resource.getNode().hasPermission(action.getRequiredPermission())) {
+            throw new AccessDeniedException();
+        }
         ActionResult result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
         if (result != null) {
             if (result.getResultCode() < 300) {

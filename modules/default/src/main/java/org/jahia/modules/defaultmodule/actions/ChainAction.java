@@ -39,6 +39,7 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.jcr.AccessDeniedException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,11 @@ public class ChainAction extends Action implements InitializingBean {
                     result = defaultPostAction.doExecute(req, renderContext, resource, parameters, resolver);
                 } else {
                     Action action = actionsMap.get(actionToDo);
-                    result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
+                    if (action.getRequiredPermission() == null || resource.getNode().hasPermission(action.getRequiredPermission())) {
+                        result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
+                    } else {
+                        throw new AccessDeniedException();
+                    }
                 }
             }
             return result;

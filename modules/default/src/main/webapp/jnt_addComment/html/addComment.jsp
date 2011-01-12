@@ -17,7 +17,7 @@
 <template:addResources type="css" resources="commentable.css"/>
 <c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${!(empty bindedComponent)}">
-    <c:set var="writeable" value="${jcr:hasPermission(bindedComponent,'jcr:addChildNodes') and currentResource.workspace eq 'live'}" />
+    <c:set var="writeable" value="${jcr:hasPermission(bindedComponent,'addComment') and currentResource.workspace eq 'live'}" />
 </c:if>
 <c:if test="${empty bindedComponent}">
     <c:set var="writeable" value="${currentResource.workspace eq 'live'}" />
@@ -64,7 +64,7 @@
 </c:if>
 <c:if test="${not writeable}">
     <c:choose>
-        <c:when test="${jcr:hasPermission(bindedComponent,'jcr:addChildNodes')}">
+        <c:when test="${jcr:hasPermission(bindedComponent,'addComment')}">
             <div class="area-liveOnly">
                 <fmt:message key="label.comments.only.live"/>
             </div>

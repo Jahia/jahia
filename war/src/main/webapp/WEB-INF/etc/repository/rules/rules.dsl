@@ -23,7 +23,6 @@
 [condition][]The {node} has a property {property}=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues ) from {node}.properties
 [condition][]The rule {ruleName} is executing = job : JobRuleExecution ( ruleToExecute=={ruleName}) and node : AddedNodeFact() from job.node
 [condition][]- it has the extension type {type}=types contains "{type}"
-[condition][]- it has the type {type}=node.types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
 [condition][]- it is in {path}=node.path matches "{path}/*"
 [condition][]- its name is not {name}=name != "{name}"

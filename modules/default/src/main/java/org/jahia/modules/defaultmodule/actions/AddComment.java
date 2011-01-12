@@ -32,19 +32,22 @@
 
 package org.jahia.modules.defaultmodule.actions;
 
+import org.jahia.bin.PostAsSystemAction;
+import org.jahia.services.content.*;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.DefaultPostAction;
 import org.jahia.bin.Render;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 
 import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -55,11 +58,10 @@ import java.util.Map;
  * @since : JAHIA 6.1
  *        Created : 3 juin 2010
  */
-public class AddComment extends DefaultPostAction {
+public class AddComment extends PostAsSystemAction {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddComment.class);
 
-    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+    public ActionResult doExecuteAsSystem(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         if(!node.isNodeType("jmix:comments")) {

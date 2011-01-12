@@ -419,6 +419,7 @@ public class JCRPublicationService extends JahiaService {
         for (final JCRNodeWrapper node : modified) {
             try {
                 if (!node.isNodeType("mix:versionable")) {
+                    destinationSession.getNode(node.getCorrespondingNodePath(destinationSession.getWorkspace().getName())).update(sourceSession.getWorkspace().getName());
                     continue;
                 }
 

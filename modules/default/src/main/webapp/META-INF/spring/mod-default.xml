@@ -72,5 +72,6 @@
 
     <bean class="org.jahia.modules.defaultmodule.actions.AddComment">
         <property name="name" value="addComment"/>
+        <property name="requiredPermission" value="addComment"/>
     </bean>
 </beans>

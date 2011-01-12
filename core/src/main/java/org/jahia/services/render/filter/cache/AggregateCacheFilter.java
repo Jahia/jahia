@@ -56,6 +56,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
 import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
@@ -226,6 +227,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getResolvedTemplate());
+        /*if(Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.dynamicRolesAcls"))) {
+            key = cacheProvider.getKeyGenerator().replaceField(key,"acls","dynamicRolesAcls");
+            chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.FALSE);
+        }*/
         if (debugEnabled) {
             logger.debug("Generating content for node : " + perUserKey);
         }
@@ -404,8 +409,32 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (logger.isDebugEnabled()) {
                     logger.debug(segment.toString());
                 }
-                String cacheKey = segment.getAttributeValue("src").replaceAll("_perUser_",
-                        renderContext.getUser().getUsername());
+                String cacheKey = segment.getAttributeValue("src");
+                CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
+                if (keyGenerator instanceof DefaultCacheKeyGenerator) {
+                    DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
+                    try {
+                        Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
+                        final JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
+                                "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
+                                renderContext.getFallbackLocale()).getNode(keyAttrbs.get("path"));
+                        Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"),
+                                Resource.CONFIGURATION_MODULE);
+                        String acls = defaultCacheKeyGenerator.appendAcls(resource, renderContext);
+                        cacheKey = keyGenerator.replaceField(cacheKey, "acls", acls);
+                    } catch (ParseException e) {
+                        logger.error(e.getMessage(), e);
+                    } catch (PathNotFoundException e) {
+                        try {
+                            cacheKey = keyGenerator.replaceField(cacheKey, "acls", "invalid");
+                        } catch (ParseException e1) {
+                            logger.error(e1.getMessage(), e1);
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+                cacheKey = cacheKey.replaceAll("_perUser_",renderContext.getUser().getUsername());
                 String mrCacheKey = cacheKey.replaceAll("_mr_", renderContext.getMainResource().getNode().getPath() +
                                                                 renderContext.getMainResource().getResolvedTemplate());
                 logger.debug("Check if " + cacheKey + " is in cache");

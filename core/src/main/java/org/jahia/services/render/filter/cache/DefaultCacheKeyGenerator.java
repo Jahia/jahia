@@ -135,17 +135,21 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         return args.toArray(new String[KNOWN_FIELDS.size()]);
     }
 
-    private String appendAcls(Resource resource, RenderContext renderContext) {
+    public String appendAcls(Resource resource, RenderContext renderContext) {
         try {
             if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
                 return "_perUser_";
             }
 
+            JCRNodeWrapper node = resource.getNode();
+            if(node.hasProperty("j:requiredPermissions")){
+                node = renderContext.getMainResource().getNode();
+            }
+
             // Search for user specific acl
             JahiaUser principal = renderContext.getUser();
             final String userName = principal.getUsername();
-            Set<String> roles = ((JahiaAccessManager) resource.getNode().getAccessControlManager()).getRoles(
-                    resource.getNode().getPath());
+            Set<String> roles = ((JahiaAccessManager) node.getAccessControlManager()).getRoles(node.getPath());
             StringBuilder b = new StringBuilder();
             for (String g : roles) {
                 if (b.length() > 0) {

@@ -57,10 +57,11 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         if (script != null) {
             String requirePermissions = script.getTemplate().getProperties().getProperty("requirePermissions");
             if (requirePermissions != null) {
+//                chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
                 String[] perms = requirePermissions.split(" ");
                 for (String perm : perms) {
                     if (!node.hasPermission(perm)) {
-                        throw new AccessDeniedException();
+                        return "";
                     }
                 }
             }
@@ -79,10 +80,11 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 }
             }
             if (node.hasProperty("j:requiredPermissions")) {
+//                chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
                 Value[] values = node.getProperty("j:requiredPermissions").getValues();
                 for (Value value : values) {
                     if (!renderContext.getMainResource().getNode().hasPermission(((JCRValueWrapperImpl) value).getNode().getName())) {
-                        throw new AccessDeniedException("Content require permission "+((JCRValueWrapperImpl) value).getNode().getName());
+                        return "";
                     }
                 }
             }

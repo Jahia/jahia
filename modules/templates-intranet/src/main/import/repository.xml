@@ -106,24 +106,6 @@
                             <listC jcr:primaryType="jnt:area" />
                         </row1-col3>
                     </double>
-                    <forum jcr:primaryType="jnt:pageTemplate">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="2col124" jcr:primaryType="jnt:row" />
-                        </pagecontent>
-                        <row-col1 jcr:primaryType="jnt:contentList">
-                            <boardIndex jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:boardIndex" j:view="detail" />
-                        </row-col1>
-                        <row-col2 jcr:primaryType="jnt:contentList" />
-                    </forum>
-                    <forum-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:topic jnt:thread" j:defaultTemplate="true">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="2col124" jcr:primaryType="jnt:row" />
-                        </pagecontent>
-                        <row-col1 jcr:primaryType="jnt:contentList">
-                            <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                        </row-col1>
-                        <row-col2 jcr:primaryType="jnt:contentList" />
-                    </forum-content>
                     <events jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row1 column="2col115" jcr:primaryType="jnt:row" />

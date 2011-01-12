@@ -96,7 +96,7 @@ public class LinkerTag extends TagSupport {
         } catch (Exception e) {
             throw new JspException(e);
         } finally {
-            property = null;
+            property = "j:bindedComponent";
             mixinType = null;
         }
         return EVAL_PAGE;

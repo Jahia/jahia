@@ -5,11 +5,12 @@
 
 [jnt:topic] > jnt:content, jmix:forumContent
  - topicSubject (string)
+ - topicDescription (string)
  + * (jnt:thread)
+ + * (jnt:topic)
 
 [jnt:dynamicTopicList] > jnt:content, jmix:forumContent
 
-[jnt:boardIndex] > jnt:content, jmix:forumContent
- - boardSubject (string)
- - boardDescription (string)
- + * (jnt:topic)
+[jnt:topicForm] > jnt:content, jmix:bindedComponent, jmix:forumContent
+
+[jnt:threadForm] > jnt:content, jmix:bindedComponent, jmix:forumContent

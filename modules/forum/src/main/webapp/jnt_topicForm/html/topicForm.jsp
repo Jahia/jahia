@@ -3,19 +3,30 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:linker property="j:bindedComponent"/>
 <template:addResources type="css" resources="forum.css"/>
-<form action="${url.base}${currentNode.path}/*" method="post">
+<c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<form action="${url.base}${linked.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jnt:topic"/>
     <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
     <%-- Define the output format for the newly created node by default html or by redirectTo--%>
-    <input type="hidden" name="newNodeOutputFormat" value="detail.html"/>
+    <input type="hidden" name="newNodeOutputFormat" value="html"/>
 
     <div class="post-reply"><!--start post-reply-->
         <div class="forum-box forum-box-style2">
             <span class="forum-corners-top"><span></span></span>
 
             <div id="forum-Form"><!--start forum-Form-->
-                <h4 class="forum-h4-first">${currentNode.propertiesAsString['boardSubject']} : Create new Topic</h4>
+                <h4 class="forum-h4-first">Create new Topic</h4>
 
                 <fieldset>
                     <p class="field">

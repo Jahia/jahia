@@ -5,6 +5,14 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <jcr:sql var="numberOfPostsQuery"
          sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
 <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
@@ -18,10 +26,6 @@
                                                                                    name="topicSubject"/></a></h2>
 
         <div class="forum-actions">
-
-            <div class="forum-buttons">
-                <div class="forum-post-icon"><a title="<fmt:message key="create.new.thread"/>" href="#"><span/><fmt:message key="create.new.thread"/></a></div>
-            </div>
             <div class="forum-pagination">
                 ${functions:length(currentNode.nodes)} <fmt:message key="threads"/>
             </div>
@@ -52,7 +56,6 @@
             <div class="clear"></div>
             <span class="forum-corners-bottom"><span></span></span>
         </div>
-        <template:include template="newThreadForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
                 ${functions:length(currentNode.nodes)} <fmt:message key="threads"/>

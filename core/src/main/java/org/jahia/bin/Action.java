@@ -32,15 +32,26 @@
 
 package org.jahia.bin;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import org.springframework.web.bind.ServletRequestUtils;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -111,4 +122,81 @@ public abstract class Action {
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
     }
+
+
+    protected JCRNodeWrapper createNode(HttpServletRequest req, Map<String, List<String>> parameters,
+                                        JCRNodeWrapper node, String nodeType, String nodeName)
+            throws RepositoryException {
+        JCRNodeWrapper newNode;
+        if (StringUtils.isBlank(nodeName)) {
+            if (parameters.get("jcr:title") != null) {
+                nodeName = JCRContentUtils.generateNodeName(parameters.get("jcr:title").get(0), 32);
+            } else {
+                nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
+            }
+            nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);
+        }
+        if (ServletRequestUtils.getBooleanParameter(req, Render.NORMALIZE_NODE_NAME, false)) {
+            nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
+        }
+        try {
+            newNode = node.getNode(nodeName);
+            if (!newNode.isCheckedOut()) {
+                newNode.checkout();
+            }
+        } catch (PathNotFoundException e) {
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
+            newNode = node.addNode(nodeName, nodeType);
+        }
+
+//        String template = parameters.containsKey("j:sourceTemplate") ? parameters.get("j:sourceTemplate").get(0) : null;
+//        if (Constants.JAHIANT_PAGE.equals(nodeType) && template != null) {
+//            // we will use the provided template
+//            JCRNodeWrapper templateNode = null;
+//            try {
+//                templateNode = session.getNodeByIdentifier(template);
+//                templateNode.copy(newNode.getParent(), nodeName, true);
+//            } catch (RepositoryException e) {
+//                logger.warn("Unable to use template node '" + template + ". Skip using template for new page.", e);
+//            }
+//
+//        }
+
+        if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
+            for (Object o : ((ArrayList) parameters.get(Constants.JCR_MIXINTYPES))) {
+                String mixin = (String) o;
+                newNode.addMixin(mixin);
+            }
+        }
+        Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
+        for (Map.Entry<String, List<String>> entry : set) {
+            String key = entry.getKey();
+            if (!Render.reservedParameters.contains(key)) {
+                List<String> values = entry.getValue();
+                ExtendedPropertyDefinition propertyDefinition = null;
+                try {
+                    propertyDefinition = newNode.getApplicablePropertyDefinition(key);
+                } catch (ConstraintViolationException cve) {
+                    // can happen if we don't have a property named as the key we are looking for.
+                    propertyDefinition = null;
+                    continue;
+                }
+                if (propertyDefinition.isMultiple()) {
+                    newNode.setProperty(key, values.toArray(new String[values.size()]));
+                } else if (values.get(0).length() > 0) {
+                    if (propertyDefinition.getRequiredType() == ExtendedPropertyType.DATE) {
+                        DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values.get(0));
+                        newNode.setProperty(key, dateTime.toCalendar(Locale.ENGLISH));
+                    } else {
+                        newNode.setProperty(key, values.get(0));
+                    }
+                }
+            }
+        }
+
+        return newNode;
+    }
+
 }

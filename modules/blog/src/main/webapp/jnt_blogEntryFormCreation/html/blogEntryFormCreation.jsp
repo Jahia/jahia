@@ -30,10 +30,10 @@
 </script>
 
 <c:set var="writeable"
-       value="${jcr:hasPermission(renderContext.mainResource.node,'jcr:addChildNodes') and currentResource.workspace eq 'live'}"/>
+       value="${jcr:hasPermission(renderContext.mainResource.node,'addBlogEntry') and currentResource.workspace eq 'live'}"/>
 <%--<c:set var="writeable" value="${jcr:canAddSubNode(renderContext.mainResource.node,'*','jnt:blogContent')}" />--%>
 <c:if test='${writeable}'>
-    <form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
+    <form id="formPost" method="post" action="${renderContext.mainResource.node.name}.addBlogEntry.do" name="blogPost">
         <input type="hidden" name="nodeType" value="jnt:blogContent"/>
         <input type="hidden" name="normalizeNodeName" value="true"/>
         <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
@@ -75,7 +75,7 @@
                             alert('${fn:replace(noTitle,"'","\\'")}');
                             return false;
                         }
-                        document.blogPost.action = '${renderContext.mainResource.node.name}/blog-content/' + encodeURIComponent(document.blogPost.elements['jcr:title'].value);
+                        <%--document.blogPost.action = '${renderContext.mainResource.node.name}/blog-content/' + encodeURIComponent(document.blogPost.elements['jcr:title'].value);--%>
                         document.blogPost.submit();"/>
             </p>
         </div>

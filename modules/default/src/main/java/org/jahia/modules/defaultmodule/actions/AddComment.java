@@ -32,22 +32,17 @@
 
 package org.jahia.modules.defaultmodule.actions;
 
-import org.jahia.bin.PostAsSystemAction;
+import org.jahia.bin.SystemAction;
 import org.jahia.services.content.*;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.DefaultPostAction;
 import org.jahia.bin.Render;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +53,7 @@ import java.util.Map;
  * @since : JAHIA 6.1
  *        Created : 3 juin 2010
  */
-public class AddComment extends PostAsSystemAction {
+public class AddComment extends SystemAction {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddComment.class);
 
     public ActionResult doExecuteAsSystem(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
@@ -70,7 +65,7 @@ public class AddComment extends PostAsSystemAction {
             jcrSessionWrapper.save();
         }
         String path = node.getPath() + "/comments";
-        JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper, jcrSessionWrapper.getNode(path), path,"jnt:post","");
+        JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper.getNode(path), "jnt:post","");
         jcrSessionWrapper.save();
         return new ActionResult(HttpServletResponse.SC_OK, newNode.getPath(), Render.serializeNodeToJSON(newNode));
     }

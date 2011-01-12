@@ -17,7 +17,7 @@ import java.util.Map;
  * Performs the default action as system user
  *
  */
-public abstract class PostAsSystemAction extends DefaultPostAction {
+public abstract class SystemAction extends Action {
 
     public ActionResult doExecute(final HttpServletRequest req, final RenderContext renderContext, final Resource resource,
                                   final Map<String, List<String>> parameters, final URLResolver urlResolver) throws Exception {

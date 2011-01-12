@@ -121,5 +121,13 @@
             </templates>
         </blog>
     </templateSets>
+
+    <permissions jcr:primaryType="jnt:permission">
+        <actions jcr:primaryType="jnt:permission">
+            <blog jcr:primaryType="jnt:permission">
+                <addBlogEntry jcr:primaryType="jnt:permission"/>
+            </blog>
+        </actions>
+    </permissions>
 </content>
 

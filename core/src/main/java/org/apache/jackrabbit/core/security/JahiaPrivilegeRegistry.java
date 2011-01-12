@@ -69,7 +69,7 @@ public final class JahiaPrivilegeRegistry {
      * the registered privileges.
      */
     private static final Map<String, Privilege> map = new HashMap<String, Privilege>();
-    private static final List<Privilege> allPrivileges = new ArrayList<Privilege>();
+    private static final List<String> allPrivileges = new ArrayList<String>();
 
     private NamespaceRegistry ns;
 
@@ -81,11 +81,9 @@ public final class JahiaPrivilegeRegistry {
         registerPrivileges(perms, privileges);
 
         for (Privilege p : privileges) {
-            if (!map.containsKey(p.getName())) {
-                map.put(p.getName(), p);
-            }
-            if (!allPrivileges.contains(p)) {
-                allPrivileges.add(p);
+            map.put(p.getName(), p);
+            if (!allPrivileges.contains(p.getName())) {
+                allPrivileges.add(p.getName());
             }
         }
     }
@@ -138,7 +136,12 @@ public final class JahiaPrivilegeRegistry {
      * @return all registered privileges.
      */
     public Privilege[] getRegisteredPrivileges() {
-        return allPrivileges.toArray(new Privilege[allPrivileges.size()]);
+        Privilege[] privileges = new Privilege[allPrivileges.size()];
+        int i = 0;
+        for (String s : allPrivileges) {
+            privileges[i++] = map.get(s);
+        }
+        return privileges;
     }
 
     /**

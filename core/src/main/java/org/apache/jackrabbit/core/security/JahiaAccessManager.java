@@ -417,7 +417,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 String language = StringUtils.substringAfter(n.getName(), "j:translation_");
                 if (permissions.contains(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName)) {
                     permissions.remove(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName);
-                    permissions.remove(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName + "_" + language);
+                    permissions.add(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName + "_" + language);
                 }
             }
 

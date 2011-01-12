@@ -336,21 +336,8 @@ public class JCRSitesProvider {
                     }
 
                     if (siteNode.getName().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
-                        Node n = session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:write_default/jcr:modifyProperties_default");
-                        Set<String> languages = new HashSet<String>();
-
-                        NodeIterator ni = n.getNodes();
-                        while (ni.hasNext()) {
-                            Node next = (Node) ni.next();
-                            if (next.getName().startsWith("jcr:modifyProperties_default_")) {
-                                languages.add(StringUtils.substringAfter(next.getName(),"jcr:modifyProperties_default_"));
-                            }
-                        }
-                        for (String s : site.getLanguages()) {
-                            if (!languages.contains(s)) {
-                                n.addNode("jcr:modifyProperties_default_"+s, "jnt:permission");
-                            }
-                        }
+                        updateWorkspacePermissions(session, "default", site);
+                        updateWorkspacePermissions(session, "live", site);
                     }
 
                     session.save();
@@ -364,6 +351,24 @@ public class JCRSitesProvider {
             });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        }
+    }
+
+    private void updateWorkspacePermissions(JCRSessionWrapper session, String ws, JahiaSite site) throws RepositoryException {
+        Node n = session.getNode("/permissions/repository-permissions/jcr:all_" + ws + "/jcr:write_" + ws + "/jcr:modifyProperties_" + ws);
+        Set<String> languages = new HashSet<String>();
+
+        NodeIterator ni = n.getNodes();
+        while (ni.hasNext()) {
+            Node next = (Node) ni.next();
+            if (next.getName().startsWith("jcr:modifyProperties_" + ws + "_")) {
+                languages.add(StringUtils.substringAfter(next.getName(), "jcr:modifyProperties_" + ws + "_"));
+            }
+        }
+        for (String s : site.getLanguages()) {
+            if (!languages.contains(s)) {
+                n.addNode("jcr:modifyProperties_" + ws + "_" +s, "jnt:permission");
+            }
         }
     }
 

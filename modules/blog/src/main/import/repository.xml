@@ -40,7 +40,6 @@
                         </pagecontent>
                         <row-col1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                             <blog-content jcr:mixinTypes="jmix:requiredPermissions"
-                                          j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live"
                                           j:subNodesView="short" j:requiredMode="live" jcr:primaryType="jnt:area"
                                           j:allowedTypes="jnt:blogContent"/>
                         </row-col1>

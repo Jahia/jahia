@@ -6,3 +6,6 @@
  + * (jnt:wikiPage)
 
 [jnt:wikiPageFormCreation] > jnt:content, jmix:siteComponent, mix:title
+
+[jnt:wikiContentRetrieval] > jnt:contentRetrieval, jmix:queryContent
+- j:type (string)  = jnt:wikiPage hidden indexed=no

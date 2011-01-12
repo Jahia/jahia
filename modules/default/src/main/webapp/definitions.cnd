@@ -171,3 +171,5 @@
  - type (string, choicelist) = edit < contribute,edit
 
 [jmix:gadget] mixin
+
+[jnt:contentInfo] > jmix:siteComponent, jmix:bindedComponent

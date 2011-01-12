@@ -112,73 +112,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>use-import</id>
-            <activation>
-                <file>
-                    <exists>src/main/import/repository.xml</exists>
-                </file>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-
-                        <executions>
-                            <execution>
-                                <id>import</id>
-                                <configuration>
-                                    <descriptors>
-                                        <descriptor>src/main/assembly/src.xml</descriptor>
-                                    </descriptors>
-                                    <attach>false</attach>
-                                    <finalName>import</finalName>
-                                </configuration>
-
-                                <phase>generate-resources</phase>
-
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.3</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant-jsch</artifactId>
-                                <version>1.7.1</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>com.jcraft</groupId>
-                                <artifactId>jsch</artifactId>
-                                <version>0.1.38</version>
-                            </dependency>
-                        </dependencies>
-
-                        <executions>
-                            <execution>
-                                <id>packaging</id>
-                                <phase>generate-resources</phase>
-                                <configuration>
-                                    <tasks>
-                                        <copy file="./target/import.zip" todir="${project.basedir}/src/main/webapp" overwrite="true"/>
-                                    </tasks>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
     <dependencies>
         <dependency>
@@ -196,6 +129,61 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>import</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/src.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                            <finalName>import</finalName>
+                        </configuration>
+
+                        <phase>generate-resources</phase>
+
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.7.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.38</version>
+                    </dependency>
+                </dependencies>
+
+                <executions>
+                    <execution>
+                        <id>packaging</id>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <copy file="./target/import.zip" todir="${project.basedir}/src/main/webapp" overwrite="true"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

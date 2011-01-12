@@ -31,7 +31,7 @@
 <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
     <c:set var="blogHome" value="${url.current}"/>
 </c:if>
-<c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+<c:if test="${jcr:hasPermission(currentNode,'jcr:removeNode'}">
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-blog-article-delete-${currentNode.UUID}">
         <input type="hidden" name="redirectTo" value="${url.base}${jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page').path}"/>
@@ -42,7 +42,7 @@
 </c:if>
 
 <div class="post">
-    <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+    <c:if test="${jcr:hasPermission(currentNode,'jcr:write'}">
         <span class="posteditdelete">
             <a class="postdelete"  href="#" onclick="document.getElementById('jahia-blog-article-delete-${currentNode.UUID}').submit();"><fmt:message key="blog.label.delete"/></a>
             <a class="postedit" href="${url.base}${currentResource.node.path}.blog-edit.html"><fmt:message key="blog.label.edit"/></a>

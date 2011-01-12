@@ -32,8 +32,8 @@
 
 package org.jahia.modules.newsletter;
 
+import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.services.content.JCRCallback;
@@ -67,7 +67,7 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
  * 
  * @author Sergiy Shyrkov
  */
-public class UnsubscribeAction extends BaseAction {
+public class UnsubscribeAction extends Action {
 
 	private static final Logger logger = LoggerFactory.getLogger(UnsubscribeAction.class);
 

@@ -35,16 +35,13 @@ package org.jahia.modules.defaultmodule;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
-import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +54,7 @@ import java.util.Map;
  * Time: 12:16:22 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ExecuteTaskAction extends BaseAction {
+public class ExecuteTaskAction extends Action {
     private WorkflowService workflowService;
 
     public void setWorkflowService(WorkflowService workflowService) {

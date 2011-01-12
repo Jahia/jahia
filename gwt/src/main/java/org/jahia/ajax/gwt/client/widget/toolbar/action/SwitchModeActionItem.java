@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.google.gwt.user.client.ui.FormPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -73,7 +74,11 @@ public class SwitchModeActionItem extends BaseActionItem {
                     .getNodeURL(servlet, path, null, null, workspace, locale, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
                             String url1 = url + ((urlParams !=null) ? "?" + urlParams :"");
-                            com.google.gwt.user.client.Window.open(url1, "mode"+ workspace, "");
+
+                            FormPanel p = new FormPanel("mode"+ servlet + workspace);
+                            p.setAction(url1);
+                            p.setMethod("GET");
+                            p.submit();
                         }
 
                     });

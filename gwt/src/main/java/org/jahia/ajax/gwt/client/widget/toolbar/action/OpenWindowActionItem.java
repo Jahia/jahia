@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FormPanel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -96,11 +97,19 @@ public class OpenWindowActionItem extends BaseActionItem {
         String name = getPropertyValue(getGwtToolbarItem(), "target");
         name = name != null ? name : getGwtToolbarItem().getTitle().replaceAll(" ", "_").replaceAll("-", "_");
         final String jsUrl = getPropertyValue(getGwtToolbarItem(), "js.url");
+        String url = null;
         if (jsUrl != null) {
-            Window.open(JahiaGWTParameters.getParam(jsUrl), name, wOptions);
+            url = JahiaGWTParameters.getParam(jsUrl);
         } else if (windowUrl != null && windowUrl.getValue() != null) {
-            String value = URL.replacePlaceholders(windowUrl.getValue(), linker.getSelectionContext().getSingleSelection());
-            Window.open(value, name, wOptions);
+            url = URL.replacePlaceholders(windowUrl.getValue(), linker.getSelectionContext().getSingleSelection());
+        }
+        if (noOptions == null) {
+            Window.open(url, name, wOptions);
+        } else {
+            FormPanel p = new FormPanel(name);
+            p.setAction(url);
+            p.setMethod("GET");
+            p.submit();
         }
     }
 

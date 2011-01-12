@@ -44,7 +44,7 @@ import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
+import org.jahia.bin.Action;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.services.content.JCRCallback;
@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sergiy Shyrkov
  */
-public class SubscribeAction extends BaseAction {
+public class SubscribeAction extends Action {
 
 	private static final Logger logger = LoggerFactory.getLogger(SubscribeAction.class);
 

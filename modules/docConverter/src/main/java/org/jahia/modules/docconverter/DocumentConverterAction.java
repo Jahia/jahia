@@ -35,9 +35,8 @@ package org.jahia.modules.docconverter;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.artofsolving.jodconverter.office.OfficeException;
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
+import org.jahia.bin.Action;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
@@ -62,7 +61,7 @@ import java.util.Map;
  * Date: Apr 20, 2010
  * Time: 11:14:20 AM
  */
-public class DocumentConverterAction extends BaseAction {
+public class DocumentConverterAction extends Action {
 
     private DocumentConverterService converterService;
 

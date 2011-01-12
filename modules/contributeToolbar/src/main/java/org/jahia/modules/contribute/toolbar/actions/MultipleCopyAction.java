@@ -36,14 +36,10 @@ import org.apache.commons.collections.list.SetUniqueList;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +51,7 @@ import java.util.Map;
  * @since : JAHIA 6.1
  *        Created : 24 nov. 2010
  */
-public class MultipleCopyAction extends BaseAction {
+public class MultipleCopyAction extends Action {
     private transient static Logger logger = Logger.getLogger(MultipleCopyAction.class);
 
     public static final String UUIDS_TO_COPY="org.jahia.uuids.to.copy";

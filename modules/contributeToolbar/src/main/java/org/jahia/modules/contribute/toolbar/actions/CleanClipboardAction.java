@@ -32,11 +32,9 @@
  */
 package org.jahia.modules.contribute.toolbar.actions;
 
-import org.apache.commons.collections.list.SetUniqueList;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -52,7 +50,7 @@ import java.util.Map;
  * @since : JAHIA 6.1
  *        Created : 24 nov. 2010
  */
-public class CleanClipboardAction extends BaseAction {
+public class CleanClipboardAction extends Action {
     private transient static Logger logger = Logger.getLogger(CleanClipboardAction.class);
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,

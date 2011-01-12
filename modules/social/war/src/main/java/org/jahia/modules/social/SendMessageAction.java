@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
+import org.jahia.bin.Action;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -53,7 +53,7 @@ import org.json.JSONObject;
  *         Date: Jun 22, 2010
  *         Time: 9:53:53 AM
  */
-public class SendMessageAction extends BaseAction {
+public class SendMessageAction extends Action {
 
     private SocialService socialService;
 

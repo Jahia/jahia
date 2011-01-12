@@ -32,8 +32,8 @@
 
 package org.jahia.modules.newsletter;
 
+import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
@@ -67,7 +67,7 @@ import java.util.*;
  * @author Thomas Draier
  * @author Sergiy Shyrkov
  */
-public class SendAsNewsletterAction extends BaseAction implements BackgroundAction {
+public class SendAsNewsletterAction extends Action implements BackgroundAction {
 
 	private static final String J_LAST_SENT = "j:lastSent";
 

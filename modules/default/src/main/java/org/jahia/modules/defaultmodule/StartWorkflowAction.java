@@ -33,9 +33,8 @@
 package org.jahia.modules.defaultmodule;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
+import org.jahia.bin.Action;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.render.RenderContext;
@@ -43,10 +42,8 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
-import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -56,7 +53,7 @@ import java.util.*;
  * Time: 12:16:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class StartWorkflowAction extends BaseAction {
+public class StartWorkflowAction extends Action {
     private WorkflowService workflowService;
     private JCRPublicationService publicationService;
 

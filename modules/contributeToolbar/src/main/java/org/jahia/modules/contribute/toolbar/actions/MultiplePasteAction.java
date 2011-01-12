@@ -35,7 +35,6 @@ package org.jahia.modules.contribute.toolbar.actions;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -55,7 +54,7 @@ import java.util.Map;
  * @since : JAHIA 6.1
  *        Created : 24 nov. 2010
  */
-public class MultiplePasteAction extends BaseAction {
+public class MultiplePasteAction extends Action {
     private transient static Logger logger = Logger.getLogger(MultiplePasteAction.class);
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,

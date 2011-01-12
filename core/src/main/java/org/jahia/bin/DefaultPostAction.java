@@ -64,7 +64,7 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 11 mars 2010
  */
-public class DefaultPostAction extends BaseAction {
+public class DefaultPostAction extends Action {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultPostAction.class);
 

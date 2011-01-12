@@ -33,8 +33,8 @@
 package org.jahia.modules.portal;
 
 import org.jahia.ajax.gwt.helper.ContentManagerHelper;
+import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
@@ -56,7 +56,7 @@ import java.util.Map;
  * Time: 6:09:21 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CloneAction extends BaseAction {
+public class CloneAction extends Action {
     private ContentManagerHelper contentManager;
 
     public void setContentManager(ContentManagerHelper contentManager) {

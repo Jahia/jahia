@@ -32,12 +32,9 @@
 
 package org.jahia.modules.bookmarks;
 
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.helper.ContentManagerHelper;
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
+import org.jahia.bin.Action;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -47,12 +44,9 @@ import org.jahia.services.render.URLResolver;
 import org.json.JSONObject;
 
 import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-
-import static org.jahia.api.Constants.JAHIANT_TASKS;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,7 +55,7 @@ import static org.jahia.api.Constants.JAHIANT_TASKS;
  * Time: 4:06:46 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AddAction extends BaseAction {
+public class AddAction extends Action {
     private ContentManagerHelper contentManager;
     final String bookmarkPath = "bookmarks";
 

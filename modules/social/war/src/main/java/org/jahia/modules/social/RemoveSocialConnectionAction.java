@@ -38,7 +38,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
+import org.jahia.bin.Action;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -48,7 +48,7 @@ import org.jahia.services.render.URLResolver;
  * 
  * @author Serge Huber
  */
-public class RemoveSocialConnectionAction extends BaseAction {
+public class RemoveSocialConnectionAction extends Action {
 
     private SocialService socialService;
 

@@ -32,10 +32,9 @@
 
 package org.jahia.modules.poll;
 
-import org.jahia.bin.BaseAction;
+import org.jahia.bin.Action;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -59,7 +58,7 @@ import java.util.List;
  * Time: 10:30:20 AM
  * To change this template use File | Settings | File Templates.
  */
-public class VoteAction extends BaseAction {
+public class VoteAction extends Action {
      private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(VoteAction.class);
 
     // Vote action

@@ -38,9 +38,9 @@ import java.util.Map;
 import javax.jcr.ItemNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jahia.bin.Action;
 import org.slf4j.Logger;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -53,7 +53,7 @@ import org.jahia.services.render.URLResolver;
  * 
  * @author Sergiy Shyrkov
  */
-public class RemoveSocialMessageAction extends BaseAction {
+public class RemoveSocialMessageAction extends Action {
     
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(RemoveSocialMessageAction.class);
 

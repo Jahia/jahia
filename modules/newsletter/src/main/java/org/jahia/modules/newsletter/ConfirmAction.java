@@ -1,7 +1,7 @@
 package org.jahia.modules.newsletter;
 
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
+import org.jahia.bin.Action;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -13,13 +13,11 @@ import org.jahia.services.render.URLResolver;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +26,7 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
  * Time: 11:07:04 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ConfirmAction extends BaseAction {
+public class ConfirmAction extends Action {
     private SubscriptionService subscriptionService;
     private String confirmationPagePath;
 

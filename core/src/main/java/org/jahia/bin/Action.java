@@ -35,25 +35,80 @@ package org.jahia.bin;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
- * Defines an action to be performed when a form data is submitted to render servlet.
- * User: toto
- * Date: Dec 3, 2009
- * Time: 1:35:24 PM
+ * Base action
+ * 
+ * @author Sergiy Shyrkov
  */
-public interface Action {
+public abstract class Action {
 
-    public abstract String getName();
+    public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
+                                           Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
+    /**
+     * Returns a single value for the specified parameter. If the parameter is
+     * not present or its value is empty, returns <code>null</code>.
+     * 
+     * @param parameters the map of action parameters
+     * @param paramName the name of the parameter in question
+     * @return a single value for the specified parameter. If the parameter is
+     *         not present or its value is empty, returns <code>null</code>
+     */
+    public static String getParameter(Map<String, List<String>> parameters, String paramName) {
+        return getParameter(parameters, paramName, null);
+    }
 
-    public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext,
-                                           Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
+    /**
+     * Returns a single value for the specified parameter. If the parameter is
+     * not present or its value is empty, returns the provided default value.
+     * 
+     * @param parameters the map of action parameters
+     * @param paramName the name of the parameter in question
+     * @param defaultValue the default value to be used if the parameter is not
+     *            present or its value is empty
+     * @return a single value for the specified parameter. If the parameter is
+     *         not present or its value is empty, returns the provided default
+     *         value
+     */
+    public static String getParameter(Map<String, List<String>> parameters, String paramName, String defaultValue) {
+        List<String> vals = parameters.get(paramName);
+        return CollectionUtils.isNotEmpty(vals) && StringUtils.isNotEmpty(vals.get(0)) ? vals.get(0) : defaultValue;
+    }
 
-    public abstract String getRequiredPermission();
+    private String name;
 
+    private String requiredPermission = null;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jahia.bin.Action#getName()
+     */
+    public String getName() {
+        return name != null ? name : StringUtils.uncapitalize(StringUtils.substringBeforeLast(getClass().getSimpleName(), "Action"));
+    }
+
+    /**
+     * Sets the action name.
+     * 
+     * @param name the action name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
+    }
 }

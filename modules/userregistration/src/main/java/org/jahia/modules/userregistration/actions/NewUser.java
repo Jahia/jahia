@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
+import org.jahia.bin.Action;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -59,7 +59,7 @@ import org.json.JSONObject;
  * @since : JAHIA 6.1
  *        Created : 29 juin 2010
  */
-public class NewUser extends BaseAction {
+public class NewUser extends Action {
 
     private JahiaUserManagerService userManagerService;
     private MailService mailService;

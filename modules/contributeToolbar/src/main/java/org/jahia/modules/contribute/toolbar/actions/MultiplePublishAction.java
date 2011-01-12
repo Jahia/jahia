@@ -36,22 +36,15 @@ import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.helper.PublicationHelper;
-import org.jahia.api.Constants;
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
+import org.jahia.bin.Action;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.workflow.jbpm.JBPMProvider;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -62,7 +55,7 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 24 nov. 2010
  */
-public class MultiplePublishAction extends BaseAction {
+public class MultiplePublishAction extends Action {
     private transient static Logger logger = Logger.getLogger(MultiplePublishAction.class);
     private WorkflowService workflowService;
     private PublicationHelper publicationHelper;

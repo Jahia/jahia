@@ -37,11 +37,9 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.json.JSONObject;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +50,7 @@ import java.util.Map;
  * @since JAHIA 6.5
  * Created : 11 mars 2010
  */
-public class ChainAction extends BaseAction implements InitializingBean {
+public class ChainAction extends Action implements InitializingBean {
 
     private JahiaTemplateManagerService templateService;
     private DefaultPostAction defaultPostAction;

@@ -90,7 +90,7 @@
                   <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>                       
-                        <version>2.1.0</version>
+                        <version>2.1.0-1</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
                             <noServer>true</noServer>
@@ -105,7 +105,9 @@
                                 <module>org.jahia.ajax.gwt.module.edit.Edit</module>
                                 <module>org.jahia.ajax.gwt.module.resources.Resources</module>
                             </modules>
+                            <!-- 
                             <style>DETAILED</style>
+                            -->
                         </configuration>
                         <executions>
                             <execution>
@@ -131,7 +133,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
-                        <version>2.1.0</version>
+                        <version>2.1.0-1</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
                             <noServer>true</noServer>

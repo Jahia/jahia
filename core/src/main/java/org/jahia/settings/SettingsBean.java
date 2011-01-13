@@ -917,7 +917,8 @@ public class SettingsBean {
     }
 
     public boolean isDevelopmentMode() {
-        return developmentMode;
+        // TODO change it back when the problem with maven plugin will be fixed
+        return true || developmentMode;
     }
 
     /**

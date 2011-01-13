@@ -227,10 +227,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getResolvedTemplate());
-        /*if(Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.dynamicRolesAcls"))) {
+        if(Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.dynamicRolesAcls"))) {
             key = cacheProvider.getKeyGenerator().replaceField(key,"acls","dynamicRolesAcls");
             chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.FALSE);
-        }*/
+        }
         if (debugEnabled) {
             logger.debug("Generating content for node : " + perUserKey);
         }
@@ -549,7 +549,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Key: </span><span>");
         stringBuilder.append(key);
         stringBuilder.append("</span><br/>");
-        if (cachedElement != null && cachedElement.getValue() != null) {
+        /*if (cachedElement != null && cachedElement.getValue() != null) {
             stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment has been created at: </span><span>");
             stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(
                     cachedElement.getCreationTime())));
@@ -565,7 +565,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             stringBuilder.append("</form>");
         } else {
             stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment Not Cacheable</span><br/>");
-        }
+        }*/
         stringBuilder.append("</div>");
         stringBuilder.append(renderContent);
         return stringBuilder.toString();

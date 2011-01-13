@@ -229,7 +229,7 @@ public class CacheFilter extends AbstractFilter {
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Key: </span><span>");
         stringBuilder.append(key);
         stringBuilder.append("</span><br/>");
-        stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment has been created at: </span><span>");
+        /*stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment has been created at: </span><span>");
         stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getCreationTime())));
         stringBuilder.append("</span><br/>");
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment will expire at: </span><span>");
@@ -240,7 +240,7 @@ public class CacheFilter extends AbstractFilter {
                 .append("/flushKey.jsp\" method=\"post\"");
         stringBuilder.append("<input type=\"hidden\" name=\"keyToFlush\" value=\"").append(key).append("\"");
         stringBuilder.append("<button type=\"submit\"title=\"Flush it\">Flush It</button>");
-        stringBuilder.append("</form>");
+        stringBuilder.append("</form>");*/
         stringBuilder.append("</div>");
         stringBuilder.append(renderContent);
         return stringBuilder.toString();

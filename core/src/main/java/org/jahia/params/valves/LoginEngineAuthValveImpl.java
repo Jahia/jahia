@@ -34,7 +34,6 @@ package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
@@ -81,7 +80,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         boolean ok = false;
 
         String doLogin = httpServletRequest.getParameter(LOGIN_TAG_PARAMETER);
-        if (Boolean.valueOf(doLogin) || "1".equals(doLogin)) {
+        if (Boolean.valueOf(doLogin) || "1".equals(doLogin) || "/cms/login".equals(httpServletRequest.getRequestURI())) {
 
             final String username = httpServletRequest.getParameter("username");
             final String password = httpServletRequest.getParameter("password");

@@ -32,6 +32,8 @@
 
 package org.jahia.bin;
 
+import java.util.Iterator;
+
 import org.jahia.services.sites.JahiaSite;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,6 +51,9 @@ import javax.servlet.http.HttpServletResponse;
  * Time: 1:47:38 PM
  */
 public class Login extends HttpServlet implements Controller {
+	
+	private JahiaSitesBaseService sitesService;
+	
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet
      * will render. A <code>null</code> return value is not an error: It indicates that
@@ -76,9 +81,15 @@ public class Login extends HttpServlet implements Controller {
         if (redirectActive) {
             redirect = request.getParameter("redirect");
             if (redirect == null || redirect.length() == 0) {
-                final JahiaSite site = JahiaSitesBaseService.getInstance().getDefaultSite();
-                redirect = request.getContextPath()+"/cms/render/default/"+ site.getDefaultLanguage() +"/sites/" +
-                        site.getSiteKey() + "/home.html";
+                JahiaSite site = sitesService.getDefaultSite();
+                if (site == null) {
+                	Iterator<JahiaSite> sites = sitesService.getSites();
+                	site = sites.hasNext() ? sites.next() : null;
+                }
+				redirect = site != null ? request.getContextPath()
+						+ "/cms/render/default/" + site.getDefaultLanguage()
+						+ "/sites/" + site.getSiteKey() + "/home.html"
+						: request.getContextPath() + "/welcome";
             }
         }
 
@@ -99,4 +110,8 @@ public class Login extends HttpServlet implements Controller {
         }
         return null;
     }
+
+	public void setSitesService(JahiaSitesBaseService sitesService) {
+		this.sitesService = sitesService;
+	}
 }

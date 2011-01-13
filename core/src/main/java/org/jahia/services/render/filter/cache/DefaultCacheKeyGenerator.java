@@ -322,9 +322,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     } else {
                         groups = aclGroups.get(path);
                     }
-                    if (!groups.contains(group)) {
-                        groups.add(group);
-                    }
+                    groups.add(group);
                 }
                 return null;
             }

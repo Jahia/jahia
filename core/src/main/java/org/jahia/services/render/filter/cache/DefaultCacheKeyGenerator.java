@@ -85,7 +85,6 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private JahiaGroupManagerService groupManagerService;
     private Map<String, Set<JahiaGroup>> aclGroups = null;
-    private Set<Role> aclRoles = null;
     private EhCacheProvider cacheProvider;
     private Cache cache;
     private JCRTemplate template;
@@ -365,7 +364,6 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     public void flushUsersGroupsKey() {
         this.aclGroups = null;
-        this.aclRoles = null;
         cache.removeAll();
         cache.flush();
     }

@@ -39,55 +39,49 @@ import java.util.Map;
  */
 public class WebClippingFilter extends AbstractFilter {
     static private final Logger log = Logger.getLogger(WebClippingFilter.class);
-    private EhCacheProvider cacheProviders;
-    private boolean cacheable;
+    // private EhCacheProvider cacheProviders;
+    // private boolean cacheable;
+    // private Cache urlsCache;
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (resource.getNode().hasProperty("url") && resource.getNode().isNodeType("jnt:webClipping")) {
-            if (!renderContext.isEditMode()) {
-                String url;
-                if (renderContext.getRequest().getParameter("jahia_url_web_clipping") != null && renderContext.getRequest().getParameter("jahia_url_web_clipping").length() > 0) {
-                    //todo encode this url, for users can't tape directly url.
-                    url = renderContext.getRequest().getParameter("jahia_url_web_clipping");
-                } else {
-                    url = resource.getNode().getPropertyAsString("url");
-                }
-                //cache content, the response is cache if properties of the currentNode haven't change since the last version in cache
-                //every url are change and they have a timeToLive in the cache equal to the property cacheDelay.
-                CacheManager cacheManager = cacheProviders.getCacheManager();
-                if (!cacheManager.cacheExists("WebClipModuleCache")) {
-                    cacheManager.addCache("WebClipModuleCache");
-                }
-                Cache cache = cacheManager.getCache("WebClipModuleCache");
-                final Element element = cache.get(url);
-                final Element elementDate = cache.get("lastModificationDate");
-                String propertieLastModified = null;
-                if (elementDate != null) {
-                    propertieLastModified = elementDate.getObjectValue().toString();
-                }
-                if (element != null && element.getValue() != null && propertieLastModified.equals(resource.getNode().getPropertyAsString("jcr:lastModified"))) {
-                    //the content is already in cache, then return it
-                    return element.getObjectValue().toString();
-                } else {
-                    //get response content and cache it
-                    this.cacheable = true;
-                    String response = getResponse(url, renderContext, resource, chain);
-                    if (Integer.valueOf(resource.getNode().getPropertyAsString("cacheDelay")) != 0 && cacheable) {
-                        Element elementToPut = new Element(url, response);
-                        //cache lastmodified date of the node, for know if properties have changes.
-                        Element propertieToPut = new Element("lastModificationDate", resource.getNode().getPropertyAsString("jcr:lastModified"));
-                        elementToPut.setTimeToLive(Integer.valueOf(resource.getNode().getPropertyAsString("cacheDelay")));
-                        propertieToPut.setTimeToLive(Integer.valueOf(resource.getNode().getPropertyAsString("cacheDelay")));
-                        cache.put(elementToPut);
-                        cache.put(propertieToPut);
-                    }
-                    return response;
-                }
+        if (!renderContext.isEditMode()) {
+            String url;
+            if (renderContext.getRequest().getParameter("jahia_url_web_clipping") != null && renderContext.getRequest().getParameter("jahia_url_web_clipping").length() > 0) {
+                //todo encode this url, for users can't tape directly url.
+                url = renderContext.getRequest().getParameter("jahia_url_web_clipping");
             } else {
-                return "WebClip module is only available in live";
+                url = resource.getNode().getPropertyAsString("url");
             }
+            /*/cache content, the response is cache if properties of the currentNode have change since the last version in cache
+        //every url are cache and they have a timeToLive in the cache equal to the property "cacheDelay".
+        final Element element = urlsCache.get(url + resource.getNode().getIdentifier());
+        final Element elementDate = urlsCache.get("lastModificationDate" + resource.getNode().getIdentifier());
+        String propertieLastModified = null;
+        if (elementDate != null) {
+            propertieLastModified = elementDate.getObjectValue().toString();
+        }
+        if (element != null && element.getValue() != null && propertieLastModified.equals(resource.getNode().getPropertyAsString("jcr:lastModified"))) {
+            //the content is already in cache, then return it
+            return element.getObjectValue().toString();
         } else {
-            return null;
+            //get response content and cache it
+            // this.cacheable = true;
+            */
+            /*   String response = (url, renderContext, resource, chain);
+              if (Integer.valueOf(resource.getNode().getPropertyAsString("cacheDelay")) != 0 && cacheable) {
+                  Element elementToPut = new Element(url + resource.getNode().getIdentifier(), response);
+                  //cache lastmodified date of the node, for know if properties have changes.
+                  Element propertieToPut = new Element("lastModificationDate" + resource.getNode().getIdentifier(), resource.getNode().getPropertyAsString("jcr:lastModified"));
+                  elementToPut.setTimeToLive(Integer.valueOf(resource.getNode().getPropertyAsString("cacheDelay")));
+                  propertieToPut.setTimeToLive(Integer.valueOf(resource.getNode().getPropertyAsString("cacheDelay")));
+                  urlsCache.put(elementToPut);
+                  urlsCache.put(propertieToPut);
+              }
+              return response;
+          }  */
+            return getResponse(url, renderContext, resource, chain);
+        } else {
+            return "WebClip module is only available in live";
         }
     }
 
@@ -136,7 +130,7 @@ public class WebClippingFilter extends AbstractFilter {
                 }
             }
             if (statusCode != HttpStatus.SC_OK) {
-                this.cacheable = false;
+                //this.cacheable = false;
                 StringBuffer buffer = new StringBuffer("<html>\n<body>");
                 buffer.append('\n' + "Error getting ").append(urlToClip).append(" failed with error code ").append(statusCode);
                 buffer.append("\n</body>\n</html>");
@@ -178,7 +172,7 @@ public class WebClippingFilter extends AbstractFilter {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            this.cacheable = false;
+            //this.cacheable = false;
             StringBuffer buffer = new StringBuffer("<html>\n<body>");
             buffer.append('\n' + "Error getting ").append(urlToClip).append(" failed with error : ").append(e.toString());
             buffer.append("\n</body>\n</html>");
@@ -187,7 +181,15 @@ public class WebClippingFilter extends AbstractFilter {
         return null;
     }
 
-    public void setCacheProviders(EhCacheProvider cacheProviders) {
-        this.cacheProviders = cacheProviders;
-    }
+    /* public void setCacheProviders(EhCacheProvider cacheProviders) {
+      this.cacheProviders = cacheProviders;
+  }
+
+ public void afterPropertiesSet() throws Exception {
+      /CacheManager cacheManager = cacheProviders.getCacheManager();
+      if (!cacheManager.cacheExists("WebClipModuleCache")) {
+          cacheManager.addCache("WebClipModuleCache");
+      }
+      urlsCache = cacheManager.getCache("WebClipModuleCache");
+  }  */
 }

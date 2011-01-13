@@ -6,6 +6,6 @@
         <property name="priority" value="45"/>
         <property name="applyOnNodeTypes" value="jnt:webClipping"/>
         <property name="skipOnConfiguration" value="include,wrapper"/>
-        <property name="cacheProviders" ref="ehCacheProvider"/>
+        <!--property name="cacheProviders" ref="ehCacheProvider"/-->
     </bean>
 </beans>

@@ -2,10 +2,10 @@
 
 [jnt:webClipping] > jnt:content, jmix:sandboxContent, mix:title
 - url (string) mandatory
-- cacheDelay (long) = '0'
+//- cacheDelay (long) = '0'
 - connectionTimeout (long) = '0'
 - expectContinue (boolean) = false
-- includeCssLink (boolean) = true
+- includeCss (boolean) = true
 - specificTag (string)
 - specificAttr (string)
 - specificAttrValue (string)

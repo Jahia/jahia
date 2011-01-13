@@ -46,7 +46,7 @@ import java.util.Locale;
  * <p/>
  * Requires a {@link JCRSessionFactory} to provide access to a JCR repository.
  *
- * @author Cï¿½dric Mailleux
+ * @author Cédric Mailleux
  */
 public class JCRTemplate {
     private JCRSessionFactory sessionFactory;

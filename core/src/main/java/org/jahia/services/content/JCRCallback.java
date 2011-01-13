@@ -38,7 +38,7 @@ import javax.jcr.RepositoryException;
  * Callback interface for JCR code. To be used with JCRTemplate's execute methods,
  * assumably often as anonymous classes within a method implementation. 
  *
- * @author Cï¿½dric Mailleux
+ * @author Cédric Mailleux
  */
 
 public interface JCRCallback<T> {

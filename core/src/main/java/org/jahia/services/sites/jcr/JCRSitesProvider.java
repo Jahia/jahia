@@ -31,9 +31,9 @@
  */
 
 package org.jahia.services.sites.jcr;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.SitesSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -56,6 +56,7 @@ import java.util.*;
  */
 public class JCRSitesProvider {
     private static Logger logger = LoggerFactory.getLogger(JCRSitesProvider.class);
+    
     private JCRTemplate jcrTemplate;
     
     public void setJcrTemplate(JCRTemplate jcrTemplate) {
@@ -334,6 +335,19 @@ public class JCRSitesProvider {
                         siteNode.getProperty("j:gaTypeUrl").remove();
                         siteNode.getProperty("j:gaProfile").remove();
                     }
+                    
+                    
+                    for (Map.Entry<Object, Object> prop : site.getSettings().entrySet()) {
+                        if (!SitesSettings.HTML_SETTINGS.contains(prop.getKey())) {
+                            continue;
+                        }
+                        try {
+                            siteNode.setProperty(prop.getKey().toString(),
+                                    JCRContentUtils.createValue(prop.getValue(), session.getValueFactory()));
+                        } catch (RepositoryException e) {
+                            logger.warn("Error setting site property '" + prop.getKey() + "'", e);
+                        }
+                    }
 
                     if (siteNode.getName().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
                         updateWorkspacePermissions(session, "default", site);
@@ -408,6 +422,12 @@ public class JCRSitesProvider {
         site.setGoogleAnalyticsProfile(typeUrl, enabled, password, login, profile, account);
 
         site.setUuid(node.getIdentifier());
+        
+        for (String setting : SitesSettings.HTML_SETTINGS) {
+            if (node.hasProperty(setting)) {
+                site.getSettings().put(setting, JCRContentUtils.getValue(node.getProperty(setting).getValue()));
+            }
+        }
 
         return site;
     }

@@ -446,13 +446,19 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         setButtonsEnabled(false);
         
     	if (validateData()) {
-    		// validation passes, let's get WCAG texts to validate
-    		final Map<String, CKEditorField> fieldsForValidation = getFieldsForWCAGValidation();
-    		Map<String, String> textForWCAGValidation = new HashMap<String, String>(fieldsForValidation.size());
-    		for (Map.Entry<String, CKEditorField> fieldEntry : fieldsForValidation.entrySet()) {
-    			textForWCAGValidation.put(fieldEntry.getKey(), fieldEntry.getValue().getRawValue());
-            }
-            if (!textForWCAGValidation.isEmpty()) {
+    	    Map<String, String> textForWCAGValidation = null;
+    	    Map<String, CKEditorField> toValidate = null;
+    	    
+    	    if (node != null && node.isWCAGComplianceCheckEnabled() || node == null && targetNode.isWCAGComplianceCheckEnabled()) {
+        		// validation passes, let's get WCAG texts to validate
+        		toValidate = getFieldsForWCAGValidation();
+        		textForWCAGValidation = new HashMap<String, String>(toValidate.size());
+        		for (Map.Entry<String, CKEditorField> fieldEntry : toValidate.entrySet()) {
+        			textForWCAGValidation.put(fieldEntry.getKey(), fieldEntry.getValue().getRawValue());
+                }
+    	    }
+            if (textForWCAGValidation != null && !textForWCAGValidation.isEmpty()) {
+                final Map<String, CKEditorField> fieldsForValidation = toValidate; 
             	// we have texts to validate against WCAG rules
             	contentService.validateWCAG(textForWCAGValidation, new BaseAsyncCallback<Map<String,WCAGValidationResult>>() {
     				public void onSuccess(Map<String, WCAGValidationResult> result) {

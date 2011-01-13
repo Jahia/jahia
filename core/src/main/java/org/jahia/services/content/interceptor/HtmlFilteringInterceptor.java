@@ -52,8 +52,10 @@ import net.htmlparser.jericho.StartTagType;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.sites.SitesSettings;
 
 /**
  * Filters out unwanted HTML elements from the rich text property values before
@@ -63,7 +65,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
  */
 public class HtmlFilteringInterceptor extends RichTextInterceptor {
 
-	private static Logger logger = org.slf4j.LoggerFactory.getLogger(HtmlFilteringInterceptor.class);
+	private static Logger logger = LoggerFactory.getLogger(HtmlFilteringInterceptor.class);
 
 	/**
 	 * Filters out configured "unwanted" HTML tags and returns the modified
@@ -115,40 +117,42 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
 	}
 
 	private Set<String> filteredTags = Collections.emptySet();
-
-	/**
-	 * Initializes an instance of this class.
-	 * 
-	 * @param filteredTags
-	 *            comma- or space-separated HTML tag names to be filtered out
-	 */
-	public HtmlFilteringInterceptor(String filteredTags) {
-		super();
-		this.filteredTags = new HashSet<String>();
-		for (String tag : StringUtils.split(filteredTags, " ,")) {
-			String toBeFiltered = tag.trim().toLowerCase();
-			if (toBeFiltered.length() > 0) {
-				this.filteredTags.add(toBeFiltered);
-			}
-		}
-
-		if (this.filteredTags.isEmpty()) {
-			logger.info("No HTML tag filtering configured. Interceptor will be disabled.");
-		} else {
-			logger.info("HTML tag filtering configured fo tags: " + filteredTags);
-		}
-	}
+	
+	private boolean considerSiteSettingsForFiltering;
 
 	@Override
 	public Value beforeSetValue(JCRNodeWrapper node, String name,
 	        ExtendedPropertyDefinition definition, Value originalValue)
 	        throws ValueFormatException, VersionException, LockException,
 	        ConstraintViolationException, RepositoryException {
-		if (filteredTags.isEmpty()) {
+	    
+        String content = originalValue.getString();
+        if (StringUtils.isEmpty(content) || !content.contains("<")) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("The value does not contain any HTML tags. Skip filtering.");
+            }
+            return originalValue;
+        }
+
+	    Set<String> tags = filteredTags;
+	    boolean doFiltering = false;
+	    if (considerSiteSettingsForFiltering) {
+	        if (node.getResolveSite().hasProperty(SitesSettings.HTML_MARKUP_FILTERING_ENABLED)) {
+                tags = convertToTagSet(node.getResolveSite().hasProperty(
+                        SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? node.getResolveSite()
+                        .getProperty(SitesSettings.HTML_MARKUP_FILTERING_TAGS).getString() : null);
+                if (tags != null && !tags.isEmpty()) {
+                    doFiltering = true;
+                }
+	        }
+	    } else if (filteredTags != null && !filteredTags.isEmpty()) {
+	        doFiltering = true;
+	    }
+	    
+		if (!doFiltering) {
 			return originalValue;
 		}
 
-		String content = originalValue.getString();
 		Value modifiedValue = originalValue;
 
 		if (logger.isDebugEnabled()) {
@@ -158,26 +162,20 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
 			}
 		}
 
-		if (StringUtils.isNotEmpty(content) && content.contains("<")) {
-			String result = filterTags(content);
-			if (result != content && !result.equals(content)) {
-				modifiedValue = node.getSession().getValueFactory().createValue(result);
-				if (logger.isDebugEnabled()) {
-					logger.debug("Done filtering of \"unwanted\" HTML tags.");
-					if (logger.isTraceEnabled()) {
-						logger.trace("Modified value: " + result);
-					}
-				}
-			} else {
-				if (logger.isDebugEnabled()) {
-					logger.debug("The value does not contain HTML tags that needs to be removed. The content remains unchanged.");
-				}
-			}
-		} else {
-			if (logger.isDebugEnabled()) {
-				logger.debug("The value does not contain any HTML tags. Skip filtering.");
-			}
-		}
+        String result = filterTags(content, tags);
+        if (result != content && !result.equals(content)) {
+            modifiedValue = node.getSession().getValueFactory().createValue(result);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Done filtering of \"unwanted\" HTML tags.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Modified value: " + result);
+                }
+            }
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("The value does not contain HTML tags that needs to be removed. The content remains unchanged.");
+            }
+        }
 
 		return modifiedValue;
 	}
@@ -196,18 +194,34 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
 		return res;
 	}
 
-	/**
-	 * Filters out configured "unwanted" HTML tags and returns the modified
-	 * content. If no modifications needs to be done, returns the original
-	 * content.
-	 * 
-	 * @param content
-	 *            the content to be modified
-	 * @return filtered out content or the original one if no modifications
-	 *         needs to be done
-	 */
-	protected String filterTags(String content) {
-		return filterTags(content, filteredTags);
-	}
+    public void setFilteredTags(String tagsToFilter) {
+        this.filteredTags = convertToTagSet(tagsToFilter);
+
+        if (this.filteredTags == null || this.filteredTags.isEmpty()) {
+            logger.info("No HTML tag filtering configured. Interceptor will be disabled.");
+        } else {
+            logger.info("HTML tag filtering configured fo tags: " + tagsToFilter);
+        }
+    }
+
+    private static Set<String> convertToTagSet(String tags) {
+        if (StringUtils.isEmpty(tags)) {
+            return null;
+        }
+
+        Set<String> tagSet = new HashSet<String>();
+        for (String tag : StringUtils.split(tags, " ,")) {
+            String toBeFiltered = tag.trim().toLowerCase();
+            if (toBeFiltered.length() > 0) {
+                tagSet.add(toBeFiltered);
+            }
+        }
+
+        return tagSet;
+    }
+
+    public void setConsiderSiteSettingsForFiltering(boolean considerSiteSettingsForFiltering) {
+        this.considerSiteSettingsForFiltering = considerSiteSettingsForFiltering;
+    }
 
 }

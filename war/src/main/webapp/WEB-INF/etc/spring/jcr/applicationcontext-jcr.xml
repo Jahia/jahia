@@ -159,7 +159,7 @@
             <list>
                 <bean class="org.jahia.services.content.interceptor.LastModifiedInterceptor"/>
                 <bean class="org.jahia.services.content.interceptor.HtmlFilteringInterceptor">
-                    <constructor-arg value="${filteredHtmlTags}"/>
+                    <property name="considerSiteSettingsForFiltering" value="true"/>
                 </bean>
                 <bean class="org.jahia.services.content.interceptor.URLInterceptor">
                     <constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>

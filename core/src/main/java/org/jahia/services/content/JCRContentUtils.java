@@ -838,6 +838,8 @@ public final class JCRContentUtils {
 	public static Value createValue(Object objectValue, ValueFactory factory) {
 		if (objectValue instanceof String) {
 			return factory.createValue((String) objectValue);
+        } else if (objectValue instanceof Boolean) {
+            return factory.createValue((Boolean) objectValue);
 		} else if (objectValue instanceof Long) {
 			return factory.createValue((Long) objectValue);
 		} else if (objectValue instanceof Integer) {
@@ -860,9 +862,40 @@ public final class JCRContentUtils {
 				IOUtils.closeQuietly(is);
 			}
 		} else {
-			logger.warn("Do not know, how to handle value of type {}"
-			        + objectValue.getClass().getName());
+			logger.warn("Do not know, how to handle value of type {}", objectValue.getClass().getName());
 		}
 		return null;
 	}
+
+    /**
+     * Returns an object value that corresponds to the provided JCR property value depending on its type.
+     * 
+     * @param propertyValue
+     *            the JCR property value to be converted
+     * @return the object value
+     * @throws RepositoryException
+     *             in case of a conversion error
+     * @throws ValueFormatException
+     *             in case of a conversion error
+     */
+    public static Object getValue(Value propertyValue) throws ValueFormatException,
+            RepositoryException {
+        Object value = propertyValue.getString();
+        switch (propertyValue.getType()) {
+            case PropertyType.BOOLEAN:
+                value = Boolean.valueOf(propertyValue.getBoolean());
+                break;
+            case PropertyType.DATE:
+                value = propertyValue.getDate();
+                break;
+            case PropertyType.DECIMAL:
+            case PropertyType.LONG:
+                value = Long.valueOf(propertyValue.getDecimal().longValue());
+                break;
+            case PropertyType.DOUBLE:
+                value = Double.valueOf(propertyValue.getDouble());
+                break;
+        }
+        return value;
+    }
 }

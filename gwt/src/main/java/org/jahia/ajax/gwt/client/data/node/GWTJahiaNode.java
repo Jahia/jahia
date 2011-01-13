@@ -118,6 +118,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private Map<String, GWTJahiaPublicationInfo> publicationInfos;
     private Map<String, GWTJahiaWorkflowInfo> workflowInfos;
     private Map<String, List<GWTJahiaPublicationInfo>> fullPublicationInfos;
+    private boolean wcagCompliance;
 
     public GWTJahiaNode() {
     }
@@ -560,5 +561,13 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public Boolean isHasAcl() {
         return get(ACL);
+    }
+    
+    public boolean isWCAGComplianceCheckEnabled() {
+        return wcagCompliance;
+    }
+
+    public void setWCAGComplianceCheckEnabled(boolean wcagComplianceCheckEnabled) {
+        wcagCompliance = wcagComplianceCheckEnabled;
     }
 }

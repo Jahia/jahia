@@ -37,9 +37,7 @@
 //
 package org.jahia.services.sites;
 
-import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
-import org.jahia.api.user.JahiaUserService;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
@@ -54,7 +52,6 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
@@ -454,10 +451,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         }
         siteProvider.deleteSite(site.getSiteKey());
 
-        siteCacheByID.remove(site.getID());
-        siteCacheByName.remove(site.getServerName());
-        siteCacheByKey.remove(site.getSiteKey());
-
+        invalidateCache(site);
     }
 
 
@@ -467,10 +461,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
      * @param site the site bean object
      */
     public synchronized void updateSite(JahiaSite site) throws JahiaException {
-//        JahiaSitesPersistance.getInstance ().dbUpdateSite (site);
-//        JahiaSite defaultSite = this.getDefaultSite();
-        //todo update jahia site name/description
-//        siteManager.updateJahiaSite(site);
         siteProvider.updateSite(site);
         siteCacheByName.flush();
         siteCacheByID.flush();
@@ -551,4 +541,16 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public void setSystemSiteTitle(String systemSiteTitle) {
         this.systemSiteTitle = systemSiteTitle;
     }
+
+    /**
+     * Invalidates the cache for the specified site.
+     *
+     * @param site the site bean object
+     */
+    public void invalidateCache(JahiaSite site) throws JahiaException {
+        siteCacheByID.remove(site.getID());
+        siteCacheByName.remove(site.getServerName());
+        siteCacheByKey.remove(site.getSiteKey());
+    }
+
 }

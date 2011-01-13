@@ -21,6 +21,7 @@
             <adminUsers jcr:primaryType="jnt:permission"/>
             <adminGroups jcr:primaryType="jnt:permission"/>
             <adminSiteLanguages jcr:primaryType="jnt:permission"/>
+            <adminHtmlSettings jcr:primaryType="jnt:permission"/>
             <adminAnalytics jcr:primaryType="jnt:permission"/>
             <adminUrlmapping jcr:primaryType="jnt:permission"/>
             <adminTemplates jcr:primaryType="jnt:permission"/>

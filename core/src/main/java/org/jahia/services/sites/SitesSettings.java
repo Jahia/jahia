@@ -32,6 +32,10 @@
 
 package org.jahia.services.sites;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * Holds constants for site's settings.
@@ -61,22 +65,18 @@ public final class SitesSettings {
     /**
      * These checks settings are used for BigText fields
      */
-    public static final String HTML_CLEANUP_ENABLED = "html_cleanup_enabled";
+    public static final String HTML_MARKUP_FILTERING_ENABLED = "j:doTagFiltering";
 
-    public static final String HTML_MARKUP_FILTERING_ENABLED = "html_markup_filtering_enabled";
+    public static final String HTML_MARKUP_FILTERING_TAGS = "j:filteredTags";
 
-    public static final String HTML_MARKUP_FILTERING_TAGS = "html_markup_filtering_tags";
-
-    public static final String URL_INTEGRITY_CHECKING_ENABLED = "url_integrity_checking_enabled";
-
-    public static final String WAI_COMPLIANCE_CHECKING_ENABLED = "wai_compliance_checking_enabled";
+    public static final String WCAG_COMPLIANCE_CHECKING_ENABLED = "j:wcagCompliance";
+    
+    public static final Set<String> HTML_SETTINGS = new HashSet<String>(Arrays.asList(HTML_MARKUP_FILTERING_ENABLED, HTML_MARKUP_FILTERING_TAGS, WCAG_COMPLIANCE_CHECKING_ENABLED)); 
 
     /**
      * Language settings
      */
     public static final String MIX_LANGUAGES_ACTIVE = "mix_languages_active";
-
-    public static final String FILE_LOCK_ON_PUBLICATION = "fileLockOnPublication";
 
     public static final String JAHIA_GA_PROFILE = "jahiaGAprofile_";
 

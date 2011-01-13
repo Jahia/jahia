@@ -52,7 +52,6 @@ import org.jahia.services.htmlvalidator.Result.Type;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.w3c.dom.DOMException;
-import org.w3c.dom.Node;
 
 /**
  * This class is used to validate an HTML fragment against the WAI (Accessiweb Section 508) rules. All the 55 "Bronze" criteria can be found
@@ -856,53 +855,6 @@ public class WAIValidator {
         }
 
         return;
-    }
-
-    /**
-     * Prints the content (at Log4j INFO level) of a Node and all its siblings and children if the recursive parameter is set to TRUE.
-     * 
-     * @param node
-     *            The starting root node
-     * @param indent
-     *            The indent to put to distinguish bewteen levels
-     * @param recursive
-     *            If False, prints only the current Node
-     * @throws DOMException
-     *             If something goes wrong with node values
-     */
-    private static void print(final Node node, final String indent, final boolean recursive)
-            throws DOMException {
-        final StringBuffer buff = new StringBuffer();
-        buff.append(indent).append(node.getClass().getName()).append(": NodeName '")
-                .append(node.getNodeName()).append("'").append(", Attributes ");
-
-        if (node.getAttributes() != null && node.getAttributes().getLength() > 0) {
-
-            buff.append("{");
-            for (int i = 0; i < node.getAttributes().getLength(); i++) {
-                final Node n = node.getAttributes().item(i);
-                buff.append(n.getNodeName()).append("=").append(n.getNodeValue()).append(",");
-            }
-            buff.deleteCharAt(buff.length() - 1);
-            buff.append("}");
-
-        } else {
-            buff.append("{}");
-        }
-
-        buff.append(", NodeValue '").append(node.getNodeValue()).append("'");
-
-        logger.info(buff.toString());
-
-        if (!recursive) {
-            return;
-        }
-
-        Node child = node.getFirstChild();
-        while (child != null) {
-            print(child, indent + "\t", true);
-            child = child.getNextSibling();
-        }
     }
 
     public String toString() {

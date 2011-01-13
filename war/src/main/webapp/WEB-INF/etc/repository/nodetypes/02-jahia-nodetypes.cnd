@@ -322,6 +322,15 @@
  - j:gaProfile (string) protected nofulltext
 
 //---------------------------------------------------------
+// HTML settings
+//---------------------------------------------------------
+
+[jmix:htmlSettings]  mixin
+ - j:wcagCompliance (boolean) = true indexed=no autocreated
+ - j:doTagFiltering (boolean) = false indexed=no
+ - j:filteredTags (string) indexed=no
+
+//---------------------------------------------------------
 // Rendering
 //---------------------------------------------------------
 
@@ -404,7 +413,7 @@
  - j:virtualsitesFolderSkeleton (string) nofulltext
  + * (jnt:virtualsite)
 
-[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:googleAnalyticsAccount, jmix:observable
+[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:googleAnalyticsAccount, jmix:observable, jmix:htmlSettings
  - j:title (string) protected nofulltext
  - j:serverName (string) protected nofulltext
  - j:description (string) protected

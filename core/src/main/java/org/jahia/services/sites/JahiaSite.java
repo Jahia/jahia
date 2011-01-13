@@ -181,44 +181,16 @@ public class JahiaSite implements Serializable {
         return -1;
     }
 
-    public boolean isURLIntegrityCheckEnabled() {
-        // we activate URL integrity checks by default if no setting was found.
-        String value = getProperty(
-                URL_INTEGRITY_CHECKING_ENABLED, "true");
-        // backward compatibility
-        if ("0".equals(value) || "1".equals(value)) {
-            return "1".equals(value);
-        } else {
-            return Boolean.valueOf(value);
-        }
-    }
-
-    public boolean isWAIComplianceCheckEnabled() {
-        // we activate WAI compliance checks by default if no setting was found.
-        final String value = getProperty(WAI_COMPLIANCE_CHECKING_ENABLED,
-                "true");
-        // backward compatibility
-        if ("0".equals(value) || "1".equals(value)) {
-            return "1".equals(value);
-        } else {
-            return Boolean.valueOf(value);
-        }
+    public boolean isWCAGComplianceCheckEnabled() {
+        return Boolean.valueOf(getProperty(WCAG_COMPLIANCE_CHECKING_ENABLED, "false"));
     }
 
     public boolean isHtmlMarkupFilteringEnabled() {
-        // we activate HTML markup filtering by default if no setting was found.
-        String value = getProperty(HTML_MARKUP_FILTERING_ENABLED, "true");
-        // backward compatibility
-        if ("0".equals(value) || "1".equals(value)) {
-            return "1".equals(value);
-        } else {
-            return Boolean.valueOf(value);
-        }
+        return Boolean.valueOf(getProperty(HTML_MARKUP_FILTERING_ENABLED, "false"));
     }
 
     public String getHtmlMarkupFilteringTags() {
-        return mSettings
-                .getProperty(HTML_MARKUP_FILTERING_TAGS);
+        return mSettings.getProperty(HTML_MARKUP_FILTERING_TAGS);
     }
 
     public String getTemplateFolder() {
@@ -419,20 +391,9 @@ public class JahiaSite implements Serializable {
     }
 
     private String getProperty(String key, String defaultValue) {
-        String value = mSettings.getProperty(key);
-        return value != null ? value : defaultValue;
+        Object value = mSettings.get(key);
+        return value != null ? value.toString() : defaultValue;
     }
-
-    public boolean isFileLockOnPublicationEnabled() {
-        return Boolean.valueOf(getProperty(FILE_LOCK_ON_PUBLICATION, "false"));
-    }
-
-    public void setFileLockOnPublicationEnabled(
-            boolean fileLockOnPublicationEnabled) {
-        mSettings.setProperty(FILE_LOCK_ON_PUBLICATION, String
-                .valueOf(fileLockOnPublicationEnabled));
-    }
-
 
     public String getJCRLocalPath() {
         return JCRLocalPath;
@@ -483,5 +444,9 @@ public class JahiaSite implements Serializable {
      */
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public Properties getSettings() {
+        return mSettings;
     }
 }

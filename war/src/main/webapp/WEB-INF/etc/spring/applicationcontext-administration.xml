@@ -119,6 +119,19 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
+    <bean id="htmlSettingsAdministrationModule" class="org.jahia.admin.htmlsettings.ManageHtmlSettings" parent="abstractAdministrationModule">
+        <property name="serverModule" value="false"/>
+        <property name="urlKey" value="htmlSettings" />
+        <property name="permissionName" value="adminHtmlSettings" />
+        <property name="name" value="htmlsettings" />
+        <property name="icon" value="text_rich_colored" />
+        <property name="label" value="label.htmlSettings" />
+        <property name="urlAction" value="htmlSettings" />
+        <property name="urlParams" value="" />
+        <property name="jspPath" value="/admin/html_settings.jsp" />
+        <property name="sitesService" ref="JahiaSitesService"/>
+    </bean>
+    
     <bean id="analyticsAdministrationModule" class="org.jahia.admin.analytics.ManageAnalytics" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="analytics" />

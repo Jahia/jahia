@@ -296,11 +296,3 @@ dumpErrorsToFiles = true
 # dumped anyway, just so that we are still informed in case this is the only
 # error sent.
 fileDumpMaxRegroupingOfPreviousException = 500
-
-######################################################################
-### HTML tag filtering ###############################################
-######################################################################
-# Provide a list of comma-separated HTML tag names that will be removed
-# from rich text properties before saving them (e.g. iframe,script,style).
-# Leave this list empty if no filtering should be done.
-filteredHtmlTags =  

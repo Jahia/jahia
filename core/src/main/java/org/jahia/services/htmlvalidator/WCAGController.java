@@ -44,7 +44,6 @@ import org.jahia.bin.JahiaMultiActionController;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.rbac.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

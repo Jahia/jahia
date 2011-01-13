@@ -56,6 +56,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.sites.SitesSettings;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -1079,7 +1080,17 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-
+        
+        // WCAG checks
+        try {
+            n.setWCAGComplianceCheckEnabled(node.getResolveSite().hasProperty(
+                    SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
+                    && node.getResolveSite()
+                            .getProperty(SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
+                            .getBoolean());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
 
         return n;
     }

@@ -32,7 +32,10 @@
 
 package org.jahia.services.content.decorator;
 
+import static org.jahia.services.sites.SitesSettings.*;
+
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
@@ -44,14 +47,13 @@ import javax.jcr.Value;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Mar 30, 2010
  * Time: 12:37:45 PM
  * 
  */
 public class JCRSiteNode extends JCRNodeDecorator {
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSiteNode.class);
+    private static final Logger logger = LoggerFactory.getLogger(JCRSiteNode.class);
 
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
@@ -94,23 +96,36 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return getName();
     }
 
-    public boolean isURLIntegrityCheckEnabled() {
-        return false;
-    }
-
-    public boolean isWAIComplianceCheckEnabled() {
-        return false;
-    }
-
-    public boolean isHtmlCleanupEnabled() {
+    public boolean isWCAGComplianceCheckEnabled() {
+        try {
+            if (hasProperty(WCAG_COMPLIANCE_CHECKING_ENABLED)) {
+                return getProperty(WCAG_COMPLIANCE_CHECKING_ENABLED).getBoolean();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property " + WCAG_COMPLIANCE_CHECKING_ENABLED, e);
+        }
         return false;
     }
 
     public boolean isHtmlMarkupFilteringEnabled() {
+        try {
+            if (hasProperty(HTML_MARKUP_FILTERING_ENABLED)) {
+                return getProperty(HTML_MARKUP_FILTERING_ENABLED).getBoolean();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property " + HTML_MARKUP_FILTERING_ENABLED, e);
+        }
         return false;
     }
 
     public String getHtmlMarkupFilteringTags() {
+        try {
+            if (hasProperty(HTML_MARKUP_FILTERING_TAGS)) {
+                return getProperty(HTML_MARKUP_FILTERING_TAGS).getString();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site property " + HTML_MARKUP_FILTERING_TAGS, e);
+        }
         return null;
     }
 
@@ -171,7 +186,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
 
     /**
      * Sets the language settings for this site. This directly interfaces with
-     * the persistant storage to store the modifications if there were any.
+     * the persistent storage to store the modifications if there were any.
      *
      * @throws JahiaException when an error occured while storing the modified
      *                        site language settings values.

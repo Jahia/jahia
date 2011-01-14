@@ -16,8 +16,8 @@
     <internal:gwtGenerateDictionary/>
 </c:if>
 <c:if test="${renderContext.contributionMode and renderContext.mainResource.contextConfiguration eq 'page'}">
-    <script>
-    var jahiaGWTParameters = {contextPath:"${url.context}",uilang:"${renderContext.mainResourceLocale}",siteUuid:"${renderContext.site.identifier}"}
-    </script>
+<script type="text/javascript">
+var jahiaGWTParameters={contextPath:"${url.context}",uilang:"${renderContext.mainResourceLocale}",siteUuid:"${renderContext.site.identifier}",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}
+</script>
 </c:if>
 <template:includeResources />

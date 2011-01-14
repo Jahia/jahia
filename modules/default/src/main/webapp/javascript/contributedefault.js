@@ -123,6 +123,10 @@ function initEditFields(id) {
 
 function wcagCompliant(id, richTextElement) {
 	var ctx = jahiaGWTParameters ? jahiaGWTParameters.contextPath : '';
+	var wcag = jahiaGWTParameters ? jahiaGWTParameters.wcag : false;
+	if (!wcag) {
+		return true;
+	}
 	var wcagOk = false;
     $.ajax({
     	async: false,

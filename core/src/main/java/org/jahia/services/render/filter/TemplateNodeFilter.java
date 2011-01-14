@@ -118,7 +118,13 @@ public class TemplateNodeFilter extends AbstractFilter {
 
         Template template = null;
         try {
-            JCRNodeWrapper site = node.getResolveSite();
+            JCRNodeWrapper site;
+            String jsite = renderContext.getRequest().getParameter("jsite");
+            if(jsite!=null) {
+                site = node.getSession().getNodeByIdentifier(jsite);
+            } else {
+                site = node.getResolveSite();
+            }
             JCRNodeWrapper templatesNode = null;
             if (site != null && site.hasNode("templates")) {
                 templatesNode = site.getNode("templates");

@@ -274,7 +274,10 @@ public class JCRTagUtils {
                 jahiaUser);
         for (String groupName : userMembership) {
             final JahiaGroup group = managerService.lookupGroup(groupName);
-            map.put(groupName,group);
+            if(!groupName.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
+               !groupName.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
+                map.put(groupName,group);
+            }
         }
         return map;
     }

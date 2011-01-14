@@ -35,26 +35,18 @@
 <div class="aboutMeListItem"><!--start aboutMeListItem -->
     <h3><fmt:message key="jnt_blog.aboutMe"/></h3>
 
-        <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
     <div class="aboutMePhoto">
+        <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
-            <%--a href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html"--%><img
-                    src="${picture.node.thumbnailUrls['avatar_60']}"
-                    alt="${userNode.properties.title.string} ${userNode.properties.firstname.string} ${userNode.properties.lastname.string}"
-                    width="58"
-                    height="58"/><%--/a--%>
-        </c:if>
-        <c:if test="${empty picture}"><%--a href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html"--%><img alt=""
-                                                                                                src="${pageContext.request.contextPath}/modules/default/css/img/userbig.png" width="58"
-                    height="58"/></a>
+            <img src="${picture.node.thumbnailUrls['avatar_60']}" alt="${fn:escapeXml(person)}"/>
         </c:if>
     </div>
     <div class="aboutMeBody"><!--start aboutMeBody -->
-        <h5>${person}</h5>
-        <c:if test="${not empty birthDate}">
+        <h5><a href="${url.base}${currentNode.path}.html?jsite=${renderContext.site.identifier}">${person}</a></h5>
+
         <p class="aboutMeAge"><fmt:message
                                     key="blog.profile.age"/>: <utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/> <fmt:message key="blog.profile.years"/></p>
-            </c:if>
+
         <div class="clear"></div>
 
     </div>

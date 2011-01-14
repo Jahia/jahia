@@ -390,7 +390,8 @@
 
                 </div>
                 <h4>
-                    <a href="${url.base}${group.value.properties['j:fullpath']}.html">${group.value.groupname}(${fn:length(group.value.members)})</a>
+                    <jcr:node var="node" path="${group.value.properties['j:fullpath']}"/>
+                    <a href="${url.base}${group.value.properties['j:fullpath']}.html?jsite=${node.resolveSite.identifier}">${group.value.groupname}(${fn:length(group.value.members)})</a>
                 </h4>
 
                 <div class='clear'></div>

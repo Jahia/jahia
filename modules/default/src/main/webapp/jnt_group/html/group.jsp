@@ -4,32 +4,23 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
-
-<jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
+<%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <div>
     <img src="${pageContext.request.contextPath}/icons/jnt_groupsFolder_large.png" alt=" " style="float: left" />
     <h2>
-    <c:if test="${not empty title}">
-        ${title.string}&nbsp(${currentNode.name})
-    </c:if>
-    <c:if test="${empty title}">
-        ${child.name}
-    </c:if>
+    <fmt:message key="label.group"/>:&nbsp;${currentNode.displayableName}
     </h2>
     <jcr:nodeProperty node="${currentNode}" name="jcr:description" />
     <ul>
-        <c:set var="parent" value="${currentNode.parent}"/>
-        <c:if test="${parent.name != ''}">
-            <li><a href="${url.base}${parent.path}.html">..</a></li>
-        </c:if>
-    <c:forEach items="${currentNode.nodes}" var="child">
-        <c:if test="${not jcr:isNodeType(child, 'jnt:members')}">
-        <li>
-            <a href="${url.base}${child.path}.html">${child.name}</a>
-        </li>
-        </c:if>
-    </c:forEach>
     <c:forEach items="${currentNode.nodes}" var="child">
         <c:if test="${jcr:isNodeType(child, 'jnt:members')}">
         <li>
@@ -38,10 +29,7 @@
             <c:forEach items="${child.nodes}" var="subchild">
                 <li>
                     <jcr:nodeProperty node="${subchild}" name="j:member" var="memberRef"/>
-                    <c:set var="uuid" value="${memberRef.string}"/> 
-                    <%
-                    pageContext.setAttribute("member", ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession().getNodeByUUID((String) pageContext.getAttribute("uuid")));
-                    %>
+                    <c:set var="member" value="${memberRef.node}"/>
                     <div>
                         <c:if test="${jcr:isNodeType(member, 'jnt:group')}" var="isGroup">
                             <img src="${pageContext.request.contextPath}/icons/jnt_groupsFolder_large.png" alt=" " style="float: left" />
@@ -50,7 +38,11 @@
                             <img src="${pageContext.request.contextPath}/icons/jnt_user_large.png" alt=" " style="float: left" />
                         </c:if>
                         <jcr:nodeProperty node="${member}" name="jcr:title" var="title"/>
-                        <a href="${url.base}${member.path}.html"><strong>
+                        <c:set var="params" value=""/>
+                        <c:if test="${not empty pageContext.request.parameterMap.jsite}">
+                            <c:set var="params" value="?jsite=${pageContext.request.parameterMap.jsite[0]}"/>
+                        </c:if>
+                        <a href="${url.base}${member.path}.html${params}"><strong>
                         <c:if test="${not empty title}">
                             ${title.string}&nbsp(${member.name})
                         </c:if>

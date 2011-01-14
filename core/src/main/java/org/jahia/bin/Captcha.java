@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.awt.image.BufferedImage;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -85,7 +86,9 @@ public class Captcha extends HttpServlet implements Controller {
         String capText = captchaProducer.createText();
 
         // store the text in the session
-        request.getSession().setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
+        Map<String,Map<String,String>> toks = (Map<String,Map<String,String>>) request.getSession().getAttribute("form-tokens");
+        Map<String,String> hiddenValues = toks.get(request.getParameter("token"));
+        hiddenValues.put("captcha", capText);
 
         // create the image with the text
         BufferedImage bi = captchaProducer.createImage(capText);

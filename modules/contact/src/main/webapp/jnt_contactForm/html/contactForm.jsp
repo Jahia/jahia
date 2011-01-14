@@ -126,6 +126,12 @@
                     <label class="left" for="remarks">${fn:escapeXml(jcr:label(props.remarks.definition,currentResource.locale))}</label><input type="text" id="remarks" name="remarks" ${disabled}/>
                 </p>
             </c:if>
+            <c:if test="${props.captcha.boolean}">
+                <p class="field">
+                    <label class="left" for="captcha"><template:captcha /></label><input type="text" id="captcha" name="captcha"/>
+                </p>
+            </c:if>
+
             <div class="divButton"><br />
                 <input type="submit" tabindex="28" value="<fmt:message key='save'/>" class="button" id="submit" ${disabled}/>
                 <input type="reset" tabindex="29" value="<fmt:message key='reset'/>" class="button" id="reset" ${disabled}/>

@@ -24,6 +24,12 @@ import java.util.*;
 
 public class TokenizedFormTag extends BodyTagSupport {
 
+    private boolean hasCaptcha = false;
+
+    public void setHasCaptcha(boolean hasCaptcha) {
+        this.hasCaptcha = hasCaptcha;
+    }
+
     @Override
     public int doStartTag() throws JspException {
         String id = java.util.UUID.randomUUID().toString();
@@ -62,6 +68,11 @@ public class TokenizedFormTag extends BodyTagSupport {
                 }
             }
 
+            if (hasCaptcha) {
+                // Put random number here, will be replaced by the captcha servlet with the expected value
+                hiddenInputs.put("captcha",java.util.UUID.randomUUID().toString());
+            }
+
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(\"" + id + "\")##\"/>");
 
 
@@ -76,6 +87,9 @@ public class TokenizedFormTag extends BodyTagSupport {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        hasCaptcha = false;
+
         return super.doEndTag();
     }
 

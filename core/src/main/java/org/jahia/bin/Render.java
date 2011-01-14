@@ -336,23 +336,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (parameters.isEmpty()) {
             parameters = toParameterMapOfListOfString(req);
         }
-        String kaptchaExpected =
-                (String) req.getSession().getAttribute(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
-        String kaptchaReceived = parameters.get(CAPTCHA) != null ? parameters.get(CAPTCHA).get(0) : null;
+
         req.getSession().removeAttribute("formDatas");
         req.getSession().removeAttribute("formError");
-        if (kaptchaExpected != null &&
-                (kaptchaReceived == null || !kaptchaReceived.equalsIgnoreCase(kaptchaExpected))) {
-            Map<String, String[]> formDatas = new HashMap<String, String[]>();
-            Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
-            for (Map.Entry<String, List<String>> entry : set) {
-                formDatas.put(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]));
-            }
-            req.getSession().setAttribute("formDatas", formDatas);
-            req.getSession().setAttribute("formError", "Your captcha is invalid");
-            performRedirect("", urlResolver.getPath(), req, resp, parameters);
-            return;
-        }
+
         Action action;
         Resource resource = null;
         if (urlResolver.getPath().endsWith(".do")) {
@@ -745,7 +732,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (token != null) {
             Map<String,Map<String,String>> toks = (Map<String,Map<String,String>>) req.getSession().getAttribute("form-tokens");
             if (toks != null && toks.containsKey(token)) {
-                Map<String,String> values = toks.get(token);
+                Map<String,String> values = new HashMap<String, String>(toks.get(token));
 
                 // Validate form token
                 if (!req.getRequestURI().equals(values.remove("form-action"))) {
@@ -753,6 +740,17 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 }
                 for (Map.Entry<String, String> entry : values.entrySet()) {
                     if (!entry.getValue().equals(req.getParameter(entry.getKey()))) {
+                        if (entry.getKey().equals("captcha")) {
+                            Map<String, String[]> formDatas = new HashMap<String, String[]>();
+                            Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
+                            for (Map.Entry<String, List<String>> params : set) {
+                                formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
+                            }
+                            req.getSession().setAttribute("formDatas", formDatas);
+                            req.getSession().setAttribute("formError", "Your captcha is invalid");
+                            performRedirect("", urlResolver.getPath(), req, resp, parameters);
+                            return;
+                        }
                         throw new AccessDeniedException();
                     }
                 }

@@ -472,7 +472,8 @@ public final class WebClippingRewriter {
                 }
                 Attribute method = attributes.get("method");
                 stringBuffer.append("method=\"get\">\n");
-                stringBuffer.append("<input type=\"hidden\" name=\"original_method\" value=\"").append((method != null) ? method.getValue() : "get").append("\">");
+                stringBuffer.append("<input type=\"hidden\" name=\"original_method\" value=\"").append((method != null) ? method.getValue() : "get").append("\">\n");
+                stringBuffer.append("<input type=\"hidden\" name=\""+WebClippingRewriter.URL_PATH_PARAM_NAME+"\" value=\"").append(getAbsoluteURL(actionUrl)).append("\">");
                 document.replace(startTag, stringBuffer.toString());
             }
         }

@@ -14,11 +14,11 @@
                         <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable"
                                   jcr:primaryType="jnt:contentList">
                             <new-blog jcr:mixinTypes="jmix:requiredPermissions"
-                                      j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live /permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live /permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live /permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live"
+                                      j:requiredPermissions="/permissions/actions/blog/createNewBlog"
                                       templateNode="/templateSets/blog/templates/base/blog" buttonLabel="create"
-                                      jcr:primaryType="jnt:pageFormCreation">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog"
-                                                  jcr:primaryType="jnt:translation"/>
+                                      jcr:primaryType="jnt:pageFormCreation" j:requireLoggedUser="true">
+                                <j:translation_en jcr:title="New Blog" jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation" jcr:language="en"/>
                             </new-blog>
                             <topBlog j:subNodesView="blogList" jcr:primaryType="jnt:topBlog"/>
                             <list jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList"
@@ -39,15 +39,15 @@
                             <row column="2col115" jcr:primaryType="jnt:row"/>
                         </pagecontent>
                         <row-col1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                            <blog-content jcr:mixinTypes="jmix:requiredPermissions"
-                                          j:subNodesView="short" j:requiredMode="live" jcr:primaryType="jnt:area"
+                            <blog-content jcr:mixinTypes="jmix:requiredPermissions" j:subNodesView="short"
+                                          j:requiredMode="live" jcr:primaryType="jnt:area"
                                           j:allowedTypes="jnt:blogContent"/>
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList">
                             <Welcome-message jcr:primaryType="jnt:area" j:allowedTypes="jnt:bigText"/>
-                            <authorDisplay jcr:primaryType="jnt:authorDisplay" j:userView="blog"/>
+                            <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay"/>
                             <addBlogLink jcr:mixinTypes="jmix:requiredPermissions"
-                                         j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live"
+                                         j:requiredPermissions="/permissions/actions/blog/addBlogEntry"
                                          j:requiredMode="live" jcr:primaryType="jnt:addBlogLink"/>
                             <calendar startDateProperty="jcr:created" endDateProperty="jcr:created"
                                       jcr:primaryType="jnt:calendar"
@@ -60,15 +60,16 @@
                                 </fieldFacet>
                             </facets>
                             <topBlogComment jcr:mixinTypes="jmix:renderable jmix:listOrdered" j:subNodesView="blogList"
-                                            jcr:primaryType="jnt:topBlogComment" j:view="unordered"
-                                            j:className="simple"/>
+                                            jcr:primaryType="jnt:topBlogComment" j:className="simple"
+                                            j:view="unordered"/>
                         </row-col2>
                         <illustration jcr:primaryType="jnt:contentList">
                             <illustration j:level="1" jcr:primaryType="jnt:levelAbsoluteArea"
                                           j:allowedTypes="jnt:imageReference"/>
                         </illustration>
                     </blog>
-                    <blog-edit jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent">
+                    <blog-edit j:requiredPermissions="/permissions/actions/blog/editBlogEntry"
+                               jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row"/>
                         </pagecontent>
@@ -94,7 +95,9 @@
                                                   jcr:primaryType="jnt:translation"/>
                                 <commentsList jcr:primaryType="jnt:commentsList"
                                               j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay"/>
-                                <addComment jcr:primaryType="jnt:addComment"
+                                <addComment j:requiredPermissions="/permissions/actions/blog/commentBlog"
+                                            jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:addComment"
+                                            j:requireLoggedUser="false"
                                             j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay"/>
                             </document-history>
                         </row-col1>
@@ -125,9 +128,17 @@
     <permissions jcr:primaryType="jnt:permission">
         <actions jcr:primaryType="jnt:permission">
             <blog jcr:primaryType="jnt:permission">
+                <createNewBlog jcr:primaryType="jnt:permission"/>
+                <commentBlog jcr:primaryType="jnt:permission"/>
                 <addBlogEntry jcr:primaryType="jnt:permission"/>
+                <editBlogEntry jcr:primaryType="jnt:permission"/>
             </blog>
         </actions>
     </permissions>
+
+    <roles>
+        <visitor jcr:primaryType="jnt:role"
+                 j:permissions="/permissions/actions/blog/createNewBlog /permissions/actions/blog/commentBlog"/>
+    </roles>
 </content>
 

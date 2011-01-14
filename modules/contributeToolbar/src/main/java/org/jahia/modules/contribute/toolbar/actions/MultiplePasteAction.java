@@ -58,11 +58,10 @@ public class MultiplePasteAction extends Action {
     private transient static Logger logger = Logger.getLogger(MultiplePasteAction.class);
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = (List<String>) req.getSession().getAttribute(MultipleCopyAction.UUIDS_TO_COPY);
         if (uuids != null && uuids.size() > 0) {
             JCRNodeWrapper targetNode = resource.getNode();
-            JCRSessionWrapper session = targetNode.getSession();
             try {
                 for (String uuid : uuids) {
                     JCRNodeWrapper node = session.getNodeByUUID(uuid);
@@ -79,7 +78,6 @@ public class MultiplePasteAction extends Action {
         uuids = (List<String>) req.getSession().getAttribute(MultipleCutAction.UUIDS_TO_CUT);
         if (uuids != null && uuids.size() > 0) {
             JCRNodeWrapper targetNode = resource.getNode();
-            JCRSessionWrapper session = targetNode.getSession();
             try {
                 for (String uuid : uuids) {
                     JCRNodeWrapper node = session.getNodeByUUID(uuid);

@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class Action {
 
     public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                           Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
+                                           JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
     /**
      * Returns a single value for the specified parameter. If the parameter is
      * not present or its value is empty, returns <code>null</code>.

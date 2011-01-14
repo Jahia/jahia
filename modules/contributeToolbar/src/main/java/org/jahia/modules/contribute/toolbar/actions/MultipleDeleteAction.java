@@ -57,10 +57,9 @@ public class MultipleDeleteAction extends Action {
     private transient static Logger logger = Logger.getLogger(MultipleDeleteAction.class);
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = parameters.get("uuids");
         assert uuids != null && uuids.size()>0;
-        JCRSessionWrapper session = resource.getNode().getSession();
         try {
             for (String uuid : uuids) {
                 JCRNodeWrapper node = session.getNodeByUUID(uuid);

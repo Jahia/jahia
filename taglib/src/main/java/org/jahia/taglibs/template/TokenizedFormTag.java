@@ -53,6 +53,7 @@ public class TokenizedFormTag extends BodyTagSupport {
             if (!action.startsWith("/") && !action.contains("://")) {
                 action = StringUtils.substringBeforeLast(((HttpServletRequest)pageContext.getRequest()).getRequestURI(), "/")+ "/" +action;
             }
+            hiddenInputs.put("form-action",action);
 
             List<StartTag> inputTags = source.getAllStartTags("input");
             for (StartTag inputTag : inputTags) {
@@ -64,7 +65,6 @@ public class TokenizedFormTag extends BodyTagSupport {
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(\"" + id + "\")##\"/>");
 
 
-            hiddenInputs.put("form-action",action);
             Map<String,Map<String,String>> forms = (Map<String, Map<String, String>>) pageContext.getAttribute("form-parameter", PageContext.REQUEST_SCOPE);
             if (forms == null) {
                 forms = new HashMap<String, Map<String,String>>();

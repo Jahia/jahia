@@ -61,7 +61,7 @@ public class RemoveSocialMessageAction extends Action {
      * @see org.jahia.bin.Action#doExecute(javax.servlet.http.HttpServletRequest, org.jahia.services.render.RenderContext, org.jahia.services.render.Resource, java.util.Map, org.jahia.services.render.URLResolver)
      */
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-            Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
         JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(),
                 resource.getLocale());

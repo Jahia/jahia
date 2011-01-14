@@ -17,13 +17,7 @@
 <template:addResources type="css" resources="commentable.css"/>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${!(empty bindedComponent)}">
-    <c:set var="writeable"
-           value="${jcr:hasPermission(bindedComponent,'addComment') and currentResource.workspace eq 'live'}"/>
-</c:if>
-<c:if test="${empty bindedComponent}">
-    <c:set var="writeable" value="${currentResource.workspace eq 'live'}"/>
-</c:if>
+<c:set var="writeable" value="${currentResource.workspace eq 'live'}"/>
 <c:if test='${writeable}'>
     <c:if test="${not empty bindedComponent}">
         <a name="addComments"></a>
@@ -76,14 +70,7 @@
     <template:linker property="j:bindedComponent"/>
 </c:if>
 <c:if test="${not writeable}">
-    <c:choose>
-        <c:when test="${jcr:hasPermission(bindedComponent,'addComment')}">
-            <div class="area-liveOnly">
-                <fmt:message key="label.comments.only.live"/>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <!--- User does not have the rights to add comments--->
-        </c:otherwise>
-    </c:choose>
+    <div class="area-liveOnly">
+        <fmt:message key="label.comments.only.live"/>
+    </div>
 </c:if>

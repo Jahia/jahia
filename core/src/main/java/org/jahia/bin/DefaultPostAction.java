@@ -35,7 +35,6 @@ package org.jahia.bin;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.*;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
@@ -49,7 +48,6 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -80,9 +78,7 @@ public class DefaultPostAction extends Action {
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  final Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
-                urlResolver.getLocale());
+                                  final JCRSessionWrapper session, final Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRNodeWrapper newNode = null;
         String[] subPaths = urlResolver.getPath().split("/");
         String lastPath = subPaths[subPaths.length - 1];

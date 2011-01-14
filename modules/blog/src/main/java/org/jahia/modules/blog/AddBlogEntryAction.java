@@ -3,7 +3,6 @@ package org.jahia.modules.blog;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Render;
-import org.jahia.bin.SystemAction;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
@@ -25,7 +24,7 @@ import java.util.Map;
 public class AddBlogEntryAction extends Action {
 
     @Override
-    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         if (!node.hasNode("blog-content")) {

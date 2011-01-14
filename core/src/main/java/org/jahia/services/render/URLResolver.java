@@ -523,9 +523,10 @@ public class URLResolver {
                             userSession = JCRSessionFactory.getInstance()
                                     .getCurrentUserSession(workspace, locale);
                         }
+                        userSession.setVersionDate(versionDate);
+                        userSession.setVersionLabel(versionLabel);
+
                         try {
-                            userSession.setVersionDate(versionDate);
-                            userSession.setVersionLabel(versionLabel);
                             node = userSession.getNode(nodePath);
                         } catch (PathNotFoundException e) {
                             throw new AccessDeniedException(path);

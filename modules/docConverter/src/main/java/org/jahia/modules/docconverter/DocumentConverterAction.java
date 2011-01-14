@@ -66,7 +66,7 @@ public class DocumentConverterAction extends Action {
     private DocumentConverterService converterService;
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
         if (converterService.isEnabled()) {
         // Get parameters + file
@@ -97,7 +97,6 @@ public class DocumentConverterAction extends Action {
 
 
         // Create a conversion node and the file node if all succeeded
-        JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
         String originFileName = inputFile.getName();
         String originMimeType = inputFile.getContentType();
         String convertedFileName = FilenameUtils.getBaseName(inputFile.getName()) + "." + converterService.getExtension(

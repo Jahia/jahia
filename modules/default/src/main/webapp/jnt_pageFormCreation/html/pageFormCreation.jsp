@@ -9,9 +9,10 @@
 <c:set var="formid" value="form" />
 <c:set var="nodeType" value="jnt:page" />
 
-<c:set var="writeable" value="${jcr:hasPermission(renderContext.mainResource.node,'jcr:addChildNodes') and currentResource.workspace eq 'live'}" />
+<c:set var="writeable" value="${currentResource.workspace eq 'live'}" />
 <c:if test='${writeable}'>
-<form class="pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/" name="${formid}">
+<template:tokenizedForm>
+<form class="pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/*" name="${formid}">
     <input type="hidden" name="nodeType" value="jnt:page">
     <input type="hidden" name="normalizeNodeName" value="true"/>
     <input type="hidden" name="autoAssignRole" value="owner"/>
@@ -38,23 +39,16 @@
                                alert('you must fill the title ');
                                return false;
                            }
-                           document.${formid}.action = '${renderContext.mainResource.node.name}/'+encodeURIComponent(document.${formid}.elements['jcr:title'].value);
                            document.${formid}.submit();
                        "
                      ${disabled} />
         </div>
     </fieldset>
 </form>
+</template:tokenizedForm>
 </c:if>
 <c:if test="${not writeable}">
-    <c:choose>
-        <c:when test="${!(currentResource.workspace eq 'live')}">
-            <div class="area-liveOnly">
-                <fmt:message key="label.page.creation.only.live"/>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <!--- User does not have the rights to add comments--->
-        </c:otherwise>
-    </c:choose>
+    <div class="area-liveOnly">
+        <fmt:message key="label.page.creation.only.live"/>
+    </div>
 </c:if>

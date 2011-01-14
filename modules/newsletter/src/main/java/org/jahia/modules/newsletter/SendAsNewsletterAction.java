@@ -82,7 +82,7 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
     private SubscriptionService subscriptionService;
 
     public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
-            Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver)
+                                  Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver)
             throws Exception {
         final JCRNodeWrapper node = resource.getNode();
 

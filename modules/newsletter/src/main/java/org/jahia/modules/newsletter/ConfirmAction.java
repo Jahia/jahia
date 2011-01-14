@@ -39,7 +39,7 @@ public class ConfirmAction extends Action {
     }
 
     public ActionResult doExecute(final HttpServletRequest req, final RenderContext renderContext, final Resource resource,
-                                  final Map<String, List<String>> parameters, final URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, final Map<String, List<String>> parameters, final URLResolver urlResolver) throws Exception {
 
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<ActionResult>() {
             public ActionResult doInJCR(JCRSessionWrapper session) throws RepositoryException {

@@ -33,6 +33,7 @@
 package org.jahia.modules.formbuilder.actions;
 
 import org.jahia.bin.Action;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.slf4j.Logger;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.bin.ActionResult;
@@ -77,7 +78,7 @@ public class MailAction extends Action {
     }
 
     public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
-                                  final Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  final Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRNodeWrapper node = renderContext.getMainResource().getNode();
         JCRNodeWrapper actionNode = null;
         NodeIterator nodes = node.getParent().getNode("action").getNodes();

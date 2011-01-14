@@ -738,6 +738,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private void doAction(HttpServletRequest req, HttpServletResponse resp, URLResolver urlResolver,
                           RenderContext renderContext, Resource resource, Action action,
                           Map<String, List<String>> parameters) throws Exception {
+        if (action.getRequiredPermission() != null && !resource.getNode().hasPermission(action.getRequiredPermission())) {
+            throw new AccessDeniedException();
+        }
         String token = req.getParameter("form-token");
         if (token != null) {
             Map<String,Map<String,String>> toks = (Map<String,Map<String,String>>) req.getSession().getAttribute("form-tokens");
@@ -757,16 +760,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 final Action originalAction = action;
                 action = new SystemAction() {
                     @Override
-                    public ActionResult doExecuteAsSystem(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-                        return originalAction.doExecute(req, renderContext, resource, parameters, urlResolver);
+                    public ActionResult doExecuteAsSystem(HttpServletRequest req, RenderContext renderContext, JCRSessionWrapper systemSession, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                        return originalAction.doExecute(req, renderContext, resource, systemSession, parameters, urlResolver);
                     }
                 };
             }
         }
-//        if (action.getRequiredPermission() != null && !resource.getNode().hasPermission(action.getRequiredPermission())) {
-//            throw new AccessDeniedException();
-//        }
-        ActionResult result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
+        ActionResult result = action.doExecute(req, renderContext, resource, session, parameters, urlResolver);
         if (result != null) {
             if (result.getResultCode() < 300) {
                 resp.setStatus(result.getResultCode());

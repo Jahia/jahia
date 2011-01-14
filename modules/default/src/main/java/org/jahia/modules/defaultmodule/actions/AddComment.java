@@ -33,7 +33,6 @@
 package org.jahia.modules.defaultmodule.actions;
 
 import org.jahia.bin.Action;
-import org.jahia.bin.SystemAction;
 import org.jahia.services.content.*;
 import org.slf4j.Logger;
 import org.jahia.bin.ActionResult;
@@ -58,7 +57,7 @@ public class AddComment extends Action {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddComment.class);
 
     @Override
-    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         if(!node.isNodeType("jmix:comments")) {

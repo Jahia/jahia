@@ -36,6 +36,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Action;
 import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -66,7 +67,7 @@ public class StartWorkflowAction extends Action {
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         String process = parameters.get("process").get(0);
         String workflowDefinitionKey = StringUtils.substringAfter(process, ":");
         String providerKey = StringUtils.substringBefore(process, ":");

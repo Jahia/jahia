@@ -61,7 +61,7 @@ public class MoveAction extends Action {
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         String sourcePath = req.getParameter("source");
         String targetPath = req.getParameter("target");
         String action = req.getParameter("action");

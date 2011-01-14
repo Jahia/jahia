@@ -164,6 +164,12 @@ public class ReferencesHelper {
             if (n.hasProperty(pName)) {
                 final Value[] oldValues = n.getProperty(pName).getValues();
                 newValues = new Value[oldValues.length+1];
+                for (Value oldValue : oldValues) {
+                    // value already set
+                    if (oldValue.getString().equals(value)) {
+                        return;
+                    }
+                }
                 System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
             } else {
                 newValues = new Value[1];

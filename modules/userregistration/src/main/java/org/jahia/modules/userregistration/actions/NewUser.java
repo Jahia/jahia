@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Action;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -74,7 +75,7 @@ public class NewUser extends Action {
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
         String username = getParameter(parameters, "username");
         String password = getParameter(parameters, "password");

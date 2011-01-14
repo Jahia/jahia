@@ -33,6 +33,7 @@
 package org.jahia.modules.poll;
 
 import org.jahia.bin.Action;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.bin.ActionResult;
@@ -63,7 +64,7 @@ public class VoteAction extends Action {
 
     // Vote action
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
         String answerUUID = req.getParameter("answerUUID");
 

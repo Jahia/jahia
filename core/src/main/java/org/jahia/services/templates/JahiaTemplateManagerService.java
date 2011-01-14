@@ -556,6 +556,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         if (property.getType() == PropertyType.REFERENCE ||
                                 property.getType() == PropertyType.WEAKREFERENCE) {
                             if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                                destinationNode.setProperty(property.getName(), new Value[0]);
                                 Value[] values = property.getValues();
                                 for (Value value : values) {
                                     keepReference(destinationNode, references, property, value.getString());

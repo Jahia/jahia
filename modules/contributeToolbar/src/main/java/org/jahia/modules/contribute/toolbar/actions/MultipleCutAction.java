@@ -36,6 +36,7 @@ import org.apache.commons.collections.list.SetUniqueList;
 import org.apache.log4j.Logger;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Action;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -56,7 +57,7 @@ public class MultipleCutAction extends Action {
     public static final String UUIDS_TO_CUT="org.jahia.uuids.to.cut";
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = parameters.get("uuids");
         assert uuids != null && uuids.size()>0;
         List<String> sessionUUIDS = (List<String>) req.getSession().getAttribute(UUIDS_TO_CUT);

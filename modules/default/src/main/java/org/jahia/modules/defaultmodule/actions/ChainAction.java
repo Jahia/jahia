@@ -33,6 +33,7 @@
 package org.jahia.modules.defaultmodule.actions;
 
 import org.jahia.bin.*;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -71,7 +72,7 @@ public class ChainAction extends Action implements InitializingBean {
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext,
-                                  Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver)
+                                  Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver)
             throws Exception {
         List<String> chainOfactions = parameters.get(CHAIN_OF_ACTION);
         if (chainOfactions != null) {
@@ -83,11 +84,11 @@ public class ChainAction extends Action implements InitializingBean {
                     String s = urlResolver.getUrlPathInfo().replace(".chain.do", "/*");
                     URLResolver resolver = new URLResolver(s,req.getServerName(), req);
                     resolver.setSiteKey(urlResolver.getSiteKey());
-                    result = defaultPostAction.doExecute(req, renderContext, resource, parameters, resolver);
+                    result = defaultPostAction.doExecute(req, renderContext, resource, session, parameters, resolver);
                 } else {
                     Action action = actionsMap.get(actionToDo);
                     if (action.getRequiredPermission() == null || resource.getNode().hasPermission(action.getRequiredPermission())) {
-                        result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
+                        result = action.doExecute(req, renderContext, resource, session, parameters, urlResolver);
                     } else {
                         throw new AccessDeniedException();
                     }

@@ -353,6 +353,7 @@
 [jmix:requiredPermissions] mixin
  extends = jnt:content, jnt:area
  itemtype = permissions
+ - j:requireLoggedUser (boolean)
  - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'live', 'edit', 'contribute'
  - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) nofulltext multiple
 

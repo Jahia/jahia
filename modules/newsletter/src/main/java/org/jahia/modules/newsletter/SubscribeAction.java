@@ -80,7 +80,7 @@ public class SubscribeAction extends Action {
 	private SubscriptionService subscriptionService;
 
 	public ActionResult doExecute(final HttpServletRequest req, final RenderContext renderContext,
-	        final Resource resource, final Map<String, List<String>> parameters, URLResolver urlResolver)
+                                  final Resource resource, JCRSessionWrapper session, final Map<String, List<String>> parameters, URLResolver urlResolver)
 	        throws Exception {
 
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<ActionResult>() {

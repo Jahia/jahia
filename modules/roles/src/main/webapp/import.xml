@@ -90,6 +90,8 @@
         <jobs jcr:primaryType="jnt:permission">
             <view-all-jobs jcr:primaryType="jnt:permission"/>
         </jobs>
+
+        <actions jcr:primaryType="jnt:permission"/>
     </permissions>
 
     <roles jcr:primaryType="jnt:roles" >
@@ -133,7 +135,7 @@
                  <!--j:permissions="/permissions" />-->
 
         <owner jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live" />
+                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live /permissions/actions" />
 
     </roles>
 

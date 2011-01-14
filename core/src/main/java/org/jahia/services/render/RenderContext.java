@@ -100,11 +100,13 @@ public class RenderContext {
     private boolean previewMode = false;
     private boolean ajaxRequest = false;
     private Resource ajaxResource = null;
+    private Map<String,Map<String,String>> formToken;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
         this.response = response;
         this.user = user;
+        formToken = null;
     }
 
     public HttpServletRequest getRequest() {
@@ -337,5 +339,14 @@ public class RenderContext {
 
     public void resetStaticAssets() {
         this.staticAssets.clear();
+    }
+
+
+    public void setFormToken(Map<String, Map<String, String>> formToken) {
+        this.formToken = formToken;
+    }
+
+    public Map<String, Map<String, String>> getFormToken() {
+        return formToken;
     }
 }

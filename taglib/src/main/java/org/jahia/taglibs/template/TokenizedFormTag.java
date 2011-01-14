@@ -4,6 +4,8 @@ import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +44,8 @@ public class TokenizedFormTag extends BodyTagSupport {
     public int doEndTag() throws JspException {
         try {
             String id = (String) pageContext.getAttribute("currentFormId");
-
+            RenderContext currentRenderContext = (RenderContext) pageContext.getAttribute("renderContext",
+                                                                           PageContext.REQUEST_SCOPE);
             JspWriter out = pageContext.getOut();
 
             String bodyContent = getBodyContent().getString();
@@ -82,7 +85,7 @@ public class TokenizedFormTag extends BodyTagSupport {
                 pageContext.setAttribute("form-parameter", forms, PageContext.REQUEST_SCOPE);
             }
             forms.put(id, hiddenInputs);
-
+            currentRenderContext.setFormToken(forms);
             out.print(outputDocument.toString());
         } catch (IOException e) {
             e.printStackTrace();

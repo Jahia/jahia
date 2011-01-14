@@ -61,7 +61,6 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -99,6 +98,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     static private ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
     private static long lastThreadDumpTime = 0L;
     private Byte[] threadDumpCheckLock = new Byte[0];
+    private static final String FORM_TOKEN = "form_token";
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -131,7 +131,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         final Cache cache = cacheProvider.getCache();
         final boolean cacheable = !notCacheableFragment.contains(key);
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
-                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getResolvedTemplate());
+                renderContext.getMainResource().getNode().getPath() +
+                renderContext.getMainResource().getResolvedTemplate());
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList == null) {
             userKeysLinkedList = new LinkedList<String>();
@@ -185,6 +186,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         String cachedContent = (String) cacheEntry.getObject();
         cachedContent = aggregateContent(cache, cachedContent, renderContext);
         setResources(renderContext, cacheEntry);
+        Object property = cacheEntry.getProperty(FORM_TOKEN);
+        if (property != null) {
+            renderContext.getRequest().setAttribute("form-parameter", property);
+        }
         if (renderContext.getMainResource() == resource) {
             cachedContent = removeEsiTags(cachedContent);
         }
@@ -226,10 +231,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
-                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getResolvedTemplate());
-        if(Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.dynamicRolesAcls"))) {
-            key = cacheProvider.getKeyGenerator().replaceField(key,"acls","dynamicRolesAcls");
-            chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.FALSE);
+                renderContext.getMainResource().getNode().getPath() +
+                renderContext.getMainResource().getResolvedTemplate());
+        if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.dynamicRolesAcls"))) {
+            key = cacheProvider.getKeyGenerator().replaceField(key, "acls", "dynamicRolesAcls");
+            chain.pushAttribute(renderContext.getRequest(), "cache.dynamicRolesAcls", Boolean.FALSE);
         }
         if (debugEnabled) {
             logger.debug("Generating content for node : " + perUserKey);
@@ -338,9 +344,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (assets.size() > 0) {
                     cacheEntry.setProperty(RESOURCES, assets);
                 }
+
                 if (assetsOptions.size() > 0) {
                     cacheEntry.setProperty(RESOURCES_OPTIONS, assetsOptions);
                 }
+
+                if (renderContext.getFormToken() != null) {
+                    cacheEntry.setProperty(FORM_TOKEN, renderContext.getFormToken());
+                }
+
                 Element cachedElement = new Element(perUserKey, cacheEntry);
                 if (expiration > 0) {
                     cachedElement.setTimeToLive(expiration.intValue() + 1);
@@ -434,7 +446,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         logger.error(e.getMessage(), e);
                     }
                 }
-                cacheKey = cacheKey.replaceAll("_perUser_",renderContext.getUser().getUsername());
+                cacheKey = cacheKey.replaceAll("_perUser_", renderContext.getUser().getUsername());
                 String mrCacheKey = cacheKey.replaceAll("_mr_", renderContext.getMainResource().getNode().getPath() +
                                                                 renderContext.getMainResource().getResolvedTemplate());
                 logger.debug("Check if " + cacheKey + " is in cache");
@@ -457,6 +469,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                     content);
                         }
                         setResources(renderContext, cacheEntry);
+                        Object property = cacheEntry.getProperty(FORM_TOKEN);
+                        if (property != null) {
+                            renderContext.getRequest().setAttribute("form-parameter", property);
+                        }
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         logger.debug("Missing content : " + cacheKey);

@@ -32,6 +32,7 @@
 
 package org.jahia.modules.defaultmodule.actions;
 
+import org.jahia.bin.Action;
 import org.jahia.bin.SystemAction;
 import org.jahia.services.content.*;
 import org.slf4j.Logger;
@@ -53,10 +54,11 @@ import java.util.Map;
  * @since : JAHIA 6.1
  *        Created : 3 juin 2010
  */
-public class AddComment extends SystemAction {
+public class AddComment extends Action {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddComment.class);
 
-    public ActionResult doExecuteAsSystem(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+    @Override
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         if(!node.isNodeType("jmix:comments")) {

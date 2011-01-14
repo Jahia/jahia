@@ -34,6 +34,7 @@ package org.jahia.modules.macros.filter;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.render.RenderContext;
@@ -117,7 +118,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
                     ScriptContext scriptContext = scriptEngine.getContext();
                     scriptContext.setWriter(new StringWriter());
                     scriptContext.setErrorWriter(new StringWriter());
-                    scriptEngine.eval(new FileReader(macroPath), getBindings(renderContext, resource, scriptContext));
+                    scriptEngine.eval(new FileReader(macroPath), getBindings(renderContext, resource, scriptContext, matcher));
                     String scriptResult = scriptContext.getWriter().toString().trim();
                     previousOut = matcher.replaceFirst(scriptResult);
                 } else {
@@ -129,13 +130,19 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
         return previousOut;
     }
 
-    private Bindings getBindings(RenderContext renderContext, Resource resource, ScriptContext scriptContext) {
+    private Bindings getBindings(RenderContext renderContext, Resource resource, ScriptContext scriptContext, Matcher matcher) {
         Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
         bindings.put("currentUser", renderContext.getUser());
         bindings.put("currentNode", resource.getNode());
         bindings.put("currentResource", resource);
         bindings.put("renderContext", renderContext);
         bindings.put( "url", new URLGenerator(renderContext, resource));
+        for (int i = 3; i < matcher.groupCount(); i++) {
+            String s = matcher.group(i);
+            s = StringUtils.substringAfter(s,"\"");
+            s = StringUtils.substringBeforeLast(s,"\"");
+            bindings.put("param"+(i-2), s);
+        }
         try {
             bindings.put("currentAliasUser", renderContext.getMainResource().getNode().getSession().getAliasedUser());
         } catch (RepositoryException e) {

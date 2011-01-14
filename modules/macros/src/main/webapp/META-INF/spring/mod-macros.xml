@@ -3,9 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
     <bean name="MacrosFilter" class="org.jahia.modules.macros.filter.MacrosFilter">
-        <property name="macrosRegexp" value="##([a-zA-Z0-9]*)##"/>
-        <property name="priority" value="91"/>
+        <property name="macrosRegexp"><value>##([a-zA-Z0-9]*)(\(("[^"]*")(,"[^"]*")*\))?##</value></property>
+        <property name="priority" value="1" />
+        <!--<property name="priority" value="91"/>-->
         <property name="macrosDirectoryName" value="macros"/>
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
+        <property name="applyOnConfigurations" value="page" />
+        <property name="applyOnTemplateTypes" value="html" />
     </bean>
 </beans>

@@ -1,5 +1,6 @@
 package org.jahia.modules.blog;
 
+import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Render;
 import org.jahia.bin.SystemAction;
@@ -21,9 +22,10 @@ import java.util.Map;
  * Time: 17:41
  * To change this template use File | Settings | File Templates.
  */
-public class AddBlogEntryAction extends SystemAction {
+public class AddBlogEntryAction extends Action {
+
     @Override
-    public ActionResult doExecuteAsSystem(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         if (!node.hasNode("blog-content")) {

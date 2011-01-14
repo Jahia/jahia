@@ -738,9 +738,34 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private void doAction(HttpServletRequest req, HttpServletResponse resp, URLResolver urlResolver,
                           RenderContext renderContext, Resource resource, Action action,
                           Map<String, List<String>> parameters) throws Exception {
-        if (action.getRequiredPermission() != null && !resource.getNode().hasPermission(action.getRequiredPermission())) {
-            throw new AccessDeniedException();
+        String token = req.getParameter("form-token");
+        if (token != null) {
+            Map<String,Map<String,String>> toks = (Map<String,Map<String,String>>) req.getSession().getAttribute("form-tokens");
+            if (toks != null && toks.containsKey(token)) {
+                Map<String,String> values = toks.get(token);
+
+                // Validate form token
+                if (!req.getRequestURI().equals(values.remove("form-action"))) {
+                    throw new AccessDeniedException();
+                }
+                for (Map.Entry<String, String> entry : values.entrySet()) {
+                    if (!entry.getValue().equals(req.getParameter(entry.getKey()))) {
+                        throw new AccessDeniedException();
+                    }
+                }
+
+                final Action originalAction = action;
+                action = new SystemAction() {
+                    @Override
+                    public ActionResult doExecuteAsSystem(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+                        return originalAction.doExecute(req, renderContext, resource, parameters, urlResolver);
+                    }
+                };
+            }
         }
+//        if (action.getRequiredPermission() != null && !resource.getNode().hasPermission(action.getRequiredPermission())) {
+//            throw new AccessDeniedException();
+//        }
         ActionResult result = action.doExecute(req, renderContext, resource, parameters, urlResolver);
         if (result != null) {
             if (result.getResultCode() < 300) {

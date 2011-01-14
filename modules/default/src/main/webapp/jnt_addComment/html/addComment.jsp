@@ -15,47 +15,60 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="commentable.css"/>
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:set var="bindedComponent"
+       value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${!(empty bindedComponent)}">
-    <c:set var="writeable" value="${jcr:hasPermission(bindedComponent,'addComment') and currentResource.workspace eq 'live'}" />
+    <c:set var="writeable"
+           value="${jcr:hasPermission(bindedComponent,'addComment') and currentResource.workspace eq 'live'}"/>
 </c:if>
 <c:if test="${empty bindedComponent}">
-    <c:set var="writeable" value="${currentResource.workspace eq 'live'}" />
+    <c:set var="writeable" value="${currentResource.workspace eq 'live'}"/>
 </c:if>
 <c:if test='${writeable}'>
     <c:if test="${not empty bindedComponent}">
         <a name="addComments"></a>
 
-        <form action="${url.base}${bindedComponent.path}.addComment.do" method="post">
-            <input type="hidden" name="nodeType" value="jnt:post"/>
-            <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-            <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <template:tokenizedForm>
+            <form action="${url.base}${bindedComponent.path}.addComment.do" method="post">
 
-                    <div id="formGenericComment">
+                <input type="hidden" name="nodeType" value="jnt:post"/>
+                <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+                <input type="hidden" name="newNodeOutputFormat" value="html"/>
 
-                        <fieldset>
-                            <p class="field">
-                                <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
-                                <input class="" value=""
-                                       type="text" size="35" id="comment-title" name="jcr:title"
-                                       tabindex="1"/>
-                            </p>
+                <div id="formGenericComment">
 
-                            <p class="field">
-                            <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message key="comment.body"/></label>
-                                <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
-                                          name="content"
-                                          tabindex="2" ></textarea>
-                            </p>
+                    <fieldset>
+                        <p class="field">
+                            <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
+                            <input class="" value=""
+                                   type="text" size="35" id="comment-title" name="jcr:title"
+                                   tabindex="1"/>
+                        </p>
 
-                            <p>
-                                <input type="reset" value="<fmt:message key='label.reset'/>" class="button" tabindex="3"  ${disabled}/>
+                        <p class="field">
+                            <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message
+                                    key="comment.body"/></label>
+                            <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
+                                      name="content"
+                                      tabindex="2"></textarea>
+                        </p>
 
-                                <input type="submit" value="<fmt:message key='label.submit'/>" class="button" tabindex="4"  ${disabled}/>
-                            </p>
-                        </fieldset>
-                    </div>
-        </form>
+                        <%--<p class="field">--%>
+                            <%--<label class="left" for="captcha"><img src="${url.captcha}?form=${currentFormId}"/></label>--%>
+                            <%--<input type="text" id="captcha" name="captcha"/>--%>
+                        <%--</p>--%>
+
+                        <p>
+                            <input type="reset" value="<fmt:message key='label.reset'/>" class="button"
+                                   tabindex="3"  ${disabled}/>
+
+                            <input type="submit" value="<fmt:message key='label.submit'/>" class="button"
+                                   tabindex="4"  ${disabled}/>
+                        </p>
+                    </fieldset>
+                </div>
+            </form>
+        </template:tokenizedForm>
     </c:if>
 </c:if>
 <c:if test="${renderContext.editMode}">

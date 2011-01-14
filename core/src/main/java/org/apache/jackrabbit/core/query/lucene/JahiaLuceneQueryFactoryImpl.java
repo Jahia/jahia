@@ -107,7 +107,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
             return rows;
         } finally {
-            PerQueryCache.getInstance().dispose();
             Util.closeOrRelease(reader);
         }
     }

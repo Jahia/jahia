@@ -6,10 +6,11 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="contactform.css"/>
 <div class="Form contactForm">
-    <c:set var="writeable" value="${jcr:hasPermission(currentNode,'jcr:addChildNodes') and currentResource.workspace eq 'live'}" />
+    <c:set var="writeable" value="${currentResource.workspace eq 'live'}" />
     <c:if test='${not writeable}'>
         <c:set var="disabled" value='disabled="true"' />
     </c:if>
+    <template:tokenizedForm>
     <form action="${url.base}${currentNode.path}/*" method="post">
         <input type="hidden" name="nodeType" value="jnt:contact"/>
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -131,9 +132,10 @@
             </div>
         </fieldset>
     </form>
+    </template:tokenizedForm>
 </div>
 
-<c:if test="${currentNode.writeable}">
+<c:if test="${jcr:hasPermission(currentNode,'viewContacts')}">
     <template:addResources type="javascript" resources="jquery.min.js"/>
     <fieldset>
         <legend>Results</legend>

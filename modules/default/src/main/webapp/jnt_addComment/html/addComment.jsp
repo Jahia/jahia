@@ -45,10 +45,12 @@
                                       tabindex="2"></textarea>
                         </p>
 
-                        <%--<p class="field">--%>
-                            <%--<label class="left" for="captcha"><img src="${url.captcha}?form=${currentFormId}"/></label>--%>
-                            <%--<input type="text" id="captcha" name="captcha"/>--%>
-                        <%--</p>--%>
+                        <c:if test="${not renderContext.loggedIn}">
+                        <p class="field">
+                            <label class="left" for="captcha"><template:captcha /></label>
+                            <input type="text" id="captcha" name="captcha"/>
+                        </p>
+                        </c:if>
 
                         <p>
                             <input type="reset" value="<fmt:message key='label.reset'/>" class="button"

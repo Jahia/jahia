@@ -21,6 +21,7 @@
 <c:if test="${jcr:isNodeType(renderContext.mainResource.node,'jnt:wikiPage')}">
     <c:set var="pageNode" value="${renderContext.mainResource.node}"/>
 </c:if>
+<template:tokenizedForm>
 <form class="formWiki" method="post" action="${url.base}${pageNode.path}/${pageName}">
     <input type="hidden" name="autoCheckin" value="true">
     <input type="hidden" name="nodeType" value="jnt:wikiPage">
@@ -43,3 +44,4 @@
     </p>
     <input class="button" type="submit"/>
 </form>
+</template:tokenizedForm>

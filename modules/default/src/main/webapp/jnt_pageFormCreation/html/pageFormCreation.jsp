@@ -9,8 +9,6 @@
 <c:set var="formid" value="form" />
 <c:set var="nodeType" value="jnt:page" />
 
-<c:set var="writeable" value="${currentResource.workspace eq 'live'}" />
-<c:if test='${writeable}'>
 <template:tokenizedForm>
 <form class="pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/*" name="${formid}">
     <input type="hidden" name="nodeType" value="jnt:page">
@@ -46,9 +44,3 @@
     </fieldset>
 </form>
 </template:tokenizedForm>
-</c:if>
-<c:if test="${not writeable}">
-    <div class="area-liveOnly">
-        <fmt:message key="label.page.creation.only.live"/>
-    </div>
-</c:if>

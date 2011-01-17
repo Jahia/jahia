@@ -17,8 +17,6 @@
 <template:addResources type="css" resources="commentable.css"/>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:set var="writeable" value="${currentResource.workspace eq 'live'}"/>
-<c:if test='${writeable}'>
     <c:if test="${not empty bindedComponent}">
         <a name="addComments"></a>
 
@@ -64,13 +62,7 @@
             </form>
         </template:tokenizedForm>
     </c:if>
-</c:if>
 <c:if test="${renderContext.editMode}">
     <fmt:message key="${fn:replace(currentNode.primaryNodeTypeName,':','_')}"/>
     <template:linker property="j:bindedComponent"/>
-</c:if>
-<c:if test="${not writeable}">
-    <div class="area-liveOnly">
-        <fmt:message key="label.comments.only.live"/>
-    </div>
 </c:if>

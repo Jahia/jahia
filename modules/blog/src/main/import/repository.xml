@@ -15,12 +15,15 @@
                                   jcr:primaryType="jnt:contentList">
                             <new-blog jcr:mixinTypes="jmix:requiredPermissions"
                                       j:requiredPermissions="/permissions/actions/blog/createNewBlog"
-                                      templateNode="/templateSets/blog/templates/base/blog" buttonLabel="create"
-                                      jcr:primaryType="jnt:pageFormCreation" j:requireLoggedUser="true">
-                                <j:translation_en jcr:title="New Blog" jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation" jcr:language="en"/>
+                                      j:requiredMode="live" templateNode="/templateSets/blog/templates/base/blog"
+                                      buttonLabel="create" jcr:primaryType="jnt:pageFormCreation"
+                                      j:requireLoggedUser="true">
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog"
+                                                  jcr:primaryType="jnt:translation"/>
                             </new-blog>
-                            <topBlog j:subNodesView="blogList" jcr:primaryType="jnt:topBlog"/>
+                            <topBlog jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions=""
+                                     j:subNodesView="blogList" j:requiredMode="live" jcr:primaryType="jnt:topBlog"
+                                     j:requireLoggedUser="false"/>
                             <list jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList"
                                   j:view="columns" j:columns="2">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list"
@@ -30,7 +33,7 @@
                                                 j:className="simple" j:view="unordered"/>
                                 <topBlogComment jcr:mixinTypes="jmix:renderable jmix:listOrdered"
                                                 j:subNodesView="blogList" jcr:primaryType="jnt:topBlogComment"
-                                                j:view="unordered" j:className="simple"/>
+                                                j:className="simple" j:view="unordered"/>
                             </list>
                         </row-col1>
                     </blog-home>
@@ -56,12 +59,13 @@
                                     j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content">
                                 <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet"
                                             missing="false" facet="tags" offset="0" sort="true" limit="100">
-                                    <j:translation_en label="Tags" jcr:language="en" jcr:primaryType="jnt:translation"/>
+                                    <j:translation_en jcr:language="en" label="Tags" jcr:primaryType="jnt:translation"/>
                                 </fieldFacet>
                             </facets>
-                            <topBlogComment jcr:mixinTypes="jmix:renderable jmix:listOrdered" j:subNodesView="blogList"
-                                            jcr:primaryType="jnt:topBlogComment" j:className="simple"
-                                            j:view="unordered"/>
+                            <topBlogComment jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:requiredPermissions"
+                                            j:requiredPermissions="" j:subNodesView="blogList" j:requiredMode="live"
+                                            jcr:primaryType="jnt:topBlogComment" j:requireLoggedUser="false"
+                                            j:className="simple" j:view="unordered"/>
                         </row-col2>
                         <illustration jcr:primaryType="jnt:contentList">
                             <illustration j:level="1" jcr:primaryType="jnt:levelAbsoluteArea"
@@ -75,7 +79,9 @@
                         </pagecontent>
                         <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable"
                                   jcr:primaryType="jnt:contentList">
-                            <edit jcr:primaryType="jnt:blogEntryFormEdition">
+                            <edit jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions=""
+                                  j:requiredMode="live" jcr:primaryType="jnt:blogEntryFormEdition"
+                                  j:requireLoggedUser="false">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Edit"
                                                   jcr:primaryType="jnt:translation"/>
                             </edit>
@@ -95,8 +101,9 @@
                                                   jcr:primaryType="jnt:translation"/>
                                 <commentsList jcr:primaryType="jnt:commentsList"
                                               j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay"/>
-                                <addComment j:requiredPermissions="/permissions/actions/blog/commentBlog"
-                                            jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:addComment"
+                                <addComment jcr:mixinTypes="jmix:requiredPermissions"
+                                            j:requiredPermissions="/permissions/actions/blog/commentBlog"
+                                            j:requiredMode="live" jcr:primaryType="jnt:addComment"
                                             j:requireLoggedUser="false"
                                             j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay"/>
                             </document-history>
@@ -114,7 +121,9 @@
                         </pagecontent>
                         <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable"
                                   jcr:primaryType="jnt:contentList">
-                            <blogEntryFormCreation jcr:primaryType="jnt:blogEntryFormCreation"/>
+                            <blogEntryFormCreation j:requiredPermissions="" jcr:mixinTypes="jmix:requiredPermissions"
+                                                   j:requiredMode="live" jcr:primaryType="jnt:blogEntryFormCreation"
+                                                   j:requireLoggedUser="false"/>
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList"/>
                     </blog-new>

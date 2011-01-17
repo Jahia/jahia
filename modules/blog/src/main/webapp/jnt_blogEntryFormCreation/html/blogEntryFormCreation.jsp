@@ -29,7 +29,6 @@
     });
 </script>
 
-<c:if test="${currentResource.workspace eq 'live'}">
     <template:tokenizedForm>
         <form id="formPost" method="post" action="${renderContext.mainResource.node.name}.addBlogEntry.do" name="blogPost">
             <input type="hidden" name="nodeType" value="jnt:blogContent"/>
@@ -79,4 +78,3 @@
             </div>
         </form>
     </template:tokenizedForm>
-</c:if>

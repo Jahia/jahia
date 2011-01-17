@@ -19,4 +19,3 @@
              statement="select * from [jnt:post] as comments  where isdescendantnode(comments, ['${currentNode.resolveSite.path}']) order by comments.[jcr:lastModified] desc"/>
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />
-<c:set target="${moduleMap}" property="liveOnly" value="true" />

@@ -257,7 +257,7 @@ public class TemplateNodeFilter extends AbstractFilter {
             String req = templateNode.getProperty("j:requiredMode").getString();
             if (renderContext.isContributionMode() && !req.equals("contribute")) {
                 return false;
-            } else if (!renderContext.isContributionMode() && !req.equals("normal")) {
+            } else if (!renderContext.isContributionMode() && !req.equals("live")) {
                 return false;
             }
 

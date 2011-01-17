@@ -68,7 +68,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         } else {
             throw new TemplateNotFoundException("Unable to resolve script: "+resource.getResolvedTemplate()+" asked template was "+renderContext.getMainResource().getResolvedTemplate());
         }
-        if (!"studiomode".equals(renderContext.getEditModeConfigName())) {
+        if (!renderContext.isEditMode()) {
             if (node.hasProperty("j:requiredMode")) {
                 String req = node.getProperty("j:requiredMode").getString();
                 if (!renderContext.isContributionMode() && req.equals("contribute")) {
@@ -79,6 +79,8 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                     throw new AccessDeniedException("Content can only be accessed in live");
                 }
             }
+        }
+        if (!"studiomode".equals(renderContext.getEditModeConfigName())) {
             if (node.hasProperty("j:requiredPermissions")) {
                 chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
                 Value[] values = node.getProperty("j:requiredPermissions").getValues();
@@ -97,4 +99,17 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         return null;
     }
 
+    @Override
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        String out = super.execute(previousOut, renderContext, resource, chain);
+        JCRNodeWrapper node = resource.getNode();
+        if (node.hasProperty("j:requiredMode")) {
+            String req = node.getProperty("j:requiredMode").getString();
+            if (!renderContext.isLiveMode() && req.equals("live")) {
+                out = "<div style=\"position:relative;overflow:hidden\"><div style=\"position:absolute; opacity:0.5; width:100%; height:100%\" class=\"area-liveOnly\"></div>"+ out +"</div>";
+            }
+        }
+
+        return out;
+    }
 }

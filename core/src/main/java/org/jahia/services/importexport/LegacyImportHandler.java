@@ -62,7 +62,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA. User: toto Date: Oct 28, 2009 Time: 2:31:18 PM 
+ * Created by IntelliJ IDEA. User: toto Date: Oct 28, 2009 Time: 2:31:18 PM
  */
 public class LegacyImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);
@@ -176,6 +176,13 @@ public class LegacyImportHandler extends DefaultHandler {
                     } else {
                         logger.warn(
                                 "Unexpected " + localName + " element in import file - skipping it and its subtree");
+                        if (logger.isDebugEnabled() && localName.endsWith("List")) {
+                            if (getCurrentContentType() == null) {
+                                logger.debug("CurrentContentType is null!");
+                            } else {
+                                logger.debug("Only the following elements are allowed: " + getCurrentContentType().getChildNodeDefinitionsAsMap().keySet().toString());
+                            }
+                        }
                         currentCtx.peek().pushSkip();
                     }
                     break;
@@ -207,6 +214,16 @@ public class LegacyImportHandler extends DefaultHandler {
                                 currentCtx.peek().pushField(mappedProperty);
                             }
                         } else {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Not imported field " + localName + ", definition not found");
+                                String s = "";
+                                for (String def : getCurrentContentType().getChildNodeDefinitionsAsMap().keySet())
+                                    s += def + ", ";
+                                logger.debug("Allowed sub definitions: " + (s.length()>0 ? s : "none"));
+                                for (String def : getCurrentContentType().getPropertyDefinitionsAsMap().keySet())
+                                    s += def + ", ";
+                                logger.debug("Allowed properties: " + (s.length()>0 ? s : "none"));
+                            }
                             currentCtx.peek().pushSkip();
                         }
                     }
@@ -248,10 +265,12 @@ public class LegacyImportHandler extends DefaultHandler {
                      * listType.getDeclaredUnstructuredChildNodeDefinitions().values().iterator().next(); ExtendedNodeType ctnType =
                      * ctnDefinition.getRequiredPrimaryTypes()[0];
                      */
+                    String pt = attributes.getValue(Name.NS_JCR_URI, "primaryType");
+                    if (pt == null && StringUtils.startsWith(originatingJahiaRelease, "5")) {
+                        pt = qName;
+                    }
 
-                    createContent(StringUtils.startsWith(originatingJahiaRelease, "5") ? qName :
-                            attributes.getValue(Name.NS_JCR_URI, "primaryType"), uuid,
-                            attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"));
+                    createContent(pt, uuid, attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"));
                     setMetadata(attributes);
                     break;
                 case CTX_FIELD:
@@ -290,6 +309,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     break;
             }
         } catch (RepositoryException e) {
+            logger.error("Error while processing element: [uri=" + uri + "], [localName=" + localName + "], [qName=" + qName + "]");
             throw new SAXException(e);
         }
 
@@ -746,6 +766,7 @@ public class LegacyImportHandler extends DefaultHandler {
             throws RepositoryException {
         String propertyName = baseType != null ? mapping.getMappedProperty(baseType, localName) :
                 mapping.getMappedMetadataProperty(localName);
+        logger.debug("localName: " + localName + ", propertyName: " + propertyName);
         return setPropertyField(baseType, localName, getCurrentContentNode(), propertyName, value);
     }
 
@@ -785,7 +806,7 @@ public class LegacyImportHandler extends DefaultHandler {
             n = parent.getOrCreateI18N(locale);
 //            propertyName = propertyName + "_" + locale.toString();
         }
-        // System.out.println("setting " + propertyName);
+        //logger.debug("Setting " + propertyName + " of type " + propertyDefinition.getRequiredType());
 
         if (value != null && value.length() != 0 && !value.equals("<empty>")) {
             switch (propertyDefinition.getRequiredType()) {
@@ -825,6 +846,8 @@ public class LegacyImportHandler extends DefaultHandler {
                     switch (propertyDefinition.getSelector()) {
                         case SelectorType.RICHTEXT: {
                             n.setProperty(propertyName, value);
+                            if (logger.isDebugEnabled())
+                                logger.debug("Setting on node " + n.getPath() + " property " + propertyName + " with value=" + value);
                             break;
                         }
                         default: {
@@ -842,9 +865,13 @@ public class LegacyImportHandler extends DefaultHandler {
                                 if (constraints.isEmpty() || constraints.contains(value)) {
                                     try {
                                         n.setProperty(propertyName, value);
+                                        if (logger.isDebugEnabled())
+                                            logger.debug("Setting on node " + n.getPath() + " property " + propertyName + " with value=" + value);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
+                                } else {
+                                    logger.error("Impossible to set property " + propertyName + " due to some constraint error");
                                 }
                             } else {
                                 String[] strings = value.split("\\$\\$\\$");
@@ -867,6 +894,8 @@ public class LegacyImportHandler extends DefaultHandler {
                                 }
                                 ;
                                 n.setProperty(propertyName, values.toArray(new Value[values.size()]));
+                                if (logger.isDebugEnabled())
+                                    logger.debug("Setting on node " + n.getPath() + " property " + propertyName + " with value=" + values.toArray(new Value[values.size()]));
                             }
                             break;
                         }

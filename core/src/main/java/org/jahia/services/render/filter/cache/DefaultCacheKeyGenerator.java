@@ -59,6 +59,7 @@ import org.springframework.beans.factory.InitializingBean;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.text.FieldPosition;
@@ -268,22 +269,30 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                             map = (Map<String, String>) ((Element) cache.get(s)).getValue();
                         }
                         String path = node.getParent().getParent().getPath();
-                        Set<String> roles = ((JahiaAccessManager) ((JCRNodeWrapper) node).getAccessControlManager()).getRoles(
-                                path);
                         StringBuilder b = new StringBuilder();
-                        for (String g : roles) {
-                            if (b.length() > 0) {
-                                b.append("|");
+                        Set<String> foundRoles = new HashSet<String>();
+                        boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
+                        if (granted) {
+                            Value[] roles = node.getProperty(Constants.J_ROLES).getValues();
+                            for (Value r : roles) {
+                                String role = r.getString();
+                                if (!foundRoles.contains(role)) {
+                                    if (b.length() > 0) {
+                                        b.append("|");
+                                    }
+                                    b.append(role);
+                                    foundRoles.add(role);
+                                }
                             }
-                            b.append(g);
+                            map.put(path, s + "_r_" + b.toString());
+                            if (!"/".equals(path)) {
+                                path = node.getParent().getParent().getParent().getPath();
+                            }
+                            map.put(path, s + "_r_" + b.toString());
+                            final Element element = new Element(s, map);
+                            element.setEternal(true);
+                            cache.put(element);
                         }
-                        if (!"/".equals(path)) {
-                            path = node.getParent().getParent().getParent().getPath();
-                        }
-                        map.put(path, s + "_r_" + b.toString());
-                        final Element element = new Element(s, map);
-                        element.setEternal(true);
-                        cache.put(element);
                     }
                 }
                 return null;
@@ -342,8 +351,18 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         return result;
     }
 
+    private Map<String, String> parseAsIs(String key) throws ParseException {
+        Object[] values = format.parse(key);
+        Map<String, String> result = new LinkedHashMap<String, String>(fields.size());
+        for (int i = 0; i < values.length; i++) {
+            String value = (String) values[i];
+            result.put(fields.get(i), value == null || value.equals("null") ? null : value);
+        }
+        return result;
+    }
+
     public String replaceField(String key, String fieldName, String newValue) throws ParseException {
-        Map<String, String> args = parse(key);
+        Map<String, String> args = parseAsIs(key);
         args.put(fieldName, newValue);
         return format.format(args.values().toArray(new String[KNOWN_FIELDS.size()]), new StringBuffer(32),
                 new FieldPosition(0)).toString();

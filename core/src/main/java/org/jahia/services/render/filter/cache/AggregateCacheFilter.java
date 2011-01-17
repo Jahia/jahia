@@ -99,6 +99,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static long lastThreadDumpTime = 0L;
     private Byte[] threadDumpCheckLock = new Byte[0];
     private static final String FORM_TOKEN = "form_token";
+    private Map<String,String> moduleParamsProperties;
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -184,7 +185,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getValue();
         String cachedContent = (String) cacheEntry.getObject();
-        cachedContent = aggregateContent(cache, cachedContent, renderContext);
+        cachedContent = aggregateContent(cache, cachedContent, renderContext,
+                (Map<String, Object>) cacheEntry.getProperty("moduleParams"));
         setResources(renderContext, cacheEntry);
         Object property = cacheEntry.getProperty(FORM_TOKEN);
         if (property != null) {
@@ -352,7 +354,17 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (renderContext.getFormToken() != null) {
                     cacheEntry.setProperty(FORM_TOKEN, renderContext.getFormToken());
                 }
-
+                Map<String, Object> moduleParams=null;
+                for (String property : moduleParamsProperties.keySet()) {
+                    if (resource.getNode().hasProperty(property)) {
+                        if (moduleParams == null) {
+                            moduleParams = new LinkedHashMap<String, Object>();
+                        }
+                        moduleParams.put(moduleParamsProperties.get(property),resource.getNode().getPropertyAsString(property));
+                    }
+                }
+                if(moduleParams!=null && moduleParams.size()>0)
+                cacheEntry.setProperty("moduleParams", moduleParams);
                 Element cachedElement = new Element(perUserKey, cacheEntry);
                 if (expiration > 0) {
                     cachedElement.setTimeToLive(expiration.intValue() + 1);
@@ -410,7 +422,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext) {
+    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String,Object> moduleParams) {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
@@ -423,7 +435,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
                 String cacheKey = segment.getAttributeValue("src");
                 CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
-                if (keyGenerator instanceof DefaultCacheKeyGenerator) {
+                if (!cacheKey.contains("_perUser_") && keyGenerator instanceof DefaultCacheKeyGenerator) {
                     DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
                     try {
                         Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
@@ -461,7 +473,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                          segment.getElement().getEndTag().getEndTagType() + " with " + content);
                         }*/
                         if (!cachedContent.equals(content)) {
-                            String aggregatedContent = aggregateContent(cache, content, renderContext);
+                            String aggregatedContent = aggregateContent(cache, content, renderContext,(Map<String, Object>) cacheEntry.getProperty("moduleParams"));
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                     aggregatedContent);
                         } else {
@@ -476,11 +488,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         logger.debug("Missing content : " + cacheKey);
-                        generateContent(renderContext, outputDocument, segment, cacheKey);
+                        generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams);
                     }
                 } else {
                     logger.debug("Missing content : " + mrCacheKey);
-                    generateContent(renderContext, outputDocument, segment, cacheKey);
+                    generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams);
                 }
             }
             return outputDocument.toString();
@@ -503,7 +515,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     private void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
-                                 String cacheKey) {
+                                 String cacheKey, Map<String, Object> moduleParams) {
         // if missing data call RenderService after creating the right resource
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
@@ -523,8 +535,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 renderContext.getRequest().removeAttribute("previousTemplate");
                 restoreOldOneIfNeeded = true;
             }
-            String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get("templateType"),
-                    keyAttrbs.get("template"), Resource.CONFIGURATION_MODULE), renderContext);
+            Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"),
+                    keyAttrbs.get("context"));
+            if (moduleParams != null) {
+                for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {
+                    resource.getModuleParams().put(entry.getKey(), entry.getValue());
+                }
+            }
+            String content = RenderService.getInstance().render(resource, renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
             if (restoreOldOneIfNeeded) {
                 renderContext.getRequest().setAttribute("previousTemplate", oldOne);
@@ -734,5 +752,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (event instanceof TemplatePackageRedeployedEvent) {
             notCacheableFragment.clear();
         }
+    }
+
+    public void setModuleParamsProperties(Map<String,String> moduleParamsProperties) {
+        this.moduleParamsProperties = moduleParamsProperties;
     }
 }

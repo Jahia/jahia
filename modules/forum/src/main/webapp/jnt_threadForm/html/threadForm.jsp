@@ -14,19 +14,18 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="forum.css"/>
 <template:linker property="j:bindedComponent"/>
-<c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<form action="${url.base}${linked.path}/*" method="post">
+<c:set var="linked" value="${uiComponents:getBindedComponentPath(currentNode, renderContext, 'j:bindedComponent')}"/>
+<template:tokenizedForm>
+<form action="${url.base}${linked}/*" method="post">
     <input type="hidden" name="nodeType" value="jnt:thread"/>
-    <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-    <%-- Define the output format for the newly created node by default html or by redirectTo--%>
-    <input type="hidden" name="newNodeOutputFormat" value="html"/>
+    <input type="hidden" name="autoAssignRole" value="owner"/>
 
     <div class="post-reply"><!--start post-reply-->
         <div class="forum-box forum-box-style2">
             <span class="forum-corners-top"><span></span></span>
 
             <div id="forum-Form"><!--start forum-Form-->
-                <h4 class="forum-h4-first">${currentNode.propertiesAsString['topicSubject']} : <fmt:message key="create.new.thread"/></h4>
+                <h4 class="forum-h4-first"><fmt:message key="create.new.thread"/></h4>
 
                 <fieldset>
                     <p class="field">
@@ -47,3 +46,4 @@
         </div>
     </div>
 </form>
+</template:tokenizedForm>

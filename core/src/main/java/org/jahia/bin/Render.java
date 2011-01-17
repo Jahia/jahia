@@ -32,6 +32,7 @@
 
 package org.jahia.bin;
 
+import org.apache.camel.impl.DefaultDebugger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
@@ -126,6 +127,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
     private Action defaultPostAction;
+    private Action defaultDeleteAction = new DefaultDeleteAction();
 
     private SettingsBean settingsBean;
     private RenderService renderService;
@@ -487,27 +489,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
-                            URLResolver urlResolver) throws RepositoryException, IOException {
-        JCRSessionWrapper session = jcrSessionFactory.getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
-        Node node = session.getNode(urlResolver.getPath());
-        Node parent = node.getParent();
-        node.remove();
-        session.save();
-        String url = parent.getPath();
-        session.save();
-        final String requestWith = req.getHeader("x-requested-with");
-        if (req.getHeader("accept").contains("application/json") && requestWith != null &&
-                requestWith.equals("XMLHttpRequest")) {
-            resp.setStatus(HttpServletResponse.SC_OK);
-            try {
-                new JSONObject().write(resp.getWriter());
-            } catch (JSONException e) {
-                logger.error(e.getMessage(), e);
-            }
-        } else {
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            performRedirect(url, urlResolver.getPath(), req, resp, toParameterMapOfListOfString(req));
-        }
+                            URLResolver urlResolver) throws Exception {
+        doAction(req, resp, urlResolver, renderContext, null, defaultDeleteAction, toParameterMapOfListOfString(req));
     }
 
     public boolean isMultipartRequest(final HttpServletRequest req) {
@@ -736,6 +719,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
                 // Validate form token
                 if (!req.getRequestURI().equals(values.remove("form-action"))) {
+                    throw new AccessDeniedException();
+                }
+                if (!req.getMethod().equalsIgnoreCase(values.remove("form-method"))) {
                     throw new AccessDeniedException();
                 }
                 for (Map.Entry<String, String> entry : values.entrySet()) {

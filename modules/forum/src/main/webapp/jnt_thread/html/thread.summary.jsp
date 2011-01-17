@@ -24,7 +24,8 @@
         <jcr:nodeProperty node="${lastModifiedNode}" name="jcr:createdBy" var="createdBy"/>
     </c:if>
 </c:forEach>
-<c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+<c:if test="${jcr:hasPermission(currentNode, 'createPost')}">
+    <template:tokenizedForm>
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-thread-delete-${currentNode.UUID}">
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -32,6 +33,7 @@
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="methodToCall" value="delete"/>
     </form>
+    </template:tokenizedForm>
 </c:if>
 
 <dl>
@@ -40,7 +42,7 @@
         <br/>
         <ul class="forum-profile-icons">
     <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
-        <li class="delete-post-icon"><a title="<fmt:message key="delete.thread"/>" href="thread.summary.jsp#"
+        <li class="delete-post-icon"><a title="<fmt:message key="delete.thread"/>" href="#"
                                         onclick="document.getElementById('jahia-forum-thread-delete-${currentNode.UUID}').submit();"><span><fmt:message key="delete.thread"/></span></a>
         </li>
     </c:if>

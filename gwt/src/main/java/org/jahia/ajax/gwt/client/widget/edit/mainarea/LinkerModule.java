@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.ModuleSelectionListener;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
@@ -92,7 +93,7 @@ public class LinkerModule extends Module {
 //        html = new HTML("<p class=\"linkAction\">Click this to link<br/></p>");
 //        panel.add(html);
 
-        label = new Label("Not linked");
+        label = new Label();
         add(label);
 
         final Button button = new Button("Click this to link");
@@ -146,12 +147,52 @@ public class LinkerModule extends Module {
 
         panel.add(button);
 
-//        final Button button2 = new Button("Click this to link to main resource");
-//        button2.setStyleName("button-placeholder");
-//        panel.add(button2);
+        final Button button2 = new Button("Click this to link to main resource");
+        button2.setStyleName("button-placeholder");
+        button2.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
+//                            final List<GWTJahiaNode> srcNodes = e.getStatus().getData(SOURCE_NODES);
+                final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property,
+                        new GWTJahiaNodePropertyValue(getMainModule().getNode(),
+                                GWTJahiaNodePropertyType.WEAKREFERENCE));
+                properties.add(gwtJahiaNodeProperty);
+                JahiaContentManagementService.App.getInstance()
+                        .saveProperties(Arrays.asList(node), properties, new BaseAsyncCallback() {
+                            public void onSuccess(Object o) {
+                                getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                            }
+
+                            public void onApplicationFailure(Throwable throwable) {
+                                Window.alert("Failed : " + throwable);
+                            }
+                        });
+            }
+        });
+        panel.add(button2);
 
         final Button button3 = new Button("Clear");
         button3.setStyleName("button-placeholder");
+        button3.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
+//                            final List<GWTJahiaNode> srcNodes = e.getStatus().getData(SOURCE_NODES);
+                final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty(property,
+                        new GWTJahiaNodePropertyValue((String) null,
+                                GWTJahiaNodePropertyType.WEAKREFERENCE));
+                properties.add(gwtJahiaNodeProperty);
+                JahiaContentManagementService.App.getInstance()
+                        .saveProperties(Arrays.asList(node), properties, new BaseAsyncCallback() {
+                            public void onSuccess(Object o) {
+                                getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                            }
+
+                            public void onApplicationFailure(Throwable throwable) {
+                                Window.alert("Failed : " + throwable);
+                            }
+                        });
+            }
+        });
         panel.add(button3);
 
 
@@ -163,19 +204,21 @@ public class LinkerModule extends Module {
     }
 
     @Override
-    public void setNode(GWTJahiaNode node) {
+    public void setNode(final GWTJahiaNode node) {
         super.setNode(node);
         final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
         async.getProperties(node.getPath(), null, new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onSuccess(GWTJahiaGetPropertiesResult gwtJahiaGetPropertiesResult) {
                 if (gwtJahiaGetPropertiesResult.getProperties().containsKey(property)) {
                     final GWTJahiaNodeProperty o = gwtJahiaGetPropertiesResult.getProperties().get(property);
-                    label.setText("Linked to: " + o.getValues().get(0).getNode().getName());
-//                    panel.removeAll();
-//                    html = new HTML("<p class=\"linkPath\">Linked to: " + o.getValues().get(0).getNode().getName() +
-//                            "</p><p class=\"linkAction\">Click this to link</p>");
-//                    panel.add(html);
-//                    panel.layout();
+                    if (o.getValues().get(0).getNode().getPath().equals(mainModule.getPath())) {
+                        label.setText(node.getName() + " - Linked to: main resource");
+                    } else {
+                        label.setText(node.getName() + " - Linked to: " + o.getValues().get(0).getNode().getName());
+                    }
+                } else {
+                    label.setText(node.getName() + " - Not linked");
+
                 }
             }
         });

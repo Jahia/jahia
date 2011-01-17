@@ -34,6 +34,7 @@ package org.jahia.bin;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.slf4j.Logger;
 import org.jahia.services.logging.MetricsLoggingService;
@@ -127,7 +128,7 @@ public class DefaultPostAction extends Action {
             session.save();
 
             final String nodeId = newNode.getIdentifier();
-            if (parameters.containsKey(Render.AUTO_ASSIGN_ROLE)) {
+            if (parameters.containsKey(Render.AUTO_ASSIGN_ROLE) && !session.getUser().getUsername().equals(Constants.GUEST_USERNAME)) {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(session.getUser().getUsername(),session.getWorkspace().getName(),new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper rootSession) throws RepositoryException {
                         JCRNodeWrapper createdNode = rootSession.getNodeByUUID(nodeId);

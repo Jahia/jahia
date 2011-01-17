@@ -32,7 +32,7 @@
         <div class="forum-actions">
 
             <div class="forum-buttons">
-                <div class="forum-post-icon"><a title="Post a new post" href="thread.jsp#threadPost"><span/><fmt:message
+                <div class="forum-post-icon"><a title="Post a new post" href="#threadPost"><span/><fmt:message
                         key="new.post"/></a></div>
             </div>
             <div class="forum-pagination">
@@ -47,7 +47,6 @@
                 <template:module node="${subchild}" template="forum"/>
             </div>
         </c:forEach>
-        <template:include template="newPostForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
                 ${functions:length(currentNode.nodes)}&nbsp;<fmt:message key="posts"/>

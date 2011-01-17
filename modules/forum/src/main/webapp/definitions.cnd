@@ -3,13 +3,15 @@
 
 [jmix:forumContent] > jmix:droppableContent
 
-[jnt:topic] > jnt:content, jmix:forumContent
+[jnt:topic] > jnt:content
  - topicSubject (string)
  - topicDescription (string)
  + * (jnt:thread)
  + * (jnt:topic)
 
-[jnt:dynamicTopicList] > jnt:content, jmix:forumContent
+[jnt:topicList] > jnt:content, jmix:bindedComponent, jmix:forumContent
+ - viewTopics (boolean)
+ - viewThreads (boolean)
 
 [jnt:topicForm] > jnt:content, jmix:bindedComponent, jmix:forumContent
 

@@ -16,14 +16,16 @@
         <jcr:nodeProperty node="${lastModifiedNode}" name="jcr:createdBy" var="createdBy"/>
     </c:if>
 </c:forEach>
-<c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+<c:if test="${jcr:hasPermission(currentNode, 'createPost')}">
+    <template:tokenizedForm>
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-topic-delete-${currentNode.UUID}">
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
             <%-- Define the output format for the newly created node by default html or by redirectTo--%>
-        <input type="hidden" name="newNodeOutputFormat" value="detail.html"/>
+        <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="methodToCall" value="delete"/>
     </form>
+    </template:tokenizedForm>
 </c:if>
 
 <dl>
@@ -47,7 +49,7 @@
                                                                                                            width="11"
                                                                                                            title="View the latest post"
                                                                                                            alt="View the latest post"
-                                                                                                           src="/jahia/modules/jahia_forum/img/icon_topic_latest.gif"/>${createdBy.string}
+                                                                                                           src="${url.currentModule}/css/img/icon_topic_latest.gif"/>${createdBy.string}
         </a><br/><fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span>
         </c:if>
     </dd>

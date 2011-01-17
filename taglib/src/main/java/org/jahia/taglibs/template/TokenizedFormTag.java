@@ -63,6 +63,7 @@ public class TokenizedFormTag extends BodyTagSupport {
                 action = StringUtils.substringBeforeLast(((HttpServletRequest)pageContext.getRequest()).getRequestURI(), "/")+ "/" +action;
             }
             hiddenInputs.put("form-action",action);
+            hiddenInputs.put("form-method", StringUtils.capitalize(formTag.getAttributeValue("method")));
 
             List<StartTag> inputTags = source.getAllStartTags("input");
             for (StartTag inputTag : inputTags) {

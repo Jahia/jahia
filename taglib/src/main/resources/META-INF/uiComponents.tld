@@ -469,5 +469,16 @@
             ${facet:getAppliedFacetFilters(facet:decodeFacetUrlParam(param[facetParamVarName])[facetParamVarName])}
         </example>
     </function>
-    
+
+    <function>
+        <description>Get the binded component node</description>
+        <name>getBindedComponentPath</name>
+        <function-class>org.jahia.taglibs.uicomponents.Functions</function-class>
+        <function-signature>java.lang.String getBindedComponentPath(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext, java.lang.String)
+        </function-signature>
+        <example>
+            ${facet:getAppliedFacetFilters(facet:decodeFacetUrlParam(param[facetParamVarName])[facetParamVarName])}
+        </example>
+    </function>
+
 </taglib>

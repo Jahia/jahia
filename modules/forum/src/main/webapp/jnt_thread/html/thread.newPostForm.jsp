@@ -15,12 +15,13 @@
     }
 </script>
 <a name="threadPost"></a>
-
+<template:tokenizedForm>
 <form action="${url.base}${currentNode.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jnt:post"/>
     <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
     <%-- Define the output format for the newly created node by default html or by redirectTo--%>
     <input type="hidden" name="newNodeOutputFormat" value="html"/>
+    <input type="hidden" name="autoAssignRole" value="owner"/>
 
     <div class="post-reply"><!--start post-reply-->
         <div class="forum-box forum-box-style2">
@@ -55,3 +56,4 @@
     </div>
     <!--stop post-reply-->
 </form>
+</template:tokenizedForm>

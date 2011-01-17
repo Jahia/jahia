@@ -62,7 +62,8 @@ public class Functions {
                     bindedComponentNode = bindedComponentProp.getNode();
                 }
                 if (bindedComponentNode != null) {
-                    if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY)) {
+                    if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
+                            bindedComponentNode.isNodeType("jnt:template")) {
                         bindedComponentNode = renderContext.getMainResource().getNode();
                     } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
                         String areaName = bindedComponentNode.getName();
@@ -79,5 +80,33 @@ public class Functions {
             logger.error(e.getMessage(), e);
         }
         return (JCRNodeWrapper) bindedComponentNode;
+    }
+
+    public static String getBindedComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext, String property) {
+        Node bindedComponentNode = null;
+        try {
+            if (currentNode.hasProperty(property)) {
+                Property bindedComponentProp = currentNode.getProperty(property);
+                if (bindedComponentProp != null) {
+                    bindedComponentNode = bindedComponentProp.getNode();
+                }
+                if (bindedComponentNode != null) {
+                    if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
+                            bindedComponentNode.isNodeType("jnt:template")) {
+                        bindedComponentNode = renderContext.getMainResource().getNode();
+                    } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
+                        String areaName = bindedComponentNode.getName();
+                        bindedComponentNode = renderContext.getMainResource().getNode();
+                        return bindedComponentNode.getPath() + "/" +areaName;
+                    }
+                }
+            }
+            if (bindedComponentNode != null) {
+                return bindedComponentNode.getPath();
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
     }
 }

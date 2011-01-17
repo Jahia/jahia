@@ -199,6 +199,17 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
             }
             Set<JahiaGroup> aclGroups = allAclsGroups.get(path);
+            if(aclGroups==null) {
+                // found no specific entry for this path
+                String fakePath = path;
+                while (!allAclsGroups.containsKey(fakePath) && !path.equals("")) {
+                    fakePath = StringUtils.substringBeforeLast(fakePath, "/");
+                }
+                if (fakePath.equals("")) {
+                    fakePath = "/";
+                }
+                aclGroups = allAclsGroups.get(fakePath);
+            }
             StringBuilder b = new StringBuilder();
             for (JahiaGroup g : aclGroups) {
                 if (g != null && g.isMember(principal)) {

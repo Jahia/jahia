@@ -65,6 +65,14 @@
     <%-- set result --%>
     <c:set target="${moduleMap}" property="currentList" value="${result.nodes}"/>
 </c:if>
+<c:if test="${!empty areaResource}">
+    <c:if test="${jcr:isNodeType(areaResource.node, 'jmix:orderedList')}">
+        <jcr:sort list="${moduleMap.currentList}"
+                  properties="${areaResource.node.properties.firstField.string},${areaResource.node.properties.firstDirection.string},${areaResource.node.properties.secondField.string},${areaResource.node.properties.secondDirection.string},${areaResource.node.properties.thirdField.string},${areaResource.node.properties.thirdDirection.string}"
+                  var="currentList"/>
+        <c:set value="${currentList}" target="${moduleMap}" property="currentList"/>
+    </c:if>
+</c:if>
 
 <c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">
     <jcr:sort list="${moduleMap.currentList}"

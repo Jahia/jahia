@@ -78,7 +78,7 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
         try {
             if (node == null && realNodeType == null) {
                 return Collections.emptyList();
-            } else if (node != null) {
+            } else if (node != null && node.getNodes().hasNext()) {
                 // TODO get the child nodes, their types and declared properties
                 propertyDefs = getCommonChildNodeDefinitions(node,showHidden,showProtected,excludedNodeTypes);
             } else {

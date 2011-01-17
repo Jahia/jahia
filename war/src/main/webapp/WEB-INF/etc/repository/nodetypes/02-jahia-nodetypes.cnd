@@ -574,7 +574,7 @@ extends = jnt:content
 
 [jmix:orderedList] mixin
  itemtype = listOrdering
- extends = jnt:contentList
+ extends = jnt:contentList, jnt:area
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
  - firstDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
  - secondField (string, choicelist[sortableFieldnames]) indexed=no
@@ -615,7 +615,7 @@ extends = jnt:content
 
 [jmix:listRestrictions] mixin
  - j:allowedTypes (string, choicelist[subnodetypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple
-
+ - j:numberOfItems (long)
 
 //---------------------------------------------------------
 // Portlets

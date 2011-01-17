@@ -53,13 +53,20 @@ public class ListContributionFilter extends AbstractFilter {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ListContributionFilter.class);
 
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
+        JCRNodeWrapper contributeNode = null;
+        if (context.getRequest().getAttribute("areaResource") != null) {
+            contributeNode = ((Resource) context.getRequest().getAttribute("areaResource")).getNode();
+        }
+
         JCRNodeWrapper node = resource.getNode();
 
         try {
             // ugly tests to check whether or not to switch to contribution mode
             if (node.isNodeType("jmix:list")
-                    && node.hasProperty("j:editableInContribution")
-                    && node.getProperty("j:editableInContribution").getBoolean()
+                    && ((node.hasProperty("j:editableInContribution")
+                    && node.getProperty("j:editableInContribution").getBoolean()) ||
+                    (contributeNode !=null && contributeNode.hasProperty("j:editableInContribution")
+                    && contributeNode.getProperty("j:editableInContribution").getBoolean()))
                     && !context.isAjaxRequest()
                     && !resource.getResolvedTemplate().startsWith("contribute.")
                     ) {

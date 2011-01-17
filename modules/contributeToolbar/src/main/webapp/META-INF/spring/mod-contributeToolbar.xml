@@ -38,7 +38,7 @@
         <property name="priority" value="5" />
         <property name="applyOnTemplateTypes" value="html" />
         <property name="applyOnModes" value="contribution" />
-        <property name="applyOnNodeTypes" value="jmix:contributeMode"/>
+        <property name="applyOnNodeTypes" value="jmix:list,jmix:area"/>
         <property name="skipOnConfiguration" value="page,wrapper,include"/>
     </bean>
 

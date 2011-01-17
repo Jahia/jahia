@@ -117,31 +117,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
         }
     }
 
-    private void applyContributeModeOptions(JCRNodeWrapper nodeWrapper, boolean nodeAlreadyExist)
-            throws RepositoryException {
-        if (nodeWrapper.isNodeType("jmix:contributeMode") && node.getSession().getWorkspace().getName().equals("default") && node.hasPermission(Privilege.JCR_WRITE)) {
-            if (!node.isNodeType("jmix:contributeMode")) {
-                ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType("jmix:contributeMode");
-                Set<String> propertyNameSet = nodeType.getPropertyDefinitionsAsMap().keySet();
-                node.checkout();
-                node.addMixin("jmix:contributeMode");
-                for (String propertyName : propertyNameSet) {
-                    if (nodeWrapper.hasProperty(propertyName)) {
-                        JCRPropertyWrapper property = nodeWrapper.getProperty(propertyName);
-                        if (!property.isMultiple()) {
-                            node.setProperty(propertyName, property.getValue());
-                        } else {
-                            node.setProperty(propertyName, property.getValues());
-                        }
-                    }
-                }
-                if (nodeAlreadyExist) {
-                    node.getSession().save();
-                }
-            }
-        }
-    }
-
     protected String getConfiguration() {
         return Resource.CONFIGURATION_WRAPPEDCONTENT;
     }
@@ -191,7 +166,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         if (!path.equals("*") && node.hasNode(path)) {
                             currentMain = resource.getNode() != node;
                             this.node = node.getNode(path);
-                            applyContributeModeOptions(currentResource.getNode(), true);
                             if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
                                 this.node = null;
                             } else {
@@ -217,7 +191,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     renderContext.getRequest().setAttribute("previousTemplate", null);
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
-                        applyContributeModeOptions(currentResource.getNode(), true);
                     } catch (PathNotFoundException e) {
                         missingResource(renderContext, currentResource, resource);
                     }
@@ -226,7 +199,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
             } else {
                 renderContext.getRequest().removeAttribute("skipWrapper");
                 node = resource.getNode();
-                applyContributeModeOptions(currentResource.getNode(), true);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -241,6 +213,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             pageContext.getRequest().setAttribute("previousTemplate", templateNode);
             templateNode = null;
             pageContext.getRequest().setAttribute("inArea", o);
+
         }
     }
 }

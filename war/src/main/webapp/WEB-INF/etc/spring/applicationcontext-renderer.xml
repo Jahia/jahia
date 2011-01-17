@@ -49,12 +49,17 @@
 		<property name="applyOnConfigurations" value="page" />
 		<property name="applyOnTemplateTypes" value="html,edit" />
 	</bean>
-
 	<bean class="org.jahia.services.render.filter.MetricsLoggingFilter">
 		<property name="priority" value="3" />
 		<property name="loggingService" ref="loggingService" />
 		<property name="skipOnConfiguration" value="include,wrapper" />
 	</bean>
+    <bean
+        class="org.jahia.services.render.filter.AreaResourceFilter">
+        <property name="applyOnNodeTypes" value="jnt:area,jmix:list" />
+        <property name="applyOnConfigurations" value="module,wrappedcontent" />
+        <property name="priority" value="4" />
+    </bean>
 
 	<bean class="org.jahia.services.render.filter.UserAgentFilter">
 		<property name="priority" value="6" />

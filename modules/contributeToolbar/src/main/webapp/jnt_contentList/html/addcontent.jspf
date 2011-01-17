@@ -25,8 +25,12 @@
 <img title="" alt="" src="${url.currentModule}/images/paste.png"/><a href="#" id="paste-${currentNode.identifier}" class="pastelink" onclick="pasteNodes(contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")});" style="display:none;"><fmt:message
         key="label.paste"/></a>
 </h3>
-
-<c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
+<c:if test="${!empty areaResource.node}">
+    <c:set var="types" value="${jcr:getContributeTypes(areaResource.node, null)}"/>
+</c:if>
+<c:if test="${!empty jcr:getContributeTypes(currentNode, null)}">
+    <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
+</c:if>
 
 <c:if test="${types != null}">
     <ul class="pagecontributeToolbar">

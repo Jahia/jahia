@@ -131,7 +131,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         Element element = null;
         final Cache cache = cacheProvider.getCache();
         final boolean cacheable = !notCacheableFragment.contains(key);
-        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
+        String perUserKey = key.replaceAll(DefaultCacheKeyGenerator.PER_USER, renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() +
                 renderContext.getMainResource().getResolvedTemplate());
         LinkedList<String> userKeysLinkedList = userKeys.get();
@@ -232,7 +232,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         final Cache cache = cacheProvider.getCache();
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
-        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
+        String perUserKey = key.replaceAll(DefaultCacheKeyGenerator.PER_USER, renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() +
                 renderContext.getMainResource().getResolvedTemplate());
         if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.dynamicRolesAcls"))) {
@@ -251,11 +251,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     // So we need to recalculate the key as we were not aware that this content needed to be cached by user
                     // We need to store content with the previously calculate dcache to avoid lock up.
                     cache.put(new Element(perUserKey, null));
-                    if (script != null) {
-                        chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(perUser));
-                    }
-                    key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
-                    perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
+                    key = cacheProvider.getKeyGenerator().replaceField(key, "acls", DefaultCacheKeyGenerator.PER_USER);
+                    perUserKey = key.replaceAll(DefaultCacheKeyGenerator.PER_USER, renderContext.getUser().getUsername()).replaceAll("_mr_",
                             renderContext.getMainResource().getNode().getPath() +
                             renderContext.getMainResource().getResolvedTemplate());
                 }
@@ -435,7 +432,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
                 String cacheKey = segment.getAttributeValue("src");
                 CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
-                if (!cacheKey.contains("_perUser_") && keyGenerator instanceof DefaultCacheKeyGenerator) {
+                if (!cacheKey.contains(DefaultCacheKeyGenerator.PER_USER) && keyGenerator instanceof DefaultCacheKeyGenerator) {
                     DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
                     try {
                         Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
@@ -458,7 +455,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         logger.error(e.getMessage(), e);
                     }
                 }
-                cacheKey = cacheKey.replaceAll("_perUser_", renderContext.getUser().getUsername());
+                cacheKey = cacheKey.replaceAll(DefaultCacheKeyGenerator.PER_USER, renderContext.getUser().getUsername());
                 String mrCacheKey = cacheKey.replaceAll("_mr_", renderContext.getMainResource().getNode().getPath() +
                                                                 renderContext.getMainResource().getResolvedTemplate());
                 logger.debug("Check if " + cacheKey + " is in cache");

@@ -80,6 +80,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             "path", "template", "templateType", "acls", "context", "wrapped", "custom", "queryString",
             "templateNodes"));
     private static final String CACHE_NAME = "nodeusersacls";
+    public static final String PER_USER = "_perUser_";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
     private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}");
@@ -143,7 +144,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     public String appendAcls(Resource resource, RenderContext renderContext) {
         try {
             if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
-                return "_perUser_";
+                return PER_USER;
             }
 
             JCRNodeWrapper node = resource.getNode();

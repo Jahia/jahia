@@ -129,8 +129,12 @@ public abstract class Action {
             throws RepositoryException {
         JCRNodeWrapper newNode;
         if (StringUtils.isBlank(nodeName)) {
-            if (parameters.get("jcr:title") != null) {
-                nodeName = JCRContentUtils.generateNodeName(parameters.get("jcr:title").get(0), 32);
+            String nodeNameProperty = "jcr:title";
+            if (parameters.get(Render.NODE_NAME_PROPERTY) != null) {
+                nodeNameProperty = parameters.get(Render.NODE_NAME_PROPERTY).get(0);
+            }
+            if (parameters.get(nodeNameProperty) != null) {
+                nodeName = JCRContentUtils.generateNodeName(parameters.get(nodeNameProperty).get(0), 32);
             } else {
                 nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
             }

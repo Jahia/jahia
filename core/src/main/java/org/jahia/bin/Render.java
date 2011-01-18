@@ -106,6 +106,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     // Here we define the constants for the reserved keywords for post methods
     public static final String NODE_TYPE = "nodeType";
     public static final String NODE_NAME = "JCRnodeName";
+    public static final String NODE_NAME_PROPERTY = "nodeNameProperty";
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
     public static final String REDIRECT_TO = "redirectTo";
     public static final String REDIRECT_HTTP_RESPONSE_CODE = "redirectResponseCode";
@@ -141,6 +142,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters = new HashSet<String>();
         reservedParameters.add(NODE_TYPE);
         reservedParameters.add(NODE_NAME);
+        reservedParameters.add(NODE_NAME_PROPERTY);
         reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
         reservedParameters.add(REDIRECT_TO);
         reservedParameters.add(METHOD_TO_CALL);

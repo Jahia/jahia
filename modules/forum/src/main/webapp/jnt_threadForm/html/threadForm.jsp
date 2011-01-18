@@ -19,6 +19,7 @@
 <form action="${url.base}${linked}/*" method="post">
     <input type="hidden" name="nodeType" value="jnt:thread"/>
     <input type="hidden" name="autoAssignRole" value="owner"/>
+    <input type="hidden" name="nodeNameProperty" value="threadSubject"/>
 
     <div class="post-reply"><!--start post-reply-->
         <div class="forum-box forum-box-style2">

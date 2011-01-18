@@ -60,7 +60,7 @@
     <p class="forum-author">
         <c:if test="${renderContext.user.name ne 'guest'}">
         <fmt:message key="by"/><strong>&nbsp;<a
-            href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html.html?jsite=${renderContext.site.identifier}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<span class="timestamp"><fmt:formatDate
+            href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html?jsite=${renderContext.site.identifier}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<span class="timestamp"><fmt:formatDate
             value="${created.time}" pattern="yyyy/MM/dd HH:mm"/></span>
         </c:if>
         <c:if test="${renderContext.user.name eq 'guest'}">

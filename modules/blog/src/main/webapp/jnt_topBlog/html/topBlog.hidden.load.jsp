@@ -11,7 +11,8 @@
 <query:definition var="listQuery"
              statement="select * from [jnt:page] as blog where isdescendantnode(blog, ['${renderContext.mainResource.node.path}']) order by blog.[jcr:lastModified] desc"/>
 <c:set target="${moduleMap}" property="editable" value="false" />
-<c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />
+<c:set target="${moduleMap}" property="listQuery" value="${
+listQuery}" />
 <c:set target="${moduleMap}" property="subNodesView" value="blogList" />
 
 

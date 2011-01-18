@@ -39,6 +39,7 @@
                     </blog-home>
                     <blog jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
+                            <pageTitle jcr:primaryType="jnt:pageTitle" />
                             <row column="2col115" jcr:primaryType="jnt:row"/>
                         </pagecontent>
                         <row-col1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">

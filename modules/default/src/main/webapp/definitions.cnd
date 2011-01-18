@@ -141,7 +141,8 @@
 
 
 [jnt:post] > jnt:content, mix:title
- - content (string,richtext) i18n
+ - jcr:title (STRING)
+ - content (string,richtext)
 
 [jnt:thread] > jnt:content
  - threadSubject (string)

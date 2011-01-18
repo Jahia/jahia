@@ -16,6 +16,6 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="blog.css"/>
 <query:definition var="listQuery"
-             statement="select * from [jnt:post] as comments  where isdescendantnode(comments, ['${currentNode.resolveSite.path}']) order by comments.[jcr:lastModified] desc"/>
+             statement="select * from [jnt:post] as comments  where isdescendantnode(comments, ['${renderContext.mainResource.node.path}']) order by comments.[jcr:lastModified] desc"/>
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />

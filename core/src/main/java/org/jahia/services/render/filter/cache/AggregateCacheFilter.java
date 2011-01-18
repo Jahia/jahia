@@ -528,6 +528,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
                 renderContext.getRequest().setAttribute("previousTemplate", new Template(keyAttrbs.get(
                         "templateNodes")));
+                renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
             } else {
                 renderContext.getRequest().removeAttribute("previousTemplate");
                 restoreOldOneIfNeeded = true;

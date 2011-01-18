@@ -67,7 +67,6 @@ public class ListContributionFilter extends AbstractFilter {
                     && node.getProperty("j:editableInContribution").getBoolean()) ||
                     (contributeNode !=null && contributeNode.hasProperty("j:editableInContribution")
                     && contributeNode.getProperty("j:editableInContribution").getBoolean()))
-                    && !context.isAjaxRequest()
                     && !resource.getResolvedTemplate().startsWith("contribute.")
                     ) {
                 resource.setTemplate("contribute." + resource.getResolvedTemplate());

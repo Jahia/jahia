@@ -100,6 +100,14 @@ public class TemplateNodeFilter extends AbstractFilter {
                     logger.error("Cannot execute wrapper " + template, e);
                 }
             }
+        } else if (renderContext.isAjaxRequest() && resource.getContextConfiguration().equals(Resource.CONFIGURATION_PAGE)) {
+            String i = renderContext.getRequest().getParameter("jarea");
+            if (i != null) {
+                JCRNodeWrapper area = resource.getNode().getSession().getNodeByUUID(i);
+                Resource wrapperResource = new Resource(area, resource.getTemplateType(), null, Resource.CONFIGURATION_MODULE);
+                String output = RenderService.getInstance().render(wrapperResource, renderContext);
+                return output;
+            }
         }
         chain.pushAttribute(renderContext.getRequest(), "inWrapper",
                 (renderContext.isAjaxRequest()) ? Boolean.TRUE :

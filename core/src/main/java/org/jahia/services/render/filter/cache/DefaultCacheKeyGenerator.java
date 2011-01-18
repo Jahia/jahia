@@ -45,7 +45,6 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.rbac.Role;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.Template;
@@ -173,7 +172,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 } else if (!checkParentsPaths) {
                     // Check if there is an entry for the parent path for this user in is map
                     if (map.containsKey(node.getParent().getPath())) {
-                        Set<String> roles = ((JahiaAccessManager) ((JCRNodeWrapper) node).getAccessControlManager()).getRoles(
+                        /*Set<String> roles = ((JahiaAccessManager) ((JCRNodeWrapper) node).getAccessControlManager()).getRoles(
                                 path);
                         StringBuilder b = new StringBuilder();
                         for (String g : roles) {
@@ -182,9 +181,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                             }
                             b.append(g);
                         }
-                        String value = userName + "_r_" + b.toString();
-                        map.put(path, value);
-                        return value;
+                        String value = userName + "_r_" + b.toString();*/
+                        map.put(path, map.get(node.getParent().getPath()));
+                        return map.get(node.getParent().getPath());
                     }
                 }
             }
@@ -199,7 +198,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
             }
             Set<JahiaGroup> aclGroups = allAclsGroups.get(path);
-            if(aclGroups==null) {
+            if (aclGroups == null) {
                 // found no specific entry for this path
                 String fakePath = path;
                 while (!allAclsGroups.containsKey(fakePath) && !path.equals("")) {
@@ -335,14 +334,17 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
                     final JahiaGroup group = groupManagerService.lookupGroup(s);
                     String path = node.getParent().getParent().getPath();
-                    Set<JahiaGroup> groups;
-                    if (!aclGroups.containsKey(path)) {
-                        groups = new LinkedHashSet<JahiaGroup>();
-                        aclGroups.put(path, groups);
-                    } else {
-                        groups = aclGroups.get(path);
+                    boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
+                    if (granted) {
+                        Set<JahiaGroup> groups;
+                        if (!aclGroups.containsKey(path)) {
+                            groups = new LinkedHashSet<JahiaGroup>();
+                            aclGroups.put(path, groups);
+                        } else {
+                            groups = aclGroups.get(path);
+                        }
+                        groups.add(group);
                     }
-                    groups.add(group);
                 }
                 return null;
             }

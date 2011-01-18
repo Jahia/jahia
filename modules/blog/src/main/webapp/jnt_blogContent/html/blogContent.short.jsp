@@ -63,3 +63,4 @@
     </p>
     <!--stop post-->
 </div>
+<template:addDependency path="${currentNode.path}/comments"/>

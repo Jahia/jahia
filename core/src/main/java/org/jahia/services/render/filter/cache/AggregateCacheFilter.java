@@ -40,6 +40,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
@@ -186,7 +187,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getValue();
         String cachedContent = (String) cacheEntry.getObject();
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
-                (Map<String, Object>) cacheEntry.getProperty("moduleParams"));
+                (Map<String, Object>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"));
         setResources(renderContext, cacheEntry);
         Object property = cacheEntry.getProperty(FORM_TOKEN);
         if (property != null) {
@@ -360,8 +361,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         moduleParams.put(moduleParamsProperties.get(property),resource.getNode().getPropertyAsString(property));
                     }
                 }
-                if(moduleParams!=null && moduleParams.size()>0)
-                cacheEntry.setProperty("moduleParams", moduleParams);
+                if(moduleParams!=null && moduleParams.size()>0) {
+                    cacheEntry.setProperty("moduleParams", moduleParams);
+                }
+                if(resource.getNode().isNodeType("jnt:area") || resource.getNode().isNodeType("jnt:mainResourceDisplay")) {
+                    cacheEntry.setProperty("areaResource", resource.getNode().getIdentifier());
+                }
                 Element cachedElement = new Element(perUserKey, cacheEntry);
                 if (expiration > 0) {
                     cachedElement.setTimeToLive(expiration.intValue() + 1);
@@ -419,7 +424,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String,Object> moduleParams) {
+    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String,Object> moduleParams,String areaIdentifier) {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
@@ -470,7 +475,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                          segment.getElement().getEndTag().getEndTagType() + " with " + content);
                         }*/
                         if (!cachedContent.equals(content)) {
-                            String aggregatedContent = aggregateContent(cache, content, renderContext,(Map<String, Object>) cacheEntry.getProperty("moduleParams"));
+                            String aggregatedContent = aggregateContent(cache, content, renderContext,(Map<String, Object>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"));
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                     aggregatedContent);
                         } else {
@@ -485,11 +490,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         logger.debug("Missing content : " + cacheKey);
-                        generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams);
+                        generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams,areaIdentifier);
                     }
                 } else {
                     logger.debug("Missing content : " + mrCacheKey);
-                    generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams);
+                    generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams,areaIdentifier);
                 }
             }
             return outputDocument.toString();
@@ -512,26 +517,32 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     private void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
-                                 String cacheKey, Map<String, Object> moduleParams) {
+                                 String cacheKey, Map<String, Object> moduleParams, String areaIdentifier) {
         // if missing data call RenderService after creating the right resource
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
             Map<String, String> keyAttrbs = cacheKeyGenerator.parse(cacheKey);
-            final JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
                     "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
-                    renderContext.getFallbackLocale()).getNode(keyAttrbs.get("path"));
+                    renderContext.getFallbackLocale());
+            final JCRNodeWrapper node = currentUserSession.getNode(keyAttrbs.get("path"));
 
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
             Template oldOne = (Template) renderContext.getRequest().getAttribute("previousTemplate");
             boolean restoreOldOneIfNeeded = false;
+            if(!keyAttrbs.get("context").equals("page")) {
+                renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
+            }
             if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
                 renderContext.getRequest().setAttribute("previousTemplate", new Template(keyAttrbs.get(
                         "templateNodes")));
-                renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
             } else {
                 renderContext.getRequest().removeAttribute("previousTemplate");
                 restoreOldOneIfNeeded = true;
+            }
+            if(areaIdentifier!=null) {
+                renderContext.getRequest().setAttribute("areaListResource",currentUserSession.getNodeByIdentifier(areaIdentifier));
             }
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"),
                     keyAttrbs.get("context"));

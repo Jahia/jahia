@@ -55,7 +55,7 @@ public class ListContributionFilter extends AbstractFilter {
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper contributeNode = null;
         if (context.getRequest().getAttribute("areaResource") != null) {
-            contributeNode = ((Resource) context.getRequest().getAttribute("areaResource")).getNode();
+            contributeNode = (JCRNodeWrapper) context.getRequest().getAttribute("areaResource");
         }
 
         JCRNodeWrapper node = resource.getNode();

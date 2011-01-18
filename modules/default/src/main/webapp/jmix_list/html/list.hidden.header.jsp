@@ -66,14 +66,14 @@
     <c:set target="${moduleMap}" property="currentList" value="${result.nodes}"/>
 </c:if>
 <c:if test="${!empty areaResource}">
-    <c:if test="${jcr:isNodeType(areaResource.node, 'jmix:orderedList')}">
+    <c:if test="${jcr:isNodeType(areaResource, 'jmix:orderedList')}">
         <jcr:sort list="${moduleMap.currentList}"
-                  properties="${areaResource.node.properties.firstField.string},${areaResource.node.properties.firstDirection.string},${areaResource.node.properties.secondField.string},${areaResource.node.properties.secondDirection.string},${areaResource.node.properties.thirdField.string},${areaResource.node.properties.thirdDirection.string}"
+                  properties="${areaResource.properties.firstField.string},${areaResource.properties.firstDirection.string},${areaResource.properties.secondField.string},${areaResource.properties.secondDirection.string},${areaResource.properties.thirdField.string},${areaResource.properties.thirdDirection.string}"
                   var="currentList"/>
         <c:set value="${currentList}" target="${moduleMap}" property="currentList"/>
     </c:if>
-    <c:if test="${!empty areaResource.node.properties['j:numberOfItems']}">
-        <c:set value="${areaResource.node.properties['j:numberOfItems'].string -1}" target="${moduleMap}" property="end"/>
+    <c:if test="${!empty areaResource.properties['j:numberOfItems']}">
+        <c:set value="${areaResource.properties['j:numberOfItems'].string -1}" target="${moduleMap}" property="end"/>
     </c:if>
 </c:if>
 

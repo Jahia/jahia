@@ -717,7 +717,19 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (token != null) {
             Map<String,Map<String,String>> toks = (Map<String,Map<String,String>>) req.getSession().getAttribute("form-tokens");
             if (toks != null && toks.containsKey(token)) {
-                Map<String,String> values = new HashMap<String, String>(toks.get(token));
+                Map<String, String> m = toks.get(token);
+                if(m==null) {
+                    Map<String, String[]> formDatas = new HashMap<String, String[]>();
+                    Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
+                    for (Map.Entry<String, List<String>> params : set) {
+                        formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
+                    }
+                    req.getSession().setAttribute("formDatas", formDatas);
+                    req.getSession().setAttribute("formError", "Your captcha is invalid");
+                    performRedirect("", urlResolver.getPath(), req, resp, parameters);
+                    return;
+                }
+                Map<String,String> values = new HashMap<String, String>(m);
 
                 // Validate form token
                 if (!req.getRequestURI().equals(values.remove("form-action"))) {

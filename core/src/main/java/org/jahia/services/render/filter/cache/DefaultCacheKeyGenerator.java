@@ -159,33 +159,26 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             if (hasUserAcl(userName)) {
                 Map<String, String> map = (Map<String, String>) cache.get(userName).getValue();
                 String path = node.getPath();
-                if (checkParentsPaths) {
+//                if (checkParentsPaths) {
                     while ((!path.equals("")) && !map.containsKey(path)) {
                         path = StringUtils.substringBeforeLast(path, "/");
                     }
                     if (path.equals("")) {
                         path = "/";
                     }
-                }
+//                }
                 if (map.containsKey(path)) {
                     return (String) map.get(path);
-                } else if (!checkParentsPaths) {
+                } /*else if (!checkParentsPaths) {
                     // Check if there is an entry for the parent path for this user in is map
-                    if (map.containsKey(node.getParent().getPath())) {
-                        /*Set<String> roles = ((JahiaAccessManager) ((JCRNodeWrapper) node).getAccessControlManager()).getRoles(
-                                path);
-                        StringBuilder b = new StringBuilder();
-                        for (String g : roles) {
-                            if (b.length() > 0) {
-                                b.append("|");
-                            }
-                            b.append(g);
-                        }
-                        String value = userName + "_r_" + b.toString();*/
-                        map.put(path, map.get(node.getParent().getPath()));
-                        return map.get(node.getParent().getPath());
+                    while ((!path.equals("")) && !map.containsKey(path)) {
+                        path = StringUtils.substringBeforeLast(path, "/");
                     }
-                }
+                    if (map.containsKey(path)) {
+                        map.put(node.getPath(), map.get(path));
+                        return map.get(path);
+                    }
+                }*/
             }
             Map<String, Set<JahiaGroup>> allAclsGroups = getAllAclsGroups();
             String path = node.getPath();

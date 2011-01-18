@@ -22,6 +22,13 @@ public class DefaultDeleteAction extends Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         Node node = session.getNode(urlResolver.getPath());
         Node parent = node.getParent();
+
+        if (!parent.isCheckedOut()) {
+            parent.checkout();
+        }
+        if (!node.isCheckedOut()) {
+            node.checkout();
+        }
         node.remove();
         session.save();
         String url = parent.getPath();

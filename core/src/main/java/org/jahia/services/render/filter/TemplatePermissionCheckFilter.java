@@ -66,7 +66,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 }
             }
         } else {
-            throw new TemplateNotFoundException("Unable to resolve script: "+resource.getResolvedTemplate()+" asked template was "+renderContext.getMainResource().getResolvedTemplate());
+            throw new TemplateNotFoundException("Unable to resolve script: "+resource.getResolvedTemplate());
         }
         if (!renderContext.isEditMode()) {
             if (node.hasProperty("j:requiredMode")) {

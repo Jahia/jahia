@@ -72,6 +72,9 @@
                   var="currentList"/>
         <c:set value="${currentList}" target="${moduleMap}" property="currentList"/>
     </c:if>
+    <c:if test="${!empty areaResource.node.properties['j:numberOfItems']}">
+        <c:set value="${areaResource.node.properties['j:numberOfItems'].string -1}" target="${moduleMap}" property="end"/>
+    </c:if>
 </c:if>
 
 <c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">
@@ -80,6 +83,7 @@
               var="currentList"/>
     <c:set value="${currentList}" target="${moduleMap}" property="currentList"/>
 </c:if>
+
 
 <c:if test="${not empty param.filter}">
     <jcr:filter var="currentList" list="${moduleMap.currentList}" properties="${param.filter}" node="${currentNode}"/>

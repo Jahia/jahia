@@ -99,7 +99,7 @@
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
 
         <viewer jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default" />
+                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/selector/sitemapSelector" />
 
         <editor jcr:primaryType="jnt:role"
                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager  /permissions/wysiwyg-editor-toolbar/full"

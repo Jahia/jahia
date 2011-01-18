@@ -58,54 +58,25 @@ import java.util.List;
 public class TranslateMenuActionItem extends BaseActionItem {
     private List<GWTJahiaLanguage> languages;
     private String siteKey;
+    private transient Menu menu;
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
         setEnabled(false);
         siteKey = JahiaGWTParameters.getSiteKey();
-        initMenu(linker);
+        menu = new Menu();
+        loadLanguages(linker);
     }
 
-    private void initMenu(final Linker linker) {
+    private void loadLanguages(final Linker linker) {
         JahiaContentManagementService.App.getInstance().getSiteLanguages(
                 new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
                     public void onSuccess(List<GWTJahiaLanguage> result) {
                         languages = result;
-                        final Menu menu = new Menu();
 
-                        menu.removeAll();
-                        final String uiLanguage = JahiaGWTParameters.getUILanguage();
-                        boolean notEmpty = false;
                         if (languages != null) {
-                            for (final GWTJahiaLanguage language : languages) {
-                                for (final GWTJahiaLanguage jahiaLanguage : languages) {
-                                    if (!jahiaLanguage.getDisplayName().equals(language.getDisplayName()) &&
-                                        (jahiaLanguage.getLanguage().equals(uiLanguage) ||
-                                         language.getLanguage().equals(uiLanguage))) {
-                                        final LinkerSelectionContext lh = linker.getSelectionContext();
-
-                                        if (PermissionsUtils.isPermitted("jcr:modifyProperties_"+JahiaGWTParameters.getWorkspace()+"_"+jahiaLanguage.getLanguage(), lh.getSelectionPermissions())) {
-                                            MenuItem item = new MenuItem(
-                                                    language.getDisplayName() + "->" + jahiaLanguage.getDisplayName());
-
-                                            item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                                                @Override
-                                                public void componentSelected(MenuEvent ce) {
-                                                    if (lh.getSingleSelection() != null) {
-                                                        new TranslateContentEngine(lh.getSingleSelection(), linker,
-                                                                language, jahiaLanguage).show();
-                                                    }
-                                                }
-                                            });
-                                            menu.add(item);
-                                            notEmpty = true;
-                                        }
-                                    }
-                                }
-                            }
+                            initMenu(linker);
                         }
-                        setSubMenu(menu);
-                        setEnabled(notEmpty);
                     }
 
                     public void onApplicationFailure(Throwable caught) {
@@ -114,11 +85,49 @@ public class TranslateMenuActionItem extends BaseActionItem {
                 });
     }
 
+    private void initMenu(final Linker linker) {
+        boolean notEmpty = false;
+        final String currentLanguage = JahiaGWTParameters.getLanguage();
+        for (final GWTJahiaLanguage sourceLang : languages) {
+            for (final GWTJahiaLanguage destLang : languages) {
+                if (!destLang.getDisplayName().equals(sourceLang.getDisplayName()) &&
+                    (destLang.getLanguage().equals(currentLanguage) ||
+                     sourceLang.getLanguage().equals(currentLanguage))) {
+                    final LinkerSelectionContext lh = linker.getSelectionContext();
+
+                    if (PermissionsUtils.isPermitted("jcr:modifyProperties_" + JahiaGWTParameters.getWorkspace() + "_" + destLang.getLanguage(), lh.getSelectionPermissions())) {
+                        MenuItem item = new MenuItem(
+                                sourceLang.getDisplayName() + "->" + destLang.getDisplayName());
+
+                        item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                            @Override
+                            public void componentSelected(MenuEvent ce) {
+                                if (lh.getSingleSelection() != null) {
+                                    new TranslateContentEngine(lh.getSingleSelection(), linker,
+                                            sourceLang, destLang).show();
+                                }
+                            }
+                        });
+                        menu.add(item);
+                        notEmpty = true;
+                    }
+                }
+            }
+        }
+        if (notEmpty) {
+            setSubMenu(menu);
+        }
+        setEnabled(notEmpty);
+    }
+
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null);
+        menu.removeAll();
         if(!JahiaGWTParameters.getSiteKey().equals(siteKey)){
             siteKey=JahiaGWTParameters.getSiteKey();
+            loadLanguages(linker);
+        } else {
             initMenu(linker);
         }
     }

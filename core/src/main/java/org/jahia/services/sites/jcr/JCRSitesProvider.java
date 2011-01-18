@@ -352,6 +352,7 @@ public class JCRSitesProvider {
                     if (siteNode.getName().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
                         updateWorkspacePermissions(session, "default", site);
                         updateWorkspacePermissions(session, "live", site);
+                        updateTranslatorRoles(session, site);
                     }
 
                     session.save();
@@ -384,6 +385,33 @@ public class JCRSitesProvider {
                 n.addNode("jcr:modifyProperties_" + ws + "_" +s, "jnt:permission");
             }
         }
+    }
+
+    private void updateTranslatorRoles(JCRSessionWrapper session, JahiaSite site) throws RepositoryException {
+        Node n = session.getNode("/roles");
+        Set<String> languages = new HashSet<String>();
+
+        NodeIterator ni = n.getNodes();
+        while (ni.hasNext()) {
+            Node next = (Node) ni.next();
+            if (next.getName().startsWith("translator-")) {
+                languages.add(StringUtils.substringAfter(next.getName(), "translator-"));
+            }
+        }
+        for (String s : site.getLanguages()) {
+            if (!languages.contains(s)) {
+                Node translator = n.addNode("translator-"  +s, "jnt:role");
+                Value[] values = new Value[] {
+                        session.getValueFactory().createValue(session.getNode("/permissions/editMode/editModeAccess"), true),
+                        session.getValueFactory().createValue(session.getNode("/permissions/editMode/selector/sitemapSelector"), true),
+                        session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:versionManagement_default"), true),
+                        session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:write_default/jcr:modifyProperties_default/jcr:modifyProperties_default_" + s), true)
+                };
+
+                translator.setProperty("j:permissions", values);
+            }
+        }
+
     }
 
     private JahiaSite getSite(JCRNodeWrapper node) throws RepositoryException {

@@ -43,8 +43,8 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowData;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -178,8 +178,8 @@ public class LangPropertiesEditor extends LayoutContainer {
                 langPropertiesEditor = new PropertiesEditor(nodeTypes, properties, dataType);
                 langPropertiesEditor.setMixin(mixin);
                 langPropertiesEditor.setInitializersValues(initializersValues);
-                langPropertiesEditor.setI18NWriteable(false);
-                langPropertiesEditor.setWriteable(editable && PermissionsUtils.isPermitted("jcr:modifyProperties", node) && !node.isLanguageLocked(locale));
+                langPropertiesEditor.setNonI18NWriteable(false);
+                langPropertiesEditor.setWriteable(editable);
                 langPropertiesEditor.setFieldSetGrouping(true);
                 langPropertiesEditor.setExcludedTypes(excludedTypes);
                 langPropertiesEditor.renderNewFormPanel();
@@ -289,7 +289,15 @@ public class LangPropertiesEditor extends LayoutContainer {
                     languageSwitcher.setVisible(true);
                     List<GWTJahiaLanguage> selected = new ArrayList<GWTJahiaLanguage>();
                     selected.add(result.getCurrentLocale());
-                    languageSwitcher.getStore().add(result.getAvailabledLanguages());
+                    if (editable) {
+                        for (GWTJahiaLanguage language : result.getAvailabledLanguages()) {
+                            if (PermissionsUtils.isPermitted("jcr:modifyProperties_" + JahiaGWTParameters.getWorkspace() + "_" + language.getLanguage(), node.getPermissions())) {
+                                languageSwitcher.getStore().add(language);
+                            }
+                        }
+                    } else {
+                        languageSwitcher.getStore().add(result.getAvailabledLanguages());
+                    }
                     languageSwitcher.setSelection(selected);
                 }
 

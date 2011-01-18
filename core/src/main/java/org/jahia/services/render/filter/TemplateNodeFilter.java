@@ -32,6 +32,7 @@
 
 package org.jahia.services.render.filter;
 
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 import org.jahia.services.content.*;
@@ -122,6 +123,7 @@ public class TemplateNodeFilter extends AbstractFilter {
             String jsite = renderContext.getRequest().getParameter("jsite");
             if(jsite!=null) {
                 site = node.getSession().getNodeByIdentifier(jsite);
+                renderContext.setSite((JCRSiteNode) site);
             } else {
                 site = node.getResolveSite();
             }

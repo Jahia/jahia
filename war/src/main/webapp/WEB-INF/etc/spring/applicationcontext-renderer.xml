@@ -56,7 +56,7 @@
 	</bean>
     <bean
         class="org.jahia.services.render.filter.AreaResourceFilter">
-        <property name="applyOnNodeTypes" value="jnt:area,jmix:list" />
+        <property name="applyOnNodeTypes" value="jnt:area,jmix:list,jnt:mainResourceDisplay" />
         <property name="applyOnConfigurations" value="module,wrappedcontent" />
         <property name="priority" value="4" />
     </bean>

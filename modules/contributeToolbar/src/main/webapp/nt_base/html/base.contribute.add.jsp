@@ -126,10 +126,12 @@
                 <p class="field"><label class="left"
                                         for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
                     <input type="text" id="${scriptTypeName}jnt_folder" name="JCRnodeName"/>
+                    <c:if test="${currentResource.properties['j:editableInContribution'].boolean}">
                     <input type="hidden" name="jcr:mixinTypes" value="jmix:contributeMode"/>
                     <input type="hidden" name="j:editableInContribution" value="true"/>
                     <input type="hidden" name="j:canDeleteInContribution" value="true"/>
                     <input type="hidden" name="j:canOrderInContribution" value="true"/>
+                    </c:if>
 
                 </p>
             </c:if>

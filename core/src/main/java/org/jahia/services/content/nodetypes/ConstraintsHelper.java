@@ -22,7 +22,7 @@ public class ConstraintsHelper {
     }
 
     public static String getConstraints(List<ExtendedNodeType> nodeType) {
-        String constraints = null;
+        String constraints = "";
         for (ExtendedNodeType type : nodeType) {
             Set<String> cons = type.getUnstructuredChildNodeDefinitions().keySet();
             for (String s : cons) {

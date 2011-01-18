@@ -20,7 +20,7 @@ public class AreaResourceFilter extends AbstractFilter {
             JCRNodeWrapper node = resource.getNode();
 
             final HttpServletRequest request = renderContext.getRequest();
-            if (node.isNodeType("jnt:area")) {
+            if (node.isNodeType("jnt:area") || node.isNodeType("jnt:mainResourceDisplay")) {
                 chain.pushAttribute(request,"areaListResource",resource);
             } else if (node.isNodeType("jmix:list")) {
                  chain.pushAttribute(request,"areaResource",request.getAttribute("areaListResource"));

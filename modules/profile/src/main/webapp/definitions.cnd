@@ -1,0 +1,20 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jmix:profileComponentContent] > jmix:droppableContent mixin
+
+[jnt:userDetails] > jnt:content, jmix:profileComponentContent, jmix:bindedComponent
+ - j:firstName (boolean)
+ - j:lastName (boolean)
+ - j:gender (boolean)
+ - j:title (boolean)
+ - j:birthDate (boolean)
+ - j:organization (boolean)
+ - j:function (boolean)
+ - j:about (boolean)
+ - j:email (boolean)
+ - j:skypeID (boolean)
+ - j:twitterID (boolean)
+ - j:facebookID (boolean)
+ - j:linkedinID (boolean)
+ - j:picture (boolean)

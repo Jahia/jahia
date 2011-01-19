@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
+import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 
 /**
  * Override LuceneQueryFactory
@@ -186,13 +187,21 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Map<String, NodeType> selectorMap,
             JackrabbitIndexSearcher searcher, IndexReader reader)
             throws RepositoryException, IOException {
-        if (constraint instanceof DescendantNode) {
-            query.subQuery.add(new TermQuery(new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(((DescendantNode) constraint).getAncestorPath()).getParent().getIdentifier())),
-                    BooleanClause.Occur.MUST_NOT);
-        } else if (constraint instanceof ChildNode) {
-            query.subQuery.add(new TermQuery(new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(((ChildNode)constraint).getParentPath()).getParent().getIdentifier())),
-                    BooleanClause.Occur.MUST_NOT);
+        try {
+            if (constraint instanceof DescendantNode) {
+                query.subQuery.add(new TermQuery(new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(((DescendantNode) constraint).getAncestorPath()).getParent().getIdentifier())),
+                        BooleanClause.Occur.MUST_NOT);
+            } else if (constraint instanceof ChildNode) {
+                query.subQuery.add(new TermQuery(new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(((ChildNode)constraint).getParentPath()).getParent().getIdentifier())),
+                        BooleanClause.Occur.MUST_NOT);
+            }
+        } catch (PathNotFoundException e) {
+            // not found
+            query.subQuery.add(new JackrabbitTermQuery(new Term(
+                    FieldNames.UUID, "invalid-node-id")), // never matches
+                    SHOULD);
         }
+
         return super.mapConstraintToQueryAndFilter(query,constraint, selectorMap, searcher, reader);
     }
 

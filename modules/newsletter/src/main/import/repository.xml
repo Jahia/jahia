@@ -4,31 +4,69 @@
          xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
          xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
-        <newsletter j:siteType="module" jcr:mixinTypes="jmix:accessControlled jmix:sitemap" jcr:primaryType="jnt:virtualsite"
-              changefreq="monthly" j:installedModules="newsletter" priority="0.5">
+        <newsletter j:siteType="module" jcr:mixinTypes="jmix:accessControlled jmix:sitemap"
+                    jcr:primaryType="jnt:virtualsite"
+                    changefreq="monthly" j:installedModules="newsletter" priority="0.5">
             <home jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly"
                   j:templateNode="/templateSets/newsletter/templates/base/newsletters" priority="0.5"/>
-            <newsletter-confirmation jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly" j:templateNode="/templateSets/newsletter/templates/base/newsletter-confirmation" priority="0.5">
-              <j:translation_en jcr:title="Newsletter confirmation" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-              <pagecontent jcr:primaryType="jnt:contentList">
-                <bigText jcr:primaryType="jnt:bigText">
-                  <j:translation_en jcr:language="en" text="&lt;p&gt;  Your request has been taken into account.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
-                </bigText>
-              </pagecontent>
-            </newsletter-confirmation>
-             <contents jcr:primaryType="jnt:contentFolder"/>
+            <newsletter-subscribe-confirmation jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page"
+                                               changefreq="monthly"
+                                               j:templateNode="/templateSets/newsletter/templates/base/newsletter-confirmation"
+                                               priority="0.5">
+                <j:translation_en jcr:title="Newsletter Subscription confirmation" jcr:mixinTypes="mix:title"
+                                  jcr:primaryType="jnt:translation" jcr:language="en"/>
+                <pagecontent jcr:primaryType="jnt:contentList">
+                    <bigText jcr:primaryType="jnt:bigText">
+                        <j:translation_en jcr:language="en"
+                                          text="&lt;p&gt;  Your subscription has been taken into account.&lt;/p&gt; "
+                                          jcr:primaryType="jnt:translation"/>
+                    </bigText>
+                </pagecontent>
+            </newsletter-subscribe-confirmation>
+            <newsletter-unsubscribe-confirmation jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page"
+                                                 changefreq="monthly"
+                                                 j:templateNode="/templateSets/newsletter/templates/base/newsletter-confirmation"
+                                                 priority="0.5">
+                <j:translation_en jcr:title="Newsletter Unsubscription confirmation" jcr:mixinTypes="mix:title"
+                                  jcr:primaryType="jnt:translation" jcr:language="en"/>
+                <pagecontent jcr:primaryType="jnt:contentList">
+                    <bigText jcr:primaryType="jnt:bigText">
+                        <j:translation_en jcr:language="en"
+                                          text="&lt;p&gt;  Your unsubscription has been taken into account.&lt;/p&gt; "
+                                          jcr:primaryType="jnt:translation"/>
+                    </bigText>
+                </pagecontent>
+            </newsletter-unsubscribe-confirmation>
+            <newsletter-subscriptions jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page"
+                                                 changefreq="monthly"
+                                                 j:templateNode="/templateSets/newsletter/templates/base/newsletter-subscriptions"
+                                                 priority="0.5">
+                <j:translation_en jcr:title="Newsletter Subscriptions" jcr:mixinTypes="mix:title"
+                                  jcr:primaryType="jnt:translation" jcr:language="en"/>
+                <pagecontent jcr:primaryType="jnt:contentList">
+                    <newsletters-subscriptions jcr:primaryType="jnt:newslettersSubscriptions"></newsletters-subscriptions>
+                </pagecontent>
+            </newsletter-subscriptions>
+            <contents jcr:primaryType="jnt:contentFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <templates jcr:primaryType="jnt:templatesFolder">
                 <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
-                    <newsletters jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletters jnt:newsletter" j:defaultTemplate="true">
-                      <pagecontent jcr:primaryType="jnt:contentList">
-                        <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                      </pagecontent>
+                    <newsletters jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletters jnt:newsletter"
+                                 j:defaultTemplate="true">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <mainResourceDisplay j:mainResourceView="default"
+                                                 jcr:primaryType="jnt:mainResourceDisplay"/>
+                        </pagecontent>
                     </newsletters>
-                    <newsletter-confirmation j:requiredPermissions="" jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="false" />
+                    <newsletter-confirmation j:requiredPermissions="" jcr:primaryType="jnt:pageTemplate"
+                                             j:hiddenTemplate="true"/>
+                    <newsletter-subscriptions j:requiredPermissions="" jcr:primaryType="jnt:pageTemplate"
+                                             j:hiddenTemplate="true"/>
                 </base>
-                <newsletter-issue jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:contentTemplate" j:view="newsletter" j:hiddenTemplate="false" j:applyOn="jnt:newsletterIssue" j:defaultTemplate="false">
+                <newsletter-issue jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:contentTemplate"
+                                  j:view="newsletter" j:hiddenTemplate="false" j:applyOn="jnt:newsletterIssue"
+                                  j:defaultTemplate="true">
                 </newsletter-issue>
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <files jcr:primaryType="jnt:folder"/>

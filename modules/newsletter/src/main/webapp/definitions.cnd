@@ -35,6 +35,7 @@
 [jnt:newsletterSubscription] > jnt:subscriptionComponent, jmix:siteComponent
  - j:target (weakreference,choicelist[nodes='$currentSite/newsletters;jnt:newsletter']) mandatory < jnt:newsletter
 
+[jnt:newslettersSubscriptions] > jnt:subscriptionComponent, jmix:siteComponent
 //---------------------------------------------------------
 // Newsletter
 //---------------------------------------------------------
@@ -43,6 +44,7 @@
  + * (jnt:newsletter)
 
 [jnt:newsletter] > jnt:content, mix:title, jmix:list, jmix:subscribable, jmix:visibleInPagesTree
+- subscriptionPage (weakreference) mandatory < jnt:page
  + * (jnt:newsletterIssue)
 
 [jnt:newsletterIssue] > jnt:content, mix:title, jmix:observable, jmix:hasTemplateNode

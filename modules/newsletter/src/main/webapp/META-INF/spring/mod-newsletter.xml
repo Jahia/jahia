@@ -26,7 +26,8 @@
 
     <bean class="org.jahia.modules.newsletter.ConfirmAction">
         <property name="subscriptionService" ref="subscriptionService"/>
-        <property name="confirmationPagePath" value="/newsletter-confirmation"/>
+        <property name="subscriptionConfirmationPagePath" value="/newsletter-subscribe-confirmation"/>
+        <property name="unsubscriptionConfirmationPagePath" value="/newsletter-unsubscribe-confirmation"/>
     </bean>
     
     <!-- toolbar and context menu items -->

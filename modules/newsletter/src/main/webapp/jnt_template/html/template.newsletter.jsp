@@ -76,7 +76,7 @@
                                         <h2 style="font-size: 16px;font-weight: normal;color: #464646;margin: 0 0 10px 0;border-bottom: 3px solid #ccc;text-transform: uppercase;">
                                             In short</h2>
                                         <template:area path="short"/>
-                                        <%--<table width="100%" height="173" border="0" cellspacing="0" cellpadding="0"
+                                        <table width="100%" height="173" border="0" cellspacing="0" cellpadding="0"
                                                style="border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;">
                                             <tr>
                                                 <td align="center" valign="top"
@@ -85,22 +85,11 @@
                                                         UNSUBSCRIBE</h3>
 
                                                     <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
-                                                        <a href="#" target="_blank"
+                                                        <a href="${renderContext.mainResource.node.parent.properties['subscriptionPage'].node.url}" target="_blank"
                                                            style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;">Click
-                                                            to instantly unsubscribe from this email</a></p></td>
+                                                            to unsubscribe from this email</a></p></td>
                                             </tr>
-                                            <tr>
-                                                <td align="center" valign="top"
-                                                    style="padding: 16px 22px 16px 22px;">
-                                                    <h3 style="font-size: 16px;font-weight: normal;color: #666;margin: 0 0 4px 0;padding: 0;">
-                                                        FORWARD</h3>
-
-                                                    <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
-                                                        <a href="#" target="_blank"
-                                                           style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;">Click
-                                                            to forward this email to a friend</a></p></td>
-                                            </tr>
-                                        </table>--%>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>

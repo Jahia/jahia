@@ -28,14 +28,19 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
  */
 public class ConfirmAction extends Action {
     private SubscriptionService subscriptionService;
-    private String confirmationPagePath;
+    private String subscriptionConfirmationPagePath;
+    private String unsubscriptionConfirmationPagePath;
 
     public void setSubscriptionService(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
     }
 
-    public void setConfirmationPagePath(String confirmationPagePath) {
-        this.confirmationPagePath = confirmationPagePath;
+    public void setUnsubscriptionConfirmationPagePath(String unsubscriptionConfirmationPagePath) {
+        this.unsubscriptionConfirmationPagePath = unsubscriptionConfirmationPagePath;
+    }
+
+    public void setSubscriptionConfirmationPagePath(String subscriptionConfirmationPagePath) {
+        this.subscriptionConfirmationPagePath = subscriptionConfirmationPagePath;
     }
 
     public ActionResult doExecute(final HttpServletRequest req, final RenderContext renderContext, final Resource resource,
@@ -53,18 +58,18 @@ public class ConfirmAction extends Action {
                         session.save();
                         req.setAttribute("subscribed", Arrays.asList(resource.getNode()));
                         return new ActionResult(SC_OK, resource.getNode().getResolveSite().getPath() +
-                                confirmationPagePath);
+                                subscriptionConfirmationPagePath);
                     } else if ("rem".equals(action)) {
                         sub.remove();
                         session.save();
                         req.setAttribute("unsubscribed", Arrays.asList(resource.getNode()));
-                        return new ActionResult(SC_OK, resource.getNode().getResolveSite().getPath() + confirmationPagePath);
+                        return new ActionResult(SC_OK, resource.getNode().getResolveSite().getPath() + unsubscriptionConfirmationPagePath);
                     }
                 }
 
                  req.setAttribute("subscribed", Arrays.asList(resource.getNode()));
                         return new ActionResult(SC_OK, resource.getNode().getResolveSite().getPath() +
-                                confirmationPagePath);
+                                subscriptionConfirmationPagePath);
 //                return new ActionResult(SC_BAD_REQUEST);
             }
         });

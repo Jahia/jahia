@@ -178,6 +178,8 @@ public class TemplateNodeFilter extends AbstractFilter {
                     throw new TemplateNotFoundException(resource.getTemplate());
                 }
             }
+        } catch (AccessDeniedException e) {
+            throw e;
         } catch (RepositoryException e) {
             logger.error("Cannot find template", e);
         }
@@ -280,6 +282,11 @@ public class TemplateNodeFilter extends AbstractFilter {
                 }
             }
 
+        }
+        if (templateNode.hasProperty("j:requireLoggedUser") && templateNode.getProperty("j:requireLoggedUser").getBoolean()) {
+            if (!renderContext.isLoggedIn()) {
+                return false;
+            }
         }
         return true;
     }

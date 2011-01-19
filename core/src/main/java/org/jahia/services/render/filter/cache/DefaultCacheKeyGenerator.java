@@ -195,7 +195,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         if (aclGroups == null) {
             // found no specific entry for this path
             String fakePath = path;
-            while (!allAclsGroups.containsKey(fakePath) && !path.equals("")) {
+            while (!allAclsGroups.containsKey(fakePath) && !fakePath.equals("")) {
                 fakePath = StringUtils.substringBeforeLast(fakePath, "/");
             }
             if (fakePath.equals("")) {

@@ -12,7 +12,7 @@
     var contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")} = {
         contributeTarget: "${currentNode.path}",
         contributeReplaceTarget: "${currentNode.UUID}",
-        contributeReplaceUrl: "${url.mainResource}.ajax?jarea=${areaResource.node.identifier}"
+        contributeReplaceUrl: "${url.mainResource}.ajax?jarea=${areaResource.identifier}"
     };
     contributeParams[contributeParams.length] = contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")};
 </script>
@@ -26,7 +26,7 @@
         key="label.paste"/></a>
 </h3>
 
-<c:set var="types" value="${jcr:getContributeTypes(currentNode, areaResource.node, null)}"/>
+<c:set var="types" value="${jcr:getContributeTypes(currentNode, areaResource, null)}"/>
 
 <c:if test="${types != null}">
     <ul class="pagecontributeToolbar">

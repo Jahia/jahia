@@ -171,6 +171,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             if (ace.isNodeType("jnt:ace")) {
                                 String principal = ace.getProperty("j:principal").getString();
                                 String type = ace.getProperty("j:aceType").getString();
+                                if (!ace.hasProperty(Constants.J_ROLES)) {
+                                    continue;
+                                }
                                 Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
 
                                 if (!results.containsKey(principal)) {

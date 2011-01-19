@@ -71,10 +71,10 @@
                                     <td align="left" style="padding: 10px;">
 
                                         <h2 style="font-size: 16px;font-weight: normal;color: #464646;margin: 0 0 10px 0;border-bottom: 3px solid #ccc;text-transform: uppercase;">
-                                            In this issue</h2>
+                                            <fmt:message key="label.in.this.issue"/></h2>
                                         <template:area path="contents"/>
                                         <h2 style="font-size: 16px;font-weight: normal;color: #464646;margin: 0 0 10px 0;border-bottom: 3px solid #ccc;text-transform: uppercase;">
-                                            In short</h2>
+                                            <fmt:message key="label.in.short"/></h2>
                                         <template:area path="short"/>
                                         <table width="100%" height="173" border="0" cellspacing="0" cellpadding="0"
                                                style="border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;">
@@ -82,12 +82,11 @@
                                                 <td align="center" valign="top"
                                                     style="border-bottom: 1px solid #ccc;padding: 16px 22px 16px 22px;">
                                                     <h3 style="font-size: 16px;font-weight: normal;color: #666;margin: 0 0 4px 0;padding: 0;">
-                                                        UNSUBSCRIBE</h3>
+                                                        <fmt:message key="label.unsubscribe"/></h3>
 
                                                     <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
                                                         <a href="${renderContext.mainResource.node.parent.properties['subscriptionPage'].node.url}" target="_blank"
-                                                           style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;">Click
-                                                            to unsubscribe from this email</a></p></td>
+                                                           style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;"><fmt:message key="label.click.to.unsubscribe.from.this.email"/></a></p></td>
                                             </tr>
                                         </table>
                                     </td>

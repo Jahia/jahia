@@ -236,10 +236,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         String perUserKey = key.replaceAll(DefaultCacheKeyGenerator.PER_USER, renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() +
                 renderContext.getMainResource().getResolvedTemplate());
-        if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.dynamicRolesAcls"))) {
+        /*if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.dynamicRolesAcls"))) {
             key = cacheProvider.getKeyGenerator().replaceField(key, "acls", "dynamicRolesAcls");
             chain.pushAttribute(renderContext.getRequest(), "cache.dynamicRolesAcls", Boolean.FALSE);
-        }
+        }*/
         if (debugEnabled) {
             logger.debug("Generating content for node : " + perUserKey);
         }
@@ -441,12 +441,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
                     try {
                         Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
-                        final JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
-                                "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
-                                renderContext.getFallbackLocale()).getNode(keyAttrbs.get("path"));
-                        Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"),
-                                Resource.CONFIGURATION_MODULE);
-                        String acls = defaultCacheKeyGenerator.appendAcls(resource, renderContext);
+                        String[] split = keyAttrbs.get("acls").split("_p_");
+                        String nodePath = "/"+StringUtils.substringAfter(split[1],"/");
+                        String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1],"/")), nodePath);
                         cacheKey = keyGenerator.replaceField(cacheKey, "acls", acls);
                     } catch (ParseException e) {
                         logger.error(e.getMessage(), e);

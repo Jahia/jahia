@@ -147,102 +147,100 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             }
 
             JCRNodeWrapper node = resource.getNode();
-            boolean checkParentsPaths = true;
+            boolean checkRootPath = true;
             if (node.hasProperty("j:requiredPermissions")) {
                 node = renderContext.getMainResource().getNode();
-                checkParentsPaths = false;
+                checkRootPath = false;
             }
+            String nodePath = node.getPath();
+            return getAclsKeyPart(renderContext, checkRootPath, nodePath);
 
-            // Search for user specific acl
-            JahiaUser principal = renderContext.getUser();
-            final String userName = principal.getUsername();
-            if (hasUserAcl(userName)) {
-                Map<String, String> map = (Map<String, String>) cache.get(userName).getValue();
-                String path = node.getPath();
-//                if (checkParentsPaths) {
-                    while ((!path.equals("")) && !map.containsKey(path)) {
-                        path = StringUtils.substringBeforeLast(path, "/");
-                    }
-                    if (path.equals("")) {
-                        path = "/";
-                    }
-//                }
-                if (map.containsKey(path)) {
-                    return (String) map.get(path);
-                } /*else if (!checkParentsPaths) {
-                    // Check if there is an entry for the parent path for this user in is map
-                    while ((!path.equals("")) && !map.containsKey(path)) {
-                        path = StringUtils.substringBeforeLast(path, "/");
-                    }
-                    if (map.containsKey(path)) {
-                        map.put(node.getPath(), map.get(path));
-                        return map.get(path);
-                    }
-                }*/
-            }
-            Map<String, Set<JahiaGroup>> allAclsGroups = getAllAclsGroups();
-            String path = node.getPath();
-            if (checkParentsPaths) {
-                while (!allAclsGroups.containsKey(path) && !path.equals("")) {
-                    path = StringUtils.substringBeforeLast(path, "/");
-                }
-                if (path.equals("")) {
-                    path = "/";
-                }
-            }
-            Set<JahiaGroup> aclGroups = allAclsGroups.get(path);
-            if (aclGroups == null) {
-                // found no specific entry for this path
-                String fakePath = path;
-                while (!allAclsGroups.containsKey(fakePath) && !path.equals("")) {
-                    fakePath = StringUtils.substringBeforeLast(fakePath, "/");
-                }
-                if (fakePath.equals("")) {
-                    fakePath = "/";
-                }
-                aclGroups = allAclsGroups.get(fakePath);
-            }
-            StringBuilder b = new StringBuilder();
-            for (JahiaGroup g : aclGroups) {
-                if (g != null && g.isMember(principal)) {
-                    if (b.length() > 0) {
-                        b.append("|");
-                    }
-                    b.append(g.getGroupname());
-                }
-            }
-
-            if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
-                    JahiaUserManagerService.GUEST_USERNAME)) {
-                b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
-            }
-            String userKey = b.toString();
-            if ("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
-                userKey = userName;
-            }
-            Set<String> roles = ((JahiaAccessManager) ((JCRNodeWrapper) node).getAccessControlManager()).getRoles(path);
-            b = new StringBuilder();
-            for (String g : roles) {
-                if (b.length() > 0) {
-                    b.append("|");
-                }
-                b.append(g);
-            }
-            Map<String, String> map;
-            if (!cache.isKeyInCache(userName)) {
-                map = new LinkedHashMap<String, String>();
-            } else {
-                map = (Map<String, String>) ((Element) cache.get(userName)).getValue();
-            }
-            map.put(path, userKey + "_r_" + b.toString());
-            final Element element = new Element(userName, map);
-            element.setEternal(true);
-            cache.put(element);
-            return userKey + "_r_" + b.toString();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
         return "";
+    }
+
+    public String getAclsKeyPart(RenderContext renderContext, boolean checkRootPath, String nodePath)
+            throws RepositoryException {
+        // Search for user specific acl
+        JahiaUser principal = renderContext.getUser();
+        final String userName = principal.getUsername();
+        if (hasUserAcl(userName)) {
+            Map<String, String> map = (Map<String, String>) cache.get(userName).getValue();
+            String path = nodePath;
+            while ((!path.equals("")) && !map.containsKey(path)) {
+                path = StringUtils.substringBeforeLast(path, "/");
+            }
+            if (checkRootPath) {
+                if (path.equals("")) {
+                    path = "/";
+                }
+            }
+            if (map.containsKey(path)) {
+                return (String) map.get(path)+"_p_"+checkRootPath+nodePath;
+            }
+        }
+        Map<String, Set<JahiaGroup>> allAclsGroups = getAllAclsGroups();
+        String path = nodePath;
+        if (checkRootPath) {
+            while (!allAclsGroups.containsKey(path) && !path.equals("")) {
+                path = StringUtils.substringBeforeLast(path, "/");
+            }
+            if (path.equals("")) {
+                path = "/";
+            }
+        }
+        Set<JahiaGroup> aclGroups = allAclsGroups.get(path);
+        if (aclGroups == null) {
+            // found no specific entry for this path
+            String fakePath = path;
+            while (!allAclsGroups.containsKey(fakePath) && !path.equals("")) {
+                fakePath = StringUtils.substringBeforeLast(fakePath, "/");
+            }
+            if (fakePath.equals("")) {
+                fakePath = "/";
+            }
+            aclGroups = allAclsGroups.get(fakePath);
+        }
+        StringBuilder b = new StringBuilder();
+        for (JahiaGroup g : aclGroups) {
+            if (g != null && g.isMember(principal)) {
+                if (b.length() > 0) {
+                    b.append("|");
+                }
+                b.append(g.getGroupname());
+            }
+        }
+
+        if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
+                JahiaUserManagerService.GUEST_USERNAME)) {
+            b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
+        }
+        String userKey = b.toString();
+        if ("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
+            userKey = userName;
+        }
+        Set<String> roles = ((JahiaAccessManager) ((JCRNodeWrapper) renderContext.getMainResource().getNode()).getAccessControlManager()).getRoles(path);
+        b = new StringBuilder();
+        for (String g : roles) {
+            if (b.length() > 0) {
+                b.append("|");
+            }
+            b.append(g);
+        }
+        Map<String, String> map;
+        if (!cache.isKeyInCache(userName)) {
+            map = new LinkedHashMap<String, String>();
+        } else {
+            map = (Map<String, String>) ((Element) cache.get(userName)).getValue();
+        }
+        String value = userKey + "_r_" + b.toString();
+        map.put(path, value);
+        final Element element = new Element(userName, map);
+        element.setEternal(true);
+        cache.put(element);
+        return value+"_p_"+checkRootPath+nodePath;
     }
 
     private boolean hasUserAcl(final String userName) throws RepositoryException {

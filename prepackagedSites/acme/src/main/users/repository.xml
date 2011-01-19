@@ -1,79 +1,213 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
-  <users j:usersFolderSkeleton="WEB-INF/etc/repository/user.xml,modules/**/user-skeleton.xml,modules/**/user-skeleton-*.xml" jcr:created="2010-12-17T15:26:41.589+01:00" jcr:primaryType="jnt:usersFolder" jcr:lastModifiedBy="root" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:30:29.534+01:00">
-    <root j:password="B1ZQLtup8YLYX8/MrygHxoKj0n0="  jcr:created="2010-12-17T15:26:41.612+01:00" jcr:primaryType="jnt:user" jcr:lastModifiedBy="root" j:external="false" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:30:06.476+01:00" j:accountLocked="false">
-      <files jcr:created="2010-12-17T15:26:41.669+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00">
-        <private  jcr:created="2010-12-17T15:26:41.671+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00">
-          <imports jcr:created="2010-12-17T15:26:41.679+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00" />
-        </private>
-      </files>
-      <portlets jcr:created="2010-12-17T15:26:41.680+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00" />
-      <contents jcr:created="2010-12-17T15:26:41.681+01:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00" />
-      <preferences  jcr:primaryType="jnt:preferences">
-      </preferences>
-      <j:addresses jcr:primaryType="jnt:addresses" />
-      <j:phones jcr:primaryType="jnt:phoneNumbers" />
-    </root>
-    <guest j:password="" jcr:created="2010-12-17T15:26:41.689+01:00" jcr:primaryType="jnt:user" jcr:lastModifiedBy="" j:external="false" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.898+01:00" j:accountLocked="false">
-      <j:addresses jcr:primaryType="jnt:addresses" />
-      <j:phones jcr:primaryType="jnt:phoneNumbers" />
-    </guest>
-    <author emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-17T15:30:26.651+01:00" jcr:lastModifiedBy="" j:lastName="Mac Cormick" j:lastPublishedBy=" system root" jcr:createdBy="root" j:organization="ACME" j:email="" j:firstName="John" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="  password.history.1242739225145="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en" lastLoginDate="1292438303397" email="" jcr:primaryType="jnt:user" j:about="&lt;p&gt;  I began my career working for the Ministry of Defense, in the department of Maritime Affairs, based first in Rotterdam (Netherlands), then in Cap Town (South Africa). I joined Acme in 1988 as head of the commercial department. After being involved in a number of construction projects, I took charge of the Russian subsidiary in 1997. I&amp;#39;m Senior Vice President, Constructions of Acme since my nomination in 2002.&lt;/p&gt; " j:external="false" j:lastPublished="2010-12-17T15:30:40.376+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-12-17T15:30:40.315+01:00" j:accountLocked="false">
-      <j:addresses jcr:primaryType="jnt:addresses" />
-      <j:phones jcr:primaryType="jnt:phoneNumbers" />
-      <files j:published="true" jcr:created="2010-12-17T15:30:26.668+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00">
-        <private  j:published="true" jcr:created="2010-12-17T15:30:26.672+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00">
-          <imports j:published="true" jcr:created="2010-12-17T15:30:26.719+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
-        </private>
-      </files>
-      <portlets j:published="true" jcr:created="2010-12-17T15:30:26.722+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00" />
-      <contents j:published="true" jcr:created="2010-12-17T15:30:26.725+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:14.439+02:00" />
-      <preferences  jcr:primaryType="jnt:preferences">
-      </preferences>
-      <tasks j:published="true" jcr:created="2010-12-17T15:30:26.773+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:32.286+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
-    </author>
-    <publisher emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-17T15:30:26.780+01:00" jcr:lastModifiedBy="" j:lastPublishedBy=" system root" j:lastName="Farell" jcr:createdBy="root" j:organization="ACME" j:email="" j:firstName="Jenifer" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="  preferredLanguage="en" email="" lastLoginDate="1233151317240" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-12-17T15:30:41.147+01:00" password.history.1242739225417="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2010-12-17T15:30:41.027+01:00" j:accountLocked="false">
-      <j:addresses jcr:primaryType="jnt:addresses" />
-      <j:phones jcr:primaryType="jnt:phoneNumbers" />
-      <files j:published="true" jcr:created="2010-12-17T15:30:26.798+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:23.243+02:00">
-        <private  j:published="true" jcr:created="2010-12-17T15:30:26.803+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00">
-          <imports j:published="true" jcr:created="2010-12-17T15:30:26.869+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
-        </private>
-      </files>
-      <portlets j:published="true" jcr:created="2010-12-17T15:30:26.874+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:23.243+02:00" />
-      <contents j:published="true" jcr:created="2010-12-17T15:30:26.878+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
-      <preferences  jcr:primaryType="jnt:preferences">
-      </preferences>
-      <tasks j:published="true" jcr:created="2010-12-17T15:30:26.917+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:30.291+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:23.243+02:00" />
-    </publisher>
-    <siteadmin password.history.1242739225611="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-17T15:30:26.922+01:00" jcr:lastModifiedBy="" j:lastName="Dupond" j:lastPublishedBy=" system root" jcr:createdBy="root" j:organization="ACME" j:email="" j:firstName="Max" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="  preferredLanguage="en" email="" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-12-17T15:30:34.659+01:00" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:34.639+01:00" j:accountLocked="false">
-      <j:addresses jcr:primaryType="jnt:addresses" />
-      <j:phones jcr:primaryType="jnt:phoneNumbers" />
-      <files j:published="true" jcr:created="2010-12-17T15:30:26.934+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:27.778+02:00">
-        <private  j:published="true" jcr:created="2010-12-17T15:30:26.939+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:27.778+02:00">
-          <imports j:published="true" jcr:created="2010-12-17T15:30:26.993+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
-        </private>
-      </files>
-      <portlets j:published="true" jcr:created="2010-12-17T15:30:26.998+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
-      <contents j:published="true" jcr:created="2010-12-17T15:30:27.002+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
-      <preferences  jcr:primaryType="jnt:preferences">
-      </preferences>
-      <tasks j:published="true" jcr:created="2010-12-17T15:30:27.045+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:31.289+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
-    </siteadmin>
-    <visitor j:published="true" jcr:created="2010-12-17T15:30:27.051+01:00" jcr:lastModifiedBy="" j:lastName="Sanders" j:lastPublishedBy=" system root" jcr:createdBy="root" j:organization="ACME" password.history.1242739225800="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" j:firstName="Marc" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="  preferredLanguage="en" lastLoginDate="1233238151917" email="" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-12-17T15:30:39.046+01:00" jcr:lastModified="2010-12-17T15:30:39.020+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00" j:accountLocked="false">
-      <j:addresses jcr:primaryType="jnt:addresses" />
-      <j:phones jcr:primaryType="jnt:phoneNumbers" />
-      <files j:published="true" jcr:created="2010-12-17T15:30:27.062+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00">
-        <private  j:published="true" jcr:created="2010-12-17T15:30:27.065+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00">
-          <imports j:published="true" jcr:created="2010-12-17T15:30:27.109+01:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00" />
-        </private>
-      </files>
-      <portlets j:published="true" jcr:created="2010-12-17T15:30:27.110+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:lastModified="2010-12-17T15:30:29.534+01:00" />
-      <contents j:published="true" jcr:created="2010-12-17T15:30:27.113+01:00" jcr:primaryType="jnt:contentFolder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00" />
-      <preferences  jcr:primaryType="jnt:preferences">
-      </preferences>
-      <tasks j:published="true" jcr:created="2010-12-17T15:30:27.149+01:00" jcr:primaryType="jnt:tasks" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:33.558+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00" />
-    </visitor>
-  </users>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test"
+         xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+    <users j:usersFolderSkeleton="WEB-INF/etc/repository/user.xml,modules/**/user-skeleton.xml,modules/**/user-skeleton-*.xml"
+           jcr:created="2010-12-17T15:26:41.589+01:00" jcr:primaryType="jnt:usersFolder" jcr:lastModifiedBy="root"
+           jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:30:29.534+01:00">
+        <root j:password="B1ZQLtup8YLYX8/MrygHxoKj0n0=" jcr:created="2010-12-17T15:26:41.612+01:00"
+              jcr:primaryType="jnt:user" jcr:lastModifiedBy="root" j:external="false" jcr:createdBy=" system "
+              jcr:lastModified="2010-12-17T15:30:06.476+01:00" j:accountLocked="false">
+            <files jcr:created="2010-12-17T15:26:41.669+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy=""
+                   jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00">
+                <private jcr:created="2010-12-17T15:26:41.671+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy=""
+                         jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00">
+                    <imports jcr:created="2010-12-17T15:26:41.679+01:00" jcr:primaryType="jnt:importDropBox"
+                             jcr:lastModifiedBy="" jcr:createdBy=" system "
+                             jcr:lastModified="2010-12-17T15:26:43.332+01:00"/>
+                </private>
+            </files>
+            <portlets jcr:created="2010-12-17T15:26:41.680+01:00" jcr:primaryType="jnt:portletFolder"
+                      jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00"/>
+            <contents jcr:created="2010-12-17T15:26:41.681+01:00" jcr:primaryType="jnt:contentList"
+                      jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00"/>
+            <preferences jcr:primaryType="jnt:preferences">
+            </preferences>
+            <j:addresses jcr:primaryType="jnt:addresses"/>
+            <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+        </root>
+        <guest j:password="" jcr:created="2010-12-17T15:26:41.689+01:00" jcr:primaryType="jnt:user"
+               jcr:lastModifiedBy="" j:external="false" jcr:createdBy=" system "
+               jcr:lastModified="2010-12-17T15:26:43.898+01:00" j:accountLocked="false">
+            <j:addresses jcr:primaryType="jnt:addresses"/>
+            <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+        </guest>
+        <author emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-17T15:30:26.651+01:00"
+                jcr:lastModifiedBy="" j:lastName="Mac Cormick" j:lastPublishedBy=" system root" jcr:createdBy="root"
+                j:organization="ACME" j:email="" j:firstName="John" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                password.history.1242739225145="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en"
+                lastLoginDate="1292438303397" email="" jcr:primaryType="jnt:user"
+                j:about="&lt;p&gt;  I began my career working for the Ministry of Defense, in the department of Maritime Affairs, based first in Rotterdam (Netherlands), then in Cap Town (South Africa). I joined Acme in 1988 as head of the commercial department. After being involved in a number of construction projects, I took charge of the Russian subsidiary in 1997. I&amp;#39;m Senior Vice President, Constructions of Acme since my nomination in 2002.&lt;/p&gt; "
+                j:external="false" j:lastPublished="2010-12-17T15:30:40.376+01:00"
+                j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2010-12-17T15:30:40.315+01:00"
+                j:accountLocked="false">
+            <j:addresses jcr:primaryType="jnt:addresses"/>
+            <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+            <files j:published="true" jcr:created="2010-12-17T15:30:26.668+01:00" jcr:primaryType="jnt:folder"
+                   jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root"
+                   jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                   j:checkinDate="2010-04-11T14:29:14.439+02:00">
+                <private j:published="true" jcr:created="2010-12-17T15:30:26.672+01:00" jcr:primaryType="jnt:folder"
+                         jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00"
+                         j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                         j:checkinDate="2010-04-11T14:29:14.439+02:00">
+                    <imports j:published="true" jcr:created="2010-12-17T15:30:26.719+01:00"
+                             jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root"
+                             j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root"
+                             jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:14.439+02:00"
+                             jcr:lastModified="2010-12-17T15:30:29.534+01:00"/>
+                </private>
+            </files>
+            <portlets j:published="true" jcr:created="2010-12-17T15:30:26.722+01:00" jcr:primaryType="jnt:portletFolder"
+                      jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root"
+                      jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                      j:checkinDate="2010-04-11T14:29:14.439+02:00"/>
+            <contents j:published="true" jcr:created="2010-12-17T15:30:26.725+01:00" jcr:primaryType="jnt:contentFolder"
+                      jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root"
+                      jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                      j:checkinDate="2010-04-11T14:29:14.439+02:00"/>
+            <preferences jcr:primaryType="jnt:preferences">
+            </preferences>
+            <tasks j:published="true" jcr:created="2010-12-17T15:30:26.773+01:00" jcr:primaryType="jnt:tasks"
+                   jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:32.286+01:00"
+                   j:lastPublishedBy=" system root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:14.439+02:00"
+                   jcr:lastModified="2010-12-17T15:30:29.534+01:00"/>
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_u_author j:principal="u:author" j:protected="false" j:roles="owner" j:aceType="GRANT"
+                               jcr:primaryType="jnt:ace"/>
+            </j:acl>
+        </author>
+        <publisher emailNotificationsDisabled="false" j:published="true" jcr:created="2010-12-17T15:30:26.780+01:00"
+                   jcr:lastModifiedBy="" j:lastPublishedBy=" system root" j:lastName="Farell" jcr:createdBy="root"
+                   j:organization="ACME" j:email="" j:firstName="Jenifer" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                   preferredLanguage="en" email="" lastLoginDate="1233151317240" jcr:primaryType="jnt:user"
+                   j:external="false" j:lastPublished="2010-12-17T15:30:41.147+01:00"
+                   password.history.1242739225417="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                   j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:lastModified="2010-12-17T15:30:41.027+01:00"
+                   j:accountLocked="false">
+            <j:addresses jcr:primaryType="jnt:addresses"/>
+            <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+            <files j:published="true" jcr:created="2010-12-17T15:30:26.798+01:00" jcr:primaryType="jnt:folder"
+                   jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root"
+                   jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                   j:checkinDate="2010-04-11T14:29:23.243+02:00">
+                <private j:published="true" jcr:created="2010-12-17T15:30:26.803+01:00" jcr:primaryType="jnt:folder"
+                         jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00"
+                         j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:23.243+02:00"
+                         jcr:lastModified="2010-12-17T15:30:29.534+01:00">
+                    <imports j:published="true" jcr:created="2010-12-17T15:30:26.869+01:00"
+                             jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root"
+                             j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root"
+                             jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:23.243+02:00"
+                             jcr:lastModified="2010-12-17T15:30:29.534+01:00"/>
+                </private>
+            </files>
+            <portlets j:published="true" jcr:created="2010-12-17T15:30:26.874+01:00" jcr:primaryType="jnt:portletFolder"
+                      jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root"
+                      jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                      j:checkinDate="2010-04-11T14:29:23.243+02:00"/>
+            <contents j:published="true" jcr:created="2010-12-17T15:30:26.878+01:00" jcr:primaryType="jnt:contentFolder"
+                      jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root"
+                      jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:23.243+02:00"
+                      jcr:lastModified="2010-12-17T15:30:29.534+01:00"/>
+            <preferences jcr:primaryType="jnt:preferences">
+            </preferences>
+            <tasks j:published="true" jcr:created="2010-12-17T15:30:26.917+01:00" jcr:primaryType="jnt:tasks"
+                   jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:30.291+01:00"
+                   j:lastPublishedBy=" system root" jcr:createdBy="root"
+                   jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:23.243+02:00"/>
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_u_publisher j:principal="u:publisher" j:protected="false" j:roles="owner" j:aceType="GRANT"
+                               jcr:primaryType="jnt:ace"/>
+            </j:acl>
+        </publisher>
+        <siteadmin password.history.1242739225611="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" emailNotificationsDisabled="false"
+                   j:published="true" jcr:created="2010-12-17T15:30:26.922+01:00" jcr:lastModifiedBy=""
+                   j:lastName="Dupond" j:lastPublishedBy=" system root" jcr:createdBy="root" j:organization="ACME"
+                   j:email="" j:firstName="Max" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en"
+                   email="" jcr:primaryType="jnt:user" j:external="false"
+                   j:lastPublished="2010-12-17T15:30:34.659+01:00" j:checkinDate="2010-04-11T14:29:27.778+02:00"
+                   jcr:lastModified="2010-12-17T15:30:34.639+01:00" j:accountLocked="false">
+            <j:addresses jcr:primaryType="jnt:addresses"/>
+            <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+            <files j:published="true" jcr:created="2010-12-17T15:30:26.934+01:00" jcr:primaryType="jnt:folder"
+                   jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root"
+                   jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                   j:checkinDate="2010-04-11T14:29:27.778+02:00">
+                <private j:published="true" jcr:created="2010-12-17T15:30:26.939+01:00" jcr:primaryType="jnt:folder"
+                         jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00"
+                         j:lastPublishedBy="root" jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                         j:checkinDate="2010-04-11T14:29:27.778+02:00">
+                    <imports j:published="true" jcr:created="2010-12-17T15:30:26.993+01:00"
+                             jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root"
+                             j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root"
+                             jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00"
+                             jcr:lastModified="2010-12-17T15:30:29.534+01:00"/>
+                </private>
+            </files>
+            <portlets j:published="true" jcr:created="2010-12-17T15:30:26.998+01:00" jcr:primaryType="jnt:portletFolder"
+                      jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root"
+                      jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00"
+                      jcr:lastModified="2010-12-17T15:30:29.534+01:00"/>
+            <contents j:published="true" jcr:created="2010-12-17T15:30:27.002+01:00" jcr:primaryType="jnt:contentFolder"
+                      jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root"
+                      jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00"
+                      jcr:lastModified="2010-12-17T15:30:29.534+01:00"/>
+            <preferences jcr:primaryType="jnt:preferences">
+            </preferences>
+            <tasks j:published="true" jcr:created="2010-12-17T15:30:27.045+01:00" jcr:primaryType="jnt:tasks"
+                   jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:31.289+01:00"
+                   j:lastPublishedBy=" system root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:27.778+02:00"
+                   jcr:lastModified="2010-12-17T15:30:29.534+01:00"/>
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_u_siteadmin j:principal="u:siteadmin" j:protected="false" j:roles="owner" j:aceType="GRANT"
+                               jcr:primaryType="jnt:ace"/>
+            </j:acl>
+        </siteadmin>
+        <visitor j:published="true" jcr:created="2010-12-17T15:30:27.051+01:00" jcr:lastModifiedBy=""
+                 j:lastName="Sanders" j:lastPublishedBy=" system root" jcr:createdBy="root" j:organization="ACME"
+                 password.history.1242739225800="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" j:firstName="Marc"
+                 j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en" lastLoginDate="1233238151917" email=""
+                 jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-12-17T15:30:39.046+01:00"
+                 jcr:lastModified="2010-12-17T15:30:39.020+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                 j:accountLocked="false">
+            <j:addresses jcr:primaryType="jnt:addresses"/>
+            <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+            <files j:published="true" jcr:created="2010-12-17T15:30:27.062+01:00" jcr:primaryType="jnt:folder"
+                   jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root"
+                   jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                   jcr:lastModified="2010-12-17T15:30:29.534+01:00">
+                <private j:published="true" jcr:created="2010-12-17T15:30:27.065+01:00" jcr:primaryType="jnt:folder"
+                         jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00"
+                         j:lastPublishedBy="root" jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                         jcr:lastModified="2010-12-17T15:30:29.534+01:00">
+                    <imports j:published="true" jcr:created="2010-12-17T15:30:27.109+01:00"
+                             jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="root"
+                             j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root"
+                             jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                             j:checkinDate="2010-04-11T14:29:31.374+02:00"/>
+                </private>
+            </files>
+            <portlets j:published="true" jcr:created="2010-12-17T15:30:27.110+01:00" jcr:primaryType="jnt:portletFolder"
+                      jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root"
+                      jcr:createdBy="root" j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                      jcr:lastModified="2010-12-17T15:30:29.534+01:00"/>
+            <contents j:published="true" jcr:created="2010-12-17T15:30:27.113+01:00" jcr:primaryType="jnt:contentFolder"
+                      jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root"
+                      jcr:createdBy="root" jcr:lastModified="2010-12-17T15:30:29.534+01:00"
+                      j:checkinDate="2010-04-11T14:29:31.374+02:00"/>
+            <preferences jcr:primaryType="jnt:preferences">
+            </preferences>
+            <tasks j:published="true" jcr:created="2010-12-17T15:30:27.149+01:00" jcr:primaryType="jnt:tasks"
+                   jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:33.558+01:00"
+                   j:lastPublishedBy=" system root" jcr:createdBy="root"
+                   jcr:lastModified="2010-12-17T15:30:29.534+01:00" j:checkinDate="2010-04-11T14:29:31.374+02:00"/>
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_u_visitor j:principal="u:visitor" j:protected="false" j:roles="owner" j:aceType="GRANT"
+                               jcr:primaryType="jnt:ace"/>
+            </j:acl>
+        </visitor>
+    </users>
 </content>
 

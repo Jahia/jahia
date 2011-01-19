@@ -47,6 +47,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.apache.solr.client.solrj.response.FacetField;
 
@@ -215,25 +216,7 @@ public class Functions {
      * @return filter encoded for URL query parameter usage
      */
     public static String encodeFacetUrlParam(String inputString) {
-        if (StringUtils.isEmpty(inputString)) {
-            return inputString;
-        }
-        // Compress the bytes
-        byte[] output = new byte[2048];
-        Deflater compresser = new Deflater();
-        try {
-            compresser.setInput(inputString.getBytes("UTF-8"));
-            compresser.finish();
-            int compressedDataLength = compresser.deflate(output);
-            byte[] copy = new byte[compressedDataLength];
-            System.arraycopy(output, 0, copy, 0,
-                             Math.min(output.length, compressedDataLength));
-            return Base64.encodeBase64URLSafeString(copy);            
-        } catch (UnsupportedEncodingException e) {
-            logger.warn("Not able to encode facet URL: " + inputString, e);
-        }
-        
-        return inputString;
+        return Url.encodeUrlParam(inputString);
     }
     
     /**
@@ -242,24 +225,6 @@ public class Functions {
      * @return decoded facet filter parameter
      */
     public static String decodeFacetUrlParam(String inputString) {
-        if (StringUtils.isEmpty(inputString)) {
-            return inputString;
-        }        
-        byte[] input = Base64.decodeBase64(inputString);
-        // Decompress the bytes
-        Inflater decompresser = new Inflater();
-        decompresser.setInput(input, 0, input.length);
-        byte[] result = new byte[2048];
-        String outputString = "";
-        try {
-            int resultlength = decompresser.inflate(result);
-            decompresser.end();        
-            outputString = new String(result, 0, resultlength, "UTF-8");            
-        } catch (DataFormatException e) {
-            logger.warn("Not able to decode facet URL: " + inputString, e);
-        } catch (UnsupportedEncodingException e) {
-            logger.warn("Not able to decode facet URL: " + inputString, e);
-        }
-        return outputString;
+        return Url.decodeUrlParam(inputString);
     }
 }

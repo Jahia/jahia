@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.JahiaService;
-import org.jahia.utils.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.InitializingBean;
 
 
@@ -99,7 +99,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
             if (md != null) {
                 md.reset ();
                 md.update (password.getBytes ());
-                result = new String (Base64.encode (md.digest ()));
+                result = new String (Base64.encodeBase64 (md.digest ()));
             }
             md = null;
         } catch (NoSuchAlgorithmException ex) {
@@ -285,7 +285,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      * This method indicates that any internal cache for a provider should be
      * updated because the value has changed and needs to be transmitted to the
      * other nodes in a clustering environment.
-     * @param jahiaGroup JahiaGroup the group to be updated in the cache.
+     * @param jahiaUser JahiaUser the group to be updated in the cache.
      */
     public abstract void updateCache(JahiaUser jahiaUser);
 

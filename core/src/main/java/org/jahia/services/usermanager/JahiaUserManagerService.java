@@ -34,7 +34,7 @@ package org.jahia.services.usermanager;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
-import org.jahia.utils.Base64;
+import org.apache.commons.codec.binary.Base64;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -91,7 +91,7 @@ public abstract class JahiaUserManagerService extends JahiaService {
             if (md != null) {
                 md.reset ();
                 md.update (password.getBytes ());
-                result = new String (Base64.encode (md.digest ()));
+                result = new String (Base64.encodeBase64 (md.digest ()));
             }
             md = null;
         } catch (NoSuchAlgorithmException ex) {
@@ -237,7 +237,6 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * side value is "*" for a property then it will be tested against all the
      * properties. ie *=test* will match every property that starts with "test"
      *
-     * @param siteID          site identifier
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "username"="*test*") or
      *                        null to search without criterias
@@ -254,7 +253,6 @@ public abstract class JahiaUserManagerService extends JahiaService {
      *
      * @param providerKey     key of the provider in which to search, may be
      *                        obtained by calling getProviderList()
-     * @param siteID          site identifier
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "username"="*test*") or
      *                        null to search without criterias

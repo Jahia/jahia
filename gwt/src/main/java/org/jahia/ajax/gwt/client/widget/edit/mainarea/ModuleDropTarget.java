@@ -133,17 +133,21 @@ public class ModuleDropTarget extends DropTarget {
 
     @Override
     protected void onDragEnter(DNDEvent e) {
-//        if (module.getMainModule().getConfig().getName().equals("studiomode") && !module.getParentModule().isLocked()) {
-//            e.getStatus().setStatus(false);
-//            e.setCancelled(false);
-//            return;
-//        }
-
-        final GWTJahiaNode jahiaNode = module.getParentModule().getNode();
+        Module parentModule = module.getParentModule();
+        final GWTJahiaNode jahiaNode = parentModule.getNode();
         if (PermissionsUtils.isPermitted("jcr:addChildNodes", jahiaNode) && !jahiaNode.isLocked()) {
-            String nodetypes = module.getParentModule().getNodeTypes();
+
+            String nodetypes = parentModule.getNodeTypes();
             if (EditModeDNDListener.EMPTYAREA_TYPE.equals(targetType)) {
                 nodetypes = module.getNodeTypes();
+            }
+            EditModeDNDListener.SIMPLEMODULE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE));
+            if (parentModule.getChildCount() >= parentModule.getListLimit() &&
+                    (e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE) == null ||
+                    !parentModule.equals(((Module) e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE)).getParentModule()))) {
+                e.getStatus().setStatus(false);
+                e.setCancelled(false);
+                return;
             }
 
             boolean allowed = !EditModeDNDListener.CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_TYPE)) &&  checkNodeType(e, nodetypes);
@@ -154,7 +158,7 @@ public class ModuleDropTarget extends DropTarget {
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
                 e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : jahiaNode);
             } else {
-                String refTypes = module.getParentModule().getReferenceTypes();
+                String refTypes = parentModule.getReferenceTypes();
                 if (targetType.equals(EditModeDNDListener.EMPTYAREA_TYPE)) {
                     refTypes = module.getReferenceTypes();
                 }

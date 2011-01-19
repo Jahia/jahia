@@ -30,6 +30,10 @@
                 </c:if>
             </c:forEach>
         </c:if>
+        <c:set var="listLimit" value="${currentNode.properties['j:numberOfItems'].long}"/>
+        <c:if test="${empty listLimit}">
+            <c:set var="listLimit" value="${-1}"/>
+        </c:if>
         <c:if test="${empty currentNode.properties['j:basenode'].node.path}">
             <c:set var="path" value="${renderContext.site.path}/home"/>
         </c:if>
@@ -39,7 +43,7 @@
 
         <template:area template="${currentNode.properties['j:referenceView'].string}"
                                  path="${path}/${currentNode.name}"
-                                 nodeTypes="${nodeTypes}" moduleType="absoluteArea" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
+                                 nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                 <template:param name="subNodesView" value="${currentNode.properties['j:subNodesView'].string}"/>
             </c:if>

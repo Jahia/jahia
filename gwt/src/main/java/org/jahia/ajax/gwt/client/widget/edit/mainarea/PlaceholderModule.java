@@ -97,6 +97,11 @@ public class PlaceholderModule extends Module {
         target.setFeedback(DND.Feedback.INSERT);
 
         target.addDNDListener(mainModule.getEditLinker().getDndListener());
+
+        if (getParentModule().getChildCount() >= getParentModule().getListLimit()) {
+            return;
+        }
+
         if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
             String[] nodeTypesArray = getParentModule().getNodeTypes().split(" ");
             for (final String s : nodeTypesArray) {

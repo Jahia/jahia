@@ -79,6 +79,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected String nodeTypes = null;
 
+    protected int listLimit = -1;
+
     protected String constraints = null;
 
     protected String var = null;
@@ -139,6 +141,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     public void setNodeTypes(String nodeTypes) {
         this.nodeTypes = nodeTypes;
+    }
+
+    public void setListLimit(int listLimit) {
+        this.listLimit = listLimit;
     }
 
     public void setEditable(boolean editable) {
@@ -275,6 +281,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             editable = true;
             templateType = null;
             nodeTypes = null;
+            listLimit = -1;
             constraints = null;
             var = null;
             buffer = null;
@@ -333,15 +340,19 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             throws RepositoryException, IOException {
 
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ").append("id=\"module")
-                .append(UUID.randomUUID().toString()).append("\" type=\"").append(type).append("\" ");
+                .append(UUID.randomUUID().toString()).append("\" type=\"").append(type).append("\"");
 
         buffer.append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "").append(" path=\"").append(path)
-                .append("\" ");
+                .append("\"");
 
         if (!StringUtils.isEmpty(nodeTypes)) {
-            buffer.append("nodetypes=\"" + nodeTypes + "\"");
+            buffer.append(" nodetypes=\"" + nodeTypes + "\"");
         } else if (!StringUtils.isEmpty(constraints)) {
-            buffer.append("nodetypes=\"" + constraints + "\"");
+            buffer.append(" nodetypes=\"" + constraints + "\"");
+        }
+
+        if (listLimit > -1) {
+            buffer.append(" listlimit=\"" + listLimit + "\"");
         }
 
         if (constraints != null) {

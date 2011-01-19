@@ -96,14 +96,8 @@ public class SimpleModuleDragSource extends EditModeDragSource {
             }
 
             Selection.getInstance().hide();
-//            if(module instanceof LinkerModule) {
-//                e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.BINDED_REFERENCE_TYPE);
-//                if (null != module.getScriptInfo() && !"".equals(module.getScriptInfo())) {
-//                    e.getStatus().setData(EditModeDNDListener.BINDED_MIXIN_TYPES, module.getScriptInfo());
-//                }
-//            } else {
-                e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-//            }
+            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
+            e.getStatus().setData(EditModeDNDListener.SOURCE_MODULE, module);
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             l.add(getModule().getNode());
             e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);

@@ -431,6 +431,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Number of elements to display.</description>
+            <name>listLimit</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Content type .</description>
             <name>areaType</name>
             <required>false</required>

@@ -34,8 +34,6 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.widget.Editor;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,7 +43,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -136,7 +133,7 @@ public class AreaModule extends SimpleModule {
             add(ctn);
 //            add(dash);
             setBorders(false);
-        } else if (!hasChildren) {
+        } else if (childCount == 0) {
             addStyleName("area-empty");
             headerText += " (" + Messages.get("label.empty", "empty")+ ")";
 
@@ -176,7 +173,7 @@ public class AreaModule extends SimpleModule {
     }
 
     @Override public void onNodeTypesLoaded() {
-        if (!hasChildren && !missingList) {
+        if (childCount == 0 && !missingList) {
             DropTarget target = new ModuleDropTarget(this, node == null ? EditModeDNDListener.EMPTYAREA_TYPE : EditModeDNDListener.PLACEHOLDER_TYPE);
             target.setOperation(DND.Operation.COPY);
             target.setFeedback(DND.Feedback.INSERT);

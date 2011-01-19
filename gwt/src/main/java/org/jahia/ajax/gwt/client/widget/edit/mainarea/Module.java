@@ -39,7 +39,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 
 import java.util.Map;
 
@@ -59,12 +58,13 @@ public abstract class Module extends LayoutContainer {
     protected Module parentModule;
     protected MainModule mainModule;
     protected String nodeTypes;
+    protected int listLimit;
     protected String referenceTypes;
     protected boolean isDraggable = false;
     protected int depth;
     protected boolean selectable;
     protected Header head;
-    protected boolean hasChildren = false;
+    protected int childCount = 0;
 
     public Module() {
     }
@@ -76,6 +76,7 @@ public abstract class Module extends LayoutContainer {
 
         template = DOM.getElementAttribute(divElement, "template");
         nodeTypes = DOM.getElementAttribute(divElement, "nodetypes");
+        listLimit = !"".equals(DOM.getElementAttribute(divElement, "listlimit")) ? Integer.parseInt(DOM.getElementAttribute(divElement, "listlimit")): -1;
         referenceTypes = DOM.getElementAttribute(divElement, "referenceTypes");
         scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
 
@@ -89,6 +90,7 @@ public abstract class Module extends LayoutContainer {
 
         template = DOM.getElementAttribute(divElement, "template");
         nodeTypes = DOM.getElementAttribute(divElement, "nodetypes");
+        listLimit = !"".equals(DOM.getElementAttribute(divElement, "listlimit")) ? Integer.parseInt(DOM.getElementAttribute(divElement, "listlimit")): -1;
         referenceTypes = DOM.getElementAttribute(divElement, "referenceTypes");
         scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
 
@@ -115,15 +117,19 @@ public abstract class Module extends LayoutContainer {
         return parentModule;
     }
 
-    public void setHasChildren(boolean hasChildren) {
-        this.hasChildren = hasChildren;
+    public void addChild(Module childModule) {
+        this.childCount++;
     }
 
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
         if (parentModule != null) {
-            parentModule.setHasChildren(true);
+            parentModule.addChild(this);
         }
+    }
+
+    public int getChildCount() {
+        return childCount;
     }
 
     public String getModuleId() {
@@ -172,6 +178,10 @@ public abstract class Module extends LayoutContainer {
 
     public String getNodeTypes() {
         return nodeTypes;
+    }
+
+    public int getListLimit() {
+        return listLimit;
     }
 
     public String getReferenceTypes() {

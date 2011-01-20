@@ -107,6 +107,7 @@
         <module>portal</module>
         <module>press</module>
         <module>publication</module>
+        <module>profile</module>
         <module>rating</module>
         <module>roles</module>
         <module>rss</module>

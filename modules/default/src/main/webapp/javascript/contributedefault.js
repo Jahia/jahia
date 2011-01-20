@@ -57,6 +57,21 @@ function initEditFields(id) {
         }, "json");
         return(value.replace("T", " "));
     }, {
+        type : 'datepicker',
+        onblur : 'ignore',
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        tooltip : contributionI18n['edit']
+    });
+
+    $(".dateTimeEdit" + id).editable(function (value, settings) {
+        var submitId = $(this).attr('jcr:id');
+        var data = {'methodToCall':'put'};
+        data[submitId] = value;
+        $.post($(this).attr('jcr:url'), data, function(result) {
+        }, "json");
+        return(value.replace("T", " "));
+    }, {
         type : 'datetimepicker',
         onblur : 'ignore',
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',

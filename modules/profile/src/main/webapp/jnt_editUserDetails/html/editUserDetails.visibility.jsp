@@ -65,7 +65,7 @@
 
     <form action="${url.basePreview}${user.path}" method="post" id="updateVisibility">
     <c:forTokens
-            items="j:firstName,j:lastName,j:gender,j:title,j:birthDate,j:organization,j:function,j:about,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:picture,j:preferredLanguage"
+            items="j:firstName,j:lastName,j:gender,j:title,j:birthDate,j:organization,j:function,j:about,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:picture,preferredLanguage"
             delims="," var="key">
         <c:if test="${currentNode.properties[key].boolean}">
             <input onchange="$('#updateVisibility').ajaxSubmit()()" type="checkbox" name="j:publicProperties" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} /> <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/> </br>

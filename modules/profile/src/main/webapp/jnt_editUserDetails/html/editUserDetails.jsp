@@ -31,6 +31,16 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery-ui.datepicker.min.js,jquery.jeditable.datepicker.js"/>
 
+<template:addResources type="javascript" resources="datepicker.js,timepicker.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${renderContext.mainResourceLocale.language}.js"/>
+
+<template:addResources type="css" resources="timepicker.css"/>
+<template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
+<template:addResources type="javascript" resources="contributedefault.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
+<template:addResources type="javascript"
+                       resources="${url.context}/gwt/resources/${url.ckEditor}/adapters/jquery.js"/>
+
 <c:set var="fields" value="${user.propertiesAsString}"/>
 <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle" var="title"/>
 <c:if test="${not empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
@@ -59,156 +69,10 @@
 <fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
 <jcr:propertyInitializers node="${user}" name="j:gender" var="genderInit"/>
 <jcr:propertyInitializers node="${user}" name="j:title" var="titleInit"/>
+
 <script>
-
-    var genderMap = "{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}";
-    var titleMap = "{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}";
-
     $(document).ready(function() {
-        $(".edit").editable(function (value, settings) {
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            data[submitId] = value;
-            data['methodToCall'] = 'put';
-            $.post("${url.basePreview}${user.path}", data, function(result) {
-                var j_title = "";
-                if (result && typeof result.j_title != 'undefined')
-                    j_title = eval("datas=" + titleMap)[result.j_title];
-                var j_firstname = "";
-                if (result && typeof result.j_firstName != 'undefined')
-                    j_firstname = result.j_firstName;
-                var j_lastname = "";
-                if (result && typeof result.j_lastName != 'undefined')
-                    j_lastname = result.j_lastName;
-                $("#personDisplay2").html(j_title + " " + j_firstname + " " + j_lastname);
-                $("#personDisplay1").html(j_title + " " + j_firstname + " " + j_lastname);
-                if (result && result.j_email != 'undefined')
-                    $("#emailDisplay").html(result.j_email);
-            }, "json");
-            return(value);
-        }, {
-            type    : 'text',
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : '<fmt:message key="label.clickToEdit"/>'
-        });
-
-        $(".imageEdit").editable('${url.basePreview}${user.path}', {
-            type : 'ajaxupload',
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : '<fmt:message key="label.clickToEdit"/>',
-            callback : function (data, status) {
-                uploadedImageCallback(data, status);
-            }
-        });
-
-        function uploadedImageCallback(data, status) {
-            var datas = {};
-            datas['j:picture'] = data.uuids[0];
-            datas['methodToCall'] = 'put';
-            $.post('${url.basePreview}${user.path}', datas, function(result) {
-                var input = $('<div class="itemImage itemImageRight"><img src="' + result.j_picture + '/avatar_120" /></div>');
-                $("#portrait").html(input);
-            }, "json");
-        }
-
-        $(".ckeditorEdit").editable(function (value, settings) {
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            data[submitId] = value;
-            data['methodToCall'] = 'put';
-            $.post("${url.basePreview}${user.path}", data, function(result) {
-            }, "json");
-            return(value);
-        }, {
-            type : 'ckeditor',
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : '<fmt:message key="label.clickToEdit"/>'
-        });
-
-        $(".dateEdit").editable(function (value, settings) {
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            data[submitId] = value;
-            data['methodToCall'] = 'put';
-            $.post("${url.basePreview}${user.path}", data, function(result) {
-            }, "json");
-            return(value);
-        }, {
-            type : 'datepicker',
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : '<fmt:message key="label.clickToEdit"/>'
-        });
-
-        $(".genderEdit").editable(function (value, settings) {
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            data[submitId] = value;
-            data['methodToCall'] = 'put';
-            $.post("${url.basePreview}${user.path}", data, null, "json");
-            return eval("values=" + genderMap)[value];
-        }, {
-            type    : 'select',
-            data   : genderMap,
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : '<fmt:message key="label.clickToEdit"/>'
-        });
-
-        $(".titleEdit").editable(function (value, settings) {
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            data[submitId] = value;
-            data['methodToCall'] = 'put';
-            $.post("${url.basePreview}${user.path}", data, function(result) {
-                var j_title = result.j_title;
-                j_title = eval("datas=" + titleMap)[j_title];
-                $("#personDisplay2").html(j_title + " " + result.j_firstName + " " + result.j_lastName);
-                $("#personDisplay1").html(j_title + " " + result.j_firstName + " " + result.j_lastName);
-                $("#emailDisplay").html(result.j_email);
-            }, "json");
-            return eval("values=" + titleMap)[value];
-        }, {
-            type    : 'select',
-            data   : titleMap,
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : '<fmt:message key="label.clickToEdit"/>'
-        });
-
-        $(".prefEdit").editable(function (value, settings) {
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            data[submitId] = value;
-            data['methodToCall'] = 'put';
-            $.post("${url.basePreview}${currentNode.path}", data, null, "json");
-            <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
-            <c:choose>
-            <c:when test="${status.first}">
-            if (value=="${adLocale}") return "${functions:capitalize(functions:displayLocaleNameWith(adLocale,adLocale))}";
-                    </c:when>
-                    <c:otherwise>
-            else if (value=="${adLocale}") return "${functions:capitalize(functions:displayLocaleNameWith(adLocale,adLocale))}";
-            </c:otherwise>
-            </c:choose>
-            </c:forEach>
-        }, {
-            type    : 'select',
-            data   : "{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${not status.first}">,</c:if>'${adLocale}':'${functions:capitalize(functions:displayLocaleNameWith(adLocale,adLocale))}'</c:forEach>}",
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : '<fmt:message key="label.clickToEdit"/>'
-        });
+        initEditFields("${currentNode.identifier}");
     });
 </script>
 
@@ -217,20 +81,18 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_firstName'/></span>
 
-            <div class="edit" id="j_firstName">
-                <c:if test="${empty fields['j:firstName']}"><fmt:message key="label.clickToEdit"/></c:if>
-                <c:if test="${!empty fields['j:firstName']}">${fields['j:firstName']}</c:if>
-            </div>
+            <span jcr:id="j:firstName" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}j_firstName"
+                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:firstName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:firstName']}">${fields['j:firstName']}</c:if></span>
         </li>
     </c:if>
     <c:if test="${currentNode.properties['j:lastName'].boolean}">
         <li>
             <span class="label"><fmt:message key='jnt_user.j_lastName'/></span>
 
-            <div class="edit" id="j_lastName">
-                <c:if test="${empty fields['j:lastName']}"><fmt:message key="label.clickToEdit"/></c:if>
-                <c:if test="${!empty fields['j:lastName']}">${fields['j:lastName']}</c:if>
-            </div>
+            <span jcr:id="j:lastName" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}j_lastName"
+                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:lastName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:lastName']}">${fields['j:lastName']}</c:if></span>
         </li>
     </c:if>
 
@@ -238,9 +100,9 @@
         <li>
             <span class="label"><fmt:message key="jnt_user.profile.sexe"/> : </span>
 
-            <div class="genderEdit" id="j_gender">
-                <jcr:nodePropertyRenderer node="${user}" name="j:gender" renderer="resourceBundle"/>
-            </div>
+            <div jcr:id="j:gender" class="choicelistEdit${currentNode.identifier}"
+                  jcr:url="${url.base}${user.path}"
+                  jcr:options="{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="j:gender" renderer="resourceBundle"/></div>
         </li>
     </c:if>
 
@@ -248,8 +110,9 @@
         <li>
             <span class="label"><fmt:message key="jnt_user.j_title"/></span>
 
-            <div class="titleEdit" id="j_title"><jcr:nodePropertyRenderer node="${user}" name="j:title"
-                                                                          renderer="resourceBundle"/></div>
+            <div jcr:id="j:title" class="choicelistEdit${currentNode.identifier}"
+                  jcr:url="${url.base}${user.path}"
+                  jcr:options="{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/></div>
         </li>
     </c:if>
 
@@ -261,10 +124,11 @@
                 <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
             </c:if>
             <c:if test="${empty birthDate}">
-                <jsp:useBean id="now" class="java.util.Date"/>
-                <fmt:formatDate value="${now}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+                <c:set var="displayBirthDate"><fmt:message key="label.clickToEdit"/></c:set>
             </c:if>
-            <div class="dateEdit" id="j_birthDate">${displayBirthDate}</div>
+            <div jcr:id="j:birthDate" class="dateEdit${currentNode.identifier}"
+                 id="dateEdit${currentNode.identifier}j_birthDate"
+                 jcr:url="${url.base}${user.path}">${displayBirthDate}</div>
         </li>
     </c:if>
 
@@ -272,10 +136,9 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_organization'/></span>
 
-            <div class="edit" id="j_organization">
-                <c:if test="${empty fields['j:organization']}"><fmt:message key="label.clickToEdit"/></c:if>
-                <c:if test="${!empty fields['j:organization']}">${fields['j:organization']}</c:if>
-            </div>
+            <span jcr:id="j:organization" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}j_organization"
+                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:organization']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:organization']}">${fields['j:organization']}</c:if></span>
         </li>
     </c:if>
 
@@ -283,10 +146,9 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_function'/></span>
 
-            <div class="edit" id="j_function">
-                <c:if test="${empty fields['j:function']}"><fmt:message key="label.clickToEdit"/></c:if>
-                <c:if test="${!empty fields['j:function']}">${fields['j:function']}</c:if>
-            </div>
+            <span jcr:id="j:function" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}j_function"
+                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:function']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:function']}">${fields['j:function']}</c:if></span>
         </li>
     </c:if>
 
@@ -294,14 +156,19 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_about'/></span>
 
-            <div class="ckeditorEdit j_aboutEdit" id="j_about">${fields['j:about']}</div>
+            <div jcr:id="j:about" class="ckeditorEdit${currentNode.identifier}"
+                  id="ckeditorEdit${currentNode.identifier}j_about"
+                  jcr:url="${url.base}${user.path}">${fields['j:about']}</div>
         </li>
     </c:if>
 
     <c:if test="${currentNode.properties['j:email'].boolean}">
         <li>
             <span class="label"><fmt:message key="jnt_user.j_email"/> : </span>
-            <span id="j_email" class="edit">${fields['j:email']}</span><br/>
+
+            <span jcr:id="j:email" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}j_email"
+                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:email']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:email']}">${fields['j:email']}</c:if></span>
         </li>
     </c:if>
 
@@ -309,10 +176,9 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_skypeID'/></span>
 
-            <div class="edit" id="j_skypeID">
-                <c:if test="${empty fields['j:skypeID']}"><fmt:message key="label.clickToEdit"/></c:if>
-                <c:if test="${!empty fields['j:skypeID']}">${fields['j:skypeID']}</c:if>
-            </div>
+            <span jcr:id="j:skypeID" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}j_skypeID"
+                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:skypeID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:skypeID']}">${fields['j:skypeID']}</c:if></span>
         </li>
     </c:if>
 
@@ -320,10 +186,9 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_twitterID'/></span>
 
-            <div class="edit" id="j_twitterID">
-                <c:if test="${empty fields['j:twitterID']}"><fmt:message key="label.clickToEdit"/></c:if>
-                <c:if test="${!empty fields['j:twitterID']}">${fields['j:twitterID']}</c:if>
-            </div>
+            <span jcr:id="j:twitterID" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}j_twitterID"
+                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:twitterID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:twitterID']}">${fields['j:twitterID']}</c:if></span>
         </li>
     </c:if>
 
@@ -331,10 +196,9 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_facebookID'/></span>
 
-            <div class="edit" id="j_facebookID">
-                <c:if test="${empty fields['j:facebookID']}"><fmt:message key="label.clickToEdit"/></c:if>
-                <c:if test="${!empty fields['j:facebookID']}">${fields['j:facebookID']}</c:if>
-            </div>
+            <span jcr:id="j:facebookID" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}j_facebookID"
+                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:facebookID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:facebookID']}">${fields['j:facebookID']}</c:if></span>
         </li>
     </c:if>
 
@@ -342,10 +206,9 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_linkedinID'/></span>
 
-            <div class="edit" id="j_linkedinID">
-                <c:if test="${empty fields['j:linkedinID']}"><fmt:message key="label.clickToEdit"/></c:if>
-                <c:if test="${!empty fields['j:linkedinID']}">${fields['j:linkedinID']}</c:if>
-            </div>
+            <span jcr:id="j:linkedinID" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}j_linkedinID"
+                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:linkedinID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:linkedinID']}">${fields['j:linkedinID']}</c:if></span>
         </li>
     </c:if>
 
@@ -353,30 +216,28 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_picture'/></span>
 
-            <div class="imageEdit">
-                <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-                <c:if test="${not empty picture}">
-                    <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${person}"/>
-                </c:if>
-                <c:if test="${empty picture}">
-                    <span><fmt:message key="jnt_user.profile.uploadPicture"/></span>
-                </c:if>
+            <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+
+            <c:if test="${not empty picture}">
+                <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${person}"/>
+            </c:if>
+
+            <div class="file${currentNode.identifier}" jcr:id="j:picture"
+                 jcr:url="${url.base}${user.path}">
+                <span><fmt:message key="add.file"/></span>
             </div>
         </li>
     </c:if>
 
     <c:if test="${currentNode.properties['j:preferredLanguage'].boolean}">
         <li>
-            <span class="label"><fmt:message key="jnt_user.preference.preferredLanguage"/></span>
+            <span class="label"><fmt:message key="jnt_user.preferredLanguage"/></span>
 
-            <div class="prefEdit" id="preferredLanguage">
-                <c:choose>
-                    <c:when test="${not empty fields.preferredLanguage}">
-                        ${functions:capitalize(functions:displayLocaleNameWith(functions:toLocale(fields.preferredLanguage),functions:toLocale(fields.preferredLanguage)))}
-                    </c:when>
-                </c:choose>
-            </div>
-
+            <div jcr:id="preferredLanguage" class="choicelistEdit${currentNode.identifier}"
+                  jcr:url="${url.base}${user.path}"
+                  jcr:options="{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${status.index > 0}">,</c:if>'${adLocale}':'${adLocale}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="preferredLanguage" renderer="resourceBundle"/></div>
         </li>
+
     </c:if>
 </ul>
+

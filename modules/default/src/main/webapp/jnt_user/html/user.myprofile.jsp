@@ -297,7 +297,7 @@
                                     });
                                 </script>
                             <label class="left"><fmt:message
-                                    key="jnt_user.preference.preferredLanguage"/></label>
+                                    key="jnt_user.preferredLanguage"/></label>
                             <div class="prefEdit" id="preferredLanguage">
                                 <c:choose>
                                     <c:when test="${not empty fields.preferredLanguage}">

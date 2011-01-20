@@ -141,9 +141,9 @@
                     </c:when>
                     <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
                         <c:set var="dateTimePicker"
-                               value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
-                        <div jcr:id="${propertyDefinition.name}" class="dateEdit${currentNode.identifier}"
-                              id="dateEdit${currentNode.identifier}${scriptPropName}"
+                               value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER ? 'dateTimeEdit' : 'dateEdit'}"/>
+                        <div jcr:id="${propertyDefinition.name}" class="${dateTimePicker}${currentNode.identifier}"
+                              id="${dateTimePicker}${currentNode.identifier}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">
                             <c:if test="${not empty prop}">
                                 <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy HH:mm"/>

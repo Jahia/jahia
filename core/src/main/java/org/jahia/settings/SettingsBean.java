@@ -58,12 +58,14 @@ import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.utils.properties.PropertiesManager;
 import org.springframework.core.io.Resource;
+import org.springframework.web.context.ServletContextAware;
 
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class SettingsBean {
+public class SettingsBean implements ServletContextAware {
 
     private static final transient Logger logger =
             org.slf4j.LoggerFactory.getLogger (SettingsBean.class);
@@ -178,6 +180,8 @@ public class SettingsBean {
     private ServerDeploymentInterface serverDeployer = null;
 
 	private boolean maintenanceMode;
+
+    private ServletContext servletContext;
 
     /**
      * Default constructor.
@@ -1050,4 +1054,11 @@ public class SettingsBean {
                 : convert;
     }
 
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
 }

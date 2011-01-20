@@ -75,7 +75,7 @@
     </c:forEach>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
         <c:set var="readonly" value="${propertyDefinition.protected}"/>
-        <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title')}">
+        <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title') and !(propertyDefinition.name eq '*')}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>

@@ -35,6 +35,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
@@ -126,6 +127,10 @@ public class CacheFilter extends AbstractFilter {
                     } catch (ItemNotFoundException e) {                       
                     }
                 }
+            }
+            JCRNodeWrapper areaResource = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaResource");
+            if(areaResource !=null) {
+                resource.getDependencies().add(areaResource.getPath());
             }
             String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getResolvedTemplate());
             if (debugEnabled) {

@@ -14,12 +14,10 @@
     <template:linker property="j:bindedComponent"/>
 </c:if>
 
-<c:if test="${not empty user}">
-
 <%--<c:if test="${not jcr:isNodeType(user, 'jnt:user')}">--%>
 <%--<jcr:node var="user" path="/users/${user.properties['jcr:createdBy'].string}"/>--%>
 <%--</c:if>--%>
-<c:if test="${not jcr:isNodeType(user, 'jnt:user')}">
+<c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
     <jcr:node var="user" path="/users/${renderContext.user.username}"/>
 </c:if>
 
@@ -90,23 +88,6 @@
             return(value);
         }, {
             type    : 'text',
-            onblur : 'ignore',
-            submit : 'OK',
-            cancel : 'Cancel',
-            tooltip : '<fmt:message key="label.clickToEdit"/>'
-        });
-        $(".visibilityEdit").editable(function (value, settings) {
-            var submitId = $(this).attr('id').replace("_", ":");
-            var data = {};
-            data[submitId] = value;
-            data['methodToCall'] = 'put';
-            $.post("${url.basePreview}${user.path}", data, null, "json");
-            if (value == "true")
-                return "Public"; else
-                return "Private";
-        }, {
-            type    : 'select',
-            data   : "{'true':'Public','false':'Private'}",
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
@@ -231,10 +212,6 @@
     });
 </script>
 
-
-
-<c:set var="userProperties" property="propertyName" value="${fn:escapeXml(fields['j:function'])}"/>
-
 <ul class="user-profile-list">
     <c:if test="${currentNode.properties['j:firstName'].boolean}">
         <li>
@@ -244,15 +221,6 @@
                 <c:if test="${empty fields['j:firstName']}"><fmt:message key="label.clickToEdit"/></c:if>
                 <c:if test="${!empty fields['j:firstName']}">${fields['j:firstName']}</c:if>
             </div>
-            <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibilityEdit" id="j_firstNamePublic">
-                <c:if test="${fields['j:firstNamePublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:firstNamePublic'] eq 'false' or empty fields['j:firstNamePublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
     <c:if test="${currentNode.properties['j:lastName'].boolean}">
@@ -263,15 +231,6 @@
                 <c:if test="${empty fields['j:lastName']}"><fmt:message key="label.clickToEdit"/></c:if>
                 <c:if test="${!empty fields['j:lastName']}">${fields['j:lastName']}</c:if>
             </div>
-            <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibilityEdit" id="j_lastNamePublic">
-                <c:if test="${fields['j:lastNamePublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:lastNamePublic'] eq 'false' or empty fields['j:lastNamePublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -282,15 +241,6 @@
             <div class="genderEdit" id="j_gender">
                 <jcr:nodePropertyRenderer node="${user}" name="j:gender" renderer="resourceBundle"/>
             </div>
-
-            <span class="visibilityEdit j_genderPublicEdit" id="j_genderPublic">
-                <c:if test="${fields['j:genderPublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:genderPublic'] eq 'false' or empty fields['j:genderPublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -300,14 +250,6 @@
 
             <div class="titleEdit" id="j_title"><jcr:nodePropertyRenderer node="${user}" name="j:title"
                                                                           renderer="resourceBundle"/></div>
-            <span class="visibilityEdit j_titlePublicEdit" id="j_titlePublic">
-                <c:if test="${fields['j:titlePublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:titlePublic'] eq 'false' or empty fields['j:titlePublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -334,15 +276,6 @@
                 <c:if test="${empty fields['j:organization']}"><fmt:message key="label.clickToEdit"/></c:if>
                 <c:if test="${!empty fields['j:organization']}">${fields['j:organization']}</c:if>
             </div>
-            <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibilityEdit" id="j_organizationPublic">
-                <c:if test="${fields['j:organizationPublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:organizationPublic'] eq 'false' or empty fields['j:organizationPublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -354,15 +287,6 @@
                 <c:if test="${empty fields['j:function']}"><fmt:message key="label.clickToEdit"/></c:if>
                 <c:if test="${!empty fields['j:function']}">${fields['j:function']}</c:if>
             </div>
-            <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibilityEdit" id="j_functionPublic">
-                <c:if test="${fields['j:functionPublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:functionPublic'] eq 'false' or empty fields['j:functionPublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -371,15 +295,6 @@
             <span class="label"><fmt:message key='jnt_user.j_about'/></span>
 
             <div class="ckeditorEdit j_aboutEdit" id="j_about">${fields['j:about']}</div>
-
-            <span class="visibilityEdit" id="j:aboutPublic">
-                <c:if test="${fields['j:aboutPublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:aboutPublic'] eq 'false' or empty fields['j:aboutPublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -387,14 +302,6 @@
         <li>
             <span class="label"><fmt:message key="jnt_user.j_email"/> : </span>
             <span id="j_email" class="edit">${fields['j:email']}</span><br/>
-            <span class="visibilityEdit" id="j_emailPublic">
-                <c:if test="${fields['j:emailPublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:emailPublic'] eq 'false' or empty fields['j:emailPublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -406,15 +313,6 @@
                 <c:if test="${empty fields['j:skypeID']}"><fmt:message key="label.clickToEdit"/></c:if>
                 <c:if test="${!empty fields['j:skypeID']}">${fields['j:skypeID']}</c:if>
             </div>
-            <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibilityEdit" id="j_skypeIDPublic">
-                <c:if test="${fields['j:skypeIDPublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:skypeIDPublic'] eq 'false' or empty fields['j:skypeIDPublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -426,15 +324,6 @@
                 <c:if test="${empty fields['j:twitterID']}"><fmt:message key="label.clickToEdit"/></c:if>
                 <c:if test="${!empty fields['j:twitterID']}">${fields['j:twitterID']}</c:if>
             </div>
-            <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibilityEdit" id="j_twitterIDPublic">
-                <c:if test="${fields['j:twitterIDPublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:twitterIDPublic'] eq 'false' or empty fields['j:twitterIDPublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -446,15 +335,6 @@
                 <c:if test="${empty fields['j:facebookID']}"><fmt:message key="label.clickToEdit"/></c:if>
                 <c:if test="${!empty fields['j:facebookID']}">${fields['j:facebookID']}</c:if>
             </div>
-            <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibilityEdit" id="j_facebookIDPublic">
-                <c:if test="${fields['j:facebookIDPublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:facebookIDPublic'] eq 'false' or empty fields['j:facebookIDPublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -466,15 +346,6 @@
                 <c:if test="${empty fields['j:linkedinID']}"><fmt:message key="label.clickToEdit"/></c:if>
                 <c:if test="${!empty fields['j:linkedinID']}">${fields['j:linkedinID']}</c:if>
             </div>
-            <c:set var="pubKey" value="${key}Public"/>
-            <span class="visibilityEdit" id="j_linkedinIDPublic">
-                <c:if test="${fields['j:linkedinIDPublic'] eq 'true'}">
-                    <fmt:message key="jnt_user.profile.public"/>
-                </c:if>
-                <c:if test="${fields['j:linkedinIDPublic'] eq 'false' or empty fields['j:linkedinIDPublic']}">
-                    <fmt:message key="jnt_user.profile.nonpublic"/>
-                </c:if>
-            </span>
         </li>
     </c:if>
 
@@ -509,4 +380,3 @@
         </li>
     </c:if>
 </ul>
-</c:if>

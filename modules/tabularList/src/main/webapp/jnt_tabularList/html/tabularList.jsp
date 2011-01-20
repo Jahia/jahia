@@ -18,6 +18,10 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="tabularList.css"/>
 <c:set var="displayTab" value="${not empty renderContext.mainResource.moduleParams.displayTab ? renderContext.mainResource.moduleParams.displayTab : param.displayTab}"/>
+
+<c:forEach items="${param}" var="p">
+    <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
+</c:forEach>
 <div id="tabs${currentNode.name}">
     <div class="idTabsContainer"><!--start idTabsContainer-->
         <ul class="idTabs">
@@ -29,7 +33,7 @@
                 <c:if test="${(empty displayTab and status.first) or (displayTab eq subList.name)}">
                     <c:set var="tabCssClass" value=' class="selected"'/>
                 </c:if>
-                <li><a href="${url.mainResource}?displayTab=${subList.name}"${tabCssClass}><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a></li>
+                <li><a href="${url.mainResource}?displayTab=${subList.name}${ps}"${tabCssClass}><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a></li>
             </c:forEach>
         </ul>
     </div>

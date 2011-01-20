@@ -203,12 +203,29 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
 
     @Override
     public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
-        return ChildrenCollectorFilter.collectChildNodes(this, nameGlobs);
+        List<JCRNodeWrapper> childEntries = internalGetChildren();
+        List<JCRNodeWrapper> childs = new LinkedList<JCRNodeWrapper>();
+        for (JCRNodeWrapper childEntry : childEntries) {
+            for (String nameGlob : nameGlobs) {
+                if(ChildrenCollectorFilter.matches(childEntry.getName(),nameGlob)) {
+                    childs.add(childEntry);
+                    break;
+                }
+            }
+        }
+        return new NodeIteratorImpl(childs.iterator(), childs.size());
     }
 
     @Override
     public NodeIterator getNodes(String namePattern) throws RepositoryException {
-        return ChildrenCollectorFilter.collectChildNodes(this, namePattern);
+        List<JCRNodeWrapper> childEntries = internalGetChildren();
+        List<JCRNodeWrapper> childs = new LinkedList<JCRNodeWrapper>();
+        for (JCRNodeWrapper childEntry : childEntries) {
+            if (ChildrenCollectorFilter.matches(childEntry.getName(), namePattern)) {
+                childs.add(childEntry);
+            }
+        }
+        return new NodeIteratorImpl(childs.iterator(), childs.size());
     }
 
     @Override

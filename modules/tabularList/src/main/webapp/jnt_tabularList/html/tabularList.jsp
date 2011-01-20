@@ -20,7 +20,9 @@
 <c:set var="displayTab" value="${not empty renderContext.mainResource.moduleParams.displayTab ? renderContext.mainResource.moduleParams.displayTab : param.displayTab}"/>
 
 <c:forEach items="${param}" var="p">
+    <c:if test="${p.key ne 'displayTab'}">
     <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
+    </c:if>
 </c:forEach>
 <div id="tabs${currentNode.name}">
     <div class="idTabsContainer"><!--start idTabsContainer-->

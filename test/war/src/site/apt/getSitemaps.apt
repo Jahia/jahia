@@ -5,6 +5,15 @@ this test create ACME web sites, with call the TestCreateSiteServlet Servlet, do
 /cms/createsite?site=ACME
 ----------------------------------------------------------------------------
 
+there are more parameters you can set for the site creation for ACME sites:
+ you can add (parents,childs and subchilds) to the request for add "news" page on 3 levels of the site.
+sample:
+------------------------------------------------------------------------------------------------------
+  http://localhost:8080/jahia/cms/createsite?site=ACME&parents=5&childs=5&subchilds=5
+  (if no specify, this values are null, so create a default ACME site)
+-----------------------------------------------------------------------------------------------------
+
+
 after the creation, the test do get on the home.sitemap.txt of the site.
 
 a regex extractor grep all urls in the doget response, after a script beanshell work the variable return by the regexExtractor

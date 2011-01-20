@@ -132,11 +132,6 @@ public class CacheFilter extends AbstractFilter {
                 logger.debug("Generating content for node : " + perUserKey);
             }
 
-            if (chain.getPreviousValue("currentResource") != null) {
-                ((Resource) chain.getPreviousValue("currentResource")).getDependencies()
-                        .addAll(resource.getDependencies());
-            }
-
             String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
             Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) :
                     Long.valueOf(script!=null?script.getTemplate().getProperties().getProperty("cache.expiration", "-1"):"-1");

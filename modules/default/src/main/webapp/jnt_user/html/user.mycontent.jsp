@@ -20,7 +20,7 @@
 <template:addResources type="css" resources="userProfile.css"/>
 <div id="${currentNode.identifier}">
     <jcr:sql var="result"
-             sql="select * from [jnt:content] as p where p.[jcr:createdBy]='${currentNode.name}' or p.[jcr:lastModifiedBy]='${currentNode.name}' order by p.[jcr:lastModified] desc"/>
+             sql="select * from [jmix:editorialContent] as p where p.[jcr:createdBy]='${currentNode.name}' or p.[jcr:lastModifiedBy]='${currentNode.name}' order by p.[jcr:lastModified] desc"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
     <c:set var="listTotalSize" value="${fn:length(result.nodes)}" scope="request"/>
     <template:initPager totalSize="${listTotalSize}" pageSize="20" id="${currentNode.identifier}"/>

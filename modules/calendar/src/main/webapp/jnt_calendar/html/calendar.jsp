@@ -23,7 +23,7 @@
 <template:addResources type="javascript" resources="fullcalendar.js"/>
 
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-
+<template:addDependency node="${linked}"/>
 <c:forEach items="${linked.nodes}" var="linkedChild" varStatus="status">
     <fmt:formatDate pattern="yyyy-MM-dd" value="${linkedChild.properties[currentNode.properties.startDateProperty.string].date.time}" var="startDate"/>
     <c:choose>

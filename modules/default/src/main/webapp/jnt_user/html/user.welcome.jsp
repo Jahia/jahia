@@ -5,15 +5,15 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jcr:nodeProperty node="${currentNode}" name="j:firstName" var="firstname"/>
-<jcr:nodeProperty node="${currentNode}" name="j:lastname" var="lastname"/>
+<jcr:nodeProperty node="${currentNode}" name="j:lastName" var="lastname"/>
 
 <h3><fmt:message key="welcome"/>
 <c:choose>
-        <c:when test="${empty firstname || empty lastname}">
+        <c:when test="${empty firstname.string && empty lastname.string}">
            , ${currentNode.name}
         </c:when>
         <c:otherwise>
-            , ${firstname}&nbsp;${lastname}.
+            , ${firstname.string}&nbsp;${lastname.string}.
         </c:otherwise>
 </c:choose>
 </h3>

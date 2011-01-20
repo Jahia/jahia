@@ -15,6 +15,7 @@
 <c:set target="${renderContext}" property="contentType" value="application/rss+xml;charset=UTF-8"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:description" var="description"/>
+<template:include template="hidden.header" templateType="html"/>
 <c:if test="${not empty title}">
     <c:set var="title" value="${title.string}"/>
 </c:if>
@@ -34,7 +35,7 @@
         <link><c:url value="${url.server}${url.base}${currentNode.path}.html" context="/"/></link>
         <description>${fn:escapeXml(description)}</description>
         <generator>Jahia <%= Jahia.VERSION + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber() %>, http://www.jahia.org</generator>
-            <c:forEach items="${currentNode.nodes}" var="subchild">
+            <c:forEach items="${moduleMap.currentList}" var="subchild">
                 <template:module node="${subchild}" editable="false"/>
             </c:forEach>
     </channel>

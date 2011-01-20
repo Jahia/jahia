@@ -138,11 +138,13 @@ public class ModuleDropTarget extends DropTarget {
         if (PermissionsUtils.isPermitted("jcr:addChildNodes", jahiaNode) && !jahiaNode.isLocked()) {
 
             String nodetypes = parentModule.getNodeTypes();
+            int listLimit = parentModule.getListLimit();
             if (EditModeDNDListener.EMPTYAREA_TYPE.equals(targetType)) {
                 nodetypes = module.getNodeTypes();
+                listLimit = module.getListLimit();
             }
             EditModeDNDListener.SIMPLEMODULE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE));
-            if (parentModule.getChildCount() >= parentModule.getListLimit() && parentModule.getListLimit() != -1 &&
+            if (parentModule.getChildCount() >= listLimit && listLimit != -1 &&
                     (e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE) == null ||
                     !parentModule.equals(((Module) e.getStatus().getData(EditModeDNDListener.SOURCE_MODULE)).getParentModule()))) {
                 e.getStatus().setStatus(false);

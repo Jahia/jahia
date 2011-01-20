@@ -4,6 +4,8 @@
 [jmix:profileComponentContent] > jmix:droppableContent mixin
 
 [jnt:userDetails] > jnt:content, jmix:profileComponentContent, jmix:bindedComponent
+
+[jnt:editUserDetails] > jnt:content, jmix:profileComponentContent, jmix:bindedComponent
  - j:firstName (boolean)
  - j:lastName (boolean)
  - j:gender (boolean)
@@ -18,3 +20,4 @@
  - j:facebookID (boolean)
  - j:linkedinID (boolean)
  - j:picture (boolean)
+ - j:preferredLanguage (boolean)

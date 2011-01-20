@@ -98,7 +98,7 @@ public class PlaceholderModule extends Module {
 
         target.addDNDListener(mainModule.getEditLinker().getDndListener());
 
-        if (getParentModule().getChildCount() >= getParentModule().getListLimit()) {
+        if (getParentModule().getChildCount() >= getParentModule().getListLimit() && getParentModule().getListLimit() != -1) {
             return;
         }
 

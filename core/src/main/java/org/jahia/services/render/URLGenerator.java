@@ -156,7 +156,13 @@ public class URLGenerator {
         convert = getContext() + DocumentConverter.getPath() + "/" + resource.getWorkspace();
         captcha = getContext() + Captcha.getCaptchaServletPath();
         templatesPath = getContext() + "/modules";
-        myProfile = "/sites/" + JahiaSitesBaseService.SYSTEM_SITE_KEY + "/home/my-profile";
+        if (!context.getUser().getUsername().equals("guest")) {
+            try {
+                myProfile = "/users/" + context.getUser().getUsername() + ".html?jsite="+context.getSite().getIdentifier();
+            } catch (RepositoryException e) {
+
+            }
+        }
     }
 
     public String getContext() {

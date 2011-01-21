@@ -217,7 +217,7 @@
         </li>
     </c:if>
 
-    <c:if test="${currentNode.properties['j:preferredLanguage'].boolean}">
+    <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
         <li>
             <span class="label"><fmt:message key="jnt_user.preferredLanguage"/></span>
 

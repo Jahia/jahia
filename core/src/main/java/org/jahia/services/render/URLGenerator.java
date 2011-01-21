@@ -116,7 +116,7 @@ public class URLGenerator {
     protected void initURL() {
         base = getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
 
-        final String resourcePath = context.getMainResource().getNode().getPath() + "." + context.getMainResource().getTemplateType();
+        final String resourcePath = context.getMainResource().getNode().getPath() + ((!"default".equals(context.getMainResource().getTemplate()))?"."+context.getMainResource().getTemplate()+".":".") + context.getMainResource().getTemplateType();
 
         baseLive = getContext() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
         live = baseLive + resourcePath;

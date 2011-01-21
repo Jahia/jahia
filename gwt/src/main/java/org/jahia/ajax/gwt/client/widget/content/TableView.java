@@ -154,8 +154,8 @@ public class TableView extends AbstractView {
 
         @Override
         protected void showFeedback(DNDEvent event) {
-            final GWTJahiaNode node = (GWTJahiaNode) store.getLoadConfig();
-            if (store.getSortField().equals("index") && store.getSortDir() == Style.SortDir.ASC &&
+            final GWTJahiaNode node = root;
+            if ("index".equals(store.getSortField()) && store.getSortDir() == Style.SortDir.ASC &&
                     Boolean.TRUE.equals(node.get("hasOrderableChildNodes"))) {
                 feedback = DND.Feedback.INSERT;
             } else {
@@ -236,7 +236,7 @@ public class TableView extends AbstractView {
                             JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
                         }
                 } else {
-                    final GWTJahiaNode target = (GWTJahiaNode) store.getLoadConfig();
+                    final GWTJahiaNode target = root;
                     JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
                 }
             }

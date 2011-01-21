@@ -1,4 +1,5 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:tabularList] > jnt:content, jmix:layoutComponentContent
+ orderable
 + * (jnt:contentList)

@@ -26,7 +26,7 @@ import java.util.List;
  * 
  */
 public abstract class AbstractView extends TopRightComponent {
-    protected Object root;
+    protected GWTJahiaNode root;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> loader;
     protected GWTManagerConfiguration configuration;
     protected List<GWTJahiaNode> hiddenSelection;
@@ -41,8 +41,8 @@ public abstract class AbstractView extends TopRightComponent {
             @Override
             protected void load(Object config, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children with type " + configuration.getNodeTypes() + " of " +
-                        ((GWTJahiaNode) root).getPath());
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) root,
+                        root.getPath());
+                JahiaContentManagementService.App.getInstance().lsLoad(root,
                         configuration.getAllNodeTypes(),
                         configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
                         false, -1, -1, listAsyncCallback);
@@ -92,6 +92,8 @@ public abstract class AbstractView extends TopRightComponent {
                     String s1 = (String) o1;
                     String s2 = (String) o2;
                     return Collator.getInstance().localeCompare(s1,s2);
+                } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
+                    return ((Comparable) o1).compareTo(o2);
                 }
                 return 0;
             }
@@ -129,7 +131,7 @@ public abstract class AbstractView extends TopRightComponent {
 
     public void setContent(final Object root) {
         clearTable();
-        this.root = root;
+        this.root = (GWTJahiaNode) root;
         if (root != null) {
             loader.load();
         }

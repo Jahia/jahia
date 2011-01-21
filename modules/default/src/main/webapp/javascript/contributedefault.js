@@ -102,9 +102,7 @@ function initEditFields(id) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
-        target : function() {
-            return $(this).attr('jcr:url');
-        },
+        target:$(".file" + id).attr('jcr:url'),
         callback : function (data, status,original) {
             var datas = {'methodToCall':'put'};
             datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];

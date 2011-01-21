@@ -1,151 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
-         xmlns:test="http://www.apache.org/jackrabbit/test"
-         xmlns:plutotestsuite202TestPortlet1="http://www.jahia.org/portlets/pluto-testsuite-2.0.2/TestPortlet1"
-         xmlns:plutotestsuite202286TestPortlet="http://www.jahia.org/portlets/pluto-testsuite-2.0.2/286TestPortlet"
-         xmlns:plutotestsuite202286TestCompanionPortlet="http://www.jahia.org/portlets/pluto-testsuite-2.0.2/286TestCompanionPortlet"
-         xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
-         xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
-         xmlns:plutotestsuite202TestPortlet2="http://www.jahia.org/portlets/pluto-testsuite-2.0.2/TestPortlet2"
-         xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0"
-         xmlns:plutotestsuite202="http://www.jahia.org/portlets/pluto-testsuite-2.0.2" xmlns:rep="internal">
-    <templateSets jcr:primaryType="jnt:templateSets">
-        <blog j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap"
-              jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="blog" priority="0.5">
-            <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
-                    <blog-home jcr:primaryType="jnt:pageTemplate">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="2col115" jcr:primaryType="jnt:row"/>
-                        </pagecontent>
-                        <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable"
-                                  jcr:primaryType="jnt:contentList">
-                            <new-blog jcr:mixinTypes="jmix:requiredPermissions"
-                                      j:requiredPermissions="/permissions/actions/blog/createNewBlog"
-                                      templateNode="/templateSets/blog/templates/base/blog" j:requiredMode="live"
-                                      buttonLabel="create" jcr:primaryType="jnt:pageFormCreation"
-                                      j:requireLoggedUser="true">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog"
-                                                  jcr:primaryType="jnt:translation"/>
-                            </new-blog>
-                            <topBlog j:subNodesView="blogList" jcr:mixinTypes="jmix:cache jmix:requiredPermissions"
-                                     j:requiredMode="live" jcr:primaryType="jnt:topBlog" j:requireLoggedUser="false"
-                                     j:perUser="false" j:expiration="900"/>
-                            <list jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList"
-                                  j:view="columns" j:columns="2">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list"
-                                                  jcr:primaryType="jnt:translation"/>
-                                <topBlogContent j:subNodesView="blogList"
-                                                jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:columns jmix:cache"
-                                                jcr:primaryType="jnt:topBlogContent" j:view="unordered"
-                                                j:className="simple" j:perUser="false" j:expiration="900"/>
-                                <topBlogComment j:subNodesView="blogList"
-                                                jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:cache"
-                                                jcr:primaryType="jnt:topBlogComment" j:view="unordered"
-                                                j:className="simple" j:perUser="false" j:expiration="900"/>
-                            </list>
-                        </row-col1>
-                    </blog-home>
-                    <blog jcr:primaryType="jnt:pageTemplate">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <pageTitle jcr:primaryType="jnt:pageTitle"/>
-                            <row column="2col115" jcr:primaryType="jnt:row"/>
-                        </pagecontent>
-                        <row-col1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                            <blog-content firstField="jcr:created" j:subNodesView="short"
-                                          jcr:mixinTypes="jmix:requiredPermissions jmix:orderedList"
-                                          secondDirection="asc" j:requiredMode="live" jcr:primaryType="jnt:area"
-                                          firstDirection="desc" j:allowedTypes="jnt:blogContent" thirdDirection="asc"/>
-                        </row-col1>
-                        <row-col2 jcr:primaryType="jnt:contentList">
-                            <Welcome-message jcr:primaryType="jnt:area" j:allowedTypes="jnt:bigText"/>
-                            <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay"/>
-                            <addBlogLink jcr:mixinTypes="jmix:requiredPermissions"
-                                         j:requiredPermissions="/permissions/actions/blog/addBlogEntry"
-                                         j:requiredMode="live" jcr:primaryType="jnt:addBlogLink"/>
-                            <calendar startDateProperty="jcr:created" endDateProperty="jcr:created"
-                                      jcr:primaryType="jnt:calendar"
-                                      j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content"/>
-                            <facets jcr:mixinTypes="jmix:cache" jcr:primaryType="jnt:facets"
-                                    j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content"
-                                    j:perUser="false" j:expiration="900">
-                                <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet"
-                                            missing="false" facet="tags" offset="0" sort="true" limit="100">
-                                    <j:translation_en jcr:language="en" label="Tags" jcr:primaryType="jnt:translation"/>
-                                </fieldFacet>
-                            </facets>
-                            <topBlogComment j:subNodesView="blogList" j:requiredMode="live" j:perUser="false"
-                                            j:expiration="900"
-                                            jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:cache jmix:requiredPermissions"
-                                            jcr:primaryType="jnt:topBlogComment" j:requireLoggedUser="false"
-                                            j:className="simple" j:view="unordered"/>
-                        </row-col2>
-                        <illustration jcr:primaryType="jnt:contentList">
-                            <illustration j:level="1" jcr:primaryType="jnt:levelAbsoluteArea"
-                                          j:allowedTypes="jnt:imageReference"/>
-                        </illustration>
-                    </blog>
-                    <blog-edit j:requiredPermissions="/permissions/actions/blog/editBlogEntry"
-                               jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="2col115" jcr:primaryType="jnt:row"/>
-                        </pagecontent>
-                        <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable"
-                                  jcr:primaryType="jnt:contentList">
-                            <edit jcr:mixinTypes="jmix:requiredPermissions" j:requiredMode="live"
-                                  jcr:primaryType="jnt:blogEntryFormEdition" j:requireLoggedUser="false">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Edit"
-                                                  jcr:primaryType="jnt:translation"/>
-                            </edit>
-                        </row-col1>
-                        <row-col2 jcr:primaryType="jnt:contentList"/>
-                    </blog-edit>
-                    <blog-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent"
-                                  j:defaultTemplate="true">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="2col115" jcr:primaryType="jnt:row"/>
-                        </pagecontent>
-                        <row-col1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay"/>
-                            <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable"
-                                              jcr:primaryType="jnt:contentList">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Comments"
-                                                  jcr:primaryType="jnt:translation"/>
-                                <commentsList jcr:primaryType="jnt:commentsList"
-                                              j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay"/>
-                                <addComment jcr:mixinTypes="jmix:requiredPermissions"
-                                            j:requiredPermissions="/permissions/actions/blog/commentBlog"
-                                            j:requiredMode="live" jcr:primaryType="jnt:addComment"
-                                            j:requireLoggedUser="false"
-                                            j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay"/>
-                            </document-history>
-                        </row-col1>
-                        <row-col2 jcr:primaryType="jnt:contentList">
-                            <back-to-parent-page jcr:primaryType="jnt:backToParentPage">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
-                                                  jcr:title="Back to parent page" jcr:primaryType="jnt:translation"/>
-                            </back-to-parent-page>
-                        </row-col2>
-                    </blog-content>
-                    <blog-new jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="true">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="2col115" jcr:primaryType="jnt:row"/>
-                        </pagecontent>
-                        <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable"
-                                  jcr:primaryType="jnt:contentList">
-                            <blogEntryFormCreation jcr:mixinTypes="jmix:requiredPermissions" j:requiredMode="live"
-                                                   jcr:primaryType="jnt:blogEntryFormCreation"
-                                                   j:requireLoggedUser="false"/>
-                        </row-col1>
-                        <row-col2 jcr:primaryType="jnt:contentList"/>
-                    </blog-new>
-                </base>
-                <contents jcr:primaryType="jnt:contentFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-            </templates>
-        </blog>
-    </templateSets>
-    <permissions jcr:primaryType="jnt:permission">
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+  <templateSets jcr:primaryType="jnt:templateSets">
+    <blog j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="blog" priority="0.5">
+      <templates jcr:primaryType="jnt:templatesFolder">
+        <base jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
+          <blog-home jcr:primaryType="jnt:pageTemplate">
+            <pagecontent jcr:primaryType="jnt:contentList">
+              <row column="2col115" jcr:primaryType="jnt:row" />
+            </pagecontent>
+            <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+              <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" />
+              <new-blog jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions="/permissions/actions/blog/createNewBlog" templateNode="/templateSets/blog/templates/base/blog" j:requiredMode="live" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation" j:requireLoggedUser="true">
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog" jcr:primaryType="jnt:translation" />
+              </new-blog>
+              <topBlog j:skin="skins.box5" jcr:mixinTypes="jmix:style jmix:cache jmix:requiredPermissions jmix:skinnable" j:subNodesView="blogList" j:requiredMode="live" jcr:primaryType="jnt:topBlog" j:requireLoggedUser="false" j:perUser="false" j:expiration="900">
+                <j:translation_en jcr:language="en" jcr:title="Top Blog" jcr:primaryType="jnt:translation" />
+              </topBlog>
+              <list jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="2">
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list" jcr:primaryType="jnt:translation" />
+                <top-content j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList" j:style="mushroom">
+                  <j:translation_en jcr:language="en" jcr:title="Top Blog Content" jcr:primaryType="jnt:translation" />
+                  <topBlogContent jcr:mixinTypes="jmix:cache jmix:renderable jmix:listOrdered jmix:columns" j:subNodesView="blogList" jcr:primaryType="jnt:topBlogContent" j:view="unordered" j:className="simple" j:perUser="false" j:expiration="900" />
+                </top-content>
+                <top-blog-coment j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList" j:style="mushroom">
+                  <j:translation_en jcr:language="en" jcr:title="Top blog Coment" jcr:primaryType="jnt:translation" />
+                  <topBlogComment jcr:mixinTypes="jmix:cache jmix:renderable jmix:listOrdered" j:subNodesView="blogList" jcr:primaryType="jnt:topBlogComment" j:view="unordered" j:className="simple" j:perUser="false" j:expiration="900" />
+                </top-blog-coment>
+              </list>
+            </row-col1>
+          </blog-home>
+          <blog jcr:primaryType="jnt:pageTemplate">
+            <pagecontent jcr:primaryType="jnt:contentList">
+              <pageTitle jcr:primaryType="jnt:pageTitle" />
+              <row column="2col115" jcr:primaryType="jnt:row" />
+            </pagecontent>
+            <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+              <blog-content firstField="jcr:created" jcr:mixinTypes="jmix:orderedList jmix:requiredPermissions" j:subNodesView="short" secondDirection="asc" j:requiredMode="live" jcr:primaryType="jnt:area" firstDirection="desc" j:allowedTypes="jnt:blogContent" thirdDirection="asc" />
+            </row-col1>
+            <row-col2 jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList">
+              <addBlogLink jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions="/permissions/actions/blog/addBlogEntry" j:requiredMode="live" jcr:primaryType="jnt:addBlogLink" />
+              <Welcome-message jcr:primaryType="jnt:area" j:allowedTypes="jnt:bigText" />
+              <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay" />
+              <calendar startDateProperty="jcr:created" endDateProperty="jcr:created" jcr:primaryType="jnt:calendar" j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content" />
+              <facets jcr:mixinTypes="jmix:cache" jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content" j:perUser="false" j:expiration="900">
+                <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" missing="false" facet="tags" offset="0" sort="true" limit="100">
+                  <j:translation_en jcr:language="en" label="Tags" jcr:primaryType="jnt:translation" />
+                </fieldFacet>
+              </facets>
+              <topBlogComment jcr:mixinTypes="jmix:cache jmix:renderable jmix:requiredPermissions jmix:listOrdered" j:subNodesView="blogList" j:requiredMode="live" jcr:primaryType="jnt:topBlogComment" j:view="unordered" j:className="simple" j:requireLoggedUser="false" j:perUser="false" j:expiration="900" />
+            </row-col2>
+            <illustration jcr:primaryType="jnt:contentList">
+              <illustration j:level="1" jcr:primaryType="jnt:levelAbsoluteArea" j:allowedTypes="jnt:imageReference" />
+            </illustration>
+          </blog>
+          <blog-edit j:requiredPermissions="/permissions/actions/blog/editBlogEntry" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent">
+            <pagecontent jcr:primaryType="jnt:contentList">
+              <row column="2col115" jcr:primaryType="jnt:row" />
+            </pagecontent>
+            <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+              <edit jcr:mixinTypes="jmix:requiredPermissions" j:requiredMode="live" jcr:primaryType="jnt:blogEntryFormEdition" j:requireLoggedUser="false">
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Edit" jcr:primaryType="jnt:translation" />
+              </edit>
+            </row-col1>
+            <row-col2 jcr:primaryType="jnt:contentList" />
+          </blog-edit>
+          <blog-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent" j:defaultTemplate="true">
+            <pagecontent jcr:primaryType="jnt:contentList">
+              <row column="2col115" jcr:primaryType="jnt:row" />
+            </pagecontent>
+            <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList" j:style="shadow">
+              <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+              <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Comments" jcr:primaryType="jnt:translation" />
+                <commentsList jcr:primaryType="jnt:commentsList" j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay" />
+                <addComment jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions="/permissions/actions/blog/commentBlog" j:requiredMode="live" jcr:primaryType="jnt:addComment" j:requireLoggedUser="false" j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay" />
+              </document-history>
+            </row-col1>
+            <row-col2 j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+              <back-to-parent-page jcr:primaryType="jnt:backToParentPage">
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Back to parent page" jcr:primaryType="jnt:translation" />
+              </back-to-parent-page>
+            </row-col2>
+          </blog-content>
+          <blog-new jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="true">
+            <pagecontent jcr:primaryType="jnt:contentList">
+              <row column="2col115" jcr:primaryType="jnt:row" />
+            </pagecontent>
+            <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList" j:style="shadow">
+              <blogEntryFormCreation jcr:mixinTypes="jmix:requiredPermissions" j:requiredMode="live" jcr:primaryType="jnt:blogEntryFormCreation" j:requireLoggedUser="false" />
+            </row-col1>
+            <row-col2 jcr:primaryType="jnt:contentList" />
+          </blog-new>
+        </base>
+        <contents jcr:primaryType="jnt:contentFolder" />
+        <files jcr:primaryType="jnt:folder" />
+      </templates>
+    </blog>
+  </templateSets>
+  <permissions jcr:primaryType="jnt:permission">
         <actions jcr:primaryType="jnt:permission">
             <blog jcr:primaryType="jnt:permission">
                 <createNewBlog jcr:primaryType="jnt:permission"/>

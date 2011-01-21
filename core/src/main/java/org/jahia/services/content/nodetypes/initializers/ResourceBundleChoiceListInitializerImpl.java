@@ -92,8 +92,12 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
     }
 
     private String getTemplatePackageName(ExtendedPropertyDefinition definition) {
+        String systemId = definition.getDeclaringNodeType().getSystemId();
+        if(systemId.equals("system-jahia")) {
+            systemId = "Default Jahia Templates";
+        }
         final JahiaTemplatesPackage tpkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackage(definition.getDeclaringNodeType().getSystemId());
+                .getTemplatePackage(systemId);
 
         return tpkg != null ? tpkg.getName() : null;
     }

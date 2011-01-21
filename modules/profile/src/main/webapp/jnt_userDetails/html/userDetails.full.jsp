@@ -19,7 +19,8 @@
 </c:forEach>
 
 <c:set var="fields" value="${user.propertiesAsString}"/>
-<c:set var="person" value="${fields['j:title']} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+<jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle" var="title"/>
+<c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
 <div class="user-profile">
 
     <c:if test="${fn:contains(publicPropertiesAsString, 'j:picture')}">

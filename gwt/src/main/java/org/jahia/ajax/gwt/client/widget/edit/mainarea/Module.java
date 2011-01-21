@@ -58,7 +58,7 @@ public abstract class Module extends LayoutContainer {
     protected Module parentModule;
     protected MainModule mainModule;
     protected String nodeTypes;
-    protected int listLimit;
+    protected int listLimit = -1;
     protected String referenceTypes;
     protected boolean isDraggable = false;
     protected int depth;

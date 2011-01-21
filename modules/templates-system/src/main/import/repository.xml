@@ -65,41 +65,6 @@
           <simple jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList" />
           </simple>
-          <my-profile jcr:primaryType="jnt:pageTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <tabularList jcr:primaryType="jnt:tabularList">
-                <my-profile jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="My Profile" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <user-profile j:userView="myprofile" jcr:primaryType="jnt:currentUserDisplay" />
-                </my-profile>
-                <my-content jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="My Content" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="mycontent" />
-                </my-content>
-                <my-tasks jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="My Tasks" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="tasklist" />
-                </my-tasks>
-                <my-bookmarks jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="My Bookmarks" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="bookmarks" />
-                </my-bookmarks>
-                <my-portal jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="My Portal" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <my-portal-logo.png j:node="/templateSets/templates-system/templates/files/themes/default/my-portal-logo.png" jcr:primaryType="jnt:imageReference" />
-                  <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="portal" />
-                </my-portal>
-                <my-connections jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="My Connections" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="myconnections" />
-                </my-connections>
-                <my-messages jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title="My Messages" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                  <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="mymessages" />
-                </my-messages>
-              </tabularList>
-            </pagecontent>
-          </my-profile>
           <header jcr:primaryType="jnt:contentList">
             <header column="2col412" jcr:primaryType="jnt:row" />
           </header>

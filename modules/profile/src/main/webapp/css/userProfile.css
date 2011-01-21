@@ -1,5 +1,5 @@
 /******************************************************************************
-* Title  with icon h3 
+* Title  with icon h3
 ******************************************************************************/
 #bodywrapper h3.user-profile-title-icon {
 	color:#333;
@@ -63,7 +63,7 @@
 	clear:both;
 }
 /******************************************************************************
-*  add form 
+*  add form
 ******************************************************************************/
 #bodywrapper form#newAddress input, #bodywrapper form#newPhone input {
 margin-bottom:2px
@@ -169,7 +169,7 @@ text-decoration:none;
 *  userMyContentList
 ******************************************************************************/
 
-#bodywrapper ul.userMyContentList  {
+#bodywrapper .userMyContentList ul {
 	position:relative;
 	margin:0;
 	margin-bottom:20px;
@@ -192,16 +192,16 @@ text-decoration:none;
 #bodywrapper .userMyContentList li:last-child {
 	border-bottom-color:#fff;
 }
-#bodywrapper ul.userMyContentList li:hover{
+#bodywrapper .userMyContentList li:hover{
 	background-color:#eaeaea
 }
-#bodywrapper ul.userMyContentList a,
-#bodywrapper ul.userMyContentList a:link,
-#bodywrapper ul.userMyContentList a:visited {
+#bodywrapper .userMyContentList ul a,
+#bodywrapper .userMyContentList ul a:link,
+#bodywrapper .userMyContentList ul a:visited {
 	text-decoration: none;
 }
-#bodywrapper ul.userMyContentList a:hover,
-#bodywrapper ul.userMyContentList a:active {
+#bodywrapper .userMyContentList ul a:hover,
+#bodywrapper .userMyContentList ul a:active {
 	text-decoration:underline;
 }
 #bodywrapper a.userMyContentListIcon {

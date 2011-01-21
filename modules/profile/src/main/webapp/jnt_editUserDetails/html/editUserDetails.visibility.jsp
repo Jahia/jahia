@@ -7,20 +7,7 @@
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
-<c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-
-<c:if test="${renderContext.editMode}">
-    <fmt:message key="${fn:replace(currentNode.primaryNodeTypeName,':','_')}"/>
-    <template:linker property="j:bindedComponent"/>
-</c:if>
-
-<%--<c:if test="${not jcr:isNodeType(user, 'jnt:user')}">--%>
-<%--<jcr:node var="user" path="/users/${user.properties['jcr:createdBy'].string}"/>--%>
-<%--</c:if>--%>
-    <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
-        <jcr:node var="user" path="/users/${renderContext.user.username}"/>
-    </c:if>
-
+<%@ include file="../../getUser.jspf"%>
 
 <template:addResources type="javascript" resources="jquery.form.js"/>
 

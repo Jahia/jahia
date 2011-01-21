@@ -7,19 +7,7 @@
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
-<c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-
-<c:if test="${renderContext.editMode}">
-    <fmt:message key="${fn:replace(currentNode.primaryNodeTypeName,':','_')}"/>
-    <template:linker property="j:bindedComponent"/>
-</c:if>
-
-<%--<c:if test="${not jcr:isNodeType(user, 'jnt:user')}">--%>
-<%--<jcr:node var="user" path="/users/${user.properties['jcr:createdBy'].string}"/>--%>
-<%--</c:if>--%>
-<c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
-    <jcr:node var="user" path="/users/${renderContext.user.username}"/>
-</c:if>
+<%@ include file="../../getUser.jspf"%>
 
 <template:addResources type="css" resources="userProfile.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
@@ -83,7 +71,7 @@
 
             <span jcr:id="j:firstName" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_firstName"
-                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:firstName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:firstName']}">${fields['j:firstName']}</c:if></span>
+                  jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:firstName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:firstName']}">${fields['j:firstName']}</c:if></span>
         </li>
     </c:if>
     <c:if test="${currentNode.properties['j:lastName'].boolean}">
@@ -92,7 +80,7 @@
 
             <span jcr:id="j:lastName" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_lastName"
-                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:lastName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:lastName']}">${fields['j:lastName']}</c:if></span>
+                  jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:lastName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:lastName']}">${fields['j:lastName']}</c:if></span>
         </li>
     </c:if>
 
@@ -101,7 +89,7 @@
             <span class="label"><fmt:message key="jnt_user.profile.sexe"/> : </span>
 
             <div jcr:id="j:gender" class="choicelistEdit${currentNode.identifier}"
-                  jcr:url="${url.base}${user.path}"
+                  jcr:url="${url.basePreview}${user.path}"
                   jcr:options="{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="j:gender" renderer="resourceBundle"/></div>
         </li>
     </c:if>
@@ -111,7 +99,7 @@
             <span class="label"><fmt:message key="jnt_user.j_title"/></span>
 
             <div jcr:id="j:title" class="choicelistEdit${currentNode.identifier}"
-                  jcr:url="${url.base}${user.path}"
+                  jcr:url="${url.basePreview}${user.path}"
                   jcr:options="{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/></div>
         </li>
     </c:if>
@@ -128,7 +116,7 @@
             </c:if>
             <div jcr:id="j:birthDate" class="dateEdit${currentNode.identifier}"
                  id="dateEdit${currentNode.identifier}j_birthDate"
-                 jcr:url="${url.base}${user.path}">${displayBirthDate}</div>
+                 jcr:url="${url.basePreview}${user.path}">${displayBirthDate}</div>
         </li>
     </c:if>
 
@@ -138,7 +126,7 @@
 
             <span jcr:id="j:organization" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_organization"
-                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:organization']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:organization']}">${fields['j:organization']}</c:if></span>
+                  jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:organization']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:organization']}">${fields['j:organization']}</c:if></span>
         </li>
     </c:if>
 
@@ -148,7 +136,7 @@
 
             <span jcr:id="j:function" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_function"
-                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:function']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:function']}">${fields['j:function']}</c:if></span>
+                  jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:function']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:function']}">${fields['j:function']}</c:if></span>
         </li>
     </c:if>
 
@@ -158,7 +146,7 @@
 
             <div jcr:id="j:about" class="ckeditorEdit${currentNode.identifier}"
                   id="ckeditorEdit${currentNode.identifier}j_about"
-                  jcr:url="${url.base}${user.path}">${fields['j:about']}</div>
+                  jcr:url="${url.basePreview}${user.path}">${fields['j:about']}</div>
         </li>
     </c:if>
 
@@ -168,7 +156,7 @@
 
             <span jcr:id="j:email" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_email"
-                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:email']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:email']}">${fields['j:email']}</c:if></span>
+                  jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:email']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:email']}">${fields['j:email']}</c:if></span>
         </li>
     </c:if>
 
@@ -178,7 +166,7 @@
 
             <span jcr:id="j:skypeID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_skypeID"
-                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:skypeID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:skypeID']}">${fields['j:skypeID']}</c:if></span>
+                  jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:skypeID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:skypeID']}">${fields['j:skypeID']}</c:if></span>
         </li>
     </c:if>
 
@@ -188,7 +176,7 @@
 
             <span jcr:id="j:twitterID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_twitterID"
-                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:twitterID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:twitterID']}">${fields['j:twitterID']}</c:if></span>
+                  jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:twitterID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:twitterID']}">${fields['j:twitterID']}</c:if></span>
         </li>
     </c:if>
 
@@ -198,7 +186,7 @@
 
             <span jcr:id="j:facebookID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_facebookID"
-                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:facebookID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:facebookID']}">${fields['j:facebookID']}</c:if></span>
+                  jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:facebookID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:facebookID']}">${fields['j:facebookID']}</c:if></span>
         </li>
     </c:if>
 
@@ -208,7 +196,7 @@
 
             <span jcr:id="j:linkedinID" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}j_linkedinID"
-                  jcr:url="${url.base}${user.path}"><c:if test="${empty fields['j:linkedinID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:linkedinID']}">${fields['j:linkedinID']}</c:if></span>
+                  jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:linkedinID']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:linkedinID']}">${fields['j:linkedinID']}</c:if></span>
         </li>
     </c:if>
 
@@ -223,7 +211,7 @@
             </c:if>
 
             <div class="file${currentNode.identifier}" jcr:id="j:picture"
-                 jcr:url="${url.base}${user.path}">
+                 jcr:url="${url.basePreview}${user.path}">
                 <span><fmt:message key="add.file"/></span>
             </div>
         </li>
@@ -234,7 +222,7 @@
             <span class="label"><fmt:message key="jnt_user.preferredLanguage"/></span>
 
             <div jcr:id="preferredLanguage" class="choicelistEdit${currentNode.identifier}"
-                  jcr:url="${url.base}${user.path}"
+                  jcr:url="${url.basePreview}${user.path}"
                   jcr:options="{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${status.index > 0}">,</c:if>'${adLocale}':'${adLocale}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="preferredLanguage" renderer="resourceBundle"/></div>
         </li>
 

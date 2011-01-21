@@ -34,6 +34,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.services.content.nodetypes.SelectorType;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -158,31 +159,49 @@ public class ReferencesHelper {
 
     private static void updateProperty(JCRSessionWrapper session, JCRNodeWrapper n, String pName, String value)
             throws RepositoryException {
-        final ExtendedPropertyDefinition propertyDefinition = n.getApplicablePropertyDefinition(pName);
-        if (propertyDefinition.isMultiple()) {
-            Value[] newValues;
-            if (n.hasProperty(pName)) {
-                final Value[] oldValues = n.getProperty(pName).getValues();
-                newValues = new Value[oldValues.length+1];
-                for (Value oldValue : oldValues) {
-                    // value already set
-                    if (oldValue.getString().equals(value)) {
-                        return;
-                    }
-                }
-                System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
-            } else {
-                newValues = new Value[1];
+        if (pName.startsWith("[")) {
+            int id = Integer.parseInt(StringUtils.substringBetween(pName, "[", "]"));
+            pName = StringUtils.substringAfter(pName,"]");
+            if (n.isNodeType("jnt:translation") && n.hasProperty("jcr:language")) {
+                pName += "_" + n.getProperty("jcr:language").getString();
+                n = n.getParent();
             }
-            newValues[newValues.length-1] =  session.getValueFactory().createValue(value, propertyDefinition.getRequiredType() );
-            if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
-                n.checkout();
-                n.setProperty(pName, newValues);
+            if (!n.isNodeType("jmix:referencesInField")) {
+                n.addMixin("jmix:referencesInField");
             }
+            if (logger.isDebugEnabled()) {
+                logger.debug("New references : "+value);
+            }
+            JCRNodeWrapper ref = n.addNode("j:referenceInField_"+pName+"_"+id, "jnt:referenceInField");
+            ref.setProperty("j:fieldName",pName);
+            ref.setProperty("j:reference", value);
         } else {
-            if (!n.hasProperty(pName) || !value.equals(n.getProperty(pName).getString())) {
-                n.checkout();
-                n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
+            final ExtendedPropertyDefinition propertyDefinition = n.getApplicablePropertyDefinition(pName);
+            if (propertyDefinition.isMultiple()) {
+                Value[] newValues;
+                if (n.hasProperty(pName)) {
+                    final Value[] oldValues = n.getProperty(pName).getValues();
+                    newValues = new Value[oldValues.length+1];
+                    for (Value oldValue : oldValues) {
+                        // value already set
+                        if (oldValue.getString().equals(value)) {
+                            return;
+                        }
+                    }
+                    System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                } else {
+                    newValues = new Value[1];
+                }
+                newValues[newValues.length-1] =  session.getValueFactory().createValue(value, propertyDefinition.getRequiredType() );
+                if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
+                    n.checkout();
+                    n.setProperty(pName, newValues);
+                }
+            } else {
+                if (!n.hasProperty(pName) || !value.equals(n.getProperty(pName).getString())) {
+                    n.checkout();
+                    n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
+                }
             }
         }
     }

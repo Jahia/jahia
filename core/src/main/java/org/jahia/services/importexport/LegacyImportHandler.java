@@ -845,6 +845,32 @@ public class LegacyImportHandler extends DefaultHandler {
                 default:
                     switch (propertyDefinition.getSelector()) {
                         case SelectorType.RICHTEXT: {
+                            if (value.contains("=\"###/")) {
+                                int count = 1;
+                                StringBuffer buf = new StringBuffer(value);
+                                while (buf.indexOf("=\"###/") > -1) {
+                                    int from = buf.indexOf("=\"###/") + 2;
+                                    int to = buf.indexOf("\"", from);
+
+                                    String ref = buf.substring(from,to);
+                                    if (ref.startsWith("###/webdav")) {
+//                                        buf.replace(from, to, "##doc-context##/{mode}/#");
+//                                        continue;
+                                        ref = currentSiteNode.getPath() + "/files" + StringUtils.substringAfter(ref, "###/webdav");
+                                        buf.replace(from, to, "##doc-context##/{mode}/##ref:link"+(count++) + "##");
+                                    } else {
+                                        ref = StringUtils.substringAfterLast(ref , "/");
+                                        buf.replace(from, to, "##cms-context##/{mode}/{lang}/##ref:link"+count + "##.html");
+                                    }
+
+                                    if (!references.containsKey(ref)) {
+                                        references.put(ref, new ArrayList<String>());
+                                    }
+                                    references.get(ref).add(n.getIdentifier() + "/[" + count + "]" + propertyDefinition.getName());
+                                    count ++;
+                                }
+                                value = buf.toString();
+                            }
                             n.setProperty(propertyName, value);
                             if (logger.isDebugEnabled())
                                 logger.debug("Setting on node " + n.getPath() + " property " + propertyName + " with value=" + value);

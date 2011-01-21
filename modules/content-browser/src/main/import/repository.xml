@@ -112,6 +112,7 @@
                           j:defaultTemplate="true">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <userDetails jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails"
+                                         j:bindedComponent="/templateSets/content-browser/templates/base/user"
                                          j:view="full"/>
                         </pagecontent>
                     </user>

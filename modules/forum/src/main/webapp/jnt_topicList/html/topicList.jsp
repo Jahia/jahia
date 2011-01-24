@@ -21,9 +21,10 @@
     <template:addResources type="css" resources="forum.css"/>
     <template:addDependency node="${linked}"/>
     <div class="topics">
-        <h2><a href="${url.base}${linked.parent.path}.html"><jcr:nodeProperty node="${linked}"
-                                                                              name="topicSubject"/></a></h2>
-
+        <jcr:nodeProperty node="${linked}" name="topicSubject" var="topicSubject"/>
+        <c:if test="${!empty topicSubject.string}">
+        	<h2><a href="${url.base}${linked.parent.path}.html">${topicSubject.string}</a></h2>
+		</c:if>
         <div class="forum-box forum-box-style1 topics">
             <span class="forum-corners-top"><span></span></span>
 

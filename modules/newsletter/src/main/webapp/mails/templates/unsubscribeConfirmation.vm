@@ -4,10 +4,10 @@
 <html>
 <body>
 <p>
-Hi !
+Hi!
 </p>
 <p>
-Please confirm your unsubscription to ${newsletter.name} by clicking <a href="${confirmationlink}">here</a>
+Please confirm your unsubscription to ${newsletter.displayableName} by clicking <a href="${confirmationlink}">here</a>
 </p>
 
 </body>

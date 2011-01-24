@@ -12,17 +12,18 @@
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <c:if test="${not empty linked}">
-<jcr:sql var="numberOfPostsQuery"
-         sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${linked.path}'])"/>
-<c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
-<jcr:sql var="numberOfThreadsQuery"
-         sql="select [jcr:uuid] from [jnt:thread] as t  where isdescendantnode(t,['${linked.path}'])"/>
-<c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
-<template:addResources type="css" resources="forum.css"/>
-
+    <jcr:sql var="numberOfPostsQuery"
+             sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${linked.path}'])"/>
+    <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
+    <jcr:sql var="numberOfThreadsQuery"
+             sql="select [jcr:uuid] from [jnt:thread] as t  where isdescendantnode(t,['${linked.path}'])"/>
+    <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
+    <template:addResources type="css" resources="forum.css"/>
+    <template:addDependency node="${linked}"/>
     <div class="topics">
         <h2><a href="${url.base}${linked.parent.path}.html"><jcr:nodeProperty node="${linked}"
-                                                                                   name="topicSubject"/></a></h2>
+                                                                              name="topicSubject"/></a></h2>
+
         <div class="forum-box forum-box-style1 topics">
             <span class="forum-corners-top"><span></span></span>
 
@@ -31,7 +32,7 @@
                     <dl class="icon">
                         <dt>Topics</dt>
                         <dd class="topics">Posts</dd>
-                        <%--<dd class="posts">View</dd>--%>
+                            <%--<dd class="posts">View</dd>--%>
                         <dd class="lastpost"><span>Last post</span></dd>
                     </dl>
                 </li>
@@ -39,14 +40,14 @@
 
 
             <ul class="forum-list forums">
-				<c:forEach items="${linked.nodes}" var="thread">
+                <c:forEach items="${linked.nodes}" var="thread">
                     <c:if test="${(currentNode.properties.viewTopics.boolean and jcr:isNodeType(thread, 'jnt:topic')) or (currentNode.properties.viewThreads.boolean and jcr:isNodeType(thread, 'jnt:thread'))}">
                         <li class="row">
                             <template:module node="${thread}" template="summary"/>
                         </li>
                         <c:set var="found" value="true"/>
                     </c:if>
-				</c:forEach>
+                </c:forEach>
 
                 <c:if test="${not found}">
                     <li class="row">

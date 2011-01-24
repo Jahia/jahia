@@ -21,6 +21,16 @@
 <c:set var="fields" value="${user.propertiesAsString}"/>
 <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle" var="title"/>
 <c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+<jsp:useBean id="now" class="java.util.Date"/>
+<jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
+<c:if test="${not empty birthDate}">
+    <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy" var="birthYear"/>
+    <fmt:formatDate value="${now}" pattern="yyyy" var="currentYear"/>
+</c:if>
+<c:if test="${not empty birthDate}">
+    <fmt:formatDate value="${birthDate.date.time}" pattern="dd/MM/yyyy" var="editBirthDate"/>
+</c:if>
+<fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
 <div class="user-profile">
 
     <c:if test="${fn:contains(publicPropertiesAsString, 'j:picture')}">
@@ -34,6 +44,12 @@
     <div class="user-body">
         <h5><c:if test="${fn:contains(publicPropertiesAsString, 'j:firstName')}">${fn:escapeXml(person)}&nbsp;</c:if>(logged
             as: ${user.name})</h5>
+        <c:if test="${fn:contains(publicPropertiesAsString, 'j:birthDate')}"><c:if test="${not empty birthDate}">
+                <fmt:formatDate value="${birthDate.date.time}" dateStyle="full" type="date"/>
+            </c:if>&nbsp;</c:if>
+        <c:if test="${fn:contains(publicPropertiesAsString, 'age')}"><c:if test="${not empty birthDate}">
+                <span class="label"><fmt:message key="jnt_user.age"/>:&nbsp;</span><utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/>
+            </c:if>&nbsp;</c:if>
     </div>
     <div>
         <c:if test="${fn:contains(publicPropertiesAsString, 'j:organization')}">

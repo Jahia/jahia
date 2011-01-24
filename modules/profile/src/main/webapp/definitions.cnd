@@ -21,6 +21,7 @@
  - j:linkedinID (boolean)
  - j:picture (boolean)
  - preferredLanguage (boolean)
+ - age (boolean)
 
 [jnt:userContentRetrieval] > jnt:contentRetrieval, jmix:profileComponentContent, jmix:bindedComponent
 

@@ -403,7 +403,7 @@ public class JCRSitesProvider {
                 Node translator = n.addNode("translator-"  +s, "jnt:role");
                 Value[] values = new Value[] {
                         session.getValueFactory().createValue(session.getNode("/permissions/editMode/editModeAccess"), true),
-                        session.getValueFactory().createValue(session.getNode("/permissions/editMode/selector/sitemapSelector"), true),
+                        session.getValueFactory().createValue(session.getNode("/permissions/editMode/editSelector/sitemapSelector"), true),
                         session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:versionManagement_default"), true),
                         session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:write_default/jcr:modifyProperties_default/jcr:modifyProperties_default_" + s), true)
                 };

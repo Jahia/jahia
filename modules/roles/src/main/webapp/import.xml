@@ -29,11 +29,14 @@
 
         <studioMode jcr:primaryType="jnt:permission">
             <studioModeAccess jcr:primaryType="jnt:permission"/>
+            <studioSelector jcr:primaryType="jnt:permission">
+                <templatesSelector jcr:primaryType="jnt:permission"/>
+            </studioSelector>
         </studioMode>
 
         <editMode jcr:primaryType="jnt:permission">
             <editModeAccess jcr:primaryType="jnt:permission"/>
-            <selector jcr:primaryType="jnt:permission">
+            <editSelector jcr:primaryType="jnt:permission">
                 <categoriesSelector jcr:primaryType="jnt:permission"/>
                 <contentSelector jcr:primaryType="jnt:permission"/>
                 <createSelector jcr:primaryType="jnt:permission"/>
@@ -42,8 +45,7 @@
                 <portletsSelector jcr:primaryType="jnt:permission"/>
                 <searchSelector jcr:primaryType="jnt:permission"/>
                 <sitemapSelector jcr:primaryType="jnt:permission"/>
-                <templatesSelector jcr:primaryType="jnt:permission"/>
-            </selector>
+            </editSelector>
 
             <engineTabs jcr:primaryType="jnt:permission">
                 <viewAnalyticsTab jcr:primaryType="jnt:permission"/>
@@ -99,7 +101,7 @@
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
 
         <viewer jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/selector/sitemapSelector" />
+                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editSelector/sitemapSelector" />
 
         <editor jcr:primaryType="jnt:role"
                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager  /permissions/wysiwyg-editor-toolbar/full"
@@ -110,7 +112,7 @@
                          j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/contributeMode"/>
 
         <publisher jcr:primaryType="jnt:role"
-                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/selector/sitemapSelector /permissions/modes/contribute /permissions/toolbar/workflow /permissions/workflow-tasks/final-review" />
+                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/modes/contribute /permissions/toolbar/workflow /permissions/workflow-tasks/final-review" />
 
         <!--<seo-manager jcr:primaryType="jnt:role"-->
                      <!--/>-->

@@ -701,7 +701,12 @@
 
     <bean id="Toolbar.Item.NewTag" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTagActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:tag"/>
+                <property name="parentTypes" value="jnt:tagList"/>
+                <property name="useEngine" value="false"/>
+                <property name="useMainNode" value="true"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.createTag"/>
         <property name="icon" value="newTag"/>
@@ -710,7 +715,12 @@
 
     <bean id="Toolbar.Item.NewRole" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRoleActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:role"/>
+                <property name="parentTypes" value="jnt:roles"/>
+                <property name="useEngine" value="false"/>
+                <property name="useMainNode" value="true"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.new"/>
         <property name="icon" value="newRole"/>
@@ -773,7 +783,11 @@
     <bean id="Toolbar.Item.NewPortletFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
           parent="Toolbar.Item.NewFolder">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewPortletFolderActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:portletFolder"/>
+                <property name="parentTypes" value="jnt:portletFolder"/>
+                <property name="useEngine" value="false"/>
+            </bean>
         </property>
     </bean>
 

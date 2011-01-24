@@ -1081,7 +1081,6 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.Item.NewRole"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Delete"/>

@@ -209,8 +209,13 @@ public class ContentActions {
      * @param windowHeaer
      * @param nodeType
      */
-    public static void createNode(final Linker linker, final String windowHeaer, final String nodeType) {
-        GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
+    public static void createNode(final Linker linker, final String windowHeaer, final String nodeType, boolean useMainNode) {
+        GWTJahiaNode parent;
+        if (useMainNode) {
+            parent = linker.getSelectionContext().getMainNode();
+        }   else {
+            parent = linker.getSelectionContext().getSingleSelection();
+        }
         if (parent != null) {
             String nodeName = Window.prompt(windowHeaer, "untitled");
             if (nodeName != null && nodeName.length() > 0) {

@@ -57,7 +57,10 @@ public class NewContentActionItem extends BaseActionItem  {
     private String nodeTypes = "";
     protected String parentTypes = "jnt:contentList jnt:contentFolder";
     protected List<String> parentTypesAsList;
-    
+    private boolean useEngine = true;
+    private String label;
+    private boolean useMainNode = false;
+
     public void setNodeTypes(String nodeTypes) {
         this.nodeTypes = nodeTypes;
     }
@@ -72,29 +75,38 @@ public class NewContentActionItem extends BaseActionItem  {
     }
 
     public void onComponentSelection() {
-        String nodeTypes = this.nodeTypes;
-        if (linker instanceof EditLinker) {
-            Module m = ((EditLinker) linker).getSelectedModule();
-            if (m == null) {
-                m = ((EditLinker) linker).getMainModule();
+        if (useEngine) {
+            String nodeTypes = this.nodeTypes;
+            if (linker instanceof EditLinker) {
+                Module m = ((EditLinker) linker).getSelectedModule();
+                if (m == null) {
+                    m = ((EditLinker) linker).getMainModule();
+                }
+                if (m instanceof ListModule) {
+                    nodeTypes = m.getNodeTypes();
+                } else if (m instanceof AreaModule) {
+                    nodeTypes = m.getNodeTypes();
+                }
             }
-            if (m instanceof ListModule) {
-                nodeTypes = m.getNodeTypes();
-            } else if (m instanceof AreaModule) {
-                nodeTypes = m.getNodeTypes();
-            }
-        }
 
-        if (nodeTypes.length() > 0) {
-            ContentActions.showContentWizard(linker, nodeTypes);
+            if (nodeTypes.length() > 0) {
+                ContentActions.showContentWizard(linker, nodeTypes);
+            } else {
+                ContentActions.showContentWizard(linker, null);
+            }
         } else {
-            ContentActions.showContentWizard(linker, null);
+            ContentActions.createNode(linker,getGwtToolbarItem().getTitle(),nodeTypes, useMainNode);
         }
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        GWTJahiaNode n = lh.getSingleSelection();
+        GWTJahiaNode n;
+        if (useMainNode) {
+            n = lh.getMainNode();
+        }   else {
+            n = lh.getSingleSelection();
+        }
         if (n != null) {
             boolean isValidParent = false;
             for (String s : parentTypesAsList) {
@@ -107,5 +119,13 @@ public class NewContentActionItem extends BaseActionItem  {
         } else {
             setEnabled(false);
         }
+    }
+
+    public void setUseEngine(boolean useEngine) {
+        this.useEngine = useEngine;
+    }
+
+    public void setUseMainNode(boolean useMainNode) {
+        this.useMainNode = useMainNode;
     }
 }

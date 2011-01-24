@@ -58,6 +58,9 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
     }
 
     public void sendMessagesWithBodyAndHeaders(String target, Object body, Map<String, Object> headers) {
+        if (!camelContext.getStatus().isStarted()) {
+            return;
+        }
         if (headers != null) {
             template.sendBodyAndHeaders(target, body, headers);
         } else {

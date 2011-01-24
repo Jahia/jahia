@@ -1239,10 +1239,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             Boolean defaultSite = Boolean.FALSE;
             if (request.getAttribute("defaultSite") == null) {
-                JahiaSite defSite = getDefaultSite();
-                if (defSite != null && defSite.getSiteKey().equals(site.getSiteKey())) {
-                    defaultSite = Boolean.TRUE;
-                }
+                defaultSite = Boolean.valueOf((Boolean) session.getAttribute(CLASS_NAME + "defaultSite"));
             } else {
                 defaultSite = (Boolean) request.getAttribute("defaultSite");
             }

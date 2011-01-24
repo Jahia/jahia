@@ -27,7 +27,8 @@
                value="${currentNode.properties['j:subNodesView'].string}"/>
     </c:when>
 </c:choose>
-<c:set target="${moduleMap}" property="emptyListMessage" value="No item found" />
+<fmt:message key="label.noItemFound" var="notFoundLabel"/>
+<c:set target="${moduleMap}" property="emptyListMessage" value="${notFoundLabel}" />
 <c:set target="${moduleMap}" property="begin" value="0"/>
 <template:include template="hidden.load"/>
 <c:if test="${empty moduleMap.currentList and not empty moduleMap.listQuerySql}">

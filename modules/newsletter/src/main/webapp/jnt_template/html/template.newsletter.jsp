@@ -85,7 +85,7 @@
                                                         <fmt:message key="label.unsubscribe"/></h3>
 
                                                     <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
-                                                        <a href="${renderContext.mainResource.node.parent.properties['subscriptionPage'].node.url}" target="_blank"
+                                                        <a href="${renderContext.mainResource.node.parent.properties['j:subscriptionPage'].node.url}" target="_blank"
                                                            style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;"><fmt:message key="label.click.to.unsubscribe.from.this.email"/></a></p></td>
                                             </tr>
                                         </table>

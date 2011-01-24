@@ -44,7 +44,7 @@
  + * (jnt:newsletter)
 
 [jnt:newsletter] > jnt:content, mix:title, jmix:list, jmix:subscribable, jmix:visibleInPagesTree
-- subscriptionPage (weakreference) mandatory < jnt:page
+ - j:subscriptionPage (weakreference) mandatory < jnt:page
  + * (jnt:newsletterIssue)
 
 [jnt:newsletterIssue] > jnt:content, mix:title, jmix:observable, jmix:hasTemplateNode

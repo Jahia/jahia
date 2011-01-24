@@ -44,7 +44,7 @@ public class TokenizedFormTag extends BodyTagSupport {
     public int doEndTag() throws JspException {
         try {
             String id = (String) pageContext.getAttribute("currentFormId");
-            RenderContext currentRenderContext = (RenderContext) pageContext.getAttribute("renderContext",
+            Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
                                                                            PageContext.REQUEST_SCOPE);
             JspWriter out = pageContext.getOut();
 
@@ -86,7 +86,7 @@ public class TokenizedFormTag extends BodyTagSupport {
                 pageContext.setAttribute("form-parameter", forms, PageContext.REQUEST_SCOPE);
             }
             forms.put(id, hiddenInputs);
-            currentRenderContext.setFormToken(forms);
+            currentResource.addFormInputs(id,hiddenInputs);
             out.print(outputDocument.toString());
         } catch (IOException e) {
             e.printStackTrace();

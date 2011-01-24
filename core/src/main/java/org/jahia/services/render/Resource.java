@@ -67,6 +67,7 @@ public class Resource {
     private List<Option> options;
     private ExtendedNodeType resourceNodeType;
     private Map<String, Object> moduleParams = new HashMap<String, Object>();
+    private HashMap<String,Map<String,String>> formInputs;
 
     /**
      * Creates a resource from the specified parameter
@@ -87,7 +88,7 @@ public class Resource {
         missingResources = new ArrayList<String>();
         wrappers = new Stack<String>();
         options = new ArrayList<Option>();
-
+        formInputs = null;
     }
 
     public JCRNodeWrapper getNode() {
@@ -277,6 +278,17 @@ public class Resource {
         result = 31 * result + (resourceNodeType != null ? resourceNodeType.hashCode() : 0);
         result = 31 * result + (moduleParams != null ? moduleParams.hashCode() : 0);
         return result;
+    }
+
+    public void addFormInputs(String id, Map<String, String> hiddenInputs) {
+        if(formInputs==null) {
+            formInputs = new HashMap<String,Map<String,String>>();
+        }
+        formInputs.put(id,hiddenInputs);
+    }
+
+    public HashMap<String, Map<String, String>> getFormInputs() {
+        return formInputs;
     }
 
     public class Option implements Comparable<Option> {

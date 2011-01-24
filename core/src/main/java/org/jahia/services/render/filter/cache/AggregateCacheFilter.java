@@ -60,6 +60,7 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.*;
@@ -189,10 +190,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
                 (Map<String, Object>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"));
         setResources(renderContext, cacheEntry);
-        Object property = cacheEntry.getProperty(FORM_TOKEN);
-        if (property != null) {
-            renderContext.getRequest().setAttribute("form-parameter", property);
-        }
+
         if (renderContext.getMainResource() == resource) {
             cachedContent = removeEsiTags(cachedContent);
         }
@@ -349,8 +347,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     cacheEntry.setProperty(RESOURCES_OPTIONS, assetsOptions);
                 }
 
-                if (renderContext.getFormToken() != null) {
-                    cacheEntry.setProperty(FORM_TOKEN, renderContext.getFormToken());
+                if (resource.getFormInputs() != null) {
+                    cacheEntry.setProperty(FORM_TOKEN, resource.getFormInputs());
                 }
                 Map<String, Object> moduleParams=null;
                 for (String property : moduleParamsProperties.keySet()) {
@@ -482,7 +480,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         setResources(renderContext, cacheEntry);
                         Object property = cacheEntry.getProperty(FORM_TOKEN);
                         if (property != null) {
-                            renderContext.getRequest().setAttribute("form-parameter", property);
+                            Map<String, Map<String, String>> forms = (Map<String, Map<String, String>>) renderContext.getRequest().getAttribute(
+                                    "form-parameter");
+                            if (forms == null) {
+                                forms = new HashMap<String, Map<String, String>>();
+                                renderContext.getRequest().setAttribute("form-parameter", forms);
+                            }
+                            forms.putAll((Map<? extends String, ? extends Map<String, String>>) property);
                         }
                     } else {
                         cache.put(new Element(mrCacheKey, null));

@@ -752,7 +752,6 @@ public class ContentManagerHelper {
         }
 
         try {
-            node.setAclInheritanceBreak(acl.isBreakAllInheritance());
             node.revokeAllRoles();
             for (GWTJahiaNodeACE ace : acl.getAce()) {
                 String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
@@ -766,6 +765,7 @@ public class ContentManagerHelper {
                     }
                 }
             }
+            node.setAclInheritanceBreak(acl.isBreakAllInheritance());
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error("error", e);

@@ -168,9 +168,33 @@ public class AclEditor {
         }
 
         // name of the princial
-        col = new ColumnConfig("principal",getResource("label.user"), 300);
+        col = new ColumnConfig("principal",getResource("label.user"), 200);
         columns.add(col);
-
+        // column break in heritance
+        if (displayInheritanceColumn) {
+            col = new ColumnConfig("inheritance", Messages.get("label.inherited"), 300);
+            col.setAlignment(Style.HorizontalAlignment.LEFT);
+            col.setRenderer(new GridCellRenderer<ModelData>() {
+                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
+                                     ListStore<ModelData> modelDataListStore, Grid<ModelData> modelDataGrid) {
+                    final GWTJahiaNodeACE ace = (GWTJahiaNodeACE) model.get("ace");
+                    LayoutContainer widget = new LayoutContainer();
+                    if (!readOnly) {
+                        if (!ace.getInheritedPermissions().isEmpty() && !acl.isBreakAllInheritance()) {
+                            if (!ace.getPermissions().isEmpty()) {
+                                widget.add(buildLocalRestoreInheritanceButton(model, ace));
+                            } else {
+                                widget.add(buildInheritanceLabel(ace));
+                            }
+                        } else {
+                            widget.add(buildRemoveButton(model, ace));
+                        }
+                    }
+                    return widget;
+                }
+            });
+            columns.add(col);
+        }
         // add a column per available permission
         for (String s : available) {
             final int i = columns.size();
@@ -204,7 +228,7 @@ public class AclEditor {
                                 List<String> toCheck = acl.getPermissionsDependencies().get(perm);
                                 if (toCheck != null) {
                                     for (String s1 : toCheck) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(s1) + 2);
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,2);
                                         if (checkBox!=null && !checkBox.getValue()) {
                                             checkBox.setValue(true,true);
                                         }
@@ -214,7 +238,7 @@ public class AclEditor {
                                 Set<String> toCheck = acl.getPermissionsDependencies().keySet();
                                 for (String s1 : toCheck) {
                                     if (acl.getPermissionsDependencies().get(s1).contains(perm)) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(s1) + 2);
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,2);
                                         if (checkBox != null && checkBox.getValue()) {
                                             checkBox.setValue(false,true);
                                         }
@@ -225,7 +249,7 @@ public class AclEditor {
                             if (!ace.getInheritedPermissions().isEmpty()) {
                                 if (ace.getPermissions().equals(ace.getInheritedPermissions()) && !acl.isBreakAllInheritance()) {
                                     if (displayInheritanceColumn) {
-                                        LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex, available.size() + 2);
+                                        LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex,2);
                                         ctn.removeAll();
                                         ctn.add(buildInheritanceLabel(ace));
                                         ctn.layout();
@@ -234,7 +258,7 @@ public class AclEditor {
                                 } else {
                                     if (ace.isInherited()) {
                                         if (displayInheritanceColumn) {
-                                            LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex, available.size() + 2);
+                                            LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex,2);
                                             ctn.removeAll();
                                             ctn.add(buildLocalRestoreInheritanceButton(model, ace));
                                             ctn.layout();
@@ -249,32 +273,6 @@ public class AclEditor {
                 }
             });
 
-            columns.add(col);
-        }
-
-        // column break in heritance
-        if (displayInheritanceColumn) {
-            col = new ColumnConfig("inheritance", Messages.get("label.inherited"), 300);
-            col.setAlignment(Style.HorizontalAlignment.LEFT);
-            col.setRenderer(new GridCellRenderer<ModelData>() {
-                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
-                                     ListStore<ModelData> modelDataListStore, Grid<ModelData> modelDataGrid) {
-                    final GWTJahiaNodeACE ace = (GWTJahiaNodeACE) model.get("ace");
-                    LayoutContainer widget = new LayoutContainer();
-                    if (!readOnly) {
-                        if (!ace.getInheritedPermissions().isEmpty() && !acl.isBreakAllInheritance()) {
-                            if (!ace.getPermissions().isEmpty()) {
-                                widget.add(buildLocalRestoreInheritanceButton(model, ace));
-                            } else {
-                                widget.add(buildInheritanceLabel(ace));
-                            }
-                        } else {
-                            widget.add(buildRemoveButton(model, ace));
-                        }
-                    }
-                    return widget;
-                }
-            });
             columns.add(col);
         }
 
@@ -506,14 +504,14 @@ public class AclEditor {
                 ace.getPermissions().clear();
 //                ace.getPermissions().putAll(ace.getInheritedPermissions());
                 int row = store.indexOf(item);
-                for (int i = 2; i < available.size() + 2; i++) {
+                for (int i = 3; i < available.size() + 3; i++) {
                     CheckBox chb = (CheckBox) grid.getView().getWidget(row,i);
                     String perm = grid.getColumnModel().getColumn(i).getId();
                     Boolean v = ace.getInheritedPermissions().get(perm);
                     chb.setChecked(Boolean.TRUE.equals(v));
                 }
                 ace.setInherited(true);
-                LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(row,available.size() + 2);
+                LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(row,2);
                 ctn.removeAll();
                 ctn.add(buildInheritanceLabel(ace));
                 ctn.layout();

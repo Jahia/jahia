@@ -10,15 +10,16 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
 
 /**
- * Created by IntelliJ IDEA.
+ * Action item that launches newsletter subscription manager.
  * User: toto
  * Date: Dec 6, 2010
  * Time: 1:33:58 PM
- * To change this template use File | Settings | File Templates.
  */
 public class SubscriptionManagerActionItem extends BaseActionItem {
 
-    @Override public void handleNewLinkerSelection() {
+    private static final long serialVersionUID = -2710441859293558523L;
+
+	@Override public void handleNewLinkerSelection() {
         final GWTJahiaNode n = linker.getSelectionContext().getSingleSelection();
         setEnabled(n != null && n.getNodeTypes().contains("jnt:newsletter") &&
                 (n.getAggregatedPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED));

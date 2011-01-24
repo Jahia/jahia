@@ -71,6 +71,8 @@ public class UnsubscribeAction extends Action {
 
 	private static final Logger logger = LoggerFactory.getLogger(UnsubscribeAction.class);
 
+	private boolean forceConfirmationForRegisteredUsers;
+
     private String mailConfirmationTemplate = null;
 
     private MailService mailService;
@@ -108,9 +110,8 @@ public class UnsubscribeAction extends Action {
 
                         if (subscription == null) {
                             return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-user\"}"));
-                        } else if (sendConfirmationMail(session, user.getProperty("j:email"), node, subscription, resource,
-                                req)) {
-                            return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
+                        } else if (forceConfirmationForRegisteredUsers && sendConfirmationMail(session, user.getProperty("j:email"), node, subscription, resource, req)) {
+                        	return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
                         }
 
                         subscriptionService.cancel(subscription.getIdentifier(), session);
@@ -160,5 +161,9 @@ public class UnsubscribeAction extends Action {
 	public void setSubscriptionService(SubscriptionService subscriptionService) {
 		this.subscriptionService = subscriptionService;
 	}
+
+	public void setForceConfirmationForRegisteredUsers(boolean forceConfirmationForRegisteredUsers) {
+    	this.forceConfirmationForRegisteredUsers = forceConfirmationForRegisteredUsers;
+    }
 
 }

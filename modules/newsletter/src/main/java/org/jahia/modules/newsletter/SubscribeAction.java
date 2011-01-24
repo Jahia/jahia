@@ -72,6 +72,8 @@ public class SubscribeAction extends Action {
 
 	private static final Logger logger = LoggerFactory.getLogger(SubscribeAction.class);
 
+	private boolean forceConfirmationForRegisteredUsers;
+
 	private boolean allowRegistrationWithoutEmail;
 
 	private String mailConfirmationTemplate = null;
@@ -97,10 +99,18 @@ public class SubscribeAction extends Action {
                             return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"invalid-email\"}"));
                         }
                         Map<String, Object> props = new HashMap<String, Object>();
+                        String[] extraProperties = req.getParameterValues("j:fields");
+                        if (extraProperties != null) {
+                        	for (String extraProperty : extraProperties) {
+	                            if (req.getParameter(extraProperty) != null) {
+	                            	props.put(extraProperty, req.getParameter(extraProperty));
+	                            }
+                            }
+                        }
 
                         final JCRNodeWrapper subscription = subscriptionService.getSubscription(node, email, session);
                         if (subscription != null) {
-                            if (!subscription.getProperty("j:confirmed").getBoolean()) {
+                            if (!subscription.getProperty(SubscriptionService.J_CONFIRMED).getBoolean()) {
                                 if (sendConfirmationMail(session, email, node, subscription, resource.getLocale(), req)) {
                                     return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
                                 }
@@ -133,11 +143,15 @@ public class SubscribeAction extends Action {
                                 session) != null) {
                             return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"already-subscribed\"}"));
                         } else {
-                            JCRNodeWrapper newSubscriptionNode = subscriptionService.subscribe(node.getIdentifier(), user.getUserKey(), session);
+                            JCRNodeWrapper newSubscriptionNode = subscriptionService.subscribe(node.getIdentifier(), user.getUserKey(), forceConfirmationForRegisteredUsers, session);
 
-                            if (sendConfirmationMail(session, user.getProperty("j:email"), node, newSubscriptionNode,
-                                    resource.getLocale(), req)) {
-                                return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
+                            if (forceConfirmationForRegisteredUsers) {
+	                            if (sendConfirmationMail(session, user.getProperty("j:email"), node, newSubscriptionNode,
+	                                    resource.getLocale(), req)) {
+	                                return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"mail-sent\"}"));
+	                            }
+                            } else {
+                            	return new ActionResult(SC_OK, null, new JSONObject("{\"status\":\"ok\"}"));
                             }
 
                         }
@@ -156,8 +170,8 @@ public class SubscribeAction extends Action {
             throws RepositoryException, JSONException {
         if (mailConfirmationTemplate != null) {
             String confirmationKey = subscriptionService.generateConfirmationKey(newSubscriptionNode);
-            newSubscriptionNode.setProperty("j:confirmed", false);
-            newSubscriptionNode.setProperty("j:confirmationKey", confirmationKey);
+            newSubscriptionNode.setProperty(SubscriptionService.J_CONFIRMED, false);
+            newSubscriptionNode.setProperty(SubscriptionService.J_CONFIRMATION_KEY, confirmationKey);
             session.save();
             Map<String, Object> bindings = new HashMap<String, Object>();
             bindings.put("newsletter", node);
@@ -192,5 +206,9 @@ public class SubscribeAction extends Action {
     public void setSubscriptionService(SubscriptionService subscriptionService) {
 		this.subscriptionService = subscriptionService;
 	}
+
+	public void setForceConfirmationForRegisteredUsers(boolean forceConfirmationForRegisteredUsers) {
+    	this.forceConfirmationForRegisteredUsers = forceConfirmationForRegisteredUsers;
+    }
 
 }

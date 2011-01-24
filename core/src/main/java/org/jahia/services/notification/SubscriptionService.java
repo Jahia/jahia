@@ -69,9 +69,9 @@ public class SubscriptionService {
 
     private static final String J_ALLOW_UNREGISTERED_USERS = "j:allowUnregisteredUsers";
 
-    private static final String J_CONFIRMATION_KEY = "j:confirmationKey";
+    public static final String J_CONFIRMATION_KEY = "j:confirmationKey";
 
-    private static final String J_CONFIRMED = "j:confirmed";
+    public static final String J_CONFIRMED = "j:confirmed";
 
     private static final String J_EMAIL = "j:email";
 
@@ -199,12 +199,12 @@ public class SubscriptionService {
             if (!target.isNodeType(JMIX_SUBSCRIBABLE)) {
                 logger.warn("The target node {} does not have the " + JMIX_SUBSCRIBABLE + " mixin." +
                         " No subscriptions can be found.", target.getPath());
-                return new PaginatedList<Subscription>(subscriptions, limit > 0 ? total : subscriptions.size());
+                return new PaginatedList<Subscription>(subscriptions, 0);
             }
             QueryManager queryManager = session.getWorkspace().getQueryManager();
             if (queryManager == null) {
                 logger.error("Unable to obtain QueryManager instance");
-                return new PaginatedList<Subscription>(subscriptions, limit > 0 ? total : subscriptions.size());
+                return new PaginatedList<Subscription>(subscriptions, 0);
             }
 
             StringBuilder q = new StringBuilder();
@@ -215,7 +215,9 @@ public class SubscriptionService {
             }
             Query query = queryManager.createQuery(q.toString(), Query.JCR_SQL2);
 
-            long totalCount = JCRContentUtils.size(query.execute().getNodes());
+            if (limit > 0 || offset > 0) {
+            	total = (int) JCRContentUtils.size(query.execute().getNodes());
+            }
 
             query.setLimit(limit);
             query.setOffset(offset);
@@ -224,8 +226,6 @@ public class SubscriptionService {
                 JCRNodeWrapper subscriptionNode = (JCRNodeWrapper) nodes.next();
                 subscriptions.add(toSubscription(subscriptionNode, session));
             }
-            total = (int) JCRContentUtils.size(query.execute().getNodes());
-
         } catch (RepositoryException e) {
             logger.error("Error retrieving subscriptions for node " + subscribableIdentifier, e);
         }
@@ -235,7 +235,7 @@ public class SubscriptionService {
                     subscriptions.size() + " subscriber(s)");
         }
 
-        return new PaginatedList<Subscription>(subscriptions, limit > 0 ? total : subscriptions.size());
+        return new PaginatedList<Subscription>(subscriptions, limit > 0 || offset > 0 ? total : subscriptions.size());
     }
 
     /**
@@ -595,9 +595,12 @@ public class SubscriptionService {
      *                               {@link org.jahia.services.usermanager.JahiaUser#getUserKey()})
      * @param session
      */
-    public JCRNodeWrapper subscribe(final String subscribableIdentifier, String userKey, JCRSessionWrapper session) {
+    public JCRNodeWrapper subscribe(final String subscribableIdentifier, String userKey, boolean confirmationNeeded, JCRSessionWrapper session) {
         Map<String, Map<String, Object>> subscribers = new HashMap<String, Map<String, Object>>(1);
-        subscribers.put(userKey, null);
+        Map<String, Object> props = new HashMap<String, Object>(1);
+        props.put(J_CONFIRMED, Boolean.valueOf(!confirmationNeeded));
+        subscribers.put(userKey, props);
+        
         return subscribe(subscribableIdentifier, subscribers, session);
     }
 

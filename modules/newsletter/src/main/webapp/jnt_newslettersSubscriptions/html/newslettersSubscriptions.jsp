@@ -226,7 +226,7 @@
 	<c:if test="${not liveMode}">
 		<p>
 		${fn:escapeXml(functions:default(currentNode.propertiesAsString['jcr:title'], target.displayableName))}
-		<fmt:message key="label.liveModeOnly" />
+		&nbsp;-&nbsp;<fmt:message key="label.liveModeOnly" />
 		</p>
 	</c:if>
 </c:if>

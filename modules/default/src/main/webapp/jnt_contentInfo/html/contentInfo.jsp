@@ -17,11 +17,11 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:addResources type="css" resources="contentinfo.css"/>
 
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<fieldset>
-    <legend><fmt:message key="contentInformation"/></legend>
-    <div class="infos">
+<div class="contentinfos">
+    <h3><fmt:message key="contentInformation"/></h3>
         <dl>
             <dt><fmt:message key="mix_created.jcr_createdBy"/></dt>
             <dd>${linked.properties['jcr:createdBy'].string}</dd>
@@ -32,6 +32,6 @@
             <dt><fmt:message key="mix_lastModified.jcr_lastModified"/></dt>
             <dd><fmt:formatDate value="${linked.properties['jcr:lastModified'].date.time}" pattern="yyyy-MM-dd HH:mm"/></dd>
         </dl>
-    </div>
-</fieldset>
+</div>
+
 <template:linker property="j:bindedComponent" />

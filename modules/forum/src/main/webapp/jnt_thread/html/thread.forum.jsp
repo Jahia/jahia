@@ -36,7 +36,7 @@
                         key="new.post"/></a></div>
             </div>
             <div class="forum-pagination">
-                ${functions:length(currentNode.nodes)}&nbsp;<fmt:message key="posts"/>
+                <c:set value="${functions:length(jcr:getChildrenOfType(currentNode,'jnt:post'))}" var="nbPosts"/> ${nbPosts}&nbsp;<fmt:message key="posts"/>
             </div>
 
         </div>
@@ -49,7 +49,7 @@
         </c:forEach>
         <div class="forum-actions">
             <div class="forum-pagination">
-                ${functions:length(currentNode.nodes)}&nbsp;<fmt:message key="posts"/>
+                ${nbPosts}&nbsp;<fmt:message key="posts"/>
             </div>
 
         </div>

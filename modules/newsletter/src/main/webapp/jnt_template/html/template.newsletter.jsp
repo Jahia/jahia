@@ -15,7 +15,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>${currentNode.properties["jcr:title"].string}</title>
+<title>${fn:escapeXml(currentNode.displayableName)}</title>
 </head>
 <body>
 <div id="bodywrapper">
@@ -76,19 +76,6 @@
                                         <h2 style="font-size: 16px;font-weight: normal;color: #464646;margin: 0 0 10px 0;border-bottom: 3px solid #ccc;text-transform: uppercase;">
                                             <fmt:message key="label.in.short"/></h2>
                                         <template:area path="short"/>
-                                        <table width="100%" height="173" border="0" cellspacing="0" cellpadding="0"
-                                               style="border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;">
-                                            <tr>
-                                                <td align="center" valign="top"
-                                                    style="border-bottom: 1px solid #ccc;padding: 16px 22px 16px 22px;">
-                                                    <h3 style="font-size: 16px;font-weight: normal;color: #666;margin: 0 0 4px 0;padding: 0;">
-                                                        <fmt:message key="label.unsubscribe"/></h3>
-
-                                                    <p style="font-size: 13px;font-weight: normal;color: #313131;margin: 0;	padding: 0;">
-                                                        <a href="${renderContext.mainResource.node.parent.properties['j:subscriptionPage'].node.url}" target="_blank"
-                                                           style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;"><fmt:message key="label.click.to.unsubscribe.from.this.email"/></a></p></td>
-                                            </tr>
-                                        </table>
                                     </td>
                                 </tr>
                             </table>
@@ -120,6 +107,18 @@
                                 </tr>
                             </table>
                         </td>
+                    </tr>
+                </table>
+
+                <table width="579" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td style="padding: 8px 0 8px 0;">
+       						<p style="font-size: 11px;font-weight: normal;font-style: italic;color: #333;text-align: center;">
+       							<fmt:message key="label.click.to.unsubscribe.from.this.email"
+       							/>&nbsp;<a href="${renderContext.mainResource.node.parent.properties['j:subscriptionPage'].node.url}" target="_blank"
+                                                           style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;"><fmt:message key="label.error.backLink.2"/></a>
+							</p>
+						</td>
                     </tr>
                 </table>
             </td>

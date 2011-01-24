@@ -77,6 +77,14 @@ public class UnsubscribeAction extends Action {
 
     private MailService mailService;
 	private SubscriptionService subscriptionService;
+	
+	static String generateUnsubscribeLink(JCRNodeWrapper newsletterNode, String confirmationKey,
+	        HttpServletRequest req) throws RepositoryException {
+		return req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()
+		        + Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
+		        + newsletterNode.getResolveSite().getDefaultLanguage() + newsletterNode.getPath()
+		        + ".confirm.do?key=" + confirmationKey + "&exec=rem";
+	}
 
     public ActionResult doExecute(final HttpServletRequest req, final RenderContext renderContext,
                                   final Resource resource, JCRSessionWrapper session, final Map<String, List<String>> parameters, URLResolver urlResolver)
@@ -136,9 +144,7 @@ public class UnsubscribeAction extends Action {
 
             Map<String, Object> bindings = new HashMap<String, Object>();
             bindings.put("newsletter", node);
-            bindings.put("confirmationlink", req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() +
-                    Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
-                    + node.getResolveSite().getDefaultLanguage() + node.getPath() + ".confirm.do?key="+confirmationKey+"&exec=rem");
+            bindings.put("confirmationlink", generateUnsubscribeLink(node, confirmationKey, req));
             try {
                 mailService.sendMessageWithTemplate(mailConfirmationTemplate, bindings, email, mailService.defaultSender(), null, null, resource.getLocale(), "Jahia Newsletter");
             } catch (ScriptException e) {

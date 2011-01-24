@@ -39,7 +39,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.TokenAuthValveImpl;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.mail.MailService;
@@ -89,7 +88,7 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
     private SubscriptionService subscriptionService;
     private JahiaUserManagerService userService;
 
-    public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
+    public ActionResult doExecute(final HttpServletRequest req, final RenderContext renderContext,
                                   Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver)
             throws Exception {
         final JCRNodeWrapper node = resource.getNode();
@@ -111,11 +110,13 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
 
                 JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live", new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    	boolean saveSession = false;
                         PaginatedList<Subscription> l = null;
                         int total = 0;
                         int offset = 0;
+                        JCRNodeWrapper target = node.getParent();
                         do {
-                            l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), true, true, null, false, offset, READ_CHUNK_SIZE, session);
+                            l = subscriptionService.getSubscriptions(target.getIdentifier(), true, true, null, false, offset, READ_CHUNK_SIZE, session);
                             total = l.getTotalSize();
                             for (Subscription subscription : l.getData()) {
                                 if (StringUtils.isEmpty(subscription.getEmail())) {
@@ -143,7 +144,22 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
                                 if (language == null) {
                                 	language = LanguageCodeConverters.languageCodeToLocale(site != null ? site.getDefaultLanguage() : SettingsBean.getInstance().getDefaultLanguageCode());
                                 }
-
+                                String confirmationKey = subscription.getConfirmationKey();
+                                if (confirmationKey == null) {
+                                	try {
+	                                	JCRNodeWrapper subscriptionNode = session.getNodeByUUID(subscription.getId());
+	                                	confirmationKey = subscriptionService.generateConfirmationKey(subscriptionNode);
+	                                	letterContext.getRequest().setAttribute("org.jahia.modules.newsletter.unsubscribeLink", UnsubscribeAction.generateUnsubscribeLink(target, confirmationKey, req));
+	                                	subscriptionNode.setProperty(SubscriptionService.J_CONFIRMATION_KEY, confirmationKey);
+	                                	saveSession = true;
+                                	} catch (RepositoryException e) {
+										        logger.warn(
+										                "Unable to store the confirmation key for the subscription "
+										                        + subscription.getSubscriber(), e);
+                                	}
+                                } else {
+                                	letterContext.getRequest().setAttribute("org.jahia.modules.newsletter.unsubscribeLink", UnsubscribeAction.generateUnsubscribeLink(target, confirmationKey, req));
+                                }
                                 sendNewsletter(letterContext, node, subscription.getEmail(), username, "html",
                                             language, "live",
                                             newsletterVersions);
@@ -151,6 +167,10 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
                             
                             offset += READ_CHUNK_SIZE;
                         } while (offset < total);
+                        
+                        if (saveSession) {
+                        	session.save();
+                        }
                         
                         return Boolean.TRUE;
                     }
@@ -188,9 +208,13 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
                         renderContext.setSite(node.getResolveSite());
 
                         // Clear attributes
+                        @SuppressWarnings("rawtypes")
                         Enumeration attributeNames = renderContext.getRequest().getAttributeNames();
                         while (attributeNames.hasMoreElements()) {
-                            renderContext.getRequest().removeAttribute((String) attributeNames.nextElement());
+                        	String attr = (String) attributeNames.nextElement();
+                        	if (!attr.startsWith("org.jahia.modules.newsletter.")) {
+                        		renderContext.getRequest().removeAttribute(attr);
+                        	}
                         }
 
                         String out = renderService.render(resource, renderContext);

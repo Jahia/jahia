@@ -113,10 +113,17 @@
                 <table width="579" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                         <td style="padding: 8px 0 8px 0;">
+							<c:if test="${not empty requestScope['org.jahia.modules.newsletter.unsubscribeLink']}">
        						<p style="font-size: 11px;font-weight: normal;font-style: italic;color: #333;text-align: center;">
        							<fmt:message key="label.click.to.unsubscribe.from.this.email"
-       							/>&nbsp;<a href="${renderContext.mainResource.node.parent.properties['j:subscriptionPage'].node.url}" target="_blank"
+       							/>&nbsp;<a href="${requestScope['org.jahia.modules.newsletter.unsubscribeLink']}" target="_blank"
                                                            style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;"><fmt:message key="label.error.backLink.2"/></a>
+							</p>
+							</c:if>
+       						<p style="font-size: 11px;font-weight: normal;font-style: italic;color: #333;text-align: center;">
+       							<fmt:message key="label.manageSubscriptions1"
+       							/>&nbsp;<a href="${renderContext.mainResource.node.parent.properties['j:subscriptionPage'].node.url}" target="_blank"
+                                                           style="color: #0066ff;text-decoration: none; border: none;margin: 0;padding: 0;"><fmt:message key="label.manageSubscriptions2"/></a>
 							</p>
 						</td>
                     </tr>

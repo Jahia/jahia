@@ -33,7 +33,10 @@
 package org.jahia.services.notification;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.bcel.generic.NEW;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
@@ -62,6 +65,8 @@ public class Subscription implements Serializable {
 	private String subscriber;
 
 	private boolean suspended;
+	
+	private Map<String, String> properties = new HashMap<String, String>(1);
 
 	@Override
 	public boolean equals(Object obj) {
@@ -120,6 +125,10 @@ public class Subscription implements Serializable {
 		return confirmed;
 	}
 
+	public boolean isRegisteredUser() {
+		return getProvider() != null;
+	}
+
 	public boolean isSuspended() {
 		return suspended;
 	}
@@ -164,4 +173,8 @@ public class Subscription implements Serializable {
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this);
 	}
+
+	public Map<String, String> getProperties() {
+    	return properties;
+    }
 }

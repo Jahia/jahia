@@ -32,6 +32,7 @@
 
 package org.jahia.modules.newsletter;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Jahia;
@@ -49,7 +50,10 @@ import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PaginatedList;
 import org.slf4j.Logger;
@@ -69,6 +73,8 @@ import java.util.*;
  */
 public class SendAsNewsletterAction extends Action implements BackgroundAction {
 
+	private static final int READ_CHUNK_SIZE = 1000;
+
 	private static final String J_LAST_SENT = "j:lastSent";
 
 	private static final String J_SCHEDULED = "j:scheduled";
@@ -79,7 +85,9 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
     private HttpClientService httpClientService;
     private MailService mailService;
     private RenderService renderService;
+    private JahiaSitesService siteService;
     private SubscriptionService subscriptionService;
+    private JahiaUserManagerService userService;
 
     public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
                                   Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver)
@@ -103,31 +111,47 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
 
                 JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live", new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        PaginatedList<Subscription> l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), null,false,0,0,
-                                session);
-                        for (Subscription subscription : l.getData()) {
-                            String username = "guest";
+                        PaginatedList<Subscription> l = null;
+                        int total = 0;
+                        int offset = 0;
+                        do {
+                            l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), true, true, null, false, offset, READ_CHUNK_SIZE, session);
+                            total = l.getTotalSize();
+                            for (Subscription subscription : l.getData()) {
+                                if (StringUtils.isEmpty(subscription.getEmail())) {
+                                	logger.warn("Empty e-mail found for the subscription {}. Skipping.", subscription.getSubscriber());
+                                	continue;
+                                }
+                            	
+                                String username = "guest";
 
-                            JahiaSite site = null;
-                            try {
-                                site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(node.getResolveSite().getSiteKey());
-                            } catch (JahiaException e) {
-                            }
+                                JahiaSite site = null;
+                                try {
+                                    site = siteService.getSiteByKey(node.getResolveSite().getSiteKey());
+                                } catch (JahiaException e) {
+                                }
 
-                            if (personalized && subscription.getSubscriber() != null) {
-                                username = subscription.getSubscriber();
-                            }
+                                if (personalized && subscription.isRegisteredUser() && subscription.getSubscriber() != null) {
+                                    username = subscription.getSubscriber();
+                                }
 
-                            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(subscription.getSubscriber());
-                            RenderContext letterContext = new RenderContext(renderContext.getRequest(), renderContext.getResponse(), user);
-                            Locale language = UserPreferencesHelper.getPreferredLocale(user , site);
+                                JahiaUser user = subscription.isRegisteredUser() ? userService.lookupUserByKey(subscription.getSubscriber()) : userService.lookupUser("guest");
+                                RenderContext letterContext = new RenderContext(renderContext.getRequest(), renderContext.getResponse(), user);
+                                Locale language = subscription.isRegisteredUser() ? 
+                                		UserPreferencesHelper.getPreferredLocale(user , site) : 
+                                			LanguageCodeConverters.languageCodeToLocale(subscription.getProperties().get("j:preferredLanguage"));
+                                if (language == null) {
+                                	language = LanguageCodeConverters.languageCodeToLocale(site != null ? site.getDefaultLanguage() : SettingsBean.getInstance().getDefaultLanguageCode());
+                                }
 
-                            if (subscription.getEmail() != null && subscription.isConfirmed() && !subscription.isSuspended()) {
                                 sendNewsletter(letterContext, node, subscription.getEmail(), username, "html",
-                                        language, "live",
-                                        newsletterVersions);
+                                            language, "live",
+                                            newsletterVersions);
                             }
-                        }
+                            
+                            offset += READ_CHUNK_SIZE;
+                        } while (offset < total);
+                        
                         return Boolean.TRUE;
                     }
                 });
@@ -227,6 +251,14 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
 
 	public void setSubscriptionService(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
+    }
+
+	public void setUserService(JahiaUserManagerService userService) {
+    	this.userService = userService;
+    }
+
+	public void setSiteService(JahiaSitesService siteService) {
+    	this.siteService = siteService;
     }
 
 }

@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,6 +33,7 @@
 package org.jahia.services.notification;
 
 import au.com.bytecode.opencsv.CSVReader;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -93,8 +94,8 @@ public class SubscriptionService {
 
     private static final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
 
-    private JahiaUserManagerService userManagerService;
-
+	private JahiaUserManagerService userManagerService;
+    
     /**
      * Cancels the specified subscriptions.
      *
@@ -189,6 +190,28 @@ public class SubscriptionService {
     public PaginatedList<Subscription> getSubscriptions(final String subscribableIdentifier, final String orderBy,
                                                         final boolean orderAscending, final int offset, final int limit,
                                                         JCRSessionWrapper session) {
+        return getSubscriptions(subscribableIdentifier, false, false, orderBy, orderAscending, offset, limit, session);
+    }
+    
+    /**
+     * Retrieves subscription for the specified node.
+     *
+     * @param subscribableIdentifier the UUID of the subscribable node
+     * @param activeOnly			 return only non-suspended subscriptions
+     * @param confirmedOnly			 return only confirmed subscriptions
+     * @param orderBy                order by property; <code>null</code> if no sorting should be
+     *                               done
+     * @param orderAscending         do we sort in ascending direction?
+     * @param offset                 the index of the first result to start with; <code>0</code> to
+     *                               start from the beginning
+     * @param limit                  the maximum number of results to return; <code>0</code> to
+     *                               return all available
+     * @param session
+     * @return paginated list list of {@link Subscription} objects
+     */
+    public PaginatedList<Subscription> getSubscriptions(final String subscribableIdentifier, final boolean activeOnly, final boolean confirmedOnly, final String orderBy,
+                                                        final boolean orderAscending, final int offset, final int limit,
+                                                        JCRSessionWrapper session) {
 
         long timer = System.currentTimeMillis();
 
@@ -210,6 +233,12 @@ public class SubscriptionService {
             StringBuilder q = new StringBuilder();
             q.append("select * from [" + JNT_SUBSCRIPTION + "] where isdescendantnode([").append(target.getPath())
                     .append("/" + J_SUBSCRIPTIONS + "])");
+            if (activeOnly) {
+            	q.append(" and [" + J_SUSPENDED + "]=false");
+            }
+            if (confirmedOnly) {
+            	q.append(" and [" + J_CONFIRMED + "]=true");
+            }
             if (orderBy != null) {
                 q.append(" order by [").append(orderBy).append("]").append(orderAscending ? "asc" : "desc");
             }
@@ -237,7 +266,7 @@ public class SubscriptionService {
 
         return new PaginatedList<Subscription>(subscriptions, limit > 0 || offset > 0 ? total : subscriptions.size());
     }
-
+    
     /**
      * Checks if the provided user is subscribed to the specified node.
      *
@@ -687,6 +716,8 @@ public class SubscriptionService {
         }
         subscriber.setConfirmed(subscriptionNode.getProperty(J_CONFIRMED).getBoolean());
         subscriber.setSuspended(subscriptionNode.getProperty(J_SUSPENDED).getBoolean());
+
+        subscriber.getProperties().putAll(subscriptionNode.getPropertiesAsString());
 
         return subscriber;
     }

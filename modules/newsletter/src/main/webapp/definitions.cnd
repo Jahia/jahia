@@ -20,7 +20,7 @@
 [jnt:subscriptionFolder] > nt:base, mix:created, mix:lastModified
  + * (jnt:subscription) = jnt:subscription
  
-[jnt:subscriptions] > jnt:content, jmix:list
+[jnt:subscriptions] > jnt:content, jmix:list, jmix:autoPublish
  + * (jnt:subscription) = jnt:subscription
  + * (jnt:subscriptionFolder) = jnt:subscriptionFolder 
  

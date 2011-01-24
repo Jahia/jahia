@@ -20,7 +20,7 @@
 [jnt:subscriptionFolder] > nt:base, mix:created, mix:lastModified
  + * (jnt:subscription) = jnt:subscription
  
-[jnt:subscriptions] > jnt:content, jmix:list, jmix:autoPublish
+[jnt:subscriptions] > jnt:content, jmix:list
  + * (jnt:subscription) = jnt:subscription
  + * (jnt:subscriptionFolder) = jnt:subscriptionFolder 
  
@@ -35,7 +35,8 @@
 [jnt:newsletterSubscription] > jnt:subscriptionComponent, jmix:siteComponent
  - j:target (weakreference,choicelist[nodes='$currentSite/newsletters;jnt:newsletter']) mandatory < jnt:newsletter
 
-[jnt:newslettersSubscriptions] > jnt:subscriptionComponent, jmix:siteComponent
+[jnt:newslettersSubscriptions] > jnt:content, mix:title, jmix:siteComponent
+ - j:fields (string,choicelist[resourceBundle]) multiple nofulltext mandatory < 'j:firstName', 'j:lastName', 'j:comment'
 //---------------------------------------------------------
 // Newsletter
 //---------------------------------------------------------

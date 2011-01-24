@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -50,7 +51,7 @@ public class TestNewsletterActionItem extends BaseActionItem {
             super();
             setLayout(new FitLayout());
 
-            setHeading(Messages.get("label.testNewsletter"));
+            setHeading(Messages.get("label.testNewsletter", "Test newsletter issue"));
             setSize(500, 170);
             setResizable(false);
             setModal(true);
@@ -66,6 +67,7 @@ public class TestNewsletterActionItem extends BaseActionItem {
             final TextField<String> mail = new TextField<String>();
             mail.setFieldLabel(Messages.get("label.email", "Email"));
             mail.setName("testemail");
+            mail.setAllowBlank(false);
             form.add(mail);
 
             final TextField<String> user = new TextField<String>();
@@ -89,9 +91,13 @@ public class TestNewsletterActionItem extends BaseActionItem {
 
             Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
+                	if (mail.getValue() == null || mail.getValue().trim().length() == 0) {
+                		MessageBox.alert(Messages.get("label.testNewsletter", "Test newsletter issue"), Messages.get("failure.invalid.emailAddress", "Please enter valid e-mail address"), null);
+                		return;
+                	}
                     mask();
                     String data = "testemail=" + URL.encodeQueryString(mail.getValue());
-                    data += "&type=html&user=" + URL.encodeQueryString(user.getValue());
+                    data += "&type=html&user=" + (user.getValue() != null ? URL.encodeQueryString(user.getValue()) : "");
                     data += "&locale=" + URL.encodeQueryString(locale.getValue().getLanguage());
                     doAction(linker.getSelectionContext().getSingleSelection(), data);
                 }
@@ -119,7 +125,7 @@ public class TestNewsletterActionItem extends BaseActionItem {
             RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + ".sendAsNewsletter.do");
             try {
                 builder.setHeader("Content-Type", "application/x-www-form-urlencoded");
-                Request response = builder.sendRequest(requestData, new RequestCallback() {
+                builder.sendRequest(requestData, new RequestCallback() {
                     public void onError(Request request, Throwable exception) {
                         com.google.gwt.user.client.Window.alert("Cannot create connection");
                         linker.loaded();

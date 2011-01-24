@@ -4,6 +4,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -60,7 +61,7 @@ public class SendNewsletterActionItem extends BaseActionItem {
 
             m_linker = linker;
 
-            setHeading(Messages.get("label.sendNewsletter"));
+            setHeading(Messages.get("label.sendNewsletter", "Send newsletter issue"));
             setSize(500, 120);
             setResizable(false);
             setModal(true);
@@ -79,6 +80,10 @@ public class SendNewsletterActionItem extends BaseActionItem {
 
             Button schedule = new Button(Messages.get("label.scheduleAsBackgroundJob"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
+                	if (date.getValue() == null) {
+                		MessageBox.alert(Messages.get("label.sendNewsletter", "Send newsletter issue"), Messages.get("failure.invalid.date", "Please provide a valid date value"), null);
+                		return;
+                	}
                     mask();
                     doSchedule(date.getValue(), n);
                 }

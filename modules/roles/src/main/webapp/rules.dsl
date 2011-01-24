@@ -1,1 +1,1 @@
-[consequence][]Refresh permissions=roleService.refreshPermissions();
+[consequence][]Refresh permissions=if (roleService != null) { roleService.refreshPermissions(); }

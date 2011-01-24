@@ -11,3 +11,6 @@
 [jnt:tasks] > jnt:content, mix:title, jmix:formContent
  orderable
  + * (jnt:task)
+
+
+[jnt:currentUserTasks] > jmix:profileComponentContent, jmix:bindedComponent

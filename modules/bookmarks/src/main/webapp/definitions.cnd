@@ -9,3 +9,5 @@
 [jnt:bookmarks] > jnt:content, mix:title
  orderable
  + * (jnt:bookmark)
+
+[jnt:currentUserBookmarks] > jmix:profileComponentContent, jmix:bindedComponent

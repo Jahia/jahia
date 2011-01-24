@@ -7,6 +7,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -20,11 +21,29 @@
 <template:addResources type="css" resources="bookmarks.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-<div id="bookmarkList${currentNode.identifier}">
+<c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+
+<c:if test="${renderContext.editMode}">
+    <fmt:message key="${fn:replace(currentNode.primaryNodeTypeName,':','_')}"/>
+    <template:linker property="j:bindedComponent"/>
+</c:if>
+
+<%--<c:if test="${not jcr:isNodeType(user, 'jnt:user')}">--%>
+<%--<jcr:node var="user" path="/users/${user.properties['jcr:createdBy'].string}"/>--%>
+<%--</c:if>--%>
+<c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
+    <jcr:node var="user" path="/users/${renderContext.user.username}"/>
+</c:if>
+<c:forEach items="${param}" var="p" varStatus="status">
+        <c:if test="${status.first}"><c:set var="sep" value="?"/></c:if>
+        <c:if test="${not status.first}"><c:set var="sep" value="&"/></c:if>
+    <c:set var="ps" value="${ps}${sep}${p.key}=${p.value}" />
+</c:forEach>
+<div id="bookmarkList${user.identifier}">
 
 <c:if test="${currentResource.workspace eq 'live'}">
     <script type="text/javascript">
-        $('#bookmarkList${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.bookmarks.html.ajax');
+        $('#bookmarkList${user.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax${ps}');
     </script>
 </c:if>
 
@@ -34,13 +53,13 @@
         function deleteBookmark(source) {
             $.post('${url.base}' + source, {"methodToCall":"delete"},
                   function(result) {
-                      $('#bookmarkList${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.bookmarks.html.ajax');
+                      $('#bookmarkList${user.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax${ps}');
                   },'json');
             }
     </script>
 
     <jcr:sql var="result"
-             sql="select * from [jnt:bookmark] as b where isdescendantnode(b,['${currentNode.path}'])"/>
+             sql="select * from [jnt:bookmark] as b where isdescendantnode(b,['${user.path}'])"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
     <c:set var="listTotalSize" value="${fn:length(result.nodes)}" scope="request"/>
     <c:choose>
@@ -51,7 +70,7 @@
             <c:set var="pageSize" value="${param.pagesize}"/>
         </c:otherwise>
     </c:choose>
-    <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
+    <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${user.identifier}"/>
     <ul class="userMyBookmarksList" id="${currentNode.UUID}">
         <c:forEach items="${currentList}" var="bookmark" varStatus="status">
 
@@ -70,7 +89,7 @@
         </c:forEach>
     </ul>
     <template:displayPagination nbItemsList="5,10,20,40,60,80,100,200"/>
-    <template:removePager id="${currentNode.identifier}"/>
+    <template:removePager id="${user.identifier}"/>
 </c:if>
 
 </div>

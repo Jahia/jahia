@@ -121,14 +121,16 @@
 		            'transitionIn'       : 'none',
 		            'transitionOut'      : 'none',
 		            'onStart'            : function(selectedArray, selectedIndex, selectedOpts) {
-		            	$('#subscribeForm-' + $(selectedArray).attr('rel') + '-email').val('');
+		            	$('#subscribeForm-' + $(selectedArray).attr('rel') + ' input[type="text"]').val('');
+		            	$('#subscribeError-${currentNode.identifier}').html('');
+		            	$('#unsubscribeError-${currentNode.identifier}').html('');
 		            }
 		        });
 		        $("#subscribeForm-${currentNode.identifier}").submit(function() {
 		        	if (this.email.value.length == 0) {
 				    	<fmt:message key="messsage.subscriptions.provideEmailAddress" var="msg"/>
                         $('#subscribeFormPanel-${currentNode.identifier}').effect("shake", {times:4}, 60)
-                        $('#subscribeError-${currentNode.identifier}').html('${msg}')
+                        $('#subscribeError-${currentNode.identifier}').html('${msg}');
 			        	return false;
 		        	}
 		        	
@@ -140,7 +142,7 @@
 		        	if (this.email.value.length == 0) {
 				    	<fmt:message key="messsage.subscriptions.provideEmailAddress" var="msg"/>
                         $('#unsubscribeFormPanel-${currentNode.identifier}').effect("shake", {times:4}, 60)
-                        $('#unsubscribeError-${currentNode.identifier}').html('${msg}')
+                        $('#unsubscribeError-${currentNode.identifier}').html('${msg}');
 			        	return false;
 		        	}
 
@@ -170,11 +172,13 @@
 			&nbsp;<a href="#unsubscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='/icons/unsubscribe.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.unsubscribe'/></a>
 			</p>
 			<div class="jahiaFancyboxForm">
-			<div id="subscribeFormPanel-${currentNode.identifier}" style="width: 350px; height: ${130 + fn:length(currentNode.properties['j:fields'])*50}px;">
+			<div id="subscribeFormPanel-${currentNode.identifier}" style="width: 400px; height: ${180 + fn:length(currentNode.properties['j:fields'])*50}px;">
 			    <div class="popup-bodywrapper">
 			        <h3 class="boxmessage-title"><fmt:message key='label.subscribe'/>&nbsp;${subscribeTitle}</h3>
 			        <form class="formMessage jahiaSubscribeForm" id="subscribeForm-${currentNode.identifier}" method="post" action="<c:url value='${target.path}.subscribe.do' context='${url.base}'/>">
-			            <input type="hidden" name="j:to" id="destinationUserKey" value="" />
+			        	<c:forEach items="${currentNode.properties['j:fields']}" var="fld">
+			        		<input type="hidden" name="j:fields" value="${fld.string}" />
+			        	</c:forEach>
 			            <fieldset>
 			                <p>
 			                	<label for="subscribeForm-${currentNode.identifier}-email" class="left"><fmt:message key="label.email"/>*</label>
@@ -196,11 +200,10 @@
 			</div>
 			</div>
 			<div class="jahiaFancyboxForm">			
-			<div id="unsubscribeFormPanel-${currentNode.identifier}" style="width: 350px;height: 150px;">
+			<div id="unsubscribeFormPanel-${currentNode.identifier}" style="width: 400px;height: 180px;">
 			    <div class="popup-bodywrapper">
 			        <h3 class="boxmessage-title"><fmt:message key='label.unsubscribe'/>&nbsp;${subscribeTitle}</h3>
 			        <form class="formMessage jahiaUnsubscribeForm" id="unsubscribeForm-${currentNode.identifier}" method="post" action="<c:url value='${target.path}.unsubscribe.do' context='${url.base}'/>">
-			            <input type="hidden" name="j:to" id="destinationUserKey" value="" />
 			            <fieldset>
 			                <p>
 			                	<label for="subscribeForm-${currentNode.identifier}-email" class="left"><fmt:message key="label.email"/>*</label>

@@ -1,7 +1,6 @@
 #bodywrapper .contentinfos {
-    background: none repeat scroll 0 0 #FBF5D0;
-    border: 1px solid #F9DD34;
-    color: #333333;
+    background: none repeat scroll 0 0 #cde6ff;
+    border: 1px solid #99ccff;
     margin: 0.5em 0;
     padding: 0.5em;
 }
@@ -11,7 +10,8 @@
     padding-top: 0;
 }
 #bodywrapper .contentinfos dt {
-	font-weight:bold
+	font-weight:bold;
+
 }
 #bodywrapper .contentinfos dd {
 	margin-bottom:0.5em;

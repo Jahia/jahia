@@ -114,7 +114,7 @@ public class AreaModule extends SimpleModule {
 //            ctn.addStyleName(moduleType+"Template");
             ctn.addText(headerText);
 
-            Button button = new Button("Enable area");
+            Button button = new Button(Messages.get("label.areaEnable", "Enable area"));
             button.setStyleName("button-placeholder");
             button.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
@@ -150,7 +150,7 @@ public class AreaModule extends SimpleModule {
             ctn.addStyleName(moduleType+"Template");
             ctn.addText(headerText);
 
-            Button button = new Button("Disable area");
+            Button button = new Button(Messages.get("label.areaDisable", "Disable area"));
             button.setStyleName("button-placeholder");
             button.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {

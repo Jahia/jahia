@@ -15,7 +15,7 @@
             <row-col1 jcr:primaryType="jnt:contentList">
               <my-task j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:title="My Tasks" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userView="tasklist" />
+                <currentUserTasks jcr:primaryType="jnt:currentUserTasks" />
               </my-task>
               <application-shortcuts jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="2">
                 <j:translation_en jcr:title="Application shortcuts" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />

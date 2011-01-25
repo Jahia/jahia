@@ -46,7 +46,7 @@
     </c:if>
     <!--start grid_${column}-->
     <div
-            class='grid_${column} ${colCss} <c:if test="${count.first}"> alpha</c:if> <c:if test="${count.last}"> omega</c:if>'>
+            class='grid_${column} ${colCss}'>
         <template:area path="${currentNode.name}-${col.key}"/>
         <div class='clear'></div>
     </div>

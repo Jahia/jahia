@@ -134,7 +134,7 @@ public class CrawlingPageVisitorTest {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
-                            TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.ACME_TEMPLATES,
+                            TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.WEB_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
                                             + "/prepackagedSites/webtemplates65.zip", "ACME.zip");
                             jcrService.publishByMainId(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home")

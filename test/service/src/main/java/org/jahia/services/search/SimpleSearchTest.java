@@ -88,10 +88,10 @@ public class SimpleSearchTest {
                                         .createSite(
                                                 FIRST_TESTSITE_NAME,
                                                 "localhost",
-                                                TestHelper.ACME_TEMPLATES,
+                                                TestHelper.WEB_TEMPLATES,
                                                 SettingsBean.getInstance()
                                                         .getJahiaVarDiskPath()
-                                                        + "/prepackagedSites/webtemplates65.zip",
+                                                        + "/prepackagedSites/webtemplates.zip",
                                                 "ACME.zip");
                                 jcrService.publishByMainId(session.getNode(
                                         FIRST_SITECONTENT_ROOT_NODE + "/home")
@@ -107,10 +107,10 @@ public class SimpleSearchTest {
                                         .createSite(
                                                 SECOND_TESTSITE_NAME,
                                                 "127.0.0.1",
-                                                TestHelper.ACME_TEMPLATES,
+                                                TestHelper.WEB_TEMPLATES,
                                                 SettingsBean.getInstance()
                                                         .getJahiaVarDiskPath()
-                                                        + "/prepackagedSites/webtemplates65.zip",
+                                                        + "/prepackagedSites/webtempaltes.zip",
                                                 "ACME.zip");
                                 jcrService.publishByMainId(session.getNode(
                                         SECOND_SITECONTENT_ROOT_NODE + "/home")

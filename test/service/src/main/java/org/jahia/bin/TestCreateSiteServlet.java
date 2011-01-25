@@ -1,7 +1,5 @@
 package org.jahia.bin;
 
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.render.filter.Template;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -17,7 +15,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
-import org.jahia.utils.LanguageCodeConverters;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -28,7 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -101,9 +97,9 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
                         int numberOfSites = 0;
                         try {
                             numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
-                            TestHelper.createSite("ACME" + numberOfSites, "localhost" + numberOfSites, TestHelper.ACME_TEMPLATES,
+                            TestHelper.createSite("ACME" + numberOfSites, "localhost" + numberOfSites, TestHelper.WEB_BLUE_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
-                                            + "/prepackagedSites/webtemplates.zip", "ACME.zip");
+                                            + "/prepackagedSites/acme.zip", "ACME.zip");
                             JCRNodeWrapper homeNode = session.getRootNode().getNode("sites/ACME" + (numberOfSites) + "/home");
                             if (numberOfParents != 0) {
                                 for (int i = 0; i < numberOfParents; i++) {

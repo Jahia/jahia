@@ -82,15 +82,16 @@ public class TestHelper {
 
     static Logger logger = LoggerFactory.getLogger(TestHelper.class);
     public static final String TCK_TEMPLATES = "Jahia Test";
-    public static final String ACME_TEMPLATES = "templates-web";
+    public static final String WEB_TEMPLATES = "templates-web";
+    public static final String WEB_BLUE_TEMPLATES = "templates-web-blue";
     public static final String INTRANET_TEMPLATES = "templates-intranet";
 
     public static JahiaSite createSite(String name) throws Exception {
-        return createSite(name, "localhost" + System.currentTimeMillis(), ACME_TEMPLATES, null, null);
+        return createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null);
     }
 
     public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
-        JahiaSite site = createSite(name, "localhost" + System.currentTimeMillis(), ACME_TEMPLATES, null, null);
+        JahiaSite site = createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null);
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         if (!CollectionUtils.isEmpty(languages) && !languages.equals(site.getLanguages())) {
             site.setLanguages(languages);

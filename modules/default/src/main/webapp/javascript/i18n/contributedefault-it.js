@@ -4,6 +4,6 @@
     'wcag.description': 'Descrizione',
     'wcag.error': 'Errore',
     'wcag.example': 'Esempio',
-    'wcag.ignore': 'Ignora avvertenza/e',
+    'wcag.ignore': 'Ignorare gli errori',
     'wcag.warning': 'Avvertenza'
 });

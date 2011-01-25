@@ -9,7 +9,7 @@ var contributionI18n = {
     'wcag.description': 'Description',
     'wcag.error': 'Error',
     'wcag.example': 'Example',
-    'wcag.ignore': 'Ignore warning(s)',
+    'wcag.ignore': 'Ignore error(s)',
     'wcag.information': 'Information',
     'wcag.warning': 'Warning'
 }

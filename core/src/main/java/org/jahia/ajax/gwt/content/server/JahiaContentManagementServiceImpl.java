@@ -41,6 +41,7 @@ import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.security.PrivilegeImpl;
@@ -1797,15 +1798,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         WCAGValidationResult wcagResult = new WCAGValidationResult();
         for (Result result : validatorResults.getErrors()) {
-            wcagResult.getErrors().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+            wcagResult.getErrors().add(new WCAGViolation(result.getType().toString(), result.getMessage(), StringEscapeUtils.escapeXml(result.getContext()), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
         }
 
         for (Result result : validatorResults.getWarnings()) {
-            wcagResult.getWarnings().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+            wcagResult.getWarnings().add(new WCAGViolation(result.getType().toString(), result.getMessage(), StringEscapeUtils.escapeXml(result.getContext()), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
         }
 
         for (Result result : validatorResults.getInfos()) {
-            wcagResult.getInfos().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+            wcagResult.getInfos().add(new WCAGViolation(result.getType().toString(), result.getMessage(), StringEscapeUtils.escapeXml(result.getContext()), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
         }
 
         return wcagResult;

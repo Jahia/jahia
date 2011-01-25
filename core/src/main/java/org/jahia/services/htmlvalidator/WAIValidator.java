@@ -868,7 +868,6 @@ public class WAIValidator {
     protected String getNearText(final Element node, final String boldText, final int width,
             final int height) {
         final StringBuilder buff = new StringBuilder(128);
-        buff.append("<span class='error'><i>");
         try {
             StringBuilder stringOut = new StringBuilder();
 
@@ -905,34 +904,14 @@ public class WAIValidator {
             if (HTMLElementName.IMG.equals(node.getName().toLowerCase())
                     && node.getAttributes().get("src") != null) {
                 final String src = node.getAttributeValue("src");
-                final boolean shrinkImage = width > 0 && height > 0;
-                if (!shrinkImage)
-                    buff.append("<div class='imageWrapper'>");
                 buff.append("<img border='0' ");
-                if (shrinkImage) {
-                    int tbWidth = width;
-                    int tbHeight = height;
-                    if (width > height && width > 100) {
-                        tbWidth = 100;
-                        tbHeight = (tbWidth * height) / width;
-
-                    } else if (height > 100) {
-                        tbHeight = 100;
-                        tbWidth = (tbHeight * width) / height;
-                    }
-                    buff.append("width='").append(tbWidth).append("' ");
-                    buff.append("height='").append(tbHeight).append("' ");
-                }
-
                 buff.append("src='");
                 buff.append(src);
                 buff.append("' />");
-                if (!shrinkImage)
-                    buff.append("</div>");
             } else {
-                buff.append("<b>");
+                //buff.append("<b>");
                 buff.append(boldText);
-                buff.append("</b>");
+                //buff.append("</b>");
             }
             Element next = null;
             previous = node.getParentElement();
@@ -972,7 +951,6 @@ public class WAIValidator {
             logger.error(e, e);
         }
 
-        buff.append("</i></span>");
         return buff.toString();
     }
 

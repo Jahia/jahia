@@ -114,6 +114,70 @@ body {
 	background:none;
 }
 /******************************************************************************
+*  Float Right List for ordered or unordered links list
+******************************************************************************/
+#bodywrapper .FloatRightList ul {
+	text-align:right;
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+
+#bodywrapper .FloatRightList li {
+	list-style:none;
+	padding-left:1em;
+	display:inline;
+	line-height:125%
+}
+/******************************************************************************
+* list Arrow
+******************************************************************************/
+#bodywrapper ul.arrowList, .arrowList ul {
+	margin:5px 0;
+	position:relative;
+	list-style:none;
+}
+#bodywrapper .arrowList li {
+	background: url(img/arrow.png) no-repeat 0 2px;
+	padding:0 0 0 12px;
+	clear:left;
+	list-style:none;
+}
+/******************************************************************************
+*  Hilight List
+******************************************************************************/
+
+#bodywrapper .hilightList ul {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	border-bottom:none;
+}
+#bodywrapper .hilightList li {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+#bodywrapper .hilightList li a,
+#bodywrapper .hilightList li a:link,
+#bodywrapper .hilightList li a:visited
+{
+	border-bottom:1px solid #ccc;
+	padding:0.2em 0.5em;
+	display:block;
+	text-decoration:none;
+	color:#333;
+}
+#bodywrapper .hilightList li a:hover,
+#bodywrapper .hilightList li a:active {
+	text-decoration:none;
+	color:#900;
+	background-color:#eaeaea
+}
+
+/******************************************************************************
 * header-part1
 ******************************************************************************/
 #bodywrapper div#headerPart1{

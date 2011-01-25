@@ -80,6 +80,20 @@ body {
 	line-height:125%
 }
 /******************************************************************************
+* list Arrow
+******************************************************************************/
+#bodywrapper ul.arrowList, .arrowList ul {
+	margin:5px 0;
+	position:relative;
+	list-style:none;
+}
+#bodywrapper .arrowList li {
+	background: url(img/arrow.png) no-repeat 0 2px;
+	padding:0 0 0 12px;
+	clear:left;
+	list-style:none;
+}
+/******************************************************************************
 *  Hilight List
 ******************************************************************************/
 

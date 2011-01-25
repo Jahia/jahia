@@ -10,7 +10,7 @@
 <%@ include file="../../getUser.jspf"%>
 
 <template:addResources type="css" resources="userProfile.css"/>
-
+<template:addDependency node="${user}"/>
 <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
 <c:set var="publicPropertiesAsString" value=""/>
 

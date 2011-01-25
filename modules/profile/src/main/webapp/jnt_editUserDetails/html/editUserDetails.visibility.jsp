@@ -10,7 +10,7 @@
 <%@ include file="../../getUser.jspf"%>
 
 <template:addResources type="javascript" resources="jquery.form.js"/>
-
+<template:addDependency node="${user}"/>
 <c:set var="fields" value="${user.propertiesAsString}"/>
 <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle" var="title"/>
 <c:if test="${not empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
@@ -56,7 +56,7 @@
             items="j:firstName,j:lastName,j:gender,j:title,j:birthDate,age,j:organization,j:function,j:about,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:picture,preferredLanguage"
             delims="," var="key">
         <c:if test="${currentNode.properties[key].boolean}">
-            <li><input onchange="$('#updateVisibility').ajaxSubmit()()" type="checkbox" name="j:publicProperties" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} /> <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/></li>
+            <li><input onchange="$('#updateVisibility').ajaxSubmit();" type="checkbox" name="j:publicProperties" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} /> <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/></li>
         </c:if>
     </c:forTokens>
         <input type="hidden" name="methodToCall" value="put" />

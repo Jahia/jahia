@@ -10,6 +10,7 @@
 <%@ include file="../../getUser.jspf"%>
 
 <template:addResources type="css" resources="userProfile.css"/>
+<template:addDependency node="${user}"/>
 <c:set var="fields" value="${user.propertiesAsString}"/>
 <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle" var="title"/>
 <c:if test="${not empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">

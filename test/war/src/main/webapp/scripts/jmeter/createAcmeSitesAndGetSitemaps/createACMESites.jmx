@@ -64,7 +64,7 @@
           </elementProp>
           <elementProp name="PATH" elementType="Argument">
             <stringProp name="Argument.name">PATH</stringProp>
-            <stringProp name="Argument.value">C:\proj\trunk\test\war\src\main\webapp\scripts\jmeter\createAcmeSitesAndGetSitemaps\sitemaps\</stringProp>
+            <stringProp name="Argument.value">sitemaps/</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -204,7 +204,7 @@
           </hashTree>
           <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="loops créations sites" enabled="true">
             <boolProp name="LoopController.continue_forever">true</boolProp>
-            <stringProp name="LoopController.loops">3</stringProp>
+            <stringProp name="LoopController.loops">40</stringProp>
           </LoopController>
           <hashTree>
             <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="counter sites" enabled="true">
@@ -298,11 +298,17 @@
     live = live.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
     String path = vars.get(&quot;PATH&quot;);
     try {
+        File p = new File(path);
+        if (!p.exists()) {
+            p.mkdirs();
+        }
         File f = new File(path + &quot;liveSitemaps.txt&quot;);
         BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
         out.write(live+&quot;\n&quot;);
         out.close();
-    } catch (IOException e) {}
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
 }</stringProp>
               </BeanShellPostProcessor>
               <hashTree/>
@@ -361,11 +367,17 @@
     edit = edit.replaceAll(&quot;/edit/&quot;, &quot;/render/&quot;);
     String path = vars.get(&quot;PATH&quot;);
     try {
+        File p = new File(path);
+        if (!p.exists()) {
+            p.mkdirs();
+        }
         File f = new File(path + &quot;editSitemaps.txt&quot;);
         BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
         out.write(edit+&quot;\n&quot;);
         out.close();
-    } catch (IOException e) {}
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
 }</stringProp>
               </BeanShellPostProcessor>
               <hashTree/>

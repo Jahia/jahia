@@ -5,6 +5,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="social" uri="http://www.jahia.org/tags/socialLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addResources type="css" resources="jquery.autocomplete.css" />
 <template:addResources type="css" resources="simplesearchform.css" />
@@ -29,35 +30,20 @@
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 <template:addResources type="javascript" resources="jahia.social.js"/>
 
+<c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
-<c:set var="fields" value="${currentNode.propertiesAsString}"/>
-<jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle" var="title"/>
-<c:if test="${not empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
-    <c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+<c:if test="${renderContext.editMode}">
+    <fmt:message key="${fn:replace(currentNode.primaryNodeTypeName,':','_')}"/>
+    <template:linker property="j:bindedComponent"/>
 </c:if>
-<c:if test="${empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
-    <c:set var="person" value="${fields['j:firstName']} ${fields['j:lastName']}"/>
+
+<%--<c:if test="${not jcr:isNodeType(user, 'jnt:user')}">--%>
+<%--<jcr:node var="user" path="/users/${user.properties['jcr:createdBy'].string}"/>--%>
+<%--</c:if>--%>
+<c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
+    <jcr:node var="user" path="/users/${renderContext.user.username}"/>
 </c:if>
-<c:if test="${empty title and empty fields['j:firstName'] and not empty fields['j:lastName']}">
-    <c:set var="person" value="${fields['j:lastName']}"/>
-</c:if>
-<c:if test="${empty title and not empty fields['j:firstName'] and empty fields['j:lastName']}">
-    <c:set var="person" value="${fields['j:firstName']}"/>
-</c:if>
-<c:if test="${empty title and empty fields['j:firstName'] and empty fields['j:lastName']}">
-    <c:set var="person" value=""/>
-</c:if>
-<jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
-<c:if test="${not empty birthDate}">
-    <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy" var="birthYear"/>
-    <fmt:formatDate value="${now}" pattern="yyyy" var="currentYear"/>
-</c:if>
-<c:if test="${not empty birthDate}">
-    <fmt:formatDate value="${birthDate.date.time}" pattern="dd/MM/yyyy" var="editBirthDate"/>
-</c:if>
-<fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
-<jcr:propertyInitializers node="${currentNode}" name="j:gender" var="genderInit"/>
-<jcr:propertyInitializers node="${currentNode}" name="j:title" var="titleInit"/>
+
 <%--map all display values --%>
 <jsp:useBean id="userProperties" class="java.util.HashMap"/>
 
@@ -81,7 +67,7 @@
             $.ajax({
                 type        : "POST",
                 cache       : false,
-                url         : '${url.base}${currentNode.path}.sendmessage.do',
+                url         : '${url.base}${user.path}.sendmessage.do',
                 data        : $(this).serializeArray(),
                 success     : function(data) {
                     alert("<fmt:message key='message.messageSent'/>");
@@ -150,7 +136,7 @@
                             .append($("<td/>").attr("title", item['username']).text(getUserDisplayName(item)))
                             .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "#add")
                             .attr("class", "social-add").attr("title", "<fmt:message key='addAsFriend'/>").click(function () {
-                        requestConnection('${url.base}${currentNode.path}.requestsocialconnection.do', item['userKey']);
+                        requestConnection('${url.base}${user.path}.requestsocialconnection.do', item['userKey']);
                         return false;
                     })))
                 );
@@ -160,14 +146,14 @@
         $("#searchUsersSubmit").click(function() {
             // validate and process form here
             var term = $("input#searchUsersTerm").val();
-            searchUsers('${url.findPrincipal}', '${url.base}${currentNode.path}', term, "<fmt:message key='addAsFriend'/>");
+            searchUsers('${url.findPrincipal}', '${url.base}${user.path}', term, "<fmt:message key='addAsFriend'/>");
             return false;
         });
         $("#statusUpdateSubmit").click(function() {
             // validate and process form here
             var updateText = $("textarea#statusUpdateText").val();
             // alert('Sending text ' + updateText);
-            submitStatusUpdate('${url.base}${currentNode.path}', '${currentNode.identifier}', updateText);
+            submitStatusUpdate('${url.base}${user.path}', '${user.identifier}', updateText);
             return false;
         });
 
@@ -179,14 +165,14 @@
             var toUserId = rel.substring(0, rel.indexOf(':'));
             var connectionType = rel.substring(rel.indexOf(':') + 1);
             if (confirm("<fmt:message key='message.removeFriend.confirm'/>")) {
-                removeSocialConnection('${url.base}${currentNode.path}', fromUserId, toUserId, connectionType,
+                removeSocialConnection('${url.base}${user.path}', fromUserId, toUserId, connectionType,
                         function() {
                             $("#connection-to-" + toUserId).remove();
                         });
             }
         });
 
-        loadActivities('${url.base}${currentNode.path}');
+        loadActivities('${url.base}${user.path}');
 
     }
 
@@ -249,17 +235,11 @@
     <h3><fmt:message key="userSearch"/></h3>
 
     <form method="get" class="simplesearchform" action="">
-
-        <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
-        <c:if test="${not empty title.string}">
-            <label for="searchUsersTerm">${fn:escapeXml(title.string)}:&nbsp;</label>
-        </c:if>
         <fmt:message key='userSearch' var="startSearching"/>
         <input type="text" id="searchUsersTerm" value="${startSearching}"
                onfocus="if(this.value==this.defaultValue)this.value='';"
                onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
         <input class="searchsubmit" id="searchUsersSubmit" type="submit" title="<fmt:message key='search.submit'/>"/>
-
     </form>
     <br class="clear"/>
 
@@ -272,10 +252,9 @@
     </div>
 
     <jcr:sql var="socialConnections"
-             sql="select * from [jnt:socialConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
-
-    <h3 class="social-title-icon titleIcon"><a href="#"><fmt:message key="friendsList"/></a><a href="#"><img title="" alt=""
-                                                                                                             src="${url.currentModule}/images/friends.png"/></a>
+             sql="select * from [jnt:socialConnection] as uC where isdescendantnode(uC,['${user.path}'])"/>
+    <template:addDependency path="${user.path}/connections"/>
+    <h3 class="social-title-icon titleIcon"><fmt:message key="friendsList"/><img title="" alt="" src="${url.currentModule}/images/friends.png"/>
     </h3>
     <ul class="social-list">
         <c:forEach items="${socialConnections.nodes}" var="socialConnection">
@@ -293,11 +272,11 @@
 			        <c:if test="${empty picture}"><a href="${url.base}${connectedToUser.path}.html">
 						<img alt="" src="${url.currentModule}/images/friend.png" alt="friend" border="0"/></a></c:if>
                 </div>
-                <a class="social-list-remove removeFriendAction" title="<fmt:message key="removeFriend"/>" href="#"
+                <a class="social-list-remove removeFriendAction" title="<fmt:message key="removeFriend"/>" href="currentUserConnections.jsp#"
                    rel="${socialConnection.properties['j:connectedFrom'].node.identifier}:${socialConnection.properties['j:connectedTo'].node.identifier}:${socialConnection.properties['j:type'].string}"><span><fmt:message
                         key="removeFriend"/></span></a>
                 <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" rel="${connectedToUser.name}"
-                   href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
+                   href="currentUserConnections.jsp#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
                 <h4>
                     <a href="${url.base}${connectedToUser.path}.html"><c:out value="${jcr:userFullName(connectedToUser)}"/></a>
                 </h4>

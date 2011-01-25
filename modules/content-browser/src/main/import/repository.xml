@@ -167,10 +167,14 @@
                                     <my-connections jcr:primaryType="jnt:contentList">
                                         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
                                                           jcr:title="My Connections" jcr:primaryType="jnt:translation"/>
+                                        <currentUserConnections jcr:primaryType="jnt:currentUserConnections"
+                                                                j:bindedComponent="/templateSets/content-browser/templates/base/user-private"/>
                                     </my-connections>
                                     <my-messages jcr:primaryType="jnt:contentList">
                                         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
                                                           jcr:title="My Messages" jcr:primaryType="jnt:translation"/>
+                                        <currentUserMessages jcr:primaryType="jnt:currentUserMessages"
+                                                             j:bindedComponent="/templateSets/content-browser/templates/base/user-private"/>
                                     </my-messages>
                                 </tabularList>
                             </pagecontent>

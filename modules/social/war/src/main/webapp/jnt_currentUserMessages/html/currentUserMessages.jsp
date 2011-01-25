@@ -4,13 +4,26 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <template:addResources type="css" resources="jahia.fancybox-form.css"/>
 <template:addResources type="css" resources="social.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
 <template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
 <template:addResources type="javascript" resources="jahia.social.js"/>
+<c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
+<c:if test="${renderContext.editMode}">
+    <fmt:message key="${fn:replace(currentNode.primaryNodeTypeName,':','_')}"/>
+    <template:linker property="j:bindedComponent"/>
+</c:if>
+
+<%--<c:if test="${not jcr:isNodeType(user, 'jnt:user')}">--%>
+<%--<jcr:node var="user" path="/users/${user.properties['jcr:createdBy'].string}"/>--%>
+<%--</c:if>--%>
+<c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
+    <jcr:node var="user" path="/users/${renderContext.user.username}"/>
+</c:if>
 <script type="text/javascript">
 
     function tabCallback() {
@@ -40,7 +53,7 @@
             $.ajax({
                 type        : "POST",
                 cache       : false,
-                url         : '${url.base}${currentNode.path}.sendmessage.do',
+                url         : '${url.base}${user.path}.sendmessage.do',
                 data        : $(this).serializeArray(),
                 success     : function(data) {
                     alert("<fmt:message key='message.messageSent'/>");
@@ -61,7 +74,7 @@
             e.preventDefault();
             var msgId = $(this).attr('rel');
             if (confirm("<fmt:message key='message.removeSocialMessage.confirm'/>")) {
-                removeSocialMessage('${url.base}/${currentNode.path}', msgId,
+                removeSocialMessage('${url.base}/${user.path}', msgId,
                         function() {
                             $("#social-message-" + msgId).remove();
                             if ($("div.social-message-detail div#social-message-detail-" + msgId).length > 0) {
@@ -113,8 +126,8 @@
 <div class='grid_8 alpha'><!--start grid_8-->
 
     <jcr:sql var="receivedMessages"
-             sql="select * from [jnt:socialMessage] where isdescendantnode(['${currentNode.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
-
+             sql="select * from [jnt:socialMessage] where isdescendantnode(['${user.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
+    <template:addDependency path="${user.path}/messages/inbox"/>
     <h3 class="social-title-icon titleIcon"><fmt:message key="receivedMessages"/><img title="" alt=""
                                                                                       src="${url.currentModule}/images/mailbox.png"/>
     </h3>

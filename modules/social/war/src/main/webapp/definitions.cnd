@@ -5,7 +5,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:socialConnection] > jnt:content, jmix:droppableContent
+[jnt:socialConnection] > jnt:content, jmix:droppableContent, jmix:autoPublish
  - j:connectedFrom (weakreference) < jnt:user
  - j:connectedTo (weakreference) < jnt:user
  - j:type (string)
@@ -54,3 +54,7 @@
 
 [jnt:socialActivitiesDisplay] > jnt:content, jmix:bindedComponent, jmix:socialComponent
  - j:activitiesLimit (long)
+
+[jnt:currentUserConnections] > jmix:profileComponentContent, jmix:bindedComponent
+
+[jnt:currentUserMessages] > jmix:profileComponentContent, jmix:bindedComponent

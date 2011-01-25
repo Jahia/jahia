@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
     <body>
         <menu ref="parent"/>
+        <menu name="Overview">
+            <item name="Overview" href="./index.html#Overview"/>
+            <item name="Prerequisites" href="./index.html#Prerequisites"/>
+            <item name="Deployment" href="./index.html#Deployment"/>
+            <item name="Usage" href="./index.html#Usage"/>
+        </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>
     </body>

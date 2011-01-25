@@ -10,3 +10,5 @@
 
 [jnt:scriptGadget] > jnt:content, mix:title, jmix:siteComponent, jmix:gadget
  - script (string) mandatory indexed=no
+
+[jnt:currentUserPortal] > jmix:profileComponentContent, jmix:bindedComponent

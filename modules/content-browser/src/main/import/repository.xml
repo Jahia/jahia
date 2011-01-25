@@ -161,6 +161,8 @@
                                         <my-portal-logo.png
                                                 j:node="/templateSets/templates-system/templates/files/themes/default/my-portal-logo.png"
                                                 jcr:primaryType="jnt:imageReference"/>
+                                        <currentUserPortal jcr:primaryType="jnt:currentUserPortal"
+                                                           j:bindedComponent="/templateSets/content-browser/templates/base/user-private"/>
                                     </my-portal>
                                     <my-connections jcr:primaryType="jnt:contentList">
                                         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"

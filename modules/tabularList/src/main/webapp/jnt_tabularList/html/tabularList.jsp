@@ -18,7 +18,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="tabularList.css"/>
 <c:set var="displayTab" value="${not empty renderContext.mainResource.moduleParams.displayTab ? renderContext.mainResource.moduleParams.displayTab : param.displayTab}"/>
-
+<c:set var="ps" value=""/>
 <c:forEach items="${param}" var="p">
     <c:if test="${p.key ne 'displayTab'}">
     <c:set var="ps" value="${ps}&${p.key}=${p.value}" />

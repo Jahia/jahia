@@ -75,6 +75,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
     private JahiaTemplateManagerService templateManagerService;
     private String macrosDirectoryName;
     private Map<String, String> scriptCache;
+    private Map<String, ScriptEngine> scriptEngineCache;
 
     public void setMacrosRegexp(String macrosRegexp) {
         this.macrosRegexp = macrosRegexp;
@@ -113,8 +114,11 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
                 }
                 if (macroPath != null) {
                     // Todo execute macro
-                    ScriptEngine scriptEngine = scriptEngineManager.getEngineByExtension(FilenameUtils.getExtension(
-                            macroPath));
+                    ScriptEngine scriptEngine = scriptEngineCache.get(FilenameUtils.getExtension(macroPath));
+                    if (scriptEngine == null) {
+                        scriptEngine = scriptEngineManager.getEngineByExtension(FilenameUtils.getExtension(macroPath));
+                        scriptEngineCache.put(FilenameUtils.getExtension(macroPath), scriptEngine);
+                    }
                     ScriptContext scriptContext = scriptEngine.getContext();
                     scriptContext.setWriter(new StringWriter());
                     scriptContext.setErrorWriter(new StringWriter());
@@ -164,6 +168,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         scriptEngineManager = new ScriptEngineManager();
         scriptCache = new LinkedHashMap<String, String>();
+        scriptEngineCache = new LinkedHashMap<String, ScriptEngine>();
     }
 
     public void setMacrosDirectoryName(String macrosDirectoryName) {

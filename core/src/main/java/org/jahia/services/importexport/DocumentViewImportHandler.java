@@ -92,6 +92,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private int uuidBehavior = ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW;
 
     private JCRSessionWrapper session;
+    private Map<String,String> placeHoldersMap = new HashMap<String,String>();
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, String siteKey) throws IOException {
         this(session, rootPath, null, null, siteKey);
@@ -107,6 +108,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 node = (JCRNodeWrapper) session.getRootNode();
             } else {
                 node = (JCRNodeWrapper) session.getNode(rootPath);
+            }
+            if (node.isNodeType("jnt:user")) {
+                placeHoldersMap.put("$user","u:" + node.getPath().substring(node.getPath().lastIndexOf("/") + 1));
             }
         } catch (RepositoryException e) {
             e.printStackTrace();
@@ -332,6 +336,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
             String attrName = ISO9075.decode(atts.getQName(i));
             String attrValue = atts.getValue(i);
+            for (String placeHolder : placeHoldersMap.keySet()) {
+                if (attrValue.contains(placeHolder)) {
+                    attrValue = attrValue.replace(placeHolder,placeHoldersMap.get(placeHolder));
+                }
+            }
 
             if (attrName.equals(Constants.JCR_PRIMARYTYPE)) {
                 // nodeType = attrValue; // ?
@@ -479,5 +488,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     public void setResolveReferenceAtEnd(boolean resolveReferenceAtEnd) {
         this.resolveReferenceAtEnd = resolveReferenceAtEnd;
+    }
+
+    public void setPlaceHoldersMap(Map<String, String> placeHoldersMap) {
+        this.placeHoldersMap = placeHoldersMap;
     }
 }

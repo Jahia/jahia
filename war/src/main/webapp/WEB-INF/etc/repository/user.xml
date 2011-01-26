@@ -6,11 +6,9 @@
 
     <files jcr:primaryType="jnt:folder">
         <private jcr:primaryType="jnt:folder" >
-            <j:acl jcr:primaryType="jnt:acl">
-              <DENY_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-              <DENY_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+            <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+              <GRANT_u_user j:protected="false" j:principal="$user" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
             </j:acl>
-
             <imports jcr:primaryType="jnt:importDropBox" />
         </private>
     </files>

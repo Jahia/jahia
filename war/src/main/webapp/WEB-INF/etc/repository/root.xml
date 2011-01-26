@@ -8,6 +8,9 @@
         <ROOT_NAME_PLACEHOLDER jcr:primaryType="jnt:user" j:password="@ROOT_PASSWORD@" j:external="false" jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b">
             <files jcr:primaryType="jnt:folder">
                 <private jcr:primaryType="jnt:folder" >
+                    <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+                      <GRANT_u_root j:protected="false" j:principal="" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+                    </j:acl>
                     <imports jcr:primaryType="jnt:importDropBox"/>
                 </private>
             </files>

@@ -47,15 +47,20 @@ public class WCAGViolation extends BaseModel {
 		super();
     }
 
-	public WCAGViolation(String type, String message, String context, String example, Integer line, Integer column) {
+	public WCAGViolation(String type, String message, String context, String code, String example, Integer line, Integer column) {
 		this();
 		setType(type);
 		setMessage(message);
 		setContext(context);
+		setCode(code);
 		setExample(example);
 		setLine(line);
 		setColumn(column);
     }
+
+	public String getCode() {
+		return get("code");
+	}
 
 	public Integer getColumn() {
 		return (Integer) get("column");
@@ -79,6 +84,10 @@ public class WCAGViolation extends BaseModel {
 
 	public String getType() {
 		return get("type");
+	}
+
+	public void setCode(String code) {
+		set("code", code);
 	}
 
 	public void setColumn(Integer column) {

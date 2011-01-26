@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ import net.htmlparser.jericho.Attribute;
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.StartTagType;
+import net.htmlparser.jericho.StartTag;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -274,8 +274,7 @@ public class WAIValidator {
             Result ve = new Result(bundle.getFormatted(
                     "org.jahia.services.htmlvalidator.WAIValidator.6.1",
                     "Link value should not be longer than 80 characters. Length = " + length,
-                    new Object[]{linkValue, Integer.toString(length)}), getNearText(node,
-                    linkValue), bundle.get(
+                    new Object[]{linkValue, Integer.toString(length)}), node.toString(), node.toString(), bundle.get(
                     "org.jahia.services.htmlvalidator.WAIValidator.6.1.example", ""));
             setPosition(node, source, ve);
             return ve;
@@ -284,11 +283,10 @@ public class WAIValidator {
         // Criteria 6.3
         final Attribute title = node.getAttributes().get("title");
         if (title == null) {
-            String context = getNearText(node, linkValue);
             Result ve = new Result(
                     bundle.getFormatted("org.jahia.services.htmlvalidator.WAIValidator.6.3",
                             "Missing 'title' attribute for 'hyperlink' element",
-                            new Object[]{linkValue}), context, bundle.get(
+                            new Object[]{linkValue}), node.toString(), node.toString(), bundle.get(
                     "org.jahia.services.htmlvalidator.WAIValidator.6.3.example", ""));
             setPosition(node, source, ve);
             return ve;
@@ -299,13 +297,12 @@ public class WAIValidator {
             final String titleValue = text2XMLEntityRef(title.getValue());
             final int length2 = titleValue.length();
             if (length2 > 80) {
-                String context = getNearText(node, linkValue);
                 Result ve = new Result(bundle.getFormatted(
                         "org.jahia.services.htmlvalidator.WAIValidator.6.3.2",
                         "Attribute 'title' should not be longer than 80 characters. Length = "
                                 + length2,
                         new Object[]{linkValue, titleValue, Integer.toString(length2)}),
-                        context, bundle.get(
+                        node.toString(), node.toString(), bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.6.3.2.example", ""));
                 setPosition(node, source, ve);
                 return ve;
@@ -322,8 +319,7 @@ public class WAIValidator {
                     Result ve = new Result(bundle.getFormatted(
                             "org.jahia.services.htmlvalidator.WAIValidator.6.5",
                             "All same link values(" + hrefValue
-                                    + ") should point to the same destination", hrefValue), getNearText(node,
-                            linkValue), bundle.get(
+                                    + ") should point to the same destination", hrefValue), node.toString(), node.toString(), bundle.get(
                             "org.jahia.services.htmlvalidator.WAIValidator.6.5.example", ""));
                     setPosition(node, source, ve);
                     return ve;
@@ -347,8 +343,6 @@ public class WAIValidator {
      * @return Result or null if no error occurred.
      */
     protected Result validateImage(final Element node, Source source) {
-        logger.debug("validateImage");
-
         final Attribute src = node.getAttributes().get("src");
         final String srcText;
 
@@ -398,7 +392,7 @@ public class WAIValidator {
             Result ve = new Result(bundle.getFormatted(
                     "org.jahia.services.htmlvalidator.WAIValidator.1.1",
                     "Missing 'alt' attribute for image " + srcText, new Object[]{srcText}),
-                    getNearText(node, "<img>", widthValue, heightValue), bundle.get(
+                    node.toString(), node.toString(), bundle.get(
                     "org.jahia.services.htmlvalidator.WAIValidator.1.1.example", ""));
             setPosition(node, source, ve);
             return ve;
@@ -411,8 +405,7 @@ public class WAIValidator {
             Result ve = new Result(
                     bundle.getFormatted("org.jahia.services.htmlvalidator.WAIValidator.1.1.1",
                             "'alt' attribute for image " + srcText + " is empty",
-                            new Object[]{srcText,}), getNearText(node, "<img>", widthValue,
-                    heightValue), bundle.get(
+                            new Object[]{srcText}), node.toString(), node.toString(), bundle.get(
                     "org.jahia.services.htmlvalidator.WAIValidator.1.1.1.example", ""),
                     Type.WARNING);
             setPosition(node, source, ve);
@@ -425,8 +418,7 @@ public class WAIValidator {
                     "org.jahia.services.htmlvalidator.WAIValidator.1.4",
                     "Attribute 'alt' should not be longer than 60 characters. Length = " + length
                             + ". Use attribute 'longdesc' if you want a longer description",
-                    new Object[]{altValue, srcText, Integer.toString(length)}), getNearText(
-                    node, "<img>", widthValue, heightValue), bundle.get(
+                    new Object[]{altValue, srcText, Integer.toString(length)}), node.toString(), node.toString(), bundle.get(
                     "org.jahia.services.htmlvalidator.WAIValidator.1.4.example", ""));
             setPosition(node, source, ve);
             return ve;
@@ -456,7 +448,7 @@ public class WAIValidator {
                 Result ve = new Result(bundle.getFormatted(
                         "org.jahia.services.htmlvalidator.WAIValidator.1.1.2",
                         "Missing 'alt' attribute for 'area' element", new Object[]{shapeValue}),
-                        getNearText(node, "<area>"), bundle.get(
+                        getContextForArea(node, source), node.toString(), bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.1.1.2.example", ""));
                 setPosition(node, source, ve);
                 return ve;
@@ -468,7 +460,7 @@ public class WAIValidator {
                 Result ve = new Result(bundle.getFormatted(
                         "org.jahia.services.htmlvalidator.WAIValidator.1.1.3",
                         "'alt' attribute for 'area' element " + shapeValue + " is empty",
-                        new Object[]{shapeValue}), getNearText(node, "<area>"), bundle.get(
+                        new Object[]{shapeValue}), getContextForArea(node, source), node.toString(), bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.1.1.3.example", ""),
                         Type.WARNING);
                 setPosition(node, source, ve);
@@ -478,7 +470,19 @@ public class WAIValidator {
         return null;
     }
 
-    /**
+    private String getContextForArea(Element areaNode, Source source) {
+    	String ctx = areaNode.toString();
+    	Element map = areaNode.getParentElement();
+    	if (map.getName().equals(HTMLElementName.MAP) && map.getAttributeValue("name") != null) {
+    		StartTag img = source.getFirstStartTag("usemap", "#" + map.getAttributeValue("name"), false);
+    		if (img != null) {
+    			ctx = img.getElement().toString();
+    		}
+    	}
+	    return ctx;
+    }
+
+	/**
      * Validates a Table Element.
      * 
      *
@@ -530,7 +534,7 @@ public class WAIValidator {
                 final Result ve = new Result(bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.5.3",
                         "The first row of a 'table' element should contain 'th' elements only"),
-                        getNearText(node, "<table>"), bundle.get(
+                        node.toString(), node.toString(), bundle.get(
                                 "org.jahia.services.htmlvalidator.WAIValidator.5.3.example", ""));
                 setPosition(node, source, ve);
                 errors.add(ve);
@@ -544,7 +548,7 @@ public class WAIValidator {
                 final Result ve = new Result(
                         bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.2",
                                 "'th' elements should have an attribute 'scope', set to 'col', OR an 'id' attribute"),
-                        getNearText(node, "<table>"), bundle.get(
+                                node.toString(), node.toString(), bundle.get(
                                 "org.jahia.services.htmlvalidator.WAIValidator.5.3.2.example", ""));
                 setPosition(node, source, ve);
                 errors.add(ve);
@@ -556,7 +560,7 @@ public class WAIValidator {
                     final Result ve = new Result(
                             bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.3",
                                     "The 'th' elements of the first row of the table should have a 'col' scope"),
-                            getNearText(node, "<table>"), bundle.get(
+                                    node.toString(), node.toString(), bundle.get(
                                     "org.jahia.services.htmlvalidator.WAIValidator.5.3.3.example",
                                     ""));
                     setPosition(node, source, ve);
@@ -574,7 +578,7 @@ public class WAIValidator {
             final Result ve = new Result(
                     bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.4",
                             "The 'th' elements of the first row of the table should all use the same attribute"),
-                    getNearText(node, "<table>"), bundle.get(
+                            node.toString(), node.toString(), bundle.get(
                             "org.jahia.services.htmlvalidator.WAIValidator.5.3.4.example", ""));
             setPosition(node, source, ve);
             errors.add(ve);
@@ -598,7 +602,7 @@ public class WAIValidator {
                 final Result ve = new Result(bundle.getFormatted(
                         "org.jahia.services.htmlvalidator.WAIValidator.5.3.5",
                         "Attribute 'header' (" + headerAttribute + ") has no corresponding 'id'",
-                        new Object[] { headerAttribute }), getNearText(node, "<table>"),
+                        new Object[] { headerAttribute }), node.toString(), node.toString(),
                         bundle.get("org.jahia.services.htmlvalidator.WAIValidator.5.3.5.example",
                                 ""));
                 setPosition(node, source, ve);
@@ -629,8 +633,9 @@ public class WAIValidator {
             if (header == null) {
                 final Result ve = new Result(bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.5.4",
-                        "Missing 'headers' attribute for 'td' element"), getNearText(node
-                        .getParentElement().getParentElement(), "<table>"), bundle.get(
+                        "Missing 'headers' attribute for 'td' element"), node
+                        .getParentElement().getParentElement().toString(), node
+                        .getParentElement().getParentElement().toString(), bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.5.4.example", ""));
                 setPosition(node, source, ve);
                 errors.add(ve);
@@ -732,7 +737,7 @@ public class WAIValidator {
                 final Result ve = new Result(bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.11.1",
                         "Missing 'for' attribute for 'label' element"),
-                        getNearText(node, "<form>"), bundle.get(
+                        node.toString(), node.toString(), bundle.get(
                                 "org.jahia.services.htmlvalidator.WAIValidator.11.1.example", ""));
                 setPosition(node, source, ve);
                 errors.add(ve);
@@ -747,9 +752,8 @@ public class WAIValidator {
                 if (idAttr == null) {
                     final Result ve = new Result(bundle.get(
                             "org.jahia.services.htmlvalidator.WAIValidator.11.1.2",
-                            "Missing 'id' attribute for 'input' element"), getNearText(node,
-                            "<form>"), bundle.get(
-                            "org.jahia.services.htmlvalidator.WAIValidator.11.2.example", ""));
+                            "Missing 'id' attribute for 'input' element"), node.toString(), node.toString(),
+                            bundle.get("org.jahia.services.htmlvalidator.WAIValidator.11.2.example", ""));
                     setPosition(node, source, ve);
                     errors.add(ve);
 
@@ -801,8 +805,8 @@ public class WAIValidator {
             if (name == null) {
                 Result ve = new Result(bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.2.1",
-                        "Missing 'name' attribute for 'frame' element"), getNearText(node,
-                        "<frame>"), bundle.get(
+                        "Missing 'name' attribute for 'frame' element"), node.toString(),
+                        node.toString(), bundle.get(
                         "org.jahia.services.htmlvalidator.WAIValidator.2.1.example", ""));
                 setPosition(node, source, ve);
                 errors.add(ve);
@@ -814,7 +818,7 @@ public class WAIValidator {
                     Result ve = new Result(bundle.getFormatted(
                             "org.jahia.services.htmlvalidator.WAIValidator.2.1.2",
                             "Attribute 'name' cannot contain any white space",
-                            new Object[]{nameValue}), getNearText(node, "<frame>"), bundle.get(
+                            new Object[]{nameValue}), node.toString(), node.toString(), bundle.get(
                             "org.jahia.services.htmlvalidator.WAIValidator.2.1.2.example", ""));
                     setPosition(node, source, ve);
                     errors.add(ve);
@@ -825,7 +829,7 @@ public class WAIValidator {
                         Result ve = new Result(bundle.getFormatted(
                                 "org.jahia.services.htmlvalidator.WAIValidator.2.5",
                                 "Missing 'title' attribute for 'frame' element",
-                                new Object[]{nameValue}), getNearText(node, "<frame>"), bundle
+                                new Object[]{nameValue}), node.toString(), node.toString(), bundle
                                 .get("org.jahia.services.htmlvalidator.WAIValidator.2.5.example",
                                         ""));
                         setPosition(node, source, ve);
@@ -839,7 +843,7 @@ public class WAIValidator {
                     Result ve = new Result(bundle.getFormatted(
                             "org.jahia.services.htmlvalidator.WAIValidator.2.10",
                             "Scrolling should be set to at least 'auto' for frame " + nameValue,
-                            new Object[]{nameValue}), getNearText(node, "<frame>"), bundle.get(
+                            new Object[]{nameValue}), node.toString(), node.toString(), bundle.get(
                             "org.jahia.services.htmlvalidator.WAIValidator.2.10.example", ""));
                     setPosition(node, source, ve);
                     errors.add(ve);
@@ -859,99 +863,6 @@ public class WAIValidator {
 
     public String toString() {
         return getClass().getName();
-    }
-
-    protected String getNearText(final Element node, final String boldText) {
-        return getNearText(node, boldText, -1, -1);
-    }
-
-    protected String getNearText(final Element node, final String boldText, final int width,
-            final int height) {
-        final StringBuilder buff = new StringBuilder(128);
-        try {
-            StringBuilder stringOut = new StringBuilder();
-
-            Element previous = node.getParentElement();
-            Element previousChild = null;
-            for (Element childElement : previous.getChildElements()) {
-                if (childElement.equals(node)) {
-                    previous = previousChild != null ? previousChild : previous;
-                    break;
-                }
-                previousChild = childElement;
-            }
-            if (previous != null) {
-                if (previous.getStartTag().getTagType().equals(StartTagType.CDATA_SECTION)) {
-                    final String text = previous.getTextExtractor().toString();
-                    final int length = text.length();
-                    if (text.length() > 20) {
-                        buff.append("...");
-                        buff.append(text.substring(length - 20, length));
-                    } else {
-                        buff.append(text);
-                    }
-                } else {
-                    if (previous.getStartTag().getTagType().equals(StartTagType.COMMENT)) {
-                        stringOut.append(previous.getTextExtractor().toString());
-                    } else {
-                        stringOut.append(previous.toString());
-                    }
-                    final String res = stringOut.toString();
-                    buff.append(res.indexOf("?>\n") != -1 ? res.substring(res.indexOf("?>\n") + 3)
-                            : res);
-                }
-            }
-            if (HTMLElementName.IMG.equals(node.getName().toLowerCase())
-                    && node.getAttributes().get("src") != null) {
-                final String src = node.getAttributeValue("src");
-                buff.append("<img border='0' ");
-                buff.append("src='");
-                buff.append(src);
-                buff.append("' />");
-            } else {
-                //buff.append("<b>");
-                buff.append(boldText);
-                //buff.append("</b>");
-            }
-            Element next = null;
-            previous = node.getParentElement();
-            boolean currentFound = false;
-            for (Element childElement : previous.getChildElements()) {
-                if (childElement.equals(node)) {
-                    currentFound = true;
-                } else if (currentFound) {
-                    next = childElement;
-                }
-            }
-            if (next == null)
-                next = !node.getChildElements().isEmpty() ? node.getChildElements().get(0) : null;
-            stringOut = new StringBuilder();
-            if (next != null) {
-                if (next.getStartTag().getTagType().equals(StartTagType.CDATA_SECTION)) {
-                    final String text = next.getTextExtractor().toString();
-                    if (text.length() > 20) {
-                        buff.append(text.substring(0, 20));
-                        buff.append("...");
-                    } else {
-                        buff.append(text);
-                    }
-                } else {
-                    if (next.getStartTag().getTagType().equals(StartTagType.COMMENT)) {
-                        stringOut.append(next.getTextExtractor().toString());
-                    } else {
-                        stringOut.append(next.toString());
-                    }
-                    final String res1 = stringOut.toString();
-                    buff.append(res1.indexOf("?>\n") != -1 ? res1.substring(res1.indexOf("?>\n") + 3)
-                            : res1);
-                }
-            }
-
-        } catch (Exception e) {
-            logger.error(e, e);
-        }
-
-        return buff.toString();
     }
 
     private void setPosition(Element node, Source source, Result result) {

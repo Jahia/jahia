@@ -375,6 +375,30 @@ public class CKEditorField extends Field<String> {
 		configs.add(column);
 
 		column = new ColumnConfig();
+		column.setId("code");
+		column.setHeader(Messages.get("label.code", "Code"));
+		column.setWidth(60);
+		column.setAlignment(HorizontalAlignment.CENTER);
+		column.setRenderer(new GridCellRenderer<WCAGViolation>() {
+			public Object render(WCAGViolation model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<WCAGViolation> store,
+                    Grid<WCAGViolation> grid) {
+				if (model.getCode() == null || model.getCode().length() == 0) {
+					return "";
+				}
+
+				ToolTipConfig tt = new ToolTipConfig();
+				tt.setTitle(Messages.get("label.code", "Code"));
+				tt.setTemplate(new Template(model.getCode()));
+				Html icon = new Html(StandardIconsProvider.STANDARD_ICONS.about().getHTML());
+				icon.setToolTip(tt);
+				
+	            return icon;
+            }
+		});
+		configs.add(column);
+
+		column = new ColumnConfig();
 		column.setId("example");
 		column.setHeader(Messages.get("label.example", "Example"));
 		column.setAlignment(HorizontalAlignment.CENTER);

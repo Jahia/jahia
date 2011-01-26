@@ -6,9 +6,8 @@
             <j:phones jcr:primaryType="jnt:phoneNumbers"></j:phones>
             <files jcr:uuid="8fbcd755-0b44-445e-a13a-bda15f9df9e3" j:published="true" jcr:created="2010-04-11T14:29:12.870+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="author" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/author/files" jcr:lastModified="2009-05-19T15:20:25.372+02:00" j:checkinDate="2010-04-11T14:29:14.439+02:00">
                 <private jcr:uuid="e32a35a5-3e1d-49c5-bfa5-7e1cc92c03a7" jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-04-11T14:29:12.871+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="author" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/author/files/private" jcr:lastModified="2009-05-19T15:20:25.371+02:00" j:checkinDate="2010-04-11T14:29:14.439+02:00">
-                    <j:acl jcr:primaryType="jnt:acl">
-                      <DENY_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                      <DENY_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                    <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+                      <GRANT_u_author j:protected="false" j:principal="author" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                     </j:acl>
                     <imports jcr:uuid="e0265a2f-f745-4f05-94d5-90af2ae4b6ea" j:published="true" jcr:created="2010-04-11T14:29:12.880+02:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="author" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/author/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.370+02:00" j:checkinDate="2010-04-11T14:29:14.439+02:00"></imports>
                 </private>
@@ -29,9 +28,8 @@
             <j:phones jcr:primaryType="jnt:phoneNumbers"></j:phones>
             <files jcr:uuid="c8e95cb2-742d-443d-bee5-832ac4761490" j:published="true" jcr:created="2010-04-11T14:29:22.437+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="publisher" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/publisher/files" jcr:lastModified="2009-05-19T15:20:25.577+02:00" j:checkinDate="2010-04-11T14:29:23.243+02:00">
                 <private jcr:uuid="f830cfe1-b4cf-46e5-87ce-bc821c10824c" jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-04-11T14:29:22.438+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="publisher" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/publisher/files/private" jcr:lastModified="2009-05-19T15:20:25.576+02:00" j:checkinDate="2010-04-11T14:29:23.243+02:00">
-                    <j:acl jcr:primaryType="jnt:acl">
-                      <DENY_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                      <DENY_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                    <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+                      <GRANT_u_publisher j:protected="false" j:principal="publisher" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                     </j:acl>
                     <imports jcr:uuid="ea076754-602e-4b39-9309-3fc7e6cf1a90" j:published="true" jcr:created="2010-04-11T14:29:22.445+02:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="publisher" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/publisher/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.575+02:00" j:checkinDate="2010-04-11T14:29:23.243+02:00"></imports>
                 </private>
@@ -52,9 +50,8 @@
             <j:phones jcr:primaryType="jnt:phoneNumbers"></j:phones>
             <files jcr:uuid="95e1b80a-bbbb-4ebf-ba09-480938edeb34" j:published="true" jcr:created="2010-04-11T14:29:26.850+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="siteadmin" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/siteadmin/files" jcr:lastModified="2009-05-19T15:20:25.775+02:00" j:checkinDate="2010-04-11T14:29:27.778+02:00">
                 <private jcr:uuid="e8c19270-f122-4fa0-b242-cefee3d90cca" jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-04-11T14:29:26.850+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="siteadmin" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/siteadmin/files/private" jcr:lastModified="2009-05-19T15:20:25.774+02:00" j:checkinDate="2010-04-11T14:29:27.778+02:00">
-                    <j:acl jcr:primaryType="jnt:acl">
-                      <DENY_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                      <DENY_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                    <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+                      <GRANT_u_siteadmin j:protected="false" j:principal="siteadmin" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                     </j:acl>
                     <imports jcr:uuid="fbb67369-c082-4d61-bc16-4ee1ec661654" j:published="true" jcr:created="2010-04-11T14:29:26.857+02:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="siteadmin" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/siteadmin/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.773+02:00" j:checkinDate="2010-04-11T14:29:27.778+02:00"></imports>
                 </private>
@@ -76,9 +73,8 @@
             <j:phones jcr:primaryType="jnt:phoneNumbers"></j:phones>
             <files jcr:uuid="2b5f764f-d1c3-4d43-976f-80a21fb21ddf" j:published="true" jcr:created="2010-04-11T14:29:30.414+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="visitor" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/visitor/files" jcr:lastModified="2009-05-19T15:20:25.973+02:00" j:checkinDate="2010-04-11T14:29:31.374+02:00">
                 <private jcr:uuid="08b6a944-1ff4-4c81-8ffe-2e531ba9ee5b" jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-04-11T14:29:30.415+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="visitor" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/visitor/files/private" jcr:lastModified="2009-05-19T15:20:25.971+02:00" j:checkinDate="2010-04-11T14:29:31.374+02:00">
-                    <j:acl jcr:primaryType="jnt:acl">
-                      <DENY_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-                      <DENY_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+                    <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+                      <GRANT_u_visitor j:protected="false" j:principal="visitor" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                     </j:acl>
                     <imports jcr:uuid="f509e5e2-9a10-41a9-b741-4a3f7c4bfd57" j:published="true" jcr:created="2010-04-11T14:29:30.421+02:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="visitor" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/visitor/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.970+02:00" j:checkinDate="2010-04-11T14:29:31.374+02:00"></imports>
                 </private>

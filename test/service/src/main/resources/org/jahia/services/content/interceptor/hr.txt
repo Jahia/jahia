@@ -3,3 +3,4 @@
 <p><span>My separated text</span></p>
 <hr>
 <p><span>My separated text 2</span></p>
+<hr />

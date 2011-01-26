@@ -43,8 +43,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.HTMLElements;
+import net.htmlparser.jericho.EndTag;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
@@ -90,19 +89,13 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
 		Source src = new Source(content);
 		OutputDocument out = new OutputDocument(src);
 		for (String filteredTagName : filteredTags) {
-			boolean requiresEndTag = HTMLElements.getEndTagRequiredElementNames().contains(filteredTagName);
-			for (StartTag tag : src.getAllStartTags(filteredTagName)) {
-				Element element = null;
-				if (tag.getTagType() == StartTagType.NORMAL) {
-					if (requiresEndTag) {
-						element = tag.getElement();
-						if (element.getEndTag() == null) {
-							// no closing tag found -> skip
-							continue;
-						}
+			for (StartTag startTag : src.getAllStartTags(filteredTagName)) {
+				if (startTag.getTagType() == StartTagType.NORMAL) {
+					EndTag endTag = startTag.getElement().getEndTag();
+					out.remove(startTag);
+					if (endTag != null) {
+						out.remove(endTag);
 					}
-
-					out.remove(element != null ? element : tag.getElement());
 					modified = true;
 				}
 			}

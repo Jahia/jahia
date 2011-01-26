@@ -94,7 +94,7 @@ public class HtmlFilteringInterceptorTest {
 	@Before
 	public void setUp() throws RepositoryException {
 
-		JCRNodeWrapper shared = session.getNode("/shared");
+		JCRNodeWrapper shared = session.getNode("/sites/html-filtering/contents");
 		if (!shared.isCheckedOut()) {
 			session.checkout(shared);
 		}
@@ -125,45 +125,20 @@ public class HtmlFilteringInterceptorTest {
 		String source = loadContent("hr.txt");
 		
 		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("script", "object", "hr")));
-		assertFalse("<hr/> element was not removed", out.contains("<hr"));
+		assertFalse("<hr/> tag was not removed", out.contains("<hr"));
 		assertTrue("other elements were incorrectly removed", out.contains("My separated text"));
 		assertTrue("other elements were incorrectly removed", out.contains("My separated text 2"));
 	}
 
 	@Test
-	public void testObject() throws Exception {
-		String source = loadContent("object.txt");
+	public void testFormatting() throws Exception {
+		String source = loadContent("formatting.txt");
 		
-		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("script", "object", "hr")));
-		assertFalse("<object/> element was not removed", out.contains("<object"));
-		assertFalse("<object/> element was not removed", out.contains("</object>"));
-		assertFalse("nested <param/> elements were not removed", out.contains("<param"));
-		assertTrue("other elements were incorrectly removed", out.contains("The video comes here:"));
-	}
-
-	@Test
-	public void testScript() throws Exception {
-		String source = loadContent("script.txt");
-		
-		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("script")));
-		assertFalse("<script/> element was not removed", out.contains("<script"));
-		assertFalse("<script/> element was not removed", out.contains("</script>"));
-		assertFalse("<script/> element was not removed", out.contains("alert('my alert')"));
-		assertTrue("other elements were incorrectly removed", out.contains("my last span"));
-	}
-
-	@Test
-	public void testUnclosedTags() throws Exception {
-		String source = loadContent("unclosed.txt");
-		
-		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("script", "object", "hr", "h3")));
-		assertFalse("<hr/> element was not removed", out.contains("<hr"));
-		assertFalse("closed <script/> element was not removed", out.contains("<script type=\"text/javascript\" src"));
-		assertFalse("closed <script/> element was not removed", out.contains("<script type=\"text/javascript\">"));
-		assertTrue("Unclosed <script/> element was removed", out.contains("<script type=\"text/javascript\" id="));
-		assertFalse("Closed <h3/> element was not removed", out.contains("<h3>My closed"));
-		assertFalse("Closed <h3/> element was not removed", out.contains("</h3>"));
-		assertTrue("Unclosed <h3/> element was removed", out.contains("<h3>My unclosed H3"));
+		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("b", "i", "strong")));
+		assertFalse("<strong/> tag was not removed", out.contains("<strong"));
+		assertFalse("<i/> tag was not removed", out.contains("<i"));
+		assertFalse("<b/> tag was not removed", out.contains("<b"));
+		assertTrue("other elements were incorrectly removed", out.contains("video") && out.contains("here:") && out.contains("require") && out.contains("market") && out.contains("Jahia Solutions"));
 	}
 
 }

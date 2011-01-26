@@ -10,12 +10,10 @@
     <h4 class="box5-title box5-title${currentNode.properties['j:style'].string}">${title.string}</h4>
 </c:if>
 <div class="box5">
-<div class="box5 box5padding16 box5marginbottom16">
-    <div class="box5-inner">
-            <div class="box5-inner-border"><!--start box5 -->
-                ${wrappedContent}
-                <div class="clear"></div>
-            </div>
+    <div class="box5 box5padding box5marginbottom">
+        <div class="box5-content">
+                    ${wrappedContent}
+                    <div class="clear"></div>
         </div>
     </div>
 </div>

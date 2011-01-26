@@ -3,7 +3,7 @@
 [jmix:style] > jmix:templateMixin mixin
  extends = jmix:list
  itemtype = layout
- - j:style (string, choicelist) = 'grey' < 'grey','shadow','blue','mushroom','orange','black','red','green','purple','yellow'
+ - j:style (string, choicelist) = 'grey' < 'grey','blue','mushroom','orange','black','red','green','purple','yellow'
 
 [jmix:customSkin] > jmix:templateMixin mixin
  extends = jmix:list

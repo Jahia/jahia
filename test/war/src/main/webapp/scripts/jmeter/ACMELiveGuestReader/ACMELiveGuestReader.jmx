@@ -37,7 +37,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">2000</stringProp>
+        <stringProp name="ThreadGroup.num_threads">20</stringProp>
         <stringProp name="ThreadGroup.ramp_time">30</stringProp>
         <longProp name="ThreadGroup.start_time">1238679268000</longProp>
         <longProp name="ThreadGroup.end_time">1238679268000</longProp>
@@ -68,8 +68,8 @@
             <stringProp name="-803558304">pageUrl</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="1058310453">
-              <stringProp name="237148201">${_StringFromFile(liveSitemaps.txt)}</stringProp>
+            <collectionProp name="1815222768">
+              <stringProp name="1830814216">${_StringFromFile(sitemaps/liveSitemaps.txt)}</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>

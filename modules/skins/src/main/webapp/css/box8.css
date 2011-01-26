@@ -1,0 +1,89 @@
+/******************************************************************************
+*  box8
+******************************************************************************/
+#bodywrapper div.box8 {
+	position:relative;
+	clear:both;
+	margin-bottom:1em;
+}
+
+#bodywrapper div.box8-content {
+	height:1%;
+	background:#fff url(img/box8-content.png) repeat-x bottom right ;
+	-webkit-border-radius:0 0 10px 10px;
+	-moz-border-radius:0 0 10px 10px;
+	border-radius:0 0 10px 10px;
+    border: 1px solid #CCCCCC;
+	border-top:none;
+    padding: 5px 10px;
+	overflow:hidden;
+	-webkit-box-shadow: 0px 0px 5px #cccccc;
+	-moz-box-shadow: 0px 0px 5px #cccccc;
+	box-shadow: 0px 0px 5px #cccccc;
+	margin-bottom:10px;
+}
+#bodywrapper div.box8-content p {
+	padding:0px 0px 1em 0px;
+}
+
+/*box8 title*/
+#bodywrapper h4.box8-title {
+	background:#010101 url(img/box8-h4titleblack.png) repeat-x top right;
+	border:1px solid #010101;
+	color:#FFFFFF;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+	-webkit-border-radius:10px 10px 0 0;
+	-moz-border-radius:10px 10px 0 0;
+	border-radius:10px 10px 0 0;
+    padding: 5px 10px;
+	overflow:hidden;
+	-webkit-box-shadow: 0px 0px 5px #cccccc;
+	-moz-box-shadow: 0px 0px 5px #cccccc;
+	box-shadow: 0px 0px 5px #cccccc;
+}
+#bodywrapper h4.box8-titleblack {
+	background:#df6c04 url(img/box8-h4titleblack.png) repeat-x top right;
+	border:1px solid #000;
+	color:#fff;
+}
+#bodywrapper h4.box8-titlegrey {
+	background:#ffffff url(img/box8-h4titlegrey.png) repeat-x top right;
+	border:1px solid #cccccc;
+	color:#333;
+}
+#bodywrapper h4.box8-titlemushroom {
+	background:#dad0c7 url(img/box8-h4titlemushroom.png) repeat-x top right;
+	border:1px solid #dad0c7;
+	color:#333;
+}
+#bodywrapper h4.box8-titleorange {
+	background:#df6c04 url(img/box8-h4titleorange.png) repeat-x top right;
+	border:1px solid #df6c04;
+	color:#333;
+}
+#bodywrapper h4.box8-titlered {
+	background:#ac0101 url(img/box8-h4titlered.png) repeat-x top right;
+	border:1px solid #990000;
+}
+#bodywrapper h4.box8-titlegreen {
+	background:#61a415 url(img/box8-h4titlegreen.png) repeat-x top right;
+	border:1px solid #669900;
+}
+#bodywrapper h4.box8-titlepurple {
+	background:#340067 url(img/box8-h4titlepurple.png) repeat-x top right;
+	border:1px solid #330033;
+}
+#bodywrapper h4.box8-titleyellow {
+	background:#ffcd35 url(img/box8-h4titleyellow.png) repeat-x top right;
+	border:1px solid #ffcc00;
+	color:#333;
+}
+#bodywrapper h4.box8-titleblue {
+	background:#03389c url(img/box8-h4titleblue.png) repeat-x top right;
+	border:1px solid #003366;
+}

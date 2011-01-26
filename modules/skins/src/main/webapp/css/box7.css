@@ -1,0 +1,59 @@
+/******************************************************************************
+*  box7
+******************************************************************************/
+#bodywrapper div.box7 {
+	background-color:#eaeaea;
+	border:1px solid #ccc;
+	margin:0 0 1em;
+	padding:15px;
+	position:relative;
+}
+
+/*black*/
+#bodywrapper div.box7-black {
+	background-color:#333333;
+	border:1px solid #010101;
+}
+#bodywrapper div.box7-black * {
+	color:#fff;
+}
+/*grey*/
+#bodywrapper div.box7-grey {
+	background-color:#eaeaea;
+	border:1px solid #ccc;
+}
+/*mushroom*/
+#bodywrapper div.box7-mushroom {
+	background-color:#dad0c7;
+	border:1px solid #a69e97;
+}
+/*orange*/
+#bodywrapper div.box7-orange {
+	border:1px solid #ff9900;
+	background-color:#fde8c9;
+}
+/*red*/
+#bodywrapper div.box7-red {
+	border:1px solid #cc3333;
+	background-color:#ffc8c8;
+}
+/*green*/
+#bodywrapper div.box7-green {
+	border:1px solid #669900;
+	background-color:#ecfec7;
+}
+/*purple*/
+#bodywrapper div.box7-purple {
+	border:1px solid #8c40d9;
+	background-color:#ead5ff;
+}
+/*yellow*/
+#bodywrapper div.box7-yellow {
+	border:1px solid #ffcc00;
+	background-color:#fff1bb;
+}
+/*blue*/
+#bodywrapper div.box7-blue {
+	border:1px solid #65b1d8;
+	background-color:#cceeff;
+}

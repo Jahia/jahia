@@ -284,7 +284,7 @@
                 <stringProp name="filename"></stringProp>
                 <stringProp name="script">if (prev.isSuccessful()) {
     String live = vars.get(&quot;LIVE_SITEMAP&quot;);
-    live = live.replaceAll(&quot; &quot;, &quot;&quot;);
+    live = live.replaceAll(&quot;    &quot;, &quot;&quot;);
     live = live.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
     String path = vars.get(&quot;PATH&quot;);
     try {
@@ -352,7 +352,7 @@
                 <stringProp name="filename"></stringProp>
                 <stringProp name="script">if (prev.isSuccessful()) {
     String edit = vars.get(&quot;EDIT_SITEMAP&quot;);
-    edit = edit.replaceAll(&quot; &quot;, &quot;&quot;);
+    edit = edit.replaceAll(&quot;    &quot;, &quot;&quot;);
     edit = edit.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
     edit = edit.replaceAll(&quot;/edit/&quot;, &quot;/render/&quot;);
     String path = vars.get(&quot;PATH&quot;);

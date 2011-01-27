@@ -210,7 +210,9 @@ public class AreaTag extends ModuleTag implements ParamParent {
         try {
             return super.doEndTag();
         } finally {
-            pageContext.getRequest().setAttribute("previousTemplate", templateNode);
+            if (templateNode != null) {
+                pageContext.getRequest().setAttribute("previousTemplate", templateNode);
+            }
             templateNode = null;
             pageContext.getRequest().setAttribute("inArea", o);
 

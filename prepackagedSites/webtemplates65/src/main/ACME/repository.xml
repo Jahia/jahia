@@ -1147,6 +1147,12 @@ exercising activities with strong recurring profits. 
             </tags>
             <categories jcr:uuid="8f168c0a-81c3-4c64-bd85-c0d5d9ea18d9"  jcr:created="2010-11-22T16:47:11.926+01:00" jcr:primaryType="jnt:category" jcr:lastModifiedBy="" jcr:createdBy=" system " j:fullpath="/sites/ACME/categories" jcr:lastModified="2010-11-22T16:47:14.779+01:00">
             </categories>
+            <j:acl j:inherit="true" jcr:primaryType="jnt:acl">
+              <GRANT_u_siteadmin j:principal="u:siteadmin" j:protected="false" j:roles="site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+              <GRANT_u_visitor j:principal="u:visitor" j:protected="false" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+              <GRANT_u_publisher j:principal="u:publisher" j:protected="false" j:roles="publisher visitor viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+              <GRANT_u_author j:principal="u:author" j:protected="false" j:roles="viewer visitor translator-fr translator-en contributor editor live-contributor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+            </j:acl>
         </ACME>
     </sites>
 </content>

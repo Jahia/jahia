@@ -630,6 +630,12 @@
           <j:translation_en jcr:title="Project" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:lastModifiedBy="root" j:lastPublished="2010-12-17T15:30:10.256+01:00" j:lastPublishedBy=" system root" jcr:language="en" jcr:lastModified="2010-12-17T15:29:59.371+01:00" />
         </project>
       </categories>
+        <j:acl j:inherit="true" jcr:primaryType="jnt:acl">
+          <GRANT_u_siteadmin j:principal="u:siteadmin" j:protected="false" j:roles="site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_u_visitor j:principal="u:visitor" j:protected="false" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_u_publisher j:principal="u:publisher" j:protected="false" j:roles="publisher visitor viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_u_author j:principal="u:author" j:protected="false" j:roles="viewer visitor translator-fr translator-en contributor editor live-contributor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        </j:acl>
     </ACME>
   </sites>
 </content>

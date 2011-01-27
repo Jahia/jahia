@@ -30,6 +30,11 @@
         <variable name="superUser.username" value="root"/>
         
         <variable name="TargetPanel.noWhitespaces" value="true"/>
+        
+        <variable name="TargetPanel.dir.mac" value="$APPLICATIONS_DEFAULT_ROOT/Jahia_xCM_CE_v${jahia.package.version}"/>
+        <variable name="TargetPanel.dir.macosx" value="$APPLICATIONS_DEFAULT_ROOT/Jahia_xCM_CE_v${jahia.package.version}"/>
+        <variable name="TargetPanel.dir.unix" value="/usr/local/Jahia_xCM_CE_v${jahia.package.version}"/>
+        <variable name="TargetPanel.dir.windows" value="C:\Jahia_xCM_CE_v${jahia.package.version}"/>
     </variables>
     <dynamicvariables>
         <variable name="jahia.war.contextPath" value=""/>
@@ -135,10 +140,6 @@
         <langpack iso3="spa"/>
     </locale>
     <resources>
-        <res id="TargetPanel.dir.unix" src="unix-path.txt" />
-        <res id="TargetPanel.dir.windows" src="windows-path.txt" />
-        <res id="TargetPanel.dir.mac" src="mac-path.txt" />
-        <res id="TargetPanel.dir.macosx" src="mac-path.txt" />
         <res id="installer.langsel.img" src="../images/language-selection.png"/>
         <res id="Installer.image" src="../images/left-side.png"/>
         <res id="LicencePanel.licence" parse="no" src="../licenses/license.txt"/>

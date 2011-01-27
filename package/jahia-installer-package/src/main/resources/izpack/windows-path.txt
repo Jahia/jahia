@@ -1,1 +1,0 @@
-C:\Jahia_xCM_CE_v${product.version}

@@ -1,1 +1,0 @@
-$APPLICATIONS_DEFAULT_ROOT/Jahia_xCM_CE_v${product.version}

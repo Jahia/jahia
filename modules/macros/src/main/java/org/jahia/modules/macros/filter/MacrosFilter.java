@@ -50,7 +50,6 @@ import javax.jcr.RepositoryException;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.io.File;
 import java.io.FileReader;
 import java.io.StringWriter;

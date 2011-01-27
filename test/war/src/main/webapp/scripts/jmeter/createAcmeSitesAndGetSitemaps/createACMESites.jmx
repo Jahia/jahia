@@ -37,34 +37,24 @@
             <stringProp name="Argument.value">${__P(loops,5)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="SITE_KEY" elementType="Argument">
-            <stringProp name="Argument.name">SITE_KEY</stringProp>
-            <stringProp name="Argument.value">mySite</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="NumberOfBoards" elementType="Argument">
-            <stringProp name="Argument.name">NumberOfBoards</stringProp>
-            <stringProp name="Argument.value">1</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="NumberOfTopics" elementType="Argument">
-            <stringProp name="Argument.name">NumberOfTopics</stringProp>
-            <stringProp name="Argument.value">1</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="NumberOfThreads" elementType="Argument">
-            <stringProp name="Argument.name">NumberOfThreads</stringProp>
-            <stringProp name="Argument.value">2</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="NumberOfPosts" elementType="Argument">
-            <stringProp name="Argument.name">NumberOfPosts</stringProp>
-            <stringProp name="Argument.value">2</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="PATH" elementType="Argument">
             <stringProp name="Argument.name">PATH</stringProp>
             <stringProp name="Argument.value">sitemaps/</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PARENTS" elementType="Argument">
+            <stringProp name="Argument.name">PARENTS</stringProp>
+            <stringProp name="Argument.value">0</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="CHILDS" elementType="Argument">
+            <stringProp name="Argument.name">CHILDS</stringProp>
+            <stringProp name="Argument.value">0</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="SUBCHILDS" elementType="Argument">
+            <stringProp name="Argument.name">SUBCHILDS</stringProp>
+            <stringProp name="Argument.value">0</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -228,7 +218,7 @@
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/createsite?site=ACME</stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/createsite?site=ACME&amp;parents=${PARENTS}&amp;childs=${CHILDS}&amp;subchilds=${SUBCHILDS}</stringProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

@@ -42,6 +42,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.ScriptEngineUtils;
 import org.jbpm.api.Execution;
 import org.jbpm.api.cmd.Environment;
 import org.jbpm.pvm.internal.email.impl.AddressTemplate;
@@ -77,8 +78,7 @@ public class JBPMMailProducer extends MailProducerImpl {
     public Collection<Message> produce(Execution execution) {
         if (ServicesRegistry.getInstance().getMailService().isEnabled() && getTemplate()!=null) {
             try {
-                ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-                scriptEngine = scriptEngineManager.getEngineByName(getTemplate().getLanguage());
+                scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(getTemplate().getLanguage());
                 bindings = null;
                 Message email = instantiateEmail();
                 fillFrom(execution, email);
@@ -94,6 +94,8 @@ public class JBPMMailProducer extends MailProducerImpl {
                 }
             } catch (MessagingException e) {
                 logger.error(e.getMessage(),e);
+            } catch (ScriptException e) {
+                logger.error(e.getMessage(), e);
             }
         }
         return Collections.emptyList();

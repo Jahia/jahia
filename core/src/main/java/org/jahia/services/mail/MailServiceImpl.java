@@ -52,6 +52,7 @@ import javax.script.ScriptException;
 import org.apache.camel.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -68,6 +69,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(MailServiceImpl.class);
     private ProducerTemplate template;
+    private ScriptEngineUtils scriptEngineUtils;
 
     /**
      * Validates entered values for mail settings.
@@ -292,12 +294,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
             String fromMail, String ccList, String bcclist, Locale locale, String templatePackageName)
             throws RepositoryException, ScriptException {
         // Resolve template :
-        ScriptEngineManager scriptManager = new ScriptEngineManager();
-        ScriptEngine scriptEngine = scriptManager.getEngineByExtension(StringUtils.substringAfterLast(template, "."));
-        if (scriptEngine == null) {
-            throw new ScriptException("No suitable ScriptEngine was found for extension: "
-                    + StringUtils.substringAfterLast(template, "."));
-        }
+        ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(StringUtils.substringAfterLast(template, "."));
         ScriptContext scriptContext = scriptEngine.getContext();
         String templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, template);
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(
@@ -352,5 +349,9 @@ public class MailServiceImpl extends MailService implements CamelContextAware, D
 		if (template != null) {
 			template.stop();
 		}
+    }
+
+    public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
+        this.scriptEngineUtils = scriptEngineUtils;
     }
 }

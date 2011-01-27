@@ -6,20 +6,21 @@
           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
           http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-	<bean id="MailService" class="org.jahia.services.mail.MailServiceImpl" parent="jahiaServiceTemplate">
-		<property name="mailEndpointUri" value="direct:mailUsers" />
-	</bean>
+    <bean id="MailService" class="org.jahia.services.mail.MailServiceImpl" parent="jahiaServiceTemplate">
+        <property name="mailEndpointUri" value="seda:mailUsers?multipleConsumers=true"/>
+        <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
+    </bean>
 
-    <bean id="HttpClient" class="org.apache.commons.httpclient.HttpClient" destroy-method="">
+    <bean id="HttpClient" class="org.apache.commons.httpclient.HttpClient">
         <constructor-arg index="0">
             <bean
-                class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager"
-                scope="prototype">
+                    class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager"
+                    scope="prototype">
                 <property name="params">
                     <bean
-                        class="org.apache.commons.httpclient.params.HttpConnectionManagerParams">
-                        <property name="connectionTimeout" value="10000" />
-                        <property name="soTimeout" value="15000" />
+                            class="org.apache.commons.httpclient.params.HttpConnectionManagerParams">
+                        <property name="connectionTimeout" value="10000"/>
+                        <property name="soTimeout" value="15000"/>
                     </bean>
                 </property>
             </bean>
@@ -32,9 +33,9 @@
 
     <bean id="HtmlExternalizationService" class="org.jahia.services.notification.HtmlExternalizationService">
         <property name="urlTraverser"
-            ref="org.jahia.services.render.filter.URLTraverser" />
-        <property name="httpClientService" ref="HttpClientService" />
-        <property name="useServletContextResources" value="true" />
+                  ref="org.jahia.services.render.filter.URLTraverser"/>
+        <property name="httpClientService" ref="HttpClientService"/>
+        <property name="useServletContextResources" value="true"/>
         <property name="rewriteUrls" value="true"/>
         <property name="inlineCss" value="true"/>
         <property name="rewriteUrlsInCss" value="true"/>
@@ -42,7 +43,8 @@
         <property name="removeInlinedScripts" value="true"/>
     </bean>
 
-    <camelContext id="jahiaNotificationContext" xmlns="http://camel.apache.org/schema/spring" depends-on="jahiaProperties">
+    <camelContext id="jahiaNotificationContext" xmlns="http://camel.apache.org/schema/spring"
+                  depends-on="jahiaProperties">
         <route>
             <!-- route for sending mails synchronously -->
             <from uri="direct:mailUsers"/>
@@ -91,23 +93,27 @@
 
     <bean id="camelNotificationService" class="org.jahia.services.notification.CamelNotificationService"/>
 
-    <bean id="org.jahia.services.content.rules.RulesNotificationService" class="org.jahia.services.content.rules.RulesNotificationService" factory-method="getInstance">
-         <property name="notificationService" ref="MailService"/>
+    <bean id="org.jahia.services.content.rules.RulesNotificationService"
+          class="org.jahia.services.content.rules.RulesNotificationService" factory-method="getInstance">
+        <property name="notificationService" ref="MailService"/>
+        <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
-    
+
     <bean name="notificationMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
                 <entry key="/notification/**">
-					<bean class="org.jahia.bin.Notifications">
-						<property name="mailService" ref="MailService" />
-					</bean>
+                    <bean class="org.jahia.bin.Notifications">
+                        <property name="mailService" ref="MailService"/>
+                    </bean>
                 </entry>
             </map>
         </property>
     </bean>
-    
+
     <bean id="subscriptionService" class="org.jahia.services.notification.SubscriptionService">
-    	<property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
+
+    <bean id="scriptEngineUtils" class="org.jahia.utils.ScriptEngineUtils"/>
 </beans>

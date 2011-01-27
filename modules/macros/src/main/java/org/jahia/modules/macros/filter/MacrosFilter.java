@@ -43,6 +43,7 @@ import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.utils.ScriptEngineUtils;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.RepositoryException;
@@ -71,11 +72,10 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
 
     private Pattern macrosPattern;
     private String macrosRegexp;
-    private ScriptEngineManager scriptEngineManager;
     private JahiaTemplateManagerService templateManagerService;
     private String macrosDirectoryName;
     private Map<String, String> scriptCache;
-    private Map<String, ScriptEngine> scriptEngineCache;
+    private ScriptEngineUtils scriptEngineUtils;
 
     public void setMacrosRegexp(String macrosRegexp) {
         this.macrosRegexp = macrosRegexp;
@@ -93,10 +93,10 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
             Matcher matcher = macrosPattern.matcher(previousOut);
             while (matcher.find()) {
                 String macroName = matcher.group(1);
-                // Todo Check if macros already in the cache of resolved script
+                //  Check if macros already in the cache of resolved script
                 String macroPath = scriptCache.get(macroName);
                 if (macroPath == null) {
-                    // Todo find the macros script matching this name scan all modules macros directory
+                    //  find the macros script matching this name scan all modules macros directory
                     List<JahiaTemplatesPackage> availableTemplatePackages = templateManagerService.getAvailableTemplatePackages();
                     for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
                         File file = new File(
@@ -105,7 +105,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
                             // Modules have macros
                             String[] files = file.list(new WildcardFileFilter(macroName + ".*"));
                             if (files.length == 1) {
-                                // Todo Store it in a cache
+                                //  Store it in a cache
                                 macroPath = file.getAbsolutePath() + File.separator + files[0];
                                 scriptCache.put(macroName, macroPath);
                             }
@@ -113,12 +113,9 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
                     }
                 }
                 if (macroPath != null) {
-                    // Todo execute macro
-                    ScriptEngine scriptEngine = scriptEngineCache.get(FilenameUtils.getExtension(macroPath));
-                    if (scriptEngine == null) {
-                        scriptEngine = scriptEngineManager.getEngineByExtension(FilenameUtils.getExtension(macroPath));
-                        scriptEngineCache.put(FilenameUtils.getExtension(macroPath), scriptEngine);
-                    }
+                    //  execute macro
+                    String extension = FilenameUtils.getExtension(macroPath);
+                    ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
                     ScriptContext scriptContext = scriptEngine.getContext();
                     scriptContext.setWriter(new StringWriter());
                     scriptContext.setErrorWriter(new StringWriter());
@@ -166,12 +163,14 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
      *                   as failure to set an essential property) or if initialization fails.
      */
     public void afterPropertiesSet() throws Exception {
-        scriptEngineManager = new ScriptEngineManager();
         scriptCache = new LinkedHashMap<String, String>();
-        scriptEngineCache = new LinkedHashMap<String, ScriptEngine>();
     }
 
     public void setMacrosDirectoryName(String macrosDirectoryName) {
         this.macrosDirectoryName = macrosDirectoryName;
+    }
+
+    public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
+        this.scriptEngineUtils = scriptEngineUtils;
     }
 }

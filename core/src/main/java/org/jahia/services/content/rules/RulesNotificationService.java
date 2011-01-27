@@ -34,6 +34,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -63,6 +64,12 @@ public class RulesNotificationService {
 
     private static RulesNotificationService instance;
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(RulesNotificationService.class);
+
+    public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
+        this.scriptEngineUtils = scriptEngineUtils;
+    }
+
+    private ScriptEngineUtils scriptEngineUtils;
 
     public static synchronized RulesNotificationService getInstance() {
         if (instance == null) {
@@ -163,12 +170,8 @@ public class RulesNotificationService {
         }
 
         // Resolve template :
-        ScriptEngineManager scriptManager = new ScriptEngineManager();
         String extension = StringUtils.substringAfterLast(template, ".");
-        ScriptEngine scriptEngine = scriptManager.getEngineByExtension(extension);
-        if(scriptEngine==null) {
-            throw new ScriptException("Script engine not found for template:"+template+ " trying to resolve sript engine for extension:"+extension);
-        }
+        ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
         ScriptContext scriptContext = scriptEngine.getContext();
         final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
         bindings.put("currentUser", user);

@@ -10,5 +10,6 @@
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
         <property name="applyOnConfigurations" value="page" />
         <property name="applyOnTemplateTypes" value="html" />
+        <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
 </beans>

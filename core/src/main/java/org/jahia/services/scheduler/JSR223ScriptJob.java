@@ -3,6 +3,7 @@ package org.jahia.services.scheduler;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.utils.ScriptEngineUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 
@@ -28,8 +29,7 @@ public class JSR223ScriptJob extends BackgroundJob {
         final JobDataMap map = jobExecutionContext.getJobDetail().getJobDataMap();
 
         String jobScriptPath = map.getString(JOB_SCRIPT_PATH);
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine scriptEngine = manager.getEngineByExtension(FilenameUtils.getExtension(jobScriptPath));
+        ScriptEngine scriptEngine = ScriptEngineUtils.getInstance().getEngineByExtension(FilenameUtils.getExtension(jobScriptPath));
         if (scriptEngine != null) {
             ScriptContext scriptContext = scriptEngine.getContext();
             final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);

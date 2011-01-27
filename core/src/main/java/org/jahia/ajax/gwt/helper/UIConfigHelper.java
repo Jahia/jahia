@@ -57,6 +57,7 @@ import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.editmode.SidePanelTab;
 import org.jahia.services.uicomponents.bean.toolbar.*;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.script.*;
@@ -75,6 +76,7 @@ public class UIConfigHelper {
     private static Map<String, Class<?>> CLASS_CACHE = new HashMap<String, Class<?>>();
     private static transient SchedulerService SCHEDULER_SERVICE;
     private LanguageHelper languages;
+    private ScriptEngineUtils scriptEngineUtils;
 
     public void setLanguages(LanguageHelper languages) {
         this.languages = languages;
@@ -700,8 +702,7 @@ public class UIConfigHelper {
         }
         if (value.contains("${")) {
             try {
-                ScriptEngineManager engineManager = new ScriptEngineManager();
-                ScriptEngine byName = engineManager.getEngineByName("velocity");
+                ScriptEngine byName = scriptEngineUtils.getEngineByName("velocity");
                 ScriptContext scriptContext = byName.getContext();
                 final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("currentSite", site);
@@ -733,4 +734,7 @@ public class UIConfigHelper {
     }
 
 
+    public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
+        this.scriptEngineUtils = scriptEngineUtils;
+    }
 }

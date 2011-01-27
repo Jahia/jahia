@@ -33,12 +33,16 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.utils.ScriptEngineUtils;
+import org.slf4j.Logger;
 
-import javax.script.*;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -57,39 +61,50 @@ import java.util.Map;
  */
 public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ScriptChoiceListInitializerImpl.class);
+    private ScriptEngineUtils scriptEngineUtils;
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param,
+                                                     List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
-        if(param!=null) {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        final String extension = param.split("\\.")[1];
-        ScriptEngine byName = manager.getEngineByExtension(extension);
-        if (byName != null) {
-            final List<JahiaTemplatesPackage> forModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
-                    epd.getDeclaringNodeType().getName().replace(":", "_"));
-            final Bindings bindings = byName.getBindings(ScriptContext.ENGINE_SCOPE);
-            bindings.put("values",values);
-            for (JahiaTemplatesPackage template : forModule) {
-                final File scriptPath = new File(
-                        template.getFilePath() + File.separator + "scripts" + File.separator + param);
-                if (scriptPath.exists()) {
-                    FileReader scriptContent = null;
-                    try {
-                        scriptContent = new FileReader(scriptPath);
-                        return (List<ChoiceListValue>) byName.eval(scriptContent, bindings);
-                    } catch (ScriptException e) {
-                        logger.error(e.getMessage(), e);
-                    } catch (FileNotFoundException e) {
-                        logger.error(e.getMessage(), e);
-                    } finally {
-                        if (scriptContent != null) {
-                            IOUtils.closeQuietly(scriptContent);
+        if (param != null) {
+            final String extension = param.split("\\.")[1];
+            ScriptEngine byName;
+            try {
+                byName = scriptEngineUtils.getEngineByExtension(extension);
+            } catch (ScriptException e) {
+                logger.error(e.getMessage(), e);
+                byName = null;
+            }
+            if (byName != null) {
+                final List<JahiaTemplatesPackage> forModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackagesForModule(
+                        epd.getDeclaringNodeType().getName().replace(":", "_"));
+                final Bindings bindings = byName.getBindings(ScriptContext.ENGINE_SCOPE);
+                bindings.put("values", values);
+                for (JahiaTemplatesPackage template : forModule) {
+                    final File scriptPath = new File(
+                            template.getFilePath() + File.separator + "scripts" + File.separator + param);
+                    if (scriptPath.exists()) {
+                        FileReader scriptContent = null;
+                        try {
+                            scriptContent = new FileReader(scriptPath);
+                            return (List<ChoiceListValue>) byName.eval(scriptContent, bindings);
+                        } catch (ScriptException e) {
+                            logger.error(e.getMessage(), e);
+                        } catch (FileNotFoundException e) {
+                            logger.error(e.getMessage(), e);
+                        } finally {
+                            if (scriptContent != null) {
+                                IOUtils.closeQuietly(scriptContent);
+                            }
                         }
                     }
                 }
             }
         }
-        }
         return Collections.emptyList();
+    }
+
+    public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
+        this.scriptEngineUtils = scriptEngineUtils;
     }
 }

@@ -91,6 +91,7 @@
 
     <bean name="UiConfigHelper" class="org.jahia.ajax.gwt.helper.UIConfigHelper">
         <property name="languages" ref="LanguagesHelper"/>
+        <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
 
     <bean name="AnalyticsHelper" class="org.jahia.ajax.gwt.helper.AnalyticsHelper"/>

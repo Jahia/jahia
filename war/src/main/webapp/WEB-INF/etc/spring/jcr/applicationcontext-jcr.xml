@@ -215,7 +215,9 @@
           class="org.jahia.services.content.nodetypes.initializers.MenusChoiceListInitializerImpl">
     </bean>
     <bean id="scriptInitializer"
-          class="org.jahia.services.content.nodetypes.initializers.ScriptChoiceListInitializerImpl"/>
+          class="org.jahia.services.content.nodetypes.initializers.ScriptChoiceListInitializerImpl">
+        <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
+    </bean>
     <bean id="sortableFieldnamesInitializer"
           class="org.jahia.services.content.nodetypes.initializers.SortableFieldnamesChoiceListInitializerImpl">
         <property name="excludedNodeTypes">
@@ -278,21 +280,23 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.services.content.rules.ImageService" class="org.jahia.services.content.rules.ImageService" factory-method="getInstance"/>
+    <bean id="org.jahia.services.content.rules.ImageService" class="org.jahia.services.content.rules.ImageService"
+          factory-method="getInstance"/>
 
-    <bean id="org.jahia.services.content.rules.Service" class="org.jahia.services.content.rules.Service" factory-method="getInstance">
-			<property name="taggingService" ref="org.jahia.services.tags.TaggingService" />
-			<property name="cacheService" ref="JahiaCacheService" />
-			<property name="schedulerService" ref="SchedulerService" />
-			<property name="sitesService" ref="JahiaSitesService" />
-			<property name="userManagerService" ref="JahiaUserManagerService" />
-			<property name="passwordPolicyService" ref="JahiaPasswordPolicyService" />
+    <bean id="org.jahia.services.content.rules.Service" class="org.jahia.services.content.rules.Service"
+          factory-method="getInstance">
+        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="schedulerService" ref="SchedulerService"/>
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="passwordPolicyService" ref="JahiaPasswordPolicyService"/>
     </bean>
 
     <bean id="JcrSessionFilter" class="org.jahia.bin.filters.jcr.JcrSessionFilter">
-    	<property name="authPipeline" ref="authPipeline"/>
-    	<property name="sessionFactory" ref="jcrSessionFactory"/>
-    	<property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="authPipeline" ref="authPipeline"/>
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
 </beans>

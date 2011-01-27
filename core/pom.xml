@@ -343,11 +343,6 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>3.4.0.GA</version>
 		</dependency>
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-			<version>2.1_3</version>
-		</dependency>
 
         <!-- Jackrabbit dependencies -->
         <dependency>
@@ -610,6 +605,10 @@
             	<exclusion>
             		<groupId>org.apache.bsf</groupId>
                     <artifactId>bsf-engines</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>xmlbeans</groupId>
+            		<artifactId>xbean</artifactId>
             	</exclusion>
             </exclusions>
         </dependency>

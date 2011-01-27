@@ -15,10 +15,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="wiki.css"/>
 
-<div id="${currentNode.UUID}-history" class="boxwiki">
-    <div class="boxwikigrey boxwikipadding16 boxwikimarginbottom16">
-        <div class="boxwiki-inner">
-            <div class="boxwiki-inner-border"><!--start boxwiki -->
+<div id="${currentNode.UUID}-history">
                 <form name="diff" method="get" >
                     <c:forEach items="${param}" var="p">
                         <c:if test="${p.key ne 'diff' and p.key ne 'oldid'}">
@@ -89,8 +86,6 @@
                     <!--stop pagination-->
                     <template:removePager id="${currentNode.identifier}"/>
                 </form>
-            </div>
-        </div>
-    </div>
+
 </div>
 <!--stop boxwiki -->

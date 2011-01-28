@@ -27,7 +27,17 @@
               method="post">
             <input type="hidden" name="nodeType" value="jnt:portal"/>
             <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-            <input type="hidden" name="newNodeOutputFormat" value="html"/>
+            <c:set var="ps" value=""/>
+            <c:forEach items="${param}" var="p">
+                <c:if test="${not empty ps}">
+                    <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
+                </c:if>
+                <c:if test="${empty ps}">
+                    <c:set var="ps" value="?${p.key}=${p.value}" />
+                </c:if>
+            </c:forEach>
+
+            <input type="hidden" name="newNodeOutputFormat" value="user-private.html${ps}"/>
             Create my portal : <input type="submit" name="submit">
         </form>
     </c:if>

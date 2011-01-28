@@ -1,71 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
-         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test"
-         xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
-         xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
-    <templateSets jcr:primaryType="jnt:templateSets">
-        <forum j:siteType="module" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" changefreq="monthly"
-               j:installedModules="forum" priority="0.5">
-            <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
-                    <forum jcr:primaryType="jnt:pageTemplate">
-                        <pagecontent j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable"
-                                     jcr:primaryType="jnt:contentList" j:id="forum-body">
-                            <row column="2col124" jcr:primaryType="jnt:row"/>
-                        </pagecontent>
-                        <row-col1 jcr:primaryType="jnt:contentList">
-                            <topicList viewTopics="true" jcr:primaryType="jnt:topicList"
-                                       j:bindedComponent="/templateSets/forum/templates/base/forum" viewThreads="true"/>
-                            <topicForm j:requiredPermissions="/permissions/actions/forum/createTopic"
-                                       jcr:mixinTypes="jmix:requiredPermissions" j:requiredMode="live"
-                                       jcr:primaryType="jnt:topicForm" j:requireLoggedUser="false"
-                                       j:bindedComponent="/templateSets/forum/templates/base/forum"/>
-                        </row-col1>
-                        <row-col2 jcr:primaryType="jnt:contentList"/>
-                    </forum>
-                    <forum-topic jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:topic" j:defaultTemplate="true">
-                        <pagecontent j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable"
-                                     jcr:primaryType="jnt:contentList" j:id="forum-body">
-                            <row column="2col124" jcr:primaryType="jnt:row"/>
-                        </pagecontent>
-                        <row-col1 jcr:primaryType="jnt:contentList">
-                            <topicList viewTopics="true" jcr:primaryType="jnt:topicList"
-                                       j:bindedComponent="/templateSets/forum/templates/base/forum-topic"
-                                       viewThreads="true"/>
-                            <threadForm jcr:mixinTypes="jmix:requiredPermissions"
-                                        j:requiredPermissions="/permissions/actions/forum/createThread"
-                                        j:requiredMode="live" jcr:primaryType="jnt:threadForm"
-                                        j:requireLoggedUser="false"
-                                        j:bindedComponent="/templateSets/forum/templates/base/forum-topic"/>
-                            <topicForm jcr:mixinTypes="jmix:requiredPermissions"
-                                       j:requiredPermissions="/permissions/actions/forum/createTopic"
-                                       j:requiredMode="live" jcr:primaryType="jnt:topicForm" j:requireLoggedUser="false"
-                                       j:bindedComponent="/templateSets/forum/templates/base/forum-topic"/>
-                        </row-col1>
-                        <row-col2 jcr:primaryType="jnt:contentList"/>
-                    </forum-topic>
-                    <forum-thread jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:thread" j:hiddenTemplate="false"
-                                  j:defaultTemplate="true">
-                        <pagecontent j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable"
-                                     jcr:primaryType="jnt:contentList" j:id="forum-body">
-                            <row column="2col124" jcr:primaryType="jnt:row"/>
-                        </pagecontent>
-                        <row-col1 jcr:primaryType="jnt:contentList">
-                            <mainResourceDisplay-1 j:mainResourceView="forum"
-                                                   jcr:primaryType="jnt:mainResourceDisplay"/>
-                            <mainResourceDisplay j:mainResourceView="newPostForm"
-                                                 jcr:primaryType="jnt:mainResourceDisplay"/>
-                        </row-col1>
-                    </forum-thread>
-                </base>
-                <contents jcr:primaryType="jnt:contentFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-            </templates>
-        </forum>
-    </templateSets>
-
-
-    <permissions jcr:primaryType="jnt:permission">
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+  <templateSets jcr:primaryType="jnt:templateSets">
+    <forum j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="forum" priority="0.5">
+      <templates jcr:primaryType="jnt:templatesFolder">
+        <base jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
+          <forum jcr:primaryType="jnt:pageTemplate">
+            <pagecontent j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList" j:id="forum-body">
+              <row column="2col124" jcr:primaryType="jnt:row" />
+            </pagecontent>
+            <row-col1 jcr:primaryType="jnt:contentList">
+              <topicList viewTopics="true" jcr:primaryType="jnt:topicList" j:bindedComponent="/templateSets/forum/templates/base/forum" viewThreads="true" />
+              <topicForm jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions="/permissions/actions/forum/createTopic" j:requiredMode="live" jcr:primaryType="jnt:topicForm" j:bindedComponent="/templateSets/forum/templates/base/forum" j:requireLoggedUser="false" />
+            </row-col1>
+            <row-col2 jcr:primaryType="jnt:contentList">
+              <jahiapp-forum-logo.png j:node="/templateSets/forum/templates/files/jahiapp-forum-logo.png" jcr:primaryType="jnt:imageReference">
+                <j:translation_en jcr:language="en" j:alternateText="jahiapp forum logo" jcr:primaryType="jnt:translation" />
+              </jahiapp-forum-logo.png>
+            </row-col2>
+          </forum>
+          <forum-topic jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:topic" j:defaultTemplate="true">
+            <pagecontent j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList" j:id="forum-body">
+              <row column="2col124" jcr:primaryType="jnt:row" />
+            </pagecontent>
+            <row-col1 jcr:primaryType="jnt:contentList">
+              <topicList viewTopics="true" jcr:primaryType="jnt:topicList" j:bindedComponent="/templateSets/forum/templates/base/forum-topic" viewThreads="true" />
+              <threadForm jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions="/permissions/actions/forum/createThread" j:requiredMode="live" jcr:primaryType="jnt:threadForm" j:requireLoggedUser="false" j:bindedComponent="/templateSets/forum/templates/base/forum-topic" />
+              <topicForm jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions="/permissions/actions/forum/createTopic" j:requiredMode="live" jcr:primaryType="jnt:topicForm" j:requireLoggedUser="false" j:bindedComponent="/templateSets/forum/templates/base/forum-topic" />
+            </row-col1>
+            <row-col2 jcr:primaryType="jnt:contentList">
+              <jahiapp-forum-logo.png j:node="/templateSets/forum/templates/base/forum/row-col2/jahiapp-forum-logo.png" jcr:primaryType="jnt:contentReference" />
+            </row-col2>
+          </forum-topic>
+          <forum-thread jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="false" j:applyOn="jnt:thread" j:defaultTemplate="true">
+            <pagecontent j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList" j:id="forum-body">
+              <row column="2col124" jcr:primaryType="jnt:row" />
+            </pagecontent>
+            <row-col1 jcr:primaryType="jnt:contentList">
+              <mainResourceDisplay-1 j:mainResourceView="forum" jcr:primaryType="jnt:mainResourceDisplay" />
+              <mainResourceDisplay j:mainResourceView="newPostForm" jcr:primaryType="jnt:mainResourceDisplay" />
+            </row-col1>
+            <row-col2 jcr:primaryType="jnt:contentList">
+              <jahiapp-forum-logo.png j:node="/templateSets/forum/templates/base/forum/row-col2/jahiapp-forum-logo.png" jcr:primaryType="jnt:contentReference" />
+            </row-col2>
+          </forum-thread>
+        </base>
+        <contents jcr:primaryType="jnt:contentFolder" />
+        <files jcr:primaryType="jnt:folder">
+          <jahiapp-forum-logo.png jcr:mixinTypes="jmix:image" j:height="66" jcr:primaryType="jnt:file" j:width="129">
+            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+          </jahiapp-forum-logo.png>
+        </files>
+      </templates>
+    </forum>
+  </templateSets>
+  
+      <permissions jcr:primaryType="jnt:permission">
         <actions jcr:primaryType="jnt:permission">
             <forum jcr:primaryType="jnt:permission">
                 <createTopic jcr:primaryType="jnt:permission"/>
@@ -84,5 +75,6 @@
         <visitor jcr:primaryType="jnt:role"
                  j:permissions="/permissions/actions/forum/createThread /permissions/actions/forum/createPost"/>
     </roles>
-
+  
 </content>
+

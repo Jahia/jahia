@@ -45,6 +45,7 @@ import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
@@ -205,11 +206,17 @@ public class AbstractJahiaTag extends BodyTagSupport {
      * @return jahia_gwt_dictionary JavaScript include
      */
     protected String getGwtDictionaryInclude() {
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        Locale locale = getUILocale();
+
+        return getGwtDictionnaryInclude(request, locale);
+    }
+
+    public static String getGwtDictionnaryInclude(HttpServletRequest request, Locale locale) {
         StringBuilder s = new StringBuilder();
         s.append("<script type=\"text/javascript\" src=\"").append(
-                ((HttpServletRequest) pageContext.getRequest()).getContextPath())
+                request.getContextPath())
                 .append("/gwt/resources/i18n/messages");
-        Locale locale = getUILocale();
         if (LanguageCodeConverters.getAvailableBundleLocales().contains(locale)) {
             s.append("_").append(locale.toString());
         }
@@ -286,8 +293,13 @@ public class AbstractJahiaTag extends BodyTagSupport {
     
     protected Locale getUILocale() {
         RenderContext renderContext = getRenderContext();
-        Locale currentLocale = renderContext != null ? renderContext.getUILocale() : null;
         HttpSession session = pageContext.getSession();
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        return getUILocale(renderContext, session, request);
+    }
+
+    public static Locale getUILocale(RenderContext renderContext, HttpSession session, HttpServletRequest request) {
+        Locale currentLocale = renderContext != null ? renderContext.getUILocale() : null;
         if (session != null) {
             if (session.getAttribute(ProcessingContext.SESSION_UI_LOCALE) != null) {
                 currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
@@ -298,7 +310,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
             currentLocale = renderContext != null ? renderContext.getFallbackLocale() : null;
         }
         if (currentLocale == null) {
-            currentLocale = pageContext.getRequest().getLocale();
+            currentLocale = request.getLocale();
         }
 
         return currentLocale;

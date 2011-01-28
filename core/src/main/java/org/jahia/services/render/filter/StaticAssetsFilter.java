@@ -32,26 +32,42 @@
 
 package org.jahia.services.render.filter;
 
-import java.util.List;
-
 import net.htmlparser.jericho.*;
-
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.utils.ScriptEngineUtils;
+import org.slf4j.Logger;
+
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
 
 /**
  * Render filter that "injects" the static assets into the HEAD section of the
  * rendered HTML document.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class StaticAssetsFilter extends AbstractFilter {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(StaticAssetsFilter.class);
+
+    private ScriptEngineUtils scriptEngineUtils;
+    private String ajaxTemplate;
+    private String template;
+
+    private String ajaxResolvedTemplate;
+    private String resolvedTemplate;
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
@@ -62,15 +78,33 @@ public class StaticAssetsFilter extends AbstractFilter {
         if (renderContext.isAjaxRequest()) {
             Element element = source.getFirstElement();
             final EndTag tag = element != null ? element.getEndTag() : null;
-            final String staticsAsset = AggregateCacheFilter.removeEsiTags(service.render(
-                    new Resource(resource.getNode(), "html", "ajax.statics.assets", Resource.CONFIGURATION_INCLUDE),
-                    renderContext));
-            if (StringUtils.isNotBlank(staticsAsset)) {
-                if (tag != null) {
-                    outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
-                    out = outputDocument.toString();
-                } else {
-                    out = previousOut + "\n" + staticsAsset;
+            String extension = StringUtils.substringAfterLast(ajaxTemplate, ".");
+            scriptEngineUtils.getEngineByExtension(extension);
+            ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
+            ScriptContext scriptContext = scriptEngine.getContext();
+            final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+            bindings.put("renderContext", renderContext);
+            bindings.put("resource", resource);
+            bindings.put("url", new URLGenerator(renderContext, resource));
+            if (ajaxResolvedTemplate == null) {
+                ajaxResolvedTemplate = FileUtils.readFileToString(new File(
+                        JahiaContextLoaderListener.getServletContext().getRealPath(ajaxTemplate)));
+            }
+            if (ajaxResolvedTemplate != null) {
+                scriptContext.setWriter(new StringWriter());
+                // The following binding is necessary for Javascript, which doesn't offer a console by default.
+                bindings.put("out", new PrintWriter(scriptContext.getWriter()));
+                scriptEngine.eval(ajaxResolvedTemplate, bindings);
+                StringWriter writer = (StringWriter) scriptContext.getWriter();
+                final String staticsAsset = writer.toString();
+
+                if (StringUtils.isNotBlank(staticsAsset)) {
+                    if (tag != null) {
+                        outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
+                        out = outputDocument.toString();
+                    } else {
+                        out = previousOut + "\n" + staticsAsset;
+                    }
                 }
             }
         } else {
@@ -78,36 +112,74 @@ public class StaticAssetsFilter extends AbstractFilter {
                 // Add static div for edit mode
                 List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
                 if (bodyElementList.size() > 0) {
-                Element bodyElement = bodyElementList.get(bodyElementList.size()-1);
-                
-                EndTag bodyEndTag = bodyElement.getEndTag();
-                outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1,
-                        "</div><");
+                    Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
 
-                bodyElement = bodyElementList.get(0);
+                    EndTag bodyEndTag = bodyElement.getEndTag();
+                    outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1, "</div><");
 
-                StartTag bodyStartTag = bodyElement.getStartTag();
-                outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(),
-                        "\n" + "<div class=\"jahia-template-gxt editmode-gxt\" jahiatype=\"editmode\" id=\"editmode\"" +
-                                " config=\""+renderContext.getEditModeConfigName()+"\"" +
-                                " path=\""+resource.getNode().getPath()+"\" locale=\""+resource.getLocale()+"\"" +
-                                " template=\""+resource.getResolvedTemplate()+"\"" +
-                                " nodetypes=\""+  ConstraintsHelper.getConstraints(renderContext.getMainResource().getNode()) + "\"" +
-                                ">");
+                    bodyElement = bodyElementList.get(0);
+
+                    StartTag bodyStartTag = bodyElement.getStartTag();
+                    outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(), "\n" +
+                                                                                         "<div class=\"jahia-template-gxt editmode-gxt\" jahiatype=\"editmode\" id=\"editmode\"" +
+                                                                                         " config=\"" +
+                                                                                         renderContext.getEditModeConfigName() +
+                                                                                         "\"" + " path=\"" +
+                                                                                         resource.getNode().getPath() +
+                                                                                         "\" locale=\"" +
+                                                                                         resource.getLocale() + "\"" +
+                                                                                         " template=\"" +
+                                                                                         resource.getResolvedTemplate() +
+                                                                                         "\"" + " nodetypes=\"" +
+                                                                                         ConstraintsHelper.getConstraints(
+                                                                                                 renderContext.getMainResource().getNode()) +
+                                                                                         "\"" + ">");
                 }
             }
             List<Element> headElementList = source.getAllElements(HTMLElementName.HEAD);
             for (Element element : headElementList) {
                 final EndTag headEndTag = element.getEndTag();
-                final String staticsAsset = service.render(new Resource(resource.getNode(), "html",
-                        "html.statics.assets", Resource.CONFIGURATION_INCLUDE), renderContext);
-                outputDocument.replace(headEndTag.getBegin(), headEndTag.getBegin() + 1,
-                        "\n" + AggregateCacheFilter.removeEsiTags(staticsAsset) + "\n<");
-            }
+                String extension = StringUtils.substringAfterLast(template, ".");
+                scriptEngineUtils.getEngineByExtension(extension);
+                ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
+                ScriptContext scriptContext = scriptEngine.getContext();
+                final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+                bindings.put("renderContext", renderContext);
+                bindings.put("resource", resource);
+                bindings.put("url", new URLGenerator(renderContext, resource));
+                if (resolvedTemplate == null) {
+                    resolvedTemplate = FileUtils.readFileToString(new File(
+                            JahiaContextLoaderListener.getServletContext().getRealPath(template)));
+                }
+                if (resolvedTemplate != null) {
+                    scriptContext.setWriter(new StringWriter());
+                    // The following binding is necessary for Javascript, which doesn't offer a console by default.
+                    bindings.put("out", new PrintWriter(scriptContext.getWriter()));
+                    scriptEngine.eval(resolvedTemplate, bindings);
+                    StringWriter writer = (StringWriter) scriptContext.getWriter();
+                    final String staticsAsset = writer.toString();
 
+                    if (StringUtils.isNotBlank(staticsAsset)) {
+                        outputDocument.replace(headEndTag.getBegin(), headEndTag.getBegin() + 1,
+                                "\n" + AggregateCacheFilter.removeEsiTags(staticsAsset) + "\n<");
+                    }
+                }
+            }
             out = outputDocument.toString();
-         }
+        }
 
         return out.trim();
+    }
+
+    public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
+        this.scriptEngineUtils = scriptEngineUtils;
+    }
+
+    public void setAjaxTemplate(String ajaxTemplate) {
+        this.ajaxTemplate = ajaxTemplate;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
     }
 }

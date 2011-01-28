@@ -87,7 +87,7 @@ public class GWTInitializer {
         return "";
     }
 
-    private static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
+    public static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
         StringBuilder buf = new StringBuilder();
         Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
         Locale uilocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale) : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER));

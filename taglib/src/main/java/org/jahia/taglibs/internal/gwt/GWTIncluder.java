@@ -54,17 +54,20 @@ public class GWTIncluder {
      * @return the string to write to html
      */
     public static String generateGWTImport(PageContext pageContext, String module) {
-        StringBuilder ret = new StringBuilder();
         final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+        return generateGWTImport(request, response, module);
+    }
+
+    public static String generateGWTImport(HttpServletRequest request, HttpServletResponse response, String module ) {
+        StringBuilder ret = new StringBuilder();
         final String gwtModulePath = response.encodeURL(new StringBuilder(64).append(request.getContextPath()).append(GWT_MODULE_PATH + "/")
                 .append(module).append("/").append(module)
                 .append(".nocache.js").toString());
-        ret.append("<script id='jahia-gwt' type='text/javascript' src='").append(gwtModulePath).append("'></script>\n");
-        return ret.toString();
+        return ret.append("<script id='jahia-gwt' type='text/javascript' src='").append(gwtModulePath).append("'></script>\n").toString();
     }
 
-     /**
+    /**
      * Get place holder for a jahiaModule  .
      * Example: <div jahiaType="categoriesPiker" start="/root" id="cat_2"/>
      * @param templateUsage true means that the module is used in a template

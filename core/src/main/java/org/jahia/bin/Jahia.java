@@ -112,9 +112,9 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     /** ... */
     static public final String COPYRIGHT =
-            "&copy; Copyright 2002-2010  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
+            "&copy; Copyright 2002-2011  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
-    public final static String COPYRIGHT_TXT = "2010 Jahia Solutions Group SA" ;
+    public final static String COPYRIGHT_TXT = "2011 Jahia Solutions Group SA" ;
 
     static private boolean maintenance = false;
 
@@ -332,7 +332,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                             + "      . . . s t a r t i n g   j a h i a   b u i l d  @BUILD_NUMBER@"+
                     " . . .\n"
                             + "\n\n"
-                            + "   Copyright 2002-2010 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
+                            + "   Copyright 2002-2011 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
                             + "\n\n"
                             + " *******************************************************************************\n"
                             + " * The contents of this software, or the files included with this software,    *\n"

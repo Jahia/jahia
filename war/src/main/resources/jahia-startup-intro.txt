@@ -13,7 +13,7 @@
       . . . s t a r t i n g   j a h i a   b u i l d   @BUILD_NUMBER@ . . .
 
 
-   Copyright 2002-2010 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved
+   Copyright 2002-2011 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved
 
 
  *******************************************************************************

@@ -1,8 +1,6 @@
-
 <%@include file="/admin/include/header.inc" %>
 <%@page import="org.jahia.bin.*" %>
 <%@page import="org.jahia.params.*" %>
-<%@page import="org.jahia.resourcebundle.*" %>
 <%@page import="org.jahia.utils.*" %>
 <%@page import   = "java.util.*,org.jahia.data.JahiaData" %>
 <%

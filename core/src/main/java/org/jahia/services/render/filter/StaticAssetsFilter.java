@@ -47,9 +47,11 @@ import org.slf4j.Logger;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
+import javax.script.SimpleScriptContext;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.List;
 
 /**
@@ -81,20 +83,20 @@ public class StaticAssetsFilter extends AbstractFilter {
             String extension = StringUtils.substringAfterLast(ajaxTemplate, ".");
             scriptEngineUtils.getEngineByExtension(extension);
             ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
-            ScriptContext scriptContext = scriptEngine.getContext();
-            final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+            ScriptContext scriptContext = new AssetsScriptContext();
+            final Bindings bindings = scriptEngine.createBindings();
             bindings.put("renderContext", renderContext);
             bindings.put("resource", resource);
             bindings.put("url", new URLGenerator(renderContext, resource));
+            scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
             if (ajaxResolvedTemplate == null) {
                 ajaxResolvedTemplate = FileUtils.readFileToString(new File(
                         JahiaContextLoaderListener.getServletContext().getRealPath(ajaxTemplate)));
             }
             if (ajaxResolvedTemplate != null) {
-                scriptContext.setWriter(new StringWriter());
                 // The following binding is necessary for Javascript, which doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                scriptEngine.eval(ajaxResolvedTemplate, bindings);
+                scriptEngine.eval(ajaxResolvedTemplate, scriptContext);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 final String staticsAsset = writer.toString();
 
@@ -142,20 +144,20 @@ public class StaticAssetsFilter extends AbstractFilter {
                 String extension = StringUtils.substringAfterLast(template, ".");
                 scriptEngineUtils.getEngineByExtension(extension);
                 ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
-                ScriptContext scriptContext = scriptEngine.getContext();
-                final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+                ScriptContext scriptContext = new AssetsScriptContext();
+                final Bindings bindings = scriptEngine.createBindings();
                 bindings.put("renderContext", renderContext);
                 bindings.put("resource", resource);
                 bindings.put("url", new URLGenerator(renderContext, resource));
+                scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
                 if (resolvedTemplate == null) {
                     resolvedTemplate = FileUtils.readFileToString(new File(
                             JahiaContextLoaderListener.getServletContext().getRealPath(template)));
                 }
                 if (resolvedTemplate != null) {
-                    scriptContext.setWriter(new StringWriter());
                     // The following binding is necessary for Javascript, which doesn't offer a console by default.
                     bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                    scriptEngine.eval(resolvedTemplate, bindings);
+                    scriptEngine.eval(resolvedTemplate, scriptContext);
                     StringWriter writer = (StringWriter) scriptContext.getWriter();
                     final String staticsAsset = writer.toString();
 
@@ -181,5 +183,20 @@ public class StaticAssetsFilter extends AbstractFilter {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    class AssetsScriptContext extends SimpleScriptContext {
+        private Writer writer = null;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Writer getWriter() {
+            if (writer == null) {
+                writer = new StringWriter();
+            }
+            return writer;
+        }
     }
 }

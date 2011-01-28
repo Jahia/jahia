@@ -79,6 +79,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             "path", "template", "templateType", "acls", "context", "wrapped", "custom", "queryString",
             "templateNodes"));
     private static final String CACHE_NAME = "nodeusersacls";
+    private static final String PROPERTY_CACHE_NAME = "requiredpermissions";
     public static final String PER_USER = "_perUser_";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
@@ -89,6 +90,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private EhCacheProvider cacheProvider;
     private Cache cache;
     private JCRTemplate template;
+    private Cache permissionCache;
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
@@ -152,9 +154,18 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
             JCRNodeWrapper node = resource.getNode();
             boolean checkRootPath = true;
-            if (node.hasProperty("j:requiredPermissions")) {
+            Element element = permissionCache.get(node.getPath());
+            if(element!=null && Boolean.TRUE==((Boolean)element.getValue())) {
                 node = renderContext.getMainResource().getNode();
                 checkRootPath = false;
+            } else if(element==null) {
+                if (node.hasProperty("j:requiredPermissions")) {
+                    permissionCache.put(new Element(node.getPath(),Boolean.TRUE));
+                    node = renderContext.getMainResource().getNode();
+                    checkRootPath = false;
+                } else {
+                    permissionCache.put(new Element(node.getPath(),Boolean.FALSE));
+                }
             }
             String nodePath = node.getPath();
             return getAclsKeyPart(renderContext, checkRootPath, nodePath);
@@ -416,6 +427,10 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             cacheManager.addCache(CACHE_NAME);
         }
         cache = cacheManager.getCache(CACHE_NAME);
+        if (!cacheManager.cacheExists(PROPERTY_CACHE_NAME)) {
+            cacheManager.addCache(PROPERTY_CACHE_NAME);
+        }
+        permissionCache = cacheManager.getCache(PROPERTY_CACHE_NAME);
     }
 
     public void setTemplate(JCRTemplate template) {

@@ -16,13 +16,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.springframework.beans.factory.InitializingBean;
 
-import javax.jcr.RepositoryException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,100 +61,86 @@ public class PageHitService implements Processor, CamelContextAware, Initializin
     public void process(Exchange exchange) throws Exception {
         final String message = (String) exchange.getIn().getBody();
         final Matcher matcher = pattern.matcher(message);
+        Session session = null;
         if (matcher.matches()) {
             final String path = matcher.group(6);
-            final JCRTemplate tpl = JCRTemplate.getInstance();
-            JCRNodeWrapper node;
-            try {
-                node = tpl.doExecuteWithSystemSession(new JCRCallback<JCRNodeWrapper>() {
-                    public JCRNodeWrapper doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        return session.getNode(path);
-                    }
-                });
-            } catch (RepositoryException e) {
-                // Node not found might be due to old logs so fail silently
-                return;
-            }
-            if (node == null) {
-                // stupid security check should not happen
-                logger.warn("Node not found in system but it has not thrown an exception strange");
-                return;
-            }
-            final String uuid = node.getIdentifier();
-            Session session = sessionFactoryBean.openSession();
-            try {
-                PageHit pageHit = (PageHit) session.get(PageHit.class, uuid);
-                // Found Update object
-                if (pageHit != null) {
-                    if (!pageHit.getPath().equals(path)) {
-                        //the node's path have change so udpate it in database and increment it directly
-                        pageHit.setPath(path);
-                        if (pageHitCache.get("pageHitUuid" + uuid) == null) {    //path change and no version in cache
-                            pageHit.setHits(pageHit.getHits() + 1);
-                        } else {                                                 //path change and version in cache exist
-                            pageHit.setHits(Long.valueOf(pageHitCache.get("pageHitUuid" + uuid).getValue().toString()) + 1);
-                            pageHitCache.remove("pageHitUuid" + uuid);           //remove the version in cache
-                        }
-                        session.flush();
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Update into database pageHit page's path as change to: " + pageHit.getPath());
-                        }
-                    } else {
-                        //increment and cache
-                        Element elementHit;
-                        if (pageHitCache.get("pageHitUuid" + uuid) == null) {
-                            elementHit = new Element("pageHitUuid" + uuid, pageHit.getHits() + 1);
-                        } else {
-                            elementHit = new Element("pageHitUuid" + uuid, Long.valueOf(pageHitCache.get("pageHitUuid" + uuid).getValue().toString()) + 1);
-                        }
-                        pageHitCache.put(elementHit);
-                        //if the counter of hits = maxNumberOfHitsInCacheBeforeFlush refresh and save in db
-                        if (Integer.valueOf(pageHitCache.get("pageHitUuid" + uuid).getValue().toString()) % maxNumberOfHitsInCacheBeforeFlush == 0) {
-                            pageHit.setHits(Long.valueOf(pageHitCache.get("pageHitUuid" + uuid).getValue().toString()));
-                            pageHitCache.remove("pageHitUuid" + uuid);           //remove the version in cache
-                            session.flush();
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Update into database pageHit page's path: " + pageHit.getPath() + " with number of view: " + pageHit.getHits());
-                            }
-                        }
-                    }
-                }
-                // Not found new object
-                else {
-                    pageHit = new PageHit();
-                    Long hit = (long) 1;
-                    pageHit.setHits(hit);
+            final String uuid = matcher.group(5);
+            if (pageHitCache.get("pageHitUuid" + uuid) != null) {
+                //if exist in cache, increment and update in cache
+                PageHit pageHit = (PageHit) pageHitCache.get("pageHitUuid" + uuid).getValue();
+                pageHit.setHits(pageHit.getHits() + 1);
+                if (!path.equals(pageHit.getPath())) {
                     pageHit.setPath(path);
-                    pageHit.setUuid(uuid);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Insert into database pageHit page's path: " + pageHit.getPath() + " with number of view: " + pageHit.getHits());
-                    }
-                    session.save(pageHit);
+                }
+                Element elementToUpdate = new Element("pageHitUuid" + uuid, pageHit);
+                pageHitCache.put(elementToUpdate);
+                //if is the time to update in database
+                if(pageHit.getHits() % maxNumberOfHitsInCacheBeforeFlush == 0){
+                    session = sessionFactoryBean.openSession();
+                    PageHit pageHitToUpdate = (PageHit) session.get(PageHit.class, uuid);
+                    pageHitToUpdate.setHits(pageHit.getHits());
+                    if(!pageHitToUpdate.getPath().equals(pageHit.getPath())) pageHitToUpdate.setPath(pageHit.getPath());
                     session.flush();
                 }
-            } catch (HibernateException e) {
-                logger.error(e.getMessage(), e);
-            } finally {
-                session.close();
+            } else {
+                //if not exist in cache recup pageHit from database, increment it and cache it
+                session = sessionFactoryBean.openSession();
+                try {
+                    PageHit pageHit = (PageHit) session.get(PageHit.class, uuid);
+                    // Found Update object
+                    if (pageHit != null) {
+                        pageHit.setHits(pageHit.getHits() + 1);
+                        if(!path.equals(pageHit.getPath())){
+                            pageHit.setPath(path);
+                        }
+                        Element elementNew = new Element("pageHitUuid" + uuid, pageHit);
+                        pageHitCache.put(elementNew);
+                        //if is the time to update in database
+                        if(pageHit.getHits() % maxNumberOfHitsInCacheBeforeFlush == 0){
+                            session.flush();
+                        }
+                    }
+                    // Not found new object
+                    else {
+                        pageHit = new PageHit();
+                        Long hit = (long) 1;
+                        pageHit.setHits(hit);
+                        pageHit.setPath(path);
+                        pageHit.setUuid(uuid);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Insert into database pageHit page's path: " + pageHit.getPath() + " with number of view: " + pageHit.getHits());
+                        }
+                        session.save(pageHit);
+                        session.flush();
+                    }
+                } catch (HibernateException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
+        }
+        if(session != null){
+            session.close();
         }
     }
 
 
     public long getNumberOfHits(JCRNodeWrapper node) {
-        Session session = sessionFactoryBean.openSession();
-        Criteria criteria = session.createCriteria(PageHit.class);
+        Session session = null;
+        PageHit pageHit;
         try {
-            criteria.add(Restrictions.eq("uuid", node.getIdentifier()));
-            PageHit pageHit = (PageHit) criteria.uniqueResult();
             if (pageHitCache.get("pageHitUuid" + node.getIdentifier()) != null) {
-                return Long.valueOf(pageHitCache.get("pageHitUuid" + node.getIdentifier()).getValue().toString());
+                pageHit = (PageHit) pageHitCache.get("pageHitUuid" + node.getIdentifier()).getValue();
+            } else {
+                session = sessionFactoryBean.openSession();
+                Criteria criteria = session.createCriteria(PageHit.class);
+                criteria.add(Restrictions.eq("uuid", node.getIdentifier()));
+                pageHit = (PageHit) criteria.uniqueResult();
             }
             return pageHit != null ? pageHit.getHits() : 0;
         } catch (Exception e) {
             return 0;
         } finally {
-            session.close();
+            if (session != null) session.close();
         }
     }
 

@@ -1,6 +1,7 @@
 package org.jahia.modules.pagehit;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Represents page hits entry.
@@ -10,7 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "jahia_pagehit")
-public class PageHit {
+public class PageHit implements Serializable{
 
     private Long hits;
     private String path;

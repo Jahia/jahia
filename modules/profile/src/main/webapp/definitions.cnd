@@ -25,3 +25,4 @@
 
 [jnt:userContentRetrieval] > jnt:contentRetrieval, jmix:profileComponentContent, jmix:bindedComponent
 
+[jnt:userPassword] > jnt:content, jmix:profileComponentContent, jmix:bindedComponent

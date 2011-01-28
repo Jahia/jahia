@@ -188,6 +188,7 @@
                                              jcr:primaryType="jnt:editUserDetails"
                                              j:bindedComponent="/templateSets/content-browser/templates/base/user-private"
                                              j:about="false" j:gender="true"/>
+                            <password jcr:primaryType="jnt:userPassword" j:bindedComponent="/templateSets/content-browser/templates/base/user-private" />
                         </row-col3>
                         <row-col1 j:skin="skins.box2style1" jcr:mixinTypes="jmix:skinnable"
                                   jcr:primaryType="jnt:contentList">

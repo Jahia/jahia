@@ -634,7 +634,7 @@
           <GRANT_u_siteadmin j:principal="u:siteadmin" j:protected="false" j:roles="site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
           <GRANT_u_visitor j:principal="u:visitor" j:protected="false" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
           <GRANT_u_publisher j:principal="u:publisher" j:protected="false" j:roles="publisher visitor viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <GRANT_u_author j:principal="u:author" j:protected="false" j:roles="viewer visitor translator-fr translator-en contributor editor live-contributor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_u_author j:principal="u:author" j:protected="false" j:roles="viewer visitor translator-fr translator-en contributor editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
         </j:acl>
     </ACME>
   </sites>

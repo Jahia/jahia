@@ -106,5 +106,5 @@
     </c:if>
 </div>
 <c:if test="${renderContext.user.username == user.name}">
-    <div><a href="${url.base}${user.path}.user-private.html?jsite=${param.jsite}">Edit my profile</a></div>
+    <div><a href="${url.base}${user.path}.user-private.html">Edit my profile</a></div>
 </c:if>

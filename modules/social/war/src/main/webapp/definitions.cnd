@@ -44,7 +44,7 @@
  + j:mediaItems (jnt:socialMediaItemCollection)
  + j:templateParams (jnt:socialActivityTemplateParams)
 
-[jnt:socialMessage] > jnt:content, jmix:droppableContent
+[jnt:socialMessage] > jnt:content, jmix:droppableContent, jmix:autoPublish
  - j:from (weakreference) < jnt:user
  - j:to (weakreference) < jnt:user
  - j:subject (string)

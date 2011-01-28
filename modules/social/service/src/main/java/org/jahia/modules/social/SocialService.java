@@ -202,7 +202,7 @@ public class SocialService {
         destinationMessageNode.setProperty("j:body", body);
         destinationMessageNode.setProperty("j:read", false);
 
-        JCRNodeWrapper sentMessagesBoxNode = JCRContentUtils.getOrAddPath(session, toUser, "messages/sent",
+        JCRNodeWrapper sentMessagesBoxNode = JCRContentUtils.getOrAddPath(session, fromUser, "messages/sent",
                 Constants.JAHIANT_CONTENTLIST);
         String sentMessagesBoxNodeName = JCRContentUtils.findAvailableNodeName(sentMessagesBoxNode, fromUser.getName()
                 + "_to_" + toUser.getName());

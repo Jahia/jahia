@@ -294,8 +294,8 @@
 <!--stop grid_4-->
 
 <div class='clear'></div>
-
-<div id="divSendMessage" class="jahiaFancyboxForm">
+<div class="jahiaFancyboxForm">
+<div id="divSendMessage" >
     <div class="popup-bodywrapper">
         <h3 class="boxmessage-title"><fmt:message key="message.new"/></h3>
 
@@ -320,4 +320,5 @@
             </fieldset>
         </form>
     </div>
+</div>
 </div>

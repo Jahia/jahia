@@ -39,9 +39,6 @@
                         </c:if>
                         <jcr:nodeProperty node="${member}" name="jcr:title" var="title"/>
                         <c:set var="params" value=""/>
-                        <c:if test="${not empty pageContext.request.parameterMap.jsite}">
-                            <c:set var="params" value="?jsite=${pageContext.request.parameterMap.jsite[0]}"/>
-                        </c:if>
                         <a href="${url.base}${member.path}.html${params}"><strong>
                         <c:if test="${not empty title}">
                             ${title.string}&nbsp(${member.name})

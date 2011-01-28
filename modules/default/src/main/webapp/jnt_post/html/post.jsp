@@ -33,7 +33,7 @@
     <p>
         <span class="author">
             <c:if test="${createdBy.string ne 'guest'}">
-            <a href="${url.base}/users/${createdBy.string}.html?jsite=${renderContext.site.identifier}">${createdBy.string}</a></c:if>
+            <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a></c:if>
             <c:if test="${createdBy.string eq 'guest'}">guest</c:if>:&nbsp;</span>
         ${content.string}
     </p>

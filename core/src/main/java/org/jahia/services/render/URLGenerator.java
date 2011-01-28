@@ -157,11 +157,7 @@ public class URLGenerator {
         captcha = getContext() + Captcha.getCaptchaServletPath();
         templatesPath = getContext() + "/modules";
         if (!context.getUser().getUsername().equals("guest")) {
-            try {
-                myProfile = "/users/" + context.getUser().getUsername() + ".html?jsite="+context.getSite().getIdentifier();
-            } catch (RepositoryException e) {
-
-            }
+            myProfile = "/users/" + context.getUser().getUsername() + ".html";
         }
     }
 

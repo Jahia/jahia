@@ -119,6 +119,10 @@
         <priority value="warn"/>
     </category>
 
+    <category name="org.hibernate.cfg.Environment">
+        <priority value="info"/>
+    </category>
+
     <category name="net.sf.ehcache">
         <priority value="error"/>
     </category>

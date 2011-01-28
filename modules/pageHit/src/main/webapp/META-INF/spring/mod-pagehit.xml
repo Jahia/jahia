@@ -7,6 +7,8 @@
           init-method="start" factory-method="getInstance">
         <property name="sessionFactoryBean" ref="sessionFactory"/>
         <property name="from" value="seda:logMsgs"/>
+        <property name="cacheProviders" ref="ehCacheProvider"/>
+        <property name="maxNumberOfHitsInCacheBeforeFlush" value="100"/>
     </bean>
 
 </beans>

@@ -53,7 +53,7 @@ rule "Remove user from cache when updated"
 		A property j:accountLocked has been set on a node
 			- the node has the type jnt:user
     then
-        Remove entry node.getName() from cache "JCR_USER_CACHE"
+        Remove entry node.getName() from cache "JCRUserCache"
 end
 
 rule "publish groups"
@@ -193,3 +193,4 @@ rule "Deploy initial modules for new site"
         Deploy module content-browser on site node
         Deploy module profile on site node
 end
+

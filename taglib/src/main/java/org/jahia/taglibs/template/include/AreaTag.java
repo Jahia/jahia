@@ -141,6 +141,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         renderContext.getRequest().removeAttribute("inArea");
 
         try {
+            // path is null in main resource display
             if (path != null) {
                 Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
                 templateNode = t;
@@ -210,9 +211,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         try {
             return super.doEndTag();
         } finally {
-            if (templateNode != null) {
-                pageContext.getRequest().setAttribute("previousTemplate", templateNode);
-            }
+            pageContext.getRequest().setAttribute("previousTemplate", templateNode);
             templateNode = null;
             pageContext.getRequest().setAttribute("inArea", o);
 

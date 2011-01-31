@@ -191,4 +191,5 @@ rule "Deploy initial modules for new site"
             - the node has the type jnt:virtualsite
     then
         Deploy module content-browser on site node
+        Deploy module profile on site node
 end

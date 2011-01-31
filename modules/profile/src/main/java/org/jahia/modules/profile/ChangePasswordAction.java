@@ -59,6 +59,7 @@ public class ChangePasswordAction extends Action {
                     // change password
                     user.setPassword(passwd);
                     json.put("errorMessage", JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.passwordChanged.label", renderContext.getUILocale()));
+                    json.put("result", "success");
                 }
             }
         }

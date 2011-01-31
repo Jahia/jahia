@@ -232,5 +232,75 @@
     <c:if test="${currentNode.properties['age'].boolean}">
         <li><span class="label"><fmt:message key="jnt_user.age"/>:&nbsp;</span><utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/></li>
     </c:if>
+
+    <c:if test="${currentNode.properties['password'].boolean}">
+        <div id="passwordFormContainer" style="display:none;"/>
+        <div id="passwordForm">
+            <form id="changePassword" method="post" action="">
+                <c:forEach items="${param}" var="p">
+                    <c:if test="${not empty ps}">
+                        <c:set var="ps" value="${ps}&${p.key}=${p.value}"/>
+                    </c:if>
+                    <c:if test="${empty ps}">
+                        <c:set var="ps" value="?${p.key}=${p.value}"/>
+                    </c:if>
+                </c:forEach>
+                <input type="password" id="password" name="password"/></p>
+
+                <span class="label"><fmt:message key="label.comfirmPassword"/></span>
+                <input type="password" id="passwordconfirm" name="passwordconfirm"/>
+                <button id="passwordokbutton" ><span class="icon-contribute icon-accept"></span><fmt:message key="label.ok"/></button>
+                <button type="button" id="passwordcancelbutton" ><span class="icon-contribute icon-cancel"></span><fmt:message key="label.cancel"/></button>
+
+            </form>
+        </div>
+        </div>
+
+            <li>
+                <span class="label"><fmt:message key="label.password"/></span>
+
+                <span id="passwordEdit" class="edit${currentNode.identifier}"><fmt:message key="label.clickToEdit"/></span>
+            </li>
+
+        <script type="text/javascript">
+
+            $(document).ready(function() {
+
+                $('#passwordEdit').click(function() {
+                    $('#passwordEdit').html('');
+                    $('#passwordForm').insertAfter('#passwordEdit');
+                });
+
+                $('#passwordcancelbutton').click(function() {
+                    $('#passwordForm').appendTo('#passwordFormContainer');
+                    $('#passwordEdit').html('<fmt:message key="label.clickToEdit"/>');
+                });
+
+                $("#changePassword").submit(function() {
+                    if ($("#password").val() == "") {
+                        alert("<fmt:message key="org.jahia.admin.userMessage.specifyPassword.label"/>");
+                        return false;
+                    }
+
+                    if ($("#password").val() != $("#passwordconfirm").val()) {
+                        alert("<fmt:message key="org.jahia.admin.userMessage.passwdNotMatch.label"/>");
+                        return false;
+                    }
+
+                    $.post('${url.base}${user.path}.changePassword.do',
+                            $(this).serializeArray(), function(data) {
+                        alert(data['errorMessage']);
+                        if (data['result']=='success') {
+                            $('#passwordForm').appendTo('#passwordFormContainer');
+                            $('#passwordEdit').html('<fmt:message key="label.clickToEdit"/>');
+                        }
+                    }, 'json');
+
+                    return false;
+                });
+            });
+
+        </script>
+    </c:if>
 </ul>
 

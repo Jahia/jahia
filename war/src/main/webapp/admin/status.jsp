@@ -14,6 +14,8 @@
 <%@ page import="org.hibernate.stat.EntityStatistics" %>
 <%@ page import="org.springframework.orm.hibernate3.support.HibernateDaoSupport" %>
 <%@ page import="org.hibernate.SessionFactory" %>
+<%@page import="org.jahia.services.cache.ehcache.EhCacheProvider"%>
+<%@page import="net.sf.ehcache.CacheManager"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 
 <%
@@ -167,15 +169,15 @@
             int cacheCounter = 0;
             String cacheLineClass = "evenLine";
             while (cacheNameIte.hasNext()) {
-                if (cacheCounter % 2 == 0) {
-                    cacheLineClass = "evenLine";
-                } else {
-                    cacheLineClass = "oddLine";
-                }
-                cacheCounter++;
                 String curCacheName = (String) cacheNameIte.next();
                 Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache (curCacheName);
-                if (objectCache instanceof Cache) {
+                if (objectCache instanceof Cache && !(((Cache) objectCache).getCacheImplementation() instanceof org.jahia.services.cache.ehcache.EhCacheImpl)) {
+                    if (cacheCounter % 2 == 0) {
+                        cacheLineClass = "evenLine";
+                    } else {
+                        cacheLineClass = "oddLine";
+                    }
+                    cacheCounter++;
                     Cache curCache = (Cache) objectCache;
                     String resourceKey = "org.jahia.admin.status.ManageStatus.cache." + curCache.getName() + ".description.label";
                     long cacheLimit = curCache.getCacheLimit()/(1024*1024);
@@ -193,7 +195,7 @@
                 <%=curCache.getName()%>: <strong><fmt:message key="<%=resourceKey%>"/></strong>
                 <br>
                 <%=curCache.size()%>&nbsp;
-                <% if(curCache.size() > 1){
+                <% if(curCache.size() != 1){
                 %><fmt:message key="org.jahia.admin.entries.label"/><%
             } else {
             %><fmt:message key="org.jahia.admin.entrie.label"/><%
@@ -225,7 +227,7 @@
                 <span style="color: ${effColour}"><%=efficiencyStr%> %</span>
             </td>
             <td>
-                <input type="submit" name="flush_<%=curCache.getName()%>" value="<fmt:message key="org.jahia.admin.status.ManageStatus.flush.label"/>">
+                <input type="submit" name="flush_<%=curCache.getName()%>" value="<fmt:message key='org.jahia.admin.status.ManageStatus.flush.label'/>">
             </td>
         </tr>
         <%
@@ -236,7 +238,80 @@
     <table width="100%" class="evenOddTable full tBorder" border="0" cellspacing="0" cellpadding="5">
         <thead>
             <tr>
-                <th colspan="6"> Hibernate Statistics</th>
+                <th colspan="2">Ehcache Statistics (<a href="?do=status&amp;sub=display&amp;enableEhcacheStats=true&amp;timestamp=${timestamp}">Enable all statistics</a> / <a href="?do=status&amp;sub=display&amp;enableEhcacheStats=false&amp;timestamp=${timestamp}">Disable all statistics</a>)</th>
+            </tr>
+        </thead>
+        <tbody>
+        <%
+        	CacheManager ehcacheManager = ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider")).getCacheManager();
+        	pageContext.setAttribute("ehcacheManager", ehcacheManager);
+        	String[] ehcacheNames = ehcacheManager.getCacheNames();
+        	java.util.Arrays.sort(ehcacheNames);
+        	pageContext.setAttribute("ehcacheNames", ehcacheNames);
+        	if (request.getParameter("enableEhcacheStats") != null) {
+        		boolean doEnable = Boolean.valueOf(request.getParameter("enableEhcacheStats"));
+        		if (request.getParameter("ehcache") != null) {
+        			ehcacheManager.getCache(request.getParameter("ehcache")).setStatisticsEnabled(doEnable);
+        		} else {
+        			for(String cacheName : ehcacheManager.getCacheNames()) {
+        				ehcacheManager.getCache(cacheName).setStatisticsEnabled(doEnable);
+        			}
+        		}
+        	}
+        %>
+        <c:forEach items="${ehcacheNames}" var="ehcacheName" varStatus="status">
+        	<%
+        		net.sf.ehcache.Cache theCache = ehcacheManager.getCache((String) pageContext.getAttribute("ehcacheName"));
+	        	pageContext.setAttribute("ehcache", theCache);
+	        	pageContext.setAttribute("ehcacheStats", theCache.getStatistics());
+        	%>
+        	<tr class="${status.index % 2 == 0 ? 'evenLine' : 'oddLine'}">
+        		<td width="100%">
+        			${ehcacheName}: <strong><fmt:message key="org.jahia.admin.status.ManageStatus.cache.${ehcacheName}.description.label"/></strong>
+        			<br/>
+        			${ehcacheStats.objectCount}&nbsp;<fmt:message key="org.jahia.admin.${ehcacheStats.objectCount != 1 ? 'entries' : 'entrie'}.label"/>
+        			<br/>
+        			<c:if test="${ehcache.statisticsEnabled}">
+		                <fmt:message key="org.jahia.admin.status.ManageStatus.successfulHits.label"/>:
+		                ${ehcacheStats.cacheHits} / ${ehcacheStats.cacheHits + ehcacheStats.cacheMisses}
+		                &nbsp;
+		                <fmt:message key="org.jahia.admin.status.ManageStatus.totalHits.label"/>,
+		                <fmt:message key="org.jahia.admin.status.ManageStatus.efficiency.label"/>:
+		                
+		                <c:set var="cacheEfficiency" value="${ehcacheStats.cacheHits + ehcacheStats.cacheMisses > 0 ? ehcacheStats.cacheHits * 100 / (ehcacheStats.cacheHits + ehcacheStats.cacheMisses) : 0}"/>
+		                <c:set var="effColour" value="#222222"/>
+		                <c:choose>
+		                    <c:when test="${cacheEfficiency > 0 && cacheEfficiency < 30}">
+		                        <c:set var="effColour" value="red"/>
+		                    </c:when>
+		                    <c:when test="$c >= 30 && cacheEfficiency < 70}">
+		                        <c:set var="effColour" value="blue"/>
+		                    </c:when>
+		                    <c:when test="${cacheEfficiency >= 70}">
+		                        <c:set var="effColour" value="green"/>
+		                    </c:when>
+		                </c:choose>
+		                <span style="color: ${effColour}"><fmt:formatNumber value="${cacheEfficiency}" pattern="0.00"/>&nbsp;%</span>
+		                <br/>
+		                Statistics: enabled (accuracy: ${ehcacheStats.statisticsAccuracyDescription})
+	                	<a href="?do=status&amp;sub=display&amp;enableEhcacheStats=false&amp;ehcache=${ehcacheName}&amp;timestamp=${timestamp}">Disable statistics</a>
+	                </c:if>
+        			<c:if test="${not ehcache.statisticsEnabled}">
+		                Statistics: disabled (accuracy: ${ehcacheStats.statisticsAccuracyDescription})
+	                	<a href="?do=status&amp;sub=display&amp;enableEhcacheStats=true&amp;ehcache=${ehcacheName}&amp;timestamp=${timestamp}">Enable statistics</a>
+	                </c:if>
+        		</td>
+	            <td>
+	                <input type="submit" name="flush_ehcache_${ehcacheName}" value="<fmt:message key='org.jahia.admin.status.ManageStatus.flush.label'/>">
+	            </td>
+        	</tr>
+        </c:forEach>
+        </tbody>
+    </table>
+    <table width="100%" class="evenOddTable full tBorder" border="0" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th colspan="6">Hibernate Statistics</th>
             </tr>
         </thead>
         <%
@@ -244,7 +319,6 @@
             Statistics statistics = factory.getStatistics();
             String enableStats = request.getParameter("enableStats");
             if (enableStats != null) {
-                System.out.println("enableStats: " + enableStats);
                 statistics.setStatisticsEnabled(Boolean.valueOf(enableStats));
             }
             if (statistics.isStatisticsEnabled()) {

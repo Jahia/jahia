@@ -40,10 +40,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.ehcache.CacheManager;
+
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.admin.AbstractAdministrationModule;
 
 
@@ -129,9 +133,20 @@ public class ManageStatus extends AbstractAdministrationModule {
                                   HttpSession session)
             throws IOException, ServletException {
 
+        CacheManager ehcacheManager = ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider")).getCacheManager();
+        
         if (request.getParameter ("flushAllCaches") != null) {
             logger.info("Flushing all caches");
             ServicesRegistry.getInstance().getCacheService().flushAllCaches();
+            for (String cacheName : ehcacheManager.getCacheNames()) {
+                net.sf.ehcache.Cache cache = ehcacheManager.getCache(cacheName);
+                if (cache != null) {
+                    // flush without notifying the other cluster nodes
+                    cache.removeAll(true);
+                    // reset statistics
+                    cache.clearStatistics();
+                }
+            }
         }
 
         // get the cache factory instance
@@ -151,6 +166,19 @@ public class ManageStatus extends AbstractAdministrationModule {
                 if (cache != null) {
                     logger.info("Flushing cache: " + curCacheName);
                     cache.flush();
+                }
+            }
+        }
+        
+        for (String cacheName : ehcacheManager.getCacheNames()) {
+            if (request.getParameter ("flush_ehcache_" + cacheName) != null) {
+                net.sf.ehcache.Cache cache = ehcacheManager.getCache(cacheName);
+                if (cache != null) {
+                    logger.info("Flushing cache: " + cacheName);
+                    // flush without notifying the other cluster nodes
+                    cache.removeAll(true);
+                    // reset statistics
+                    cache.clearStatistics();
                 }
             }
         }

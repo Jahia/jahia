@@ -37,9 +37,9 @@ import java.util.Set;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.constructs.blocking.BlockingCache;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.springframework.beans.factory.InitializingBean;
@@ -47,15 +47,15 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * Instantiates and provides access to the module output and dependency caches.
  * 
+ * @author rincevent
  * @author Sergiy Shyrkov
- * 
  */
 public class ModuleCacheProvider implements InitializingBean {
 
-    private static final String CACHE_NAME = "CJHTMLCache";
-    private static final String DEPS_CACHE_NAME = CACHE_NAME + "dependencies";
+    private static final String CACHE_NAME = "HTMLCache";
+    private static final String DEPS_CACHE_NAME = "HTMLDependenciesCache";
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ModuleCacheProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(ModuleCacheProvider.class);
     
     /**
      * Returns an instance of this class

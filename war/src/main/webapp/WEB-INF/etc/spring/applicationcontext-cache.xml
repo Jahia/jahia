@@ -28,10 +28,6 @@ when we flush this entry we will flush the whole cache-->
 		</property>
 		<property name="cacheProviderForCache">
 			<map>
-				<entry key="SkeletonCache" value="EH_CACHE" />
-				<entry key="ContainerHTMLCache" value="EH_CACHE" />
-				<entry key="LockAlreadyAcquiredMap" value="EH_CACHE" />
-				<entry key="LockPrerequisitesResultMap" value="EH_CACHE" />
 				<entry key="WebdavCache" value="EH_CACHE" />
 			</map>
 		</property>

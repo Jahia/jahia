@@ -69,6 +69,7 @@ import java.util.*;
 /**
  * Default implementation of the module output cache key generator.
  *
+ * @author rincevent
  * @author Sergiy Shyrkov
  */
 public class DefaultCacheKeyGenerator implements CacheKeyGenerator, InitializingBean {
@@ -78,8 +79,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
             "path", "template", "templateType", "acls", "context", "wrapped", "custom", "queryString",
             "templateNodes"));
-    private static final String CACHE_NAME = "nodeusersacls";
-    private static final String PROPERTY_CACHE_NAME = "requiredpermissions";
+    private static final String CACHE_NAME = "HTMLNodeUsersACLs";
+    private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
     public static final String PER_USER = "_perUser_";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 

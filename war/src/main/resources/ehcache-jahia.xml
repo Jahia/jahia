@@ -164,13 +164,13 @@
             >
     </defaultCache>
     <cache
-            name="nodeusersacls"
+            name="HTMLNodeUsersACLs"
             overflowToDisk="true"
             maxElementsInMemory="300"
             diskPersistent="false"
             eternal="true"/>
     <cache
-            name="CJHTMLCache"
+            name="HTMLCache"
             overflowToDisk="true"
             maxElementsInMemory="10000"
             diskPersistent="true"
@@ -179,7 +179,7 @@
             maxElementsOnDisk="50000"
             eternal="false"/>
     <cache
-            name="CJHTMLCachedependencies"
+            name="HTMLDependenciesCache"
             overflowToDisk="true"
             maxElementsInMemory="500"
             diskPersistent="true"

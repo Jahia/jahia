@@ -76,7 +76,7 @@
           </header-col1>
           <footer-col1 jcr:primaryType="jnt:contentList">
             <bigText jcr:primaryType="jnt:bigText">
-              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  &amp;copy; 2002-2010 Jahia Solutions Group - All rights reserved.&lt;/p&gt; " />
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  &amp;copy; 2002-2011 Jahia Solutions Group - All rights reserved.&lt;/p&gt; " />
             </bigText>
           </footer-col1>
           <header-col2 jcr:primaryType="jnt:contentList">

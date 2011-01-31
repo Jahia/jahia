@@ -33,15 +33,20 @@
 package org.jahia.ajax.gwt.client.widget.form;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGViolation;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor;
 import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.core.Template;
@@ -55,6 +60,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -68,6 +74,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
@@ -81,7 +88,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CKEditorField extends Field<String> {
 
-    /**
+	private static Map<String, CKEditorField> instances = new HashMap<String, CKEditorField>();
+	
+	/**
      * The wrapped widget.
      */
     protected CKEditor ckeditor;
@@ -104,13 +113,8 @@ public class CKEditorField extends Field<String> {
 
     public CKEditorField(CKEditorConfig config) {
     	super();
-        ckeditor = new CKEditor(config);
+    	ckeditor = new CKEditor(config, this);
         html = new Html();
-//        panel = new ContentPanel(new FitLayout());
-//        panel.setHeaderVisible(false);
-//        panel.setBorders(true);
-//        panel.add(new Label("kj alskfh salkf sakf hdakjfhs sadlkjhf"));
-//        panel.add(ckeditor);
     }
 
     public Component getComponent() {
@@ -183,6 +187,7 @@ public class CKEditorField extends Field<String> {
         } finally {
             ComponentHelper.doDetach(getComponent());
         }
+        onDetachHelper();
     }
 
     @Override
@@ -211,7 +216,16 @@ public class CKEditorField extends Field<String> {
         setElement(component.getElement(), target, index);
     }
 
-
+    public void afterCKEditorInstanceReady() {
+        String instanceId = ckeditor.getInstanceId();
+        if (instanceId != null) {
+        	instances.put(instanceId, this);
+        } else {
+			Log.warn("CKEditor instance ID is null."
+			        + " Unable to store the reference to this instance of the CKEditorField");
+        }
+    }
+    
     @Override
     protected boolean validateValue(String value) {
     	boolean isValid = super.validateValue(value);
@@ -225,7 +239,7 @@ public class CKEditorField extends Field<String> {
     	}
     	
     	if (!ignoreWcagWarnings && wcagValidationResult != null && !wcagValidationResult.isEmpty()) {
-    		showWarnings(wcagValidationResult);
+    		showWarnings(wcagValidationResult, false);
     		return false;
     	} else {
     		return true;
@@ -266,7 +280,7 @@ public class CKEditorField extends Field<String> {
     	lastValidatedContent = getRawValue();
     }
 
-	public void showWarnings(WCAGValidationResult wcagResult) {
+	protected void showWarnings(WCAGValidationResult wcagResult, final boolean userTriggered) {
 		FieldSet parent = (FieldSet) getParent();
 		el().getParent().addStyleName(invalidStyle);
 		if (wcagPanel != null) {
@@ -275,11 +289,11 @@ public class CKEditorField extends Field<String> {
 		wcagPanel = new ContentPanel(new FitLayout());
 		wcagPanel.setHeading(Messages.getWithArgs("label.wcag.report.title", "WCAG Compliance ({0} errors / {1} warnings / {2} infos)", new String[] {String.valueOf(wcagResult.getErrors().size()), String.valueOf(wcagResult.getWarnings().size()), String.valueOf(wcagResult.getInfos().size())}));
 		wcagPanel.getHeader().setIcon(GXT.IMAGES.field_invalid());
-		final CheckMenuItem ignore = new CheckMenuItem(Messages.get("label.wcag.ignore", "Ignore all warnings"));
+		final CheckMenuItem ignore = new CheckMenuItem(userTriggered ? Messages.get("label.close", "Close") : Messages.get("label.wcag.ignore", "Ignore errors"));
 		ignore.addListener(Events.OnClick, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
 				ignore.setChecked(true, true);
-				ignoreWcagWarnings = true;
+				ignoreWcagWarnings = !userTriggered;
 				wcagPanel.el().fadeToggle(FxConfig.NONE);
 				el().getParent().removeStyleName(invalidStyle);
             }
@@ -292,7 +306,7 @@ public class CKEditorField extends Field<String> {
 		parent.layout();
 	}
 
-	private Widget getWarningGrid(WCAGValidationResult wcagResult) {
+	private static Widget getWarningGrid(WCAGValidationResult wcagResult) {
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
 		RowNumberer rowNumberer = new RowNumberer();
@@ -427,4 +441,51 @@ public class CKEditorField extends Field<String> {
 	public boolean isIgnoreWcagWarnings() {
     	return ignoreWcagWarnings;
     }
+
+	public void checkWCAGCompliance() {
+		String text = ckeditor.getData();
+		if (text == null || text.length() == 0) {
+			MessageBox.info(Messages.get("label.information", "Information"), Messages.getWithArgs(
+			        "label.wcag.report.title",
+			        "WCAG Compliance ({0} errors / {1} warnings / {2} infos)", new String[] {
+			                String.valueOf(0), String.valueOf(0), String.valueOf(0) }), null);
+			return;
+		}
+		final Map<String, String> toValidate = new HashMap<String, String>(1);
+		toValidate.put("text", text);
+		JahiaContentManagementService.App.getInstance().validateWCAG(toValidate,
+		        new BaseAsyncCallback<Map<String, WCAGValidationResult>>() {
+			        public void onSuccess(Map<String, WCAGValidationResult> result) {
+				        WCAGValidationResult validationResult = result.get("text");
+				        if (validationResult.isEmpty()) {
+					        MessageBox.info(
+					                Messages.get("label.information", "Information"),
+					                Messages.getWithArgs(
+					                        "label.wcag.report.title",
+					                        "WCAG Compliance ({0} errors / {1} warnings / {2} infos)",
+					                        new String[] { String.valueOf(0), String.valueOf(0),
+					                                String.valueOf(0) }), null);
+				        } else {
+					        showWarnings(validationResult, true);
+				        }
+			        }
+
+			        @Override
+			        public void onApplicationFailure(Throwable caught) {
+				        super.onApplicationFailure(caught);
+				        // unable to do WCAG check, skipping
+			        }
+		        });
+		return;
+	}
+	
+	@Override
+	protected void onUnload() {
+		instances.remove(ckeditor.getInstanceId());
+	    super.onUnload();
+	}
+	
+	public static CKEditorField getInstance(String editorInstanceId) {
+		return instances.get(editorInstanceId);
+	}  
 }

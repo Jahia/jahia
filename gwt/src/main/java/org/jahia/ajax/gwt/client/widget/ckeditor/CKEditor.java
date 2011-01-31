@@ -32,12 +32,15 @@
 
 package org.jahia.ajax.gwt.client.widget.ckeditor;
 
-import com.google.gwt.user.client.*;
-import com.google.gwt.core.client.JavaScriptObject;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 
 /**
  * User: ktlili
@@ -46,14 +49,14 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
  */
 public class CKEditor extends Component {
     private String instanceId;
-    protected JavaScriptObject editorInstance;
     private CKEditorConfig config;
     private boolean isLoaded;
+	private CKEditorField field;
 
-    public CKEditor(CKEditorConfig config) {
+    public CKEditor(CKEditorConfig config, CKEditorField field) {
+    	super();
         if (config == null) {
             config = new CKEditorConfig();
-            String site = JahiaGWTParameters.getSiteKey();
             if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/full") || PermissionsUtils.isPermitted("studioModeAccess")) {
                 config.setToolbarSet("Full");
             } else if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/basic")) {
@@ -63,7 +66,7 @@ public class CKEditor extends Component {
             }
         }
         this.config = config;
-
+        this.field = field;
     }
 
     @Override
@@ -72,18 +75,16 @@ public class CKEditor extends Component {
         DOM.setElementAttribute(ele, "width", config.getWidth());
         DOM.setElementAttribute(ele, "height", config.getHeight());
         setElement(ele, target, index);
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                instanceId = getElement().getId();
-                DOM.setElementAttribute(getElement(), "name", instanceId);
-                editorInstance = initEditor();
-            }
-        });
-        addLoadListener(new CKEditorLoadListener() {
-            public void onLoad() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			public void execute() {
+		        instanceId = getElement().getId();
+		        DOM.setElementAttribute(getElement(), "name", instanceId);
+                initEditor();
                 isLoaded = true;
-            }
-        });
+                field.afterCKEditorInstanceReady();
+			}
+		});
+
         super.onRender(target, index);
     }
 
@@ -93,15 +94,9 @@ public class CKEditor extends Component {
      * @param html
      */
     public void setData(final String html) {
-        if (!isLoaded) {
-            addLoadListener(new CKEditorLoadListener() {
-                public void onLoad() {
-                    _setCKData(html);
-                }
-            });
-        } else {
-            _setCKData(html);
-        }
+    	if (isLoaded) {
+    		_setCKData(html);
+    	}
     }
 
     /**
@@ -116,7 +111,7 @@ public class CKEditor extends Component {
         Log.error("cKeditor is not yet loaded. getData() returns null value");
         return null;
     }
-
+    
     /**
      * Clear
      */
@@ -134,30 +129,28 @@ public class CKEditor extends Component {
         try {
             return checkDirty();
         } catch (Exception e) {
-            Log.error("Null pointer",e);
+            Log.error("Error calling checkDirty() on CKEditor instance.Cause: " + e.getMessage(), e);
             return false;
         }
     }
 
 
     /**
-     * Nadive method that set the html of the CKEditor
+     * Native method that set the HTML of the CKEditor
      *
      * @param html
      */
     private native void _setCKData(String html)/*-{
-        var oEditor = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::editorInstance ;
-        oEditor.setData(html);
+        $wnd.CKEDITOR.instances[this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId].setData(html);
       }-*/;
 
     /**
-     * Native methode to giamet html of the CKEditor
+     * Native method to get the HTML of the CKEditor
      *
      * @return
      */
     private native String getCKData()/*-{
-        var oEditor = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::editorInstance ;
-        return oEditor.getData();
+        return $wnd.CKEDITOR.instances[this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId].getData();
       }-*/;
 
 
@@ -167,29 +160,18 @@ public class CKEditor extends Component {
      * @return
      */
 
-    private native JavaScriptObject initEditor()/*-{
-
+    private native boolean initEditor()/*-{
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
             width : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()(),
             height : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getHeight()(),
             toolbar : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getToolbarSet()()
         });
-
-        return oCKeditor;
+        
+        oCKeditor.checkWCAGCompliance = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::checkWCAGCompliance(Ljava/lang/String;);
+        
+        return true;
       }-*/;
-
-    /**
-     * Add a load listener
-     *
-     * @param listener
-     */
-    public native void addLoadListener(CKEditorLoadListener listener)/*-{
-        $wnd.CKEDITOR.on('instanceReady',function() {
-          listener.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorLoadListener::onLoad()();
-        });
-      }-*/;
-
 
     /**
      * Check dirty
@@ -197,9 +179,18 @@ public class CKEditor extends Component {
      * @return
      */
     private native boolean checkDirty()/*-{
-        var oEditor = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::editorInstance ;
-        return oEditor.checkDirty();
+        return $wnd.CKEDITOR.instances[this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId].checkDirty();
       }-*/;
 
 
+    public void checkWCAGCompliance(String editorId) {
+    	CKEditorField fld = CKEditorField.getInstance(editorId);
+    	if (fld != null) {
+    		fld.checkWCAGCompliance();
+    	}
+    }
+
+	public String getInstanceId() {
+    	return instanceId;
+    }
 }

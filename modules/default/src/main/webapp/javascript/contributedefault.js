@@ -5,6 +5,7 @@ var contributionI18n = {
     'edit': 'Click to edit',
     'uploaded': 'file uploaded click on preview to see the new file',
     'error' : 'an error occurred, please check the file you try to upload',
+    'wcag.close': 'Close',
     'wcag.context': 'Context',
     'wcag.description': 'Description',
     'wcag.error': 'Error',
@@ -203,9 +204,9 @@ function wcagCompliant(id, richTextElement) {
 	return wcagOk;
 }
 
-function checkWCAGCompliace(rechTexts) {
+function checkWCAGCompliace(richTexts) {
 	var wcagOk = true;
-	$.each(rechTexts, function (index, richTextElement) {
+	$.each(richTexts, function (index, richTextElement) {
 		if (!wcagCompliant($(richTextElement).attr('id'), richTextElement)) {
 			wcagOk = false;
 			return false;

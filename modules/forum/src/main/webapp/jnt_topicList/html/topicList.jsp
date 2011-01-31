@@ -19,7 +19,7 @@
              sql="select [jcr:uuid] from [jnt:thread] as t  where isdescendantnode(t,['${linked.path}'])"/>
     <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
     <template:addResources type="css" resources="forum.css"/>
-    <template:addDependency node="${linked}"/>
+    <template:addCacheDependency node="${linked}"/>
     <div class="topics">
         <jcr:nodeProperty node="${linked}" name="topicSubject" var="topicSubject"/>
         <c:if test="${!empty topicSubject.string}">

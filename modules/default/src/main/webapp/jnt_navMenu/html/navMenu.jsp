@@ -51,7 +51,7 @@
     </c:if>
 </c:if>
 <c:if test="${not empty current}">
-    <template:addDependency node="${current}"/>
+    <template:addCacheDependency node="${current}"/>
     <c:set var="items" value="${jcr:getChildrenOfType(current,'jmix:navMenuItem')}"/>
     <c:if test="${navMenuLevel eq 1}">
         <div class="navbar">

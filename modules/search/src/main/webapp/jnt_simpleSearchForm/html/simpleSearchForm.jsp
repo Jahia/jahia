@@ -67,7 +67,7 @@
     });
 </script>
 </template:addResources>
-<template:addDependency uuid="${currentNode.properties.result.string}"/>
+<template:addCacheDependency uuid="${currentNode.properties.result.string}"/>
 <c:if test="${not empty currentNode.properties.result.node}">
 <s:form method="post" class="simplesearchform" action="${url.base}${currentNode.properties.result.node.path}.html">
 		<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>

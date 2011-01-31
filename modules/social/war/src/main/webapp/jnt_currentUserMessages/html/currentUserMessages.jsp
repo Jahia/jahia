@@ -127,7 +127,7 @@
 
     <jcr:sql var="receivedMessages"
              sql="select * from [jnt:socialMessage] where isdescendantnode(['${user.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
-    <template:addDependency path="${user.path}/messages/inbox"/>
+    <template:addCacheDependency path="${user.path}/messages/inbox"/>
     <h3 class="social-title-icon titleIcon"><fmt:message key="receivedMessages"/><img title="" alt=""
                                                                                       src="${url.currentModule}/images/mailbox.png"/>
     </h3>

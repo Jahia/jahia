@@ -46,8 +46,8 @@ import javax.servlet.jsp.tagext.TagSupport;
  * @since : JAHIA 6.1
  *        Created : 15 juil. 2010
  */
-public class AddDependencyTag extends TagSupport {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddDependencyTag.class);
+public class AddCacheDependencyTag extends TagSupport {
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddCacheDependencyTag.class);
     protected JCRNodeWrapper node;
     protected String stringDependency;
 

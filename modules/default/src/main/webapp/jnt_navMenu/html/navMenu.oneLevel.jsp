@@ -50,7 +50,7 @@
 <%--get children to iterate over--%>
 <c:if test="${not empty current}">
     <%--this dependency makes the cache works--%>
-    <template:addDependency node="${current}"/>
+    <template:addCacheDependency node="${current}"/>
     <c:set var="items" value="${jcr:getChildrenOfType(current,'jmix:navMenuItem')}"/>
 </c:if>
 

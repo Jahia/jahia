@@ -76,4 +76,4 @@
     </p>
  <div class="clear"></div>
 </div>
-<template:addDependency path="${currentNode.path}/comments"/>
+<template:addCacheDependency path="${currentNode.path}/comments"/>

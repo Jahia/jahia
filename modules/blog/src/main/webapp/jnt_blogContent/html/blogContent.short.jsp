@@ -63,4 +63,4 @@
     </p>
     <!--stop post-->
 </div>
-<template:addDependency path="${currentNode.path}/comments"/>
+<template:addCacheDependency path="${currentNode.path}/comments"/>

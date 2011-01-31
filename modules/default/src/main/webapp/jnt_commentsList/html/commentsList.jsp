@@ -32,11 +32,11 @@
         <c:otherwise>
             <jcr:node var="comments" path="${bindedComponent.path}/comments"/>
             <c:if test="${not empty comments}">
-                <template:addDependency node="${comments}"/>
+                <template:addCacheDependency node="${comments}"/>
                 <template:module node="${comments}" />
             </c:if>
             <c:if test="${empty comments}">
-                <template:addDependency node="${bindedComponent}"/>
+                <template:addCacheDependency node="${bindedComponent}"/>
             </c:if>
         </c:otherwise>
     </c:choose>

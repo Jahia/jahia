@@ -253,7 +253,7 @@
 
     <jcr:sql var="socialConnections"
              sql="select * from [jnt:socialConnection] as uC where isdescendantnode(uC,['${user.path}'])"/>
-    <template:addDependency path="${user.path}/connections"/>
+    <template:addCacheDependency path="${user.path}/connections"/>
     <h3 class="social-title-icon titleIcon"><fmt:message key="friendsList"/><img title="" alt="" src="${url.currentModule}/images/friends.png"/>
     </h3>
     <ul class="social-list">

@@ -7,7 +7,7 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:description" var="description"/>
 <jcr:nodeProperty node="${currentNode}" name="j:target" var="target"/>
 <c:set var="node" value="${reference.node}"/>
-<template:addDependency uuid="${reference.string}"/>
+<template:addCacheDependency uuid="${reference.string}"/>
 <c:if test="${not empty node}">
 <%--<c:url var="link" value="${node.path}.html" context="${url.base}"/>--%>
 <c:url var="link" value="${node.url}" context="/"/>

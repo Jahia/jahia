@@ -7,13 +7,14 @@ CKEDITOR.plugins.add('acheck',
             commandName = 'acheck';
         editor.addCommand(commandName, 
             {
-	        exec : function(theEditor)
-            {
-				if (typeof theEditor.checkWCAGCompliance == 'function') {
-					theEditor.checkWCAGCompliance(theEditor.name, document.getElementById(theEditor.name), true);
-				}
-            },
-            canUndo : false
+        		modes : { wysiwyg : 1, source : 1 },
+		        exec : function(theEditor)
+	            {
+					if (typeof theEditor.checkWCAGCompliance == 'function') {
+						theEditor.checkWCAGCompliance(theEditor.name, document.getElementById(theEditor.name), true);
+					}
+	            },
+	            canUndo : false
         });
         
         editor.ui.addButton('ACheck',

@@ -443,6 +443,12 @@ public class CKEditorField extends Field<String> {
     }
 
 	public void checkWCAGCompliance() {
+		if (wcagPanel != null) {
+			el().getParent().removeStyleName(invalidStyle);
+			((FieldSet) getParent()).remove(wcagPanel);
+			wcagPanel = null;
+		}
+				
 		String text = ckeditor.getData();
 		if (text == null || text.length() == 0) {
 			MessageBox.info(Messages.get("label.information", "Information"), Messages.getWithArgs(

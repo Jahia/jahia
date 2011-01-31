@@ -12,7 +12,6 @@
 <c:set var="types" value="${jcr:getContributeTypes(target, null, currentNode.properties['j:type'])}"/>
 
 <c:forEach items="${types}" var="nodeType" varStatus="status">
-
     <a href="#add${currentNode.identifier}-${status.index}"  id="addButton${currentNode.identifier}-${status.index}">
         <fmt:message key="add"/> ${jcr:label(nodeType, renderContext.mainResourceLocale)}
     </a>
@@ -29,7 +28,7 @@
         $(document).ready(function() {
             $("#addButton${currentNode.identifier}-${status.index}").fancybox({
                 'onComplete':function() {
-                    $(".newContentCkeditorContribute${target.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor() })
+                    $(".newContentCkeditorContribute${target.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(); alert('ckeditorInstance: ' + $(this).data('ckeditorInstance')); alert('wcagCompliant: ' + wcagCompliant);})
                 },
 
                 'onCleanup':function() {

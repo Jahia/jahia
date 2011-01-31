@@ -6,5 +6,6 @@
     'wcag.error': 'Errore',
     'wcag.example': 'Esempio',
     'wcag.ignore': 'Ignorare gli errori',
+    'wcag.ok': 'Conformità WCAG: OK',
     'wcag.warning': 'Avvertenza'
 });

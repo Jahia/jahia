@@ -9,5 +9,6 @@
     'wcag.example': 'Beispiel',
     'wcag.ignore': 'Fehler ignorieren',
     'wcag.information': 'Information',
+    'wcag.ok': 'WCAG-Kompatibilität: OK',
     'wcag.warning': 'Warnung'
 });

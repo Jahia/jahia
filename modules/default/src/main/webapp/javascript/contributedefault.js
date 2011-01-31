@@ -12,6 +12,7 @@ var contributionI18n = {
     'wcag.example': 'Example',
     'wcag.ignore': 'Ignore error(s)',
     'wcag.information': 'Information',
+    'wcag.ok': 'WCAG Compliance: OK',
     'wcag.warning': 'Warning'
 }
 function initEditFields(id) {
@@ -135,11 +136,13 @@ function initEditFields(id) {
     });
 }
 
-function wcagCompliant(id, richTextElement) {
+function wcagCompliant(id, richTextElement, userTriggered) {
 	var ctx = jahiaGWTParameters ? jahiaGWTParameters.contextPath : '';
-	var wcag = jahiaGWTParameters ? jahiaGWTParameters.wcag : false;
-	if (!wcag) {
-		return true;
+	if (!userTriggered) {
+		var wcag = jahiaGWTParameters ? jahiaGWTParameters.wcag : false;
+		if (!wcag) {
+			return true;
+		}
 	}
 	var wcagOk = false;
     $.ajax({
@@ -152,13 +155,12 @@ function wcagCompliant(id, richTextElement) {
   	  	},
   	  	success: function (data, textStatus) {
   	  		var ignore = $('#wcag-ignore-' + id);
-  	  		if ((ignore.length == 0 || ignore.attr('checked') == false) && (data.errors.length + data.warnings.length + data.infos.length > 0)) {
-
+  	  		if ((userTriggered || ignore.length == 0 || ignore.attr('checked') == false) && (data.errors.length + data.warnings.length + data.infos.length > 0)) {
   	  			if (ignore.length > 0) {
   	  				$('#wcag-' + id).remove();
   	  			}
   	        	var myDiv = $('<div class="wcag-warnings" id="wcag-' + id + '">' +
-      	        			'<div class="wcag-warnings-ignore"><input type="checkbox" id="wcag-ignore-' + id + '" value="true" name="ignore"/>&nbsp;<label for="wcag-ignore-' + id + '">' + contributionI18n['wcag.ignore'] + '</label></div>' +
+      	        			'<div class="wcag-warnings-ignore"><input type="checkbox" id="wcag-ignore-' + id + '" value="true" name="ignore"/>&nbsp;<label for="wcag-ignore-' + id + '">' + (userTriggered ? contributionI18n['wcag.close'] : contributionI18n['wcag.ignore']) + '</label></div>' +
       	        			'<table class="table" width="100%" border="1" cellpadding="0" cellspacing="3">' +
       	        			'<thead><tr><th width="5%">#</th><th width="5%"> </th><th width="75%">' +
       	        			contributionI18n['wcag.description'] + '</th>' + 
@@ -171,6 +173,11 @@ function wcagCompliant(id, richTextElement) {
       	        			'</table>' +
       	        			'</div>');
   	        	$(richTextElement).before(myDiv);
+  	        	if (userTriggered) {
+  	        		$('#wcag-ignore-' + id).click(function() {
+  	        			$('#wcag-' + id).remove();
+  	        		})
+  	        	}
   	        	var placeholder = $('#wcag-violations-' + id);
   	        	var count = 0;
   	        	$.each($.merge([], $.merge($.merge([], data.errors), data.warnings), data.infos), function(index, violation) {
@@ -197,6 +204,9 @@ function wcagCompliant(id, richTextElement) {
   	  		} else {
   	  			wcagOk = true;
   	        	$('#wcag-' + id).remove();
+  	        	if (userTriggered && (data.errors.length + data.warnings.length + data.infos.length == 0)) {
+  	        		alert(contributionI18n['wcag.ok']);
+  	        	}
   	  		}
   	  	},
   	  	dataType: 'json'

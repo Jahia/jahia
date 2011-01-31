@@ -92,7 +92,7 @@ public class WAIValidator {
         bundle = new JahiaResourceBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, uiLocale);
 
         if (inputHTML == null || inputHTML.length() == 0)
-            return null;
+            return evh;
 
         final String tmp;
         if (!inputHTML.startsWith("<body>")) {

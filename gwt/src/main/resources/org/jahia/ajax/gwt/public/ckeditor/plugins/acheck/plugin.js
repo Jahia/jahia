@@ -10,7 +10,7 @@ CKEDITOR.plugins.add('acheck',
 	        exec : function(theEditor)
             {
 				if (typeof theEditor.checkWCAGCompliance == 'function') {
-					theEditor.checkWCAGCompliance(theEditor.name);
+					theEditor.checkWCAGCompliance(theEditor.name, document.getElementById(theEditor.name), true);
 				}
             },
             canUndo : false

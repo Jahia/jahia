@@ -37,7 +37,8 @@
         plugin : function(settings, original) {
             var id = get_id(original);
             remove_ck(id);
-            CKEDITOR.replace(id, { toolbar : 'User'});
+            var ckeditorInstance=CKEDITOR.replace(id, { toolbar : 'User'});
+            ckeditorInstance.checkWCAGCompliance=wcagCompliant;
         },
         submit : function(settings, original) {
             var id = get_id(original);

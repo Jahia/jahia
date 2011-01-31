@@ -40,7 +40,7 @@
                 'autoScale':false,
                 'autoDimensions':false,
                 'onComplete':function() {
-                    $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { $(this).ckeditor() })
+                    $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { $(this).ckeditor(); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; })
                 },
 
                 'onCleanup':function() {

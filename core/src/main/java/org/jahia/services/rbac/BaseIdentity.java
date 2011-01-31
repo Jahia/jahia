@@ -45,7 +45,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 class BaseIdentity implements Serializable {
 
-    private String name;
+    private static final long serialVersionUID = 2553419782143599884L;
+    
+	private String name;
     private String path;
     private String title;
     private String description;

@@ -77,7 +77,7 @@ public class PermissionImpl extends BaseImpl implements Permission {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public List<Permission> getChilds() {
+    public List<Permission> getChildren() {
         return childs;
     }
 

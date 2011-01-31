@@ -49,7 +49,7 @@ public interface Permission extends Serializable {
      */
     String getName();
 
-    List<Permission> getChilds();
+    List<Permission> getChildren();
 
     List<Permission> getDependencies();
 

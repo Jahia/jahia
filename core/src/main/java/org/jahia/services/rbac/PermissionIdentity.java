@@ -41,7 +41,10 @@ import java.util.List;
  * @author Sergiy Shyrkov
  */
 public class PermissionIdentity extends BaseIdentity implements Permission {
-    /**
+	
+    private static final long serialVersionUID = -3751516036733116754L;
+
+	/**
      * Initializes an instance of this class.
      * 
      * @param name the name of this role
@@ -51,7 +54,7 @@ public class PermissionIdentity extends BaseIdentity implements Permission {
     }
 
 
-    public List<Permission> getChilds() {
+    public List<Permission> getChildren() {
         return Collections.emptyList();
     }
 

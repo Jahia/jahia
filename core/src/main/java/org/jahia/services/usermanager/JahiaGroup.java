@@ -57,6 +57,8 @@ package org.jahia.services.usermanager;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.jcr.JCRUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
 import java.security.acl.Group;
@@ -85,10 +87,7 @@ public abstract class JahiaGroup extends JahiaBasePrincipal implements Group {
 
     private static final long serialVersionUID = 3192050315335252786L;
 
-    public static final String PROPERTY_ENFORCE_PASSWORD_POLICY = "enforcePasswordPolicy";
-
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(JahiaGroup.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaGroup.class);
 
     /** Group unique identification name */
     protected String mGroupname;

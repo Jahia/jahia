@@ -37,15 +37,11 @@ import java.util.List;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -217,43 +213,7 @@ public class JahiaPasswordPolicyService extends JahiaService implements JahiaAft
 			throw new IllegalArgumentException("The specified user is null");
 		}
 
-		if (!isPolicyEnforcementEnabled() || isPasswordReadOnly(user)) {
-			return false;
-		}
-
-		boolean enforcePolicy = true;
-
-		// check if the policy is enabled for at least one of the user
-		// groups
-		// additionally check the user key (for new user the key is null)
-		if (user.getUserKey() != null && enforcePolicy) {
-			JahiaGroupManagerService groupMgr = ServicesRegistry.getInstance()
-			        .getJahiaGroupManagerService();
-			List<String> groups = groupMgr.getUserMembership(user);
-			if (groups.size() > 0) {
-				boolean enforcePolicyAtLeastForOneGroup = false;
-				for (String groupName : groups) {
-					if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupName)
-					        || JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
-						continue;
-					}
-					JahiaGroup group = groupMgr.lookupGroup(groupName);
-					if (group != null) {
-						String propValue = group
-						        .getProperty(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY);
-						// is property for group not set (overridden) or is
-						// true?
-						if (StringUtils.isEmpty(propValue) || "true".equals(propValue)) {
-							// we do force policy check
-							enforcePolicyAtLeastForOneGroup = true;
-							break;
-						}
-					}
-				}
-				enforcePolicy = enforcePolicy && enforcePolicyAtLeastForOneGroup;
-			}
-		}
-		return enforcePolicy;
+		return isPolicyEnforcementEnabled() && !isPasswordReadOnly(user);
 	}
 
 	/**

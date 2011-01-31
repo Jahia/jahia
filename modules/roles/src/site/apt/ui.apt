@@ -1,4 +1,4 @@
-Roles/permissions management UI
+!OBSOLETE! Roles/permissions management UI
 
   Roles and permissions can be created on the server and on a virtual-site level.
   This allows having global roles/permissions for the server and more flexible access control

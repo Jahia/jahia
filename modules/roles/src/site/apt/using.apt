@@ -1,4 +1,4 @@
-Using roles/permissions
+!OBSOLETE! Using roles/permissions
 
   Jahia provides ways to utilize the role/permission concept in JSP templates as well as in custom Java services.
   

@@ -1,4 +1,4 @@
-Roles/permissions related business rules
+!OBSOLETE! Roles/permissions related business rules
 
   Several rules are provided for an event-driven role/permission management in an automated way.
   The list of possible rule consequences (actions) can be found in the <<</templates/roles/rules.dsl>>>

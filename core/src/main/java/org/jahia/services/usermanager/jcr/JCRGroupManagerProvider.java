@@ -74,7 +74,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     private transient CacheService cacheService;
     private transient Cache<String, JCRGroup> cache;
     private Cache<String, List<String>> membershipCache;
-    public static final String JCR_GROUPMEMBERSHIP_CACHE = "JCR_GROUPMEMBERSHIP_CACHE";
+    public static final String JCR_GROUPMEMBERSHIP_CACHE = "JCRGroupMembershipCache";
 
     /**
      * Create an new instance of the User Manager Service if the instance do not
@@ -777,7 +777,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     private Cache<String, JCRGroup> getCache() throws JahiaInitializationException {
         if (cache == null) {
             if (cacheService != null) {
-                cache = cacheService.createCacheInstance("JCR_GROUP_CACHE");
+                cache = cacheService.createCacheInstance("JCRGroupCache");
             }
         }
 

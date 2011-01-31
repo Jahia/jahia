@@ -106,7 +106,6 @@
         <editor jcr:primaryType="jnt:role"
                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager  /permissions/wysiwyg-editor-toolbar/full"
                 />
-                <!-- modes/contribute actions/*  languages/* "/>-->
 
         <contributor     jcr:primaryType="jnt:role"
                          j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/contributeMode"/>
@@ -114,27 +113,9 @@
         <publisher jcr:primaryType="jnt:role"
                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/modes/contribute /permissions/toolbar/workflow /permissions/workflow-tasks/final-review" />
 
-        <!--<seo-manager jcr:primaryType="jnt:role"-->
-                     <!--/>-->
-        <!--<live-contributor jcr:primaryType="jnt:role"-->
-                          <!--j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:versionManagement_live /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/repository-permissions/jcr:all_live/jcr:write_live/jcr:addChildNodes_live /permissions/repository-permissions/jcr:all_live/jcr:nodeTypeManagement_live" />-->
-
-
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
                             j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers /permissions/wysiwyg-editor-toolbar"
                             />
-
-        <!--<translator jcr:primaryType="jnt:role"/>-->
-
-        <!--<web-designer jcr:primaryType="jnt:role"/>-->
-        <!--<server-content-manager jcr:primaryType="jnt:role"/>-->
-
-        <!--<security-advisor jcr:primaryType="jnt:role" />-->
-
-        <!--<webmaster jcr:primaryType="jnt:role" />-->
-
-        <!--<administrator jcr:primaryType="jnt:role" j:nodeTypes="rep:root"-->
-                 <!--j:permissions="/permissions" />-->
 
         <owner jcr:primaryType="jnt:role"
                  j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live /permissions/actions" />

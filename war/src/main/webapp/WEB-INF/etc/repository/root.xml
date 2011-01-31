@@ -60,7 +60,7 @@
       <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule" />
     </j:workflowRules>
 
-    <permissions jcr:primaryType="jnt:permission" >
+    <permissions jcr:primaryType="jnt:permission">
         <repository-permissions jcr:primaryType="jnt:permission">
             <jcr:all_default jcr:primaryType="jnt:permission">
 
@@ -101,4 +101,6 @@
             <publish jcr:primaryType="jnt:permission"/>
         </repository-permissions>
     </permissions>
+    
+    <roles jcr:primaryType="jnt:roles"/>
 </content>

@@ -77,10 +77,7 @@ import java.util.*;
  * - Go to the parent node, repeat
  * - Deny access
  * <p/>
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: 28 févr. 2006
- * Time: 17:58:41
+ * @author toto
  * 
  */
 public class JahiaAccessManager extends AbstractAccessControlManager implements AccessManager, AccessControlManager {

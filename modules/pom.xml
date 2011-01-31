@@ -109,7 +109,6 @@
         <module>publication</module>
         <module>profile</module>
         <module>rating</module>
-        <module>roles</module>
         <module>rss</module>
         <module>search</module>
         <module>seo</module>

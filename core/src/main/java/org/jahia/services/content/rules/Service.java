@@ -34,6 +34,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.ajax.gwt.helper.ContentManagerHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
@@ -661,4 +662,12 @@ public class Service extends JahiaService {
     	this.passwordPolicyService = passwordPolicyService;
     }
 
+    public void refreshPermissions() throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JahiaPrivilegeRegistry.init(session);
+                return null;
+            }
+        });
+    }
 }

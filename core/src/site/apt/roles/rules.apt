@@ -1,0 +1,8 @@
+!OBSOLETE! Roles/permissions related business rules
+
+  Several rules are provided for an event-driven role/permission management in an automated way.
+  The list of possible rule consequences (actions) can be found in the <<</templates/roles/rules.dsl>>>
+  file, which contains rule consequences in JBoss Rules Domain Specific Language.
+
+  Examples of those consequence usages in rules can be found in the <<</templates/roles/rules.drl>>> file
+  in the same <<<roles>>> module.

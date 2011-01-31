@@ -35,7 +35,6 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
-import org.jahia.ajax.gwt.helper.ContentManagerHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

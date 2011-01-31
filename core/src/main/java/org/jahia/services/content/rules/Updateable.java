@@ -34,12 +34,10 @@ package org.jahia.services.content.rules;
 
 import org.jahia.services.content.JCRSessionWrapper;
 
-import javax.jcr.Session;
 import javax.jcr.RepositoryException;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Jul 25, 2008
  * Time: 6:37:35 PM

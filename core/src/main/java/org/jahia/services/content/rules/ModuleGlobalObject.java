@@ -32,8 +32,6 @@
 
 package org.jahia.services.content.rules;
 
-import org.slf4j.Logger;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,8 +43,6 @@ import java.util.Map;
  *        Created : 5 janv. 2010
  */
 public class ModuleGlobalObject {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ModuleGlobalObject.class);
-
     private Map<String,Object> globalRulesObject = new LinkedHashMap<String, Object>();
 
     public Map<String, Object> getGlobalRulesObject() {

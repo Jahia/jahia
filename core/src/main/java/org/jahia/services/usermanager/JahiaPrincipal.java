@@ -34,10 +34,6 @@ package org.jahia.services.usermanager;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.Set;
-
-import org.jahia.services.rbac.Permission;
-import org.jahia.services.rbac.Role;
 
 /**
  * Represents a common notion of a principal in Jahia, including users and

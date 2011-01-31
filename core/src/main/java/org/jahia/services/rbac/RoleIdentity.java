@@ -34,6 +34,7 @@ package org.jahia.services.rbac;
 
 import org.jahia.services.usermanager.JahiaPrincipal;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -43,7 +44,9 @@ import java.util.Set;
  */
 public class RoleIdentity extends BaseIdentity implements Role, JahiaPrincipal {
 
-    /**
+    private static final long serialVersionUID = 3025645052363998759L;
+
+	/**
      * Initializes an instance of this class.
      * 
      * @param name the name of this role
@@ -58,6 +61,6 @@ public class RoleIdentity extends BaseIdentity implements Role, JahiaPrincipal {
      * @return a set of permission implied by this role
      */
     public Set<Permission> getPermissions() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Collections.emptySet();
     }
 }

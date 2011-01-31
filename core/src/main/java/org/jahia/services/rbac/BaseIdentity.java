@@ -39,7 +39,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * Base identity for roles and permissions.O
+ * Base identity for roles and permissions.
  * 
  * @author Sergiy Shyrkov
  */

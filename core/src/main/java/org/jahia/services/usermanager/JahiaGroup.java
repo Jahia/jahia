@@ -83,7 +83,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Fulco Houkes
  * @version 2.2
  */
-public abstract class JahiaGroup extends JahiaBasePrincipal implements Group {
+public abstract class JahiaGroup implements JahiaPrincipal, Group {
 
     private static final long serialVersionUID = 3192050315335252786L;
 

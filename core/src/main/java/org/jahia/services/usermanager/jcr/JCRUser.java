@@ -62,7 +62,7 @@ import java.util.Properties;
  * @since JAHIA 6.5
  * Created : 7 juil. 2009
  */
-public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincipal {
+public class JCRUser implements JahiaUser, JCRPrincipal {
     private static final long serialVersionUID = 4032549320399420578L;
 	private transient static Logger logger = LoggerFactory.getLogger(JCRUser.class);
     protected static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";

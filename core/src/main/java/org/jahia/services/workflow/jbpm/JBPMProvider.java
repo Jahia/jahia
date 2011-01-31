@@ -425,7 +425,6 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 } else if (participation.getGroupId() != null && participation.getGroupId().startsWith("{role}")) {
                     String id = StringUtils.substringAfter(participation.getGroupId(), "{role}");
                     String roleName = StringUtils.substringBefore(id, ":");
-                    String siteName = StringUtils.substringAfter(id, ":");
                     participations
                             .add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
                                     new RoleIdentity(roleName)));

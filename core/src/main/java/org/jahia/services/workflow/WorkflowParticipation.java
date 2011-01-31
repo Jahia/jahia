@@ -35,11 +35,8 @@ package org.jahia.services.workflow;
 import org.jahia.services.usermanager.JahiaPrincipal;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 4 févr. 2010
+ * @author rincevent
+ * @since JAHIA 6.5
  */
 public class WorkflowParticipation {
     private final String role;

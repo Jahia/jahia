@@ -13,6 +13,6 @@
     <template:linker property="j:bindedComponent"/>
 </c:if>
 
-<div class="${currentNode.properties['divClass']}"><!--start preferences-->
-    <h3><a title="${currentNode.properties['jcr:title']}" class="${currentNode.properties['aClass']}" href="${url.base}${bindedComponent.path}.${currentNode.properties['targetTemplate']}.html" >${currentNode.properties['jcr:title']}</a></h3>
+<div class="${currentNode.properties['divClass'].string}"><!--start preferences-->
+    <a title="${currentNode.properties['jcr:title'].string}" class="${currentNode.properties['aClass']}" href="${url.base}${bindedComponent.path}.${currentNode.properties['targetTemplate'].string}.html" >${currentNode.properties['jcr:title'].string}</a>
 </div>

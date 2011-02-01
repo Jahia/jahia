@@ -112,6 +112,7 @@
  - displayHome (boolean) = true indexed=no
  - displayCurrentPage (boolean) = true indexed=no
  - displayLinkOnCurrentPage (boolean) = false indexed=no
+ - additionalType (string, choicelist[subnodetypes = 'jnt:content',resourceBundle]) multiple
 
 [jnt:languageSwitcher] > jnt:content, jmix:siteComponent
  - typeOfDisplay (string,choicelist[resourceBundle]) = isoLocaleCountryCode mandatory indexed=no < isoLocaleCountryCode,languageCode,doubleLetter,letter,nameInLocale,nameCurrentLocale,flag
@@ -123,6 +124,8 @@
 [jnt:pageFormCreation] > jnt:content, jmix:siteComponent, mix:title
  - templateNode (weakreference,choicelist[templatesNode='pageTemplate']) mandatory < jnt:template
  - buttonLabel (string)
+ - useDescription (boolean) = false
+ - class (string)
 
 [jnt:linkList] > jnt:content, jmix:listContent, mix:title, jmix:list
  orderable

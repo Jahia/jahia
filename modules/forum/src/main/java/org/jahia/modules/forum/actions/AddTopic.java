@@ -66,6 +66,6 @@ public class AddTopic extends Action {
         node.setProperty("topicSubject",topicTitle);
         JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper.getNode(node.getPath()), "jnt:post","");
         jcrSessionWrapper.save();
-        return new ActionResult(HttpServletResponse.SC_OK, newNode.getPath(), Render.serializeNodeToJSON(newNode));
+        return new ActionResult(HttpServletResponse.SC_OK, node.getPath(), Render.serializeNodeToJSON(newNode));
     }
 }

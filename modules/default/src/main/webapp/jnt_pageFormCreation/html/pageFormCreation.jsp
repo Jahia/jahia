@@ -9,6 +9,10 @@
 <c:set var="formid" value="form" />
 <c:set var="nodeType" value="jnt:page" />
 
+<c:if test="${not empty currentNode.properties['class']}">
+    <div class="${currentNode.properties['class'].string}">
+</c:if>
+
 <template:tokenizedForm>
 <form class="pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/*" name="${formid}">
     <input type="hidden" name="nodeType" value="jnt:page">
@@ -25,11 +29,12 @@
                    tabindex="20"/></p>
 
 
+        <c:if test="${currentNode.properties['useDescription'].boolean}">
         <p><label for="description"><fmt:message
                 key="label.description"/></label>
             <textarea name="jcr:description" id="description" cols="45" rows="3"
                       tabindex="21" ></textarea></p>
-
+        </c:if>
         <div>
             <input type="submit" class="button"
                    value="${currentNode.properties['buttonLabel'].string}" tabindex="28"
@@ -44,3 +49,7 @@
     </fieldset>
 </form>
 </template:tokenizedForm>
+
+<c:if test="${not empty currentNode.properties['class']}">
+    </div>
+</c:if>

@@ -4,7 +4,9 @@
 [jmix:forumContent] > jmix:droppableContent
 
 [jnt:topicList] > jnt:content, jmix:bindedComponent, jmix:forumContent
- - viewTopics (boolean)
 
-[jnt:topicForm] > jnt:content, jmix:bindedComponent, jmix:forumContent
- - useDescription (boolean) = false
+[jnt:postsList] > jnt:content, jmix:bindedComponent, jmix:forumContent
+ - reverseOrder (boolean)
+ - limit (long)
+
+[jnt:postForm] > jnt:content, mix:title, jmix:bindedComponent, jmix:forumContent

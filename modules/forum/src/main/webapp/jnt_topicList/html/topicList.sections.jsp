@@ -22,9 +22,7 @@
     <template:addCacheDependency node="${linked}"/>
     <div class="topics">
         <jcr:nodeProperty node="${linked}" name="jcr:title" var="topicSubject"/>
-            <%--<c:if test="${!empty topicSubject.string}">--%>
-            <%--<h2><a href="${url.base}${linked.parent.path}.forum-topic.html">${topicSubject.string}</a></h2>--%>
-            <%--</c:if>--%>
+
         <div class="forum-box forum-box-style1 topics">
             <span class="forum-corners-top"><span></span></span>
 
@@ -41,13 +39,13 @@
 
 
             <ul class="forum-list forums">
-                <c:forEach items="${linked.nodes}" var="topic">
-                    <c:if test="${jcr:isNodeType(topic, 'jnt:topic')}">
+                <c:forEach items="${linked.nodes}" var="section">
+                    <c:if test="${jcr:isNodeType(section, 'jnt:page')}">
                         <li class="row">
 
 
                             <jcr:sql var="numberOfPostsQuery"
-                                     sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${topic.path}']) order by post.[jcr:lastModified] desc"/>
+                                     sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${section.path}']) order by post.[jcr:lastModified] desc"/>
                             <c:set var="numberOfPosts" value="${numberOfPostsQuery.nodes.size}"/>
                             <c:forEach items="${numberOfPostsQuery.nodes}" var="node" varStatus="status" end="2">
                                 <c:if test="${status.first}">
@@ -56,10 +54,10 @@
                                     <jcr:nodeProperty node="${lastModifiedNode}" name="jcr:createdBy" var="createdBy"/>
                                 </c:if>
                             </c:forEach>
-                            <c:if test="${jcr:hasPermission(topic, 'createPost')}">
+                            <c:if test="${jcr:hasPermission(section, 'createPost')}">
                                 <template:tokenizedForm>
-                                    <form action="${url.base}${topic.path}" method="post"
-                                          id="jahia-forum-section-delete-${topic.UUID}">
+                                    <form action="${url.base}${section.path}" method="post"
+                                          id="jahia-forum-section-delete-${section.UUID}">
                                         <input type="hidden" name="redirectTo"
                                                value="${url.base}${renderContext.mainResource.node.path}"/>
                                             <%-- Define the output format for the newly created node by default html or by redirectTo--%>
@@ -71,17 +69,16 @@
 
                             <dl>
                                 <dt title="posts"><a class="forum-title"
-                                                     href="${url.base}${topic.path}.html"><jcr:nodeProperty
-                                        node="${topic}" name="topicSubject"/></a>
+                                                     href="${url.base}${section.path}.html"><jcr:nodeProperty
+                                        node="${section}" name="jcr:title"/></a>
                                     <br/>
                                 <p>
-                                        ${topic.properties.topicSubject.string}
+                                        ${section.properties['jcr:description'].string}
                                 </p>
-
                                 <ul class="forum-profile-icons">
-                                    <c:if test="${topic.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+                                    <c:if test="${section.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
                                         <li class="delete-post-icon"><a title="Delete this topic" href="#"
-                                                                        onclick="document.getElementById('jahia-forum-section-delete-${topic.UUID}').submit();"><span>Delete this topic</span></a>
+                                                                        onclick="document.getElementById('jahia-forum-section-delete-${section.UUID}').submit();"><span>Delete this section</span></a>
                                         </li>
                                     </c:if>
 
@@ -98,14 +95,12 @@
                                                                                                             title="View the latest post"
                                                                                                             alt="View the latest post"
                                                                                                             src="${url.currentModule}/css/img/icon_topic_latest.gif"/>${createdBy.string}
-                                        </a><br/><fmt:formatDate value="${lastModified.time}" dateStyle="full"
-                                                                 type="both"/></span>
+                                        </a><br/><fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span>
                                     </c:if>
                                 </dd>
                             </dl>
 
 
-                            xxx
                         </li>
                         <c:set var="found" value="true"/>
                     </c:if>

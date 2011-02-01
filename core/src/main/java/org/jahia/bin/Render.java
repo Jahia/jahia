@@ -734,7 +734,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 Map<String,String> values = new HashMap<String, String>(m);
 
                 // Validate form token
-                if (!req.getRequestURI().equals(values.remove("form-action"))) {
+                if (!URLDecoder.decode(req.getRequestURI()).equals(values.remove("form-action"))) {
                     throw new AccessDeniedException();
                 }
                 if (!req.getMethod().equalsIgnoreCase(values.remove("form-method"))) {

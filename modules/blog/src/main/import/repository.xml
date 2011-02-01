@@ -12,7 +12,7 @@
               <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" />
               <create-new-blog j:skin="skins.box8" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList" j:style="blue">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Create new blog" jcr:primaryType="jnt:translation" />
-                <new-blog jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions="/permissions/actions/blog/createNewBlog" templateNode="/templateSets/blog/templates/base/blog" j:requiredMode="live" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation" j:requireLoggedUser="true">
+                <new-blog jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions="/permissions/actions/blog/createNewBlog" templateNode="/templateSets/blog/templates/base/blog" j:requiredMode="live" buttonLabel="create" useDescription="true" jcr:primaryType="jnt:pageFormCreation" j:requireLoggedUser="true">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog" jcr:primaryType="jnt:translation" />
                 </new-blog>
               </create-new-blog>

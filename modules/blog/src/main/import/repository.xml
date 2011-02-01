@@ -49,7 +49,9 @@
             <row-col2 jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList">
               <Welcome-message jcr:primaryType="jnt:area" j:allowedTypes="jnt:bigText" />
               <jahiapp-blog-logo.png j:node="/templateSets/blog/templates/base/blog-home/row-col2/jahiapp-blog-logo.png" jcr:primaryType="jnt:contentReference" />
-              <addBlogLink jcr:mixinTypes="jmix:requiredPermissions" j:requiredPermissions="/permissions/actions/blog/addBlogEntry" j:requiredMode="live" jcr:primaryType="jnt:addBlogLink" />
+              <addBlogLink divClass="addArticle" aClass="addArticle" j:requiredPermissions="/permissions/actions/blog/addBlogEntry" j:requiredMode="live" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:componentLink" j:bindedComponent="/templateSets/blog/templates/base/blog" targetTemplate="blog-new">
+                <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="Add a new blog entry" jcr:lastModified="2011-02-01T15:47:02.555+01:00" jcr:primaryType="jnt:translation" />
+              </addBlogLink>
               <contentList j:skin="skins.box6" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList" j:style="blue">
                 <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay" />
               </contentList>

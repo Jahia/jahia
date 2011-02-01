@@ -176,3 +176,8 @@
 [jmix:gadget] mixin
 
 [jnt:contentInfo] > jmix:siteComponent, jmix:bindedComponent
+
+[jnt:componentLink] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent
+ - targetTemplate (string)
+ - aClass (string)
+ - divClass (string)

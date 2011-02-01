@@ -25,20 +25,20 @@
             }
         }
     </script>
-    <ui:loginArea class="Form loginForm" action="${pageContext.request.contextPath}/cms/login">
-        <h3 class="loginIcon">${currentNode.properties['jcr:title'].string}</h3>
+    <ui:loginArea class=" loginForm" action="${pageContext.request.contextPath}/cms/login">
+        <h3 class="loginicon">${currentNode.properties['jcr:title'].string}</h3>
         <ui:isLoginError var="loginResult">
             <span class="error"><fmt:message bundle="JahiaInternalResources" key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
         </ui:isLoginError>
 
         <p>
             <label class="left" for="username"><fmt:message key="label.username"/></label>
-            <input type="text" value="" tabindex="1" maxlength="250" name="username" id="username" onkeydown="keyDown"/>
+            <input class="full" type="text" value="" tabindex="1" maxlength="250" name="username" id="username" onkeydown="keyDown"/>
         </p>
 
         <p>
             <label class="left" for="password"><fmt:message key="label.password"/></label>
-            <input type="password" tabindex="2" maxlength="250" name="password" id="password" onkeydown="keyDown"/>
+            <input class="full" type="password" tabindex="2" maxlength="250" name="password" id="password" onkeydown="keyDown"/>
         </p>
 
         <p>
@@ -54,9 +54,17 @@
     </ui:loginArea>
 </c:if>
 <c:if test="${renderContext.loggedIn &&  !(currentAliasUser.username eq 'guest')}">
+    <div class="loginForm">
+                    <div class='image'>
+                    <div class='itemImage itemImageRight'>
+							<img alt="" src="${url.currentModule}/images/userbig.png" alt="friend" border="0"/>
+                    </div>
+                </div>
+    <h3 class="logouticon">Logout</h3>
     <p>Logged as ${renderContext.user.username}
         <c:if test="${!empty currentAliasUser}">( as ${currentAliasUser.username}) </c:if>
     </p>
     <p><a class="loginFormTopLogoutShortcuts"
           href='${url.logout}'><span><fmt:message key="label.logout"/></span></a></p>
+          </div>
 </c:if>

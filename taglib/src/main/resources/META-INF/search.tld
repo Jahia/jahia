@@ -125,6 +125,24 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable the SearchCriteria bean will be exposed under. [searchCriteria]
+            </description>
+            <name>searchCriteriaVar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                The name of the page scope variable the search term (or the first term in case of multiple terms) will be exposed under. [term]
+            </description>
+            <name>termVar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
         	<description>The name of the page scope variable the list of found hits will be exposed under. [hits]</description>
             <name>var</name>
             <required>false</required>

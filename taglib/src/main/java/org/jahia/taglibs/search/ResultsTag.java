@@ -58,12 +58,18 @@ public class ResultsTag extends AbstractJahiaTag {
 
     private String searchCriteriaBeanName;
 
+    private String searchCriteriaVar;
+
+    private String termVar;
+
     private String var;
 
     @Override
     public int doEndTag() throws JspException {
         pageContext.removeAttribute(getVar(), PageContext.PAGE_SCOPE);
         pageContext.removeAttribute(getCountVar(), PageContext.PAGE_SCOPE);
+        pageContext.removeAttribute(getSearchCriteriaVar(), PageContext.PAGE_SCOPE);
+        pageContext.removeAttribute(getTermVar(), PageContext.PAGE_SCOPE);
         resetState();
 
         return EVAL_PAGE;
@@ -83,6 +89,10 @@ public class ResultsTag extends AbstractJahiaTag {
 
         pageContext.setAttribute(getVar(), hits);
         pageContext.setAttribute(getCountVar(), Integer.valueOf(count));
+        pageContext.setAttribute(getSearchCriteriaVar(), criteria);
+        if (!criteria.getTerms().isEmpty() && !criteria.getTerms().get(0).isEmpty()) {
+        	pageContext.setAttribute(getTermVar(), criteria.getTerms().get(0).getTerm());
+        }
 
         return EVAL_BODY_INCLUDE;
     }
@@ -100,6 +110,14 @@ public class ResultsTag extends AbstractJahiaTag {
 
     protected String getDefaultCountVarName() {
         return "count";
+    }
+
+    protected String getDefaultSearchCriteriaVarName() {
+        return "searchCriteria";
+    }
+
+    protected String getDefaultTermVarName() {
+        return "term";
     }
 
     /**
@@ -132,6 +150,14 @@ public class ResultsTag extends AbstractJahiaTag {
                 : SearchCriteriaFactory.getInstance(ctx);
     }
 
+    private String getSearchCriteriaVar() {
+    	return searchCriteriaVar != null ? searchCriteriaVar : getDefaultSearchCriteriaVarName();
+    }
+
+    private String getTermVar() {
+    	return termVar != null ? termVar : getDefaultTermVarName();
+    }
+
     private String getVar() {
         return var != null ? var : getDefaultVarName();
     }
@@ -142,6 +168,8 @@ public class ResultsTag extends AbstractJahiaTag {
         countVar = null;
         hits = null;
         searchCriteriaBeanName = null;
+        searchCriteriaVar = null;
+        termVar = null;
         super.resetState();
     }
 
@@ -149,11 +177,20 @@ public class ResultsTag extends AbstractJahiaTag {
         this.countVar = countVar;
     }
 
-    public void setSearchCriteriaBeanName(String searchCriteriaBeanName) {
+	public void setSearchCriteriaBeanName(String searchCriteriaBeanName) {
         this.searchCriteriaBeanName = searchCriteriaBeanName;
     }
 
-    public void setVar(String var) {
+	public void setSearchCriteriaVar(String searchCriteriaVar) {
+    	this.searchCriteriaVar = searchCriteriaVar;
+    }
+
+	public void setTermVar(String termVar) {
+    	this.termVar = termVar;
+    }
+
+	public void setVar(String var) {
         this.var = var;
     }
+
 }

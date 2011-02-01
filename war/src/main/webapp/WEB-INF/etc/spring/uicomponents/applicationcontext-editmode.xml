@@ -81,7 +81,7 @@
                                     <ref bean="Toolbar.Item.PasteReference"/>
                                     <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.TemplateExport"/>
+                                    <ref bean="Toolbar.Item.Export"/>
                                     <ref bean="Toolbar.Item.Import"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Lock"/>
@@ -91,13 +91,30 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                            <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GenerateWarActionItem"/>
+
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.export"/>
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GenerateWarActionItem"/>
+                                        </property>
+                                        <property name="titleKey" value="label.exportWar"/>
+                                        <property name="icon" value="templateExport"/>
+                                    </bean>
+
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExportTemplateActionItem"/>
+                                        </property>
+                                        <property name="titleKey" value="label.export"/>
+                                        <property name="icon" value="templateExport"/>
+                                    </bean>
+                                </list>
                             </property>
-                            <property name="titleKey" value="label.exportWar"/>
-                            <property name="icon" value="templateExport"/>
                         </bean>
+
                         <ref bean="studiomode.managers.menu"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.cache"/>
@@ -163,7 +180,7 @@
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
                         <ref bean="Toolbar.Item.TranslateMenu"/>
-                        <ref bean="Toolbar.Item.TemplateExport"/>
+                        <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>

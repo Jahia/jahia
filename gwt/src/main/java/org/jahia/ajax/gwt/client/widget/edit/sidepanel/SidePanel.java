@@ -128,14 +128,6 @@ public class SidePanel extends ContentPanel {
         }
     }
 
-    public GWTJahiaNode getRootTemplate() {
-        if (templatesTabItem != null) {
-            return ((TemplatesTabItem) templatesTabItem).getRootTemplate();
-        }
-        return null;
-    }
-
-
     public void refresh(int flag) {
         for (SidePanelTabItem tab : tabs) {
             tab.refresh(flag);

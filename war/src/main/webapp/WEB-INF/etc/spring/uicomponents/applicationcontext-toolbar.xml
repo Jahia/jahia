@@ -1020,15 +1020,6 @@
         <property name="icon" value="workflowDashboard"/>
     </bean>
 
-    <bean id="Toolbar.Item.TemplateExport" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExportTemplateActionItem"/>
-        </property>
-        <property name="titleKey" value="label.export"/>
-        <property name="icon" value="templateExport"/>
-    </bean>
-    <!-- end of new content action buttons -->
-
     <bean id="Toolbar.Item.DeployPortlets" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployPortletDefinitionActionItem"/>

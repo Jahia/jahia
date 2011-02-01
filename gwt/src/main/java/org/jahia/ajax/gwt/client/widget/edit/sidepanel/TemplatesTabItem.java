@@ -116,10 +116,6 @@ public class TemplatesTabItem extends BrowseTabItem {
         }
     }
 
-    public GWTJahiaNode getRootTemplate() {
-        return tree.getStore().getAt(0);
-    }
-
     @Override
     protected boolean acceptNode(GWTJahiaNode node) {
         return node.getNodeTypes().contains("jnt:page");

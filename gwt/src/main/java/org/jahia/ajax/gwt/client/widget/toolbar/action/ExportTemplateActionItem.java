@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.ContentExportTemplate;
@@ -50,7 +51,7 @@ public class ExportTemplateActionItem extends BaseActionItem    {
     public void onComponentSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         if (linker instanceof EditLinker) {
-            new ContentExportTemplate(linker, ((EditLinker) linker).getSidePanel().getRootTemplate()).show();
+            new ContentExportTemplate(linker, "/templateSets/"+JahiaGWTParameters.getSiteKey(), JahiaGWTParameters.getSiteKey()).show();
         } else {
             new ContentExportTemplate(linker, lh.getSingleSelection()).show();
         }

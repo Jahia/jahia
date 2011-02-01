@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <template:addResources type="css" resources="forum.css"/>
 
 <jcr:sql var="numberOfPostsQuery"
@@ -32,6 +33,16 @@
     <dt title="posts"><a class="forum-title" href="${url.base}${currentNode.path}.html"><jcr:nodeProperty
             node="${currentNode}" name="topicSubject"/></a>
         <br/>
+        <p>
+            ${currentNode.properties.topicDescription.string}
+        </p>
+        <c:forEach items="${currentNode.nodes}" var="child" varStatus="count">
+            <c:if test="${count.first}"><fmt:message key="subdivision"/></c:if>
+            <c:if test="${jcr:isNodeType(child,'jnt:topic' )}">
+                <a class="forum-title" href="${url.base}${child.path}.html"><jcr:nodeProperty
+                node="${child}" name="topicSubject"/></a>
+            </c:if>
+        </c:forEach>
         <ul class="forum-profile-icons">
     <c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
         <li class="delete-post-icon"><a title="Delete this topic" href="#"

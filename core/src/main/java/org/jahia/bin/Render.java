@@ -120,6 +120,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String SUBMIT = "submit";
     public static final String AUTO_ASSIGN_ROLE = "autoAssignRole";
     public static final String ALIAS_USER = "alias";
+    public static final String PARENT_TYPE = "parentType";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -155,6 +156,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(VERSION);
         reservedParameters.add(SUBMIT);
         reservedParameters.add(AUTO_ASSIGN_ROLE);
+        reservedParameters.add(PARENT_TYPE);
     }
 
     private transient ServletConfig servletConfig;

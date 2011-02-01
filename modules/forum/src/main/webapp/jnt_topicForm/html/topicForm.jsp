@@ -33,7 +33,11 @@
                         <input value="New Topic Subject" type="text" size="35" id="forum_site" name="topicSubject"
                                tabindex="1"/>
                     </p>
-
+					<c:if test="${currentNode.properties.useDescription.boolean}">
+                    <p class="field">
+						<textarea name="topicDescription"></textarea>
+                    </p>
+					</c:if>
                     <p class="forum_button">
                         <input type="reset" value="Reset" class="button" tabindex="3"/>
 

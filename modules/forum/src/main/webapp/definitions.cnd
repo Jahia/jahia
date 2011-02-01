@@ -3,16 +3,8 @@
 
 [jmix:forumContent] > jmix:droppableContent
 
-[jnt:topic] > jnt:content
- - topicSubject (string)
- - topicDescription (string)
- + * (jnt:thread)
- + * (jnt:topic)
-
 [jnt:topicList] > jnt:content, jmix:bindedComponent, jmix:forumContent
  - viewTopics (boolean)
- - viewThreads (boolean)
 
 [jnt:topicForm] > jnt:content, jmix:bindedComponent, jmix:forumContent
-
-[jnt:threadForm] > jnt:content, jmix:bindedComponent, jmix:forumContent
+ - useDescription (boolean) = false

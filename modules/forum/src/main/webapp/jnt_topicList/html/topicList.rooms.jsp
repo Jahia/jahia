@@ -22,44 +22,43 @@
     <template:addCacheDependency node="${linked}"/>
     <div class="topics">
         <jcr:nodeProperty node="${linked}" name="topicSubject" var="topicSubject"/>
-        <c:if test="${!empty topicSubject.string}">
-        	<h2><a href="${url.base}${linked.parent.path}.html">${topicSubject.string}</a></h2>
-		</c:if>
-        <div class="forum-box forum-box-style1 topics">
-            <span class="forum-corners-top"><span></span></span>
+        <c:forEach items="${linked.nodes}" var="topic">
+            <div class="forum-box forum-box-style1 topics">
+                <span class="forum-corners-top"><span></span></span>
 
-            <ul class="forum-list">
-                <li class="forum-list-header">
-                    <dl class="icon">
-                        <dt>${topicSubject.string}</dt>
-                        <dd class="topics">Posts</dd>
-                            <%--<dd class="posts">View</dd>--%>
-                        <dd class="lastpost"><span>Last post</span></dd>
-                    </dl>
-                </li>
-            </ul>
-
-
-            <ul class="forum-list forums">
-                <c:forEach items="${linked.nodes}" var="thread">
-                    <c:if test="${(currentNode.properties.viewTopics.boolean and jcr:isNodeType(thread, 'jnt:topic'))}">
-                        <li class="row">
-                            <template:module node="${thread}" template="summary"/>
-                        </li>
-                        <c:set var="found" value="true"/>
-                    </c:if>
-                </c:forEach>
-
-                <c:if test="${not found}">
-                    <li class="row">
-                        No thread or topic found
+                <ul class="forum-list">
+                    <li class="forum-list-header">
+                        <dl class="icon">
+                            <dt><a href="${url.base}${topic.path}.forum-sections.html">${topic.properties.topicSubject.string}</a></dt>
+                            <dd class="topics"><fmt:message key="posts"/></dd>
+                                <%--<dd class="posts">View</dd>--%>
+                            <dd class="lastpost"><span><fmt:message key="lastPosts"/></span></dd>
+                        </dl>
                     </li>
-                </c:if>
+                </ul>
 
-            </ul>
-            <div class="clear"></div>
-            <span class="forum-corners-bottom"><span></span></span>
-        </div>
+
+                <ul class="forum-list forums">
+                    <c:forEach items="${topic.nodes}" var="thread">
+                        <c:if test="${(currentNode.properties.viewTopics.boolean and jcr:isNodeType(thread, 'jnt:topic'))}">
+                            <li class="row">
+                                <template:module node="${thread}" template="summary"/>
+                            </li>
+                            <c:set var="found" value="true"/>
+                        </c:if>
+                    </c:forEach>
+
+                    <c:if test="${not found}">
+                        <li class="row">
+                            <fmt:message key="noTopicFound"/>
+                        </li>
+                    </c:if>
+
+                </ul>
+                <div class="clear"></div>
+                <span class="forum-corners-bottom"><span></span></span>
+            </div>
+        </c:forEach>
         <span><fmt:message key="total.threads"/>: ${numberOfThreads}</span>
         <span><fmt:message key="total.posts"/>: ${numberOfPosts}</span>
     </div>

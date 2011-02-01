@@ -32,7 +32,7 @@
         <div class="forum-actions">
 
             <div class="forum-buttons">
-                <div class="forum-post-icon"><a title="Post a new post" href="#threadPost"><span/><fmt:message
+                <div class="forum-post-icon"><a title="Post a new post" href="topic.forum.jsp#threadPost"><span/><fmt:message
                         key="new.post"/></a></div>
             </div>
             <div class="forum-pagination">

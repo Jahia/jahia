@@ -95,7 +95,11 @@ public class DefaultPostAction extends Action {
                         if (!node.isCheckedOut()) {
                             node.checkout();
                         }
-                        node = node.addNode(subPath, "jnt:contentList");
+                         String parentType = "jnt:contentList";
+                        if (parameters.containsKey(Render.PARENT_TYPE)) {
+                            parentType = parameters.get(Render.PARENT_TYPE).get(0);
+                        }
+                        node = node.addNode(subPath, parentType);
                     }
                 }
             }

@@ -144,13 +144,15 @@
  - jcr:title (STRING)
  - content (string,richtext)
 
-[jnt:thread] > jnt:content
- - threadSubject (string)
+[jnt:topic] > jnt:content
+ - topicSubject (string)
+ - topicDescription (string)
+ + * (jnt:topic)
  + * (jnt:post)
 
 [jmix:comments] mixin
  - shortView (boolean) = false autocreated
- + comments (jnt:thread) = jnt:thread autocreated hidden
+ + comments (jnt:topic) = jnt:topic autocreated hidden
 
 [jnt:commentsList] > jnt:content, jmix:bindedComponent, jmix:socialComponent
 - premoderated (boolean) = false

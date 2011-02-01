@@ -1990,6 +1990,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                             (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                             defaultLocale, tpl, "fileImport", file,
                                             (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"));
+                            session.setAttribute(ProcessingContext.SESSION_SITE, site);
                             jParams.setSite(site);
                             jParams.setSiteID(site.getID());
                             jParams.setSiteKey(site.getSiteKey());

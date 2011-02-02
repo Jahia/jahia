@@ -246,7 +246,7 @@ public class FacetHandler {
     private String getNodeTypeFromSelector(String selectorName,
                                            String propertyName) throws RepositoryException {
         selectorName = StringUtils.removeEnd(selectorName, "translationAdded");
-        Selector foundSelector = null;
+        Selector foundSelector = selector;
 //        for (SelectorImpl selector : ((SourceImpl) qomTree.getSource()).getSelectors()) {
 //            if (StringUtils.isEmpty(selectorName) || selectorName.equals(selector.getSelectorName())) {
 //                foundSelector = selector;

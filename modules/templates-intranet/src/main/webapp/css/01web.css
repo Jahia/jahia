@@ -747,9 +747,11 @@ body {
 #bodywrapper .divButton{
 	text-align:center;
 	margin:0 0 10px 0;
+	overflow:hidden;
 }
 #bodywrapper .divButtonRight{
 	text-align:right;
+	overflow:hidden;
 }
 #bodywrapper input.button, #bodywrapper button {
 	margin-right:0.5em;

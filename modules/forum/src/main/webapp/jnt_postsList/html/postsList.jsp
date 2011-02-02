@@ -15,7 +15,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="forum.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js,jquery.jeditable.mini.js"/>
 
 <template:linker property="j:bindedComponent"/>
 <template:addResources type="css" resources="forum.css"/>
@@ -27,6 +27,20 @@
     }
     $(document).ready(function () {
         $('.timestamp').cuteTime({ refresh: 60000 });
+
+        $(".editablePost").editable(function (value, settings) {
+            var data = {'methodToCall':'put'};
+            var submitId = $(this).attr('jcr:id');
+            data[submitId] = value;
+            $.post($(this).attr('jcr:url'), data, null, "json");
+            return(value);
+        }, {
+            type    : 'textarea',
+            onblur : 'ignore',
+            submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>Ok</button>',
+            cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
+            tooltip : 'Edit'
+        });
     });
 </script>
 <div id="forum-body">

@@ -52,7 +52,7 @@
             </li>
         </c:if>
         <c:if test="${jcr:hasPermission(currentNode, 'editPost')}">
-            <li class="edit-post-icon"><a title="<fmt:message key="edit.post"/>" href="#"><span><fmt:message key="edit.post"/></span></a></li>
+            <li class="edit-post-icon"><a title="<fmt:message key="edit.post"/>" href="javascript:$('#edit${currentNode.UUID}').click();"><span><fmt:message key="edit.post"/></span></a></li>
         </c:if>
     </ul>
 
@@ -70,7 +70,15 @@
         </c:if>
     </p>
 
-    <div class="content">${content.string}</div>
+    <c:if test="${jcr:hasPermission(currentNode, 'editPost')}">
+        <div class="content editablePost" jcr:id="content"
+              id="edit${currentNode.identifier}"
+              jcr:url="${url.base}${currentNode.path}">${content.string}</div>
+    </c:if>
+    <c:if test="${not jcr:hasPermission(currentNode, 'editPost')}">
+        <div class="content">${content.string}</div>
+    </c:if>
+
 </div>
 <jcr:sql var="numberOfPostsQuery"
          sql="select [jcr:uuid] from [jnt:post] as p  where p.[jcr:createdBy] = '${createdBy.string}'"/>

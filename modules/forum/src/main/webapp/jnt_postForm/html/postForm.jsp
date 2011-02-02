@@ -48,9 +48,7 @@
 
                         <p class="field">
                             <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content"
-                                      tabindex="2">
-                                       <c:if test="${functions:length(reply.properties['content'].string) > 0}"><blockquote>${reply.properties['content'].string}</blockquote></c:if>
-                                      </textarea>
+                                      tabindex="2"><c:if test="${functions:length(reply.properties['content'].string) > 0}"><blockquote>${reply.properties['content'].string}</blockquote></c:if></textarea>
                         </p>
 
                         <p class="forum_button">

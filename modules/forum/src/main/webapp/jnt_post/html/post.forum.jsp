@@ -35,9 +35,9 @@
 <span class="forum-corners-top"><span></span></span>
 <div class="forum-postbody">
     <ul class="forum-profile-icons">
-        <c:if test="${jcr:hasPermission(currentNode, 'reportPost')}">
-            <li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="#"><span><fmt:message key='report.post'/></span></a></li>
-        </c:if>
+        <%--<c:if test="${jcr:hasPermission(currentNode, 'reportPost')}">--%>
+            <%--<li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="#"><span><fmt:message key='report.post'/></span></a></li>--%>
+        <%--</c:if>--%>
         <c:if test="${jcr:hasPermission(currentNode, 'createPost')}">
             <li class="forum-quote-icon">
                 <a title="<fmt:message key='reply.quote'/>" href="${url.base}${renderContext.mainResource.node.path}.forum-topic-newPost.html?reply=${currentNode.UUID}">

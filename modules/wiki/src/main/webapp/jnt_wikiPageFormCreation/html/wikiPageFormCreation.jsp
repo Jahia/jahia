@@ -35,9 +35,7 @@
         </c:otherwise>
     </c:choose>
     <label for="text-${currentNode.identifier}"><fmt:message key="jnt_wiki.Content"/>: </label>
-    <textarea class="textareawiki" name="text" rows="30" cols="85" id="text-${currentNode.identifier}">
-        <fmt:message key="jnt_wiki.typeContentHere"/>
-    </textarea>
+    <textarea class="textareawiki" name="text" rows="30" cols="85" id="text-${currentNode.identifier}"><fmt:message key="jnt_wiki.typeContentHere"/></textarea>
     <p>
         <label for="comment-${currentNode.identifier}"><fmt:message key="jnt_wiki.addComment"/>: </label><input name="lastComment" id="comment-${currentNode.identifier}"/>
         

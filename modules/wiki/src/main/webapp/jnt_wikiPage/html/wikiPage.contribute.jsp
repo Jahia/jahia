@@ -6,9 +6,7 @@
 <form class="formWiki" action="${currentNode.name}" method="post">
     <input type="hidden" name="autoCheckin" value="true">
     <input type="hidden" name="nodeType" value="jnt:wikiPage">
-    <textarea class="textareawiki" name="text" rows="30" cols="85">
-        ${currentNode.properties['text'].string}
-    </textarea>
+    <textarea class="textareawiki" name="text" rows="30" cols="85">${currentNode.properties['text'].string}</textarea>
 
     <p>
         <label><fmt:message key="jnt_wiki.addComment"/>: </label> <input name="lastComment"/>

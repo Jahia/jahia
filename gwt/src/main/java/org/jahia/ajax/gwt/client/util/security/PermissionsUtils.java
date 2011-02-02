@@ -85,6 +85,9 @@ public class PermissionsUtils {
     }
 
     public static boolean isPermitted(String permissionName, GWTBitSet permissions) {
+        if (permissions == null) {
+            return false;
+        }
         int i = grantedPermissions.indexOf(permissionName);
 
         if (i == -1) {

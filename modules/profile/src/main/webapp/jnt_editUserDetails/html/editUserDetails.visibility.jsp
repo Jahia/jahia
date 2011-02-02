@@ -41,8 +41,6 @@
 <jcr:propertyInitializers node="${user}" name="j:title" var="titleInit"/>
 
 
-    <h3>Public fields</h3>
-
 <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
     <c:set var="publicPropertiesAsString" value=""/>
 
@@ -51,7 +49,7 @@
     </c:forEach>
 
     <form action="${url.basePreview}${user.path}" method="post" id="updateVisibility">
-        <ul>
+        <ul class="listvisibility">
     <c:forTokens
             items="j:firstName,j:lastName,j:gender,j:title,j:birthDate,age,j:organization,j:function,j:about,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:picture,preferredLanguage"
             delims="," var="key">

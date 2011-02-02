@@ -84,14 +84,31 @@
                   jcr:url="${url.basePreview}${user.path}"><c:if test="${empty fields['j:lastName']}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:lastName']}">${fields['j:lastName']}</c:if></span>
         </li>
     </c:if>
+    <c:if test="${currentNode.properties['j:picture'].boolean}">
+        <li>
+            <span class="label"><fmt:message key='jnt_user.j_picture'/></span>
 
+            <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+
+            <c:if test="${not empty picture}">
+                <div class='image'>
+          <div class='itemImage itemImageLeft'> <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/> </div>
+        </div><div class="clear"></div>
+            </c:if>
+
+            <div class="file${currentNode.identifier}" jcr:id="j:picture"
+                 jcr:url="${url.basePreview}${user.path}">
+                <span class="small colorlight"><fmt:message key="add.file"/></span>
+            </div>
+        </li>
+    </c:if>
     <c:if test="${currentNode.properties['j:gender'].boolean}">
         <li>
             <span class="label"><fmt:message key="jnt_user.profile.sexe"/> : </span>
 
-            <div jcr:id="j:gender" class="choicelistEdit${currentNode.identifier}"
+            <span jcr:id="j:gender" class="choicelistEdit${currentNode.identifier}"
                   jcr:url="${url.basePreview}${user.path}"
-                  jcr:options="{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="j:gender" renderer="resourceBundle"/></div>
+                  jcr:options="{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="j:gender" renderer="resourceBundle"/></span>
         </li>
     </c:if>
 
@@ -99,9 +116,9 @@
         <li>
             <span class="label"><fmt:message key="jnt_user.j_title"/></span>
 
-            <div jcr:id="j:title" class="choicelistEdit${currentNode.identifier}"
+            <span jcr:id="j:title" class="choicelistEdit${currentNode.identifier}"
                   jcr:url="${url.basePreview}${user.path}"
-                  jcr:options="{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/></div>
+                  jcr:options="{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}"><jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/></span>
         </li>
     </c:if>
 
@@ -115,9 +132,9 @@
             <c:if test="${empty birthDate}">
                 <c:set var="displayBirthDate"><fmt:message key="label.clickToEdit"/></c:set>
             </c:if>
-            <div jcr:id="j:birthDate" class="dateEdit${currentNode.identifier}"
+            <span jcr:id="j:birthDate" class="dateEdit${currentNode.identifier}"
                  id="dateEdit${currentNode.identifier}j_birthDate"
-                 jcr:url="${url.basePreview}${user.path}">${displayBirthDate}</div>
+                 jcr:url="${url.basePreview}${user.path}">${displayBirthDate}</span>
         </li>
     </c:if>
 
@@ -145,9 +162,9 @@
         <li>
             <span class="label"><fmt:message key='jnt_user.j_about'/></span>
 
-            <div jcr:id="j:about" class="ckeditorEdit${currentNode.identifier}"
+            <span jcr:id="j:about" class="ckeditorEdit${currentNode.identifier}"
                   id="ckeditorEdit${currentNode.identifier}j_about"
-                  jcr:url="${url.basePreview}${user.path}">${fields['j:about']}</div>
+                  jcr:url="${url.basePreview}${user.path}">${fields['j:about']}</span>
         </li>
     </c:if>
 
@@ -201,22 +218,7 @@
         </li>
     </c:if>
 
-    <c:if test="${currentNode.properties['j:picture'].boolean}">
-        <li>
-            <span class="label"><fmt:message key='jnt_user.j_picture'/></span>
 
-            <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-
-            <c:if test="${not empty picture}">
-                <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${person}"/>
-            </c:if>
-
-            <div class="file${currentNode.identifier}" jcr:id="j:picture"
-                 jcr:url="${url.basePreview}${user.path}">
-                <span><fmt:message key="add.file"/></span>
-            </div>
-        </li>
-    </c:if>
 
     <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
         <li>
@@ -245,13 +247,17 @@
                         <c:set var="ps" value="?${p.key}=${p.value}"/>
                     </c:if>
                 </c:forEach>
+                <p>
                 <input type="password" id="password" name="password"/></p>
-
+</p>
+<p>
                 <span class="label"><fmt:message key="label.comfirmPassword"/></span>
                 <input type="password" id="passwordconfirm" name="passwordconfirm"/>
+           </p>
+<div>     
                 <button id="passwordokbutton" ><span class="icon-contribute icon-accept"></span><fmt:message key="label.ok"/></button>
                 <button type="button" id="passwordcancelbutton" ><span class="icon-contribute icon-cancel"></span><fmt:message key="label.cancel"/></button>
-
+</div>                
             </form>
         </div>
         </div>

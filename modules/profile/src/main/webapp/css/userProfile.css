@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *  userDetails full
 ******************************************************************************/
@@ -16,6 +17,52 @@
 }
 #bodywrapper .user-profile .divButtonRight{
 	margin-bottom:1em;
+}
+/******************************************************************************
+* Form
+******************************************************************************/
+#bodywrapper #changePassword p{
+	margin:0;
+	padding:0 0 0.2em 0;
+	}
+/******************************************************************************
+*  userMyContentList
+******************************************************************************/
+
+#bodywrapper ul.user-profile-list  {
+	margin:0;
+	margin-bottom:20px;
+	list-style:none;
+	padding:0;
+	float:left;
+	width:49%
+}
+#bodywrapper ul.user-profile-list input  {
+	width:100% !important;
+	padding:0 0 0.2em 0;
+	
+}
+#bodywrapper .user-profile-list li {
+	padding:2px 5px;
+	margin:0;
+	list-style:none
+}
+#bodywrapper .user-profile-list .label {
+	font-weight:bold;
+}
+/******************************************************************************
+*  editUserDetails.visibility
+******************************************************************************/
+
+#bodywrapper ul.listvisibility  {
+	margin:0;
+	list-style:none;
+	padding:0;
+}
+#bodywrapper .listvisibility li {
+	padding:1px 5px;
+	margin:0;
+	list-style:none
 }
 /******************************************************************************
 *  userMyContentList

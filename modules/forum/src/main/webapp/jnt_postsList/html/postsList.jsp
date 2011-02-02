@@ -45,9 +45,19 @@
 </script>
 <div id="forum-body">
     <div class="posts" id="${currentNode.UUID}">
+        <c:if test="${currentNode.properties.reverseOrder.boolean}">
+            <c:set target="${moduleMap}" property="currentList" value="${functions:reverseIterator(linked.nodes)}" />
+        </c:if>
+        <c:if test="${!currentNode.properties.reverseOrder.boolean}">
+            <c:set target="${moduleMap}" property="currentList" value="${linked.nodes}" />
+        </c:if>
         <c:set target="${moduleMap}" property="currentList" value="${linked.nodes}" />
         <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(linked.nodes)}" />
-        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status">
+        <c:set var="end" value="${fn:length(linked.nodes)}"/>
+        <c:if test="${currentNode.properties.limit.long > 0}">
+            <c:set var="end" value="${currentNode.properties.limit.long -1}"/>
+        </c:if>
+        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" end="${end}">
             <c:if test="${jcr:isNodeType(subchild, 'jnt:post')}">
             <div class="forum-box forum-box-style${(status.index mod 2)+1}">
                 <template:module node="${subchild}" template="forum"/>

@@ -189,7 +189,16 @@ public class Functions {
         Collections.reverse(copy);
         return copy;
     }
-    
+
+    public static <T> Iterator<T> reverse(Iterator<T> it) {
+        List<T> copy = new ArrayList<T>();
+        while (it.hasNext()) {
+            copy.add(it.next());
+        }
+        Collections.reverse(copy);
+        return copy.iterator();
+    }
+
     /**
      * Checks if the current object is iterable so that it can be used in an c:forEach
      * tag.

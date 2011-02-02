@@ -222,7 +222,20 @@
             Tag usage reverse: ${functions:reverse(mylist)}
         </example>
     </function>
-    
+
+    <function>
+        <description>
+			Reverse an Iterator
+        </description>
+        <name>reverseIterator</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.util.Iterator reverse(java.util.Iterator)</function-signature>
+        <example>
+            Tag usage reverse: ${functions:reverse(myIterator)}
+        </example>
+    </function>
+
+
     <function>
         <description>
             Returns the CSS style name that corresponds to the file extension of the provided file name.

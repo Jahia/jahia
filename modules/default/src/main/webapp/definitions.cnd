@@ -112,7 +112,6 @@
  - displayHome (boolean) = true indexed=no
  - displayCurrentPage (boolean) = true indexed=no
  - displayLinkOnCurrentPage (boolean) = false indexed=no
- - additionalType (string, choicelist[subnodetypes = 'jnt:content',resourceBundle]) multiple
 
 [jnt:languageSwitcher] > jnt:content, jmix:siteComponent
  - typeOfDisplay (string,choicelist[resourceBundle]) = isoLocaleCountryCode mandatory indexed=no < isoLocaleCountryCode,languageCode,doubleLetter,letter,nameInLocale,nameCurrentLocale,flag

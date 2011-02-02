@@ -39,11 +39,11 @@
         </c:choose>
         <c:if test="${displayPage}">
             <li>
-                <c:if test="${!status.last || displayLinkOnCurrentPage.boolean}">
+                <c:if test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
                     <a href="${url.base}${pageNode.path}.html">
                 </c:if>
                 ${pageNode.properties['jcr:title'].string}
-                <c:if test="${!status.last || displayLinkOnCurrentPage.boolean}">
+                <c:if test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
                     </a>
                 </c:if>
             </li>

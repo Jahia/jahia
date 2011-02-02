@@ -602,7 +602,7 @@
 <!-- Quercus PHP servlet -->
     <servlet>
       <servlet-name>Quercus Servlet</servlet-name>
-      <servlet-class>org.jahia.services.render.scripting.JahiaQuercusServletImpl</servlet-class>
+      <servlet-class>org.jahia.services.render.scripting.JahiaQuercusServlet</servlet-class>
 
       <!--
         Specifies the encoding Quercus should use to read in PHP scripts.

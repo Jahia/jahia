@@ -212,7 +212,7 @@ Search form top
 *  illustration
 ******************************************************************************/
 #bodywrapper #illustration{
-	background-color:#f7f7f7;
+	background:#f7f7f7 url(img/illustration-bg.png) repeat-y 50% 0%;
 	border-bottom:1px solid #efefef;
 	position:relative;
 	z-index:900;
@@ -337,12 +337,15 @@ Search form top
 	padding-left:8px;
 }
 #bodywrapper div.intro{
+	font-family:Georgia, "Times New Roman", Times, serif;
+	color:#0066ff;
 	font-size:1.4em;
 	font-style:italic;
-	line-height:1.6em
+	line-height:1.6em;
+	padding-bottom:1em;
 }
 #bodywrapper div.intro p{
-	padding:0.7em 0;
+	padding-bottom:1em;
 }
 #bodywrapper p.intro {
 	font-size:1.3em;
@@ -356,16 +359,7 @@ Search form top
 	line-height:normal;
 	padding:0 0 0.5em 0;
 }
-#bodywrapper h2.pageTitle,#bodywrapper .pageTitle {
-	font-family:"Times New Roman", Times, serif;
-	margin:0;
-	color:#333;
-	margin-bottom:5px;
-	padding:5px 0;
-	font-weight:normal;
-	font-size:2.2em;
-	line-height:normal;
-}
+
 #bodywrapper h2 {
 	font-weight:normal;
 	font-size:1.8em;
@@ -374,7 +368,16 @@ Search form top
 	margin-top:15px;
 	background:transparent url(img/hr-bg.png) repeat-x bottom left;
 }
-
+#bodywrapper h2.pageTitle,#bodywrapper .pageTitle {
+	margin:0;
+	color:#003399;
+	margin-bottom:5px;
+	padding:5px 0;
+	font-size:2.2em;
+	line-height:normal;
+	text-shadow: 0px 1px 1px #ccd6eb;
+	filter: dropshadow(color=#ccd6eb,offX=0,offY=1);
+}
 #bodywrapper h3 {
 	font-weight:normal;
 	font-size:1.6em;

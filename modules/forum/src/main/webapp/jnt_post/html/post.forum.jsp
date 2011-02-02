@@ -40,8 +40,9 @@
         </c:if>
         <c:if test="${jcr:hasPermission(currentNode, 'createPost')}">
             <li class="forum-quote-icon">
-                <a title="<fmt:message key='reply.quote'/>" href="#threadPost"
-                   onclick="jahiaForumQuote('jahia-forum-thread-${currentNode.parent.UUID}', '${fn:escapeXml(functions:escapeJavaScript(content.string))}');"><span><fmt:message key='reply.quote'/></span></a>
+                <a title="<fmt:message key='reply.quote'/>" href="${url.base}${renderContext.mainResource.node.path}.forum-topic-newPost.html?reply=${currentNode.UUID}">
+                    <span><fmt:message key='reply.quote'/></span>
+                </a>
             </li>
         </c:if>
             <li><template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/></li>

@@ -103,9 +103,6 @@
                                     </c:if>
                                 </dd>
                             </dl>
-
-
-                            xxx
                         </li>
                         <c:set var="found" value="true"/>
                     </c:if>
@@ -113,7 +110,7 @@
 
                 <c:if test="${not found}">
                     <li class="row">
-                        No thread or topic found
+                        No topic found
                     </li>
                 </c:if>
 

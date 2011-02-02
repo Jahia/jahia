@@ -27,6 +27,9 @@
     }
 </script>
 <a name="threadPost"></a>
+<c:if test="${!empty param.reply}">
+    <jcr:node uuid="${param.reply}" var="reply"/>
+</c:if>
 <template:tokenizedForm>
     <form action="${url.base}${linked}.addTopic.do" method="post" name="newTopicForm">
         <div class="post-reply"><!--start post-reply-->
@@ -38,14 +41,16 @@
 
                     <fieldset>
                         <p class="field">
-                            <input value="<c:if test="${functions:length(currentNode.nodes) > 0}"> Re:</c:if>${currentNode.propertiesAsString['threadSubject']}"
+                            <input value="<c:if test="${functions:length(reply['jcr:title'].string) > 0}"> Re:</c:if>${reply['jcr:title'].string}"
                                    type="text" size="35" id="forum_site" name="jcr:title"
                                    tabindex="1"/>
                         </p>
 
                         <p class="field">
                             <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content"
-                                      tabindex="2"></textarea>
+                                      tabindex="2">
+                                       <c:if test="${functions:length(reply['content'].string) > 0}"><blockquote>${reply['content'].string}</blockquote></c:if>
+                                      </textarea>
                         </p>
 
                         <p class="forum_button">

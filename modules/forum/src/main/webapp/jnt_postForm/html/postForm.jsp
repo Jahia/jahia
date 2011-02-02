@@ -41,7 +41,7 @@
 
                     <fieldset>
                         <p class="field">
-                            <input value="<c:if test="${functions:length(reply['jcr:title'].string) > 0}"> Re:</c:if>${reply['jcr:title'].string}"
+                            <input value="<c:if test="${functions:length(reply.properties['jcr:title'].string) > 0}"> Re:</c:if>${reply.properties['jcr:title'].string}"
                                    type="text" size="35" id="forum_site" name="jcr:title"
                                    tabindex="1"/>
                         </p>
@@ -49,7 +49,7 @@
                         <p class="field">
                             <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content"
                                       tabindex="2">
-                                       <c:if test="${functions:length(reply['content'].string) > 0}"><blockquote>${reply['content'].string}</blockquote></c:if>
+                                       <c:if test="${functions:length(reply.properties['content'].string) > 0}"><blockquote>${reply.properties['content'].string}</blockquote></c:if>
                                       </textarea>
                         </p>
 

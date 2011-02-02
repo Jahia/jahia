@@ -5,6 +5,8 @@
 
 [jnt:topicList] > jnt:content, jmix:bindedComponent, jmix:forumContent
 
+[jnt:forumNavigation] > jnt:content, jmix:bindedComponent, jmix:forumContent
+
 [jnt:postsList] > jnt:content, jmix:bindedComponent, jmix:forumContent
  - reverseOrder (boolean)
  - limit (long)

@@ -126,6 +126,7 @@
  - buttonLabel (string)
  - useDescription (boolean) = false
  - class (string)
+ - stayOnPage (boolean) = false
 
 [jnt:linkList] > jnt:content, jmix:listContent, mix:title, jmix:list
  orderable

@@ -33,7 +33,7 @@
                         </row-col2>
                         <forum-home jcr:primaryType="jnt:pageTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <topicList jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:topicList"
+                                <forumNavigation jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:forumNavigation"
                                            j:bindedComponent="/templateSets/forum/templates/base/forum/forum-home"
                                            j:view="rooms"/>
                                 <pageForm class="forum-Form" jcr:mixinTypes="jmix:requiredPermissions"
@@ -41,7 +41,7 @@
                                           j:requiredPermissions="/permissions/actions/forum/createTopic"
                                           j:requiredMode="live"
                                           templateNode="/templateSets/forum/templates/base/forum/forum-room"
-                                          buttonLabel="Create room" jcr:primaryType="jnt:pageFormCreation">
+                                          buttonLabel="Create room" jcr:primaryType="jnt:pageFormCreation" stayOnPage="true">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
                                                       jcr:title="Create new room" jcr:primaryType="jnt:translation"/>
                                 </pageForm>
@@ -49,45 +49,44 @@
                         </forum-home>
                         <forum-room jcr:primaryType="jnt:pageTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <topicList jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:topicList"
-                                           j:view="sections"
+                                <forumNavigation jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:forumNavigation"
                                            j:bindedComponent="/templateSets/forum/templates/base/forum/forum-room"/>
                                 <pageForm class="forum-Form" jcr:mixinTypes="jmix:requiredPermissions"
                                           j:requiredPermissions="/permissions/actions/forum/createTopic"
                                           useDescription="true"
-                                          templateNode="/templateSets/forum/templates/base/forum/forum-section"
+                                          templateNode="/templateSets/forum/templates/base/forum/forum"
                                           j:requiredMode="live" buttonLabel="Create section"
-                                          jcr:primaryType="jnt:pageFormCreation">
+                                          jcr:primaryType="jnt:pageFormCreation" stayOnPage="true">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
                                                       jcr:title="Create new section" jcr:primaryType="jnt:translation"/>
                                 </pageForm>
                             </pagecontent>
                         </forum-room>
-                        <forum-section jcr:primaryType="jnt:pageTemplate">
+                        <forum jcr:primaryType="jnt:pageTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
                                 <topicList jcr:primaryType="jnt:topicList"
-                                           j:bindedComponent="/templateSets/forum/templates/base/forum/forum-section"/>
+                                           j:bindedComponent="/templateSets/forum/templates/base/forum/forum"/>
                             </pagecontent>
                             <aside jcr:primaryType="jnt:contentList">
                                 <jahiapp-forum-logo.png jcr:primaryType="jnt:contentReference"/>
                                 <add-a-new-topic divClass="forum-buttons" aClass="forum-post-icon"
                                                  jcr:primaryType="jnt:componentLink"
-                                                 j:bindedComponent="/templateSets/forum/templates/base/forum/forum-section"
-                                                 targetTemplate="forum-section-newTopic">
+                                                 j:bindedComponent="/templateSets/forum/templates/base/forum/forum"
+                                                 targetTemplate="forum-newTopic">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
                                                       jcr:title="Add a new topic" jcr:primaryType="jnt:translation"/>
                                 </add-a-new-topic>
                             </aside>
-                        </forum-section>
-                        <forum-section-newTopic jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="true">
+                        </forum>
+                        <forum-newTopic jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="true">
                             <pagecontent jcr:primaryType="jnt:contentList">
                                 <post jcr:primaryType="jnt:postForm"
-                                      j:bindedComponent="/templateSets/forum/templates/base/forum/forum-section-newTopic">
+                                      j:bindedComponent="/templateSets/forum/templates/base/forum/forum-newTopic">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="post"
                                                       jcr:primaryType="jnt:translation"/>
                                 </post>
                             </pagecontent>
-                        </forum-section-newTopic>
+                        </forum-newTopic>
                         <forum-topic jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="false"
                                      j:applyOn="jnt:topic" j:defaultTemplate="true">
                             <aside jcr:primaryType="jnt:contentList">

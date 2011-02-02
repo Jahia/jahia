@@ -56,7 +56,7 @@
                                     <jcr:nodeProperty node="${lastModifiedNode}" name="jcr:createdBy" var="createdBy"/>
                                 </c:if>
                             </c:forEach>
-                            <c:if test="${jcr:hasPermission(section, 'deleteTopic')}">
+                            <c:if test="${jcr:hasPermission(topic, 'deleteTopic')}">
                                 <template:tokenizedForm>
                                     <form action="${url.base}${topic.path}" method="post"
                                           id="jahia-forum-topic-delete-${topic.UUID}">
@@ -79,7 +79,7 @@
                                 </p>
 
                                 <ul class="forum-profile-icons">
-                                    <c:if test="${jcr:hasPermission(section, 'deleteTopic')}">
+                                    <c:if test="${jcr:hasPermission(topic, 'deleteTopic')}">
                                         <li class="delete-post-icon"><a title="Delete this topic" href="#"
                                                                         onclick="document.getElementById('jahia-forum-topic-delete-${topic.UUID}').submit();"><span>Delete this topic</span></a>
                                         </li>

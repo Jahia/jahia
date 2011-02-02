@@ -32,6 +32,7 @@
 
 package org.jahia.modules.forum.actions;
 
+import org.jahia.api.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
@@ -47,6 +48,8 @@ import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -66,11 +69,19 @@ public class AddTopic extends Action {
         JCRNodeWrapper node = resource.getNode();
         if (!node.isNodeType("jnt:topic")) {
             String topicTitle = parameters.get("jcr:title").get(0);
+            node.checkout();
             node = node.addNode(JCRContentUtils.generateNodeName(topicTitle, 32), "jnt:topic");
             node.setProperty("topicSubject",topicTitle);
         }
         JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper.getNode(node.getPath()), "jnt:post","");
+
+        if (!session.getUser().getUsername().equals(Constants.GUEST_USERNAME)) {
+            List<String> roles = Arrays.asList("owner");
+            newNode.grantRoles("u:"+session.getUser().getUsername(), new HashSet<String>(roles));
+        }
+
         jcrSessionWrapper.save();
+
         return new ActionResult(HttpServletResponse.SC_OK, node.getPath(), Render.serializeNodeToJSON(newNode));
     }
 }

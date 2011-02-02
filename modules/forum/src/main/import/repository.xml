@@ -51,15 +51,14 @@
                             <pagecontent jcr:primaryType="jnt:contentList">
                                 <forumNavigation jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:forumNavigation"
                                                  j:bindedComponent="/templateSets/forum/templates/base/forum/forum-room"/>
-                                <pageForm class="forum-Form" jcr:mixinTypes="jmix:requiredPermissions"
-                                          useDescription="true"
-                                          j:requiredPermissions="/permissions/actions/forum/createTopic"
-                                          j:requiredMode="live"
+                                <pageForm class="forum-Form"
                                           templateNode="/templateSets/forum/templates/base/forum/forum"
-                                          buttonLabel="Create section" jcr:primaryType="jnt:pageFormCreation"
-                                          stayOnPage="true">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
-                                                      jcr:title="Create new section" jcr:primaryType="jnt:translation"/>
+                                          j:requiredMode="live" buttonLabel="Create section"
+                                          j:requiredPermissions="/permissions/actions/forum/createTopic"
+                                          useDescription="true" jcr:mixinTypes="jmix:requiredPermissions"
+                                          jcr:primaryType="jnt:pageFormCreation" stayOnPage="true">
+                                    <j:translation_en jcr:title="Create new section" jcr:mixinTypes="mix:title"
+                                                      jcr:primaryType="jnt:translation" jcr:language="en"/>
                                 </pageForm>
                             </pagecontent>
                         </forum-room>
@@ -83,9 +82,9 @@
                         </forum>
                         <forum-newTopic jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="true">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <post j:requiredPermissions="/permissions/actions/forum/createTopic"
-                                      jcr:mixinTypes="jmix:requiredPermissions" j:requiredMode="live"
-                                      jcr:primaryType="jnt:postForm" j:requireLoggedUser="false"
+                                <post jcr:mixinTypes="jmix:requiredPermissions"
+                                      j:requiredPermissions="/permissions/actions/forum/createTopic"
+                                      j:requiredMode="live" jcr:primaryType="jnt:postForm" j:requireLoggedUser="false"
                                       j:bindedComponent="/templateSets/forum/templates/base/forum/forum-newTopic">
                                     <j:translation_en jcr:title="post" jcr:mixinTypes="mix:title"
                                                       jcr:primaryType="jnt:translation" jcr:language="en"/>
@@ -97,13 +96,13 @@
                             <aside jcr:primaryType="jnt:contentList">
                                 <jahiapp-forum-logo.png jcr:primaryType="jnt:contentReference"/>
                                 <add-a-new-post divClass="forum-buttons" aClass="forum-post-icon"
-                                                j:requiredPermissions="/permissions/actions/forum/createPost"
                                                 jcr:mixinTypes="jmix:requiredPermissions"
+                                                j:requiredPermissions="/permissions/actions/forum/createPost"
                                                 jcr:primaryType="jnt:componentLink" j:requireLoggedUser="false"
                                                 j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic"
                                                 targetTemplate="forum-topic-newPost">
-                                    <j:translation_en jcr:title="Add a new post" jcr:mixinTypes="mix:title"
-                                                      jcr:primaryType="jnt:translation" jcr:language="en"/>
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                                      jcr:title="Add a new post" jcr:primaryType="jnt:translation"/>
                                 </add-a-new-post>
                             </aside>
                             <pagecontent jcr:primaryType="jnt:contentList">
@@ -118,8 +117,8 @@
                                       jcr:mixinTypes="jmix:requiredPermissions" j:requiredMode="live"
                                       jcr:primaryType="jnt:postForm" j:requireLoggedUser="false"
                                       j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic-newPost">
-                                    <j:translation_en jcr:title="post" jcr:mixinTypes="mix:title"
-                                                      jcr:primaryType="jnt:translation" jcr:language="en"/>
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="post"
+                                                      jcr:primaryType="jnt:translation"/>
                                 </post>
                                 <postsList reverseOrder="true" jcr:primaryType="jnt:postsList"
                                            j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic-newPost"
@@ -156,6 +155,6 @@
 
     <roles>
         <visitor jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/actions/forum/createThread /permissions/actions/forum/createPost"/>
+                 j:permissions="/permissions/actions/forum/createTopic /permissions/actions/forum/createPost"/>
     </roles>
 </content>

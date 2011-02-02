@@ -54,7 +54,7 @@
                                     <jcr:nodeProperty node="${lastModifiedNode}" name="jcr:createdBy" var="createdBy"/>
                                 </c:if>
                             </c:forEach>
-                            <c:if test="${jcr:hasPermission(section, 'createPost')}">
+                            <c:if test="${jcr:hasPermission(section, 'jcr:removeNode')}">
                                 <template:tokenizedForm>
                                     <form action="${url.base}${section.path}" method="post"
                                           id="jahia-forum-section-delete-${section.UUID}">

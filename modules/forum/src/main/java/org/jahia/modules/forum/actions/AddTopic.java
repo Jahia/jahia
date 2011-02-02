@@ -32,15 +32,18 @@
 
 package org.jahia.modules.forum.actions;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Render;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.slf4j.Logger;
+import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +65,7 @@ public class AddTopic extends Action {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         if (!node.isNodeType("jnt:topic")) {
-            String topicTitle = parameters.get("jcr:title").get(0);
+            String topicTitle = JCRContentUtils.generateNodeName(parameters.get("jcr:title").get(0), 32);
             node = node.addNode(topicTitle, "jnt:topic");
             node.setProperty("topicSubject",topicTitle);
         }

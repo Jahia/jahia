@@ -59,7 +59,7 @@
                         <simpleSearchForm result="/templateSets/templates-intranet/search-results" jcr:primaryType="jnt:simpleSearchForm" />
                     </simpleSearch>
                     <topMenu jcr:primaryType="jnt:contentList">
-                        <top-menu j:menuType="/templateSets/templates-intranet/templates/contents/menuAvailable/primary" j:maxDepth="2" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-intranet/home" j:styleName="navigation" />
+                        <top-menu j:menuType="/templateSets/templates-intranet/templates/contents/menuAvailable/primary" j:maxDepth="2" jcr:primaryType="jnt:navMenu" j:baselineNode="home" j:styleName="navigation" />
                         <shortcuts jcr:primaryType="jnt:shortcuts" />
                     </topMenu>
                     <footer jcr:primaryType="jnt:contentList">

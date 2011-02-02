@@ -38,7 +38,7 @@
               <illustration j:level="1" jcr:primaryType="jnt:levelAbsoluteArea" j:allowedTypes="jnt:imageReference" />
             </illustration>
             <content-col2 jcr:primaryType="jnt:contentList">
-              <navMenu j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web-blue/home" j:menuItemView="menuElement" j:startLevel="1" j:styleName="navigationN2-2" />
+              <navMenu j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="home" j:menuItemView="menuElement" j:startLevel="1" j:styleName="navigationN2-2" />
               <Right-column jcr:primaryType="jnt:area" j:allowedTypes="" />
             </content-col2>
             <content-col1 jcr:primaryType="jnt:contentList">
@@ -58,7 +58,7 @@
             <footer divID="footer" jcr:primaryType="jnt:customRow" customColumn="8,8" />
           </pagecontent>
           <headerBottom-colContent jcr:primaryType="jnt:contentList">
-            <navMenu j:maxDepth="1" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web-blue/home" j:menuItemView="menuElement" j:startLevel="0" j:styleName="navigationN1" />
+            <navMenu j:maxDepth="1" jcr:primaryType="jnt:navMenu" j:baselineNode="home" j:menuItemView="menuElement" j:startLevel="0" j:styleName="navigationN1" />
           </headerBottom-colContent>
           <header-col1 jcr:primaryType="jnt:contentList">
             <header-left jcr:primaryType="jnt:absoluteArea" j:allowedTypes="" />
@@ -101,7 +101,7 @@
               <events j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:canDeleteInContribution="true" jcr:primaryType="jnt:area" j:contributeTypes="jnt:event" j:allowedTypes="jnt:event" j:editableInContribution="true" />
             </row1-col1>
             <row1-col2 jcr:primaryType="jnt:contentList">
-              <side-menu j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web-blue/home" j:startLevel="1" j:styleName="navigationN2" />
+              <side-menu j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="home" j:startLevel="1" j:styleName="navigationN2" />
               <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templateSets/templates-web-blue/templates/base/events/row1-col1/events" />
               <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-web-blue/templates/base/events/row1-col1/events">
                 <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
@@ -132,7 +132,7 @@
               <illustration j:level="1" jcr:primaryType="jnt:levelAbsoluteArea" j:allowedTypes="jnt:imageReference" />
             </illustration>
             <content-col2 jcr:primaryType="jnt:contentList">
-              <navMenu j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web-blue/home" j:menuItemView="menuElement" j:startLevel="1" j:styleName="navigationN2-2" />
+              <navMenu j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="home" j:menuItemView="menuElement" j:startLevel="1" j:styleName="navigationN2-2" />
               <Right-column jcr:primaryType="jnt:area" j:allowedTypes="" />
             </content-col2>
             <content-col1 jcr:primaryType="jnt:contentList">

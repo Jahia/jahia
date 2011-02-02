@@ -30,7 +30,17 @@
 <c:if test="${empty menuItemTemplate}">
     <c:set var="menuItemTemplate" value="menuElement" />
 </c:if>
-<c:set var="current" value="${baseline.node}"/>
+
+<c:if test="${empty currentResource.moduleParams.base}">
+    <c:if test="${empty baseline or baseline.string eq 'home'}">
+        <jcr:node var="current" path="${currentNode.resolveSite.path}/home"/>
+    </c:if>
+    <c:if test="${baseline.string eq 'currentPage'}">
+        <c:set var="current" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}" />
+    </c:if>
+</c:if>
+
+<%--<c:set var="current" value="${baseline.node}"/>--%>
 <c:if test="${not empty currentResource.moduleParams.base}">
     <jcr:node var="current" uuid="${currentResource.moduleParams.base}" />
 </c:if>

@@ -65,8 +65,8 @@ public class AddTopic extends Action {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         if (!node.isNodeType("jnt:topic")) {
-            String topicTitle = JCRContentUtils.generateNodeName(parameters.get("jcr:title").get(0), 32);
-            node = node.addNode(topicTitle, "jnt:topic");
+            String topicTitle = parameters.get("jcr:title").get(0);
+            node = node.addNode(JCRContentUtils.generateNodeName(topicTitle, 32), "jnt:topic");
             node.setProperty("topicSubject",topicTitle);
         }
         JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper.getNode(node.getPath()), "jnt:post","");

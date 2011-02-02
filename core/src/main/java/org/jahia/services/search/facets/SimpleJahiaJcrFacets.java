@@ -96,8 +96,6 @@ public class SimpleJahiaJcrFacets {
 
     public static final String PROPNAME_INDEX_SEPARATOR = "#";
 
-    private static final DateField dateType = new DateField();
-
     /** The main set of documents all facet counts should be relative to */
     protected OpenBitSet docs;
     /** Configuration params behavior should be driven by */
@@ -180,7 +178,7 @@ public class SimpleJahiaJcrFacets {
                 // current default is to include zeros.
             }            
             for (String q : facetQs) {
-                QueryParser qp = new QueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
+                QueryParser qp = new JahiaQueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
                 qp.setLowercaseExpandedTerms(false);
                 Query qobj = qp.parse(q);
                 long count = OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj), ""),
@@ -587,7 +585,7 @@ public class SimpleJahiaJcrFacets {
                     FacetParams.FACET_DATE_START);
             final Date start;
             try {
-                start = dateType.parseMath(NOW, startS);
+                start = JahiaQueryParser.DATE_TYPE.parseMath(NOW, startS);
             } catch (SolrException e) {
                 throw new JahiaException(
                         "date facet 'start' is not a valid Date string: " + startS,
@@ -597,7 +595,7 @@ public class SimpleJahiaJcrFacets {
             final String endS = required.getFieldParam(f, FacetParams.FACET_DATE_END);
             Date end; // not final, hardend may change this
             try {
-                end = dateType.parseMath(NOW, endS);
+                end = JahiaQueryParser.DATE_TYPE.parseMath(NOW, endS);
             } catch (SolrException e) {
                 throw new JahiaException("date facet 'end' is not a valid Date string: " + endS,
                         "date facet 'end' is not a valid Date string: " + endS,
@@ -619,8 +617,8 @@ public class SimpleJahiaJcrFacets {
                 Date low = start;
                 while (low.before(end)) {
                     dmp.setNow(low);
-                    final String lowI = dateType.toInternal(low);
-                    final String label = dateType.indexedToReadable(lowI, true);
+                    final String lowI = JahiaQueryParser.DATE_TYPE.toInternal(low);
+                    final String label = JahiaQueryParser.DATE_TYPE.indexedToReadable(lowI, true);
                     Date high = dmp.parseMath(gap);
                     if (end.before(high)) {
                         if (params.getFieldBool(f, FacetParams.FACET_DATE_HARD_END,
@@ -635,7 +633,7 @@ public class SimpleJahiaJcrFacets {
                                 "date facet infinite loop (is gap negative?)",
                                 JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
                     }
-                    final String highI = dateType.toInternal(high);
+                    final String highI = JahiaQueryParser.DATE_TYPE.toInternal(high);
                     Query rangeQuery = getRangeQuery(fieldNameInIndex, lowI, highI, true, true);
                     int count = rangeCount(rangeQuery);
                     if (count >= mincount) {
@@ -667,8 +665,8 @@ public class SimpleJahiaJcrFacets {
                 // no matter what other values are listed, we don't do
                 // anything if "none" is specified.
                 if (!others.contains(FacetDateOther.NONE)) {
-                    final String startI = dateType.toInternal(start);
-                    final String endI = dateType.toInternal(end);
+                    final String startI = JahiaQueryParser.DATE_TYPE.toInternal(start);
+                    final String endI = JahiaQueryParser.DATE_TYPE.toInternal(end);
 
                     boolean all = others.contains(FacetDateOther.ALL);
 

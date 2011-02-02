@@ -14,6 +14,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.jahia.services.search.facets.JahiaQueryParser;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
@@ -167,7 +168,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             try {
                 StaticOperand expr = fts.getFullTextSearchExpression();
                 if (expr instanceof Literal) {
-                    QueryParser qp = new QueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
+                    QueryParser qp = new JahiaQueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
                     qp.setLowercaseExpandedTerms(false);
                     qobj = qp.parse(((Literal) expr).getLiteralValue().getString());
                 } else {

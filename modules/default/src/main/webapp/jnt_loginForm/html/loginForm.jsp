@@ -2,6 +2,8 @@
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -54,17 +56,38 @@
     </ui:loginArea>
 </c:if>
 <c:if test="${renderContext.loggedIn &&  !(currentAliasUser.username eq 'guest')}">
+    <jcr:node var="user" uuid="${renderContext.user.identifier}"/>
+    <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
+    <c:set var="publicPropertiesAsString" value=""/>
+
+    <c:forEach items="${publicProperties}" var="value">
+        <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
+    </c:forEach>
+
     <div class="loginForm">
-                    <div class='image'>
-                    <div class='itemImage itemImageRight'>
-							<img alt="" src="${url.currentModule}/images/userbig.png" alt="friend" border="0"/>
-                    </div>
-                </div>
-    <h3 class="logouticon">Logout</h3>
-    <p>Logged as ${renderContext.user.username}
-        <c:if test="${!empty currentAliasUser}">( as ${currentAliasUser.username}) </c:if>
-    </p>
-    <p><a class="loginFormTopLogoutShortcuts"
-          href='${url.logout}'><span><fmt:message key="label.logout"/></span></a></p>
-          </div>
+        <div class='image'>
+            <div class='itemImage itemImageRight'>
+                <c:choose>
+                    <c:when test="${fn:contains(publicPropertiesAsString, 'j:picture')}">
+                        <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+                        <c:if test="${not empty picture}">
+                            <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/>
+                        </c:if>
+                        <c:if test="${empty picture}">
+                            <img src="${url.currentModule}/images/userbig.png" alt="" border="0"/>
+                        </c:if>
+                    </c:when>
+                    <c:otherwise>
+                        <img src="${url.currentModule}/images/userbig.png" alt="" border="0"/>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </div>
+        <h3 class="logouticon">Logout</h3>
+        <p>Logged as ${renderContext.user.username}
+            <c:if test="${!empty currentAliasUser}">( as ${currentAliasUser.username}) </c:if>
+        </p>
+        <p><a class="loginFormTopLogoutShortcuts"
+              href='${url.logout}'><span><fmt:message key="label.logout"/></span></a></p>
+    </div>
 </c:if>

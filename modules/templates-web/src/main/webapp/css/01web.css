@@ -515,6 +515,12 @@ body {
 		padding:0;
 	vertical-align: bottom;
 }
+#bodywrapper .small {
+	font-weight:0.8em;
+}
+#bodywrapper .colorlight {
+	color:#666
+}
 /******************************************************************************
 *  Float Right Links List ordered or unordered
 ******************************************************************************/

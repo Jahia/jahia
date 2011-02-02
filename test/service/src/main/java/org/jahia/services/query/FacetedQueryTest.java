@@ -271,9 +271,9 @@ public class FacetedQueryTest {
         assertEquals("Query did not return correct number of facets", 3, field.getValues().size());
         Iterator<FacetField.Count> counts = field.getValues().iterator();
 
-        checkFacet(counts.next(), session.getNode("/categories/cat3").getIdentifier(), 16);
-        checkFacet(counts.next(), session.getNode("/categories/cat2").getIdentifier(), 6);
-        checkFacet(counts.next(), session.getNode("/categories/cat1").getIdentifier(), 5);
+        checkFacet(counts.next(), session.getNode("/sites/systemsite/categories/cat3").getIdentifier(), 16);
+        checkFacet(counts.next(), session.getNode("/sites/systemsite/categories/cat2").getIdentifier(), 6);
+        checkFacet(counts.next(), session.getNode("/sites/systemsite/categories/cat1").getIdentifier(), 5);
 
         for (FacetField.Count count : field.getValues()) {
             QueryResultWrapper resCheck = doFilteredQuery(session, "j:defaultCategory", count.getName());
@@ -371,14 +371,27 @@ public class FacetedQueryTest {
         QueryResultWrapper resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:eventsType:[a TO p]");
         checkResultSize(resCheck, 10);
         resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:eventsType:[p TO z]");
-        checkResultSize(resCheck, 17);                
+        checkResultSize(resCheck, 17);            
+
+        res = doQuery(session, "startDate", "rep:facet(facet.query=0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z TO 2000-01-01T00:00:00.000Z+1MONTH]&facet.query=0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z+1MONTH TO 2000-01-01T00:00:00.000Z+2MONTH])");
+        queryFacet = res.getFacetQuery();
+        assertNotNull("Query facet result is null",queryFacet);
+        assertEquals("Query did not return correct number of facets", 2, queryFacet.size());
+        
+        assertEquals("Facet count is incorrect", 14, queryFacet.get("0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z TO 2000-01-01T00:00:00.000Z+1MONTH]").longValue());
+        assertEquals("Facet count is incorrect", 13, queryFacet.get("0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z+1MONTH TO 2000-01-01T00:00:00.000Z+2MONTH]").longValue());        
+        
+        resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z TO 2000-01-01T00:00:00.000Z+1MONTH]");
+        checkResultSize(resCheck, 14);
+        resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:startDate:[2000-01-01T00:00:00.000Z+1MONTH TO 2000-01-01T00:00:00.000Z+2MONTH]");
+        checkResultSize(resCheck, 13);        
     }
 
     private static void initContent(JCRSessionWrapper session) throws RepositoryException {
         int i = 0;
         Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
 
-        JCRNodeWrapper cats = session.getNode("/categories");
+        JCRNodeWrapper cats = session.getNode("/sites/systemsite/categories");
         session.getWorkspace().getVersionManager().checkout(cats.getPath());
         if (!cats.hasNode("cat1")) cats.addNode("cat1", "jnt:category");
         if (!cats.hasNode("cat2")) cats.addNode("cat2", "jnt:category");

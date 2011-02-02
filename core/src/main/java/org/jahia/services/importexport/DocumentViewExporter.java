@@ -192,8 +192,12 @@ public class DocumentViewExporter {
                 }                
             }
             PropertyIterator propsIterator = node.getRealNode().getProperties();
+            SortedSet<String> sortedProps = new TreeSet<String>();
             while (propsIterator.hasNext()) {
-                Property property = propsIterator.nextProperty();
+                sortedProps.add(propsIterator.nextProperty().getName());
+            }
+            for (String prop : sortedProps) {
+                Property property = node.getRealNode().getProperty(prop);
                 if ((property.getType() != PropertyType.BINARY || !skipBinary) && !excluded.contains(property.getName())) {
                     String key = property.getName();
                     String prefix = null;

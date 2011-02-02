@@ -567,10 +567,32 @@ text-align: center
 div.addArticle{
 	padding-bottom:1em;
 }
-#bodywrapper a.addArticle {
-	background: url(img/blog/addarticle.png) no-repeat;
+#bodywrapper .addArticle a,
+#bodywrapper .addArticle a:link{
+	background:#eaeaea url(img/blog/addarticle.png) no-repeat 2% 50%;
 	padding:2px 0;
-	padding-left:28px;
+	padding:5px 5px 5px 35px;
+	line-height:1.4em;
+	display:block;
+	font-weight:bold;
+	font-size:1.4em;
+	color:#ccc;
+	color: rgba ( 255, 255, 255, 0.7);
+	text-shadow: 0 1px 0px rgba (0 ,0 ,0 ,0.5);
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-transition: all 0.3s ease-in-out; 
+	-moz-transition: all 0.3s ease-in-out; 
+	-o-transition: all 0.3s ease-in-out; 
+	transition: all 0.3s ease-in-out; 
+}
+#bodywrapper .addArticle a:hover,
+#bodywrapper .addArticle a:focus{
+	background-color:#333;
+	background: rgba ( 255, 255, 255, 0.15);
+	color:#fff;
+	text-decoration:none;
 }
 
 

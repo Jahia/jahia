@@ -4,133 +4,136 @@
          xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
          xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
-        <forum j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap"
-               jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="forum" priority="0.5">
+        <forum changefreq="monthly" j:installedModules="forum" j:siteType="module" j:wcagCompliance="true"
+               jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
             <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
-                    <forum jcr:primaryType="jnt:template" j:hiddenTemplate="false">
+                <base j:view="apps" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
+                    <forum j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                         <pagecontent jcr:primaryType="jnt:contentList">
-                            <pagecontent j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin"
-                                         jcr:primaryType="jnt:contentList" j:id="forum-body">
+                            <pagecontent j:id="forum-body" j:skin="skins.custom"
+                                         jcr:mixinTypes="jmix:skinnable jmix:customSkin"
+                                         jcr:primaryType="jnt:contentList">
                                 <row column="2col124" jcr:primaryType="jnt:row"/>
                             </pagecontent>
                         </pagecontent>
                         <row-col1 jcr:primaryType="jnt:contentList">
-                            <pageBreadcrumb jcr:primaryType="jnt:pageBreadcrumb" additionalType=""
-                                            displayCurrentPage="true" displayHome="true"
-                                            displayLinkOnCurrentPage="false"/>
-                            <pagecontent jcr:primaryType="jnt:area" j:allowedTypes=""/>
+                            <pageBreadcrumb displayCurrentPage="true" displayHome="true"
+                                            displayLinkOnCurrentPage="false" jcr:primaryType="jnt:pageBreadcrumb"/>
+                            <pageTitle jcr:primaryType="jnt:pageTitle"/>
+                            <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area"/>
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList">
                             <jahiapp-forum-logo.png jcr:primaryType="jnt:contentReference"/>
                             <jahiapp-forum-logo-1.png
                                     j:node="/templateSets/forum/templates/files/jahiapp-forum-logo.png"
                                     jcr:primaryType="jnt:imageReference">
-                                <j:translation_en jcr:language="en" j:alternateText="jahiapp forum logo"
+                                <j:translation_en j:alternateText="jahiapp forum logo" jcr:language="en"
                                                   jcr:primaryType="jnt:translation"/>
                             </jahiapp-forum-logo-1.png>
-                            <aside jcr:primaryType="jnt:area" j:allowedTypes=""/>
+                            <aside j:allowedTypes="" jcr:primaryType="jnt:area"/>
                         </row-col2>
                         <forum-home jcr:primaryType="jnt:pageTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <forumNavigation jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:forumNavigation"
-                                                 j:bindedComponent="/templateSets/forum/templates/base/forum/forum-home"
-                                                 j:view="rooms"/>
-                                <pageForm class="forum-Form" jcr:mixinTypes="jmix:requiredPermissions"
-                                          useDescription="false"
+                                <forumNavigation j:bindedComponent="/templateSets/forum/templates/base/forum/forum-home"
+                                                 j:view="rooms" jcr:mixinTypes="jmix:renderable"
+                                                 jcr:primaryType="jnt:forumNavigation"/>
+                                <pageForm buttonLabel="Create room" class="forum-Form" j:requiredMode="live"
                                           j:requiredPermissions="/permissions/actions/forum/createTopic"
+                                          jcr:mixinTypes="jmix:requiredPermissions"
+                                          jcr:primaryType="jnt:pageFormCreation" stayOnPage="true"
                                           templateNode="/templateSets/forum/templates/base/forum/forum-room"
-                                          j:requiredMode="live" buttonLabel="Create room"
-                                          jcr:primaryType="jnt:pageFormCreation" stayOnPage="true">
+                                          useDescription="false">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
-                                                      jcr:title="Create new room" jcr:primaryType="jnt:translation"/>
+                                                      jcr:primaryType="jnt:translation" jcr:title="Create new room"/>
                                 </pageForm>
                             </pagecontent>
                         </forum-home>
                         <forum-room jcr:primaryType="jnt:pageTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <forumNavigation jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:forumNavigation"
-                                                 j:bindedComponent="/templateSets/forum/templates/base/forum/forum-room"/>
-                                <pageForm class="forum-Form"
-                                          templateNode="/templateSets/forum/templates/base/forum/forum"
-                                          j:requiredMode="live" buttonLabel="Create section"
+                                <forumNavigation j:bindedComponent="/templateSets/forum/templates/base/forum/forum-room"
+                                                 jcr:mixinTypes="jmix:renderable"
+                                                 jcr:primaryType="jnt:forumNavigation"/>
+                                <pageForm buttonLabel="Create section" class="forum-Form" j:requiredMode="live"
                                           j:requiredPermissions="/permissions/actions/forum/createTopic"
-                                          useDescription="true" jcr:mixinTypes="jmix:requiredPermissions"
-                                          jcr:primaryType="jnt:pageFormCreation" stayOnPage="true">
-                                    <j:translation_en jcr:title="Create new section" jcr:mixinTypes="mix:title"
-                                                      jcr:primaryType="jnt:translation" jcr:language="en"/>
+                                          jcr:mixinTypes="jmix:requiredPermissions"
+                                          jcr:primaryType="jnt:pageFormCreation" stayOnPage="true"
+                                          templateNode="/templateSets/forum/templates/base/forum/forum"
+                                          useDescription="true">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                                      jcr:primaryType="jnt:translation" jcr:title="Create new section"/>
                                 </pageForm>
                             </pagecontent>
                         </forum-room>
                         <forum jcr:primaryType="jnt:pageTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <topicList jcr:primaryType="jnt:topicList"
-                                           j:bindedComponent="/templateSets/forum/templates/base/forum/forum"/>
+                                <topicList j:bindedComponent="/templateSets/forum/templates/base/forum/forum"
+                                           jcr:primaryType="jnt:topicList"/>
                             </pagecontent>
                             <aside jcr:primaryType="jnt:contentList">
                                 <jahiapp-forum-logo.png jcr:primaryType="jnt:contentReference"/>
-                                <add-a-new-topic divClass="forum-buttons" aClass="forum-post-icon"
+                                <add-a-new-topic aClass="forum-post-icon" divClass="forum-buttons"
+                                                 j:bindedComponent="/templateSets/forum/templates/base/forum/forum"
+                                                 j:requireLoggedUser="false"
                                                  j:requiredPermissions="/permissions/actions/forum/createTopic"
                                                  jcr:mixinTypes="jmix:requiredPermissions"
-                                                 jcr:primaryType="jnt:componentLink" j:requireLoggedUser="false"
-                                                 j:bindedComponent="/templateSets/forum/templates/base/forum/forum"
-                                                 targetTemplate="forum-newTopic">
-                                    <j:translation_en jcr:title="Add a new topic" jcr:mixinTypes="mix:title"
-                                                      jcr:primaryType="jnt:translation" jcr:language="en"/>
+                                                 jcr:primaryType="jnt:componentLink" targetTemplate="forum-newTopic">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                                      jcr:primaryType="jnt:translation" jcr:title="Add a new topic"/>
                                 </add-a-new-topic>
                             </aside>
                         </forum>
-                        <forum-newTopic jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="true">
+                        <forum-newTopic j:hiddenTemplate="true" jcr:primaryType="jnt:pageTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <post jcr:mixinTypes="jmix:requiredPermissions"
+                                <post j:bindedComponent="/templateSets/forum/templates/base/forum/forum-newTopic"
+                                      j:requireLoggedUser="false" j:requiredMode="live"
                                       j:requiredPermissions="/permissions/actions/forum/createTopic"
-                                      j:requiredMode="live" jcr:primaryType="jnt:postForm" j:requireLoggedUser="false"
-                                      j:bindedComponent="/templateSets/forum/templates/base/forum/forum-newTopic">
-                                    <j:translation_en jcr:title="post" jcr:mixinTypes="mix:title"
-                                                      jcr:primaryType="jnt:translation" jcr:language="en"/>
+                                      jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:postForm">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                                      jcr:primaryType="jnt:translation" jcr:title="post"/>
                                 </post>
                             </pagecontent>
                         </forum-newTopic>
-                        <forum-topic jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:topic"
-                                     j:hiddenTemplate="false" j:defaultTemplate="true">
+                        <forum-topic j:applyOn="jnt:topic" j:defaultTemplate="true" j:hiddenTemplate="false"
+                                     jcr:primaryType="jnt:contentTemplate">
                             <aside jcr:primaryType="jnt:contentList">
                                 <jahiapp-forum-logo.png jcr:primaryType="jnt:contentReference"/>
-                                <add-a-new-post divClass="forum-buttons" aClass="forum-post-icon"
-                                                jcr:mixinTypes="jmix:requiredPermissions"
-                                                j:requiredPermissions="/permissions/actions/forum/createPost"
-                                                jcr:primaryType="jnt:componentLink" j:requireLoggedUser="false"
+                                <add-a-new-post aClass="forum-post-icon" divClass="forum-buttons"
                                                 j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic"
+                                                j:requireLoggedUser="false"
+                                                j:requiredPermissions="/permissions/actions/forum/createPost"
+                                                jcr:mixinTypes="jmix:requiredPermissions"
+                                                jcr:primaryType="jnt:componentLink"
                                                 targetTemplate="forum-topic-newPost">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
-                                                      jcr:title="Add a new post" jcr:primaryType="jnt:translation"/>
+                                                      jcr:primaryType="jnt:translation" jcr:title="Add a new post"/>
                                 </add-a-new-post>
                             </aside>
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <postsList reverseOrder="false" jcr:primaryType="jnt:postsList"
-                                           j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic"/>
+                                <postsList j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic"
+                                           jcr:primaryType="jnt:postsList" reverseOrder="false"/>
                             </pagecontent>
                         </forum-topic>
-                        <forum-topic-newPost jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:topic"
-                                             j:hiddenTemplate="false" j:defaultTemplate="false">
+                        <forum-topic-newPost j:applyOn="jnt:topic" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                             jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <post j:requiredPermissions="/permissions/actions/forum/createPost"
-                                      jcr:mixinTypes="jmix:requiredPermissions" j:requiredMode="live"
-                                      jcr:primaryType="jnt:postForm" j:requireLoggedUser="false"
-                                      j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic-newPost">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="post"
-                                                      jcr:primaryType="jnt:translation"/>
+                                <post j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic-newPost"
+                                      j:requireLoggedUser="false" j:requiredMode="live"
+                                      j:requiredPermissions="/permissions/actions/forum/createPost"
+                                      jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:postForm">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                                      jcr:primaryType="jnt:translation" jcr:title="post"/>
                                 </post>
-                                <postsList reverseOrder="true" jcr:primaryType="jnt:postsList"
-                                           j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic-newPost"
-                                           limit="3"/>
+                                <postsList
+                                        j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic-newPost"
+                                        jcr:primaryType="jnt:postsList" limit="3" reverseOrder="true"/>
                             </pagecontent>
                         </forum-topic-newPost>
                     </forum>
                 </base>
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <files jcr:primaryType="jnt:folder">
-                    <jahiapp-forum-logo.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="66"
-                                            j:width="129">
+                    <jahiapp-forum-logo.png j:height="66" j:width="129" jcr:mixinTypes="jmix:image"
+                                            jcr:primaryType="jnt:file">
                         <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                         <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                         <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>

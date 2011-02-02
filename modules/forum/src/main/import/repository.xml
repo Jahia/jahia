@@ -81,9 +81,8 @@
                         </forum-section>
                         <forum-section-newTopic jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="true">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <post jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:postForm"
-                                      j:bindedComponent="/templateSets/forum/templates/base/forum/forum-section-newTopic"
-                                      j:view="newTopic">
+                                <post jcr:primaryType="jnt:postForm"
+                                      j:bindedComponent="/templateSets/forum/templates/base/forum/forum-section-newTopic">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="post"
                                                       jcr:primaryType="jnt:translation"/>
                                 </post>

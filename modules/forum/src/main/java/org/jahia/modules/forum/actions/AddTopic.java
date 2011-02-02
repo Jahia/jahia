@@ -61,9 +61,11 @@ public class AddTopic extends Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
-        String topicTitle = parameters.get("jcr:title").get(0);
-        node = node.addNode(topicTitle, "jnt:topic");
-        node.setProperty("topicSubject",topicTitle);
+        if (!node.isNodeType("jnt:topic")) {
+            String topicTitle = parameters.get("jcr:title").get(0);
+            node = node.addNode(topicTitle, "jnt:topic");
+            node.setProperty("topicSubject",topicTitle);
+        }
         JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper.getNode(node.getPath()), "jnt:post","");
         jcrSessionWrapper.save();
         return new ActionResult(HttpServletResponse.SC_OK, node.getPath(), Render.serializeNodeToJSON(newNode));

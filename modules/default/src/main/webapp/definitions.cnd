@@ -150,7 +150,6 @@
 [jnt:topic] > jnt:content
  - topicSubject (string)
  - topicDescription (string)
- + * (jnt:topic)
  + * (jnt:post)
 
 [jmix:comments] mixin

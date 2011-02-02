@@ -17,22 +17,24 @@
 <template:addResources type="css" resources="forum.css"/>
 <c:set var="linked" value="${uiComponents:getBindedComponentPath(currentNode, renderContext, 'j:bindedComponent')}"/>
 <template:addResources type="css" resources="forum.css"/>
-
+<script type="text/javascript">
+    function jahiaForumQuote(targetId, quotedText) {
+        var targetArea = document.getElementById(targetId);
+        if (targetArea) {
+            targetArea.value = targetArea.value + '\n<blockquote>\n' + quotedText + '\n</blockquote>\n';
+        }
+        return false;
+    }
+</script>
 <a name="threadPost"></a>
 <template:tokenizedForm>
-    <form action="${url.base}${linked}/*" method="post">
-        <input type="hidden" name="nodeType" value="jnt:post"/>
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-        <input type="hidden" name="newNodeOutputFormat" value="${renderContext.mainResource.template}.html"/>
-        <input type="hidden" name="autoAssignRole" value="owner"/>
-
+    <form action="${url.base}${linked}.addTopic.do" method="post" name="newTopicForm">
         <div class="post-reply"><!--start post-reply-->
             <div class="forum-box forum-box-style2">
                 <span class="forum-corners-top"><span></span></span>
 
                 <div id="forum-Form"><!--start forum-Form-->
-                    <h4 class="forum-h4-first">${currentNode.propertiesAsString['jcr:title']} : <fmt:message
-                            key="reply"/></h4>
+                    <h4 class="forum-h4-first">${currentNode.propertiesAsString['jcr:title']} : </h4>
 
                     <fieldset>
                         <p class="field">

@@ -197,39 +197,43 @@ public class DocumentViewExporter {
                 sortedProps.add(propsIterator.nextProperty().getName());
             }
             for (String prop : sortedProps) {
-                Property property = node.getRealNode().getProperty(prop);
-                if ((property.getType() != PropertyType.BINARY || !skipBinary) && !excluded.contains(property.getName())) {
-                    String key = property.getName();
-                    String prefix = null;
-                    String localname = key;
-                    if (key.indexOf(':') > -1) {
-                        prefix = key.substring(0, key.indexOf(':'));
-                        localname = key.substring(key.indexOf(':') + 1);
-                    }
-
-                    String attrName = ISO9075.encode(localname);
-
-                    String value;
-                    if (!property.isMultiple()) {
-                        value = getValue(property.getValue());
-                    } else {
-                        Value[] vs = property.getValues();
-                        StringBuffer b = new StringBuffer();
-                        for (int i = 0; i < vs.length; i++) {
-                            Value v = vs[i];
-                            b.append(getValue(v));
-                            if (i + 1 < vs.length) {
-                                b.append(" ");
-                            }
+                try {
+                    Property property = node.getRealNode().getProperty(prop);
+                    if ((property.getType() != PropertyType.BINARY || !skipBinary) && !excluded.contains(property.getName())) {
+                        String key = property.getName();
+                        String prefix = null;
+                        String localname = key;
+                        if (key.indexOf(':') > -1) {
+                            prefix = key.substring(0, key.indexOf(':'));
+                            localname = key.substring(key.indexOf(':') + 1);
                         }
-                        value = b.toString();
-                    }
 
-                    if (prefix == null) {
-                        atts.addAttribute("", localname, attrName, CDATA, value);
-                    } else {
-                        atts.addAttribute(prefixes.get(prefix), localname, prefix + ":" + attrName, CDATA, value);
+                        String attrName = ISO9075.encode(localname);
+
+                        String value;
+                        if (!property.isMultiple()) {
+                            value = getValue(property.getValue());
+                        } else {
+                            Value[] vs = property.getValues();
+                            StringBuffer b = new StringBuffer();
+                            for (int i = 0; i < vs.length; i++) {
+                                Value v = vs[i];
+                                b.append(getValue(v));
+                                if (i + 1 < vs.length) {
+                                    b.append(" ");
+                                }
+                            }
+                            value = b.toString();
+                        }
+
+                        if (prefix == null) {
+                            atts.addAttribute("", localname, attrName, CDATA, value);
+                        } else {
+                            atts.addAttribute(prefixes.get(prefix), localname, prefix + ":" + attrName, CDATA, value);
+                        }
                     }
+                } catch (RepositoryException e) {
+                    logger.error("Cannot export property",e);
                 }
 
             }

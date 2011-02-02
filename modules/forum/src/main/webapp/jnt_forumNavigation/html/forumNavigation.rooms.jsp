@@ -30,10 +30,24 @@
                     <li class="forum-list-header">
                         <dl class="icon">
                             <dt><a href="${url.base}${room.path}.html">${room.properties['jcr:title'].string}</a>
-                                <c:if test="${section.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
-                                    <li class="delete-post-icon"><a title="Delete this topic" href="#"
-                                                                    onclick="document.getElementById('jahia-forum-section-delete-${section.UUID}').submit();"><span>Delete this section</span></a>
-                                    </li>
+
+                                <c:if test="${jcr:hasPermission(room, 'jcr:removeNode')}">
+                                    <template:tokenizedForm>
+                                        <form action="${url.base}${room.path}" method="post"
+                                              id="jahia-forum-room-delete-${room.UUID}">
+                                            <input type="hidden" name="redirectTo"
+                                                   value="${url.base}${renderContext.mainResource.node.path}"/>
+                                                <%-- Define the output format for the newly created node by default html or by redirectTo--%>
+                                            <input type="hidden" name="newNodeOutputFormat" value="html"/>
+                                            <input type="hidden" name="methodToCall" value="delete"/>
+                                        </form>
+                                    </template:tokenizedForm>
+                                    <ul class="forum-profile-icons">
+                                            <li class="delete-post-icon"><a title="<fmt:message key='delete.room'/>" href="#"
+                                                                            onclick="if (window.confirm('<fmt:message key='confirm.delete.room'/>')) {document.getElementById('jahia-forum-room-delete-${room.UUID}').submit();}"><span><fmt:message key='delete.room'/></span></a>
+                                            </li>
+
+                                    </ul>
                                 </c:if>
                             </dt>
                             <dd class="topics"><fmt:message key="posts"/></dd>
@@ -62,7 +76,7 @@
                                                           var="createdBy"/>
                                     </c:if>
                                 </c:forEach>
-                                <c:if test="${jcr:hasPermission(section, 'createPost')}">
+                                <c:if test="${jcr:hasPermission(section, 'jcr:removeNode')}">
                                     <template:tokenizedForm>
                                         <form action="${url.base}${section.path}" method="post"
                                               id="jahia-forum-section-delete-${section.UUID}">
@@ -84,9 +98,9 @@
                                             ${section.properties['jcr:description'].string}
                                     </p>
                                     <ul class="forum-profile-icons">
-                                        <c:if test="${section.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
-                                            <li class="delete-post-icon"><a title="Delete this topic" href="#"
-                                                                            onclick="document.getElementById('jahia-forum-section-delete-${section.UUID}').submit();"><span>Delete this section</span></a>
+                                        <c:if test="${jcr:hasPermission(section, 'jcr:removeNode')}">
+                                            <li class="delete-post-icon"><a title="<fmt:message key='delete.section'/>" href="#"
+                                                                            onclick="if (window.confirm('<fmt:message key='confirm.delete.section'/>')) { document.getElementById('jahia-forum-section-delete-${section.UUID}').submit(); }"><span><fmt:message key='delete.section'/></span></a>
                                             </li>
                                         </c:if>
 

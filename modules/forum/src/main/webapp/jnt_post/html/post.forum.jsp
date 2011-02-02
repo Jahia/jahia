@@ -20,7 +20,7 @@
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
-<c:if test="${currentNode.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+<c:if test="${jcr:hasPermission(currentNode, 'deletePost')}">
     <template:tokenizedForm>
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-post-delete-${currentNode.UUID}">

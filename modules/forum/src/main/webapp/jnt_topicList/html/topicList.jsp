@@ -56,10 +56,10 @@
                                     <jcr:nodeProperty node="${lastModifiedNode}" name="jcr:createdBy" var="createdBy"/>
                                 </c:if>
                             </c:forEach>
-                            <c:if test="${jcr:hasPermission(topic, 'createPost')}">
+                            <c:if test="${jcr:hasPermission(section, 'deleteTopic')}">
                                 <template:tokenizedForm>
                                     <form action="${url.base}${topic.path}" method="post"
-                                          id="jahia-forum-section-delete-${topic.UUID}">
+                                          id="jahia-forum-topic-delete-${topic.UUID}">
                                         <input type="hidden" name="redirectTo"
                                                value="${url.base}${renderContext.mainResource.node.path}"/>
                                             <%-- Define the output format for the newly created node by default html or by redirectTo--%>
@@ -79,9 +79,9 @@
                                 </p>
 
                                 <ul class="forum-profile-icons">
-                                    <c:if test="${topic.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
+                                    <c:if test="${jcr:hasPermission(section, 'deleteTopic')}">
                                         <li class="delete-post-icon"><a title="Delete this topic" href="#"
-                                                                        onclick="document.getElementById('jahia-forum-section-delete-${topic.UUID}').submit();"><span>Delete this topic</span></a>
+                                                                        onclick="document.getElementById('jahia-forum-topic-delete-${topic.UUID}').submit();"><span>Delete this topic</span></a>
                                         </li>
                                     </c:if>
 

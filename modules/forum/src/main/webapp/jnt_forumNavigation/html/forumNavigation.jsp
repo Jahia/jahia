@@ -30,9 +30,9 @@
                 <li class="forum-list-header">
                     <dl class="icon">
                         <dt></dt>
-                        <dd class="topics">Posts</dd>
+                        <dd class="topics"><fmt:message key='posts'/></dd>
                             <%--<dd class="posts">View</dd>--%>
-                        <dd class="lastpost"><span>Last post</span></dd>
+                        <dd class="lastpost"><span><fmt:message key='last.post'/></span></dd>
                     </dl>
                 </li>
             </ul>
@@ -76,9 +76,9 @@
                                         ${section.properties['jcr:description'].string}
                                 </p>
                                 <ul class="forum-profile-icons">
-                                    <c:if test="${section.propertiesAsString['jcr:createdBy'] == renderContext.user.name}">
-                                        <li class="delete-post-icon"><a title="Delete this topic" href="#"
-                                                                        onclick="document.getElementById('jahia-forum-section-delete-${section.UUID}').submit();"><span>Delete this section</span></a>
+                                    <c:if test="${jcr:hasPermission(section, 'jcr:removeNode')}">
+                                        <li class="delete-post-icon"><a title="<fmt:message key='delete.section'/>" href="#"
+                                                                        onclick="if (window.confirm('<fmt:message key='confirm.delete.section'/>')) {document.getElementById('jahia-forum-section-delete-${section.UUID}').submit();}"><span><fmt:message key='delete.section'/></span></a>
                                         </li>
                                     </c:if>
 

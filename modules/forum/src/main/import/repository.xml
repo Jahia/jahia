@@ -137,8 +137,6 @@
             <forum jcr:primaryType="jnt:permission">
                 <createTopic jcr:primaryType="jnt:permission"/>
                 <deleteTopic jcr:primaryType="jnt:permission"/>
-                <createThread jcr:primaryType="jnt:permission"/>
-                <deleteThread jcr:primaryType="jnt:permission"/>
                 <createPost jcr:primaryType="jnt:permission"/>
                 <deletePost jcr:primaryType="jnt:permission"/>
                 <editPost jcr:primaryType="jnt:permission"/>

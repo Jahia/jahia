@@ -77,8 +77,12 @@ public class JCRPropertyTag extends AbstractJahiaTag {
     @Override
     public int doStartTag() throws JspException {
         int returnValue = SKIP_BODY;
-        if (var != null)
-            pageContext.removeAttribute(var);
+        try {
+            if (var != null)
+                pageContext.removeAttribute(var);
+        } catch (IllegalStateException e) {
+            logger.debug("Cannot remove property",e);
+        }
         JCRNodeWrapper curNode = node;
         while (true) {
             try {

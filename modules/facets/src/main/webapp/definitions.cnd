@@ -24,16 +24,16 @@ orderable
 - gap (string) mandatory indexed=no
 - hardend (boolean) = false indexed=no
 - other (string, choicelist[resourceBundle]) multiple indexed=no < before,after,between,none,all
-- format (string) indexed=no
+- labelFormat (string) indexed=no
 
 [jnt:queryFacet] > jnt:facet
 - query (string) mandatory indexed=no
 - valueLabel (string) i18n indexed=no
 
 [jnt:rangeFacet] > jnt:facet
-- lowerBound (string) mandatory indexed=no
-- upperBound (string) mandatory indexed=no
-- includeBounds (boolean) = true indexed=no
+- start (string) mandatory indexed=no
+- end (string) mandatory indexed=no
+- include (string, choicelist[resourceBundle]) = all multiple indexed=no < lower,upper,all
 - valueLabel (string) i18n indexed=no
 
 [jnt:tagCloud] > jnt:content, mix:title, jmix:siteComponent

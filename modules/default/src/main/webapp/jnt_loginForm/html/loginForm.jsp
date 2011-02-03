@@ -87,7 +87,7 @@
         <p>Logged as ${renderContext.user.username}
             <c:if test="${!empty currentAliasUser}">( as ${currentAliasUser.username}) </c:if>
         </p>
-        <p><a class="loginFormTopLogoutShortcuts"
+        <p><a class="aButton"
               href='${url.logout}'><span><fmt:message key="label.logout"/></span></a></p>
     </div>
 </c:if>

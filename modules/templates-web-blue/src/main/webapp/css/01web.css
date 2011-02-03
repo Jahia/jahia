@@ -854,7 +854,7 @@ border: 1px solid #fff;
 #bodywrapper .idTabs li a:hover span,
 #bodywrapper .idTabs li a.idTabs span {
 	background-position:100% -29px;
-	color:#003399;
+	color:#fff;
 	text-decoration:none;
 }
 

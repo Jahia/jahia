@@ -30,7 +30,8 @@
                 <li class="forum-list-header">
                     <dl class="icon">
                         <dt></dt>
-                        <dd class="topics"><fmt:message key='posts'/></dd>
+                        <dd class="topics"><fmt:message key='topics'/></dd>
+                        <dd class="posts"><fmt:message key='posts'/></dd>
                             <%--<dd class="posts">View</dd>--%>
                         <dd class="lastpost"><span><fmt:message key='last.post'/></span></dd>
                     </dl>
@@ -47,6 +48,9 @@
                             <jcr:sql var="numberOfPostsQuery"
                                      sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${section.path}']) order by post.[jcr:lastModified] desc"/>
                             <c:set var="numberOfPosts" value="${numberOfPostsQuery.nodes.size}"/>
+                            <jcr:sql var="numberOfTopicsQuery"
+                                     sql="select * from [jnt:topic] as topic where isdescendantnode(topic, ['${section.path}']) order by topic.[jcr:lastModified] desc"/>
+                            <c:set var="numberOfTopics" value="${numberOfTopicsQuery.nodes.size}"/>
                             <c:forEach items="${numberOfPostsQuery.nodes}" var="node" varStatus="status" end="2">
                                 <c:if test="${status.first}">
                                     <c:set value="${node}" var="lastModifiedNode"/>
@@ -85,6 +89,7 @@
                                 </ul>
                                 </dt>
                                     <%--<dd class="topics">30</dd>--%>
+                                <dd class="topics">${numberOfTopics}</dd>
                                 <dd class="posts">${numberOfPosts}</dd>
                                 <dd class="lastpost">
                                     <c:if test="${numberOfPosts > 0}">

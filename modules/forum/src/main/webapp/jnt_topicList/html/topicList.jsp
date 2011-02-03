@@ -31,10 +31,10 @@
             <ul class="forum-list">
                 <li class="forum-list-header">
                     <dl class="icon">
-                        <dt></dt>
-                        <dd class="topics">Posts</dd>
+                        <dt><fmt:message key="topic"/></dt>
+                        <dd class="topics"><fmt:message key="posts"/></dd>
                             <%--<dd class="posts">View</dd>--%>
-                        <dd class="lastpost"><span>Last post</span></dd>
+                        <dd class="lastpost"><span><fmt:message key="lastPosts"/></span></dd>
                     </dl>
                 </li>
             </ul>
@@ -71,11 +71,10 @@
 
                             <dl>
                                 <dt title="posts"><a class="forum-title"
-                                                     href="${url.base}${topic.path}.html"><jcr:nodeProperty
-                                        node="${topic}" name="topicSubject"/></a>
+                                                     href="${url.base}${topic.path}.html">${topic.properties.topicSubject.string}</a>
                                     <br/>
                                 <p>
-                                        ${topic.properties.topicSubject.string}
+                                    <fmt:message key="mix_created.jcr_createdBy"/> ${topic.properties["jcr:createdBy"].string}  <fmt:formatDate value="${topic.properties['jcr:created'].time}" dateStyle="full" type="both"/>
                                 </p>
 
                                 <ul class="forum-profile-icons">

@@ -227,18 +227,22 @@ public class MainModule extends Module {
     private int maxScript = -1;
 
     private void switchStaticAssets(Map<String, Set<String>> assets) {
+        int m;
         Set<String> values = assets.get("css");
-        int m = removeAllAssets("link", "href", values);
-        if (maxLink == -1) maxLink = m;
-        for (String s : values) {
-            addAsset("css", s, ++maxLink);
+        if (values != null) {
+            m = removeAllAssets("link", "href", values);
+            if (maxLink == -1) maxLink = m;
+            for (String s : values) {
+                addAsset("css", s, ++maxLink);
+            }
         }
-
         values = assets.get("javascript");
-        m = removeAllAssets("script", "src", values);
-        if (maxScript == -1) maxScript = m;
-        for (String s : values) {
-            addAsset("javascript", s, ++maxScript);
+        if (values != null) {
+            m = removeAllAssets("script", "src", values);
+            if (maxScript == -1) maxScript = m;
+            for (String s : values) {
+                addAsset("javascript", s, ++maxScript);
+            }
         }
     }
 
@@ -442,7 +446,7 @@ public class MainModule extends Module {
                                 if (info.isLocked()) {
                                     images.add(ToolbarIconProvider.getInstance().getIcon("publication/locked"));
                                 }
-                                
+
                                 if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                                     lastUnpublished = m.getNode().getPath();
                                     if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
@@ -474,9 +478,9 @@ public class MainModule extends Module {
     }
 
     public static native void exportStaticMethod() /*-{
-       $wnd.goTo = function(path,template,params) {
-          @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(path,template,params);
-       }
+        $wnd.goTo = function(path,template,params) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(path,template,params);
+        }
     }-*/;
 
 

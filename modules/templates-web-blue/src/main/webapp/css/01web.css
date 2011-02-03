@@ -646,19 +646,21 @@ Search form top
 }
 
 #bodywrapper input.button, #bodywrapper button {
-	background:#ccc url(img/bg-button.png) repeat-x top left;
-	border:1px solid #ccc;
-	color:#003399;
+	background:#043b9d url(img/bg-button.png) repeat-x top left;
+	border:1px solid #003366;
+	outline:none;
+	color:#fff;
 	text-align:center;
 	padding:3px 15px;
-	-moz-border-radius:	3px;
-	-webkit-border-radius: 3px;
+	-moz-border-radius:	5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
 
 }
 #bodywrapper .button:hover, #bodywrapper button:hover {
 	cursor: pointer;
-	background:#ccc url(img/bg-button-on.png) repeat-x top left;
-	color:#003399;
+	background:#043b9d url(img/bg-button-on.png) repeat-x bottom left;
+	color:#fff;
 }
 
 /******************************************************************************
@@ -676,7 +678,7 @@ Search form top
 	padding-right: 20px; /* CHENGE THIS VALUE ACCORDING TO RIGHT IMAGE WIDTH */
 	/* FONT PROPERTIES */
 	text-decoration: none;
-	color:#003399;
+	color:#fff;
 	margin-top: 5px;
 }
 #bodywrapper  a.aButton span {

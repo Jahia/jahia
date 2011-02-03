@@ -48,12 +48,7 @@ Jahia Facets Module
   Jahia supports all the facet types (field, date, range, queries) available in Apache Solr. Read {{{./facetTypes.html} Facet types and their parameters}} to get 
   a description of all supported facet types and parameters.
 
-* Facet module and components
+* Operation
 
-** Component binding
-
-** Drill-down urls
-
-* Using the API 
-
-** Integration of Solr in Jackrabbit
+  Jahia not only offers {{{./backendAccess.html}backend access}} to run facet queries, but also has {{{./facetComponents.html}facet module with several components}}, which help to create a template
+  with faceting support simply with drag&drop in the Studio.   

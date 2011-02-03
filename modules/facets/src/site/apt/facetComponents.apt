@@ -1,0 +1,55 @@
+Facet module and components
+
+  Jahia provides a facet module, with a {{Facets list}} and a {{Site Tag cloud}} component, which make use of the faceting support in the backend.
+  With this an integrator can create templates with faceting support in next to no time.  
+
+* Facets list
+
+  This component can be found under {{Site components -> Facets list}}.
+  
+  If for instance you want to add a facets list on the News template, simply open the Studio, select your template-set and then navigate to the news 
+  template in the left side-panel. Find the {{Site components -> Facets list}} component and drag&drop it to the <<right column area>>. In the popup 
+  simply click on <<Save>>.
+  
+  Now you need to bind the component to the area, which displays the list or the query results. So you simply click on the <<Click this to link>> button.
+  Release the mouse button (no drag&drop) and move the cursor (should display a chain icon) to the <<Maincontent area>> and click on te area. Now you should
+  see the message <<facets - Linked to: maincontent>> in the component.
+  
+  Now let's make a facet on the news date. For that we first need to make the property facetable. Modify the definition of jnt:news and add the 
+  attribute <<<facetable>>> to the date property. 
+  
+----------------------------------------  
+[jnt:news] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent
+ - jcr:title (string) i18n mandatory
+ - desc (string, richtext) i18n
+ - image (weakreference, picker[type='image'])
+ - date (date) = now() facetable    
+---------------------------------------- 
+
+  After that you need to re-index the site. So you have to shutdown the server and manually delete all indexes, like described {{{http://wiki.apache.org/jackrabbit/Search#Rebuilding_the_Index}here}}.  
+  Start the server and continue working in the studio modifying the news template. On server restart the index is recreated.
+  
+  Now in the dropped facets list component select the button in <Add to facets:> <<Abstract facet>>. In the popup choose the <<Date facet>>.
+  
+  Then fill out the next form with the following values:
+  
+  <<facet:>> <<<date>>>\
+  <<label:>> <<<Date>>>\
+  <<field:>> <<<Date (News entry)>>>\
+  <<mincount:>> <<<1>>>\
+  <<start:>> <<<2000-01-01T00:00:00Z>>>\
+  <<end:>> <<<NOW>>>\
+  <<hardend:>> <<<true>>>\
+  <<format:>> <<<MMMM (yyyy)>>>\
+    
+  Click on <<Save>>.
+  
+  Now you can deploy the template, by choosing in the top-menu <<Deploy templates -> ACME>>.
+  
+  Go to the news page in <<Edit>> or <<Preview>> mode (reload the page) and you should see the applied facets list in the right area. 
+
+** Drill-down urls
+
+** Active facets
+
+* Site Tag cloud

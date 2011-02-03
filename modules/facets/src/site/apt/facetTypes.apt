@@ -86,10 +86,10 @@ Facet types and their parameters
 
 * Date Faceting
 
-  For date faceting you also need to choose a date property definition from your node-type definitions in Jahia. For these fields it does not make much
-  sense to facet on the terms, but the facets are more interesting on ranges. Several parameters can be used to trigger faceting based on Date ranges 
-  computed using simple {{{http://lucene.apache.org/solr/api/org/apache/solr/util/DateMathParser.html}DateMathParser}} expressions. You can also look
-  at  {{{http://lucidworks.lucidimagination.com/display/LWEUG/Solr+Date+Format}Solr Date Format}} to have more expression examples.
+  For date faceting you also need to choose a property definition of type date from your node-type definitions in Jahia. For these fields it does not 
+  make much sense to facet on the terms, but the facets are more interesting on ranges. Several parameters can be used to trigger faceting based on 
+  Date ranges computed using simple {{{http://lucene.apache.org/solr/api/org/apache/solr/util/DateMathParser.html}DateMathParser}} expressions. 
+  You can also look at  {{{http://lucidworks.lucidimagination.com/display/LWEUG/Solr+Date+Format}Solr Date Format}} to have more expression examples.
 
   When using Date Faceting, the <<start>>, <<end>>, and <<gap>> parameters are all mandatory. 
 

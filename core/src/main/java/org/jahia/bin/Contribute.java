@@ -33,10 +33,9 @@
 package org.jahia.bin;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.slf4j.Logger;
-import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

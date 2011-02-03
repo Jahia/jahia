@@ -6,9 +6,6 @@
 <%@page import="org.jahia.data.JahiaData" %>
 <%@page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
 <%@page import="org.jahia.params.ParamBean" %>
-<%@page import="org.jahia.registries.ServicesRegistry" %>
-<%@page import="org.jahia.services.rbac.PermissionIdentity"%>
-<%@page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>

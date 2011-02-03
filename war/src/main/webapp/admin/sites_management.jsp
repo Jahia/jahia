@@ -7,7 +7,6 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@page import="org.jahia.registries.ServicesRegistry" %>
-<%@page import="org.jahia.services.rbac.PermissionIdentity"%>
 <%@ page import="org.jahia.admin.sites.ManageSites" %>
 <%@ page import="java.io.File" %>
 <%@ page import="org.jahia.bin.Export" %>

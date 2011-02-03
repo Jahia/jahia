@@ -60,8 +60,6 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRSessionFactory;
-import org.slf4j.Logger;
 import org.apache.struts.Globals;
 import org.jahia.admin.AdministrationModule;
 import org.jahia.admin.AdministrationModulesRegistry;
@@ -77,8 +75,8 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.applications.ServletIncludeRequestWrapper;
 import org.jahia.services.applications.ServletIncludeResponseWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -88,6 +86,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;

@@ -32,26 +32,17 @@
 
 package org.jahia.services.content.impl.jackrabbit;
 
-import org.apache.jackrabbit.commons.AbstractRepository;
 import org.apache.jackrabbit.api.JackrabbitRepository;
+import org.apache.jackrabbit.commons.AbstractRepository;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
-import org.jahia.services.rbac.RoleIdentity;
-import org.jahia.services.usermanager.*;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.api.user.JahiaUserService;
-import org.jahia.exceptions.JahiaException;
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.core.io.Resource;
+import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
 import javax.servlet.ServletContext;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * User: toto

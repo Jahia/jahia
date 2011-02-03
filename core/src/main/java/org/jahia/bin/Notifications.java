@@ -32,23 +32,20 @@
 
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.camel.CamelExecutionException;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
-import org.jahia.services.rbac.Permission;
-import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Performs various notification-related tasks.

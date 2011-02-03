@@ -115,5 +115,5 @@
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
-    <bean id="scriptEngineUtils" class="org.jahia.utils.ScriptEngineUtils"/>
+    <bean id="scriptEngineUtils" class="org.jahia.utils.ScriptEngineUtils" factory-method="getInstance"/>
 </beans>

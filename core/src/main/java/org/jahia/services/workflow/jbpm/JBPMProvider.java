@@ -32,10 +32,7 @@
 
 package org.jahia.services.workflow.jbpm;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -43,17 +40,21 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
-import org.jbpm.api.history.*;
+import org.jbpm.api.history.HistoryActivityInstance;
+import org.jbpm.api.history.HistoryProcessInstance;
+import org.jbpm.api.history.HistoryProcessInstanceQuery;
+import org.jbpm.api.history.HistoryTask;
 import org.jbpm.api.job.Job;
+import org.jbpm.api.model.Activity;
 import org.jbpm.api.task.Participation;
 import org.jbpm.api.task.Task;
 import org.jbpm.jpdl.internal.activity.TaskActivity;
 import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
-import org.jbpm.api.model.Activity;
 import org.jbpm.pvm.internal.model.ActivityImpl;
 import org.jbpm.pvm.internal.svc.HistoryServiceImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
@@ -418,16 +419,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         if (participationList.size() > 0) {
             List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
             for (Participation participation : participationList) {
-                if (participation.getGroupId() != null && !participation.getGroupId().startsWith("{role}")) {
+                if (participation.getGroupId() != null) {
                     participations
                             .add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
                                     groupManager.lookupGroup(participation.getGroupId())));
-                } else if (participation.getGroupId() != null && participation.getGroupId().startsWith("{role}")) {
-                    String id = StringUtils.substringAfter(participation.getGroupId(), "{role}");
-                    String roleName = StringUtils.substringBefore(id, ":");
-                    participations
-                            .add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                                    new RoleIdentity(roleName)));
                 } else {
                     if (participation.getUserId() != null) {
                         participations

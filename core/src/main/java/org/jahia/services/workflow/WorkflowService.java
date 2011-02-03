@@ -33,11 +33,6 @@
 package org.jahia.services.workflow;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.rbac.PermissionIdentity;
-import org.jahia.services.rbac.jcr.RoleImpl;
-import org.jahia.services.rbac.jcr.RoleManager;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
@@ -48,6 +43,7 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
+import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 
 import javax.jcr.*;
@@ -245,12 +241,18 @@ public class WorkflowService {
                                     }
                                 }
                                 try {
-                                    PermissionIdentity permission = new PermissionIdentity(permName);
-                                    permission.setPath("/permissions"+permName);
-                                    List<RoleImpl> roles = ((RoleManager) SpringContextSingleton.getInstance().getContext().getBeansOfType(RoleManager.class).values().iterator().next()).getRolesInPermission(permission, session);
                                     Set<String> s = new HashSet<String>();
-                                    for (RoleImpl role : roles) {
-                                        s.add(role.getName());
+
+                                    try {
+                                        JCRNodeWrapper permissionNode = session.getNode("/permissions"+permName);
+                                        for (PropertyIterator iterator = permissionNode.getWeakReferences("j:permissions"); iterator
+                                                .hasNext();) {
+                                            Property prop = iterator.nextProperty();
+                                            Node roleNode = prop.getParent();
+                                            s.add(roleNode.getName());
+                                        }
+                                    } catch (PathNotFoundException e) {
+                                        logger.warn("Unable to find the node for the permission " + permName);
                                     }
 
                                     for (Map.Entry<String, List<String[]>> entry : m.entrySet()) {

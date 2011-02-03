@@ -38,7 +38,7 @@
                                                  j:view="rooms" jcr:mixinTypes="jmix:renderable"
                                                  jcr:primaryType="jnt:forumNavigation"/>
                                 <pageForm buttonLabel="Create room" class="forum-Form" j:requiredMode="live"
-                                          j:requiredPermissions="/permissions/actions/forum/createTopic"
+                                          j:requiredPermissions="/permissions/actions/forum/createRoom"
                                           jcr:mixinTypes="jmix:requiredPermissions"
                                           jcr:primaryType="jnt:pageFormCreation" stayOnPage="true"
                                           templateNode="/templateSets/forum/templates/base/forum/forum-room"
@@ -54,7 +54,7 @@
                                                  jcr:mixinTypes="jmix:renderable"
                                                  jcr:primaryType="jnt:forumNavigation"/>
                                 <pageForm buttonLabel="Create section" class="forum-Form" j:requiredMode="live"
-                                          j:requiredPermissions="/permissions/actions/forum/createTopic"
+                                          j:requiredPermissions="/permissions/actions/forum/createSection"
                                           jcr:mixinTypes="jmix:requiredPermissions"
                                           jcr:primaryType="jnt:pageFormCreation" stayOnPage="true"
                                           templateNode="/templateSets/forum/templates/base/forum/forum"
@@ -146,6 +146,10 @@
     <permissions jcr:primaryType="jnt:permission">
         <actions jcr:primaryType="jnt:permission">
             <forum jcr:primaryType="jnt:permission">
+                <createRoom jcr:primaryType="jnt:permission"/>
+                <deleteRoom jcr:primaryType="jnt:permission"/>
+                <createSection jcr:primaryType="jnt:permission"/>
+                <deleteSection jcr:primaryType="jnt:permission"/>
                 <createTopic jcr:primaryType="jnt:permission"/>
                 <deleteTopic jcr:primaryType="jnt:permission"/>
                 <createPost jcr:primaryType="jnt:permission"/>
@@ -159,5 +163,8 @@
     <roles>
         <visitor jcr:primaryType="jnt:role"
                  j:permissions="/permissions/actions/forum/createTopic /permissions/actions/forum/createPost"/>
+
+        <author jcr:primaryType="jnt:role"
+                 j:permissions="/permissions/actions/forum/createRoom /permissions/actions/forum/createSection"/>
     </roles>
 </content>

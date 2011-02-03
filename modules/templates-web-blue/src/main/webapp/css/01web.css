@@ -190,6 +190,7 @@ Search form top
 ******************************************************************************/
 #bodywrapper #header form.simplesearchform .text-input {
 	width:304px !important;
+	 border: 1px solid #333
 }
 #bodywrapper #header form.simplesearchform {
 	width:340px !important;

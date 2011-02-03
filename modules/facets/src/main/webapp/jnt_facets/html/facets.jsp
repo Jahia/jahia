@@ -159,7 +159,7 @@
                 <c:if test="${not empty currentFacetLabel}">
                     </ul>
                 </c:if>
-                <h4>${mappedFacetLabel}</h4>
+                <h5>${mappedFacetLabel}</h5>
                 <ul>        
             </c:if>
             <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">

@@ -45,13 +45,13 @@
 </script>
 <div id="forum-body">
     <div class="posts" id="${currentNode.UUID}">
+        <h3>${linked.properties["topicSubject"].string}</h3>
         <c:if test="${currentNode.properties.reverseOrder.boolean}">
             <c:set target="${moduleMap}" property="currentList" value="${functions:reverseIterator(linked.nodes)}" />
         </c:if>
         <c:if test="${!currentNode.properties.reverseOrder.boolean}">
             <c:set target="${moduleMap}" property="currentList" value="${linked.nodes}" />
         </c:if>
-        <c:set target="${moduleMap}" property="currentList" value="${linked.nodes}" />
         <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(linked.nodes)}" />
         <c:set var="end" value="${fn:length(linked.nodes)}"/>
         <c:if test="${currentNode.properties.limit.long > 0}">

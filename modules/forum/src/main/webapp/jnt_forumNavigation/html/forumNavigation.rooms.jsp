@@ -23,6 +23,7 @@
     <div class="topics">
         <jcr:nodeProperty node="${linked}" name="jcr:title" var="topicSubject"/>
         <c:forEach items="${linked.nodes}" var="room">
+            <template:addCacheDependency node="${room}"/>
             <div class="forum-box forum-box-style1 topics">
                 <span class="forum-corners-top"><span></span></span>
 

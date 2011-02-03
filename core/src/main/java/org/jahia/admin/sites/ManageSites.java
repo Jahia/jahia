@@ -935,6 +935,10 @@ public class ManageSites extends AbstractAdministrationModule {
                     jParams.setSiteID(currentSite.getID());
                 }
                 sMgr.updateSite(site);
+
+                JahiaSite jahiaSite = sMgr.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                jahiaSite.getLanguages().addAll(site.getLanguages());
+                sMgr.updateSite(jahiaSite);
             } else {
                 warningMsg = 
                         getMessage("label.error.processingRequestError");

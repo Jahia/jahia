@@ -1,0 +1,213 @@
+Facet types and their parameters
+
+  Jahia supports the same facet types supported in Solr 1.3, which are also described in 
+  {{{http://wiki.apache.org/solr/SimpleFacetParameters}SimpleFacetParameters}}, where you will find examples and 
+  more details about the different types and their parameters supported in that Solr release.
+  
+  We are now going to first describe the parameters (properties), which are common to all facet types, and then describe the specific facet types and 
+  their parameters. The parameters are useful  
+  
+* Common parameters for all facet types
+
+** facet 
+
+  This is an id, you can choose for the facet classification. Elements with the same facet id will be grouped together. 
+  
+  For field and date facets you will mostly have just one facet element, which will automatically create all the different facet values.\
+  For range and query facets you will probably have many elements with the same facet id, but different query constraints, where each query results 
+  in a facet value. In future versions the range facet will become more powerful and you will no longer have to create one element per facet value. 
+   
+  This is a mandatory field.
+  
+** label
+ 
+  This is a multilingual property holding the label for the facet, which will be displayed as facet classification title above the facet values.
+    
+** field
+ 
+  This property allows you to specify a field, which should be treated as a facet. In Jahia this is a property definition in a nodetype 
+  (e.g. <<<jnt:event;eventsType>>> or <<<jmix:categorized;j:defaultCategory>>>). 
+  
+  For field facets we will iterate over all terms in that field and generate a facet count using that term as constraint.\
+  For date and range facets we will count how many values in that field are matching the range.\
+  For query facets the property is not mandatory as the arbitrary query can be based on multiple fields, but if the query is based just on one field, 
+  it is recommended to also specify it in this property.
+
+** mincount
+ 
+  This parameter indicates the minimum counts for facet values, which should be included in the response. 
+  
+  The default value in the Solr backend is 0, whereas when using the Jahia user interface, the default will be 1, which means that facet 
+  values resulting in no hits will not be returned and displayed.
+  
+* Field Value Faceting
+
+  In Solr the fields had to be defined in a schema. With Jahia there is no need to create a Solr schema, because Jahia already defines nodetypes and
+  properties, like it is used for Java content repositories. 
+  
+  So for field value faceting you simply select a property definition in a nodetype and then the facet values will simply be created from the terms
+  indexed for that field. Notice that in most cases you will need to add the attribute <<<facetable>>> in the property definition, so that the values
+  will be indexed in a way, which is required for faceting.
+  
+  In addition to the common parameters, field value faceting also supports the following parameters:
+
+** sort
+
+  This parameter determines the ordering of the facet values.
+
+    *  <<<true>>> - sort the constraints by count (highest count first)
+    
+    *  <<<false>>> - to return the constraints sorted in their index order (lexicographic by indexed term). For terms in the ascii range, this will be 
+    alphabetically sorted.  
+
+** prefix
+
+  Limits the terms on which to facet to those starting with the given string prefix. 
+
+** limit
+  
+  This parameter indicates the maximum number of facet value counts that should be returned for the facet fields. A negative value means unlimited.
+
+  The default value is 100. 
+
+** offset
+
+  This parameter indicates an offset into the list of constraints to allow paging.
+
+  The default value is 0. 
+
+** missing    
+
+  Set to <<<true>>> this parameter indicates that in addition to the term based constraints of a facet field, a count of all matching results which 
+  have no value for the field should be computed
+
+  The default value is <<<false>>>. 
+
+
+* Date Faceting
+
+  For date faceting you also need to choose a date property definition from your node-type definitions in Jahia. For these fields it does not make much
+  sense to facet on the terms, but the facets are more interesting on ranges. Several parameters can be used to trigger faceting based on Date ranges 
+  computed using simple {{{http://lucene.apache.org/solr/api/org/apache/solr/util/DateMathParser.html}DateMathParser}} expressions. You can also look
+  at  {{{http://lucidworks.lucidimagination.com/display/LWEUG/Solr+Date+Format}Solr Date Format}} to have more expression examples.
+
+  When using Date Faceting, the <<start>>, <<end>>, and <<gap>> parameters are all mandatory. 
+
+** date.start
+
+  The lower bound for the first date range for all Date Faceting on this field. This should be a single date expression which may use the 
+  {{{http://lucene.apache.org/solr/api/org/apache/solr/util/DateMathParser.html}DateMathParser}} syntax. 
+
+** date.end
+
+  The minimum upper bound for the last date range for all Date Faceting on this field (see <<hardend>> for an explanation of what the actual end 
+  value may be greater). This should be a single date expression which may use the 
+  {{{http://lucene.apache.org/solr/api/org/apache/solr/util/DateMathParser.html}DateMathParser}} syntax. 
+
+** date.gap
+
+  The size of each date range expressed as an interval to be added to the lower bound using the 
+  {{{http://lucene.apache.org/solr/api/org/apache/solr/util/DateMathParser.html}DateMathParser}} syntax.
+
+  Example: <<<gap=+1DAY>>> 
+
+** date.hardend
+
+  A Boolean parameter instructing Solr what to do in the event that <<gap>> does not divide evenly between <<start>> and <<end>>. If this is 
+  <<<true>>>, the last date range constraint will have an upper bound of <<end>>; if <<<false>>>, the last date range will have the smallest 
+  possible upper bound greater then <<end>>, such that the range is exactly <<gap>> wide.
+
+  The default is <<<false>>>. 
+
+** date.other
+
+  This parameter indicates that in addition to the counts for each date range constraint between <<start>> and <<end>>, counts should also be computed for...
+
+    * <<<before>>> all records with field values lower than lower bound of the first range
+    
+    * <<<after>>> all records with field values greater than the upper bound of the last range
+    
+    * <<<between>>> all records with field values between the start and end bounds of all ranges
+    
+    * <<<none>>> compute none of this information
+    
+    * <<<all>>> shortcut for <<<before>>>, <<<between>>>, and <<<after>>>
+
+  In addition to the <<<all>>> option, this is a multiple choice parameter -- but <<<none>>> will override all other options. 
+
+** date.labelFormat
+
+  In order to print nice labels for the dates representing the facet values, this property is here to define how to format the date object into a label. 
+  The patterns, which can be used are the same as the ones used and described in the 
+  {{{http://download.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html}SimpleDateFormat}} class.
+  
+  Example: <<<MMMM yyyy=April 2010>>>
+ 
+
+* Facet by Range 
+
+  This is a facet type, which is not existing in Solr 1.3, but only since Solr 3.1. There it is similar to the date facet. We will support it in the same
+  way in later Jahia releases, once Jackrabbit will upgrade to a newer Lucene version.
+  
+  For now we have our own range support, which is more similar to the query facet. It means that you will need to create multiple elements with the same 
+  facet id, all having different <<start>> and <<end>> parameters for the different facet values. Range queries only work when used via the Jahia Facet 
+  module and not when directly caling the backend. 
+  
+  These are the range specific parameters:  
+
+** range.start
+
+  The lower bound of the range. 
+
+** range.end
+
+  The upper bound of the range.
+
+** range.include
+
+    The parameter can be a combination of the following options (more to come in future versions):
+
+    * <<<lower>>> = the range includes the lower bound
+    
+    * <<<upper>>> = the range includes the upper bound
+    
+    * <<<all>>> = shorthand for <<<lower>>>, <<<upper>>> 
+
+** range.valueLabel
+
+  This is a multilingual property, in which you can set the label, which should be displayed for this facet value. 
+
+* Arbitrary Query Faceting
+
+  Last but not least you can also specify any arbitrary query in Lucene default syntax to generate a facet count. This type is the most flexible, 
+  but also the most complex and sophisticated for the template/page designer, who is setting up the facets, as he needs some technical knowledge 
+  and skills. The other facet types (field, date and range) are more user friendly and provide more logic out-of-the-box. But sometimes there are 
+  more complex requirements, for instance when a facet is comprised of two properties, like is the case in the above <<<jnt:event>>> example. If you 
+  want to provide a date facet showing all events per month, you need to query on the <<<startDate>>> as well as on the <<<endDate>>>.
+  
+** query
+
+  This parameter holds the query in Lucene syntax to generate a facet count.
+
+  The syntax of Lucene queries is described on the {{{http://lucene.apache.org/java/2_4_1/queryparsersyntax.html}Query Parser Syntax}} WIKI page.
+  
+  Now for using fields in the queries, you will need to find out the exact field names used in the index. For that you should install 
+  {{{http://code.google.com/p/luke/}Luke}} and open the repository index, which you will find under <<<\WEB-INF\var\repository\workspaces\default\index>>> . 
+  Click on the <<Documents>> tab and then you will see the <<Term>> combobox with all the available field names. <<<facetable>>> properties are prefixed with
+  <<<FACET:>>>. Notice that the names contain special characters, which need to be escaped with a "\" according to 
+  {{{http://lucene.apache.org/java/2_3_2/queryparsersyntax.html#Escaping Special Characters}Escaping Special Characters}}.
+  
+  For date range queries, you can also use the dynamic {{{http://lucidworks.lucidimagination.com/display/LWEUG/Solr+Date+Format}Solr Date Format}} or
+  {{{http://lucene.apache.org/solr/api/org/apache/solr/util/DateMathParser.html}DateMathParser}} expressions, like in the Date faceting. 
+  
+  Example for retrieving events from now until the end of the current month:\
+  <<<0\:FACET\:startDate:[NOW/DAY TO NOW/MONTH+1MONTH] OR 0\:FACET\:endDate:[NOW/DAY TO NOW/MONTH+1MONTH]>>>  
+
+** valueLabel
+ 
+  This is a multilingual property, in which you can set the label, which should be displayed for this facet value.
+  For the label you can also make use of {{{../macros/index.html}Jahia macros}}. For instance if you used the dynamic 
+  {{{http://lucene.apache.org/solr/api/org/apache/solr/util/DateMathParser.html}DateMathParser}} expressions, you can for the above example to print 
+  the current month use the macro <<<##DynamicDateLabel("NOW/MONTH","date","MMMM")##>>> . The first parameter is the date expression and for the optional 
+  second and third parameter, we use the same <FormatType> and <FormatStyle> like used and described in the Java 
+  {{{http://download.oracle.com/javase/1.5.0/docs/api/java/text/MessageFormat.html}MessageFormat}} class.  

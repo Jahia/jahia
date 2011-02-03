@@ -1,1 +1,59 @@
-Jahia Crazy Jane
+Jahia Facets Module
+
+  Faceted search has become a popular technique and very nice way to help narrowing down search results or improve the navigation of a site.  
+  With facets you define how to classify content objects or query results. You can display all or the most interesting values within 
+  the classification, which immediately show the count of resulting objects, if the query would be narrowed by including the faceted value as 
+  filter.
+  
+  Apache Jackrabbit does not yet provide out-of-the-box faceting support. At Jahia we were therefore looking into ways to integrate {{{http://lucene.apache.org/solr}Apache Solr}} - 
+  one of the most popular Apache Lucene based open source solutions offering faceting support - into Jackrabbit. This was not easily possible as
+  Solr is not implemented as open, that it can be used outside of the Solr core and with indexes not created with Solr. Nevertheless at Jahia 
+  we were able to create a SimpleJahiaJcrFacets class, which is very similar to the SimpleFacets class from Solr. We are directly reusing 
+  classes from solr-common and use exactly the same facet query syntax and result objects as Solr does. So in addition to Jahia's documentation,
+  you can also look at articles and examples about faceting with Solr. As Jackrabbit still uses Lucene 2.4.1, we were forced to stick to Solr 1.3 
+  As soon as Jackrabbit will switch to a newer Lucene version we will also be able to support features from newer Solr versions.    
+
+* Indexing for facet support 
+
+  If node properties will be used for faceting, in most cases they will in addition to the normal indexing also have to be indexed differently. 
+  This is because normally analyzers will use stemming, lowercasing and tokenizing before indexing a field, but for faceting the values
+  
+   * should not be tokenized into separate words
+   
+   * should not be lowercased
+   
+   * should not have punctuation removed
+  
+   * should not be stored in the index
+  
+  Therefore you should add the attribute <<<facetable>>> in the property definition, like it is done in the definition of the properties <<<startDate>>>, 
+  <<<endDate>>>, <<<location>>> and <<<eventsType>>> in our <<<jnt:event>>> nodetype: 
+
+----------------------------------------    
+ [jnt:event] > jnt:content, jmix:editorialContent, mix:title, jmix:structuredContent
+ - startDate (date) facetable
+ - endDate (date) facetable
+ - location (string) i18n facetable
+ - eventsType (string, choicelist[resourceBundle]) facetable  < meeting,consumerShow,roadShow,conference,show,pressConference
+ - body (string, richtext) i18n  
+----------------------------------------
+
+  If you decide to add the <<<facetable>>> attribute at a time, where content is already existing, you will need to rebuild the index 
+  (see: {{http://wiki.apache.org/jackrabbit/Search#Rebuilding_the_Index}}).
+  
+  The <<<facetable>>> fields can be recognized in the index, as they will have the term <<<FACET:>>> in the prefix of its name.
+
+* Facet types
+  
+  Jahia supports all the facet types (field, date, range, queries) available in Apache Solr. Read {{{./facetTypes.html} Facet types and their parameters}} to get 
+  a description of all supported facet types and parameters.
+
+* Facet module and components
+
+** Component binding
+
+** Drill-down urls
+
+* Using the API 
+
+** Integration of Solr in Jackrabbit

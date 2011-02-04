@@ -138,6 +138,19 @@ public class HttpClientService implements ServletContextAware {
      * @param url a URL to connect to
      * @param parameters the request parameter to submit; <code>null</code> if no parameters are passed
      * @param headers request headers to be set for connection; <code>null</code> if no additional headers needs to be set
+     * @return the string representation of the URL connection response
+     * @throws {@link IllegalArgumentException} in case of a malformed URL
+     */
+    public String executePost(String url, Map<String, String> parameters, Map<String, String> headers) throws IllegalArgumentException {
+    	return executePost(url, parameters, headers, null);
+    }
+    
+    /**
+     * Executes a request with POST method to the specified URL and reads the response content as a string.
+     * 
+     * @param url a URL to connect to
+     * @param parameters the request parameter to submit; <code>null</code> if no parameters are passed
+     * @param headers request headers to be set for connection; <code>null</code> if no additional headers needs to be set
      * @param state the HTTP state object if additional state options, e.g. credentials, needs to be specified; otherwise can be <code>null</code>
      * @return the string representation of the URL connection response
      * @throws {@link IllegalArgumentException} in case of a malformed URL

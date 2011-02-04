@@ -11,24 +11,26 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
 
-    <bean id="HttpClient" class="org.apache.commons.httpclient.HttpClient">
-        <constructor-arg index="0">
-            <bean
-                    class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager"
-                    scope="prototype">
-                <property name="params">
-                    <bean
-                            class="org.apache.commons.httpclient.params.HttpConnectionManagerParams">
-                        <property name="connectionTimeout" value="10000"/>
-                        <property name="soTimeout" value="15000"/>
-                    </bean>
-                </property>
-            </bean>
-        </constructor-arg>
-    </bean>
-
     <bean id="HttpClientService" class="org.jahia.services.notification.HttpClientService" destroy-method="shutdown">
-        <property name="httpClient" ref="HttpClient"/>
+        <property name="httpClient">
+		    <bean id="HttpClient" class="org.apache.commons.httpclient.HttpClient">
+		        <constructor-arg index="0">
+		            <bean class="org.apache.commons.httpclient.params.HttpClientParams">
+		                <property name="authenticationPreemptive" value="true"/>
+		            </bean>
+		        </constructor-arg>
+		        <constructor-arg index="1">
+		            <bean class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager">
+		                <property name="params">
+		                    <bean class="org.apache.commons.httpclient.params.HttpConnectionManagerParams">
+		                        <property name="connectionTimeout" value="15000"/>
+		                        <property name="soTimeout" value="60000"/>
+		                    </bean>
+		                </property>
+		            </bean>
+		        </constructor-arg>
+		    </bean>
+		</property>        
     </bean>
 
     <bean id="HtmlExternalizationService" class="org.jahia.services.notification.HtmlExternalizationService">

@@ -44,16 +44,20 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.StatusLine;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.params.valves.TokenAuthValveImpl;
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
+import org.slf4j.Logger;
 import org.springframework.web.context.ServletContextAware;
 
 /**
@@ -132,12 +136,13 @@ public class HttpClientService implements ServletContextAware {
      * Executes a request with POST method to the specified URL and reads the response content as a string.
      * 
      * @param url a URL to connect to
-     * @param parameters the request parameter to submit
-     * @param headers
+     * @param parameters the request parameter to submit; <code>null</code> if no parameters are passed
+     * @param headers request headers to be set for connection; <code>null</code> if no additional headers needs to be set
+     * @param state the HTTP state object if additional state options, e.g. credentials, needs to be specified; otherwise can be <code>null</code>
      * @return the string representation of the URL connection response
      * @throws {@link IllegalArgumentException} in case of a malformed URL
      */
-    public String executePost(String url, Map<String, String> parameters, Map<String, String> headers) throws IllegalArgumentException {
+    public String executePost(String url, Map<String, String> parameters, Map<String, String> headers, HttpState state) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
             throw new IllegalArgumentException("Provided URL is null");
         }
@@ -160,7 +165,7 @@ public class HttpClientService implements ServletContextAware {
         }
 
         try {
-            httpClient.executeMethod(httpMethod);
+            httpClient.executeMethod(null, httpMethod, state);
             StatusLine statusLine = httpMethod.getStatusLine();
 
             if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
@@ -341,6 +346,11 @@ public class HttpClientService implements ServletContextAware {
     public void shuddown() {
         logger.info("Shutting down HttpClient...");
         try {
+            if (httpClient.getHttpConnectionManager() instanceof MultiThreadedHttpConnectionManager) {
+            	((MultiThreadedHttpConnectionManager) httpClient.getHttpConnectionManager()).shutdown();
+            } else if (httpClient.getHttpConnectionManager() instanceof SimpleHttpConnectionManager) {
+            	((SimpleHttpConnectionManager) httpClient.getHttpConnectionManager()).shutdown();
+            }
             MultiThreadedHttpConnectionManager.shutdownAll();
         } catch (Exception e) {
             logger.warn("Error shutting down HttpClient. Cause: " + e.getMessage(), e);

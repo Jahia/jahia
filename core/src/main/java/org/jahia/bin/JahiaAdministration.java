@@ -296,7 +296,7 @@ public class JahiaAdministration extends HttpServlet {
     }
 
 
-    private boolean hasServerPermission(String permissionName) {
+    private static boolean hasServerPermission(String permissionName) {
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode().hasPermission(permissionName);
         } catch (RepositoryException e) {
@@ -305,7 +305,7 @@ public class JahiaAdministration extends HttpServlet {
         }
     }
 
-    private boolean hasSitePermission(String permissionName, final String siteKey) {
+    private static boolean hasSitePermission(String permissionName, final String siteKey) {
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/"+siteKey).hasPermission(permissionName);
         } catch (RepositoryException e) {
@@ -473,7 +473,9 @@ public class JahiaAdministration extends HttpServlet {
         if (jData != null) {
             final ParamBean jParams = (ParamBean) jData.getProcessingContext();
             
-            initMenu(request,(JahiaUser) session.getAttribute("org.jahia.usermanager.jahiauser"));
+            if (isValidLoginSession(session)) {
+            	initMenu(request,(JahiaUser) session.getAttribute("org.jahia.usermanager.jahiauser"));
+            }
 
             try {
                 String htmlContent = ServicesRegistry.getInstance().
@@ -927,7 +929,7 @@ public class JahiaAdministration extends HttpServlet {
      * @param session the HttpSession object
      * @return <code>true</code> if the user can access to administration, <code>false</code> otherwise.
      */
-    private boolean isValidLoginSession(HttpSession session) {
+    private static boolean isValidLoginSession(HttpSession session) {
 
         logger.debug("isValidatingLoginSession started");
 

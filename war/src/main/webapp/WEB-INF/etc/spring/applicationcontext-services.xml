@@ -57,7 +57,6 @@
 		<property name="groupManagerService" ref="JahiaGroupManagerService" />
 		<property name="servletContextManager" ref="ServletContextManager" />
 		<property name="plutoServices" ref="PlutoServices" />
-        <property name="roleService" ref="org.jahia.services.rbac.jcr.RoleService" />
         <property name="defaultPortletPermissionMappings">
             <map>
                 <entry key="createInstance" value="/roles/editor" />

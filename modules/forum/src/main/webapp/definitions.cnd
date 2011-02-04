@@ -3,12 +3,14 @@
 
 [jmix:forumContent] > jmix:droppableContent
 
-[jnt:topicList] > jnt:content, jmix:bindedComponent, jmix:forumContent
+[jnt:topicList] > jnt:content, jmix:bindedComponent, jmix:forumContent , jmix:list
+ - j:subNodesView (string, choicelist[templates=jnt:topic,resourceBundle,image]) nofulltext itemtype = layout
 
 [jnt:forumNavigation] > jnt:content, jmix:bindedComponent, jmix:forumContent
 
-[jnt:postsList] > jnt:content, jmix:bindedComponent, jmix:forumContent
+[jnt:postsList] > jnt:content, jmix:bindedComponent, jmix:forumContent, jmix:list
  - reverseOrder (boolean)
  - limit (long)
+ - j:subNodesView (string, choicelist[templates=jnt:post,resourceBundle,image]) nofulltext itemtype = layout
 
 [jnt:postForm] > jnt:content, mix:title, jmix:bindedComponent, jmix:forumContent

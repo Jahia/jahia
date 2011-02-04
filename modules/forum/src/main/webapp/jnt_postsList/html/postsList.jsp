@@ -17,9 +17,7 @@
 <template:addResources type="css" resources="forum.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js,jquery.jeditable.mini.js"/>
 
-<template:linker property="j:bindedComponent"/>
-<template:addResources type="css" resources="forum.css"/>
-<c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<template:include template="hidden.header"/>
 
 <script>
     function initCuteTime() {
@@ -46,21 +44,10 @@
 <div id="forum-body">
     <div class="posts" id="${currentNode.UUID}">
         <h3>${linked.properties["topicSubject"].string}</h3>
-        <c:if test="${currentNode.properties.reverseOrder.boolean}">
-            <c:set target="${moduleMap}" property="currentList" value="${functions:reverseIterator(linked.nodes)}" />
-        </c:if>
-        <c:if test="${!currentNode.properties.reverseOrder.boolean}">
-            <c:set target="${moduleMap}" property="currentList" value="${linked.nodes}" />
-        </c:if>
-        <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(linked.nodes)}" />
-        <c:set var="end" value="${fn:length(linked.nodes)}"/>
-        <c:if test="${currentNode.properties.limit.long > 0}">
-            <c:set var="end" value="${currentNode.properties.limit.long -1}"/>
-        </c:if>
-        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" end="${end}">
+        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <c:if test="${jcr:isNodeType(subchild, 'jnt:post')}">
             <div class="forum-box forum-box-style${(status.index mod 2)+1}">
-                <template:module node="${subchild}" template="forum"/>
+                <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
             </div>
             </c:if>
         </c:forEach>

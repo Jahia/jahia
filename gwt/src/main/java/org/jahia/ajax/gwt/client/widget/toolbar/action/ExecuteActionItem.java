@@ -32,25 +32,49 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.http.client.*;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: david
  * Date: Apr 28, 2010
  * Time: 2:26:32 PM
  * 
  */
 public class ExecuteActionItem extends BaseActionItem {
-    public static final int STATUS_CODE_OK = 200;
+    private static final long serialVersionUID = -1317342305404063292L;
+	public static final int STATUS_CODE_OK = 200;
     private String action;
+    private String confirmationMessageKey;
 
     public void onComponentSelection() {
+		if (confirmationMessageKey != null) {
+			MessageBox.confirm(
+			        Messages.get("label.information", "Information"),
+			        Messages.get(confirmationMessageKey, "You are about to execute action "
+			                + action + ". Do you want to continue?"),
+			        new Listener<MessageBoxEvent>() {
+				        public void handleEvent(MessageBoxEvent be) {
+					        if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getText())) {
+						        doAction();
+					        }
+				        }
+			        });
+		} else {
+			doAction();
+		}
+    }
+
+    private void doAction() {
         final List<GWTJahiaNode> gwtJahiaNodes = linker.getSelectionContext().getMultipleSelection();
         for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
             String baseURL = org.jahia.ajax.gwt.client.util.URL.getAbsoluteURL(JahiaGWTParameters.getContextPath() + "/cms/render");
@@ -58,7 +82,7 @@ public class ExecuteActionItem extends BaseActionItem {
             linker.loading("Executing action ...");
             RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + "." + action + ".do");
             try {
-                Request response = builder.sendRequest(null, new RequestCallback() {
+                builder.sendRequest(null, new RequestCallback() {
                     public void onError(Request request, Throwable exception) {
                         com.google.gwt.user.client.Window.alert("Cannot create connection");
                         linker.loaded();
@@ -87,6 +111,10 @@ public class ExecuteActionItem extends BaseActionItem {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+	public void setConfirmationMessageKey(String confirmationMessageKey) {
+    	this.confirmationMessageKey = confirmationMessageKey;
     }
 }
 

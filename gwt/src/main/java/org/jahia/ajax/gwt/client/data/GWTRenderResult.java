@@ -44,14 +44,16 @@ public class GWTRenderResult implements Serializable {
     private String result;
     private Map<String,Set<String>> staticAssets;
     private String nodeTypes;
+    private String name;
 
     public GWTRenderResult() {
     }
 
-    public GWTRenderResult(String result, Map<String, Set<String>> staticAssets, String nodeTypes) {
+    public GWTRenderResult(String result, Map<String, Set<String>> staticAssets, String nodeTypes, String name) {
         this.result = result;
         this.staticAssets = staticAssets;
-        this.nodeTypes = nodeTypes;               
+        this.nodeTypes = nodeTypes;
+        this.name = name;
     }
 
     public String getResult() {
@@ -64,5 +66,9 @@ public class GWTRenderResult implements Serializable {
 
     public String getNodeTypes() {
         return nodeTypes;
+    }
+
+    public String getName() {
+        return name;
     }
 }

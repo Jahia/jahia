@@ -87,6 +87,7 @@ public class TemplateHelper {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
+
             Resource r = new Resource(node, "html", template, configuration);
             request.setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
@@ -115,7 +116,7 @@ public class TemplateHelper {
             if (constraints == null) {
                 constraints = "";
             }
-            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(map), constraints);
+            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(map), constraints, node.getDisplayableName());
         } catch (PathNotFoundException e) {
             throw new GWTJahiaServiceException("Not found");
         } catch (RepositoryException e) {

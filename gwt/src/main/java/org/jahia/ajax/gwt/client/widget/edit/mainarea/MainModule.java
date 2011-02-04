@@ -39,11 +39,13 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.xml.client.Document;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -210,6 +212,10 @@ public class MainModule extends Module {
                                 editLinker.onModuleSelection(MainModule.this);
                                 editLinker.getSidePanel().refresh(Linker.REFRESH_WORKFLOW);
                                 switchStaticAssets(result.getStaticAssets());
+
+                                setDocumentTitle(result.getName());
+
+//                                evalScripts(html.getElement());
                             }
 
                             @Override public void onApplicationFailure(Throwable caught) {
@@ -282,6 +288,27 @@ public class MainModule extends Module {
         }
 
     }-*/;
+
+    public static native void evalScripts(Element element) /*-{
+        var scripts = element.getElementsByTagName("script");
+
+        for (i=0; i < scripts.length; i++) {
+            // if src, eval it, otherwise eval the body
+            if (!scripts[i].hasAttribute("src")) {
+                var src = scripts[i].getAttribute("src");
+                var script = $doc.createElement('script');
+                script.setAttribute("src", src);
+                $doc.getElementsByTagName('body')[0].appendChild(script);
+            } else {
+                $wnd.eval(scripts[i].innerHTML);
+            }
+        }
+    }-*/;
+
+    public static native void setDocumentTitle(String title) /*-{
+        $doc.title = title;
+    }-*/;
+
 
     private void display(String result) {
         scrollContainer.removeAll();

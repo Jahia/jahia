@@ -32,7 +32,6 @@
 
 package org.jahia.bin;
 
-import org.apache.camel.impl.DefaultDebugger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
@@ -400,35 +399,38 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     final FileUpload fileUpload = new FileUpload(req, savePath, Integer.MAX_VALUE);
                     req.setAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE, fileUpload);
                     if (fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
-                        JCRSessionWrapper session =
-                                jcrSessionFactory.getCurrentUserSession(workspace, locale);
-                        JCRNodeWrapper userDirectory = ((JCRUser) jcrSessionFactory.getCurrentUser())
-                                .getNode(session); //todo ldap users
-                        String target = userDirectory.getPath() + "/files";
                         boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
-                        boolean isTargetNameDefined = fileUpload.getParameterNames().contains(TARGETNAME);
-                        boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION) ?
-                                (fileUpload.getParameterValues(VERSION))[0].equals("true") : false;
                         final String requestWith = req.getHeader("x-requested-with");
                         boolean isAjaxRequest =
                                 req.getHeader("accept").contains("application/json") && requestWith != null &&
                                         requestWith.equals("XMLHttpRequest") || fileUpload.getParameterMap().isEmpty();
-                        if (isTargetDirectoryDefined) {
-                            target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
-                        }
-                        final JCRNodeWrapper targetDirectory = session.getNode(target);
                         List<String> uuids = new LinkedList<String>();
                         List<String> files = new ArrayList<String>();
                         List<String> urls =  new LinkedList<String>();
                         // If target directory is defined or if it is an ajax request then save the file now
                         // otherwise we delay the save of the file to the node creation
                         if (isTargetDirectoryDefined || isAjaxRequest) {
+                            JCRSessionWrapper session =
+                                jcrSessionFactory.getCurrentUserSession(workspace, locale);
+                            String target = null;
+                            if (isTargetDirectoryDefined) {
+                                target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
+                            } else {
+	                            JCRNodeWrapper userDirectory = ((JCRUser) jcrSessionFactory.getCurrentUser())
+	                                    .getNode(session); //todo ldap users
+	                            target = userDirectory.getPath() + "/files";
+                            }
+                            final JCRNodeWrapper targetDirectory = session.getNode(target);
+                            
+                            boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION) ?
+                                    (fileUpload.getParameterValues(VERSION))[0].equals("true") : false;
+                                    
                             final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
                             for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
                                 //if node exists, do a checkout before
                                 String name = itemEntry.getValue().getName();
 
-                                if (isTargetNameDefined) {
+                                if (fileUpload.getParameterNames().contains(TARGETNAME)) {
                                     name = (fileUpload.getParameterValues(TARGETNAME))[0];
                                 }
 
@@ -717,6 +719,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         String token = req.getParameter("form-token");
         if (token != null) {
+            @SuppressWarnings("unchecked")
             Map<String,Map<String,String>> toks = (Map<String,Map<String,String>>) req.getSession().getAttribute("form-tokens");
             if (toks != null && toks.containsKey(token)) {
                 Map<String, String> m = toks.get(token);

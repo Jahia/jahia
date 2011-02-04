@@ -64,7 +64,7 @@ border: 1px solid #B7CBD8;
 #bodywrapper .FormContribute .wcag-warnings-ignore label,
 #bodywrapper .FormContribute input[type=checkbox]{
 	display:inline
-} 
+}
 /******************************************************************************
 * FormContribute
 ******************************************************************************/
@@ -150,6 +150,13 @@ border: 1px solid #B7CBD8;
     color: #333;
 	cursor: pointer;
 	text-decoration:none;
+}
+
+ #bodywrapper .FormContribute input.disabled,  #bodywrapper .FormContribute button.disabled {
+    background:none;
+    background-color:#ccc;
+     color:#666;
+
 }
  #bodywrapper .FormContribute button img{
 	vertical-align: text-bottom;

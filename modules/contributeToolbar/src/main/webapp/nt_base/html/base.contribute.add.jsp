@@ -147,25 +147,25 @@
             <div class="divButton">
                 <c:choose>
                     <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
-                        <button type="button" onclick="$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
+                        <button type="button" class="form-button" onclick="$('.form-button').attr('disabled',true);$('.form-button').addClass('disabled');$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
                                 class="icon-contribute icon-accept"></span>Start:&nbsp;${currentResource.moduleParams.workflowStartFormWFName}
                         </button>
                     </c:when>
                     <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
                         <c:forEach items="${workflowTaskFormTask.outcomes}" var="outcome" varStatus="status">
-                            <button type="button"
-                                    onclick="$('#outcome').val('${outcome}');$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
+                            <button type="button" class="form-button"
+                                    onclick="$('#outcome').val('${outcome}');$('.form-button').attr('disabled',true);$('.form-button').addClass('disabled');$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
                                     class="icon-contribute icon-accept"></span>&nbsp;${workflowTaskFormTask.displayOutcomes[status.index]}
                             </button>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <button type="button" onclick="if (!checkWCAGCompliace($('textarea.newContentCkeditorContribute'))) return false; $('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span class="icon-contribute icon-accept"></span><fmt:message
+                        <button type="button" class="form-button" onclick="if (!checkWCAGCompliace($('textarea.newContentCkeditorContribute'))) return false; $('.form-button').attr('disabled',true);$('.form-button').addClass('disabled'); $('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span class="icon-contribute icon-accept"></span><fmt:message
                                 key="label.add.new.content.submit"/></button>
                     </c:otherwise>
                 </c:choose>
 
-                <button type="reset"><span class="icon-contribute icon-cancel"></span><fmt:message
+                <button type="reset"  class="form-button"><span class="icon-contribute icon-cancel"></span><fmt:message
                         key="label.add.new.content.reset"/></button>
             </div>
         </fieldset>
@@ -173,17 +173,7 @@
         <script type="text/javascript">
             var options${jsNodeName}${scriptTypeName} = {
                 success: function() {
-                <c:choose>
-                <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
-                    jreplace('${currentResource.moduleParams.workflowStartFormWFCallbackId}', '${currentResource.moduleParams.workflowStartFormWFCallbackURL}',null, "${currentResource.moduleParams.workflowStartFormWFCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
-                </c:when>
-                <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
-                    jreplace('${currentResource.moduleParams.workflowTaskFormCallbackId}', '${currentResource.moduleParams.workflowTaskFormCallbackURL}',null, "${currentResource.moduleParams.workflowTaskFormCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
-                </c:when>
-                <c:otherwise>
                     window.location.reload();
-                </c:otherwise>
-                </c:choose>
                 },
                 dataType: "json",
                 clearForm: true

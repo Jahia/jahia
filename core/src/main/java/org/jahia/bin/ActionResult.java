@@ -44,9 +44,11 @@ import org.json.JSONObject;
  */
 public class ActionResult {
     
+    public static final ActionResult BAD_REQUEST = new ActionResult(HttpServletResponse.SC_BAD_REQUEST);
+    public static final ActionResult INTERNAL_ERROR = new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    public static final ActionResult INTERNAL_ERROR_JSON = new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject());
     public static final ActionResult OK = new ActionResult(HttpServletResponse.SC_OK);
     public static final ActionResult OK_JSON = new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
-    public static final ActionResult BAD_REQUEST = new ActionResult(HttpServletResponse.SC_BAD_REQUEST);
     public static final ActionResult SERVICE_UNAVAILABLE = new ActionResult(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 
     private JSONObject json;

@@ -3,10 +3,8 @@ import org.jahia.taglibs.internal.gwt.GWTIncluder
 import org.jahia.taglibs.AbstractJahiaTag
 
 /**
- * Created by IntelliJ IDEA.
- * @author : rincevent
- * @since : JAHIA 6.1
- * Created : 28/01/11
+ * @author rincevent
+ * @since JAHIA 6.5
  */
 if (renderContext.editMode && renderContext.mainResource.contextConfiguration == 'page') {
     println GWTInitializer.generateInitializerStructure(renderContext.request,renderContext.request.session);
@@ -16,7 +14,7 @@ if (renderContext.editMode && renderContext.mainResource.contextConfiguration ==
 
 if (renderContext.contributionMode && renderContext.mainResource.contextConfiguration == 'page') {
     println "<script type=\"text/javascript\">"
-    println "\tvar jahiaGWTParameters={contextPath:${url.context},uilang:${renderContext.mainResourceLocale},siteUuid:${renderContext.site.identifier},wcag:${renderContext.site.WCAGComplianceCheckEnabled}}";
+    println "\tvar jahiaGWTParameters={contextPath:\"${url.context}\",uilang:\"${renderContext.mainResourceLocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}";
     println "</script>";
 }
 

@@ -56,20 +56,15 @@
             
             <c:choose>
                 <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet')}">
+                    <c:if test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">                
+                        <jcr:nodeProperty node="${facet}" name="labelFormat" var="currentFacetValueFormat"/>
+                        <c:if test="${not empty currentFacetValueFormat.string}">
+                            <c:set target="${facetValueFormats}" property="${facetPropertyName}" value="${currentFacetValueFormat.string}"/>
+                        </c:if>                                                                            
+                    </c:if>            
                     <c:if test="${not empty currentField and not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
                         <c:set var="facetQuery" value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}${minCountParam}"/>
-                        <c:choose>
-                            <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">
-                                <jcr:nodeProperty node="${facet}" name="labelFormat" var="currentFacetValueFormat"/>
-                                <c:if test="${not empty currentFacetValueFormat.string}">
-                                    <c:set target="${facetValueFormats}" property="${facetPropertyName}" value="${currentFacetValueFormat.string}"/>
-                                </c:if>                                                                            
-                                <c:set var="facetPrefix" value="date."/>
-                            </c:when>
-                            <c:otherwise>
-                                <c:set var="facetPrefix" value=""/>
-                            </c:otherwise>                  
-                        </c:choose>      
+                        <c:set var="facetPrefix" value="${jcr:isNodeType(facet, 'jnt:dateFacet') ? 'date.' : ''}"/>
                         <c:forEach items="${facet.primaryNodeType.declaredPropertyDefinitions}" var="propertyDefinition">
                             <jcr:nodeProperty node="${facet}" name="${propertyDefinition.name}" var="facetPropValue"/>
                             <c:choose>

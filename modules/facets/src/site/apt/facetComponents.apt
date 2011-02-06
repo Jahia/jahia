@@ -1,22 +1,26 @@
 Facet module and components
 
-  Jahia provides a facet module, with a {{Facets list}} and a {{Site Tag cloud}} component, which make use of the faceting support in the backend.
-  With this an integrator can create templates with faceting support in next to no time.  
+  Jahia provides a facet module, with a {{Facets list}} and a {{Site Tag cloud}} component, which make use of the faceting support in the 
+  backend. With this an integrator can create templates with faceting support in next to no time.  
 
 * Facets list
 
   This component can be found under {{Site components -> Facets list}}.
   
-  If for instance you want to add a facets list on the News template, simply open the Studio, select your template-set and then navigate to the news 
-  template in the left side-panel. Find the {{Site components -> Facets list}} component and drag&drop it to the <<right column area>>. In the popup 
-  simply click on <<Save>>.
+  If for instance you want to add a Facets list on the News template, simply open the Studio, select your template-set and then navigate to 
+  the news template in the left side-panel. Find the {{Site components -> Facets list}} component and drag&drop it to the 
+  <<right column area>>. In the popup click on <<Save>>.
   
-  Now you need to bind the component to the area, which displays the list or the query results. So you simply click on the <<Click this to link>> button.
-  Release the mouse button (no drag&drop) and move the cursor (should display a chain icon) to the <<Maincontent area>> and click on te area. Now you should
-  see the message <<facets - Linked to: maincontent>> in the component.
+[./images/facets/facetslist.png] Facets list component in left side-panel of the Studio
   
-  Now let's make a facet on the news date. For that we first need to make the property facetable. Modify the definition of jnt:news and add the 
-  attribute <<<facetable>>> to the date property. 
+  Now you need to bind the component to the area, which displays the list or the query results. Click on the <<Click this to link>> button.
+  Release the mouse button (no drag&drop) and move the mouse pointer (should display a chain icon) to the <<Maincontent area>> and click 
+  on the area. Now you should see the message <<facets - Linked to: maincontent>> in the component.
+  
+[./images/facets/linkfacets.png] Link (bind) facets component to list  
+  
+  Now let's create a facet on the news date. For that we first need to make the property facetable. Modify the definition of <<<jnt:news>>> 
+  and add the attribute <<<facetable>>> to the date property. 
   
 ----------------------------------------  
 [jnt:news] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent
@@ -40,13 +44,17 @@ Facet module and components
   <<start:>> <<<2000-01-01T00:00:00Z>>>\
   <<end:>> <<<NOW>>>\
   <<hardend:>> <<<true>>>\
-  <<format:>> <<<MMMM (yyyy)>>>\
+  <<format:>> <<<MMMM (yyyy)>>>
+  
+[./images/facets/datefacet.png] Fill out date facet form  
     
   Click on <<Save>>.
   
   Now you can deploy the template, by choosing in the top-menu <<Deploy templates -> ACME>>.
   
-  Go to the news page in <<Edit>> or <<Preview>> mode (reload the page) and you should see the applied facets list in the right area. 
+  Go to the news page in <<Edit>> or <<Preview>> mode (reload the page) and you should see the applied facets list in the right area.
+  
+[./images/facets/facetinnewspage.png]    
 
 ** Drill-down urls
 

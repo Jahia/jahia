@@ -31,21 +31,22 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.util.BaseEventPreview;
-import com.extjs.gxt.ui.client.widget.BoxComponent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
+import com.extjs.gxt.ui.client.widget.form.AdapterField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -96,18 +97,18 @@ public class CronField extends AdapterField {
         minuteCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
         minuteCombo.setWidth(50);
         for (int i = 0; i < 60; i += 1) {
-            minuteCombo.add("" + i);
+            minuteCombo.add((i<10 ? "0":"") + i);
         }
-        minuteCombo.select(0);
+        minuteCombo.setValue(minuteCombo.getStore().getAt(0));
 
         hourCombo = new SimpleComboBox<String>();
         hourCombo.setEditable(false);
         hourCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
         hourCombo.setWidth(50);
         for (int i = 0; i < 24; i++) {
-            hourCombo.add("" + i);
+            hourCombo.add((i<10 ? "0":"") + i);
         }
-        hourCombo.select(0);
+        hourCombo.setValue(hourCombo.getStore().getAt(0));
 
         weekDayCombo = new SimpleComboBox<String>();
         weekDayCombo.setEditable(false);
@@ -119,7 +120,7 @@ public class CronField extends AdapterField {
         weekDayCombo.add(Messages.get("label.cron.day.friday"));
         weekDayCombo.add(Messages.get("label.cron.day.saturday"));
         weekDayCombo.add(Messages.get("label.cron.day.sunday"));
-        weekDayCombo.select(0);
+        weekDayCombo.setValue(weekDayCombo.getStore().getAt(0));
 
         monthCombo = new SimpleComboBox<String>();
         monthCombo.setEditable(false);
@@ -136,7 +137,7 @@ public class CronField extends AdapterField {
         monthCombo.add(Messages.get("label.cron.month.october"));
         monthCombo.add(Messages.get("label.cron.month.november"));
         monthCombo.add(Messages.get("label.cron.month.december"));
-        monthCombo.select(0);
+        monthCombo.setValue(monthCombo.getStore().getAt(0));
 
         monthDayCombo = new SimpleComboBox<String>();
         monthDayCombo.setEditable(false);
@@ -145,7 +146,7 @@ public class CronField extends AdapterField {
         for (int i = 1; i <= 31; i++) {
             monthDayCombo.add("" + i);
         }
-        monthDayCombo.select(0);
+        monthDayCombo.setValue(monthDayCombo.getStore().getAt(0));
 
         final Map<Integer, List<Widget>> widgets = new HashMap<Integer, List<Widget>>();
 
@@ -210,12 +211,6 @@ public class CronField extends AdapterField {
         panel.add(choose);
     }
 
-
-    @Override
-    public void setRawValue(String value) {
-        super.setRawValue(value);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
     @Override
     public void setValue(Object value) {
         String s = (String) value;
@@ -255,11 +250,6 @@ public class CronField extends AdapterField {
             }
         }
         super.setValue(value);
-    }
-
-    @Override
-    public String getRawValue() {
-        return "";
     }
 
     @Override

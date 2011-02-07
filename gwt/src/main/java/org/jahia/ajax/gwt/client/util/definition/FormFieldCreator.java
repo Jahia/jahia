@@ -47,6 +47,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
+import org.jahia.ajax.gwt.client.widget.content.CronField;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
@@ -135,6 +136,9 @@ public class FormFieldCreator {
 
                     break;
                 case GWTJahiaNodeSelectorType.COLOR:
+                    break;
+                case GWTJahiaNodeSelectorType.CRON:
+                    field = new CronField();
                     break;
                 case GWTJahiaNodeSelectorType.CATEGORY:
                     field = new ContentPickerField(definition.getSelectorOptions(),

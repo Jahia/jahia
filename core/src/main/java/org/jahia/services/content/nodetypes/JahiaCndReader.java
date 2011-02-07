@@ -461,6 +461,8 @@ public class JahiaCndReader {
             pdi.setSelector(SelectorType.TEXTAREA);
         } else if (currentTokenEquals(Lexer.CHOICELIST)) {
             pdi.setSelector(SelectorType.CHOICELIST);
+        } else if (currentTokenEquals(Lexer.CRON)) {
+            pdi.setSelector(SelectorType.CRON);
         } else if (currentTokenEquals(Lexer.DATEPICKER)) {
             pdi.setSelector(SelectorType.DATEPICKER);
         } else if (currentTokenEquals(Lexer.DATETIMEPICKER)) {

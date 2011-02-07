@@ -221,36 +221,36 @@ public class CronField extends AdapterField {
         String s = (String) value;
         if (s.length() > 0) {
             String[] values = s.split(" ");
-            if ("*".equals(values[0])) {
+            if ("*".equals(values[1])) {
                 // Minute
                 choose.setValue(choose.getStore().getAt(EVERY_MINUTE));
-            } else if ("*".equals(values[1])) {
-                // Hour
-                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[0])));
-                choose.setValue(choose.getStore().getAt(EVERY_HOUR));
-            } else if (!"*".equals(values[4])) {
-                // Week
-                hourCombo.setValue(hourCombo.getStore().getAt(Integer.parseInt(values[1])));
-                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[0])));
-                weekDayCombo.setValue(weekDayCombo.getStore().getAt((Integer.parseInt(values[4]) - 2) % 7));
-                choose.setValue(choose.getStore().getAt(EVERY_WEEK));
             } else if ("*".equals(values[2])) {
-                // Day
-                hourCombo.setValue(hourCombo.getStore().getAt(Integer.parseInt(values[1])));
-                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[0])));
-                choose.setValue(choose.getStore().getAt(EVERY_DAY));
+                // Hour
+                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[1])));
+                choose.setValue(choose.getStore().getAt(EVERY_HOUR));
+            } else if (!"?".equals(values[5])) {
+                // Week
+                hourCombo.setValue(hourCombo.getStore().getAt(Integer.parseInt(values[2])));
+                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[1])));
+                weekDayCombo.setValue(weekDayCombo.getStore().getAt((Integer.parseInt(values[5]) - 2) % 7));
+                choose.setValue(choose.getStore().getAt(EVERY_WEEK));
             } else if ("*".equals(values[3])) {
+                // Day
+                hourCombo.setValue(hourCombo.getStore().getAt(Integer.parseInt(values[2])));
+                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[1])));
+                choose.setValue(choose.getStore().getAt(EVERY_DAY));
+            } else if ("*".equals(values[4])) {
                 // Month
-                hourCombo.setValue(hourCombo.getStore().getAt(Integer.parseInt(values[1])));
-                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[0])));
-                monthDayCombo.setValue(monthDayCombo.getStore().getAt(Integer.parseInt(values[2]) - 1));
+                hourCombo.setValue(hourCombo.getStore().getAt(Integer.parseInt(values[2])));
+                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[1])));
+                monthDayCombo.setValue(monthDayCombo.getStore().getAt(Integer.parseInt(values[3]) - 1));
                 choose.setValue(choose.getStore().getAt(EVERY_MONTH));
             } else {
                 // Year
-                hourCombo.setValue(hourCombo.getStore().getAt(Integer.parseInt(values[1])));
-                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[0])));
-                monthDayCombo.setValue(monthDayCombo.getStore().getAt(Integer.parseInt(values[2]) - 1));
-                monthCombo.setValue(monthCombo.getStore().getAt(Integer.parseInt(values[3])));
+                hourCombo.setValue(hourCombo.getStore().getAt(Integer.parseInt(values[2])));
+                minuteCombo.setValue(minuteCombo.getStore().getAt(Integer.parseInt(values[1])));
+                monthDayCombo.setValue(monthDayCombo.getStore().getAt(Integer.parseInt(values[3]) - 1));
+                monthCombo.setValue(monthCombo.getStore().getAt(Integer.parseInt(values[4])));
                 choose.setValue(choose.getStore().getAt(EVERY_YEAR));
             }
         }
@@ -263,25 +263,25 @@ public class CronField extends AdapterField {
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         switch (choose.getSelectedIndex()) {
             case EVERY_MINUTE: { // Minute
-                return "* * * * *";
+                return "0 * * * * ?";
             }
             case EVERY_HOUR: { // Hour
-                return minuteCombo.getValue().getValue() + " * * * *";
+                return "0 " + minuteCombo.getValue().getValue() + " * * * ?";
             }
             case EVERY_DAY: { // Day
-                return minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " * * *";
+                return "0 " + minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " * * ?";
             }
             case EVERY_WEEK: { // Week
-                return minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " * * " + (weekDayCombo.getSelectedIndex() + 2) % 7;
+                return "0 " + minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " ? * " + (weekDayCombo.getSelectedIndex() + 2) % 7;
             }
             case EVERY_MONTH: { // Month
-                return minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " " + (monthDayCombo.getSelectedIndex() + 1) + " * *";
+                return "0 " + minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " " + (monthDayCombo.getSelectedIndex() + 1) + " * ?";
             }
             case EVERY_YEAR: { // Year
-                return minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " " + (monthDayCombo.getSelectedIndex() + 1) + " " + (monthCombo.getSelectedIndex()) + " *";
+                return "0 " + minuteCombo.getValue().getValue() + " " + hourCombo.getValue().getValue() + " " + (monthDayCombo.getSelectedIndex() + 1) + " " + (monthCombo.getSelectedIndex()) + " ?";
             }
         }
         return "";

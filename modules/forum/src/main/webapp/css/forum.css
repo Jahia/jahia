@@ -139,9 +139,13 @@
 }
 #bodywrapper #forum-body ul.forum-list dl.iconsection {
 	background:url(img/section.gif) no-repeat 5px 50%;
+	height: auto !important;
+    min-height: 35px;
 }
 #bodywrapper #forum-body ul.forum-list dl.icontopic {
 	background:url(img/topic.gif) no-repeat 5px 50%;
+	height: auto !important;
+    min-height: 35px;
 }
 
 

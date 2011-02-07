@@ -53,7 +53,7 @@ import java.util.List;
  * Date: 20 déc. 2007
  * Time: 11:53:45
  */
-public class AddedNodeFact implements Updateable {
+public class AddedNodeFact implements Updateable, NodeFact {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(AddedNodeFact.class);
 
     private AddedNodeFact parentNode;
@@ -252,4 +252,8 @@ public class AddedNodeFact implements Updateable {
         result = 31 * result + (node != null ? node.hashCode() : 0);
         return result;
     }
+
+	public String getIdentifier() throws RepositoryException {
+		return node != null ? node.getIdentifier() : null;
+	}
 }

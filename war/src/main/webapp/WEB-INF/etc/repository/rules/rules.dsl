@@ -71,7 +71,7 @@
 [consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeRuleLater(node, "{property}",{ruleName}, drools);
 [consequence][]Execute the action {actionName} at {property} on the {node}=service.executeActionLater(node, "{property}",{actionName}, drools);
 [consequence][]Cancel execution of action {actionName} on the {node}=service.cancelActionExecution(node, {actionName}, drools);
-[consequence][]Schedule the background action {actionName} on the {node} using cron expression {cron}=service.scheduleAction(node, "{actionName}", "{cron}", drools);
+[consequence][]Schedule the background action {actionName} on the {node} using cron expression {cron}=service.scheduleAction(node, {actionName}, {cron}, drools);
 [consequence][]Publish the {node}=service.publishNode({node}, drools);
 [consequence][]Start the workflow {processKey} from {provider} on the {node}=service.startWorkflowOnNode(node,{processKey},{provider}, drools);
 [consequence][]Enable auto-splitting for subnodes of the {node} into folders of type {folderNodeType} using configuration "{config}"=service.enableAutoSplitting(node, "{config}", "{folderNodeType}",drools);

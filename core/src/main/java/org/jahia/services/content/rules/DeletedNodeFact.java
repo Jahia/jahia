@@ -43,7 +43,7 @@ import javax.jcr.RepositoryException;
  * Date: 17 janv. 2008
  * Time: 15:17:58
  */
-public class DeletedNodeFact {
+public class DeletedNodeFact implements NodeFact {
     private String path;
     private String identifier;
     private JCRSessionWrapper session;

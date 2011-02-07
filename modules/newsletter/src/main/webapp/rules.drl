@@ -44,3 +44,13 @@ rule "Cancel newsletter scheduling"
         Log "Canceling newsletter " + node.getPath()
         Cancel execution of action "sendAsNewsletter" on the node 
 end
+
+rule "Cancel newsletter scheduling (on delete)"
+    when
+        A node is deleted
+        The node has a parent
+            - the parent has the type jnt:newsletter
+    then
+        Log "Canceling newsletter " + node.getPath()
+        Cancel execution of action "sendAsNewsletter" on the node 
+end

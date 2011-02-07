@@ -57,6 +57,7 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
@@ -528,10 +529,10 @@ public class Service extends JahiaService {
 		schedulerService.scheduleJob(jobDetail, trigget);
 	}
 
-	public void cancelActionExecution(AddedNodeFact node, final String actionToCancel,
+	public void cancelActionExecution(NodeFact node, final String actionToCancel,
 	        KnowledgeHelper drools) throws JahiaException, RepositoryException {
 		String jobGroup = ActionJob.getJobGroup(actionToCancel);
-		String jobName = ActionJob.getJobName(actionToCancel, node.getNode().getIdentifier());
+		String jobName = ActionJob.getJobName(actionToCancel, node.getIdentifier());
 		if (schedulerService.deleteJob(jobName, jobGroup)) {
 			logger.info("Action job with the name {} and group {} canceled successfully", jobName, jobGroup);
 		}
@@ -582,8 +583,7 @@ public class Service extends JahiaService {
 
         boolean resetUser = false;
         if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
-            final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root");
-            JCRSessionFactory.getInstance().setCurrentUser(jahiaUser);
+            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
             resetUser = true;
         }
 

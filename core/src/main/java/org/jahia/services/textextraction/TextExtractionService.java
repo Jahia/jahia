@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.slf4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.IOUtils;
@@ -69,8 +70,7 @@ public class TextExtractionService implements InitializingBean {
                 parser = new AutoDetectParser(new TikaConfig(stream));
             } else {
                 TikaConfig cfg = new TikaConfig(stream);
-                parser = new CompositeParser();
-                parser.setParsers(cfg.getParsers());
+                parser = (CompositeParser) cfg.getParser();
             }
         } catch (Exception e) {
             logger.error("Error initializing text extraction service. Service will be disabled. Cause: "
@@ -201,13 +201,16 @@ public class TextExtractionService implements InitializingBean {
         if (!isEnabled()) {
             return false;
         }
-        String contentType = metadata.get(Metadata.CONTENT_TYPE);
+        MediaType contentMediaType = null;
         if (parser instanceof AutoDetectParser) {
-            MediaType type = ((AutoDetectParser) parser).getDetector().detect(stream, metadata);
-            contentType = type != null ? type.toString() : contentType;
+        	contentMediaType = ((AutoDetectParser) parser).getDetector().detect(stream, metadata);
+        }
+        if (contentMediaType == null) {
+        	String contentType = metadata.get(Metadata.CONTENT_TYPE);
+        	contentMediaType = contentType != null ? new MediaType(StringUtils.substringBefore(contentType, "/"), StringUtils.substringAfter(contentType, "/")) : null;
         }
 
-        return contentType != null ? parser.getParsers().containsKey(contentType) : false;
+        return contentMediaType != null ? parser.getParsers().containsKey(contentMediaType) : false;
     }
 
     /**

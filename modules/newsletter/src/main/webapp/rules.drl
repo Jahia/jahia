@@ -33,7 +33,6 @@ rule "Schedule as a newsletter"
 			- the node has the type jnt:newsletterIssue
     then
         Log "Scheduling newsletter " + node.getPath() + " at " + propertyValueAsString
-        Cancel execution of action "sendAsNewsletter" on the node
         Execute the action "sendAsNewsletter" at j:scheduled on the node 
 end
 

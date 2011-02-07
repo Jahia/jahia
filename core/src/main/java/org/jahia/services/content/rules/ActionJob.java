@@ -53,18 +53,30 @@ public class ActionJob extends BackgroundJob {
 
     public static final String JOB_NODE_UUID = "node";
     public static final String JOB_ACTION_TO_EXECUTE = "actionToExecute";
+    
+    public static final String getJobGroup(String actionName) {
+    	return BackgroundJob.getGroupName(ActionJob.class) + "." + actionName;
+    }
+
+    public static final String getJobName(String actionName, String nodeIdentifier) {
+    	return actionName + "-" + nodeIdentifier;
+    }
 
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try {
             final JobDataMap map = jobExecutionContext.getJobDetail().getJobDataMap();
-            final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-            final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession();
-            JCRNodeWrapper node = jcrSessionWrapper.getNodeByUUID(map.getString(JOB_NODE_UUID));
-            final BackgroundAction action = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getBackgroundActions().get(
-                    map.getString(JOB_ACTION_TO_EXECUTE));
+            String actionName = map.getString(JOB_ACTION_TO_EXECUTE);
+			final BackgroundAction action = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getBackgroundActions().get(
+                    actionName);
             if (action != null) {
                 BackgroundAction backgroundAction = (BackgroundAction) action;
+                final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession();
+                JCRNodeWrapper node = jcrSessionWrapper.getNodeByUUID(map.getString(JOB_NODE_UUID));
                 backgroundAction.executeBackgroundAction(node);
+            } else {
+				logger.error("Background action with the name {} is not found in the registry."
+				        + " Skip executing action.", actionName);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

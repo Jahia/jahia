@@ -484,8 +484,8 @@ public class SchedulerServiceImpl extends SchedulerService {
      */
     public boolean deleteJob(String jobName, String groupName)
             throws JahiaException {
-        if (logger.isDebugEnabled() && !groupName.equals("RetentionRuleJob")) {
-			logger.debug("try to delete job:" + jobName + " gn:" + groupName);
+        if (logger.isDebugEnabled()) {
+			logger.debug("try to delete job: " + jobName + " gn: " + groupName);
         }
         if (!schedulerRunning) {
             return false;

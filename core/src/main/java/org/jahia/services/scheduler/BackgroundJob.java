@@ -114,10 +114,6 @@ public abstract class BackgroundJob implements StatefulJob {
         return name.substring(name.lastIndexOf('.') + 1);
     }
 
-    public static int getMaxExecutionTime() {
-        return 3600;
-    }
-
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
         // First some sanity checks, mostly because we could be executing jobs before Jahia has finished initializing
@@ -131,7 +127,7 @@ public abstract class BackgroundJob implements StatefulJob {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap data = jobDetail.getJobDataMap();
         long now = System.currentTimeMillis();
-        logger.info("Background job " + jobDetail.getName() + " started @ " + new Date(now));
+        logger.info("Background job " + jobDetail.getName() + " (of type " + jobDetail.getGroup() + ") started @ " + new Date(now));
         String status = STATUS_FAILED;
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {
@@ -148,7 +144,7 @@ public abstract class BackgroundJob implements StatefulJob {
                 status = STATUS_SUCCESSFUL;
             }
         } catch (Exception e) {
-            logger.error("Cannot execute job", e);
+            logger.error("Cannot execute job " + (jobDetail != null ? jobDetail.getKey().toString() : "n/a"), e);
             data.put(JOB_MESSAGE, e.toString());
             throw new JobExecutionException(e);
         } finally {
@@ -160,7 +156,7 @@ public abstract class BackgroundJob implements StatefulJob {
             int duration = (int) ((Long.parseLong((String) data.get(JOB_END)) - Long.parseLong((String) data.get(JOB_BEGIN))) / 1000);
             data.putAsString(JOB_DURATION, duration);//duration
 
-            logger.info("Background job (of type " + jobDetail.getGroup() + ") ended with status " + status + " executed in " + duration + "s");
+            logger.info("Background job " + jobDetail.getName() + " (of type " + jobDetail.getGroup() + ") ended with status " + status + " executed in " + duration + "s");
 
             Date nextFireTime = jobExecutionContext.getNextFireTime();
             try {
@@ -174,7 +170,7 @@ public abstract class BackgroundJob implements StatefulJob {
                     }
                 }
             } catch (SchedulerException e) {
-                logger.error("Cannot get triggers for job", e);
+                logger.error("Cannot get triggers for job " + (jobDetail != null ? jobDetail.getKey().toString() : "n/a"), e);
             }
 
             if (status == STATUS_FAILED) {
@@ -182,7 +178,7 @@ public abstract class BackgroundJob implements StatefulJob {
                     boolean ramScheduler = this instanceof RamJob;
                     ServicesRegistry.getInstance().getSchedulerService().unscheduleJob(jobDetail, ramScheduler);
                 } catch (JahiaException e) {
-                    logger.error("Cannot unschedule job", e);
+                    logger.error("Cannot unschedule job " + (jobDetail != null ? jobDetail.getKey().toString() : "n/a"), e);
                 }
             } else {
                 if (nextFireTime != null) {

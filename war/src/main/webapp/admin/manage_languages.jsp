@@ -1,11 +1,11 @@
-<%@page import="org.jahia.utils.LanguageCodeConverters,java.util.Iterator,java.util.Locale,java.util.Set" %>
+<%@page import="org.jahia.bin.Jahia,org.jahia.utils.LanguageCodeConverters,java.util.Iterator,java.util.Locale,java.util.Set" %>
 <%@include file="/admin/include/header.inc" %>
 <%
     Set<String> languageSet = (Set<String>) request.getAttribute("languageSet");
     Set<String> mandatoryLanguageSet = (Set<String>) request.getAttribute("mandatoryLanguageSet");
     Boolean mixLanguages = (Boolean) request.getAttribute("mixLanguages");
     String defaultLanguage = (String) request.getAttribute("defaultLanguage");
-    Locale currentLocale = request.getLocale();
+    Locale currentLocale = Jahia.getThreadParamBean().getUILocale();
 %>
 <script type="text/javascript" language="javascript">
     <!--
@@ -162,9 +162,7 @@
                                                                 String displayName = "";
                                                                 displayName = curLocale.getDisplayName(
                                                                         currentLocale); %>
-                                                    <option value="<%=curLocale%>"><%=displayName %>
-                                                        (<%=curLocale.toString() %>)
-                                                    </option>
+                                                    <option value="<%=curLocale%>"><%=displayName %>&nbsp;(<%=curLocale.toString() %>)</option>
                                                     <%
                                                             }
                                                         } %>

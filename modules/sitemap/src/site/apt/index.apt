@@ -30,7 +30,7 @@ end
  The submission of your sitemap can be done automatically by a background job in JAHIA. This job is define inside the sitemap module.
 
 +------------------------------------
-<bean id="sitemapCronTrigger" class="org.quartz.CronTrigger">
+    <bean id="sitemapCronTrigger" class="org.quartz.CronTrigger">
         <property name="name" value="SitemapCronTrigger"/>
         <!-- Will start the process at 4 a.m -->
         <property name="cronExpression" value="0 0 4 * * ?" />
@@ -58,7 +58,7 @@ end
 +------------------------------------
 
   This job is define in two parts first we have the trigger. The trigger is here to define at which time we want to execute
-  the job. Here we use a cron expression to define the time of execution ( here 4 A.M every day of every year).
+  the job. Here we use a cron expression to define the time of execution ( here 4 AM every day of every year).
 
   The second part is the job by itself, where you can configure how many search engines you want to reach by specifying
   the url where to submit the sitemap.
@@ -67,7 +67,7 @@ end
   your domain/sitemap.xml to your homepage look at the documentation about Apache HTTP Server in the war module.
 
   For each search engines you will have to follow their policy, for example on google they ask that for the first time you
-  manually register you sitemap using their webmaster tools (to follow what happens and have feedback in your google
+  manually register you sitemap using their webmaster tools (to follow what happens and have feedback in your Google
   environment).
 
   

@@ -25,22 +25,23 @@
     </template:tokenizedForm>
 </c:if>
 
-<dl>
-    <dt title="posts"><a class="forum-title"
+<dl class="icon icontopic">
+    <dt title="posts">
+        <c:if test="${jcr:hasPermission(currentNode, 'deleteTopic')}"><ul class="forum-profile-icons">
+        
+            <li class="delete-post-icon"><a title="Delete this topic" href="#"
+                                            onclick="document.getElementById('jahia-forum-topic-delete-${currentNode.UUID}').submit();"><span>Delete this topic</span></a>
+            </li>
+        
+
+    </ul></c:if>
+    <a class="forum-title"
                          href="${url.base}${currentNode.path}.html">${currentNode.properties.topicSubject.string}</a>
         <br/>
     <p>
         <fmt:message key="mix_created.jcr_createdBy"/> ${currentNode.properties["jcr:createdBy"].string}  <fmt:formatDate value="${currentNode.properties['jcr:created'].time}" dateStyle="full" type="both"/>
     </p>
 
-    <ul class="forum-profile-icons">
-        <c:if test="${jcr:hasPermission(currentNode, 'deleteTopic')}">
-            <li class="delete-post-icon"><a title="Delete this topic" href="#"
-                                            onclick="document.getElementById('jahia-forum-topic-delete-${currentNode.UUID}').submit();"><span>Delete this topic</span></a>
-            </li>
-        </c:if>
-
-    </ul>
     </dt>
         <%--<dd class="topics">30</dd>--%>
     <dd class="posts">${numberOfPosts}</dd>

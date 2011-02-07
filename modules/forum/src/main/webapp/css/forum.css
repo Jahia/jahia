@@ -3,70 +3,34 @@
 * box
 ******************************************************************************/
 #bodywrapper #forum-body .forum-box{
-	background: #12A3EB url(img/bg_header.gif) repeat-x top left;
-	padding: 0 5px;
-	margin-bottom:10px;
+	position:relative;
 	clear:both;
-}
-#bodywrapper #forum-body span.forum-corners-top,
-#bodywrapper #forum-body span.forum-corners-bottom,
-#bodywrapper #forum-body span.forum-corners-top span,
-#bodywrapper #forum-body span.forum-corners-bottom span {
-	font-size: 1px;
-	line-height: 1px;
-	display: block;
-	height: 5px;
-	background-repeat: no-repeat;
-}
-
-#bodywrapper #forum-body span.forum-corners-top {
-	background-image: none;
-	background-position: 0 0;
-	margin: 0 -5px;
-}
-
-#bodywrapper #forum-body span.forum-corners-top span {
-	background-image: none;
-	background-position: 100% 0;
-}
-
-#bodywrapper #forum-body span.forum-corners-bottom {
-	background-image: none;
-	background-position: 0 100%;
-	margin: 0 -5px;
-	clear: both;
-}
-
-#bodywrapper #forum-body span.forum-corners-bottom span {
-	background-image: none;
-	background-position: 100% 100%;
-}
-#bodywrapper #forum-body span.forum-corners-top {
-	background-image: url("img/corners_left.png");
-}
-
-#bodywrapper #forum-body span.forum-corners-top span {
-	background-image: url("img/corners_right.png");
-}
-
-#bodywrapper #forum-body span.forum-corners-bottom {
-	background-image: url("img/corners_left.png");
-}
-
-#bodywrapper #forum-body span.forum-corners-bottom span {
-	background-image: url("img/corners_right.png");
+	margin-bottom:1em;
+	background:#f2f2f2 url(img/forum-box.png) repeat-x top right;
+	border:1px solid #cccccc;
+	margin-left:0;
+	padding:5px;
+	font-weight:normal;
+	clear:both;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	border-radius:10px;
+    padding: 5px 10px;
+	overflow:hidden;
+	-webkit-box-shadow: 0px 0px 5px #cccccc;
+	-moz-box-shadow: 0px 0px 5px #cccccc;
+	box-shadow: 0px 0px 5px #cccccc;
 }
 /* box style 1 
 ----------------------------------------*/
 #bodywrapper #forum-body .forum-box-style1 {
-	background: none;
-	background-color:#eaeaea
+	background:#f2f2f2 url(img/forum-box.png) repeat-x top right;
 }
 /* box style 2 
 ----------------------------------------*/
 #bodywrapper #forum-body .forum-box-style2 {
-	background: none;
-	background-color:#d6ecfd
+	background:#dfeffc url(img/forum-box2.png) repeat-x top right;
+	border:1px solid #99ccff;
 }
 
 /******************************************************************************
@@ -103,7 +67,6 @@
 #bodywrapper #forum-body ul.forum-linklist li {
 	display:block;
 	float:left;
-	font-size:1.1em;
 	line-height:2.2em;
 	list-style-type:none;
 	margin-right:5px;
@@ -169,6 +132,18 @@
 	height:1%;
 	overflow:hidden;
 }
+#bodywrapper #forum-body ul.forum-list dl.icon dt {
+    background-position: 5px 95%;
+    background-repeat: no-repeat;
+    padding-left: 45px;
+}
+#bodywrapper #forum-body ul.forum-list dl.iconsection {
+	background:url(img/section.gif) no-repeat 5px 50%;
+}
+#bodywrapper #forum-body ul.forum-list dl.icontopic {
+	background:url(img/topic.gif) no-repeat 5px 50%;
+}
+
 
 #bodywrapper #forum-body ul.forum-list dl {
 	position:relative;
@@ -181,7 +156,6 @@
 }
 
 #bodywrapper #forum-body ul.forum-list li {
-	color:#777777;
 	display:block;
 	list-style-type:none;
 	margin:0;
@@ -197,6 +171,10 @@
 	padding-left:5px;
 	padding-right:5px;
 	width:50%;
+}
+#bodywrapper #forum-body ul.forum-list dt p {
+	font-size:0.9em;
+	padding:0px;
 }
 #bodywrapper #forum-body ul.forum-list dd {
 	border-left-color:#FFFFFF;
@@ -218,13 +196,11 @@
 #bodywrapper #forum-body li.forum-list-header dt a,
 #bodywrapper #forum-body li.forum-list-header dt a:link,
 #bodywrapper #forum-body li.forum-list-header dt a:visited {
-	color: #333;
 	text-decoration:none;
 	background:none;
 }
 #bodywrapper #forum-body li.forum-list-header dt a:hover,
 #bodywrapper #forum-body li.forum-list-header dt a:active {
-	color:#fff;
 	text-decoration:underline;
 	background:none;
 }
@@ -245,11 +221,14 @@
 #bodywrapper #forum-body ul.forum-list li.forum-list-header dd{
 	border:none
 }
-
+#bodywrapper #forum-body ul.forum-list li.forum-list-header dl.icon dt {
+ 	padding-right: 50px;
+    padding-left: 0px;
+}
 /* specific
 ----------------------------------------*/
 div.rooms, div.topics, div.posts{
-	margin-bottom:1em
+	margin:1em 0;
 }
 
 #bodywrapper #forum-body ul.forum-list dd {
@@ -271,7 +250,6 @@ div.rooms, div.topics, div.posts{
 }
 
 #bodywrapper #forum-body dd.lastpost {
-	font-size:1.1em;
 	width:25%;
 }
 dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.topiclist dd.time span, dd.redirect span, dd.moderation span {
@@ -287,6 +265,9 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 	border-top-color:#FFFFFF;
 	padding:5px 0
 }
+#bodywrapper #forum-body li.row:last-child {
+	border-bottom:none;
+}
 #bodywrapper #forum-body li.row form {
 	display:none;
 }
@@ -301,14 +282,13 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 ******************************************************************************/
 #bodywrapper #forum-body .forum-postprofile {
 	border-left-color:#FFFFFF;
-	color:#666666;
 }
 /******************************************************************************
 * forum-postprofile
 ******************************************************************************/
 #bodywrapper #forum-body .forum-postprofile {
 	border-left:1px solid #FFFFFF;
-	color:#666666;
+
 	display:inline;
 	float:right;
 	margin:5px 0 10px;
@@ -316,16 +296,18 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 	width:22%;
 	padding:5px
 }
+#bodywrapper #forum-body .forum-postprofile p {
+	margin:0;
+	padding:0;
+}
 /******************************************************************************
+
 * forum-postbody
 ******************************************************************************/
-#bodywrapper #forum-body .forum-postbody {
-	color:#333333;
-}
+
 
 #bodywrapper #forum-body .forum-postbody {
 	clear:both;
-	color:#333333;
 	float:left;
 	padding:0;
 	width:76%;
@@ -341,56 +323,68 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 #bodywrapper #forum-body .forum-buttons a,
 #bodywrapper #forum-body .forum-buttons a:link,
 #bodywrapper #forum-body .forum-buttons a:visited{
+	background:#eaeaea url(img/addforumpost.png) no-repeat 10px 3px;
 	display: inline-block;
-	padding: 5px 10px 6px;
+	padding: 5px 10px 6px 30px;
 	color: #fff;
 	text-decoration: none;
 	font-weight: bold;
 	line-height: 1;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	
 	-moz-box-shadow: 0px 1px 3px #999;
 	-webkit-box-shadow: 0px 1px 3px #999;
 	box-shadow: 0px 1px 3px #999;
+	
 	text-shadow: 0px -1px 1px #222;
 	filter: dropshadow(color=#222, offx=0, offy=-1);
-	border-bottom: 1px solid #222;
+	
+	background-color:#333;
 	position: relative;
 	cursor: pointer;
-	background-color:#333;
+	-webkit-transition: all 0.3s ease-in-out; 
+	-moz-transition: all 0.3s ease-in-out; 
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 }
 #bodywrapper #forum-body .forum-buttons a:hover,
 #bodywrapper #forum-body .forum-buttons a:active {
 	text-decoration:none;
-	background-color: #333;
+	color: #000;
+	text-shadow: 0px -1px 1px #fff;
+	filter: dropshadow(color=#fff, offx=0, offy=-1);
+	background:#eaeaea url(img/addforumpost.png) no-repeat 10px -30px;
 }
 #bodywrapper #forum-body .forum-pagination{float:right}
 /******************************************************************************
 *  Form comments
 ******************************************************************************/
-#bodywrapper #forum-body #forum-Form {
+#bodywrapper #forum-body .forum-Form {
 	margin: 0;
 	padding:0;
     clear:both;
 }
-#bodywrapper #forum-body #forum-Form p{
+#bodywrapper #forum-body .forum-Form p{
 	margin:0;
 	padding:0;
+	margin-bottom:0.2em;
 }
-#bodywrapper #forum-body #forum-Form  p.field{
+#bodywrapper #forum-body .forum-Form  p.field{
 	margin-bottom:0.2em;
 }
 #bodywrapper #forum-body textarea, #bodywrapper #forum-body input{
 	width:98%
 }
-#bodywrapper #forum-body #forum-Form input.radio,
-#bodywrapper #forum-body #forum-Form input.checkbox,
-#bodywrapper #forum-body #forum-Form input.button,
-#bodywrapper #forum-body #forum-Form button {
+#bodywrapper #forum-body .forum-Form input.radio,
+#bodywrapper #forum-body .forum-Form input.checkbox,
+#bodywrapper #forum-body .forum-Form input.button,
+#bodywrapper #forum-body .forum-Form button {
 	width:auto;
 }
 
-#bodywrapper #forum-body #forum-Form fieldset{
+#bodywrapper #forum-body .forum-Form fieldset{
 	border:none;
 	margin:0;
 }
@@ -420,25 +414,29 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 #bodywrapper #forum-body ul.forum-profile-icons li a:visited{
 	display: inline-block;
 	font-size:0.8em;
-	padding: 2px;
+	padding: 2px 4px 4px 4px;
 	color: #fff;
 	text-decoration: none;
 	line-height: 1;
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
-	-moz-box-shadow: 0px 1px 2px #999;
-	-webkit-box-shadow: 0px 1px 2px #999;
-	text-shadow: 0px -1px 1px #222;
-	filter: dropshadow(color=#222, offx=0, offy=-1);
-	border-bottom: 1px solid #222;
+	-moz-box-shadow: 0px 1px 1px #999;
+	-webkit-box-shadow: 0px 1px 1px #999;
+
 	position: relative;
 	cursor: pointer;
-	background-color: #666
+	background-color: #333;
+	
+	-webkit-transition: all 0.3s ease-in-out; 
+	-moz-transition: all 0.3s ease-in-out; 
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 }
 #bodywrapper #forum-body ul.forum-profile-icons li a:hover,
 #bodywrapper #forum-body ul.forum-profile-icons li a:active {
 	text-decoration:none;
-	background-color: #666
+	color: #000;
+	background-color: #eaeaea
 }
 
 #bodywrapper #forum-body .back2top{

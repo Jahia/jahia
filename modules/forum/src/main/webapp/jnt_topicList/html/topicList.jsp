@@ -24,7 +24,6 @@
             <%--<h2><a href="${url.base}${linked.parent.path}.forum-topic.html">${topicSubject.string}</a></h2>--%>
             <%--</c:if>--%>
         <div class="forum-box forum-box-style1 topics">
-            <span class="forum-corners-top"><span></span></span>
 
             <ul class="forum-list">
                 <li class="forum-list-header">
@@ -36,7 +35,6 @@
                     </dl>
                 </li>
             </ul>
-
 
             <ul class="forum-list forums">
                 <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
@@ -50,13 +48,12 @@
 
                 <c:if test="${not found}">
                     <li class="row">
-                        No topic found
+                        <p>No topic found</p>
                     </li>
                 </c:if>
 
             </ul>
             <div class="clear"></div>
-            <span class="forum-corners-bottom"><span></span></span>
         </div>
         <span><fmt:message key="total.threads"/>: ${numberOfThreads}</span>
         <span><fmt:message key="total.posts"/>: ${numberOfPosts}</span>

@@ -377,7 +377,6 @@ Search form top
 	font-size:2.2em;
 	line-height:normal;
 	text-shadow: 0px 1px 1px #ccd6eb;
-	filter: dropshadow(color=#ccd6eb,offX=0,offY=1);
 }
 #bodywrapper h3 {
 	font-weight:normal;
@@ -426,6 +425,13 @@ Search form top
 	margin-bottom:15px;
 	margin-top:15px;
 	padding:20px;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	border-radius:10px;
+	-webkit-box-shadow: 0px 0px 5px #cccccc;
+	-moz-box-shadow: 0px 0px 5px #cccccc;
+	box-shadow: 0px 0px 5px #cccccc;
+	
 }
 
 #bodywrapper textarea {

@@ -312,9 +312,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             return null;
         }
         try {
-            if (cache.containsKey(name)) {
-                JCRUser user = cache.get(name);
-                return user != null && user.isExternal() ? null : user;
+            JCRUser user = cache.get(name);
+            if (user != null) {
+                return user.isExternal() ? null : user;
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -337,8 +337,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
 
     public JCRUser lookupExternalUser(final String name) {
         try {
-            if (cache.containsKey(name)) {
-                return cache.get(name);
+        	JCRUser user = cache.get(name); 
+            if (user != null) {
+                return user;
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -502,8 +503,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
 				try {
 					String newPwd = IOUtils.toString(is);
 					logger.info("Resetting root user password");
-					JCRUser root = new JCRUser(JCRUser.ROOT_USER_UUID, jcrTemplate);
-					root.setPassword(newPwd);
+					lookupRootUser().setPassword(newPwd);
 					logger.info("New root user password set.");
 				} finally {
 					IOUtils.closeQuietly(is);
@@ -534,4 +534,12 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         }
     }
 
+	/**
+	 * Returns the system root user (not cached).
+	 * 
+	 * @return the system root user (not cached)
+	 */
+	public JCRUser lookupRootUser() {
+		return new JCRUser(JCRUser.ROOT_USER_UUID, jcrTemplate);
+	}
 }

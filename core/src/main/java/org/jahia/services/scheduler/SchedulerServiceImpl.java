@@ -40,6 +40,7 @@ import java.util.List;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.quartz.Job;
@@ -62,7 +63,7 @@ import org.slf4j.Logger;
  */
 
 
-public class SchedulerServiceImpl extends SchedulerService {
+public class SchedulerServiceImpl extends SchedulerService implements JahiaAfterInitializationService {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(SchedulerServiceImpl.class);
 
@@ -202,43 +203,48 @@ public class SchedulerServiceImpl extends SchedulerService {
         }
     }
 
-    public void startSchedulers() throws SchedulerException {
-        // here we remove the zombies process
-        // maybe we can flag them as stopped later?
-        try {
-            List<JobDetail> all = getAllJobsDetails();
-            for (JobDetail jd : all) {
-                JobDataMap data = jd.getJobDataMap();
-                //data.clearDirtyFlag();
-                if (BackgroundJob.STATUS_RUNNING.equalsIgnoreCase(data.getString(BackgroundJob.JOB_STATUS)) &&
-                        (data.getString(BackgroundJob.JOB_SERVER) == null || data.getString(BackgroundJob.JOB_SERVER).equals(serverId))) {
-                    data.put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_FAILED);
-                    scheduler.addJob(jd, true);
-                    unscheduleJob(jd);
-                }
-                if (BackgroundJob.STATUS_WAITING.equalsIgnoreCase(data.getString(BackgroundJob.JOB_STATUS)) &&
-                        (data.getString(BackgroundJob.JOB_SERVER) == null || data.getString(BackgroundJob.JOB_SERVER).equals(serverId))) {
-                    SimpleTrigger trigger = new SimpleTrigger(jd.getName() + "_Trigger", INSTANT_TRIGGER_GROUP);
-                    trigger.setVolatility(jd.isVolatile());
-                    trigger.setJobName(jd.getName());
-                    trigger.setJobGroup(jd.getGroup());
-                    scheduler.rescheduleJob(trigger.getName(), trigger.getGroup(), trigger);
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Error while starting schedulers", e);
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Starting scheduler...\n instanceId:"
-                    + scheduler.getMetaData().getSchedulerInstanceId() +
-                    " instanceName:" + scheduler.getMetaData().getSchedulerName()
-                    + "\n" + scheduler.getMetaData().getSummary());
-        }
+    private void startSchedulers() throws SchedulerException {
+    	long timer = System.currentTimeMillis();
+    	
         ramscheduler.start();
+        
         if (settingsBean.isProcessingServer()) {
+	    	// here we remove the zombies process
+	        // maybe we can flag them as stopped later?
+	        try {
+	            List<JobDetail> all = getAllJobsDetails();
+	            for (JobDetail jd : all) {
+	                JobDataMap data = jd.getJobDataMap();
+	                //data.clearDirtyFlag();
+	                if (BackgroundJob.STATUS_RUNNING.equalsIgnoreCase(data.getString(BackgroundJob.JOB_STATUS)) &&
+	                        (data.getString(BackgroundJob.JOB_SERVER) == null || data.getString(BackgroundJob.JOB_SERVER).equals(serverId))) {
+	                    data.put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_FAILED);
+	                    scheduler.addJob(jd, true);
+	                    unscheduleJob(jd);
+	                }
+	                if (BackgroundJob.STATUS_WAITING.equalsIgnoreCase(data.getString(BackgroundJob.JOB_STATUS)) &&
+	                        (data.getString(BackgroundJob.JOB_SERVER) == null || data.getString(BackgroundJob.JOB_SERVER).equals(serverId))) {
+	                    SimpleTrigger trigger = new SimpleTrigger(jd.getName() + "_Trigger", INSTANT_TRIGGER_GROUP);
+	                    trigger.setVolatility(jd.isVolatile());
+	                    trigger.setJobName(jd.getName());
+	                    trigger.setJobGroup(jd.getGroup());
+	                    scheduler.rescheduleJob(trigger.getName(), trigger.getGroup(), trigger);
+	                }
+	            }
+	        } catch (Exception e) {
+	            logger.error("Error while starting schedulers", e);
+	        }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Starting scheduler...\n instanceId:"
+                        + scheduler.getMetaData().getSchedulerInstanceId() +
+                        " instanceName:" + scheduler.getMetaData().getSchedulerName()
+                        + "\n" + scheduler.getMetaData().getSummary());
+            }
+            
             scheduler.start();
         }
+        logger.info("Scheduler service initialization took " + (System.currentTimeMillis() - timer) + " ms");
     }
 
     public void stat() {
@@ -722,5 +728,14 @@ public class SchedulerServiceImpl extends SchedulerService {
 
 	public void setServerId(String serverId) {
     	this.serverId = serverId;
+    }
+
+	public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+		try {
+	        startSchedulers();
+        } catch (SchedulerException e) {
+        	logger.error(e.getMessage(), e);
+        	throw new JahiaInitializationException(e.getMessage(), e);
+        }
     }
 }

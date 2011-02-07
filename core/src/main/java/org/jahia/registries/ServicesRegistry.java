@@ -32,6 +32,7 @@
 
 package org.jahia.registries;
 
+import org.apache.commons.collections.FastHashMap;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.SpringContextSingleton;
@@ -61,8 +62,6 @@ import org.jahia.settings.SettingsBean;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -127,7 +126,12 @@ public class ServicesRegistry {
     private static final String PREFERENCES_SERVICE = "JahiaPreferencesService";
 
     // This map is an optimization to avoid synchronization issues.
-    private Map<String, JahiaService> servicesCache = new HashMap<String, JahiaService>();
+    private FastHashMap servicesCache;
+    
+    {
+    	 servicesCache = new FastHashMap();
+    	 servicesCache.setFast(true);
+    }
 
     /**
      * Return the unique instance of this class.
@@ -171,7 +175,7 @@ public class ServicesRegistry {
      * @return the service instance
      */
     public JahiaService getService(String serviceName) {
-        JahiaService jahiaService = servicesCache.get(serviceName);
+        JahiaService jahiaService = (JahiaService) servicesCache.get(serviceName);
         if (jahiaService != null) {
             return jahiaService;
         }

@@ -55,6 +55,7 @@ import org.jahia.params.*;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -256,9 +257,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	        }
 	
 	        // Initialize all the registered services.
-            if (initServicesRegistry()) {
-                ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
-            }
+            initServicesRegistry();
 
             // Activate the JMS synchronization if needed
             final CacheService factory = ServicesRegistry.getInstance().getCacheService();
@@ -266,9 +265,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 factory.enableClusterSync();
             }
 
-            final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
-                    "root");
-            JCRSessionFactory.getInstance().setCurrentUser(jahiaUser);
+            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 
             if (SpringContextSingleton.getInstance().isInitialized()) {
 	            Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(

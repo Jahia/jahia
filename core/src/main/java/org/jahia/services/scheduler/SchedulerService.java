@@ -49,8 +49,6 @@ public abstract class SchedulerService extends JahiaService {
     public static final String SCHEDULED_TRIGGER_GROUP = "scheduled";
     public static final String REPEATED_TRIGGER_GROUP = "repeated";
 
-    public abstract void startSchedulers() throws SchedulerException;
-
     public abstract void scheduleJobNow(JobDetail jobDetail)
             throws JahiaException;
 

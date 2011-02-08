@@ -154,6 +154,8 @@
                 <c:if test="${not empty currentFacetLabel}">
                     </ul>
                 </c:if>
+                
+                <div class="facetsList">
                 <h5>${mappedFacetLabel}</h5>
                 <ul>        
             </c:if>
@@ -166,6 +168,7 @@
         </c:forEach>     
         <c:if test="${not empty currentFacetLabel}">
             </ul>
+            </div>
         </c:if>                     
     </div>
 </c:if>

@@ -70,7 +70,7 @@ public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
             final String extension = param.split("\\.")[1];
             ScriptEngine byName;
             try {
-                byName = scriptEngineUtils.getEngineByExtension(extension);
+                byName = scriptEngineUtils.scriptEngine(extension);
             } catch (ScriptException e) {
                 logger.error(e.getMessage(), e);
                 byName = null;
@@ -89,7 +89,7 @@ public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
                             scriptContent = new FileReader(scriptPath);
                             return (List<ChoiceListValue>) byName.eval(scriptContent, bindings);
                         } catch (ScriptException e) {
-                            logger.error(e.getMessage(), e);
+                            logger.error("Error while executing script " + scriptPath, e);
                         } catch (FileNotFoundException e) {
                             logger.error(e.getMessage(), e);
                         } finally {

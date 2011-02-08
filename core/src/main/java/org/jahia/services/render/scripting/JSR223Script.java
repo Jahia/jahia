@@ -35,7 +35,6 @@ package org.jahia.services.render.scripting;
 import org.apache.commons.io.IOUtils;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.render.*;
 
@@ -76,7 +75,7 @@ public class JSR223Script implements Script {
     public String execute(Resource resource, RenderContext context) throws RenderException {
         ScriptEngine scriptEngine = null;
         try {
-            scriptEngine = ScriptEngineUtils.getInstance().getEngineByExtension(template.getFileExtension());
+            scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(template.getFileExtension());
         } catch (ScriptException e) {
             logger.error(e.getMessage(), e);
         }
@@ -102,7 +101,7 @@ public class JSR223Script implements Script {
                     StringWriter writer = (StringWriter) scriptContext.getWriter();
                     return writer.toString();
                 } catch (ScriptException e) {
-                    throw new RenderException(e.getMessage(), e);
+                    throw new RenderException("Error while executing script " + template.getPath(), e);
                 } finally {
                     if (scriptContent != null) {
                         IOUtils.closeQuietly(scriptContent);

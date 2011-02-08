@@ -171,7 +171,7 @@ public class RulesNotificationService {
 
         // Resolve template :
         String extension = StringUtils.substringAfterLast(template, ".");
-        ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
+        ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
         ScriptContext scriptContext = scriptEngine.getContext();
         final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
         bindings.put("currentUser", user);

@@ -74,7 +74,7 @@ public class ScriptEngineUtils implements InitializingBean {
         scriptEngineByNameCache = new LinkedHashMap<String, ScriptEngine>();
     }
 
-    public ScriptEngine getEngineByExtension(String extension) throws ScriptException {
+    public ScriptEngine scriptEngine(String extension) throws ScriptException {
         ScriptEngine scriptEngine = scriptEngineByExtensionCache.get(extension);
         if (scriptEngine == null) {
             scriptEngine = scriptEngineManager.getEngineByExtension(extension);

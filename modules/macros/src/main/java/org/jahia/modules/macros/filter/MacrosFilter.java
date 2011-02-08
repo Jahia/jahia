@@ -114,7 +114,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
                 if (macroPath != null) {
                     //  execute macro
                     String extension = FilenameUtils.getExtension(macroPath);
-                    ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
+                    ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
                     ScriptContext scriptContext = scriptEngine.getContext();
                     scriptContext.setWriter(new StringWriter());
                     scriptContext.setErrorWriter(new StringWriter());

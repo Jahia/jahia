@@ -81,8 +81,7 @@ public class StaticAssetsFilter extends AbstractFilter {
             Element element = source.getFirstElement();
             final EndTag tag = element != null ? element.getEndTag() : null;
             String extension = StringUtils.substringAfterLast(ajaxTemplate, ".");
-            scriptEngineUtils.getEngineByExtension(extension);
-            ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
+            ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
             ScriptContext scriptContext = new AssetsScriptContext();
             final Bindings bindings = scriptEngine.createBindings();
             bindings.put("renderContext", renderContext);
@@ -142,8 +141,7 @@ public class StaticAssetsFilter extends AbstractFilter {
             for (Element element : headElementList) {
                 final EndTag headEndTag = element.getEndTag();
                 String extension = StringUtils.substringAfterLast(template, ".");
-                scriptEngineUtils.getEngineByExtension(extension);
-                ScriptEngine scriptEngine = scriptEngineUtils.getEngineByExtension(extension);
+                ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
                 ScriptContext scriptContext = new AssetsScriptContext();
                 final Bindings bindings = scriptEngine.createBindings();
                 bindings.put("renderContext", renderContext);

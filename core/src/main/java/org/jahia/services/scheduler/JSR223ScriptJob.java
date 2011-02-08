@@ -29,7 +29,7 @@ public class JSR223ScriptJob extends BackgroundJob {
         final JobDataMap map = jobExecutionContext.getJobDetail().getJobDataMap();
 
         String jobScriptPath = map.getString(JOB_SCRIPT_PATH);
-        ScriptEngine scriptEngine = ScriptEngineUtils.getInstance().getEngineByExtension(FilenameUtils.getExtension(jobScriptPath));
+        ScriptEngine scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(FilenameUtils.getExtension(jobScriptPath));
         if (scriptEngine != null) {
             ScriptContext scriptContext = scriptEngine.getContext();
             final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);

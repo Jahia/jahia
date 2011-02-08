@@ -713,7 +713,7 @@ public class UIConfigHelper {
                 String error = scriptContext.getErrorWriter().toString();
                 return scriptContext.getWriter().toString().trim();
             } catch (ScriptException e) {
-                logger.error(e.getMessage(), e);
+                logger.error("Error while executing script [" + value + "]", e);
             }
         }
         return value;

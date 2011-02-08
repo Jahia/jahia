@@ -1876,8 +1876,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return returnedSites;
     }
 
-	public boolean createRemotePublication(String nodeName, String languageCode,
-	        Map<String, String> props, boolean validateConnectionSettings)
+	public boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings)
 	        throws GWTJahiaServiceException {
 		
     	String theUrl = props.get("remoteUrl");
@@ -1896,7 +1895,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     	props.put("remotePath", thePath);
 		
 		if (validateConnectionSettings) {
-			publication.validateConnection(languageCode, props);
+			publication.validateConnection(props, retrieveCurrentSession());
 		}
 
 		List<GWTJahiaNodeProperty> gwtProps = new ArrayList<GWTJahiaNodeProperty>();

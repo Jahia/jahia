@@ -357,7 +357,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public GWTJahiaToolbar getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException;
     
-    boolean createRemotePublication(String nodeName, String languageCode, Map<String, String> props, boolean validateConnectionSettings) throws GWTJahiaServiceException;
+    boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings) throws GWTJahiaServiceException;
 
     // -------------------------- INNER CLASSES --------------------------
 

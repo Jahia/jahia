@@ -311,5 +311,5 @@ public interface JahiaContentManagementServiceAsync {
 
     void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbar> async);
 
-    void createRemotePublication(String nodeName, String languageCode, Map<String, String> props, boolean validateConnectionSettings, AsyncCallback<Boolean> async);
+    void createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings, AsyncCallback<Boolean> async);
 }

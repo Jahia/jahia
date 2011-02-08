@@ -414,11 +414,12 @@ public class PublicationHelper {
         }
     }
 
-	public void validateConnection(String languageCode, Map<String, String> props)
+	public void validateConnection(Map<String, String> props, JCRSessionWrapper jcrSession)
 	        throws GWTJahiaServiceException {
 		PostMethod post = null;
 		URL url = null;
 		try {
+			String languageCode = jcrSession.getNodeByIdentifier(props.get("node")).getResolveSite().getDefaultLanguage();
 			String theUrl = props.get("remoteUrl") + Render.getRenderServletPath() + "/live/" + languageCode + props.get("remotePath") + ".preparereplay.do";
 			url = new URL(theUrl);
 			post = new PostMethod(theUrl);
@@ -435,6 +436,11 @@ public class PublicationHelper {
 				throw new GWTJahiaServiceException(
 				        "Connection failed with the status " + post.getStatusLine());
 			}
+		} catch (RepositoryException e) {
+			logger.error("Unable to get source node with identifier: " + props.get("node")
+			        + ". Cause: " + e.getMessage(), e);
+			throw new GWTJahiaServiceException(
+			        "Connection failed with the an error:\n" + e.getMessage());
 		} catch (HttpException e) {
 			logger.error(
 			        "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),

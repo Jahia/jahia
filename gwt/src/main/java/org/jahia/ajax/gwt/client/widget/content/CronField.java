@@ -49,11 +49,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Cron expression picker control.
  * User: toto
  * Date: Dec 1, 2008
  * Time: 6:37:07 PM
- * To change this template use File | Settings | File Templates.
  */
 public class CronField extends AdapterField {
     public static final int EVERY_MINUTE = 0;
@@ -80,17 +79,17 @@ public class CronField extends AdapterField {
 
     private void createUI() {
         panel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-        panel.add(new Text(Messages.get("label.cron.every&nbsp;")));
+        panel.add(new Text(Messages.get("label.cron.every", "Every") + "&nbsp;"));
 
         choose = new SimpleComboBox<String>();
         choose.setEditable(false);
         choose.setTriggerAction(ComboBox.TriggerAction.ALL);
-        choose.add(Messages.get("label.cron.minute"));
-        choose.add(Messages.get("label.cron.hour"));
-        choose.add(Messages.get("label.cron.day"));
-        choose.add(Messages.get("label.cron.week"));
-        choose.add(Messages.get("label.cron.month"));
-        choose.add(Messages.get("label.cron.year"));
+        choose.add(Messages.get("label.minute", "minute"));
+        choose.add(Messages.get("label.hour", "hour"));
+        choose.add(Messages.get("label.day", "day"));
+        choose.add(Messages.get("label.week", "week"));
+        choose.add(Messages.get("label.month", "month"));
+        choose.add(Messages.get("label.year", "year"));
 
         minuteCombo = new SimpleComboBox<String>();
         minuteCombo.setEditable(false);
@@ -113,30 +112,30 @@ public class CronField extends AdapterField {
         weekDayCombo = new SimpleComboBox<String>();
         weekDayCombo.setEditable(false);
         weekDayCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
-        weekDayCombo.add(Messages.get("label.cron.day.monday"));
-        weekDayCombo.add(Messages.get("label.cron.day.tuesday"));
-        weekDayCombo.add(Messages.get("label.cron.day.wednesday"));
-        weekDayCombo.add(Messages.get("label.cron.day.thursday"));
-        weekDayCombo.add(Messages.get("label.cron.day.friday"));
-        weekDayCombo.add(Messages.get("label.cron.day.saturday"));
-        weekDayCombo.add(Messages.get("label.cron.day.sunday"));
+        weekDayCombo.add(Messages.get("label.day.monday", "Monday"));
+        weekDayCombo.add(Messages.get("label.day.tuesday", "Tuesday"));
+        weekDayCombo.add(Messages.get("label.day.wednesday", "Wednesday"));
+        weekDayCombo.add(Messages.get("label.day.thursday", "Thursday"));
+        weekDayCombo.add(Messages.get("label.day.friday", "Friday"));
+        weekDayCombo.add(Messages.get("label.day.saturday", "Saturday"));
+        weekDayCombo.add(Messages.get("label.day.sunday", "Sunday"));
         weekDayCombo.setValue(weekDayCombo.getStore().getAt(0));
 
         monthCombo = new SimpleComboBox<String>();
         monthCombo.setEditable(false);
         monthCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
-        monthCombo.add(Messages.get("label.cron.month.january"));
-        monthCombo.add(Messages.get("label.cron.month.february"));
-        monthCombo.add(Messages.get("label.cron.month.march"));
-        monthCombo.add(Messages.get("label.cron.month.april"));
-        monthCombo.add(Messages.get("label.cron.month.may"));
-        monthCombo.add(Messages.get("label.cron.month.june"));
-        monthCombo.add(Messages.get("label.cron.month.july"));
-        monthCombo.add(Messages.get("label.cron.month.august"));
-        monthCombo.add(Messages.get("label.cron.month.september"));
-        monthCombo.add(Messages.get("label.cron.month.october"));
-        monthCombo.add(Messages.get("label.cron.month.november"));
-        monthCombo.add(Messages.get("label.cron.month.december"));
+        monthCombo.add(Messages.get("label.month.january", "January"));
+        monthCombo.add(Messages.get("label.month.february", "February"));
+        monthCombo.add(Messages.get("label.month.march", "March"));
+        monthCombo.add(Messages.get("label.month.april", "April"));
+        monthCombo.add(Messages.get("label.month.may", "May"));
+        monthCombo.add(Messages.get("label.month.june", "June"));
+        monthCombo.add(Messages.get("label.month.july", "July"));
+        monthCombo.add(Messages.get("label.month.august", "August"));
+        monthCombo.add(Messages.get("label.month.september", "September"));
+        monthCombo.add(Messages.get("label.month.october", "October"));
+        monthCombo.add(Messages.get("label.month.november", "November"));
+        monthCombo.add(Messages.get("label.month.december", "December"));
         monthCombo.setValue(monthCombo.getStore().getAt(0));
 
         monthDayCombo = new SimpleComboBox<String>();
@@ -155,12 +154,13 @@ public class CronField extends AdapterField {
         widgets.put(EVERY_MINUTE, new ArrayList<Widget>());
 
         widgets.put(EVERY_HOUR, new ArrayList<Widget>());
-        widgets.get(EVERY_HOUR).add(new Text("&nbsp;" + Messages.get("label.cron.at") + "&nbsp;"));
+        String textEvery = "&nbsp;" + Messages.get("label.cron.at", "Every") + "&nbsp;";
+		widgets.get(EVERY_HOUR).add(new Text(textEvery));
         widgets.get(EVERY_HOUR).add(minuteCombo);
-        widgets.get(EVERY_HOUR).add(new Text("&nbsp;" + Messages.get("label.cron.minutesPastHour")));
+        widgets.get(EVERY_HOUR).add(new Text("&nbsp;" + Messages.get("label.cron.minutesPastHour", "minutes past the hour")));
 
         widgets.put(EVERY_DAY, new ArrayList<Widget>());
-        widgets.get(EVERY_DAY).add(new Text("&nbsp;" + Messages.get("label.cron.at") + "&nbsp;"));
+        widgets.get(EVERY_DAY).add(new Text(textEvery));
         widgets.get(EVERY_DAY).add(hourCombo);
         widgets.get(EVERY_DAY).add(new Text("&nbsp;:&nbsp;"));
         widgets.get(EVERY_DAY).add(minuteCombo);
@@ -168,7 +168,7 @@ public class CronField extends AdapterField {
         widgets.put(EVERY_WEEK, new ArrayList<Widget>());
         widgets.get(EVERY_WEEK).add(new Text("&nbsp;" + Messages.get("label.cron.on") + "&nbsp;"));
         widgets.get(EVERY_WEEK).add(weekDayCombo);
-        widgets.get(EVERY_WEEK).add(new Text("&nbsp;" + Messages.get("label.cron.at") + "&nbsp;"));
+        widgets.get(EVERY_WEEK).add(new Text(textEvery));
         widgets.get(EVERY_WEEK).add(hourCombo);
         widgets.get(EVERY_WEEK).add(new Text("&nbsp;:&nbsp;"));
         widgets.get(EVERY_WEEK).add(minuteCombo);
@@ -176,7 +176,7 @@ public class CronField extends AdapterField {
         widgets.put(EVERY_MONTH, new ArrayList<Widget>());
         widgets.get(EVERY_MONTH).add(new Text("&nbsp;" + Messages.get("label.cron.onThe") + "&nbsp;"));
         widgets.get(EVERY_MONTH).add(monthDayCombo);
-        widgets.get(EVERY_MONTH).add(new Text("&nbsp;" + Messages.get("label.cron.at") + "&nbsp;"));
+        widgets.get(EVERY_MONTH).add(new Text(textEvery));
         widgets.get(EVERY_MONTH).add(hourCombo);
         widgets.get(EVERY_MONTH).add(new Text("&nbsp;:&nbsp;"));
         widgets.get(EVERY_MONTH).add(minuteCombo);
@@ -186,7 +186,7 @@ public class CronField extends AdapterField {
         widgets.get(EVERY_YEAR).add(monthDayCombo);
         widgets.get(EVERY_YEAR).add(new Text("&nbsp;" + Messages.get("label.cron.of") + "&nbsp;"));
         widgets.get(EVERY_YEAR).add(monthCombo);
-        widgets.get(EVERY_YEAR).add(new Text("&nbsp;" + Messages.get("label.cron.at") + "&nbsp;"));
+        widgets.get(EVERY_YEAR).add(new Text(textEvery));
         widgets.get(EVERY_YEAR).add(hourCombo);
         widgets.get(EVERY_YEAR).add(new Text("&nbsp;:&nbsp;"));
         widgets.get(EVERY_YEAR).add(minuteCombo);

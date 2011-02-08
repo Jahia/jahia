@@ -494,21 +494,25 @@ public class Service extends JahiaService {
 
     public void executeActionLater(AddedNodeFact node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
-        final Property property = node.getNode().getProperty(propertyName);
-        try {
-            doScheduleAction(node, actionToExecute, getTrigger(node, property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString(), null, null), drools);
-        } catch (ParseException e) {
-            logger.error(e.getMessage(), e);
+        final Property property = node.getNode().hasProperty(propertyName) ? node.getNode().getProperty(propertyName) : null;
+        if (property != null && (property.getType() == PropertyType.DATE ? property.getDate() != null : StringUtils.isNotEmpty(property.getString()))) {
+	        try {
+	            doScheduleAction(node, actionToExecute, getTrigger(node, property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString(), null, null), drools);
+	        } catch (ParseException e) {
+	            logger.error(e.getMessage(), e);
+	        }
         }
     }
 
 	public void scheduleAction(AddedNodeFact node, final String actionToExecute,
 	        final String cronExpression, KnowledgeHelper drools) throws JahiaException,
 	        RepositoryException {
-		try {
-            doScheduleAction(node, actionToExecute, getTrigger(node, cronExpression, null, null), drools);
-		} catch (ParseException e) {
-			logger.error(e.getMessage(), e);
+		if (StringUtils.isNotEmpty(cronExpression)) {
+			try {
+	            doScheduleAction(node, actionToExecute, getTrigger(node, cronExpression, null, null), drools);
+			} catch (ParseException e) {
+				logger.error(e.getMessage(), e);
+			}
 		}
 	}
 

@@ -127,7 +127,7 @@
                 </elementProp>
                 <elementProp name="redirect" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">/cms/edit/default/en/sites/ACME/home.html</stringProp>
+                  <stringProp name="Argument.value">/cms/edit/default/en/sites/systemsite/home.html</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <stringProp name="Argument.name">redirect</stringProp>

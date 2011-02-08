@@ -29,7 +29,7 @@
           </elementProp>
           <elementProp name="SITE_KEY" elementType="Argument">
             <stringProp name="Argument.name">SITE_KEY</stringProp>
-            <stringProp name="Argument.value">${__P(sitekey,mySite)}</stringProp>
+            <stringProp name="Argument.value">${__P(sitekey,systemsite)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="LOOPS" elementType="Argument">
@@ -194,7 +194,7 @@
                   </elementProp>
                   <elementProp name="userredirectpage" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">/sites/mySite/home</stringProp>
+                    <stringProp name="Argument.value">/sites/system/home</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">userredirectpage</stringProp>
@@ -261,7 +261,7 @@
               <bytes>true</bytes>
             </value>
           </objProp>
-          <stringProp name="filename">C:\Users\Dorth\Desktop\Login</stringProp>
+          <stringProp name="filename">createuser_results.txt</stringProp>
         </ResultCollector>
         <hashTree/>
         <ResultCollector guiclass="AssertionVisualizer" testclass="ResultCollector" testname="R�cepteur d&apos;assertions" enabled="true">

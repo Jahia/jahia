@@ -495,28 +495,25 @@ public class Service extends JahiaService {
     public void executeActionLater(AddedNodeFact node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
         final Property property = node.getNode().hasProperty(propertyName) ? node.getNode().getProperty(propertyName) : null;
-        if (property != null && (property.getType() == PropertyType.DATE ? property.getDate() != null : StringUtils.isNotEmpty(property.getString()))) {
-	        try {
-	            doScheduleAction(node, actionToExecute, getTrigger(node, property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString(), null, null), drools);
-	        } catch (ParseException e) {
-	            logger.error(e.getMessage(), e);
-	        }
-        }
+	    try {
+	        doScheduleAction(node, actionToExecute, getTrigger(node, property != null ? (property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString()) : null, null, null), drools);
+	    } catch (ParseException e) {
+	        logger.error(e.getMessage(), e);
+	    }
     }
 
 	public void scheduleAction(AddedNodeFact node, final String actionToExecute,
 	        final String cronExpression, KnowledgeHelper drools) throws JahiaException,
 	        RepositoryException {
-		if (StringUtils.isNotEmpty(cronExpression)) {
-			try {
-	            doScheduleAction(node, actionToExecute, getTrigger(node, cronExpression, null, null), drools);
-			} catch (ParseException e) {
-				logger.error(e.getMessage(), e);
-			}
+		try {
+			doScheduleAction(node, actionToExecute, getTrigger(node, cronExpression, null, null),
+			        drools);
+		} catch (ParseException e) {
+			logger.error(e.getMessage(), e);
 		}
 	}
 
-	private void doScheduleAction(AddedNodeFact node, final String actionToExecute, final Trigger trigget, KnowledgeHelper drools) throws JahiaException,
+	private void doScheduleAction(AddedNodeFact node, final String actionToExecute, final Trigger trigger, KnowledgeHelper drools) throws JahiaException,
 	    RepositoryException {
 		final String uuid = node.getNode().getIdentifier();
 		final JobDetail jobDetail = BackgroundJob.createJahiaJob("Action job: " + actionToExecute + " on node " + uuid, ActionJob.class);
@@ -528,9 +525,11 @@ public class Service extends JahiaService {
 		map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
 		// cancel the scheduled job if exists 
 		schedulerService.deleteJob(jobDetail.getName(), jobDetail.getGroup());
-		// schedule the job
-		trigget.setName(jobDetail.getName() + "TRIGGER");
-		schedulerService.scheduleJob(jobDetail, trigget);
+		if (trigger != null) {
+			// schedule the job
+			trigger.setName(jobDetail.getName() + "TRIGGER");
+			schedulerService.scheduleJob(jobDetail, trigger);
+		}
 	}
 
 	public void cancelActionExecution(NodeFact node, final String actionToCancel,
@@ -544,10 +543,14 @@ public class Service extends JahiaService {
 
     private Trigger getTrigger(AddedNodeFact node, Object schedule, String jobName, String group)
             throws ParseException, RepositoryException {
+    	if (schedule == null) {
+    		return null;
+    	}
+    	
         if (schedule instanceof Date) {
             return new SimpleTrigger(jobName + "TRIGGER", group, (Date) schedule);
         } else {
-            return new CronTrigger(jobName + "TRIGGER", group, String.valueOf(schedule));
+            return String.valueOf(schedule).length() > 0 ? new CronTrigger(jobName + "TRIGGER", group, String.valueOf(schedule)) : null;
         }
     }
 

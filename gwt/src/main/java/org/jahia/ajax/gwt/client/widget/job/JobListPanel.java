@@ -32,7 +32,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,10 +48,7 @@ import java.util.Map;
  */
 public class JobListPanel extends LayoutContainer {
 
-    private JobListWindow window;
     private FormPanel detailsPanel;
-
-    private Linker linker;
 
     private List<GWTJahiaJobDetail> selectedItems = null;
     private transient Timer timer;
@@ -65,11 +61,8 @@ public class JobListPanel extends LayoutContainer {
     private boolean autoRefreshActivated = false;
     private List<String> activeGroupNames = null;
 
-    public JobListPanel(JobListWindow window, Linker linker) {
+    public JobListPanel() {
         super(new BorderLayout());
-
-        this.linker = linker;
-        this.window = window;
         init();
     }
 
@@ -319,7 +312,6 @@ public class JobListPanel extends LayoutContainer {
         refreshIntervalTextBox.addChangeHandler(new ChangeHandler() {
 
             public void onChange(com.google.gwt.event.dom.client.ChangeEvent event) {
-                //To change body of implemented methods use File | Settings | File Templates.
                 String refreshTextValue = refreshIntervalTextBox.getText();
                 int newRefreshInterval = -1;
                 try {
@@ -514,12 +506,7 @@ public class JobListPanel extends LayoutContainer {
             addDetail("label.targetAction", "Target action", jobDetail.getTargetAction());
             addDetail("label.targetWorkspace", "Target workspace", jobDetail.getTargetWorkspace());
         } else {
-            int nbJobs = 0;
-
-            for (GWTJahiaJobDetail jobDetail : selectedItems) {
-                nbJobs++;
-            }
-            detailsPanel.add(new HTML("<b>" + Messages.get("label.selectedJobCount", "Number of selected jobs") + " :</b> " + nbJobs));
+            detailsPanel.add(new HTML("<b>" + Messages.get("label.selectedJobCount", "Number of selected jobs") + " :</b> " + selectedItems.size()));
         }
         detailsPanel.layout();
 

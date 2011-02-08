@@ -55,12 +55,13 @@ import java.util.Map;
  * Time: 6:37:07 PM
  */
 public class CronField extends AdapterField {
-    public static final int EVERY_MINUTE = 0;
-    public static final int EVERY_HOUR = 1;
-    public static final int EVERY_DAY = 2;
-    public static final int EVERY_WEEK = 3;
-    public static final int EVERY_MONTH = 4;
-    public static final int EVERY_YEAR = 5;
+    public static final int NONE = 0;
+    public static final int EVERY_MINUTE = 1;
+    public static final int EVERY_HOUR = 2;
+    public static final int EVERY_DAY = 3;
+    public static final int EVERY_WEEK = 4;
+    public static final int EVERY_MONTH = 5;
+    public static final int EVERY_YEAR = 6;
 
     private HorizontalPanel panel = new HorizontalPanel();
 
@@ -84,6 +85,7 @@ public class CronField extends AdapterField {
         choose = new SimpleComboBox<String>();
         choose.setEditable(false);
         choose.setTriggerAction(ComboBox.TriggerAction.ALL);
+        choose.add(Messages.get("empty", ""));
         choose.add(Messages.get("label.minute", "minute"));
         choose.add(Messages.get("label.hour", "hour"));
         choose.add(Messages.get("label.day", "day"));
@@ -151,6 +153,8 @@ public class CronField extends AdapterField {
 
         widgets.put(-1, new ArrayList<Widget>());
 
+        widgets.put(NONE, new ArrayList<Widget>());
+        
         widgets.put(EVERY_MINUTE, new ArrayList<Widget>());
 
         widgets.put(EVERY_HOUR, new ArrayList<Widget>());
@@ -248,6 +252,8 @@ public class CronField extends AdapterField {
                 monthCombo.setValue(monthCombo.getStore().getAt(Integer.parseInt(values[4])));
                 choose.setValue(choose.getStore().getAt(EVERY_YEAR));
             }
+        } else {
+        	choose.setValue(choose.getStore().getAt(NONE));
         }
         super.setValue(value);
     }
@@ -255,6 +261,9 @@ public class CronField extends AdapterField {
     @Override
     public String getValue() {
         switch (choose.getSelectedIndex()) {
+	        case NONE: {
+	            return "";
+	        }
             case EVERY_MINUTE: { // Minute
                 return "0 * * * * ?";
             }

@@ -6,11 +6,9 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
- * Created by IntelliJ IDEA.
  * User: loom
  * Date: Sep 21, 2010
  * Time: 12:26:09 PM
- * 
  */
 public class JobListWindow extends Window {
 
@@ -28,6 +26,6 @@ public class JobListWindow extends Window {
         setLayout(new FitLayout());
         setSize(800, 600);
 
-        add(new JobListPanel(this, linker));
+        add(new JobListPanel());
     }
 }

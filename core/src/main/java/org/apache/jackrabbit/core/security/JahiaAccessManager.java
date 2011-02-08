@@ -431,7 +431,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             // Todo : optimize site resolution
-            int siteId = 0;
+//            int siteId = 0;
             String site = null;
             Node s = n;
             try {
@@ -439,17 +439,17 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                     s = s.getParent();
                 }
                 site = s.getName();
-                siteId = (int) s.getProperty("j:siteId").getLong();
+//                siteId = (int) s.getProperty("j:siteId").getLong();
             } catch (ItemNotFoundException e) {
             } catch (PathNotFoundException e) {
             }
 
-            if (jahiaPrincipal != null) {
-                if (isAdmin(jahiaPrincipal.getName(), siteId)) {
-                    cache.put(absPathStr + " : " + permissions, true);
-                    return true;
-                }
-            }
+//            if (jahiaPrincipal != null) {
+//                if (isAdmin(jahiaPrincipal.getName(), siteId)) {
+//                    cache.put(absPathStr + " : " + permissions, true);
+//                    return true;
+//                }
+//            }
 
 
             res = recurseonACPs(jcrPath, getSecuritySession(), permissions, site);
@@ -714,6 +714,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
         JahiaUser user = userService.lookupUser(username);
         JahiaGroup group = groupService.lookupGroup(siteId, groupname);
+        if (group == null) {
+            group = groupService.lookupGroup(0, groupname);
+        }
         return (user != null) && (group != null) && group.isMember(user);
     }
 

@@ -9,13 +9,13 @@
     <portlets jcr:primaryType="jnt:portletFolder" />
 
     <groups jcr:primaryType="jnt:groupsFolder">
-        <users jcr:primaryType="jnt:group" j:hidden="false">
+        <site-administrators jcr:primaryType="jnt:group" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
-        </users>
-        <administrators jcr:primaryType="jnt:group" j:hidden="false">
+        </site-administrators>
+        <site-privileged jcr:primaryType="jnt:group" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
-        </administrators>
-    </groups>    
+        </site-privileged>
+    </groups>
 
     <contents jcr:primaryType="jnt:contentFolder" />
 
@@ -24,6 +24,10 @@
     <tags jcr:primaryType="jnt:tagList" >
     </tags>
 
-    <categories jcr:primaryType="jnt:category" >
-    </categories>
+    <j:acl jcr:primaryType="jnt:acl">
+      <GRANT_g_site-privileged j:protected="false" j:principal="g:site-privileged" j:roles="staging-viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="staging-viewer" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+      <GRANT_g_site-administrators j:principal="g:site-administrators" j:protected="false" j:roles="site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+    </j:acl>
+
 </site>

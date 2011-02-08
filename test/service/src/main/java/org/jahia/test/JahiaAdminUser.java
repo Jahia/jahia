@@ -56,7 +56,7 @@ public class JahiaAdminUser {
         JahiaUser user = (JahiaUser)adminUser.get(new Integer(siteId));
         if ( user == null ){
             JahiaGroup adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
-                    .lookupGroup(siteId, JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+                    .lookupGroup(siteId, siteId == 0 ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
             Set members = adminGroup.getRecursiveUserMembers();
             if ( members.iterator().hasNext() ){
                 user = (JahiaUser)members.iterator().next();

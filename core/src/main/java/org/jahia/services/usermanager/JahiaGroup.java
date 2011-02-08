@@ -196,7 +196,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @return The unique identifier of this group.
      */
     public String getName () {
-        return mGroupKey;
+        return mGroupname;
     }
 
 

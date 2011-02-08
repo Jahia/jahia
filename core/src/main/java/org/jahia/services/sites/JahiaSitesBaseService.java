@@ -322,15 +322,30 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     guestGroup = jgms.createGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
                 }
 
+                JahiaGroup privGroup = jgms.lookupGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME);
+                if (privGroup == null) {
+                    privGroup = jgms.createGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, false);
+                }
+
                 JahiaGroup adminGroup = jgms.lookupGroup(site.getID(),
-                        JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+                        JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
                 if (adminGroup == null) {
-                    adminGroup = jgms.createGroup(site.getID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null,
+                    adminGroup = jgms.createGroup(site.getID(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, null,
+                            false);
+                }
+
+                JahiaGroup sitePrivGroup = jgms.lookupGroup(site.getID(),
+                        JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+                if (sitePrivGroup == null) {
+                    sitePrivGroup = jgms.createGroup(site.getID(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null,
                             false);
                 }
 
                 // attach superadmin user (current) to administrators group...
                 adminGroup.addMember(currentUser);
+
+                // atach site privileged group to server privileged
+                privGroup.addMember(sitePrivGroup);
             }
             File initialZip = null;
             String initialZipName = null;

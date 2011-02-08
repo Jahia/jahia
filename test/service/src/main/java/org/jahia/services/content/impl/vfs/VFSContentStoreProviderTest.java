@@ -1,5 +1,6 @@
 package org.jahia.services.content.impl.vfs;
 
+import org.jahia.test.JahiaAdminUser;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -171,7 +172,7 @@ public class VFSContentStoreProviderTest {
     @Test
     public void testDynamicMount() throws GWTJahiaServiceException, RepositoryException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
-        JahiaUser jahiaRootUser = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdminUser(0);
+        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
         contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();

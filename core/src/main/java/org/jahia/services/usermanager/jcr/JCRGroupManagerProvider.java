@@ -61,11 +61,6 @@ import java.util.*;
  *        Created : 8 juil. 2009
  */
 public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
-
-    public static final String USERS_GROUPNAME = "users";
-    public static final String ADMINISTRATORS_GROUPNAME = "administrators";
-    public static final String GUEST_GROUPNAME = "guest";
-
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroupManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
     private static JCRGroupManagerProvider mGroupManagerProvider;
@@ -207,7 +202,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      *
      */
     public JahiaGroup getAdministratorGroup(int siteID) {
-        return lookupGroup(siteID, ADMINISTRATORS_GROUPNAME);
+        return lookupGroup(siteID, siteID == 0 ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
     }
 
     /**
@@ -372,7 +367,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * @return Return the instance of the guest group. Return null on any failure.
      */
     public JahiaGroup getGuestGroup(int siteID) {
-        return lookupGroup(0, GUEST_GROUPNAME);
+        return lookupGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME);
     }
 
     /**
@@ -474,7 +469,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      */
 
     public JahiaGroup getUsersGroup(int siteID) {
-        return lookupGroup(0, USERS_GROUPNAME);
+        return lookupGroup(0, JahiaGroupManagerService.USERS_GROUPNAME);
     }
 
     /**
@@ -530,7 +525,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             String[] splittedGroupKey = groupKey.split(":");
             siteID = Integer.valueOf(splittedGroupKey[1]);
             name = splittedGroupKey[0];
-            if (GUEST_GROUPNAME.equals(name) || USERS_GROUPNAME.equals(name)) {
+            if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(name) || JahiaGroupManagerService.USERS_GROUPNAME.equals(name)) {
                 siteID = 0;
             }
         } else {
@@ -576,7 +571,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      */
     private JCRGroup lookupGroup(int siteID, final String name, final boolean allowExternal) {
         try {
-            if (name.equals(GUEST_GROUPNAME) || name.equals(USERS_GROUPNAME)) {
+            if (name.equals(JahiaGroupManagerService.GUEST_GROUPNAME) || name.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
                 siteID = 0;
             }
             final String trueGroupKey = name + ":" + siteID;

@@ -33,7 +33,6 @@
  package org.jahia.services.usermanager;
 
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -167,20 +166,6 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
                 return p.getAdministratorGroup(siteID);
             }
         }, null);
-    }
-
-    public synchronized JahiaUser getAdminUser(int siteId) {
-        JahiaUser user = adminUser.get(siteId);
-        if ( user == null ){
-            JahiaGroup adminGroup = lookupGroup(siteId, JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-            Set<Principal> members = adminGroup.getRecursiveUserMembers();
-            if ( members.iterator().hasNext() ){
-                user = (JahiaUser)members.iterator().next();
-                adminUser.put(siteId, user);
-            }
-        }
-        return user;
-
     }
 
     public List<String> getGroupList () {

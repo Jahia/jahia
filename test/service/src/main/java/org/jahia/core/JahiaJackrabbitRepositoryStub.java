@@ -50,6 +50,7 @@ import org.apache.jackrabbit.test.RepositoryStub;
 import org.apache.jackrabbit.test.RepositoryStubException;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
@@ -150,7 +151,7 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
         JahiaUser readOnlyUser = JCRUserManagerProvider.getInstance().lookupUser(readonly.getUserID());
         if (readOnlyUser == null) {
             readOnlyUser = JCRUserManagerProvider.getInstance().createUser(readonly.getUserID(), new String(readonly.getPassword()), new Properties());
-            JahiaGroup usersGroup = JCRGroupManagerProvider.getInstance().lookupGroup(JCRGroupManagerProvider.USERS_GROUPNAME);
+            JahiaGroup usersGroup = JCRGroupManagerProvider.getInstance().lookupGroup(JahiaGroupManagerService.USERS_GROUPNAME);
             usersGroup.addMember(readOnlyUser);
         }
         

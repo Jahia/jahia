@@ -203,24 +203,30 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRUser jcrUser = null;
+                    JCRPrincipal jcrUser = null;
+                    String name = principal.getName();
                     if (principal instanceof JCRUser) {
-                        jcrUser = (JCRUser) principal;
+                        jcrUser = (JCRPrincipal) principal;
+                    } else if (principal instanceof JCRGroup) {
+                        name = name + "___" + ((JCRGroup)principal).getSiteID();
+                        jcrUser = (JCRPrincipal) principal;
                     } else if (principal instanceof JahiaUser) {
-                        jcrTemplate.getProvider("/").deployExternalUser(principal.getName(),
+                        jcrTemplate.getProvider("/").deployExternalUser(name,
                                 ((JahiaUser) principal).getProviderName());
-                        jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser(principal.getName());
+                        jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser(name);
                     }
                     if (jcrUser != null) {
                         Node node = getNode(session);
                         Node members = node.getNode("j:members");
-                        if (!members.hasNode(principal.getName())) {
+                        if (!members.hasNode(name)) {
                             members.checkout();
-                            Node member = members.addNode(principal.getName(), Constants.JAHIANT_MEMBER);
+                            Node member = members.addNode(name, Constants.JAHIANT_MEMBER);
                             member.setProperty("j:member", jcrUser.getIdentifier());
                             JCRGroupManagerProvider.getInstance().updateMembershipCache(jcrUser.getIdentifier());
                             session.save();
                         }
+                        mMembers.put(principal.getName(), principal);
+
                         return true;
                     }
                     return false;

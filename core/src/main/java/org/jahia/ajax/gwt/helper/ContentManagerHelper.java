@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.apache.tika.io.IOUtils;
@@ -472,10 +473,10 @@ public class ContentManagerHelper {
 
     private JCRNodeWrapper doPaste(JCRNodeWrapper targetNode, JCRNodeWrapper node, String name, boolean cut,
                                    boolean reference) throws RepositoryException, JahiaException {
+        targetNode.checkout();
         if (cut) {
             node.checkout();
             node.getParent().checkout();
-            targetNode.checkout();
             targetNode.getSession().move(node.getPath(), targetNode.getPath() + "/" + name);
         } else if (reference) {
             /*Property p = */
@@ -629,7 +630,37 @@ public class ContentManagerHelper {
         Map<String, List<String[]>> m = node.getAclEntries();
 
         GWTJahiaNodeACL acl = new GWTJahiaNodeACL();
+
         try {
+            Map<String, List<JCRNodeWrapper>> roles = node.getAvailableRoles();
+            Map<String, List<String>> dependencies = new HashMap<String, List<String>>();
+
+            Map<String, List<String>> availablePermissions = new HashMap<String, List<String>>();
+            Set<String> allAvailablePermissions = new HashSet<String>();
+            Map<String, String> labels = new HashMap<String, String>();
+
+            for (Map.Entry<String, List<JCRNodeWrapper>> entry : roles.entrySet()) {
+                availablePermissions.put(entry.getKey(), new ArrayList<String>());
+                for (JCRNodeWrapper nodeWrapper : entry.getValue()) {
+                    allAvailablePermissions.add(nodeWrapper.getName());
+                    availablePermissions.get(entry.getKey()).add(nodeWrapper.getName());
+                    if (nodeWrapper.hasProperty("jcr:title")) {
+                        labels.put(nodeWrapper.getName(), nodeWrapper.getProperty("jcr:title").getString());
+                    } else {
+                        labels.put(nodeWrapper.getName(), nodeWrapper.getName());
+                    }
+                    List<String> d = new ArrayList<String>();
+                    if (nodeWrapper.hasProperty("j:dependencies")) {
+                        for (Value value : nodeWrapper.getProperty("j:dependencies").getValues()) {
+                            d.add(((JCRValueWrapper) value).getNode().getName());
+                        }
+                    }
+                    dependencies.put(nodeWrapper.getName(), d);
+                }
+            }
+            acl.setAvailablePermissions(availablePermissions);
+            acl.setPermissionLabels(labels);
+            acl.setPermissionsDependencies(dependencies);
 
             List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
             Map<String, GWTJahiaNodeACE> map = new HashMap<String, GWTJahiaNodeACE>();
@@ -638,7 +669,6 @@ public class ContentManagerHelper {
                 String principal = iterator.next();
                 GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
                 map.put(principal, ace);
-                aces.add(ace);
                 ace.setPrincipalType(principal.charAt(0));
                 ace.setPrincipal(principal.substring(2));
 
@@ -659,11 +689,14 @@ public class ContentManagerHelper {
                         inheritedPerms.put(role, aclType.equals("GRANT"));
                     }
                 }
-
-                ace.setInheritedFrom(inheritedFrom);
-                ace.setInheritedPermissions(inheritedPerms);
-                ace.setPermissions(perms);
-                ace.setInherited(perms.isEmpty());
+                if (!CollectionUtils.intersection(allAvailablePermissions, inheritedPerms.keySet()).isEmpty() ||
+                        !CollectionUtils.intersection(allAvailablePermissions, perms.keySet()).isEmpty()) {
+                    aces.add(ace);
+                    ace.setInheritedFrom(inheritedFrom);
+                    ace.setInheritedPermissions(inheritedPerms);
+                    ace.setPermissions(perms);
+                    ace.setInherited(perms.isEmpty());
+                }
             }
 
             boolean aclInheritanceBreak = node.getAclInheritanceBreak();
@@ -704,33 +737,6 @@ public class ContentManagerHelper {
             }
             acl.setAce(aces);
 
-            Map<String, List<JCRNodeWrapper>> roles = node.getAvailableRoles();
-            Map<String, List<String>> dependencies = new HashMap<String, List<String>>();
-
-            Map<String, List<String>> availablePermissions = new HashMap<String, List<String>>();
-            Map<String, String> labels = new HashMap<String, String>();
-
-            for (Map.Entry<String, List<JCRNodeWrapper>> entry : roles.entrySet()) {
-                availablePermissions.put(entry.getKey(), new ArrayList<String>());
-                for (JCRNodeWrapper nodeWrapper : entry.getValue()) {
-                    availablePermissions.get(entry.getKey()).add(nodeWrapper.getName());
-                    if (nodeWrapper.hasProperty("jcr:title")) {
-                        labels.put(nodeWrapper.getName(), nodeWrapper.getProperty("jcr:title").getString());
-                    } else {
-                        labels.put(nodeWrapper.getName(), nodeWrapper.getName());
-                    }
-                    List<String> d = new ArrayList<String>();
-                    if (nodeWrapper.hasProperty("j:dependencies")) {
-                        for (Value value : nodeWrapper.getProperty("j:dependencies").getValues()) {
-                            d.add(((JCRValueWrapper) value).getNode().getName());
-                        }
-                    }
-                    dependencies.put(nodeWrapper.getName(), d);
-                }
-            }
-            acl.setAvailablePermissions(availablePermissions);
-            acl.setPermissionLabels(labels);
-            acl.setPermissionsDependencies(dependencies);
         } catch (RepositoryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

@@ -386,7 +386,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      *         false on any error.
      */
     public boolean isAdminMember(int siteID) {
-        return isMemberOfGroup(siteID, JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+        return isMemberOfGroup(siteID, siteID == 0 ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
     }
 
     /**

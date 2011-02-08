@@ -48,6 +48,9 @@ public abstract class JahiaGroupManagerService extends JahiaService {
 
     public static final String USERS_GROUPNAME = "users";
     public static final String ADMINISTRATORS_GROUPNAME = "administrators";
+    public static final String PRIVILEGED_GROUPNAME = "privileged";
+    public static final String SITE_PRIVILEGED_GROUPNAME = "site-privileged";
+    public static final String SITE_ADMINISTRATORS_GROUPNAME = "site-administrators";
     public static final String GUEST_GROUPNAME = "guest";
 
 
@@ -89,8 +92,6 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      *
      */
     public abstract JahiaGroup getAdministratorGroup (int siteID);
-
-    public abstract JahiaUser getAdminUser (int siteId);
 
     //-------------------------------------------------------------------------
     /**

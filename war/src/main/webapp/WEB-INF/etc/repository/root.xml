@@ -37,6 +37,11 @@
                 <root jcr:primaryType="jnt:member" j:member="b32d306a-6c74-11de-b3ef-001e4fead50b"/>
             </j:members>
         </administrators>
+        <privileged jcr:primaryType="jnt:group" j:hidden="false">
+            <j:members jcr:primaryType="jnt:members">
+                <root jcr:primaryType="jnt:member" j:member="b32d306a-6c74-11de-b3ef-001e4fead50b"/>
+            </j:members>
+        </privileged>
     </groups>
     
     <sites jcr:primaryType="jnt:virtualsitesFolder"
@@ -53,7 +58,7 @@
 
     <j:acl jcr:primaryType="jnt:acl">
       <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-      <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="visitor viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="staging-viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
     </j:acl>
 
     <j:workflowRules jcr:primaryType="jnt:workflowRules">
@@ -195,7 +200,7 @@
         <visitor jcr:primaryType="jnt:role"
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
 
-        <viewer jcr:primaryType="jnt:role"
+        <staging-viewer jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
                  j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editSelector/sitemapSelector" />
 
         <editor jcr:primaryType="jnt:role"

@@ -579,14 +579,17 @@
         <j:translation_fr jcr:mixinTypes="mix:title" jcr:title="Résultat de la recherche" jcr:primaryType="jnt:translation" jcr:lastModifiedBy="root" j:lastPublished="2011-02-01T16:44:51.468+01:00" jcr:language="fr" j:lastPublishedBy=" system root" jcr:lastModified="2011-02-01T16:40:14.671+01:00" />
       </search-results>
       <groups j:published="true" jcr:created="2011-02-01T16:39:51.583+01:00" jcr:primaryType="jnt:groupsFolder" jcr:lastModifiedBy="" j:lastPublished="2010-12-14T15:36:58.407+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2010-11-23T10:52:55.136+01:00">
-        <users j:hidden="false" j:published="true" jcr:created="2011-02-01T16:39:51.583+01:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy="root" j:external="false" j:lastPublished="2010-12-15T17:50:03.832+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00">
-          <j:members jcr:primaryType="jnt:members" />
-        </users>
-        <administrators j:hidden="false" j:published="true" jcr:created="2011-02-01T16:39:51.583+01:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy="root" j:external="false" j:lastPublished="2010-12-15T17:50:03.832+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00">
+        <site-administrators j:hidden="false" j:published="true" jcr:created="2011-02-01T16:39:51.583+01:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy="root" j:external="false" j:lastPublished="2010-12-15T17:50:03.832+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00">
           <j:members jcr:primaryType="jnt:members">
             <root j:member="/users/root" jcr:primaryType="jnt:member" />
           </j:members>
-        </administrators>
+        </site-administrators>
+        <site-privileged j:hidden="false" j:published="true" jcr:created="2011-02-01T16:39:51.583+01:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy="root" j:external="false" j:lastPublished="2010-12-15T17:50:03.832+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00">
+          <j:members jcr:primaryType="jnt:members">
+            <author j:member="/users/author" jcr:primaryType="jnt:member" />
+            <publisher j:member="/users/publisher" jcr:primaryType="jnt:member" />
+          </j:members>
+        </site-privileged>
       </groups>
       <tags jcr:created="2011-02-01T16:39:51.584+01:00" jcr:primaryType="jnt:tagList" jcr:lastModifiedBy="root" j:lastPublished="2011-02-01T16:40:21.933+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00">
         <ACME jcr:created="2011-02-01T16:40:08.487+01:00" jcr:primaryType="jnt:tag" jcr:lastModifiedBy="root" j:lastPublished="2011-02-01T16:40:21.933+01:00" j:lastPublishedBy=" system root" jcr:createdBy="root" jcr:lastModified="2011-02-01T16:40:14.671+01:00" />
@@ -638,10 +641,10 @@
         </project>
       </categories>
       <j:acl j:inherit="true" jcr:primaryType="jnt:acl">
-        <GRANT_u_siteadmin j:principal="u:siteadmin" j:protected="false" j:roles="site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_g_site-administrators j:principal="g:site-administrators" j:protected="false" j:roles="site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
         <GRANT_u_visitor j:principal="u:visitor" j:protected="false" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <GRANT_u_publisher j:principal="u:publisher" j:protected="false" j:roles="publisher visitor viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <GRANT_u_author j:principal="u:author" j:protected="false" j:roles="viewer visitor translator-fr translator-en contributor editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_u_publisher j:principal="u:publisher" j:protected="false" j:roles="publisher visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_u_author j:principal="u:author" j:protected="false" j:roles="visitor translator-fr translator-en contributor editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
       </j:acl>
     </ACME>
   </sites>

@@ -106,10 +106,7 @@ public class ErrorLoggingFilter implements Filter {
                 return;
             }
 
-            File errorFile = ErrorFileDumper.dumpToFile(t, request);
-            if (errorFile != null) {
-                logger.error("Error details were dumped to file " + errorFile.getAbsolutePath());
-            }
+            ErrorFileDumper.dumpToFile(t, request);
         } catch (Throwable throwable) {
             logger.warn("Error creating error file", throwable);
         }
@@ -129,7 +126,7 @@ public class ErrorLoggingFilter implements Filter {
                 }
             }
 
-            StringWriter msgBodyWriter = ErrorFileDumper.generateErrorReport(request, t, lastMailedExceptionOccurences, lastMailedException);
+            StringWriter msgBodyWriter = ErrorFileDumper.generateErrorReport(new ErrorFileDumper.HttpRequestData(request), t, lastMailedExceptionOccurences, lastMailedException);
 
             ServicesRegistry.getInstance().getMailService().sendMessage(null, null, null, null,
                     "Server Error: " + t.getMessage(), msgBodyWriter

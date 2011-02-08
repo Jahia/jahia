@@ -60,12 +60,7 @@ public class ExceptionAppender extends AppenderSkeleton {
         if (event.getThrowableInformation() != null) {
             try {
                 alreadyDumping = true;
-                long dumpStartTime = System.currentTimeMillis();
-                File errorFile = ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
-                if (errorFile != null) {
-                    long dumpTotalTime = System.currentTimeMillis() - dumpStartTime;
-                    System.err.println("Error dumped to file " + errorFile.getAbsolutePath() + " in " + dumpTotalTime + "ms");
-                }
+                ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {

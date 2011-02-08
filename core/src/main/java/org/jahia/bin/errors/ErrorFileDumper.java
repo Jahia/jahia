@@ -44,6 +44,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,13 +59,129 @@ public class ErrorFileDumper {
     private static int lastFileDumpedExceptionOccurences = 0;
     private static long exceptionCount = 0L;
 
-    public static File dumpToFile(Throwable t, HttpServletRequest request) throws IOException {
+    private static Map<String, Set<Throwable>> exceptions = new HashMap<String, Set<Throwable>>();
+    private static ExecutorService executorService;
 
+    /**
+     * A low priority thread factory
+     */
+    private static class LowPriorityThreadFactory implements ThreadFactory {
+
+        public Thread newThread(Runnable runnable) {
+            Thread lowPriorityThread = new Thread(runnable);
+            lowPriorityThread.setPriority(Thread.MIN_PRIORITY);
+            lowPriorityThread.setName("ErrorFileDumperThread");
+            return lowPriorityThread;
+        }
+    }
+
+    /**
+     * Utility class to copy useful information from the HTTP request object, as we won't have access to it in
+     * asynchronous threads.
+     */
+    public static class HttpRequestData {
+
+        String requestURL;
+        String queryString;
+        String method;
+        Map<String, String> headers = new HashMap<String, String>();
+        String remoteHost;
+        String remoteAddr;
+
+        public HttpRequestData(HttpServletRequest request) {
+            this.requestURL = request.getRequestURI();
+            this.queryString = request.getQueryString();
+            this.method = request.getMethod();
+            this.remoteHost = request.getRemoteHost();
+            this.remoteAddr = request.getRemoteAddr();
+            Iterator headerNames = new EnumerationIterator(request.getHeaderNames());
+            while (headerNames.hasNext()) {
+                String headerName = (String) headerNames.next();
+                String headerValue = request.getHeader(headerName);
+                headers.put(headerName, headerValue);
+            }
+
+        }
+
+        public String getRequestURL() {
+            return requestURL;
+        }
+
+        public String getQueryString() {
+            return queryString;
+        }
+
+        public String getMethod() {
+            return method;
+        }
+
+        public Map<String, String> getHeaders() {
+            return headers;
+        }
+
+        public String getRemoteHost() {
+            return remoteHost;
+        }
+
+        public String getRemoteAddr() {
+            return remoteAddr;
+        }
+    }
+
+    private static class FileDumperRunnable implements Runnable {
+
+        private Throwable t;
+        private HttpRequestData requestData;
+
+        public FileDumperRunnable(Throwable t, HttpRequestData requestData) {
+            this.t = t;
+            this.requestData = requestData;
+        }
+
+        public void run() {
+            try {
+                performDumpToFile(t, requestData);
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+    }
+
+    static {
+        executorService = Executors.newSingleThreadExecutor(new LowPriorityThreadFactory());
+
+        // add shutdown hook to properly dispose of executor service.
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                System.out.println("Shutting down error file dumper executor service...");
+                executorService.shutdown();
+                try {
+                    if (!executorService.awaitTermination(100L, TimeUnit.MILLISECONDS)) {
+                        List<Runnable> droppedTasks = executorService.shutdownNow();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public static void dumpToFile(Throwable t, HttpServletRequest request) throws IOException {
+
+        HttpRequestData requestData = null;
+        if (request != null) {
+           requestData = new HttpRequestData(request);
+        }
+        Future<?> dumperFuture = executorService.submit(new FileDumperRunnable(t, requestData));
+    }
+
+    private static void performDumpToFile(Throwable t, HttpRequestData httpRequestData) throws IOException {
+        long dumpStartTime = System.currentTimeMillis();
         if (lastFileDumpedException != null && t != null && t.toString().equals(lastFileDumpedException.toString())) {
             lastFileDumpedExceptionOccurences++;
             if (lastFileDumpedExceptionOccurences <
                     SettingsBean.getInstance().getFileDumpMaxRegroupingOfPreviousException()) {
-                return null;
+                return;
             }
         }
 
@@ -86,17 +203,17 @@ public class ErrorFileDumper {
         File errorFile = new File(todaysDirectory,
                 "error-" + fileDateFormat.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
         StringWriter errorWriter =
-                generateErrorReport(request, t, lastFileDumpedExceptionOccurences, lastFileDumpedException);
+                generateErrorReport(httpRequestData, t, lastFileDumpedExceptionOccurences, lastFileDumpedException);
         FileWriter fileWriter = new FileWriter(errorFile);
         fileWriter.write(errorWriter.toString());
         fileWriter.close();
         lastFileDumpedException = t;
         lastFileDumpedExceptionOccurences = 1;
-        return errorFile;
-
+        long dumpTotalTime = System.currentTimeMillis() - dumpStartTime;
+        System.err.println("Error dumped to file " + errorFile.getAbsolutePath() + " in " + dumpTotalTime + "ms");
     }
 
-    public static StringWriter generateErrorReport(HttpServletRequest request, Throwable t, int lastExceptionOccurences,
+    public static StringWriter generateErrorReport(HttpRequestData requestData, Throwable t, int lastExceptionOccurences,
                                                    Throwable lastException) {
         StringWriter msgBodyWriter = new StringWriter();
         PrintWriter strOut = new PrintWriter(msgBodyWriter);
@@ -134,23 +251,22 @@ public class ErrorFileDumper {
             strOut.println("Error: " + t.getMessage());
         }
         strOut.println("");
-        if (request != null) {
-            strOut.println("URL: " + request.getRequestURL());
-            if (request.getQueryString() != null) {
-                strOut.println("?" + request.getQueryString());
+        if (requestData != null) {
+            strOut.println("URL: " + requestData.getRequestURL());
+            if (requestData.getQueryString() != null) {
+                strOut.println("?" + requestData.getQueryString());
             }
-            strOut.println("   Method: " + request.getMethod());
+            strOut.println("   Method: " + requestData.getMethod());
             strOut.println("");
             strOut.println(
-                    "Remote host: " + request.getRemoteHost() + "     Remote Address: " + request.getRemoteAddr());
+                    "Remote host: " + requestData.getRemoteHost() + "     Remote Address: " + requestData.getRemoteAddr());
             strOut.println("");
             strOut.println("Request headers:");
             strOut.println("-----------------");
-            Iterator headerNames = new EnumerationIterator(request.getHeaderNames());
-            while (headerNames.hasNext()) {
-                String headerName = (String) headerNames.next();
-                String headerValue = request.getHeader(headerName);
-                strOut.println("   " + headerName + " : " + headerValue);
+            Iterator<Map.Entry<String, String>> headerEntryIterator = requestData.getHeaders().entrySet().iterator();
+            while (headerEntryIterator.hasNext()) {
+                Map.Entry<String, String> headerEntry = headerEntryIterator.next();
+                strOut.println("   " + headerEntry.getKey() + " : " + headerEntry.getValue());
             }
         }
 

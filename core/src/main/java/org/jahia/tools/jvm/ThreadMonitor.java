@@ -44,6 +44,10 @@ import java.util.Locale;
 import javax.management.*;
 import java.io.*;
 
+/**
+ * Warning : generating thread dumps is an operation that locks the JVM and therefore should not be done while
+ * high load is running on the system.
+ */
 public class ThreadMonitor {
     private MBeanServerConnection server;
     private ThreadMXBean tmbean;

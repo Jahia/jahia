@@ -48,9 +48,19 @@ public class GWTJahiaNodeProperty implements Serializable {
     private List<GWTJahiaNodePropertyValue> values;
 
     public GWTJahiaNodeProperty() {
+    	super();
+    }
+
+    public GWTJahiaNodeProperty(String name, String value) {
+        this(name, new GWTJahiaNodePropertyValue(value));
+    }
+
+    public GWTJahiaNodeProperty(String name, String value, int valueType) {
+        this(name, new GWTJahiaNodePropertyValue(value, valueType));
     }
 
     public GWTJahiaNodeProperty(String name, GWTJahiaNodePropertyValue v) {
+    	this();
         setName(name);
         setValue(v);
     }

@@ -55,9 +55,15 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
     private GWTJahiaNode linkNode;
 
     public GWTJahiaNodePropertyValue() {
+    	super();
+    }
+
+    public GWTJahiaNodePropertyValue(String value) {
+    	this(value, GWTJahiaNodePropertyType.STRING);
     }
 
     public GWTJahiaNodePropertyValue(String value, int type) {
+    	this();
         this.type = type;
         this.value = value;
     }

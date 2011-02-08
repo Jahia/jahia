@@ -245,7 +245,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
     }
 
     /**
-     * This method returns the list of all the user names registed into the system.
+     * This method returns the list of all the user names registered in the system.
      *
      * @return Return a List of strings holding the user identification names.
      */
@@ -255,7 +255,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> users = new ArrayList<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] ORDER BY u.[j:nodename]";
+                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] ORDER BY [j:nodename]";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         RowIterator rows = qr.getRows();

@@ -184,7 +184,7 @@ public abstract class JahiaUserManagerService extends JahiaService {
 
     //-------------------------------------------------------------------------
     /**
-     * This method returns the list of all the user names registed into the system.
+     * This method returns the list of all the user names registered in the system.
      *
      * @return Return a List of strings holding the user identification names.
      */

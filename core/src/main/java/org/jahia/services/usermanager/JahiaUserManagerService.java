@@ -34,10 +34,9 @@ package org.jahia.services.usermanager;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
-import org.apache.commons.codec.binary.Base64;
+import org.jahia.utils.EncryptionUtils;
+import org.apache.commons.lang.StringUtils;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Properties;
@@ -76,29 +75,11 @@ public abstract class JahiaUserManagerService extends JahiaService {
      *         null on any failure.
      */
     public static String encryptPassword (String password) {
-        if (password == null) {
+        if (StringUtils.isEmpty(password)) {
             return null;
         }
 
-        if (password.length () == 0) {
-            return null;
-        }
-
-        String result = null;
-
-        try {
-            MessageDigest md = MessageDigest.getInstance ("SHA-1");
-            if (md != null) {
-                md.reset ();
-                md.update (password.getBytes ());
-                result = new String (Base64.encodeBase64 (md.digest ()));
-            }
-            md = null;
-        } catch (NoSuchAlgorithmException ex) {
-            throw new UnsupportedOperationException(ex);
-        }
-
-        return result;
+        return EncryptionUtils.sha1DigestLegacy(password);
     }
         
     public static String getKey(Principal p) {

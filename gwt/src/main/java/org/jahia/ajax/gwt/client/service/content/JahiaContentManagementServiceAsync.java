@@ -310,4 +310,6 @@ public interface JahiaContentManagementServiceAsync {
     void getNumberOfTasksForUser(AsyncCallback<Integer> asyncCallback);
 
     void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbar> async);
+
+    void createRemotePublication(String nodeName, String languageCode, Map<String, String> props, boolean validateConnectionSettings, AsyncCallback<Boolean> async);
 }

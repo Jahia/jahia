@@ -34,15 +34,22 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.collections.map.LinkedMap;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.api.Constants;
+import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
@@ -51,23 +58,26 @@ import org.jahia.services.workflow.WorkflowService;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:15:34 PM
- * 
  */
 public class PublicationHelper {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(PublicationHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(PublicationHelper.class);
 
     private JCRPublicationService publicationService;
     private WorkflowHelper workflowHelper;
     private WorkflowService workflowService;
+	private HttpClientService httpClientService;
 
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
@@ -403,4 +413,49 @@ public class PublicationHelper {
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
+
+	public void validateConnection(String languageCode, Map<String, String> props)
+	        throws GWTJahiaServiceException {
+		PostMethod post = null;
+		URL url = null;
+		try {
+			String theUrl = props.get("remoteUrl") + Render.getRenderServletPath() + "/live/" + languageCode + props.get("remotePath") + ".preparereplay.do";
+			url = new URL(theUrl);
+			post = new PostMethod(theUrl);
+			post.addParameter("testOnly", "true");
+			post.addRequestHeader("accept", "application/json");
+			HttpState state = new HttpState();
+			state.setCredentials(
+			        new AuthScope(url.getHost(), url.getPort()),
+			        new UsernamePasswordCredentials(props.get("remoteUser"), props
+			                .get("remotePassword")));
+			if (httpClientService.getHttpClient().executeMethod(null, post, state) != 200) {
+				logger.warn("Connection to URL: {} failed with status {}", url,
+				        post.getStatusLine());
+				throw new GWTJahiaServiceException(
+				        "Connection failed with the status " + post.getStatusLine());
+			}
+		} catch (HttpException e) {
+			logger.error(
+			        "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
+			        e);
+			throw new GWTJahiaServiceException(
+			        "Connection failed with the an error:\n" + e.getMessage());
+		} catch (IOException e) {
+			logger.error(
+			        "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
+			        e);
+			throw new GWTJahiaServiceException(
+			        "Connection failed with the an error:\n" + e.getMessage());
+		} finally {
+			if (post != null) {
+				post.releaseConnection();
+			}
+		}
+	}
+
+	public void setHttpClientService(HttpClientService httpClientService) {
+		this.httpClientService = httpClientService;
+	}
+
 }

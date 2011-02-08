@@ -44,6 +44,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.web.context.ServletContextAware;
@@ -137,7 +138,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     String l_password;
                     if (!password.startsWith("SHA-1:")) {
                         // Encrypt the password
-                        l_password = encryptPassword(password);
+                        l_password = JahiaUserManagerService.encryptPassword(password);
                     } else {
                         l_password = password.substring(6);
                     }

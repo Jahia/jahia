@@ -1199,6 +1199,13 @@
         	<version>1.9.14</version>
         </dependency>
         
+        <dependency>
+        	<!-- We use for bi-derectional encryption of passwords for remote publication -->
+        	<groupId>org.jasypt</groupId>
+        	<artifactId>jasypt</artifactId>
+        	<version>1.7</version>
+        	<classifier>lite</classifier>
+        </dependency>
     </dependencies>
     <build>
 

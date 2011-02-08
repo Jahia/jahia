@@ -344,7 +344,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      *         otherwise
      */
     public boolean setPassword(String password) {
-        return setProperty(J_PASSWORD, JCRUserManagerProvider.encryptPassword(password));
+        return setProperty(J_PASSWORD, JahiaUserManagerService.encryptPassword(password));
     }
 
     /**
@@ -408,7 +408,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      *         encapsulated password in this user, and return false on any error.
      */
     public boolean verifyPassword(String password) {
-        return getProperty(J_PASSWORD).equals(JahiaUserManagerProvider.encryptPassword(password));
+        return getProperty(J_PASSWORD).equals(JahiaUserManagerService.encryptPassword(password));
     }
 
     /**

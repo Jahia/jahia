@@ -40,6 +40,7 @@ import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -82,7 +83,6 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.googledocs.GoogleDocsService;
@@ -94,6 +94,7 @@ import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
+import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
@@ -120,9 +121,8 @@ import java.util.*;
  * @version 5 mai 2008 - 17:23:39
  */
 public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
-// ------------------------------ FIELDS ------------------------------
 
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
+	private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
 
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
@@ -148,9 +148,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private CacheHelper cacheHelper;
     private SchedulerHelper schedulerHelper;
     private UIConfigHelper uiConfigHelper;
-
-
-// --------------------- GETTER / SETTER METHODS ---------------------
 
     public void setGoogleDocsServiceFactory(GoogleDocsServiceFactory googleDocsServiceFactory) {
         this.googleDocsServiceFactory = googleDocsServiceFactory;
@@ -1878,5 +1875,48 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         return returnedSites;
     }
+
+	public boolean createRemotePublication(String nodeName, String languageCode,
+	        Map<String, String> props, boolean validateConnectionSettings)
+	        throws GWTJahiaServiceException {
+		
+    	String theUrl = props.get("remoteUrl");
+    	while (theUrl.endsWith("/")) {
+    		theUrl = theUrl.substring(0, theUrl.length() - 1);
+    	}
+    	if (!theUrl.startsWith("http://") && !theUrl.startsWith("https://")) {
+    		theUrl = "http://" + theUrl;
+    	}
+    	props.put("remoteUrl", theUrl);
+    	
+    	String thePath = props.get("remotePath");
+    	while (thePath.endsWith("/")) {
+    		thePath = thePath.substring(0, thePath.length() - 1);
+    	}
+    	props.put("remotePath", thePath);
+		
+		if (validateConnectionSettings) {
+			publication.validateConnection(languageCode, props);
+		}
+
+		List<GWTJahiaNodeProperty> gwtProps = new ArrayList<GWTJahiaNodeProperty>();
+		gwtProps.add(new GWTJahiaNodeProperty("remoteUrl", props.get("remoteUrl")));
+		gwtProps.add(new GWTJahiaNodeProperty("remotePath", props.get("remotePath")));
+		gwtProps.add(new GWTJahiaNodeProperty("remoteUser", props.get("remoteUser")));
+		gwtProps.add(new GWTJahiaNodeProperty("remotePassword", encryptPassword(props
+		        .get("remotePassword"))));
+		gwtProps.add(new GWTJahiaNodeProperty("node", props.get("node")));
+		gwtProps.add(new GWTJahiaNodeProperty("schedule", props.get("schedule")));
+
+		createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName, 255),
+		        "jnt:remotePublication", null, null, gwtProps,
+		        new HashMap<String, List<GWTJahiaNodeProperty>>());
+
+		return true;
+	}
+
+	private String encryptPassword(String pwd) {
+		return StringUtils.isNotEmpty(pwd) ? EncryptionUtils.passwordBaseEncrypt(pwd) : StringUtils.EMPTY;
+	}
 
 }

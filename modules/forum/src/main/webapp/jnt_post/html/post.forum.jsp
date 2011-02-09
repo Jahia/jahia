@@ -47,15 +47,13 @@
       <template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/>
     </li>
     <c:if test="${jcr:hasPermission(currentNode, 'deletePost')}">
-      <li class="delete-post-icon"><a title="<fmt:message key='delete.post'/>" href="#"
-                                            onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"><span>
+      <li class="delete-post-icon"><a title="<fmt:message key='delete.post'/>" href="#delete"
+                                            onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit(); return false;"><span>
         <fmt:message key="delete.post"/>
         </span></a> </li>
     </c:if>
     <c:if test="${jcr:hasPermission(currentNode, 'editPost')}">
-      <li class="edit-post-icon"><a title="<fmt:message key='edit.post'/>" href="javascript:return false;" onclick="$('#edit${currentNode.UUID}').click();"><span>
-        <fmt:message key="edit.post"/>
-        </span></a></li>
+      <li class="edit-post-icon"><a title="<fmt:message key='edit.post'/>" href="#edit" onclick="$('#edit${currentNode.UUID}').click(); return false;"><span><fmt:message key="edit.post"/></span></a></li>
     </c:if>
   </ul>
   <h4 class="forum-h4-first">${title.string}</h4>

@@ -12,7 +12,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:if test="${not omitFormatting && !inWrapper}"><div id="${currentNode.UUID}"></c:if>
 <template:include template="hidden.header"/>
 <c:set var="isEmpty" value="true"/>
 <c:choose>
@@ -45,4 +44,3 @@
         <template:include template="hidden.footer"/>
     </c:otherwise>
 </c:choose>
-<c:if test="${not omitFormatting && !inWrapper}"></div></c:if>

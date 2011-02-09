@@ -17,10 +17,7 @@ import org.apache.lucene.search.TermQuery;
 import org.jahia.services.search.facets.JahiaQueryParser;
 import org.slf4j.Logger;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Row;
 import javax.jcr.query.qom.*;
@@ -139,6 +136,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             } else {
                 return super.getNodeIdQuery(field, path);
             }
+        } catch (AccessDeniedException e) {
+            return new JackrabbitTermQuery(new Term(FieldNames.UUID, "invalid-node-id")); // never matches
         } catch (PathNotFoundException e) {
             return new JackrabbitTermQuery(new Term(FieldNames.UUID, "invalid-node-id")); // never matches
         }
@@ -196,11 +195,16 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 query.subQuery.add(new TermQuery(new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(((ChildNode)constraint).getParentPath()).getParent().getIdentifier())),
                         BooleanClause.Occur.MUST_NOT);
             }
+        } catch (AccessDeniedException e) {
+            // denied
+            query.subQuery.add(new JackrabbitTermQuery(new Term(
+                    FieldNames.UUID, "invalid-node-id")), // never matches
+                    MUST);
         } catch (PathNotFoundException e) {
             // not found
             query.subQuery.add(new JackrabbitTermQuery(new Term(
                     FieldNames.UUID, "invalid-node-id")), // never matches
-                    SHOULD);
+                    MUST);
         }
 
         return super.mapConstraintToQueryAndFilter(query,constraint, selectorMap, searcher, reader);

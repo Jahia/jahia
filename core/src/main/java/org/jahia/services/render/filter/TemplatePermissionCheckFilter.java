@@ -95,6 +95,12 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                     return "";
                 }
             }
+            if (node.hasProperty("j:requirePrivilegedUser") && node.getProperty("j:requirePrivilegedUser").getBoolean()) {
+                if (!renderContext.getUser().isMemberOfGroup(0,"privileged")) {
+                    return "";
+                }
+            }
+
         }
         return null;
     }

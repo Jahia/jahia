@@ -1,4 +1,3 @@
-
 <site jcr:primaryType="jnt:virtualsite"
            xmlns:jcr="http://www.jcp.org/jcr/1.0"
            xmlns:j="http://www.jahia.org/jahia/1.0"
@@ -23,11 +22,5 @@
 
     <tags jcr:primaryType="jnt:tagList" >
     </tags>
-
-    <j:acl jcr:primaryType="jnt:acl">
-      <GRANT_g_site-privileged j:protected="false" j:principal="g:site-privileged" j:roles="staging-viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-      <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="staging-viewer" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-      <GRANT_g_site-administrators j:principal="g:site-administrators" j:protected="false" j:roles="site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-    </j:acl>
 
 </site>

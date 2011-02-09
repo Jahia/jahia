@@ -658,8 +658,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
                     for (Value value : perms) {
                         Node p = s.getNodeByIdentifier(value.getString());
-                        Privilege privilege = privilegeRegistry.getPrivilege(p);
-                        results.add(privilege);
+                        try {
+                            Privilege privilege = privilegeRegistry.getPrivilege(p);
+                            results.add(privilege);
+                        } catch (AccessControlException e) {
+                            logger.debug("Permission not available : "+p,e);
+                        }
                     }
                 }
             }

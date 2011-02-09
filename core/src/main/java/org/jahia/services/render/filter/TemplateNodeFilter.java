@@ -202,33 +202,35 @@ public class TemplateNodeFilter extends AbstractFilter {
         } else {
             query += " and [j:defaultTemplate]=true";
         }
+        query += " order by [j:priority] desc";
         Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query,
                 Query.JCR_SQL2);
         QueryResult result = q.execute();
         NodeIterator ni = result.getNodes();
 
-        SortedMap<String, Template> templates = new TreeMap<String, Template>(new Comparator<String>() {
-            public int compare(String o1, String o2) {
-                if (o1 == o2) {
-                    return 0;
-                }
-                if (o1 == null) {
-                    return 1;
-                } else if (o2 == null) {
-                    return -1;
-                }
-                try {
-                    if (NodeTypeRegistry.getInstance().getNodeType(o1).isNodeType(o2)) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                } catch (NoSuchNodeTypeException e) {
-                    e.printStackTrace();
-                    return 1;
-                }
-            }
-        });
+        List<Template> templates = new ArrayList<Template>();
+//        SortedMap<String, Template> templates = new TreeMap<String, Template>(new Comparator<String>() {
+//            public int compare(String o1, String o2) {
+//                if (o1 == o2) {
+//                    return 0;
+//                }
+//                if (o1 == null) {
+//                    return 1;
+//                } else if (o2 == null) {
+//                    return -1;
+//                }
+//                try {
+//                    if (NodeTypeRegistry.getInstance().getNodeType(o1).isNodeType(o2)) {
+//                        return -1;
+//                    } else {
+//                        return 1;
+//                    }
+//                } catch (NoSuchNodeTypeException e) {
+//                    e.printStackTrace();
+//                    return 1;
+//                }
+//            }
+//        });
         while (ni.hasNext()) {
             final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
             addTemplate(resource, renderContext, contentTemplateNode, templates);
@@ -236,11 +238,11 @@ public class TemplateNodeFilter extends AbstractFilter {
         if (templates.isEmpty()) {
             return null;
         } else {
-            return templates.get(templates.firstKey());
+            return templates.get(0);
         }
     }
 
-    private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, Map<String, Template> templates)
+    private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, List<Template> templates)
             throws RepositoryException {
         boolean ok = true;
         String type = null;
@@ -249,7 +251,6 @@ public class TemplateNodeFilter extends AbstractFilter {
             Value[] values = templateNode.getProperty("j:applyOn").getValues();
             for (Value value : values) {
                 if (resource.getNode().isNodeType(value.getString())) {
-                    type = value.getString();
                     ok = true;
                     break;
                 }
@@ -261,7 +262,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         if (!checkTemplatePermission(resource, renderContext, templateNode)) return;
 
         if (ok) {
-            templates.put(type,new Template(
+            templates.add(new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             null, templateNode.getIdentifier(), null));
         }
@@ -288,6 +289,11 @@ public class TemplateNodeFilter extends AbstractFilter {
         }
         if (templateNode.hasProperty("j:requireLoggedUser") && templateNode.getProperty("j:requireLoggedUser").getBoolean()) {
             if (!renderContext.isLoggedIn()) {
+                return false;
+            }
+        }
+        if (templateNode.hasProperty("j:requirePrivilegedUser") && templateNode.getProperty("j:requirePrivilegedUser").getBoolean()) {
+            if (!renderContext.getUser().isMemberOfGroup(0,"privileged")) {
                 return false;
             }
         }

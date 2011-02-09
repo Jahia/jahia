@@ -342,6 +342,7 @@
  extends = jnt:content, jnt:area, jnt:mainResourceDisplay
  itemtype = permissions
  - j:requireLoggedUser (boolean)
+ - j:requirePrivilegedUser (boolean)
  - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'live', 'edit', 'contribute'
  - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) nofulltext multiple
 
@@ -350,6 +351,7 @@
 [jnt:contentTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:content,jnt:contentList,jnt:folder,jnt:file,jnt:user,jnt:group',resourceBundle]) multiple
  - j:defaultTemplate (boolean) = false
+ - j:priority (long)
 
 [jmix:mockupStyle] mixin
  - j:mockupStyle (string)

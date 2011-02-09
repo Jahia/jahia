@@ -58,6 +58,7 @@
 
     <j:acl jcr:primaryType="jnt:acl">
       <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
       <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="staging-viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
     </j:acl>
 

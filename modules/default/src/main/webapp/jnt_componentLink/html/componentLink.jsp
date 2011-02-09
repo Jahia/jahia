@@ -14,5 +14,5 @@
 </c:if>
 
 <div class="${currentNode.properties['divClass'].string}"><!--start preferences-->
-    <a title="${currentNode.properties['jcr:title'].string}" class="${currentNode.properties['aClass']}" href="${url.base}${bindedComponent.path}.${currentNode.properties['targetTemplate'].string}.html" >${currentNode.properties['jcr:title'].string}</a>
+    <a title="${fn:escapeXml(currentNode.displayableName)}" class="${currentNode.properties['aClass']}" href="${url.base}${bindedComponent.path}.${currentNode.properties['targetTemplate'].string}.html">${fn:escapeXml(currentNode.displayableName)}</a>
 </div>

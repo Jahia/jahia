@@ -130,12 +130,6 @@
         <to last="true">$1/gwt/$2</to>
     </rule>
 
-    <!-- startup -->
-    <rule>
-        <from>/start</from>
-        <to type="redirect">%{context-path}/cms/render/live/en/sites/systemsite/home.html</to>
-    </rule>
-
     <!-- Outbound rules-->
     <outbound-rule>
         <note>

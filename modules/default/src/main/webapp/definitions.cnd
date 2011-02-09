@@ -170,7 +170,7 @@
 [jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent
 
 [jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent
- - type (string, choicelist) = content < content,document,"united content"
+ - type (string, choicelist) = content < content,document,"united content",roles
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent
  - type (string, choicelist) = edit < contribute,edit

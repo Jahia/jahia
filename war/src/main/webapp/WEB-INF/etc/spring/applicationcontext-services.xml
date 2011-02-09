@@ -88,7 +88,7 @@
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="systemSiteTitle" value="System Site"/>
-        <property name="systemSiteServername" value="localhost"/>
+        <property name="systemSiteServername" value=""/>
         <property name="systemSiteDefaultLanguage" value="en"/>
         <property name="systemSiteTemplateSetName" value="templates-system"/>
     </bean>

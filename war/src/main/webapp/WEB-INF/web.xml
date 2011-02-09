@@ -650,6 +650,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
+        <url-pattern>/start</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WelcomeServlet</servlet-name>
         <url-pattern>/welcome/*</url-pattern>
     </servlet-mapping>
 

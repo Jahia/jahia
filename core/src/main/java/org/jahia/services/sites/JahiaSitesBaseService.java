@@ -89,7 +89,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     protected JCRSessionFactory sessionFactory;
     private String systemSiteDefaultLanguage = "en";
     private String systemSiteTitle = "System Site";
-    private String systemSiteServername = "localhost";
+    private String systemSiteServername = "";
     private String systemSiteTemplateSetName = "templates-system";
 
     public void setCacheService(CacheService cacheService) {

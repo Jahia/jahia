@@ -197,9 +197,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             }
         } catch (AccessDeniedException e) {
             // denied
-            query.subQuery.add(new JackrabbitTermQuery(new Term(
-                    FieldNames.UUID, "invalid-node-id")), // never matches
-                    MUST);
+            // todo : should find another way to test that we are not in a translation sub node
         } catch (PathNotFoundException e) {
             // not found
             query.subQuery.add(new JackrabbitTermQuery(new Term(

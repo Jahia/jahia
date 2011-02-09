@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
-<%@ taglib prefix="functions" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -37,23 +37,21 @@
       <!--start post-reply-->
       <div class="forum-Form">
         <!--start forum-Form-->
-        <h4 class="forum-h4-first">${currentNode.propertiesAsString['jcr:title']} : </h4>
+        <h4 class="forum-h4-first">${fn:escapeXml(currentNode.displayableName)}:</h4>
         <fieldset>
           <p class="field">
-            <input value="<c:if test="${functions:length(reply.properties['jcr:title'].string) >
-            0}"> Re:
-            </c:if>
-            ${reply.properties['jcr:title'].string}"
+          	<fmt:message key="reply.prefix" var="replyPrefix"/><c:set var="replyPrefix" value="${replyPrefix} "/>
+          	<c:set var="replyTitle" value="${reply.properties['jcr:title'].string}"/>
+            <input value="${not empty replyTitle ? replyPrefix : ''}${not empty replyTitle ? fn:escapeXml(replyTitle) : ''}"
             type="text" size="35" id="forum_site" name="jcr:title"
             tabindex="1"/> </p>
           <p class="field">
             <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content"
-                                      tabindex="2"><c:if test="${functions:length(reply.properties['content'].string) > 0}"><blockquote>${reply.properties['content'].string}</blockquote></c:if>
-</textarea>
+                                      tabindex="2"><c:if test="${not empty reply.properties['content'].string}"><blockquote>${reply.properties['content'].string}</blockquote></c:if></textarea>
           </p>
           <p class="forum_button">
-            <input type="reset" value="Reset" class="button" tabindex="3"/>
-            <input type="submit" value="Submit" class="button" tabindex="4"/>
+            <input type="reset" value="<fmt:message key='label.reset'/>" class="button" tabindex="3"/>
+            <input type="submit" value="<fmt:message key='label.submit'/>" class="button" tabindex="4"/>
           </p>
         </fieldset>
       </div>

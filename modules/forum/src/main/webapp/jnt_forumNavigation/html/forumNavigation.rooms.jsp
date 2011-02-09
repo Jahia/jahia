@@ -29,10 +29,10 @@
             <dl class="icon">
               <dt>
                 <ul class="forum-profile-icons">
-                  <li class="delete-post-icon"><a title="<fmt:message key='delete.room'/>" href="#"
-                                                                            onclick="if (window.confirm('<fmt:message key='confirm.delete.room'/>')) {document.getElementById('jahia-forum-room-delete-${room.UUID}').submit();}"><span>
-                    <fmt:message key='delete.room'/>
-                    </span></a> </li>
+                  <li class="delete-post-icon">
+                  	<fmt:message key="confirm.delete.room" var="confirmMsg"/>
+                  	<a title="<fmt:message key='delete.room'/>" href="#"
+						onclick="if (window.confirm('${functions:escapeJavaScript(confirmMsg)}')) {document.getElementById('jahia-forum-room-delete-${room.UUID}').submit();} return false;"><span><fmt:message key='delete.room'/></span></a></li>
                 </ul>
                 <a href="${url.base}${room.path}.html">${room.properties['jcr:title'].string}</a>
                 <c:if test="${jcr:hasPermission(room, 'deleteRoom')}">
@@ -55,9 +55,7 @@
                 <fmt:message key="posts"/>
               </dd>
               <%--<dd class="posts">View</dd>--%>
-              <dd class="lastpost"><span>
-                <fmt:message key="lastPosts"/>
-                </span></dd>
+              <dd class="lastpost"><span><fmt:message key="lastPosts"/></span></dd>
             </dl>
           </li>
         </ul>
@@ -96,10 +94,9 @@
                   <dt title="posts">
                     <c:if test="${jcr:hasPermission(section, 'deleteSection')}">
                       <ul class="forum-profile-icons">
+                      	<fmt:message key='confirm.delete.section' var="confirmMsg"/>
                         <li class="delete-post-icon"><a title="<fmt:message key='delete.section'/>" href="#"
-                                                                            onclick="if (window.confirm('<fmt:message key='confirm.delete.section'/>')) { document.getElementById('jahia-forum-section-delete-${section.UUID}').submit(); }"><span>
-                          <fmt:message key='delete.section'/>
-                          </span></a> </li>
+                                                                            onclick="if (window.confirm('${functions:escapeJavaScript(confirmMsg)}')) { document.getElementById('jahia-forum-section-delete-${section.UUID}').submit(); } return false;"><span><fmt:message key='delete.section'/></span></a></li>
                       </ul>
                     </c:if>
                     <a class="forum-title"
@@ -107,22 +104,20 @@
                     <jcr:nodeProperty
                                             node="${section}" name="jcr:title"/>
                     </a> <br/>
-                    <p> ${section.properties['jcr:description'].string} </p>
+                    <p>${fn:escapeXml(section.properties['jcr:description'].string)}</p>
                   </dt>
                   <%--<dd class="topics">30</dd>--%>
                   <dd class="topics">${numberOfTopics}</dd>
                   <dd class="posts">${numberOfPosts}</dd>
                   <dd class="lastpost">
-                    <c:if test="${numberOfPosts > 0}"> <span> <dfn>
-                      <fmt:message key="last.post"/>
-                      </dfn>
+                    <c:if test="${numberOfPosts > 0}"> <span><dfn><fmt:message key="last.post"/></dfn>
                       <fmt:message key="by"/>
                       <a
                                                     href="${url.base}${lastModifiedNode.parent.path}.html"><img height="9"
                                                                                                                 width="11"
                                                                                                                 title="View the latest post"
                                                                                                                 alt="View the latest post"
-                                                                                                                src="${url.currentModule}/css/img/icon_topic_latest.gif"/>${createdBy.string} </a><br/>
+                                                                                                                src="${url.currentModule}/css/img/icon_topic_latest.gif"/>${fn:escapeXml(createdBy.string)} </a><br/>
                       <fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/>
                       </span> </c:if>
                   </dd>
@@ -140,9 +135,7 @@
         <div class="clear"></div>
       </div>
     </c:forEach>
-    <span>
-    <fmt:message key="total.threads"/>
-    : ${numberOfThreads}</span> <span>
-    <fmt:message key="total.posts"/>
-    : ${numberOfPosts}</span> </div>
+    <span><fmt:message key="total.threads"/>:&nbsp;${numberOfThreads}</span>
+    <span><fmt:message key="total.posts"/>:&nbsp;${numberOfPosts}</span>
+    </div>
 </c:if>

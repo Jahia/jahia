@@ -113,9 +113,7 @@
       </ul>
       <div class="clear"></div>
     </div>
-    <span>
-    <fmt:message key="total.threads"/>
-    : ${numberOfThreads}</span> <span>
-    <fmt:message key="total.posts"/>
-    : ${numberOfPosts}</span> </div>
+    <span><fmt:message key="total.threads"/>:&nbsp;${numberOfThreads}</span>
+    <span><fmt:message key="total.posts"/>:&nbsp;${numberOfPosts}</span>
+    </div>
 </c:if>

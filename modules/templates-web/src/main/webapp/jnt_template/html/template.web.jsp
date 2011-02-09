@@ -16,8 +16,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <c:set var="pageTitle" value="${renderContext.mainResource.node.propertiesAsString['jcr:title']}"/>
-    <title>${fn:escapeXml(not empty pageTitle ? pageTitle : renderContext.mainResource.node.name)}</title>
+    <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
     <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print"/>
 </head>
 <body id="body">

@@ -23,9 +23,9 @@
     <c:if test="${currentNode.properties.stayOnPage.boolean}">
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
     </c:if>
-    <h3>${currentNode.properties['jcr:title'].string}</h3>
+    <h3>${fn:escapeXml(currentNode.displayableName)}</h3>
     <fieldset>
-        <legend>${currentNode.properties['jcr:title'].string}</legend>
+        <legend>${fn:escapeXml(currentNode.displayableName)}</legend>
 
         <p><label for="title"><fmt:message key="label.title"/></label>
             <input type="text" name="jcr:title" id="title" class="field" value=""

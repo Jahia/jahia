@@ -108,7 +108,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
     protected Map<String, Boolean> membership = new ConcurrentHashMap<String, Boolean>();
     
     /** Map holding all the group members. */
-    protected Map<String, Principal> mMembers;
+    protected Set<Principal> mMembers;
 
     /**
      * Get grp's properties list.
@@ -272,7 +272,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
             // For each member check if it's the member we are looking for,
             // otherwise, if the member is a group, check recursively in this group
             // for the requested member.
-            for (Principal member : mMembers.values()) {
+            for (Principal member : mMembers) {
                 if (member != null) {
                     // check if the member is the one we are looking for
                     String mname = JahiaUserManagerService.getKey(member);
@@ -332,11 +332,11 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @return An Iterator of the group members.
      */
     public Enumeration<Principal> members () {
-        return new Vector<Principal>(getMembersMap().values()).elements();
+        return new Vector<Principal>(getMembersMap()).elements();
     }
 
     public Collection<Principal> getMembers() {
-        return getMembersMap().values();
+        return getMembersMap();
     }
 
     /**
@@ -345,7 +345,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * 
      * @return members of this group
      */
-    protected abstract Map<String, Principal> getMembersMap();
+    protected abstract Set<Principal> getMembersMap();
 
     /**
      * This method returns ONLY a list of users. All sub groups are expanded
@@ -396,7 +396,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
         // For each member check if it's the member we are looking for,
         // otherwise, if the member is a group, check recursively in this group
         // for the requested member.
-        for (Principal curMember : getMembersMap().values()) {
+        for (Principal curMember : getMembersMap()) {
             // if the member is a group look for the principal in this
             // group. Groups are already loaded.
             if (curMember instanceof JahiaGroup) {
@@ -428,7 +428,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @return Return false on error
      */
     public boolean removeMembers () {
-        for (Principal aMember : getMembersMap().values()) {
+        for (Principal aMember : getMembersMap()) {
             removeMember (aMember);
         }
         return true;

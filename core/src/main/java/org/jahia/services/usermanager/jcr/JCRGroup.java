@@ -47,9 +47,7 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Implementation of the JahiaGroup interface that uses the JCR API for storage
@@ -225,7 +223,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                             JCRGroupManagerProvider.getInstance().updateMembershipCache(jcrUser.getIdentifier());
                             session.save();
                         }
-                        mMembers.put(principal.getName(), principal);
+                        mMembers.add(principal);
 
                         return true;
                     }
@@ -274,10 +272,10 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      *
      * @return members of this group
      */
-    protected Map<String, Principal> getMembersMap() {
+    protected Set<Principal> getMembersMap() {
         try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Map<String, Principal>>() {
-                public Map<String, Principal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Set<Principal>>() {
+                public Set<Principal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     final Node node = getNode(session);
                     return getMembersMap(node);
                 }
@@ -285,11 +283,11 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         } catch (RepositoryException e) {
             logger.error("Error while retrieving group member map", e);
         }
-        return new HashMap<String, Principal>();
+        return new HashSet<Principal>();
     }
 
-    private Map<String, Principal> getMembersMap(Node node) throws RepositoryException {
-        Map<String, Principal> principalMap = new HashMap<String, Principal>();
+    private Set<Principal> getMembersMap(Node node) throws RepositoryException {
+        Set<Principal> principalMap = new HashSet<Principal>();
         Node members = node.getNode("j:members");
         NodeIterator iterator = members.getNodes();
         while (iterator.hasNext()) {
@@ -297,12 +295,12 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
                 JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
                 if (jahiaUser != null) {
-                    principalMap.put(member.getName(), jahiaUser);
+                    principalMap.add(jahiaUser);
                 } else {
                     String s = member.getName().replace("___", ":");
                     JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
                     if (g != null) {
-                        principalMap.put(s, g);
+                        principalMap.add(g);
                     } else {
                         logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
                                 + "'");
@@ -406,8 +404,8 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
 
             if (mMembers != null) {
                 if (mMembers.size() > 0) {
-                    for (String member : mMembers.keySet()) {
-                        output.append(member).append("/");
+                    for (Principal member : mMembers) {
+                        output.append(member.getName()).append("/");
                     }
                 } else {
                     output.append(" -no members-\n");

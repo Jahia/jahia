@@ -37,7 +37,6 @@ import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.id.ItemId;
-import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.security.authorization.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.Path;
@@ -370,7 +369,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 Item i = getSecuritySession().getItem(jcrPath);
                 if (i.isNode() && permissions.contains(Privilege.JCR_WRITE + "_" + workspaceName)) {
                     String ntName = ((Node) i).getPrimaryNodeType().getName();
-                    if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
+                    if (ntName.equals(Constants.JAHIANT_SYSTEMNODE) || ntName.equals("rep:root")) {
                         cache.put(absPathStr + " : " + permissions, false);
                         return false;
                     }

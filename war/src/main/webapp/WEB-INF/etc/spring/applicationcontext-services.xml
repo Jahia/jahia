@@ -86,11 +86,6 @@
           factory-method="getInstance" lazy-init="true">
         <property name="groupService" ref="JahiaGroupManagerService"/>
         <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="siteProvider">
-            <bean class="org.jahia.services.sites.jcr.JCRSitesProvider">
-                <property name="jcrTemplate" ref="jcrTemplate"/>
-            </bean>
-        </property>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="systemSiteTitle" value="System Site"/>
         <property name="systemSiteServername" value="localhost"/>

@@ -560,7 +560,7 @@ public final class JCRContentUtils {
         if (options.contains("initials")) {
             String s = "" + Character.toUpperCase(name.charAt(0));
             if (!result.hasNode(s)) {
-                result = result.addNode(s, Constants.JAHIANT_SYSTEMFOLDER);
+                result = result.addNode(s, Constants.JAHIANT_SYSTEMNODE);
             } else {
                 result = result.getNode(s);
             }

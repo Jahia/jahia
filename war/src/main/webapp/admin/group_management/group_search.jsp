@@ -31,7 +31,7 @@ int stretcherToOpen   = 1;
                 <tr>
                     <td colspan="2">
                         <br /><fmt:message key="label.search"/>&nbsp;:
-                        <input type="text" name="searchString" size="10"
+                        <input type="text" name="searchString" size="20"
                             <%
                                 String searchString = request.getParameter("searchString");
                                 if (searchString != null) {
@@ -104,7 +104,7 @@ int stretcherToOpen   = 1;
             <!-- end search engine view -->
         </td>
 <%
-    Integer userNameWidth=new Integer(15);
+    Integer userNameWidth=new Integer(30);
     request.getSession().setAttribute("userNameWidth",userNameWidth);
 %>
         <td align="center">

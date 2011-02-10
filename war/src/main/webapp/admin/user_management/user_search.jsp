@@ -30,7 +30,7 @@ int stretcherToOpen   = 0;
                 <tr>
                     <td colspan="2">
                         <br><fmt:message key="label.search"/>&nbsp;:
-                        <input type="text" name="searchString" size="10"
+                        <input type="text" name="searchString" size="15"
                             <%
                             String searchString = request.getParameter("searchString");
                             if (searchString != null) {
@@ -107,7 +107,7 @@ int stretcherToOpen   = 0;
             <!-- -->
         </td>
 <%
-    Integer userNameWidth=new Integer(15);
+    Integer userNameWidth=new Integer(20);
     request.getSession().setAttribute("userNameWidth",userNameWidth);
 %>
         <td>
@@ -148,7 +148,7 @@ int stretcherToOpen   = 0;
                         </table>
                         <%
                         Set resultSet = (Set)request.getAttribute( "resultList" );
-                        String[] textPattern = {"Principal", "Provider, 6", "Name, "+userNameWidth, "Properties, 20"};
+                        String[] textPattern = {"Principal", "Provider, 6", "Name, "+userNameWidth, "Properties, 30"};
                         PrincipalViewHelper principalViewHelper = new PrincipalViewHelper(textPattern);
                         %>
                         <select ondblclick="javascript:handleKey(event);"

@@ -647,7 +647,7 @@ span.flag_en_plain_off,
     span.flag_en_ZA_off,
     span.flag_en_GB_off,
     span.flag_en_US_off {
-    background: url( "images/flags/plain/flag_england.png" ) no-repeat 0 0;
+    background: url( "images/flags/plain/flag_great_britain.png" ) no-repeat 0 0;
 }
 
 span.flag_en_plain_off:hover,
@@ -659,7 +659,7 @@ span.flag_en_plain_off:hover,
     span.flag_en_ZA_off:hover,
     span.flag_en_GB_off:hover,
     span.flag_en_US_off:hover {
-    background: url( "images/flags/plain/flag_england.png" ) no-repeat 0 0;
+    background: url( "images/flags/plain/flag_great_britain.png" ) no-repeat 0 0;
 }
 
 span.flag_en_plain_on,
@@ -671,7 +671,7 @@ span.flag_en_plain_on,
     span.flag_en_ZA_on,
     span.flag_en_GB_on,
     span.flag_en_US_on {
-    background: url( "images/flags/plain/flag_england.png" ) no-repeat 0 0;
+    background: url( "images/flags/plain/flag_great_britain.png" ) no-repeat 0 0;
 }
 
 span.flag_en_shadow_off,
@@ -683,7 +683,7 @@ span.flag_en_shadow_off,
     span.flag_en_ZA_off,
     span.flag_en_GB_off,
     span.flag_en_US_off {
-    background: url( "images/flags/shadow/flag_england.png" ) no-repeat 0 0;
+    background: url( "images/flags/shadow/flag_great_britain.png" ) no-repeat 0 0;
 }
 
 span.flag_en_shadow_off:hover,
@@ -695,7 +695,7 @@ span.flag_en_shadow_off:hover,
     span.flag_en_ZA_off:hover,
     span.flag_en_GB_off:hover,
     span.flag_en_US_off:hover {
-    background: url( "images/flags/shadow/flag_england.png" ) no-repeat 0 0;
+    background: url( "images/flags/shadow/flag_great_britain.png" ) no-repeat 0 0;
 }
 
 span.flag_en_shadow_on,
@@ -707,7 +707,7 @@ span.flag_en_shadow_on,
     span.flag_en_ZA_on,
     span.flag_en_GB_on,
     span.flag_en_US_on {
-    background: url( "images/flags/shadow/flag_england.png" ) no-repeat 0 0;
+    background: url( "images/flags/shadow/flag_great_britain.png" ) no-repeat 0 0;
 }
 
 span.flag_es_off,
@@ -2962,13 +2962,13 @@ span.flag_ar_SA_shadow {
 }
 
 span.flag_en_GB {
-    background: url("images/flags/plain/flag_united_kingdom.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_great_britain.png") no-repeat 0 0;
 }
 span.flag_en_GB_plain {
-    background: url("images/flags/plain/flag_united_kingdom.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_great_britain.png") no-repeat 0 0;
 }
 span.flag_en_GB_shadow {
-    background: url("images/flags/shadow/flag_united_kingdom.png") no-repeat 0 0;
+    background: url("images/flags/shadow/flag_great_britain.png") no-repeat 0 0;
 }
 
 span.flag_sr_CS {

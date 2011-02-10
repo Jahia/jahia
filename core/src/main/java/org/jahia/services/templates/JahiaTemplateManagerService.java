@@ -476,7 +476,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             moduleName = originalNode.getName();
                         }
 
-                        synchro(originalNode, destinationNode, session, moduleName, references, true);
+                        synchro(originalNode, destinationNode, session, moduleName, references);
 
                         ReferencesHelper.resolveCrossReferences(session, references);
                         session.save();
@@ -489,43 +489,39 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,
-                        Map<String, List<String>> references, boolean doChildren) throws RepositoryException {
+                        Map<String, List<String>> references) throws RepositoryException {
         if (source.isNodeType("jnt:virtualsite")) {
             session.getUuidMapping().put(source.getIdentifier(), destinationNode.getIdentifier());
             NodeIterator ni = source.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
                 JCRNodeWrapper node;
+                boolean newNode = false;
                 if (destinationNode.hasNode(child.getName())) {
                     node = destinationNode.getNode(child.getName());
-                    doChildren = false;
                 } else {
                     session.checkout(destinationNode);
                     node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
                     session.save();
-                    doChildren = true;
+                    newNode = true;
                 }
-                synchro(child, node, session, moduleName, references, doChildren);
-            }
-        } else {
-            if (source.isNodeType("jnt:folder") || source.isNodeType("jnt:contentList")) {
-                templatesSynchro(source, destinationNode, session, references, false, false, moduleName);
-            } else if (source.isNodeType("jnt:templatesFolder")) {
-                templatesSynchro(source, destinationNode, session, references, true, false, moduleName);
-            } else {
-                templatesSynchro(source, destinationNode, session, references, false, doChildren, moduleName);
+
+                templatesSynchro(source, destinationNode, session, references, newNode, false, true, moduleName, child.isNodeType("jnt:templatesFolder"));
             }
         }
     }
 
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
-                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doRemove, boolean doChildren, String moduleName)
+                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doUpdate, boolean doRemove, boolean doChildren, String moduleName, boolean inTemplatesFolder)
             throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
 
-        boolean isCurrentModule = doChildren || (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
+        logger.debug("Synchronizing node : " +destinationNode.getPath() + ", update="+doUpdate + "/remove=" + doRemove + "/children=" + doChildren);
+
+        // Set for jnt:template nodes : declares if the template was originally created with that module, false otherwise
+//        boolean isCurrentModule = (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
 
         session.checkout(destinationNode);
 
@@ -539,7 +535,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         uuidMapping.put(source.getIdentifier(), destinationNode.getIdentifier());
 
         List<String> names = new ArrayList<String>();
-        if (isCurrentModule) {
+
+        if (doUpdate) {
             if (source.hasProperty("jcr:language") && (!destinationNode.hasProperty("jcr:language") ||
                     (!destinationNode.getProperty("jcr:language").getString().equals(source.getProperty("jcr:language").getString())))) {
                 destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
@@ -603,30 +600,43 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-            if (child.isNodeType("jnt:template") || isCurrentModule) {
+            boolean isTemplateNode = child.isNodeType("jnt:template");
+            boolean isPageNode = child.isNodeType("jnt:page");
+
+            if (doChildren || isTemplateNode) {
                 names.add(child.getName());
 
+                boolean currentModule = false;
+                boolean newNode = false;
                 JCRNodeWrapper node;
                 if (destinationNode.hasNode(child.getName())) {
                     node = destinationNode.getNode(child.getName());
+                    currentModule = (!node.hasProperty("j:moduleTemplate") && moduleName == null) || (node.hasProperty("j:moduleTemplate") && node.getProperty("j:moduleTemplate").getString().equals(moduleName));
                 } else {
                     node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                    newNode = true;
                     if (moduleName != null && node.isNodeType("jnt:template")) {
                         node.setProperty("j:moduleTemplate", moduleName);
+                        currentModule = true;
                     }
                 }
-
-                templatesSynchro(child, node, session, references, doRemove, isCurrentModule, moduleName);
+                if (isTemplateNode) {
+                    templatesSynchro(child, node, session, references, currentModule, currentModule, currentModule, moduleName, inTemplatesFolder);
+                } else {
+                    templatesSynchro(child, node, session, references, inTemplatesFolder || newNode, doRemove, doChildren && !(isPageNode && !newNode), moduleName, inTemplatesFolder);
+                }
             }
         }
         if (doRemove) {
+            logger.debug("Remove unwanted child of : " +destinationNode.getPath());
             ni = destinationNode.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper oldDestChild = (JCRNodeWrapper) ni.next();
                 if (!names.contains(oldDestChild.getName()) &&
-                        ((!oldDestChild.isNodeType("jnt:template") && isCurrentModule) ||
+                        ((!oldDestChild.isNodeType("jnt:template")) ||
                                 (!oldDestChild.hasProperty("j:moduleTemplate") && moduleName == null) ||
                                 (oldDestChild.hasProperty("j:moduleTemplate") && oldDestChild.getProperty("j:moduleTemplate").getString().equals(moduleName)))) {
+                    logger.debug(oldDestChild.getPath());
                     oldDestChild.remove();
                 }
             }

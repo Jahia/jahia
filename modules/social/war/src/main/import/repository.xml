@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test"
+         xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+    <templateSets jcr:primaryType="jnt:templateSets">
+        <social changefreq="monthly" j:installedModules="profile" j:siteType="module" j:wcagCompliance="true"
+                 jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
+            <portlets jcr:primaryType="jnt:portletFolder"/>
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
+            <templates jcr:primaryType="jnt:templatesFolder">
+                <files jcr:primaryType="jnt:folder">
+                    <themes jcr:primaryType="jnt:folder">
+                        <default jcr:primaryType="jnt:folder">
+
+                        </default>
+                    </themes>
+                </files>
+                <contents jcr:primaryType="jnt:contentFolder">
+                    <portalComponents jcr:primaryType="jnt:contentFolder"/>
+                </contents>
+
+                <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:template" j:theme="/templatesSet/files/themes/default">
+                </base>
+
+            </templates>
+        </social>
+    </templateSets>
+</content>
+

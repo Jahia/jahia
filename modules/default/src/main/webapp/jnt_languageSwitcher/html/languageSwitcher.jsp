@@ -20,6 +20,12 @@
     <c:when test="${linkKind eq 'flag'}">
         <ui:langBar display="horizontal" linkDisplay="flag"/>
     </c:when>
+    <c:when test="${linkKind eq 'flagPlain'}">
+        <ui:langBar display="horizontal" linkDisplay="flag" flagType="plain"/>
+    </c:when>
+    <c:when test="${linkKind eq 'flagShadow'}">
+        <ui:langBar display="horizontal" linkDisplay="flag" flagType="shadow"/>
+    </c:when>
     <c:otherwise>
         <div id="languages">
             <ul>

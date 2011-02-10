@@ -53,6 +53,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
     private String languageCode;
     private String onLanguageSwitch;
     private String redirectCssClassName;
+    private String flagType;
     private String title;
     private String titleKey;
     private JCRNodeWrapper rootPage;
@@ -121,10 +122,24 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
         }
         buff.append("<span class='flag ");
         Locale locale = LanguageCodeConverters.languageCodeToLocale(languageCode);
-        if (locale.getCountry() != null && locale.getCountry().length()>0) {
+        if (locale.getCountry() != null && locale.getCountry().length() > 0) {
             buff.append("flag_").append(languageCode);
+            if (flagType != null) {
+                if (flagType.equals("plain")) {
+                    buff.append("_plain");
+                } else if (flagType.equals("shadow")) {
+                    buff.append("_shadow");
+                }
+            }
         } else {
             buff.append("flag_").append(languageCode);
+            if (flagType != null) {
+                if (flagType.equals("plain")) {
+                    buff.append("_plain");
+                } else if (flagType.equals("shadow")) {
+                    buff.append("_shadow");
+                }
+            }
 
             if (!isCurrentBrowsingLanguage) {
                 buff.append("_off");
@@ -165,5 +180,13 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
     protected boolean isCurrentBrowsingLanguage(final String languageCode) {
         final String currentLanguageCode = getRenderContext().getMainResource().getLocale().toString();
         return currentLanguageCode.equals(languageCode);
+    }
+
+    public String getFlagType() {
+        return flagType;
+    }
+
+    public void setFlagType(String flagType) {
+        this.flagType = flagType;
     }
 }

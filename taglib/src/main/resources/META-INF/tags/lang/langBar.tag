@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ attribute name="display" required="true" type="java.lang.String"%>
 <%@ attribute name="linkDisplay" required="false" rtexprvalue="true" %>
+<%@ attribute name="flagType" required="false" rtexprvalue="true" type="java.lang.String" %><%-- flagType is render choice off the flag(plain, shadow, or nothing) --%>
 <%@ attribute name="onLanguageSwitch" required="false" rtexprvalue="true" %>
 <%@ attribute name="redirectToHomePageStyle" required="false" rtexprvalue="true" %>
 <%@ attribute name="order" required="false" rtexprvalue="true" %>
@@ -55,6 +56,7 @@
                                 <uiComponents:displayLanguageFlag languageCode="${langCode}"
                                                         title="Switch to ${langCode}"
                                                         titleKey="switchTo"
+                                                        flagType="${flagType}"
                                                         onLanguageSwitch="${onLanguageSwitch}"
                                                         redirectCssClassName="${redirectCssClassName}"/>
                             </c:when>
@@ -85,6 +87,7 @@
                                 <uiComponents:displayLanguageFlag languageCode="${langCode}"
                                                         title="Switch to ${langCode}"
                                                         titleKey="switchTo"
+                                                        flagType="${flagType}"
                                                         onLanguageSwitch="${onLanguageSwitch}"
                                                         redirectCssClassName="${redirectCssClassName}"/>
                             </c:when>

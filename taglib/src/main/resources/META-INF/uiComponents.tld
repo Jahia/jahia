@@ -308,6 +308,11 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <name>flagType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>onLanguageSwitch</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

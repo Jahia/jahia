@@ -46,6 +46,14 @@ span.flag {
     display: inline;
 }
 
+span.flagList {
+    height: 16px;
+    padding-left: 12px;
+    padding-top: 2px;
+    margin-right:5px;
+    display:inline-block;
+}
+
 li.nameInLocale span,
     li.letter span,
     li.doubleLetter span,
@@ -60,7 +68,7 @@ li.nameInLocale div,
     li.doubleLetter div,
     li.nameCurrentLocale div,
     li.languageCode div {
-    text-decoration: none;  
+    text-decoration: none;
 }
 
 span.flag_ar_off,
@@ -126,6 +134,132 @@ span.flag_ar_on,
     background: url( "images/flags/ar_on.png" ) no-repeat 0 0;
 }
 
+span.flag_ar_plain_off,
+    span.flag_ar_DZ_off,
+    span.flag_ar_BH_off,
+    span.flag_ar_EG_off,
+    span.flag_ar_IQ_off,
+    span.flag_ar_JO_off,
+    span.flag_ar_KW_off,
+    span.flag_ar_LB_off,
+    span.flag_ar_LY_off,
+    span.flag_ar_MA_off,
+    span.flag_ar_OM_off,
+    span.flag_ar_QA_off,
+    span.flag_ar_SA_off,
+    span.flag_ar_SD_off,
+    span.flag_ar_SY_off,
+    span.flag_ar_TN_off,
+    span.flag_ar_AE_off,
+    span.flag_ar_YE_off {
+    background: url( "images/flags/plain/flag_jordan.png" ) no-repeat 0 0;
+}
+
+span.flag_ar_plain_off:hover,
+    span.flag_ar_DZ_off:hover,
+    span.flag_ar_BH_off:hover,
+    span.flag_ar_EG_off:hover,
+    span.flag_ar_IQ_off:hover,
+    span.flag_ar_JO_off:hover,
+    span.flag_ar_KW_off:hover,
+    span.flag_ar_LB_off:hover,
+    span.flag_ar_LY_off:hover,
+    span.flag_ar_MA_off:hover,
+    span.flag_ar_OM_off:hover,
+    span.flag_ar_QA_off:hover,
+    span.flag_ar_SA_off:hover,
+    span.flag_ar_SD_off:hover,
+    span.flag_ar_SY_off:hover,
+    span.flag_ar_TN_off:hover,
+    span.flag_ar_AE_off:hover,
+    span.flag_ar_YE_off:hover {
+    background: url( "images/flags/plain/flag_jordan.png" ) no-repeat 0 0;
+}
+
+span.flag_ar_plain_on,
+    span.flag_ar_DZ_on,
+    span.flag_ar_BH_on,
+    span.flag_ar_EG_on,
+    span.flag_ar_IQ_on,
+    span.flag_ar_JO_on,
+    span.flag_ar_KW_on,
+    span.flag_ar_LB_on,
+    span.flag_ar_LY_on,
+    span.flag_ar_MA_on,
+    span.flag_ar_OM_on,
+    span.flag_ar_QA_on,
+    span.flag_ar_SA_on,
+    span.flag_ar_SD_on,
+    span.flag_ar_SY_on,
+    span.flag_ar_TN_on,
+    span.flag_ar_AE_on,
+    span.flag_ar_YE_on {
+    background: url( "images/flags/plain/flag_jordan.png" ) no-repeat 0 0;
+}
+
+span.flag_ar_shadow_off,
+    span.flag_ar_DZ_off,
+    span.flag_ar_BH_off,
+    span.flag_ar_EG_off,
+    span.flag_ar_IQ_off,
+    span.flag_ar_JO_off,
+    span.flag_ar_KW_off,
+    span.flag_ar_LB_off,
+    span.flag_ar_LY_off,
+    span.flag_ar_MA_off,
+    span.flag_ar_OM_off,
+    span.flag_ar_QA_off,
+    span.flag_ar_SA_off,
+    span.flag_ar_SD_off,
+    span.flag_ar_SY_off,
+    span.flag_ar_TN_off,
+    span.flag_ar_AE_off,
+    span.flag_ar_YE_off {
+    background: url( "images/flags/shadow/flag_jordan.png" ) no-repeat 0 0;
+}
+
+span.flag_ar_shadow_off:hover,
+    span.flag_ar_DZ_off:hover,
+    span.flag_ar_BH_off:hover,
+    span.flag_ar_EG_off:hover,
+    span.flag_ar_IQ_off:hover,
+    span.flag_ar_JO_off:hover,
+    span.flag_ar_KW_off:hover,
+    span.flag_ar_LB_off:hover,
+    span.flag_ar_LY_off:hover,
+    span.flag_ar_MA_off:hover,
+    span.flag_ar_OM_off:hover,
+    span.flag_ar_QA_off:hover,
+    span.flag_ar_SA_off:hover,
+    span.flag_ar_SD_off:hover,
+    span.flag_ar_SY_off:hover,
+    span.flag_ar_TN_off:hover,
+    span.flag_ar_AE_off:hover,
+    span.flag_ar_YE_off:hover {
+    background: url( "images/flags/shadow/flag_jordan.png" ) no-repeat 0 0;
+}
+
+span.flag_ar_shadow_on,
+    span.flag_ar_DZ_on,
+    span.flag_ar_BH_on,
+    span.flag_ar_EG_on,
+    span.flag_ar_IQ_on,
+    span.flag_ar_JO_on,
+    span.flag_ar_KW_on,
+    span.flag_ar_LB_on,
+    span.flag_ar_LY_on,
+    span.flag_ar_MA_on,
+    span.flag_ar_OM_on,
+    span.flag_ar_QA_on,
+    span.flag_ar_SA_on,
+    span.flag_ar_SD_on,
+    span.flag_ar_SY_on,
+    span.flag_ar_TN_on,
+    span.flag_ar_AE_on,
+    span.flag_ar_YE_on {
+    background: url( "images/flags/shadow/flag_jordan.png" ) no-repeat 0 0;
+}
+
 span.flag_be_off,
     span.flag_be_BY_off {
     background: url( "images/flags/be_on.png" ) no-repeat 0 0;
@@ -139,6 +273,66 @@ span.flag_be_off:hover,
 span.flag_be_on,
     span.flag_be_BY_on {
     background: url( "images/flags/be_on.png" ) no-repeat 0 0;
+}
+
+span.flag_be_plain_off,
+    span.flag_be_BY_off {
+    background: url( "images/flags/plain/flag_belarus.png" ) no-repeat 0 0;
+}
+
+span.flag_be_plain_off:hover,
+    span.flag_be_BY_off:hover {
+    background: url( "images/flags/plain/flag_belarus.png" ) no-repeat 0 0;
+}
+
+span.flag_be_plain_on,
+    span.flag_be_BY_on {
+    background: url( "images/flags/plain/flag_belarus.png" ) no-repeat 0 0;
+}
+
+span.flag_be_shadow_off,
+    span.flag_be_BY_off {
+    background: url( "images/flags/shadow/flag_belarus.png" ) no-repeat 0 0;
+}
+
+span.flag_be_shadow_off:hover,
+    span.flag_be_BY_off:hover {
+    background: url( "images/flags/shadow/flag_belarus.png" ) no-repeat 0 0;
+}
+
+span.flag_be_shadow_on,
+    span.flag_be_BY_on {
+    background: url( "images/flags/shadow/flag_belarus.png" ) no-repeat 0 0;
+}
+
+span.flag_bg_off,
+    span.flag_bg_BG_off {
+    background: url( "images/flags/bg_on.png" ) no-repeat 0 0;
+}
+
+span.flag_bg_off:hover,
+    span.flag_bg_BG_off:hover {
+    background: url( "images/flags/bg_on.png" ) no-repeat 0 0;
+}
+
+span.flag_bg_on,
+    span.flag_bg_BG_on {
+    background: url( "images/flags/bg_on.png" ) no-repeat 0 0;
+}
+
+span.flag_bg_off,
+    span.flag_bg_BG_off {
+    background: url( "images/flags/bg_on.png" ) no-repeat 0 0;
+}
+
+span.flag_bg_off:hover,
+    span.flag_bg_BG_off:hover {
+    background: url( "images/flags/bg_on.png" ) no-repeat 0 0;
+}
+
+span.flag_bg_on,
+    span.flag_bg_BG_on {
+    background: url( "images/flags/bg_on.png" ) no-repeat 0 0;
 }
 
 span.flag_bg_off,
@@ -171,6 +365,36 @@ span.flag_ca_on,
     background: url( "images/flags/ca_on.png" ) no-repeat 0 0;
 }
 
+span.flag_ca_plain_off,
+    span.flag_ca_ES_off {
+    background: url( "images/flags/plain/flag_canada.png" ) no-repeat 0 0;
+}
+
+span.flag_ca_plain_off:hover,
+    span.flag_ca_ES_off:hover {
+    background: url( "images/flags/plain/flag_canada.png" ) no-repeat 0 0;
+}
+
+span.flag_ca_plain_on,
+    span.flag_ca_ES_on {
+    background: url( "images/flags/plain/flag_canada.png" ) no-repeat 0 0;
+}
+
+span.flag_ca_shadow_off,
+    span.flag_ca_ES_off {
+    background: url( "images/flags/shadow/flag_canada.png" ) no-repeat 0 0;
+}
+
+span.flag_ca_shadow_off:hover,
+    span.flag_ca_ES_off:hover {
+    background: url( "images/flags/shadow/flag_canada.png" ) no-repeat 0 0;
+}
+
+span.flag_ca_shadow_on,
+    span.flag_ca_ES_on {
+    background: url( "images/flags/shadow/flag_canada.png" ) no-repeat 0 0;
+}
+
 span.flag_cs_off,
     span.flag_cs_CZ_off {
     background: url( "images/flags/cs_on.png" ) no-repeat 0 0;
@@ -186,6 +410,36 @@ span.flag_cs_on,
     background: url( "images/flags/cs_on.png" ) no-repeat 0 0;
 }
 
+span.flag_cs_plain_off,
+    span.flag_cs_CZ_off {
+    background: url( "images/flags/plain/flag_czech_republic.png" ) no-repeat 0 0;
+}
+
+span.flag_cs_plain_off:hover,
+    span.flag_cs_CZ_off:hover {
+    background: url( "images/flags/plain/flag_czech_republic.png" ) no-repeat 0 0;
+}
+
+span.flag_cs_plain_on,
+    span.flag_cs_CZ_on {
+    background: url( "images/flags/plain/flag_czech_republic.png" ) no-repeat 0 0;
+}
+
+span.flag_cs_shadow_off,
+    span.flag_cs_CZ_off {
+    background: url( "images/flags/shadow/flag_czech_republic.png" ) no-repeat 0 0;
+}
+
+span.flag_cs_shadow_off:hover,
+    span.flag_cs_CZ_off:hover {
+    background: url( "images/flags/shadow/flag_czech_republic.png" ) no-repeat 0 0;
+}
+
+span.flag_cs_shadow_on,
+    span.flag_cs_CZ_on {
+    background: url( "images/flags/shadow/flag_czech_republic.png" ) no-repeat 0 0;
+}
+
 span.flag_da_off,
     span.flag_da_DK_off {
     background: url( "images/flags/da_on.png" ) no-repeat 0 0;
@@ -199,6 +453,36 @@ span.flag_da_off:hover,
 span.flag_da_on,
     span.flag_da_DK_on {
     background: url( "images/flags/da_on.png" ) no-repeat 0 0;
+}
+
+span.flag_da_plain_off,
+    span.flag_da_DK_off {
+    background: url( "images/flags/plain/flag_denmark.png" ) no-repeat 0 0;
+}
+
+span.flag_da_plain_off:hover,
+    span.flag_da_DK_off:hover {
+    background: url( "images/flags/plain/flag_denmark.png" ) no-repeat 0 0;
+}
+
+span.flag_da_plain_on,
+    span.flag_da_DK_on {
+    background: url( "images/flags/plain/flag_denmark.png" ) no-repeat 0 0;
+}
+
+span.flag_da_shadow_off,
+    span.flag_da_DK_off {
+    background: url( "images/flags/shadow/flag_denmark.png" ) no-repeat 0 0;
+}
+
+span.flag_da_shadow_off:hover,
+    span.flag_da_DK_off:hover {
+    background: url( "images/flags/shadow/flag_denmark.png" ) no-repeat 0 0;
+}
+
+span.flag_da_shadow_on,
+    span.flag_da_DK_on {
+    background: url( "images/flags/shadow/flag_denmark.png" ) no-repeat 0 0;
 }
 
 span.flag_de_off,
@@ -225,6 +509,54 @@ span.flag_de_on,
     background: url( "images/flags/de_on.png" ) no-repeat 0 0;
 }
 
+span.flag_de_plain_off,
+    span.flag_de_AT_off,
+    span.flag_de_DE_off,
+    span.flag_de_LU_off,
+    span.flag_de_CH_off {
+    background: url( "images/flags/plain/flag_germany.png" ) no-repeat 0 0;
+}
+
+span.flag_de_plain_off:hover,
+    span.flag_de_AT_off:hover,
+    span.flag_de_DE_off:hover,
+    span.flag_de_LU_off:hover,
+    span.flag_de_CH_off:hover {
+    background: url( "images/flags/plain/flag_germany.png" ) no-repeat 0 0;
+}
+
+span.flag_de_plain_on,
+    span.flag_de_AT_on,
+    span.flag_de_DE_on,
+    span.flag_de_LU_on,
+    span.flag_de_CH_on {
+    background: url( "images/flags/plain/flag_germany.png" ) no-repeat 0 0;
+}
+
+span.flag_de_shadow_off,
+    span.flag_de_AT_off,
+    span.flag_de_DE_off,
+    span.flag_de_LU_off,
+    span.flag_de_CH_off {
+    background: url( "images/flags/shadow/flag_germany.png" ) no-repeat 0 0;
+}
+
+span.flag_de_shadow_off:hover,
+    span.flag_de_AT_off:hover,
+    span.flag_de_DE_off:hover,
+    span.flag_de_LU_off:hover,
+    span.flag_de_CH_off:hover {
+    background: url( "images/flags/shadow/flag_germany.png" ) no-repeat 0 0;
+}
+
+span.flag_de_shadow_on,
+    span.flag_de_AT_on,
+    span.flag_de_DE_on,
+    span.flag_de_LU_on,
+    span.flag_de_CH_on {
+    background: url( "images/flags/shadow/flag_germany.png" ) no-repeat 0 0;
+}
+
 span.flag_el_off,
     span.flag_el_GR_off {
     background: url( "images/flags/el_on.png" ) no-repeat 0 0;
@@ -238,6 +570,36 @@ span.flag_el_off:hover,
 span.flag_el_on,
     span.flag_el_GR_on {
     background: url( "images/flags/el_on.png" ) no-repeat 0 0;
+}
+
+span.flag_el_plain_off,
+    span.flag_el_GR_off {
+    background: url( "images/flags/plain/flag_greece.png" ) no-repeat 0 0;
+}
+
+span.flag_el_plain_off:hover,
+    span.flag_el_GR_off:hover {
+    background: url( "images/flags/plain/flag_greece.png" ) no-repeat 0 0;
+}
+
+span.flag_el_plain_on,
+    span.flag_el_GR_on {
+    background: url( "images/flags/plain/flag_greece.png" ) no-repeat 0 0;
+}
+
+span.flag_el_shadow_off,
+    span.flag_el_GR_off {
+    background: url( "images/flags/shadow/flag_greece.png" ) no-repeat 0 0;
+}
+
+span.flag_el_shadow_off:hover,
+    span.flag_el_GR_off:hover {
+    background: url( "images/flags/shadow/flag_greece.png" ) no-repeat 0 0;
+}
+
+span.flag_el_shadow_on,
+    span.flag_el_GR_on {
+    background: url( "images/flags/shadow/flag_greece.png" ) no-repeat 0 0;
 }
 
 span.flag_en_off,
@@ -274,6 +636,78 @@ span.flag_en_on,
     span.flag_en_GB_on,
     span.flag_en_US_on {
     background: url( "images/flags/en_on.png" ) no-repeat 0 0;
+}
+
+span.flag_en_plain_off,
+    span.flag_en_AU_off,
+    span.flag_en_CA_off,
+    span.flag_en_IN_off,
+    span.flag_en_IE_off,
+    span.flag_en_NZ_off,
+    span.flag_en_ZA_off,
+    span.flag_en_GB_off,
+    span.flag_en_US_off {
+    background: url( "images/flags/plain/flag_england.png" ) no-repeat 0 0;
+}
+
+span.flag_en_plain_off:hover,
+    span.flag_en_AU_off:hover,
+    span.flag_en_CA_off:hover,
+    span.flag_en_IN_off:hover,
+    span.flag_en_IE_off:hover,
+    span.flag_en_NZ_off:hover,
+    span.flag_en_ZA_off:hover,
+    span.flag_en_GB_off:hover,
+    span.flag_en_US_off:hover {
+    background: url( "images/flags/plain/flag_england.png" ) no-repeat 0 0;
+}
+
+span.flag_en_plain_on,
+    span.flag_en_AU_on,
+    span.flag_en_CA_on,
+    span.flag_en_IN_on,
+    span.flag_en_IE_on,
+    span.flag_en_NZ_on,
+    span.flag_en_ZA_on,
+    span.flag_en_GB_on,
+    span.flag_en_US_on {
+    background: url( "images/flags/plain/flag_england.png" ) no-repeat 0 0;
+}
+
+span.flag_en_shadow_off,
+    span.flag_en_AU_off,
+    span.flag_en_CA_off,
+    span.flag_en_IN_off,
+    span.flag_en_IE_off,
+    span.flag_en_NZ_off,
+    span.flag_en_ZA_off,
+    span.flag_en_GB_off,
+    span.flag_en_US_off {
+    background: url( "images/flags/shadow/flag_england.png" ) no-repeat 0 0;
+}
+
+span.flag_en_shadow_off:hover,
+    span.flag_en_AU_off:hover,
+    span.flag_en_CA_off:hover,
+    span.flag_en_IN_off:hover,
+    span.flag_en_IE_off:hover,
+    span.flag_en_NZ_off:hover,
+    span.flag_en_ZA_off:hover,
+    span.flag_en_GB_off:hover,
+    span.flag_en_US_off:hover {
+    background: url( "images/flags/shadow/flag_england.png" ) no-repeat 0 0;
+}
+
+span.flag_en_shadow_on,
+    span.flag_en_AU_on,
+    span.flag_en_CA_on,
+    span.flag_en_IN_on,
+    span.flag_en_IE_on,
+    span.flag_en_NZ_on,
+    span.flag_en_ZA_on,
+    span.flag_en_GB_on,
+    span.flag_en_US_on {
+    background: url( "images/flags/shadow/flag_england.png" ) no-repeat 0 0;
 }
 
 span.flag_es_off,
@@ -345,6 +779,144 @@ span.flag_es_on,
     background: url( "images/flags/es_on.png" ) no-repeat 0 0;
 }
 
+span.flag_es_plain_off,
+    span.flag_es_AR_off,
+    span.flag_es_BO_off,
+    span.flag_es_CL_off,
+    span.flag_es_CO_off,
+    span.flag_es_CR_off,
+    span.flag_es_DO_off,
+    span.flag_es_EC_off,
+    span.flag_es_SV_off,
+    span.flag_es_GT_off,
+    span.flag_es_HN_off,
+    span.flag_es_MX_off,
+    span.flag_es_NI_off,
+    span.flag_es_PA_off,
+    span.flag_es_PY_off,
+    span.flag_es_PE_off,
+    span.flag_es_PR_off,
+    span.flag_es_ES_off,
+    span.flag_es_UY_off,
+    span.flag_es_VE_off {
+    background: url( "images/flags/plain/flag_spain.png" ) no-repeat 0 0;
+}
+
+span.flag_es_plain_off:hover,
+    span.flag_es_AR_off:hover,
+    span.flag_es_BO_off:hover,
+    span.flag_es_CL_off:hover,
+    span.flag_es_CO_off:hover,
+    span.flag_es_CR_off:hover,
+    span.flag_es_DO_off:hover,
+    span.flag_es_EC_off:hover,
+    span.flag_es_SV_off:hover,
+    span.flag_es_GT_off:hover,
+    span.flag_es_HN_off:hover,
+    span.flag_es_MX_off:hover,
+    span.flag_es_NI_off:hover,
+    span.flag_es_PA_off:hover,
+    span.flag_es_PY_off:hover,
+    span.flag_es_PE_off:hover,
+    span.flag_es_PR_off:hover,
+    span.flag_es_ES_off:hover,
+    span.flag_es_UY_off:hover,
+    span.flag_es_VE_off:hover {
+    background: url( "images/flags/plain/flag_spain.png" ) no-repeat 0 0;
+}
+
+span.flag_es_plain_on,
+    span.flag_es_AR_on,
+    span.flag_es_BO_on,
+    span.flag_es_CL_on,
+    span.flag_es_CO_on,
+    span.flag_es_CR_on,
+    span.flag_es_DO_on,
+    span.flag_es_EC_on,
+    span.flag_es_SV_on,
+    span.flag_es_GT_on,
+    span.flag_es_HN_on,
+    span.flag_es_MX_on,
+    span.flag_es_NI_on,
+    span.flag_es_PA_on,
+    span.flag_es_PY_on,
+    span.flag_es_PE_on,
+    span.flag_es_PR_on,
+    span.flag_es_ES_on,
+    span.flag_es_UY_on,
+    span.flag_es_VE_on {
+    background: url( "images/flags/plain/flag_spain.png" ) no-repeat 0 0;
+}
+
+span.flag_es_shadow_off,
+    span.flag_es_AR_off,
+    span.flag_es_BO_off,
+    span.flag_es_CL_off,
+    span.flag_es_CO_off,
+    span.flag_es_CR_off,
+    span.flag_es_DO_off,
+    span.flag_es_EC_off,
+    span.flag_es_SV_off,
+    span.flag_es_GT_off,
+    span.flag_es_HN_off,
+    span.flag_es_MX_off,
+    span.flag_es_NI_off,
+    span.flag_es_PA_off,
+    span.flag_es_PY_off,
+    span.flag_es_PE_off,
+    span.flag_es_PR_off,
+    span.flag_es_ES_off,
+    span.flag_es_UY_off,
+    span.flag_es_VE_off {
+    background: url( "images/flags/shadow/flag_spain.png" ) no-repeat 0 0;
+}
+
+span.flag_es_shadow_off:hover,
+    span.flag_es_AR_off:hover,
+    span.flag_es_BO_off:hover,
+    span.flag_es_CL_off:hover,
+    span.flag_es_CO_off:hover,
+    span.flag_es_CR_off:hover,
+    span.flag_es_DO_off:hover,
+    span.flag_es_EC_off:hover,
+    span.flag_es_SV_off:hover,
+    span.flag_es_GT_off:hover,
+    span.flag_es_HN_off:hover,
+    span.flag_es_MX_off:hover,
+    span.flag_es_NI_off:hover,
+    span.flag_es_PA_off:hover,
+    span.flag_es_PY_off:hover,
+    span.flag_es_PE_off:hover,
+    span.flag_es_PR_off:hover,
+    span.flag_es_ES_off:hover,
+    span.flag_es_UY_off:hover,
+    span.flag_es_VE_off:hover {
+    background: url( "images/flags/shadow/flag_spain.png" ) no-repeat 0 0;
+}
+
+span.flag_es_shadow_on,
+    span.flag_es_AR_on,
+    span.flag_es_BO_on,
+    span.flag_es_CL_on,
+    span.flag_es_CO_on,
+    span.flag_es_CR_on,
+    span.flag_es_DO_on,
+    span.flag_es_EC_on,
+    span.flag_es_SV_on,
+    span.flag_es_GT_on,
+    span.flag_es_HN_on,
+    span.flag_es_MX_on,
+    span.flag_es_NI_on,
+    span.flag_es_PA_on,
+    span.flag_es_PY_on,
+    span.flag_es_PE_on,
+    span.flag_es_PR_on,
+    span.flag_es_ES_on,
+    span.flag_es_UY_on,
+    span.flag_es_VE_on {
+    background: url( "images/flags/shadow/flag_spain.png" ) no-repeat 0 0;
+}
+
 span.flag_et_off,
     span.flag_et_EE_off {
     background: url( "images/flags/et_on.png" ) no-repeat 0 0;
@@ -360,6 +932,36 @@ span.flag_et_on,
     background: url( "images/flags/et_on.png" ) no-repeat 0 0;
 }
 
+span.flag_et_plain_off,
+    span.flag_et_EE_off {
+    background: url( "images/flags/plain/flag_estonia.png" ) no-repeat 0 0;
+}
+
+span.flag_et_plain_off:hover,
+    span.flag_et_EE_off:hover {
+    background: url( "images/flags/plain/flag_estonia.png" ) no-repeat 0 0;
+}
+
+span.flag_et_plain_on,
+    span.flag_et_EE_on {
+    background: url( "images/flags/plain/flag_estonia.png" ) no-repeat 0 0;
+}
+
+span.flag_et_shadow_off,
+    span.flag_et_EE_off {
+    background: url( "images/flags/shadow/flag_estonia.png" ) no-repeat 0 0;
+}
+
+span.flag_et_shadow_off:hover,
+    span.flag_et_EE_off:hover {
+    background: url( "images/flags/shadow/flag_estonia.png" ) no-repeat 0 0;
+}
+
+span.flag_et_shadow_on,
+    span.flag_et_EE_on {
+    background: url( "images/flags/shadow/flag_estonia.png" ) no-repeat 0 0;
+}
+
 span.flag_fi_off,
     span.flag_fi_FI_off {
     background: url( "images/flags/fi_on.png" ) no-repeat 0 0;
@@ -373,6 +975,36 @@ span.flag_fi_off:hover,
 span.flag_fi_on,
     span.flag_fi_FI_on {
     background: url( "images/flags/fi_on.png" ) no-repeat 0 0;
+}
+
+span.flag_fi_plain_off,
+    span.flag_fi_FI_off {
+    background: url( "images/flags/plain/flag_finland.png" ) no-repeat 0 0;
+}
+
+span.flag_fi_plain_off:hover,
+    span.flag_fi_FI_off:hover {
+    background: url( "images/flags/plain/flag_finland.png" ) no-repeat 0 0;
+}
+
+span.flag_fi_plain_on,
+    span.flag_fi_FI_on {
+    background: url( "images/flags/plain/flag_finland.png" ) no-repeat 0 0;
+}
+
+span.flag_fi_shadow_off,
+    span.flag_fi_FI_off {
+    background: url( "images/flags/shadow/flag_finland.png" ) no-repeat 0 0;
+}
+
+span.flag_fi_shadow_off:hover,
+    span.flag_fi_FI_off:hover {
+    background: url( "images/flags/shadow/flag_finland.png" ) no-repeat 0 0;
+}
+
+span.flag_fi_shadow_on,
+    span.flag_fi_FI_on {
+    background: url( "images/flags/shadow/flag_finland.png" ) no-repeat 0 0;
 }
 
 span.flag_fr_off,
@@ -402,6 +1034,60 @@ span.flag_fr_on,
     background: url( "images/flags/fr_on.png" ) no-repeat 0 0;
 }
 
+span.flag_fr_plain_off,
+    span.flag_fr_BE_off,
+    span.flag_fr_CA_off,
+    span.flag_fr_FR_off,
+    span.flag_fr_LU_off,
+    span.flag_fr_CH_off {
+    background: url( "images/flags/plain/flag_france.png" ) no-repeat 0 0;
+}
+
+span.flag_fr_plain_off:hover,
+    span.flag_fr_BE_off:hover,
+    span.flag_fr_CA_off:hover,
+    span.flag_fr_FR_off:hover,
+    span.flag_fr_LU_off:hover,
+    span.flag_fr_CH_off:hover {
+    background: url( "images/flags/plain/flag_france.png" ) no-repeat 0 0;
+}
+
+span.flag_fr_plain_on,
+    span.flag_fr_BE_on,
+    span.flag_fr_CA_on,
+    span.flag_fr_FR_on,
+    span.flag_fr_LU_on,
+    span.flag_fr_CH_on {
+    background: url( "images/flags/plain/flag_france.png" ) no-repeat 0 0;
+}
+
+span.flag_fr_shadow_off,
+    span.flag_fr_BE_off,
+    span.flag_fr_CA_off,
+    span.flag_fr_FR_off,
+    span.flag_fr_LU_off,
+    span.flag_fr_CH_off {
+    background: url( "images/flags/shadow/flag_france.png" ) no-repeat 0 0;
+}
+
+span.flag_fr_shadow_off:hover,
+    span.flag_fr_BE_off:hover,
+    span.flag_fr_CA_off:hover,
+    span.flag_fr_FR_off:hover,
+    span.flag_fr_LU_off:hover,
+    span.flag_fr_CH_off:hover {
+    background: url( "images/flags/shadow/flag_france.png" ) no-repeat 0 0;
+}
+
+span.flag_fr_shadow_on,
+    span.flag_fr_BE_on,
+    span.flag_fr_CA_on,
+    span.flag_fr_FR_on,
+    span.flag_fr_LU_on,
+    span.flag_fr_CH_on {
+    background: url( "images/flags/shadow/flag_france.png" ) no-repeat 0 0;
+}
+
 span.flag_hi_off,
     span.flag_hi_IN_off {
     background: url( "images/flags/hi_on.png" ) no-repeat 0 0;
@@ -415,6 +1101,36 @@ span.flag_hi_off:hover,
 span.flag_hi_on,
     span.flag_hi_IN_on {
     background: url( "images/flags/hi_on.png" ) no-repeat 0 0;
+}
+
+span.flag_hi_plain_off,
+    span.flag_hi_IN_off {
+    background: url( "images/flags/plain/flag_india.png" ) no-repeat 0 0;
+}
+
+span.flag_hi_plain_off:hover,
+    span.flag_hi_IN_off:hover {
+    background: url( "images/flags/plain/flag_india.png" ) no-repeat 0 0;
+}
+
+span.flag_hi_plain_on,
+    span.flag_hi_IN_on {
+    background: url( "images/flags/plain/flag_india.png" ) no-repeat 0 0;
+}
+
+span.flag_hi_shadow_off,
+    span.flag_hi_IN_off {
+    background: url( "images/flags/shadow/flag_india.png" ) no-repeat 0 0;
+}
+
+span.flag_hi_shadow_off:hover,
+    span.flag_hi_IN_off:hover {
+    background: url( "images/flags/shadow/flag_india.png" ) no-repeat 0 0;
+}
+
+span.flag_hi_shadow_on,
+    span.flag_hi_IN_on {
+    background: url( "images/flags/shadow/flag_india.png" ) no-repeat 0 0;
 }
 
 span.flag_hr_off,
@@ -432,6 +1148,36 @@ span.flag_hr_on,
     background: url( "images/flags/hr_on.png" ) no-repeat 0 0;
 }
 
+span.flag_hr_plain_off,
+    span.flag_hr_HR_off {
+    background: url( "images/flags/plain/flag_croatia.png" ) no-repeat 0 0;
+}
+
+span.flag_hr_plain_off:hover,
+    span.flag_hr_HR_off:hover {
+    background: url( "images/flags/plain/flag_croatia.png" ) no-repeat 0 0;
+}
+
+span.flag_hr_plain_on,
+    span.flag_hr_HR_on {
+    background: url( "images/flags/plain/flag_croatia.png" ) no-repeat 0 0;
+}
+
+span.flag_hr_shadow_off,
+    span.flag_hr_HR_off {
+    background: url( "images/flags/shadow/flag_croatia.png" ) no-repeat 0 0;
+}
+
+span.flag_hr_shadow_off:hover,
+    span.flag_hr_HR_off:hover {
+    background: url( "images/flags/shadow/flag_croatia.png" ) no-repeat 0 0;
+}
+
+span.flag_hr_shadow_on,
+    span.flag_hr_HR_on {
+    background: url( "images/flags/shadow/flag_croatia.png" ) no-repeat 0 0;
+}
+
 span.flag_hu_off,
     span.flag_hu_HU_off {
     background: url( "images/flags/hu_on.png" ) no-repeat 0 0;
@@ -447,6 +1193,36 @@ span.flag_hu_on,
     background: url( "images/flags/hu_on.png" ) no-repeat 0 0;
 }
 
+span.flag_hu_plain_off,
+    span.flag_hu_HU_off {
+    background: url( "images/flags/plain/flag_hungary.png" ) no-repeat 0 0;
+}
+
+span.flag_hu_plain_off:hover,
+    span.flag_hu_HU_off:hover {
+    background: url( "images/flags/plain/flag_hungary.png" ) no-repeat 0 0;
+}
+
+span.flag_hu_plain_on,
+    span.flag_hu_HU_on {
+    background: url( "images/flags/plain/flag_hungary.png" ) no-repeat 0 0;
+}
+
+span.flag_hu_shadow_off,
+    span.flag_hu_HU_off {
+    background: url( "images/flags/shadow/flag_hungary.png" ) no-repeat 0 0;
+}
+
+span.flag_hu_shadow_off:hover,
+    span.flag_hu_HU_off:hover {
+    background: url( "images/flags/shadow/flag_hungary.png" ) no-repeat 0 0;
+}
+
+span.flag_hu_shadow_on,
+    span.flag_hu_HU_on {
+    background: url( "images/flags/shadow/flag_hungary.png" ) no-repeat 0 0;
+}
+
 span.flag_is_off,
     span.flag_is_IS_off {
     background: url( "images/flags/is_on.png" ) no-repeat 0 0;
@@ -460,6 +1236,36 @@ span.flag_is_off:hover,
 span.flag_is_on,
     span.flag_is_IS_on {
     background: url( "images/flags/is_on.png" ) no-repeat 0 0;
+}
+
+span.flag_is_plain_off,
+    span.flag_is_IS_off {
+    background: url( "images/flags/plain/flag_iceland.png" ) no-repeat 0 0;
+}
+
+span.flag_is_plain_off:hover,
+    span.flag_is_IS_off:hover {
+    background: url( "images/flags/plain/flag_iceland.png" ) no-repeat 0 0;
+}
+
+span.flag_is_plain_on,
+    span.flag_is_IS_on {
+    background: url( "images/flags/plain/flag_iceland.png" ) no-repeat 0 0;
+}
+
+span.flag_is_shadow_off,
+    span.flag_is_IS_off {
+    background: url( "images/flags/shadow/flag_iceland.png" ) no-repeat 0 0;
+}
+
+span.flag_is_shadow_off:hover,
+    span.flag_is_IS_off:hover {
+    background: url( "images/flags/shadow/flag_iceland.png" ) no-repeat 0 0;
+}
+
+span.flag_is_shadow_on,
+    span.flag_is_IS_on {
+    background: url( "images/flags/shadow/flag_iceland.png" ) no-repeat 0 0;
 }
 
 span.flag_it_off,
@@ -480,6 +1286,42 @@ span.flag_it_on,
     background: url( "images/flags/it_on.png" ) no-repeat 0 0;
 }
 
+span.flag_it_plain_off,
+    span.flag_it_IT_off,
+    span.flag_it_CH_off {
+    background: url( "images/flags/plain/flag_italy.png" ) no-repeat 0 0;
+}
+
+span.flag_it_plain_off:hover,
+    span.flag_it_IT_off:hover,
+    span.flag_it_CH_off:hover {
+    background: url( "images/flags/plain/flag_italy.png" ) no-repeat 0 0;
+}
+
+span.flag_it_plain_on,
+    span.flag_it_IT_on,
+    span.flag_it_CH_on {
+    background: url( "images/flags/plain/flag_italy.png" ) no-repeat 0 0;
+}
+
+span.flag_it_shadow_off,
+    span.flag_it_IT_off,
+    span.flag_it_CH_off {
+    background: url( "images/flags/shadow/flag_italy.png" ) no-repeat 0 0;
+}
+
+span.flag_it_shadow_off:hover,
+    span.flag_it_IT_off:hover,
+    span.flag_it_CH_off:hover {
+    background: url( "images/flags/shadow/flag_italy.png" ) no-repeat 0 0;
+}
+
+span.flag_it_shadow_on,
+    span.flag_it_IT_on,
+    span.flag_it_CH_on {
+    background: url( "images/flags/shadow/flag_italy.png" ) no-repeat 0 0;
+}
+
 span.flag_iw_off,
     span.flag_iw_IL_off {
     background: url( "images/flags/iw_on.png" ) no-repeat 0 0;
@@ -493,6 +1335,36 @@ span.flag_iw_off:hover,
 span.flag_iw_on,
     span.flag_iw_IL_on {
     background: url( "images/flags/iw_on.png" ) no-repeat 0 0;
+}
+
+span.flag_iw_plain_off,
+    span.flag_iw_IL_off {
+    background: url( "images/flags/plain/flag_israel.png" ) no-repeat 0 0;
+}
+
+span.flag_iw_plain_off:hover,
+    span.flag_iw_IL_off:hover {
+    background: url( "images/flags/plain/flag_israel.png" ) no-repeat 0 0;
+}
+
+span.flag_iw_plain_on,
+    span.flag_iw_IL_on {
+    background: url( "images/flags/plain/flag_israel.png" ) no-repeat 0 0;
+}
+
+span.flag_iw_shadow_off,
+    span.flag_iw_IL_off {
+    background: url( "images/flags/shadow/flag_israel.png" ) no-repeat 0 0;
+}
+
+span.flag_iw_shadow_off:hover,
+    span.flag_iw_IL_off:hover {
+    background: url( "images/flags/shadow/flag_israel.png" ) no-repeat 0 0;
+}
+
+span.flag_iw_shadow_on,
+    span.flag_iw_IL_on {
+    background: url( "images/flags/shadow/flag_israel.png" ) no-repeat 0 0;
 }
 
 span.flag_ja_off,
@@ -510,6 +1382,36 @@ span.flag_ja_on,
     background: url( "images/flags/ja_on.png" ) no-repeat 0 0;
 }
 
+span.flag_ja_plain_off,
+    span.flag_ja_JP_off {
+    background: url( "images/flags/plain/flag_japan.png" ) no-repeat 0 0;
+}
+
+span.flag_ja_plain_off:hover,
+    span.flag_ja_JP_off:hover {
+    background: url( "images/flags/plain/flag_japan.png" ) no-repeat 0 0;
+}
+
+span.flag_ja_plain_on,
+    span.flag_ja_JP_on {
+    background: url( "images/flags/plain/flag_japan.png" ) no-repeat 0 0;
+}
+
+span.flag_ja_shadow_off,
+    span.flag_ja_JP_off {
+    background: url( "images/flags/shadow/flag_japan.png" ) no-repeat 0 0;
+}
+
+span.flag_ja_shadow_off:hover,
+    span.flag_ja_JP_off:hover {
+    background: url( "images/flags/shadow/flag_japan.png" ) no-repeat 0 0;
+}
+
+span.flag_ja_shadow_on,
+    span.flag_ja_JP_on {
+    background: url( "images/flags/shadow/flag_japan.png" ) no-repeat 0 0;
+}
+
 span.flag_ko_off,
     span.flag_ko_KR_off {
     background: url( "images/flags/ko_on.png" ) no-repeat 0 0;
@@ -523,6 +1425,36 @@ span.flag_ko_off:hover,
 span.flag_ko_on,
     span.flag_ko_KR_on {
     background: url( "images/flags/ko_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ko_plain_off,
+    span.flag_ko_KR_off {
+    background: url( "images/flags/plain/flag_south_korea.png" ) no-repeat 0 0;
+}
+
+span.flag_ko_plain_off:hover,
+    span.flag_ko_KR_off:hover {
+    background: url( "images/flags/plain/flag_south_korea.png" ) no-repeat 0 0;
+}
+
+span.flag_ko_plain_on,
+    span.flag_ko_KR_on {
+    background: url( "images/flags/plain/flag_south_korea.png" ) no-repeat 0 0;
+}
+
+span.flag_ko_shadow_off,
+    span.flag_ko_KR_off {
+    background: url( "images/flags/shadow/flag_south_korea.png" ) no-repeat 0 0;
+}
+
+span.flag_ko_shadow_off:hover,
+    span.flag_ko_KR_off:hover {
+    background: url( "images/flags/shadow/flag_south_korea.png" ) no-repeat 0 0;
+}
+
+span.flag_ko_shadow_on,
+    span.flag_ko_KR_on {
+    background: url( "images/flags/shadow/flag_south_korea.png" ) no-repeat 0 0;
 }
 
 span.flag_lt_off,
@@ -540,6 +1472,36 @@ span.flag_lt_on,
     background: url( "images/flags/lt_on.png" ) no-repeat 0 0;
 }
 
+span.flag_lt_plain_off,
+    span.flag_lt_LT_off {
+    background: url( "images/flags/plain/flag_lithuania.png" ) no-repeat 0 0;
+}
+
+span.flag_lt_plain_off:hover,
+    span.flag_lt_LT_off:hover {
+    background: url( "images/flags/plain/flag_lithuania.png" ) no-repeat 0 0;
+}
+
+span.flag_lt_plain_on,
+    span.flag_lt_LT_on {
+    background: url( "images/flags/plain/flag_lithuania.png" ) no-repeat 0 0;
+}
+
+span.flag_lt_shadow_off,
+    span.flag_lt_LT_off {
+    background: url( "images/flags/shadow/flag_lithuania.png" ) no-repeat 0 0;
+}
+
+span.flag_lt_shadow_off:hover,
+    span.flag_lt_LT_off:hover {
+    background: url( "images/flags/shadow/flag_lithuania.png" ) no-repeat 0 0;
+}
+
+span.flag_lt_shadow_on,
+    span.flag_lt_LT_on {
+    background: url( "images/flags/shadow/flag_lithuania.png" ) no-repeat 0 0;
+}
+
 span.flag_lv_off,
     span.flag_lv_LV_off {
     background: url( "images/flags/lv_on.png" ) no-repeat 0 0;
@@ -555,6 +1517,36 @@ span.flag_lv_on,
     background: url( "images/flags/lv_on.png" ) no-repeat 0 0;
 }
 
+span.flag_lv_plain_off,
+    span.flag_lv_LV_off {
+    background: url( "images/flags/plain/flag_latvia.png" ) no-repeat 0 0;
+}
+
+span.flag_lv_plain_off:hover,
+    span.flag_lv_LV_off:hover {
+    background: url( "images/flags/plain/flag_latvia.png" ) no-repeat 0 0;
+}
+
+span.flag_lv_plain_on,
+    span.flag_lv_LV_on {
+    background: url( "images/flags/plain/flag_latvia.png" ) no-repeat 0 0;
+}
+
+span.flag_lv_shadow_off,
+    span.flag_lv_LV_off {
+    background: url( "images/flags/shadow/flag_latvia.png" ) no-repeat 0 0;
+}
+
+span.flag_lv_shadow_off:hover,
+    span.flag_lv_LV_off:hover {
+    background: url( "images/flags/shadow/flag_latvia.png" ) no-repeat 0 0;
+}
+
+span.flag_lv_shadow_on,
+    span.flag_lv_LV_on {
+    background: url( "images/flags/shadow/flag_latvia.png" ) no-repeat 0 0;
+}
+
 span.flag_mk_off,
     span.flag_mk_MK_off {
     background: url( "images/flags/mk_on.png" ) no-repeat 0 0;
@@ -568,6 +1560,36 @@ span.flag_mk_off:hover,
 span.flag_mk_on,
     span.flag_mk_MK_on {
     background: url( "images/flags/mk_on.png" ) no-repeat 0 0;
+}
+
+span.flag_mk_plain_off,
+    span.flag_mk_MK_off {
+    background: url( "images/flags/plain/flag_macedonia.png" ) no-repeat 0 0;
+}
+
+span.flag_mk_plain_off:hover,
+    span.flag_mk_MK_off:hover {
+    background: url( "images/flags/plain/flag_macedonia.png" ) no-repeat 0 0;
+}
+
+span.flag_mk_plain_on,
+    span.flag_mk_MK_on {
+    background: url( "images/flags/plain/flag_macedonia.png" ) no-repeat 0 0;
+}
+
+span.flag_mk_shadow_off,
+    span.flag_mk_MK_off {
+    background: url( "images/flags/shadow/flag_macedonia.png" ) no-repeat 0 0;
+}
+
+span.flag_mk_shadow_off:hover,
+    span.flag_mk_MK_off:hover {
+    background: url( "images/flags/shadow/flag_macedonia.png" ) no-repeat 0 0;
+}
+
+span.flag_mk_shadow_on,
+    span.flag_mk_MK_on {
+    background: url( "images/flags/shadow/flag_macedonia.png" ) no-repeat 0 0;
 }
 
 span.flag_nl_off,
@@ -606,6 +1628,42 @@ span.flag_no_on,
     background: url( "images/flags/no_on.png" ) no-repeat 0 0;
 }
 
+span.flag_no_plain_off,
+    span.flag_no_NO_NY_off,
+    span.flag_no_NO_off {
+    background: url( "images/flags/plain/flag_norway.png" ) no-repeat 0 0;
+}
+
+span.flag_no_plain_off:hover,
+    span.flag_no_NO_NY_off:hover,
+    span.flag_no_NO_off:hover {
+    background: url( "images/flags/plain/flag_norway.png" ) no-repeat 0 0;
+}
+
+span.flag_no_plain_on,
+    span.flag_no_NO_NY_on,
+    span.flag_no_NO_on {
+    background: url( "images/flags/plain/flag_norway.png" ) no-repeat 0 0;
+}
+
+span.flag_no_shadow_off,
+    span.flag_no_NO_NY_off,
+    span.flag_no_NO_off {
+    background: url( "images/flags/shadow/flag_norway.png" ) no-repeat 0 0;
+}
+
+span.flag_no_shadow_off:hover,
+    span.flag_no_NO_NY_off:hover,
+    span.flag_no_NO_off:hover {
+    background: url( "images/flags/shadow/flag_norway.png" ) no-repeat 0 0;
+}
+
+span.flag_no_shadow_on,
+    span.flag_no_NO_NY_on,
+    span.flag_no_NO_on {
+    background: url( "images/flags/shadow/flag_norway.png" ) no-repeat 0 0;
+}
+
 span.flag_pl_off,
     span.flag_pl_PL_off {
     background: url( "images/flags/pl_on.png" ) no-repeat 0 0;
@@ -619,6 +1677,36 @@ span.flag_pl_off:hover,
 span.flag_pl_on,
     span.flag_pl_PL_on {
     background: url( "images/flags/pl_on.png" ) no-repeat 0 0;
+}
+
+span.flag_pl_plain_off,
+    span.flag_pl_PL_off {
+    background: url( "images/flags/plain/flag_poland.png" ) no-repeat 0 0;
+}
+
+span.flag_pl_plain_off:hover,
+    span.flag_pl_PL_off:hover {
+    background: url( "images/flags/plain/flag_poland.png" ) no-repeat 0 0;
+}
+
+span.flag_pl_plain_on,
+    span.flag_pl_PL_on {
+    background: url( "images/flags/plain/flag_poland.png" ) no-repeat 0 0;
+}
+
+span.flag_pl_shadow_off,
+    span.flag_pl_PL_off {
+    background: url( "images/flags/shadow/flag_poland.png" ) no-repeat 0 0;
+}
+
+span.flag_pl_shadow_off:hover,
+    span.flag_pl_PL_off:hover {
+    background: url( "images/flags/shadow/flag_poland.png" ) no-repeat 0 0;
+}
+
+span.flag_pl_shadow_on,
+    span.flag_pl_PL_on {
+    background: url( "images/flags/shadow/flag_poland.png" ) no-repeat 0 0;
 }
 
 span.flag_pt_off,
@@ -639,6 +1727,42 @@ span.flag_pt_on,
     background: url( "images/flags/pt_on.png" ) no-repeat 0 0;
 }
 
+span.flag_pt_plain_off,
+    span.flag_pt_BR_off,
+    span.flag_pt_PT_off {
+    background: url( "images/flags/plain/flag_portugal.png" ) no-repeat 0 0;
+}
+
+span.flag_pt_plain_off:hover,
+    span.flag_pt_BR_off:hover,
+    span.flag_pt_PT_off:hover {
+    background: url( "images/flags/plain/flag_portugal.png" ) no-repeat 0 0;
+}
+
+span.flag_pt_plain_on,
+    span.flag_pt_BR_on,
+    span.flag_pt_PT_on {
+    background: url( "images/flags/plain/flag_portugal.png" ) no-repeat 0 0;
+}
+
+span.flag_pt_shadow_off,
+    span.flag_pt_BR_off,
+    span.flag_pt_PT_off {
+    background: url( "images/flags/shadow/flag_portugal.png" ) no-repeat 0 0;
+}
+
+span.flag_pt_shadow_off:hover,
+    span.flag_pt_BR_off:hover,
+    span.flag_pt_PT_off:hover {
+    background: url( "images/flags/shadow/flag_portugal.png" ) no-repeat 0 0;
+}
+
+span.flag_pt_shadow_on,
+    span.flag_pt_BR_on,
+    span.flag_pt_PT_on {
+    background: url( "images/flags/shadow/flag_portugal.png" ) no-repeat 0 0;
+}
+
 span.flag_ro_off,
     span.flag_ro_RO_off {
     background: url( "images/flags/ro_on.png" ) no-repeat 0 0;
@@ -652,6 +1776,36 @@ span.flag_ro_off:hover,
 span.flag_ro_on,
     span.flag_ro_RO_on {
     background: url( "images/flags/ro_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ro_plain_off,
+    span.flag_ro_RO_off {
+    background: url( "images/flags/plain/flag_romania.png" ) no-repeat 0 0;
+}
+
+span.flag_ro_plain_off:hover,
+    span.flag_ro_RO_off:hover {
+    background: url( "images/flags/plain/flag_romania.png" ) no-repeat 0 0;
+}
+
+span.flag_ro_plain_on,
+    span.flag_ro_RO_on {
+    background: url( "images/flags/plain/flag_romania.png" ) no-repeat 0 0;
+}
+
+span.flag_ro_shadow_off,
+    span.flag_ro_RO_off {
+    background: url( "images/flags/shadow/flag_romania.png" ) no-repeat 0 0;
+}
+
+span.flag_ro_shadow_off:hover,
+    span.flag_ro_RO_off:hover {
+    background: url( "images/flags/shadow/flag_romania.png" ) no-repeat 0 0;
+}
+
+span.flag_ro_shadow_on,
+    span.flag_ro_RO_on {
+    background: url( "images/flags/shadow/flag_romania.png" ) no-repeat 0 0;
 }
 
 span.flag_ru_off,
@@ -669,6 +1823,36 @@ span.flag_ru_on,
     background: url( "images/flags/ru_on.png" ) no-repeat 0 0;
 }
 
+span.flag_ru_plain_off,
+    span.flag_ru_RU_off {
+    background: url( "images/flags/plain/flag_russia.png" ) no-repeat 0 0;
+}
+
+span.flag_ru_plain_off:hover,
+    span.flag_ru_RU_off:hover {
+    background: url( "images/flags/plain/flag_russia.png" ) no-repeat 0 0;
+}
+
+span.flag_ru_plain_on,
+    span.flag_ru_RU_on {
+    background: url( "images/flags/plain/flag_russia.png" ) no-repeat 0 0;
+}
+
+span.flag_ru_shadow_off,
+    span.flag_ru_RU_off {
+    background: url( "images/flags/shadow/flag_russia.png" ) no-repeat 0 0;
+}
+
+span.flag_ru_shadow_off:hover,
+    span.flag_ru_RU_off:hover {
+    background: url( "images/flags/shadow/flag_russia.png" ) no-repeat 0 0;
+}
+
+span.flag_ru_shadow_on,
+    span.flag_ru_RU_on {
+    background: url( "images/flags/shadow/flag_russia.png" ) no-repeat 0 0;
+}
+
 span.flag_sk_off,
     span.flag_sk_SK_off {
     background: url( "images/flags/sk_on.png" ) no-repeat 0 0;
@@ -682,6 +1866,36 @@ span.flag_sk_off:hover,
 span.flag_sk_on,
     span.flag_sk_SK_on {
     background: url( "images/flags/sk_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sk_plain_off,
+    span.flag_sk_SK_off {
+    background: url( "images/flags/plain/flag_slovakia.png" ) no-repeat 0 0;
+}
+
+span.flag_sk_plain_off:hover,
+    span.flag_sk_SK_off:hover {
+    background: url( "images/flags/plain/flag_slovakia.png" ) no-repeat 0 0;
+}
+
+span.flag_sk_plain_on,
+    span.flag_sk_SK_on {
+    background: url( "images/flags/plain/flag_slovakia.png" ) no-repeat 0 0;
+}
+
+span.flag_sk_shadow_off,
+    span.flag_sk_SK_off {
+    background: url( "images/flags/shadow/flag_slovakia.png" ) no-repeat 0 0;
+}
+
+span.flag_sk_shadow_off:hover,
+    span.flag_sk_SK_off:hover {
+    background: url( "images/flags/shadow/flag_slovakia.png" ) no-repeat 0 0;
+}
+
+span.flag_sk_shadow_on,
+    span.flag_sk_SK_on {
+    background: url( "images/flags/shadow/flag_slovakia.png" ) no-repeat 0 0;
 }
 
 span.flag_sl_off,
@@ -699,6 +1913,36 @@ span.flag_sl_on,
     background: url( "images/flags/sl_on.png" ) no-repeat 0 0;
 }
 
+span.flag_sl_plain_off,
+    span.flag_sl_SI_off {
+    background: url( "images/flags/plain/flag_slovenia.png" ) no-repeat 0 0;
+}
+
+span.flag_sl_plain_off:hover,
+    span.flag_sl_SI_off:hover {
+    background: url( "images/flags/plain/flag_slovenia.png" ) no-repeat 0 0;
+}
+
+span.flag_sl_plain_on,
+    span.flag_sl_SI_on {
+    background: url( "images/flags/plain/flag_slovenia.png" ) no-repeat 0 0;
+}
+
+span.flag_sl_shadow_off,
+    span.flag_sl_SI_off {
+    background: url( "images/flags/shadow/flag_slovenia.png" ) no-repeat 0 0;
+}
+
+span.flag_sl_shadow_off:hover,
+    span.flag_sl_SI_off:hover {
+    background: url( "images/flags/plain/flag_slovenia.png" ) no-repeat 0 0;
+}
+
+span.flag_sl_shadow_on,
+    span.flag_sl_SI_on {
+    background: url( "images/flags/plain/flag_slovenia.png" ) no-repeat 0 0;
+}
+
 span.flag_sq_off,
     span.flag_sq_AL_off {
     background: url( "images/flags/sq_on.png" ) no-repeat 0 0;
@@ -712,6 +1956,36 @@ span.flag_sq_off:hover,
 span.flag_sq_on,
     span.flag_sq_AL_on {
     background: url( "images/flags/sq_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sq_plain_off,
+    span.flag_sq_AL_off {
+    background: url( "images/flags/plain/flag_albania.png" ) no-repeat 0 0;
+}
+
+span.flag_sq_plain_off:hover,
+    span.flag_sq_AL_off:hover {
+    background: url( "images/flags/plain/flag_albania.png" ) no-repeat 0 0;
+}
+
+span.flag_sq_plain_on,
+    span.flag_sq_AL_on {
+    background: url( "images/flags/plain/flag_albania.png" ) no-repeat 0 0;
+}
+
+span.flag_sq_shadow_off,
+    span.flag_sq_AL_off {
+    background: url( "images/flags/shadow/flag_albania.png" ) no-repeat 0 0;
+}
+
+span.flag_sq_shadow_off:hover,
+    span.flag_sq_AL_off:hover {
+    background: url( "images/flags/shadow/flag_albania.png" ) no-repeat 0 0;
+}
+
+span.flag_sq_shadow_on,
+    span.flag_sq_AL_on {
+    background: url( "images/flags/shadow/flag_albania.png" ) no-repeat 0 0;
 }
 
 span.flag_sr_off,
@@ -732,6 +2006,42 @@ span.flag_sr_on,
     background: url( "images/flags/sr_on.png" ) no-repeat 0 0;
 }
 
+span.flag_sr_plain_off,
+    span.flag_sr_BA_off,
+    span.flag_sr_CS_off {
+    background: url( "images/flags/plain/flag_serbia_montenegro.png" ) no-repeat 0 0;
+}
+
+span.flag_sr_plain_off:hover,
+    span.flag_sr_BA_off:hover,
+    span.flag_sr_CS_off {
+    background: url( "images/flags/plain/flag_serbia_montenegro.png" ) no-repeat 0 0;
+}
+
+span.flag_sr_plain_on,
+    span.flag_sr_BA_on,
+    span.flag_sr_CS_off {
+    background: url( "images/flags/plain/flag_serbia_montenegro.png" ) no-repeat 0 0;
+}
+
+span.flag_sr_shadow_off,
+    span.flag_sr_BA_off,
+    span.flag_sr_CS_off {
+    background: url( "images/flags/shadow/flag_serbia_montenegro.png" ) no-repeat 0 0;
+}
+
+span.flag_sr_shadow_off:hover,
+    span.flag_sr_BA_off:hover,
+    span.flag_sr_CS_off {
+    background: url( "images/flags/shadow/flag_serbia_montenegro.png" ) no-repeat 0 0;
+}
+
+span.flag_sr_shadow_on,
+    span.flag_sr_BA_on,
+    span.flag_sr_CS_off {
+    background: url( "images/flags/shadow/flag_serbia_montenegro.png" ) no-repeat 0 0;
+}
+
 span.flag_sv_off,
     span.flag_sv_SE_off {
     background: url( "images/flags/sv_on.png" ) no-repeat 0 0;
@@ -745,6 +2055,36 @@ span.flag_sv_off:hover,
 span.flag_sv_on,
     span.flag_sv_SE_on {
     background: url( "images/flags/sv_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sv_plain_off,
+    span.flag_sv_SE_off {
+    background: url( "images/flags/plain/flag_sweden.png" ) no-repeat 0 0;
+}
+
+span.flag_sv_plain_off:hover,
+    span.flag_sv_SE_off:hover {
+    background: url( "images/flags/plain/flag_sweden.png" ) no-repeat 0 0;
+}
+
+span.flag_sv_plain_on,
+    span.flag_sv_SE_on {
+    background: url( "images/flags/plain/flag_sweden.png" ) no-repeat 0 0;
+}
+
+span.flag_sv_shadow_off,
+    span.flag_sv_SE_off {
+    background: url( "images/flags/shadow/flag_sweden.png" ) no-repeat 0 0;
+}
+
+span.flag_sv_shadow_off:hover,
+    span.flag_sv_SE_off:hover {
+    background: url( "images/flags/shadow/flag_sweden.png" ) no-repeat 0 0;
+}
+
+span.flag_sv_shadow_on,
+    span.flag_sv_SE_on {
+    background: url( "images/flags/shadow/flag_sweden.png" ) no-repeat 0 0;
 }
 
 span.flag_th_off,
@@ -765,6 +2105,42 @@ span.flag_th_on,
     background: url( "images/flags/th_on.png" ) no-repeat 0 0;
 }
 
+span.flag_th_plain_off,
+    span.flag_th_TH_TH_off,
+    span.flag_th_TH_off {
+    background: url( "images/flags/plain/flag_thailand.png" ) no-repeat 0 0;
+}
+
+span.flag_th_plain_off:hover,
+    span.flag_th_TH_TH_off:hover,
+    span.flag_th_TH_off:hover {
+    background: url( "images/flags/plain/flag_thailand.png" ) no-repeat 0 0;
+}
+
+span.flag_th_plain_on,
+    span.flag_th_TH_TH_on,
+    span.flag_th_TH_on {
+    background: url( "images/flags/plain/flag_thailand.png" ) no-repeat 0 0;
+}
+
+span.flag_th_shadow_off,
+    span.flag_th_TH_TH_off,
+    span.flag_th_TH_off {
+    background: url( "images/flags/shadow/flag_thailand.png" ) no-repeat 0 0;
+}
+
+span.flag_th_shadow_off:hover,
+    span.flag_th_TH_TH_off:hover,
+    span.flag_th_TH_off:hover {
+    background: url( "images/flags/shadow/flag_thailand.png" ) no-repeat 0 0;
+}
+
+span.flag_th_shadow_on,
+    span.flag_th_TH_TH_on,
+    span.flag_th_TH_on {
+    background: url( "images/flags/shadow/flag_thailand.png" ) no-repeat 0 0;
+}
+
 span.flag_tr_off,
     span.flag_tr_TR_off {
     background: url( "images/flags/tr_on.png" ) no-repeat 0 0;
@@ -780,6 +2156,36 @@ span.flag_tr_on,
     background: url( "images/flags/tr_on.png" ) no-repeat 0 0;
 }
 
+span.flag_tr_plain_off,
+    span.flag_tr_TR_off {
+    background: url( "images/flags/plain/flag_turkey.png" ) no-repeat 0 0;
+}
+
+span.flag_tr_plain_off:hover,
+    span.flag_tr_TR_off:hover {
+    background: url( "images/flags/plain/flag_turkey.png" ) no-repeat 0 0;
+}
+
+span.flag_tr_plain_on,
+    span.flag_tr_TR_on {
+    background: url( "images/flags/plain/flag_turkey.png" ) no-repeat 0 0;
+}
+
+span.flag_tr_shadow_off,
+    span.flag_tr_TR_off {
+    background: url( "images/flags/shadow/flag_turkey.png" ) no-repeat 0 0;
+}
+
+span.flag_tr_shadow_off:hover,
+    span.flag_tr_TR_off:hover {
+    background: url( "images/flags/shadow/flag_turkey.png" ) no-repeat 0 0;
+}
+
+span.flag_tr_shadow_on,
+    span.flag_tr_TR_on {
+    background: url( "images/flags/shadow/flag_turkey.png" ) no-repeat 0 0;
+}
+
 span.flag_uk_off,
     span.flag_uk_UA_off {
     background: url( "images/flags/uk_on.png" ) no-repeat 0 0;
@@ -793,6 +2199,36 @@ span.flag_uk_off:hover,
 span.flag_uk_on,
     span.flag_uk_UA_on {
     background: url( "images/flags/uk_on.png" ) no-repeat 0 0;
+}
+
+span.flag_uk_plain_off,
+    span.flag_uk_UA_off {
+    background: url( "images/flags/plain/flag_ukraine.png" ) no-repeat 0 0;
+}
+
+span.flag_uk_plain_off:hover,
+    span.flag_uk_UA_off:hover {
+    background: url( "images/flags/plain/flag_ukraine.png" ) no-repeat 0 0;
+}
+
+span.flag_uk_plain_on,
+    span.flag_uk_UA_on {
+    background: url( "images/flags/plain/flag_ukraine.png" ) no-repeat 0 0;
+}
+
+span.flag_uk_shadow_off,
+    span.flag_uk_UA_off {
+    background: url( "images/flags/shadow/flag_ukraine.png" ) no-repeat 0 0;
+}
+
+span.flag_uk_shadow_off:hover,
+    span.flag_uk_UA_off:hover {
+    background: url( "images/flags/shadow/flag_ukraine.png" ) no-repeat 0 0;
+}
+
+span.flag_uk_shadow_on,
+    span.flag_uk_UA_on {
+    background: url( "images/flags/shadow/flag_ukraine.png" ) no-repeat 0 0;
 }
 
 span.flag_zh_off,
@@ -814,6 +2250,48 @@ span.flag_zh_on,
     span.flag_zh_HK_on,
     span.flag_zh_TW_on {
     background: url( "images/flags/zh_on.png" ) no-repeat 0 0;
+}
+
+span.flag_zh_plain_off,
+    span.flag_zh_CN_off,
+    span.flag_zh_HK_off,
+    span.flag_zh_TW_off {
+    background: url( "images/flags/plain/flag_china.png" ) no-repeat 0 0;
+}
+
+span.flag_zh_plain_off:hover,
+    span.flag_zh_CN_off:hover,
+    span.flag_zh_HK_off:hover,
+    span.flag_zh_TW_off:hover {
+    background: url( "images/flags/plain/flag_china.png" ) no-repeat 0 0;
+}
+
+span.flag_zh_plain_on,
+    span.flag_zh_CN_on,
+    span.flag_zh_HK_on,
+    span.flag_zh_TW_on {
+    background: url( "images/flags/plain/flag_china.png" ) no-repeat 0 0;
+}
+
+span.flag_zh_shadown_off,
+    span.flag_zh_CN_off,
+    span.flag_zh_HK_off,
+    span.flag_zh_TW_off {
+    background: url( "images/flags/shadow/flag_china.png" ) no-repeat 0 0;
+}
+
+span.flag_zh_shadow_off:hover,
+    span.flag_zh_CN_off:hover,
+    span.flag_zh_HK_off:hover,
+    span.flag_zh_TW_off:hover {
+    background: url( "images/flags/shadow/flag_china.png" ) no-repeat 0 0;
+}
+
+span.flag_zh_shadow_on,
+    span.flag_zh_CN_on,
+    span.flag_zh_HK_on,
+    span.flag_zh_TW_on {
+    background: url( "images/flags/shadow/flag_china.png" ) no-repeat 0 0;
 }
 
 
@@ -1256,435 +2734,1089 @@ span.flag_honduras {
 span.flag_ja_JP {
     background: url("images/flags/plain/flag_japan.png") no-repeat 0 0;
 }
+span.flag_ja_JP_plain {
+    background: url("images/flags/plain/flag_japan.png") no-repeat 0 0;
+}
+span.flag_ja_JP_shadow {
+    background: url("images/flags/shadow/flag_japan.png") no-repeat 0 0;
+}
 
 span.flag_es_PE {
     background: url("images/flags/plain/flag_peru.png") no-repeat 0 0;
+}
+span.flag_es_PE_plain {
+    background: url("images/flags/plain/flag_peru.png") no-repeat 0 0;
+}
+span.flag_es_PE_shadow {
+    background: url("images/flags/shadow/flag_peru.png") no-repeat 0 0;
 }
 
 span.flag_ja_JP_JP {
     background: url("images/flags/plain/flag_japan.png") no-repeat 0 0;
 }
+span.flag_ja_JP_JP_plain {
+    background: url("images/flags/plain/flag_japan.png") no-repeat 0 0;
+}
+span.flag_ja_JP_JP_shadow {
+    background: url("images/flags/shadow/flag_japan.png") no-repeat 0 0;
+}
 
 span.flag_es_PA {
     background: url("images/flags/plain/flag_panama.png") no-repeat 0 0;
+}
+span.flag_es_PA_plain {
+    background: url("images/flags/plain/flag_panama.png") no-repeat 0 0;
+}
+span.flag_es_PA_shadow {
+    background: url("images/flags/shadow/flag_panama.png") no-repeat 0 0;
 }
 
 span.flag_sr_BA {
     background: url("images/flags/plain/flag_bosnia_and_herzegovina.png") no-repeat 0 0;
 }
+span.flag_sr_BA_plain {
+    background: url("images/flags/plain/flag_bosnia_and_herzegovina.png") no-repeat 0 0;
+}
+span.flag_sr_BA_shadow {
+    background: url("images/flags/shadow/flag_bosnia_and_herzegovina.png") no-repeat 0 0;
+}
 
 span.flag_es_GT {
     background: url("images/flags/plain/flag_guatemala.png") no-repeat 0 0;
+}
+span.flag_es_GT_plain {
+    background: url("images/flags/plain/flag_guatemala.png") no-repeat 0 0;
+}
+span.flag_es_GT_shadow {
+    background: url("images/flags/shadow/flag_guatemala.png") no-repeat 0 0;
 }
 
 span.flag_ar_AE {
     background: url("images/flags/plain/flag_united_arab_emirates.png") no-repeat 0 0;
 }
+span.flag_ar_AE_plain {
+    background: url("images/flags/plain/flag_united_arab_emirates.png") no-repeat 0 0;
+}
+span.flag_ar_AE_shadow {
+    background: url("images/flags/shadow/flag_united_arab_emirates.png") no-repeat 0 0;
+}
 
 span.flag_no_NO {
     background: url("images/flags/plain/flag_norway.png") no-repeat 0 0;
+}
+span.flag_no_NO_plain {
+    background: url("images/flags/plain/flag_norway.png") no-repeat 0 0;
+}
+span.flag_no_NO_shadow {
+    background: url("images/flags/shadow/flag_norway.png") no-repeat 0 0;
 }
 
 span.flag_sq_AL {
     background: url("images/flags/plain/flag_albania.png") no-repeat 0 0;
 }
+span.flag_sq_AL_plain {
+    background: url("images/flags/plain/flag_albania.png") no-repeat 0 0;
+}
+span.flag_sq_AL_shadow {
+    background: url("images/flags/shadow/flag_albania.png") no-repeat 0 0;
+}
 
 span.flag_ar_IQ {
     background: url("images/flags/plain/flag_iraq.png") no-repeat 0 0;
+}
+span.flag_ar_IQ_plain {
+    background: url("images/flags/plain/flag_iraq.png") no-repeat 0 0;
+}
+span.flag_ar_IQ_shadow {
+    background: url("images/flags/shadow/flag_iraq.png") no-repeat 0 0;
 }
 
 span.flag_ar_YE {
     background: url("images/flags/plain/flag_yemen.png") no-repeat 0 0;
 }
+span.flag_ar_YE_plain {
+    background: url("images/flags/plain/flag_yemen.png") no-repeat 0 0;
+}
+span.flag_ar_YE_shadow {
+    background: url("images/flags/shadow/flag_yemen.png") no-repeat 0 0;
+}
 
 span.flag_pt_PT {
     background: url("images/flags/plain/flag_portugal.png") no-repeat 0 0;
+}
+span.flag_pt_PT_plain {
+    background: url("images/flags/plain/flag_portugal.png") no-repeat 0 0;
+}
+span.flag_pt_PT_shadow {
+    background: url("images/flags/shadow/flag_portugal.png") no-repeat 0 0;
 }
 
 span.flag_el_CY {
     background: url("images/flags/plain/flag_cyprus.png") no-repeat 0 0;
 }
+span.flag_el_CY_plain {
+    background: url("images/flags/plain/flag_cyprus.png") no-repeat 0 0;
+}
+span.flag_el_CY_shadow {
+    background: url("images/flags/shadow/flag_cyprus.png") no-repeat 0 0;
+}
 
 span.flag_ar_QA {
     background: url("images/flags/plain/flag_qatar.png") no-repeat 0 0;
+}
+span.flag_ar_QA_plain {
+    background: url("images/flags/plain/flag_qatar.png") no-repeat 0 0;
+}
+span.flag_ar_QA_shadow {
+    background: url("images/flags/shadow/flag_qatar.png") no-repeat 0 0;
 }
 
 span.flag_mk_MK {
     background: url("images/flags/plain/flag_macedonia.png") no-repeat 0 0;
 }
+span.flag_mk_MK_plain {
+    background: url("images/flags/plain/flag_macedonia.png") no-repeat 0 0;
+}
+span.flag_mk_MK_shadow {
+    background: url("images/flags/shadow/flag_macedonia.png") no-repeat 0 0;
+}
 
 span.flag_de_CH {
     background: url("images/flags/plain/flag_switzerland.png") no-repeat 0 0;
+}
+span.flag_de_CH_plain {
+    background: url("images/flags/plain/flag_switzerland.png") no-repeat 0 0;
+}
+span.flag_de_CH_shadow {
+    background: url("images/flags/shadow/flag_switzerland.png") no-repeat 0 0;
 }
 
 span.flag_en_US {
     background: url("images/flags/plain/flag_united_states.png") no-repeat 0 0;
 }
+span.flag_en_US_plain {
+    background: url("images/flags/plain/flag_united_states.png") no-repeat 0 0;
+}
+span.flag_en_US_shadow {
+    background: url("images/flags/shadow/flag_united_states.png") no-repeat 0 0;
+}
 
 span.flag_fi_FI {
     background: url("images/flags/plain/flag_finland.png") no-repeat 0 0;
+}
+span.flag_fi_FI_plain {
+    background: url("images/flags/plain/flag_finland.png") no-repeat 0 0;
+}
+span.flag_fi_FI_shadow {
+    background: url("images/flags/shadow/flag_finland.png") no-repeat 0 0;
 }
 
 span.flag_en_MT {
     background: url("images/flags/plain/flag_malta.png") no-repeat 0 0;
 }
+span.flag_en_MT_plain {
+    background: url("images/flags/plain/flag_malta.png") no-repeat 0 0;
+}
+span.flag_en_MT_shadow {
+    background: url("images/flags/shadow/flag_malta.png") no-repeat 0 0;
+}
 
 span.flag_sl_SI {
     background: url("images/flags/plain/flag_slovenia.png") no-repeat 0 0;
+}
+span.flag_sl_SI_plain {
+    background: url("images/flags/plain/flag_slovenia.png") no-repeat 0 0;
+}
+span.flag_sl_SI_shadow {
+    background: url("images/flags/shadow/flag_slovenia.png") no-repeat 0 0;
 }
 
 span.flag_sk_SK {
     background: url("images/flags/plain/flag_slovakia.png") no-repeat 0 0;
 }
+span.flag_sk_SK_plain {
+    background: url("images/flags/plain/flag_slovakia.png") no-repeat 0 0;
+}
+span.flag_sk_SK_shadow {
+    background: url("images/flags/shadow/flag_slovakia.png") no-repeat 0 0;
+}
 
 span.flag_tr_TR {
     background: url("images/flags/plain/flag_turkey.png") no-repeat 0 0;
+}
+span.flag_tr_TR_plain {
+    background: url("images/flags/plain/flag_turkey.png") no-repeat 0 0;
+}
+span.flag_tr_TR_shadow {
+    background: url("images/flags/shadow/flag_turkey.png") no-repeat 0 0;
 }
 
 span.flag_ar_SA {
     background: url("images/flags/plain/flag_saudi_arabia.png") no-repeat 0 0;
 }
+span.flag_ar_SA_plain {
+    background: url("images/flags/plain/flag_saudi_arabia.png") no-repeat 0 0;
+}
+span.flag_ar_SA_shadow {
+    background: url("images/flags/shadow/flag_saudi_arabia.png") no-repeat 0 0;
+}
 
 span.flag_en_GB {
     background: url("images/flags/plain/flag_united_kingdom.png") no-repeat 0 0;
+}
+span.flag_en_GB_plain {
+    background: url("images/flags/plain/flag_united_kingdom.png") no-repeat 0 0;
+}
+span.flag_en_GB_shadow {
+    background: url("images/flags/shadow/flag_united_kingdom.png") no-repeat 0 0;
 }
 
 span.flag_sr_CS {
     background: url("images/flags/plain/flag_serbia_montenegro.png") no-repeat 0 0;
 }
+span.flag_sr_CS_plain {
+    background: url("images/flags/plain/flag_serbia_montenegro.png") no-repeat 0 0;
+}
+span.flag_sr_CS_shadow {
+    background: url("images/flags/shadow/flag_serbia_montenegro.png") no-repeat 0 0;
+}
 
 span.flag_en_NZ {
     background: url("images/flags/plain/flag_new_zealand.png") no-repeat 0 0;
+}
+span.flag_en_NZ_plain {
+    background: url("images/flags/plain/flag_new_zealand.png") no-repeat 0 0;
+}
+span.flag_en_NZ_shadow {
+    background: url("images/flags/shadow/flag_new_zealand.png") no-repeat 0 0;
 }
 
 span.flag_no_NO_NY {
     background: url("images/flags/plain/flag_norway.png") no-repeat 0 0;
 }
+span.flag_no_NO_NY_plain {
+    background: url("images/flags/plain/flag_norway.png") no-repeat 0 0;
+}
+span.flag_no_NO_NY_shadow {
+    background: url("images/flags/shadow/flag_norway.png") no-repeat 0 0;
+}
 
 span.flag_lt_LT {
     background: url("images/flags/plain/flag_lithuania.png") no-repeat 0 0;
+}
+span.flag_lt_LT_plain {
+    background: url("images/flags/plain/flag_lithuania.png") no-repeat 0 0;
+}
+span.flag_lt_LT_shadow {
+    background: url("images/flags/shadow/flag_lithuania.png") no-repeat 0 0;
 }
 
 span.flag_es_NI {
     background: url("images/flags/plain/flag_nicaragua.png") no-repeat 0 0;
 }
+span.flag_es_NI_plain {
+    background: url("images/flags/plain/flag_nicaragua.png") no-repeat 0 0;
+}
+span.flag_es_NI_shadow {
+    background: url("images/flags/shadow/flag_nicaragua.png") no-repeat 0 0;
+}
 
 span.flag_ga_IE {
     background: url("images/flags/plain/flag_ireland.png") no-repeat 0 0;
+}
+span.flag_ga_IE_plain {
+    background: url("images/flags/plain/flag_ireland.png") no-repeat 0 0;
+}
+span.flag_ga_IE_shadow {
+    background: url("images/flags/shadow/flag_ireland.png") no-repeat 0 0;
 }
 
 span.flag_fr_BE {
     background: url("images/flags/plain/flag_belgium.png") no-repeat 0 0;
 }
+span.flag_fr_BE_plain {
+    background: url("images/flags/plain/flag_belgium.png") no-repeat 0 0;
+}
+span.flag_fr_BE_shadow {
+    background: url("images/flags/shadow/flag_belgium.png") no-repeat 0 0;
+}
 
 span.flag_es_ES {
     background: url("images/flags/plain/flag_spain.png") no-repeat 0 0;
+}
+span.flag_es_ES_plain {
+    background: url("images/flags/plain/flag_spain.png") no-repeat 0 0;
+}
+span.flag_es_ES_shadow {
+    background: url("images/flags/shadow/flag_spain.png") no-repeat 0 0;
 }
 
 span.flag_ar_LB {
     background: url("images/flags/plain/flag_lebanon.png") no-repeat 0 0;
 }
+span.flag_ar_LB_plain {
+    background: url("images/flags/plain/flag_lebanon.png") no-repeat 0 0;
+}
+span.flag_ar_LB_shadow {
+    background: url("images/flags/shadow/flag_lebanon.png") no-repeat 0 0;
+}
 
 span.flag_fr_CA {
     background: url("images/flags/plain/flag_canada.png") no-repeat 0 0;
+}
+span.flag_fr_CA_plain {
+    background: url("images/flags/plain/flag_canada.png") no-repeat 0 0;
+}
+span.flag_fr_CA_shadow {
+    background: url("images/flags/shadow/flag_canada.png") no-repeat 0 0;
 }
 
 span.flag_et_EE {
     background: url("images/flags/plain/flag_estonia.png") no-repeat 0 0;
 }
+span.flag_et_EE_plain {
+    background: url("images/flags/plain/flag_estonia.png") no-repeat 0 0;
+}
+span.flag_et_EE_shadow {
+    background: url("images/flags/shadow/flag_estonia.png") no-repeat 0 0;
+}
 
 span.flag_ar_KW {
     background: url("images/flags/plain/flag_kuwait.png") no-repeat 0 0;
 }
+span.flag_ar_KW_plain {
+    background: url("images/flags/plain/flag_kuwait.png") no-repeat 0 0;
+}
+span.flag_ar_KW_shadow {
+    background: url("images/flags/shadow/flag_kuwait.png") no-repeat 0 0;
+}
 
 span.flag_sr_RS {
-    background: url("images/flags/plain/flag_serbia.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_serbia_montenegro.png") no-repeat 0 0;
+}
+span.flag_sr_RS_plain {
+    background: url("images/flags/plain/flag_serbia_montenegro.png") no-repeat 0 0;
+}
+span.flag_sr_RS_shadow {
+    background: url("images/flags/shadow/flag_serbia_montenegro.png") no-repeat 0 0;
 }
 
 span.flag_es_US {
     background: url("images/flags/plain/flag_united_states.png") no-repeat 0 0;
 }
+span.flag_es_US_plain {
+    background: url("images/flags/plain/flag_united_states.png") no-repeat 0 0;
+}
+span.flag_es_US_shadow {
+    background: url("images/flags/shadow/flag_united_states.png") no-repeat 0 0;
+}
 
 span.flag_es_MX {
     background: url("images/flags/plain/flag_mexico.png") no-repeat 0 0;
+}
+span.flag_es_MX_plain {
+    background: url("images/flags/plain/flag_mexico.png") no-repeat 0 0;
+}
+span.flag_es_MX_shadow {
+    background: url("images/flags/shadow/flag_mexico.png") no-repeat 0 0;
 }
 
 span.flag_ar_SD {
     background: url("images/flags/plain/flag_sudan.png") no-repeat 0 0;
 }
+span.flag_ar_SD_plain {
+    background: url("images/flags/plain/flag_sudan.png") no-repeat 0 0;
+}
+span.flag_ar_SD_shadow {
+    background: url("images/flags/shadow/flag_sudan.png") no-repeat 0 0;
+}
 
 span.flag_in_ID {
     background: url("images/flags/plain/flag_indonesia.png") no-repeat 0 0;
+}
+span.flag_in_ID_plain {
+    background: url("images/flags/plain/flag_indonesia.png") no-repeat 0 0;
+}
+span.flag_in_ID_shadow {
+    background: url("images/flags/shadow/flag_indonesia.png") no-repeat 0 0;
 }
 
 span.flag_es_UY {
     background: url("images/flags/plain/flag_uruquay.png") no-repeat 0 0;
 }
+span.flag_es_UY_plain {
+    background: url("images/flags/plain/flag_uruquay.png") no-repeat 0 0;
+}
+span.flag_es_UY_shadow {
+    background: url("images/flags/shadow/flag_uruquay.png") no-repeat 0 0;
+}
 
 span.flag_lv_LV {
     background: url("images/flags/plain/flag_latvia.png") no-repeat 0 0;
+}
+span.flag_lv_LV_plain {
+    background: url("images/flags/plain/flag_latvia.png") no-repeat 0 0;
+}
+span.flag_lv_LV_shadow {
+    background: url("images/flags/shadow/flag_latvia.png") no-repeat 0 0;
 }
 
 span.flag_pt_BR {
     background: url("images/flags/plain/flag_brazil.png") no-repeat 0 0;
 }
+span.flag_pt_BR_plain {
+    background: url("images/flags/plain/flag_brazil.png") no-repeat 0 0;
+}
+span.flag_pt_BR_shadow {
+    background: url("images/flags/shadow/flag_brazil.png") no-repeat 0 0;
+}
 
 span.flag_ar_SY {
     background: url("images/flags/plain/flag_syria.png") no-repeat 0 0;
+}
+span.flag_ar_SY_plain {
+    background: url("images/flags/plain/flag_syria.png") no-repeat 0 0;
+}
+span.flag_ar_SY_shadow {
+    background: url("images/flags/shadow/flag_syria.png") no-repeat 0 0;
 }
 
 span.flag_es_DO {
     background: url("images/flags/plain/flag_dominican_republic.png") no-repeat 0 0;
 }
+span.flag_es_DO_plain {
+    background: url("images/flags/plain/flag_dominican_republic.png") no-repeat 0 0;
+}
+span.flag_es_DO_shadow {
+    background: url("images/flags/shadow/flag_dominican_republic.png") no-repeat 0 0;
+}
 
 span.flag_fr_CH {
     background: url("images/flags/plain/flag_switzerland.png") no-repeat 0 0;
+}
+span.flag_fr_CH_plain {
+    background: url("images/flags/plain/flag_switzerland.png") no-repeat 0 0;
+}
+span.flag_fr_CH_shadow {
+    background: url("images/flags/shadow/flag_switzerland.png") no-repeat 0 0;
 }
 
 span.flag_hi_IN {
     background: url("images/flags/plain/flag_india.png") no-repeat 0 0;
 }
+span.flag_hi_IN_plain {
+    background: url("images/flags/plain/flag_india.png") no-repeat 0 0;
+}
+span.flag_hi_IN_shadow {
+    background: url("images/flags/shadow/flag_india.png") no-repeat 0 0;
+}
 
 span.flag_es_VE {
     background: url("images/flags/plain/flag_venezuela.png") no-repeat 0 0;
+}
+span.flag_es_VE_plain {
+    background: url("images/flags/plain/flag_venezuela.png") no-repeat 0 0;
+}
+span.flag_es_VE_shadow {
+    background: url("images/flags/shadow/flag_venezuela.png") no-repeat 0 0;
 }
 
 span.flag_ar_BH {
     background: url("images/flags/plain/flag_bahrain.png") no-repeat 0 0;
 }
+span.flag_ar_BH_plain {
+    background: url("images/flags/plain/flag_bahrain.png") no-repeat 0 0;
+}
+span.flag_ar_BH_shadow {
+    background: url("images/flags/shadow/flag_bahrain.png") no-repeat 0 0;
+}
 
 span.flag_en_PH {
     background: url("images/flags/plain/flag_philippines.png") no-repeat 0 0;
+}
+span.flag_en_PH_plain {
+    background: url("images/flags/plain/flag_philippines.png") no-repeat 0 0;
+}
+span.flag_en_PH_shadow {
+    background: url("images/flags/shadow/flag_philippines.png") no-repeat 0 0;
 }
 
 span.flag_ar_TN {
     background: url("images/flags/plain/flag_tunisia.png") no-repeat 0 0;
 }
+span.flag_ar_TN_plain {
+    background: url("images/flags/plain/flag_tunisia.png") no-repeat 0 0;
+}
+span.flag_ar_TN_shadow {
+    background: url("images/flags/shadow/flag_tunisia.png") no-repeat 0 0;
+}
 
 span.flag_de_AT {
     background: url("images/flags/plain/flag_austria.png") no-repeat 0 0;
+}
+span.flag_de_AT_plain {
+    background: url("images/flags/plain/flag_austria.png") no-repeat 0 0;
+}
+span.flag_de_AT_shadow {
+    background: url("images/flags/shadow/flag_austria.png") no-repeat 0 0;
 }
 
 span.flag_nl_NL {
     background: url("images/flags/plain/flag_netherlands.png") no-repeat 0 0;
 }
+span.flag_nl_NL_plain {
+    background: url("images/flags/plain/flag_netherlands.png") no-repeat 0 0;
+}
+span.flag_nl_NL_shadow {
+    background: url("images/flags/shadow/flag_netherlands.png") no-repeat 0 0;
+}
 
 span.flag_es_EC {
     background: url("images/flags/plain/flag_equador.png") no-repeat 0 0;
+}
+span.flag_es_EC_plain {
+    background: url("images/flags/plain/flag_equador.png") no-repeat 0 0;
+}
+span.flag_es_EC_shadow {
+    background: url("images/flags/shadow/flag_equador.png") no-repeat 0 0;
 }
 
 span.flag_zh_TW {
     background: url("images/flags/plain/flag_taiwan.png") no-repeat 0 0;
 }
+span.flag_zh_TW_plain {
+    background: url("images/flags/plain/flag_taiwan.png") no-repeat 0 0;
+}
+span.flag_zh_TW_shadow {
+    background: url("images/flags/shadow/flag_taiwan.png") no-repeat 0 0;
+}
 
 span.flag_ar_JO {
     background: url("images/flags/plain/flag_jordan.png") no-repeat 0 0;
+}
+span.flag_ar_JO_plain {
+    background: url("images/flags/plain/flag_jordan.png") no-repeat 0 0;
+}
+span.flag_ar_JO_shadow {
+    background: url("images/flags/shadow/flag_jordan.png") no-repeat 0 0;
 }
 
 span.flag_is_IS {
     background: url("images/flags/plain/flag_iceland.png") no-repeat 0 0;
 }
+span.flag_is_IS_plain {
+    background: url("images/flags/plain/flag_iceland.png") no-repeat 0 0;
+}
+span.flag_is_IS_shadow {
+    background: url("images/flags/shadow/flag_iceland.png") no-repeat 0 0;
+}
 
 span.flag_es_CO {
     background: url("images/flags/plain/flag_colombia.png") no-repeat 0 0;
+}
+span.flag_es_CO_plain {
+    background: url("images/flags/plain/flag_colombia.png") no-repeat 0 0;
+}
+span.flag_es_CO_shadow {
+    background: url("images/flags/shadow/flag_colombia.png") no-repeat 0 0;
 }
 
 span.flag_es_CR {
     background: url("images/flags/plain/flag_costa_rica.png") no-repeat 0 0;
 }
+span.flag_es_CR_plain {
+    background: url("images/flags/plain/flag_costa_rica.png") no-repeat 0 0;
+}
+span.flag_es_CR_shadow {
+    background: url("images/flags/shadow/flag_costa_rica.png") no-repeat 0 0;
+}
 
 span.flag_es_CL {
     background: url("images/flags/plain/flag_chile.png") no-repeat 0 0;
+}
+span.flag_es_CL_plain {
+    background: url("images/flags/plain/flag_chile.png") no-repeat 0 0;
+}
+span.flag_es_CL_shadow {
+    background: url("images/flags/shadow/flag_chile.png") no-repeat 0 0;
 }
 
 span.flag_ar_EG {
     background: url("images/flags/plain/flag_egypt.png") no-repeat 0 0;
 }
+span.flag_ar_EG_plain {
+    background: url("images/flags/plain/flag_egypt.png") no-repeat 0 0;
+}
+span.flag_ar_EG_shadow {
+    background: url("images/flags/shadow/flag_egypt.png") no-repeat 0 0;
+}
 
 span.flag_en_ZA {
     background: url("images/flags/plain/flag_south_africa.png") no-repeat 0 0;
+}
+span.flag_en_ZA_plain {
+    background: url("images/flags/plain/flag_south_africa.png") no-repeat 0 0;
+}
+span.flag_en_ZA_shadow {
+    background: url("images/flags/shadow/flag_south_africa.png") no-repeat 0 0;
 }
 
 span.flag_th_TH {
     background: url("images/flags/plain/flag_thailand.png") no-repeat 0 0;
 }
+span.flag_th_TH_plain {
+    background: url("images/flags/plain/flag_thailand.png") no-repeat 0 0;
+}
+span.flag_th_TH_shadow {
+    background: url("images/flags/shadow/flag_thailand.png") no-repeat 0 0;
+}
 
 span.flag_el_GR {
     background: url("images/flags/plain/flag_greece.png") no-repeat 0 0;
+}
+span.flag_el_GR_plain {
+    background: url("images/flags/plain/flag_greece.png") no-repeat 0 0;
+}
+span.flag_el_GR_shadow {
+    background: url("images/flags/shadow/flag_greece.png") no-repeat 0 0;
 }
 
 span.flag_it_IT {
     background: url("images/flags/plain/flag_italy.png") no-repeat 0 0;
 }
+span.flag_it_IT_plain {
+    background: url("images/flags/plain/flag_italy.png") no-repeat 0 0;
+}
+span.flag_it_IT_shadow {
+    background: url("images/flags/shadow/flag_italy.png") no-repeat 0 0;
+}
 
 span.flag_hu_HU {
     background: url("images/flags/plain/flag_hungary.png") no-repeat 0 0;
+}
+span.flag_hu_HU_plain {
+    background: url("images/flags/plain/flag_hungary.png") no-repeat 0 0;
+}
+span.flag_hu_HU_shadow {
+    background: url("images/flags/shadow/flag_hungary.png") no-repeat 0 0;
 }
 
 span.flag_en_IE {
     background: url("images/flags/plain/flag_ireland.png") no-repeat 0 0;
 }
+span.flag_en_IE_plain {
+    background: url("images/flags/plain/flag_ireland.png") no-repeat 0 0;
+}
+span.flag_en_IE_shadow {
+    background: url("images/flags/shadow/flag_ireland.png") no-repeat 0 0;
+}
 
 span.flag_uk_UA {
     background: url("images/flags/plain/flag_ukraine.png") no-repeat 0 0;
+}
+span.flag_uk_UA_plain {
+    background: url("images/flags/plain/flag_ukraine.png") no-repeat 0 0;
+}
+span.flag_uk_UA_shadow {
+    background: url("images/flags/shadow/flag_ukraine.png") no-repeat 0 0;
 }
 
 span.flag_pl_PL {
     background: url("images/flags/plain/flag_poland.png") no-repeat 0 0;
 }
+span.flag_pl_PL_plain {
+    background: url("images/flags/plain/flag_poland.png") no-repeat 0 0;
+}
+span.flag_pl_PL_shadow {
+    background: url("images/flags/shadow/flag_poland.png") no-repeat 0 0;
+}
 
 span.flag_fr_LU {
     background: url("images/flags/plain/flag_luxembourg.png") no-repeat 0 0;
+}
+span.flag_fr_LU_plain {
+    background: url("images/flags/plain/flag_luxembourg.png") no-repeat 0 0;
+}
+span.flag_fr_LU_shadow {
+    background: url("images/flags/shadow/flag_luxembourg.png") no-repeat 0 0;
 }
 
 span.flag_nl_BE {
     background: url("images/flags/plain/flag_belgium.png") no-repeat 0 0;
 }
+span.flag_nl_BE_plain {
+    background: url("images/flags/plain/flag_belgium.png") no-repeat 0 0;
+}
+span.flag_nl_BE_shadow {
+    background: url("images/flags/shadow/flag_belgium.png") no-repeat 0 0;
+}
 
 span.flag_en_IN {
     background: url("images/flags/plain/flag_india.png") no-repeat 0 0;
+}
+span.flag_en_IN_plain {
+    background: url("images/flags/plain/flag_india.png") no-repeat 0 0;
+}
+span.flag_en_IN_shadow {
+    background: url("images/flags/shadow/flag_india.png") no-repeat 0 0;
 }
 
 span.flag_ca_ES {
     background: url("images/flags/plain/flag_spain.png") no-repeat 0 0;
 }
+span.flag_ca_ES_plain {
+    background: url("images/flags/plain/flag_spain.png") no-repeat 0 0;
+}
+span.flag_ca_ES_shadow {
+    background: url("images/flags/shadow/flag_spain.png") no-repeat 0 0;
+}
 
 span.flag_ar_MA {
     background: url("images/flags/plain/flag_morocco.png") no-repeat 0 0;
+}
+span.flag_ar_MA_plain {
+    background: url("images/flags/plain/flag_morocco.png") no-repeat 0 0;
+}
+span.flag_ar_MA_shadow {
+    background: url("images/flags/shadow/flag_morocco.png") no-repeat 0 0;
 }
 
 span.flag_es_BO {
     background: url("images/flags/plain/flag_bolivia.png") no-repeat 0 0;
 }
+span.flag_es_BO_plain {
+    background: url("images/flags/plain/flag_bolivia.png") no-repeat 0 0;
+}
+span.flag_es_BO_shadow {
+    background: url("images/flags/shadow/flag_bolivia.png") no-repeat 0 0;
+}
 
 span.flag_en_AU {
     background: url("images/flags/plain/flag_australia.png") no-repeat 0 0;
+}
+span.flag_en_AU_plain {
+    background: url("images/flags/plain/flag_australia.png") no-repeat 0 0;
+}
+span.flag_en_AU_shadow {
+    background: url("images/flags/shadow/flag_australia.png") no-repeat 0 0;
 }
 
 span.flag_zh_SG {
     background: url("images/flags/plain/flag_singapore.png") no-repeat 0 0;
 }
+span.flag_zh_SG_plain {
+    background: url("images/flags/plain/flag_singapore.png") no-repeat 0 0;
+}
+span.flag_zh_SG_shadow {
+    background: url("images/flags/shadow/flag_singapore.png") no-repeat 0 0;
+}
 
 span.flag_es_SV {
     background: url("images/flags/plain/flag_el_salvador.png") no-repeat 0 0;
+}
+span.flag_es_SV_plain {
+    background: url("images/flags/plain/flag_el_salvador.png") no-repeat 0 0;
+}
+span.flag_es_SV_shadow {
+    background: url("images/flags/shadow/flag_el_salvador.png") no-repeat 0 0;
 }
 
 span.flag_ru_RU {
     background: url("images/flags/plain/flag_russia.png") no-repeat 0 0;
 }
+span.flag_ru_RU_plain {
+    background: url("images/flags/plain/flag_russia.png") no-repeat 0 0;
+}
+span.flag_ru_RU_shadow {
+    background: url("images/flags/shadow/flag_russia.png") no-repeat 0 0;
+}
 
 span.flag_ko_KR {
     background: url("images/flags/plain/flag_south_korea.png") no-repeat 0 0;
+}
+span.flag_ko_KR_plain {
+    background: url("images/flags/plain/flag_south_korea.png") no-repeat 0 0;
+}
+span.flag_ko_KR_shadow {
+    background: url("images/flags/shadow/flag_south_korea.png") no-repeat 0 0;
 }
 
 span.flag_ar_DZ {
     background: url("images/flags/plain/flag_algeria.png") no-repeat 0 0;
 }
+span.flag_ar_DZ_plain {
+    background: url("images/flags/plain/flag_algeria.png") no-repeat 0 0;
+}
+span.flag_ar_DZ_shadow {
+    background: url("images/flags/shadow/flag_algeria.png") no-repeat 0 0;
+}
 
 span.flag_vi_VN {
     background: url("images/flags/plain/flag_vietnam.png") no-repeat 0 0;
 }
+span.flag_vi_VN_plain {
+    background: url("images/flags/plain/flag_vietnam.png") no-repeat 0 0;
+}
+span.flag_vi_VN_shadow {
+    background: url("images/flags/shadow/flag_vietnam.png") no-repeat 0 0;
+}
 
 span.flag_sr_ME {
-    background: url("images/flags/plain/flag_montenegro.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_serbia_montenegro.png") no-repeat 0 0;
+}
+span.flag_sr_ME_plain {
+    background: url("images/flags/plain/flag_serbia_montenegro.png") no-repeat 0 0;
+}
+span.flag_sr_ME_shadow {
+    background: url("images/flags/shadow/flag_serbia_montenegro.png") no-repeat 0 0;
 }
 
 span.flag_ar_LY {
     background: url("images/flags/plain/flag_libya.png") no-repeat 0 0;
 }
+span.flag_ar_LY_plain {
+    background: url("images/flags/plain/flag_libya.png") no-repeat 0 0;
+}
+span.flag_ar_LY_shadow {
+    background: url("images/flags/shadow/flag_libya.png") no-repeat 0 0;
+}
 
 span.flag_zh_CN {
     background: url("images/flags/plain/flag_china.png") no-repeat 0 0;
+}
+span.flag_zh_CN_plain {
+    background: url("images/flags/plain/flag_china.png") no-repeat 0 0;
+}
+span.flag_zh_CN_shadow {
+    background: url("images/flags/shadow/flag_china.png") no-repeat 0 0;
 }
 
 span.flag_be_BY {
     background: url("images/flags/plain/flag_belarus.png") no-repeat 0 0;
 }
+span.flag_be_BY_plain {
+    background: url("images/flags/plain/flag_belarus.png") no-repeat 0 0;
+}
+span.flag_be_BY_shadow {
+    background: url("images/flags/shadow/flag_belarus.png") no-repeat 0 0;
+}
 
 span.flag_zh_HK {
     background: url("images/flags/plain/flag_hong_kong.png") no-repeat 0 0;
+}
+span.flag_zh_HK_plain {
+    background: url("images/flags/plain/flag_hong_kong.png") no-repeat 0 0;
+}
+span.flag_zh_HK_shadow {
+    background: url("images/flags/shadow/flag_hong_kong.png") no-repeat 0 0;
 }
 
 span.flag_iw_IL {
     background: url("images/flags/plain/flag_israel.png") no-repeat 0 0;
 }
+span.flag_iw_IL_plain {
+    background: url("images/flags/plain/flag_israel.png") no-repeat 0 0;
+}
+span.flag_iw_IL_shadow {
+    background: url("images/flags/shadow/flag_israel.png") no-repeat 0 0;
+}
 
 span.flag_bg_BG {
     background: url("images/flags/plain/flag_bulgaria.png") no-repeat 0 0;
+}
+span.flag_bg_BG_plain {
+    background: url("images/flags/plain/flag_bulgaria.png") no-repeat 0 0;
+}
+span.flag_bg_BG_shadow {
+    background: url("images/flags/shadow/flag_bulgaria.png") no-repeat 0 0;
 }
 
 span.flag_mt_MT {
     background: url("images/flags/plain/flag_malta.png") no-repeat 0 0;
 }
+span.flag_mt_MT_plain {
+    background: url("images/flags/plain/flag_malta.png") no-repeat 0 0;
+}
+span.flag_mt_MT_shadow {
+    background: url("images/flags/shadow/flag_malta.png") no-repeat 0 0;
+}
 
 span.flag_es_PY {
-    background: url("images/flags/plain/flag_paraguay.png") no-repeat 0 0;
+    background: url("images/flags/plain/flag_paraquay.png") no-repeat 0 0;
+}
+span.flag_es_PY_plain {
+    background: url("images/flags/plain/flag_paraquay.png") no-repeat 0 0;
+}
+span.flag_es_PY_shadow {
+    background: url("images/flags/shadow/flag_paraquay.png") no-repeat 0 0;
 }
 
 span.flag_fr_FR {
     background: url("images/flags/plain/flag_france.png") no-repeat 0 0;
 }
+span.flag_fr_FR_plain {
+    background: url("images/flags/plain/flag_france.png") no-repeat 0 0;
+}
+span.flag_fr_FR_shadow {
+    background: url("images/flags/shadow/flag_france.png") no-repeat 0 0;
+}
 
 span.flag_cs_CZ {
     background: url("images/flags/plain/flag_czech_republic.png") no-repeat 0 0;
+}
+span.flag_cs_CZ_plain {
+    background: url("images/flags/plain/flag_czech_republic.png") no-repeat 0 0;
+}
+span.flag_cs_CZ_shadow {
+    background: url("images/flags/shadow/flag_czech_republic.png") no-repeat 0 0;
 }
 
 span.flag_it_CH {
     background: url("images/flags/plain/flag_switzerland.png") no-repeat 0 0;
 }
+span.flag_it_CH_plain {
+    background: url("images/flags/plain/flag_switzerland.png") no-repeat 0 0;
+}
+span.flag_it_CH_shadow {
+    background: url("images/flags/shadow/flag_switzerland.png") no-repeat 0 0;
+}
 
 span.flag_ro_RO {
     background: url("images/flags/plain/flag_romania.png") no-repeat 0 0;
+}
+span.flag_ro_RO_plain {
+    background: url("images/flags/plain/flag_romania.png") no-repeat 0 0;
+}
+span.flag_ro_RO_shadow {
+    background: url("images/flags/shadow/flag_romania.png") no-repeat 0 0;
 }
 
 span.flag_es_PR {
     background: url("images/flags/plain/flag_puerto_rico.png") no-repeat 0 0;
 }
+span.flag_es_PR_plain {
+    background: url("images/flags/plain/flag_puerto_rico.png") no-repeat 0 0;
+}
+span.flag_es_PR_shadow {
+    background: url("images/flags/shadow/flag_puerto_rico.png") no-repeat 0 0;
+}
 
 span.flag_en_CA {
     background: url("images/flags/plain/flag_canada.png") no-repeat 0 0;
+}
+span.flag_en_CA_plain {
+    background: url("images/flags/plain/flag_canada.png") no-repeat 0 0;
+}
+span.flag_en_CA_shadow {
+    background: url("images/flags/shadow/flag_canada.png") no-repeat 0 0;
 }
 
 span.flag_de_DE {
     background: url("images/flags/plain/flag_germany.png") no-repeat 0 0;
 }
+span.flag_de_DE_plain {
+    background: url("images/flags/plain/flag_germany.png") no-repeat 0 0;
+}
+span.flag_de_DE_shadow {
+    background: url("images/flags/shadow/flag_germany.png") no-repeat 0 0;
+}
 
 span.flag_de_LU {
     background: url("images/flags/plain/flag_luxembourg.png") no-repeat 0 0;
+}
+span.flag_de_LU_plain {
+    background: url("images/flags/plain/flag_luxembourg.png") no-repeat 0 0;
+}
+span.flag_de_LU_shadow {
+    background: url("images/flags/shadow/flag_luxembourg.png") no-repeat 0 0;
 }
 
 span.flag_es_AR {
     background: url("images/flags/plain/flag_argentina.png") no-repeat 0 0;
 }
+span.flag_es_AR_plain {
+    background: url("images/flags/plain/flag_argentina.png") no-repeat 0 0;
+}
+span.flag_es_AR_shadow {
+    background: url("images/flags/shadow/flag_argentina.png") no-repeat 0 0;
+}
 
 span.flag_ms_MY {
     background: url("images/flags/plain/flag_malaysia.png") no-repeat 0 0;
+}
+span.flag_ms_MY_plain {
+    background: url("images/flags/plain/flag_malaysia.png") no-repeat 0 0;
+}
+span.flag_ms_MY_shadow {
+    background: url("images/flags/shadow/flag_malaysia.png") no-repeat 0 0;
 }
 
 span.flag_hr_HR {
     background: url("images/flags/plain/flag_croatia.png") no-repeat 0 0;
 }
+span.flag_hr_HR_plain {
+    background: url("images/flags/plain/flag_croatia.png") no-repeat 0 0;
+}
+span.flag_hr_HR_shadow {
+    background: url("images/flags/shadow/flag_croatia.png") no-repeat 0 0;
+}
 
 span.flag_en_SG {
     background: url("images/flags/plain/flag_singapore.png") no-repeat 0 0;
+}
+span.flag_en_SG_plain {
+    background: url("images/flags/plain/flag_singapore.png") no-repeat 0 0;
+}
+span.flag_en_SG_shadow {
+    background: url("images/flags/shadow/flag_singapore.png") no-repeat 0 0;
 }
 
 span.flag_ar_OM {
     background: url("images/flags/plain/flag_oman.png") no-repeat 0 0;
 }
+span.flag_ar_OM_plain {
+    background: url("images/flags/plain/flag_oman.png") no-repeat 0 0;
+}
+span.flag_ar_OM_shadow {
+    background: url("images/flags/shadow/flag_oman.png") no-repeat 0 0;
+}
 
 span.flag_th_TH_TH {
     background: url("images/flags/plain/flag_thailand.png") no-repeat 0 0;
 }
+span.flag_th_TH_TH_plain {
+    background: url("images/flags/plain/flag_thailand.png") no-repeat 0 0;
+}
+span.flag_th_TH_TH_shadow {
+    background: url("images/flags/shadow/flag_thailand.png") no-repeat 0 0;
+}
 
 span.flag_sv_SE {
+    background: url("images/flags/plain/flag_denmark.png") no-repeat 0 0;
+}
+span.flag_sv_SE_plain {
     background: url("images/flags/plain/flag_sweden.png") no-repeat 0 0;
+}
+span.flag_sv_SE_shadow {
+    background: url("images/flags/shadow/flag_sweden.png") no-repeat 0 0;
 }
 
 span.flag_da_DK {
     background: url("images/flags/plain/flag_denmark.png") no-repeat 0 0;
 }
+span.flag_da_DK_plain {
+    background: url("images/flags/plain/flag_denmark.png") no-repeat 0 0;
+}
+span.flag_da_DK_shadow {
+    background: url("images/flags/shadow/flag_denmark.png") no-repeat 0 0;
+}
 
 span.flag_es_HN {
     background: url("images/flags/plain/flag_honduras.png") no-repeat 0 0;
+}
+span.flag_es_HN_plain {
+    background: url("images/flags/plain/flag_honduras.png") no-repeat 0 0;
+}
+span.flag_es_HN_shadow {
+    background: url("images/flags/shadow/flag_honduras.png") no-repeat 0 0;
 }

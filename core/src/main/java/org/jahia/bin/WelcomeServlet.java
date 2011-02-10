@@ -34,8 +34,6 @@ package org.jahia.bin;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -80,9 +78,9 @@ public class WelcomeServlet extends HttpServlet {
      * The serialVersionUID.
      */
     private static final long serialVersionUID = -2055161334153523152L;
-
+    
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ProcessingContext.class);
-
+    
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
 
     @Override
@@ -92,8 +90,8 @@ public class WelcomeServlet extends HttpServlet {
             if (request.getRequestURI().endsWith("start")) {
                 userRedirect(request, response, getServletContext());
             } else {
-                defaultRedirect(request, response, getServletContext());
-            }
+        defaultRedirect(request, response, getServletContext());
+    }
         } catch (Exception e) {
             List<ErrorHandler> handlers = ServicesRegistry.getInstance()
                     .getJahiaTemplateManagerService().getErrorHandler();
@@ -116,61 +114,61 @@ public class WelcomeServlet extends HttpServlet {
     }
 
     protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
-        request.getSession(true);
-        JahiaSite site = resolveSite(request);
-        if (site == null) {
-            response.sendRedirect(request.getContextPath() + "/administration");
-        } else {
-            String language = resolveLanguage(request, site);
-            String base;
-
-            final String jcrPath = "/sites/" + site.getSiteKey() + "/home";
-
-            String pathInfo = request.getPathInfo();
-            if (pathInfo != null && "/edit".equals(pathInfo)) {
-                // edit mode was requested
-                base = request.getContextPath() + Edit.getEditServletPath() + "/"
-                        + Constants.EDIT_WORKSPACE + "/" + language;
+            request.getSession(true);
+            JahiaSite site = resolveSite(request);
+            if (site == null) {
+                response.sendRedirect(request.getContextPath() + "/administration");
             } else {
-                try {
-                    JCRStoreService.getInstance().getSessionFactory()
-                            .getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(jcrPath);
-                    base = request.getContextPath() + Render.getRenderServletPath() + "/"
-                            + Constants.LIVE_WORKSPACE + "/" + language;
-                } catch (PathNotFoundException e) {
-                    try {
-                        JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession()
-                                .getNode(jcrPath);
-                        base = request.getContextPath() + Edit.getEditServletPath() + "/"
-                                + Constants.EDIT_WORKSPACE + "/" + language;
-                    } catch (PathNotFoundException e2) {
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(
-                                new JCRCallback<Object>() {
-                                    public Object doInJCR(JCRSessionWrapper session)
-                                            throws RepositoryException {
-                                        session.getNode(jcrPath);
-                                        throw new AccessDeniedException();
-                                    }
-                                });
-                        throw new AccessDeniedException();
-                    }
+                String language = resolveLanguage(request, site);
+                String base;
+
+                final String jcrPath = "/sites/" + site.getSiteKey() + "/home";
+
+                String pathInfo = request.getPathInfo();
+                if (pathInfo != null && "/edit".equals(pathInfo)) {
+                	// edit mode was requested
+					base = request.getContextPath() + Edit.getEditServletPath() + "/"
+					        + Constants.EDIT_WORKSPACE + "/" + language;
+                } else {
+	                try {
+	                    JCRStoreService.getInstance().getSessionFactory()
+	                            .getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(jcrPath);
+	                    base = request.getContextPath() + Render.getRenderServletPath() + "/"
+	                            + Constants.LIVE_WORKSPACE + "/" + language;
+	                } catch (PathNotFoundException e) {
+	                    try {
+	                        JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession()
+	                                .getNode(jcrPath);
+	                        base = request.getContextPath() + Edit.getEditServletPath() + "/"
+	                                + Constants.EDIT_WORKSPACE + "/" + language;
+	                    } catch (PathNotFoundException e2) {
+	                        JCRTemplate.getInstance().doExecuteWithSystemSession(
+	                                new JCRCallback<Object>() {
+	                                    public Object doInJCR(JCRSessionWrapper session)
+	                                            throws RepositoryException {
+	                                        session.getNode(jcrPath);
+	                                        throw new AccessDeniedException();
+	                                    }
+	                                });
+	                        throw new AccessDeniedException();
+	                    }
+	                }
                 }
+
+                response.sendRedirect(base + jcrPath + ".html");
+
             }
-
-            response.sendRedirect(base + jcrPath + ".html");
-
-        }
     }
 
     protected JahiaSite resolveSite(HttpServletRequest request) throws JahiaException {
         JahiaSitesService siteService = JahiaSitesBaseService.getInstance();
-        JahiaSite resolvedSite = siteService.getSiteByServerName(request.getServerName());
+        JahiaSite resolvedSite = !"localhost".equals(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
         if (resolvedSite == null) {
             resolvedSite = siteService.getDefaultSite();
         }
         return resolvedSite;
     }
-
+    
     protected String resolveLanguage(HttpServletRequest request, JahiaSite site)
             throws JahiaException {
         List<Locale> newLocaleList = new ArrayList<Locale>();
@@ -185,7 +183,7 @@ public class WelcomeServlet extends HttpServlet {
 
         // retrieve the browser locales
         for (@SuppressWarnings("unchecked")
-             Iterator<Locale> browserLocales = new EnumerationIterator(request.getLocales()); browserLocales
+        Iterator<Locale> browserLocales = new EnumerationIterator(request.getLocales()); browserLocales
                 .hasNext();) {
             final Locale curLocale = browserLocales.next();
             if (siteLanguages.contains(curLocale)) {
@@ -205,8 +203,8 @@ public class WelcomeServlet extends HttpServlet {
         String language = DEFAULT_LOCALE;
         if (!newLocaleList.isEmpty()) {
             language = newLocaleList.get(0).toString();
-        } else if (!siteLanguages.isEmpty()) {
-            language = siteLanguages.get(0).toString();
+        } else if (!siteLanguages.isEmpty()){
+            language = siteLanguages.get(0).toString();            
         } else if (!StringUtils.isEmpty(SettingsBean.getInstance().getDefaultLanguageCode())) {
             language = SettingsBean.getInstance().getDefaultLanguageCode();
         }

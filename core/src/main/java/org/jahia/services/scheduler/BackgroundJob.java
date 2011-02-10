@@ -156,7 +156,7 @@ public abstract class BackgroundJob implements StatefulJob {
             int duration = (int) ((Long.parseLong((String) data.get(JOB_END)) - Long.parseLong((String) data.get(JOB_BEGIN))) / 1000);
             data.putAsString(JOB_DURATION, duration);//duration
 
-            logger.info("Background job " + jobDetail.getName() + " (of type " + jobDetail.getGroup() + ") ended with status " + status + " executed in " + duration + "s");
+            logger.info("Background job " + jobDetail.getName() + " (of type " + jobDetail.getGroup() + ") ended with status " + status + " in " + duration + "s");
 
             Date nextFireTime = jobExecutionContext.getNextFireTime();
             try {

@@ -16,6 +16,8 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="forum.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js,jquery.jeditable.mini.js"/>
+<template:addResources type="javascript" resources="ckeditor/ckeditor.js,ckeditor/adapters/jquery.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 
 <template:include template="hidden.header"/>
 
@@ -33,11 +35,12 @@
             $.post($(this).attr('jcr:url'), data, null, "json");
             return(value);
         }, {
-            type    : 'textarea',
-            onblur : 'ignore',
-            submit : '<button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message key="label.ok"/></button>',
-            cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span><fmt:message key="label.cancel"/></button>',
-            tooltip : 'Edit'
+            type    : 'ckeditor',
+            ckeditorType : 'Mini',
+            onblur  : 'ignore',
+            submit  : '<button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message key="label.ok"/></button>',
+            cancel  : '<button type="submit"><span class="icon-contribute icon-cancel"></span><fmt:message key="label.cancel"/></button>',
+            tooltip : '<fmt:message key="label.edit"/>'
         });
     });
 </script>

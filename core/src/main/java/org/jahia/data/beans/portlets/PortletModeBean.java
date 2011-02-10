@@ -76,7 +76,7 @@ public class PortletModeBean {
         String portletWindowID = portletWindowBean.getPortletWindow().getId().getStringId();
         portalUrl.setPortletMode(portletWindowID, new PortletMode(name));
         // URL should be like this (taken from Pluto RI 286 portal : http://localhost:8080/pluto/portal//Test%20Page/__pm0x3testsuite0x2TestPortlet1!764587357%7C0_edit? )
-        return portalUrl.toString();
+        return portalUrl.toURL(false);
     }
 
 }

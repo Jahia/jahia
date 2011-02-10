@@ -382,12 +382,27 @@ public class URLResolver {
                             throws RepositoryException {
                         String nodePath = path.endsWith("/*")?path.substring(0,path.lastIndexOf("/*")):path;
                         JCRNodeWrapper node = null;
+                        // remove extension
                         if (nodePath.indexOf(".") > 0 && nodePath.lastIndexOf("/") < nodePath.lastIndexOf(".")) {
-                            nodePath = nodePath.substring(0, nodePath.indexOf(".",nodePath.lastIndexOf('/')));
+                            nodePath = nodePath.substring(0, nodePath.lastIndexOf("."));
                         }
                         try {
                             if (method.equals(Render.METHOD_GET)) {
-                                node = session.getNode(nodePath);
+                                while (true) {
+                                    try {
+                                        node = session.getNode(nodePath);
+                                        break;
+                                    } catch (PathNotFoundException ex) {
+                                        if (nodePath.lastIndexOf("/") < nodePath.lastIndexOf(".")) {
+                                            nodePath = nodePath.substring(0,nodePath.lastIndexOf("."));
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (node == null) {
+                                    throw new PathNotFoundException("'" + nodePath + "'not found");
+                                }
                             }
                             else {
                                 while (nodePath.lastIndexOf("/") > 0) {

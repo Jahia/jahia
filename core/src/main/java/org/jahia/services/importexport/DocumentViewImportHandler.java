@@ -425,13 +425,13 @@ public class DocumentViewImportHandler extends DefaultHandler {
         }
         int fileIndex = fileList.indexOf(path);
         if (fileIndex != -1) {
-            if (fileList.indexOf("/" + nextEntry) > fileIndex) {
+            if (fileList.indexOf("/" + nextEntry.getName().replace('\\', '/')) > fileIndex) {
                 zis.reallyClose();
                 zis = new NoCloseZipInputStream(new FileInputStream(archive));
             }
             do {
                 nextEntry = zis.getNextEntry();
-            } while (!("/" + nextEntry.getName()).equals(path));
+            } while (!("/" + nextEntry.getName().replace('\\', '/')).equals(path));
 
             return true;
         }

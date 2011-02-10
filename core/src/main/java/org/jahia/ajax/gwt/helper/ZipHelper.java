@@ -169,7 +169,7 @@ public class ZipHelper {
             while ((zipentry = zis.getNextEntry()) != null) {
                 String filename = null;
                 try {
-                    filename = zipentry.getName();
+                    filename = zipentry.getName().replace('\\', '/');
                     if (logger.isDebugEnabled()) {
                         logger.debug("Unzip file (" + zipentry.getMethod() + ")" + filename);
                     }

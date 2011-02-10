@@ -579,6 +579,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     ZipEntry zipentry = zis.getNextEntry();
                     if (zipentry == null) break;
                     String name = zipentry.getName();
+					if (name.indexOf('\\') > -1) {
+						name = name.replace('\\', '/');
+					}
                     if (name.indexOf('/') > -1) {
                         if (!sizes.containsKey(REPOSITORY_XML)) {
                             // No repository descriptor - Old import format only
@@ -1054,7 +1057,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();
                 if (zipentry == null) break;
-                String name = zipentry.getName();
+                String name = zipentry.getName().replace('\\', '/');
                 if (name.endsWith(".xml")) {
                     BufferedReader br = new BufferedReader(new InputStreamReader(zis));
                     long i = 0;

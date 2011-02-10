@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <templateSets jcr:primaryType="jnt:templateSets">
@@ -18,6 +19,11 @@
               <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
             </pagecontent>
           </googleAnalytics>
+          <data j:applyOn="jnt:googleAnalyticsAccount" j:defaultTemplate="false" j:hiddenTemplate="false" jcr:primaryType="jnt:contentTemplate">
+            <pagecontent jcr:primaryType="jnt:contentList">
+              <mainResourceDisplay j:mainResourceView="data" jcr:primaryType="jnt:mainResourceDisplay" />
+            </pagecontent>
+          </data>
         </base>
       </templates>
       <googleAnalytics jcr:primaryType="jnt:googleAnalyticsAccounts" />

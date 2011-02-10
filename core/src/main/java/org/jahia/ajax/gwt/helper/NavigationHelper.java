@@ -1173,14 +1173,14 @@ public class NavigationHelper {
     public String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
         String folder = primaryNodeType.getSystemId();
         if (folder.startsWith("system-")) {
-            folder = "default";
+            folder = "assets";
         } else {
             final JahiaTemplatesPackage aPackage =
                     ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(folder);
             if (aPackage != null) {
                 folder = aPackage.getRootFolder();
             } else {
-                folder = "default"; // todo handle portlets 
+                folder = "assets"; // todo handle portlets 
             }
         }
         folder += "/icons/";

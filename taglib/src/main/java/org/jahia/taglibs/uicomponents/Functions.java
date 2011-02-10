@@ -75,6 +75,8 @@ public class Functions {
                         }
                     }
                 }
+            } else {
+                bindedComponentNode = renderContext.getMainResource().getNode();
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

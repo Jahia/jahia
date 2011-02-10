@@ -5,25 +5,39 @@
          xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
         <bookmarks changefreq="monthly" j:installedModules="profile" j:siteType="module" j:wcagCompliance="true"
-                 jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
+                   jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
-            <contents jcr:primaryType="jnt:contentFolder"/>
+            <contents jcr:primaryType="jnt:contentFolder">
+                <profilepageitems jcr:primaryType="jnt:contentList">
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="profilePageItems"/>
+                    <bookmarks divClass="user-bookmarks" jcr:primaryType="jnt:componentLink"
+                           targetTemplate="user-bookmarks">
+                        <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Bookmarks"/>
+                    </bookmarks>
+                </profilepageitems>
+            </contents>
             <templates jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder">
                     <themes jcr:primaryType="jnt:folder">
-                        <default jcr:primaryType="jnt:folder">
-
-                        </default>
+                        <default jcr:primaryType="jnt:folder"/>
                     </themes>
                 </files>
                 <contents jcr:primaryType="jnt:contentFolder">
-                    <portalComponents jcr:primaryType="jnt:contentFolder"/>
+                    <portalComponents jcr:primaryType="jnt:contentFolder">
+                        <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks"/>
+                    </portalComponents>
                 </contents>
-
-                <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:template" j:theme="/templatesSet/files/themes/default">
+                <base j:view="apps" jcr:primaryType="jnt:template">
+                    <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
+                        <user-bookmarks j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                        jcr:primaryType="jnt:contentTemplate">
+                            <pagecontent jcr:primaryType="jnt:contentList">
+                                <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks"/>
+                            </pagecontent>
+                        </user-bookmarks>
+                    </user-base>
                 </base>
-
             </templates>
         </bookmarks>
     </templateSets>

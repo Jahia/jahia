@@ -949,6 +949,13 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
+            <artifactId>googleAnalytics</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>location</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>

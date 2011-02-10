@@ -135,5 +135,6 @@
 		<module>videostreaming</module>
         <module>webClipping</module>
         <module>wiki</module>
+        <module>googleAnalytics</module>
   </modules>
 </project>

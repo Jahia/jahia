@@ -78,7 +78,6 @@ import org.jahia.bin.googledocs.GoogleDocsEditor;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -141,7 +140,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private DiffHelper diff;
     private SeoHelper seo;
     private UIConfigHelper uiConfig;
-    private AnalyticsHelper analytics;
     private int sessionPollingFrequency;
     private GoogleDocsExportFormats googleDocsExportFormats;
     private GoogleDocsServiceFactory googleDocsServiceFactory;
@@ -1221,37 +1219,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    /**
-     * Get analytics data
-     *
-     * @param query
-     * @return
-     */
-    public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query) throws GWTJahiaServiceException {
-        if (!getSite().hasGoogleAnalyticsProfile()) {
-            logger.debug("There is no configured google analytics account");
-            return new ArrayList<GWTJahiaAnalyticsData>();
-        }
-
-        // get google analytics account
-        final GoogleAnalyticsProfile googleAnalyticsProfile = getSite().getGoogleAnalyticsProfile();
-
-        // get its parameter
-        final String gaAccount = googleAnalyticsProfile.getAccount();
-        final String login = googleAnalyticsProfile.getLogin();
-        final String pwd = googleAnalyticsProfile.getPassword();
-
-
-        // check parameters
-        if (gaAccount == null) {
-            logger.error("There is no google analytics account configured");
-            throw new GWTJahiaServiceException("There is no google analytics account configured");
-        }
-
-        // get data
-        return analytics.queryData(login, pwd, gaAccount, query);
-    }
-
     public void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException {
     	logger.info("Deploying templates {} to the target {}", templatesPath, sitePath);
         contentManager.deployTemplates(templatesPath, sitePath, retrieveCurrentSession());
@@ -1284,10 +1251,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public void setSeo(SeoHelper seoHelper) {
         this.seo = seoHelper;
-    }
-
-    public void setAnalytics(AnalyticsHelper analyticsHelper) {
-        this.analytics = analyticsHelper;
     }
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId, String locale)

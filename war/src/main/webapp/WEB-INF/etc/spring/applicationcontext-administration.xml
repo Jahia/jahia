@@ -132,17 +132,6 @@
         <property name="sitesService" ref="JahiaSitesService"/>
     </bean>
     
-    <bean id="analyticsAdministrationModule" class="org.jahia.admin.analytics.ManageAnalytics" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
-        <property name="urlKey" value="analytics" />
-        <property name="permissionName" value="adminAnalytics" />
-        <property name="name" value="analytics" />
-        <property name="icon" value="column-chart" />
-        <property name="label" value="org.jahia.admin.manageanalytics.label" />
-        <property name="urlAction" value="analytics" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
-
     <bean id="urlmappingAdministrationModule" class="org.jahia.admin.urlmapping.Urlmapping" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="urlmapping" />

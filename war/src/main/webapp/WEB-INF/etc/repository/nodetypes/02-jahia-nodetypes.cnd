@@ -299,17 +299,6 @@
  + j:members (jnt:members) = jnt:members mandatory autocreated
 
 //---------------------------------------------------------
-// Google analytics
-//---------------------------------------------------------
-
-[jmix:googleAnalyticsAccount]  mixin
- - j:gaLogin (string) protected nofulltext
- - j:gaPassword (string) protected nofulltext
- - j:gaAccount (string) protected nofulltext
- - j:gaTypeUrl (string) protected nofulltext
- - j:gaProfile (string) protected nofulltext
-
-//---------------------------------------------------------
 // HTML settings
 //---------------------------------------------------------
 
@@ -404,7 +393,7 @@
  - j:virtualsitesFolderSkeleton (string) nofulltext
  + * (jnt:virtualsite)
 
-[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:googleAnalyticsAccount, jmix:observable, jmix:htmlSettings
+[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:htmlSettings
  - j:title (string) protected nofulltext
  - j:serverName (string) protected nofulltext
  - j:description (string) protected
@@ -470,15 +459,6 @@
 [jmix:list] mixin
 
 [jmix:templateMixin] mixin
-
-//---------------------------------------------------------
-// Google analytics
-//---------------------------------------------------------
-
-[jmix:googleanalytics]  mixin
- extends = jnt:content, jnt:page
- itemtype = options
-- j:gaenabled (boolean)
 
 //---------------------------------------------------------
 // References and links

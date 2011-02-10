@@ -751,7 +751,6 @@
                 <ref bean="Engine.Tab.History"/>
                 <ref bean="Engine.Tab.Versioning"/>
                 <ref bean="Engine.Tab.Seo"/>
-                <ref bean="Engine.Tab.Analytics"/>
             </list>
         </property>
 
@@ -1378,18 +1377,4 @@
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolePermissionsTabItem"/>
         </property>
     </bean>
-
-    <bean id="Engine.Tab.Analytics" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="id" value="analytics"/>
-        <property name="titleKey" value="label.engineTab.analytics"/>
-        <property name="requiredPermission" value="viewAnalyticsTab"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.contentmanager.AnalyticsVisibility"/>
-        </property>
-        <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.AnalyticsTabItem"/>
-        </property>
-    </bean>
-
-
 </beans>

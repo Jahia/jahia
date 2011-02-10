@@ -33,7 +33,6 @@
                 <ref bean="Engine.Tab.Usages" />
                 <ref bean="Engine.Tab.Workflow" />
                 <ref bean="Engine.Tab.Seo" />
-                <ref bean="Engine.Tab.Analytics" />
             </list>
         </property>
 
@@ -749,7 +748,6 @@
                 <ref bean="Engine.Tab.Workflow" />
                 <ref bean="Engine.Tab.Versioning" />
                 <ref bean="Engine.Tab.Seo" />
-                <ref bean="Engine.Tab.Analytics" />
             </list>
         </property>
 
@@ -896,7 +894,6 @@
                 <ref bean="Engine.Tab.Workflow" />
                 <ref bean="Engine.Tab.Versioning" />
                 <ref bean="Engine.Tab.Seo" />
-                <ref bean="Engine.Tab.Analytics" />
             </list>
         </property>
 
@@ -1030,7 +1027,6 @@
                 <ref bean="Engine.Tab.Roles" />
                 <ref bean="Engine.Tab.Usages" />
                 <ref bean="Engine.Tab.Versioning" />
-                <ref bean="Engine.Tab.Analytics" />
                 <ref bean="Engine.Tab.Seo" />
             </list>
         </property>

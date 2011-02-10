@@ -127,12 +127,6 @@
 		<property name="skipOnConfiguration" value="include,wrapper" />
 		<property name="skipOnAJaxRequest" value="true" />
 	</bean>
-	<bean
-		class="org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter">
-		<property name="applyOnNodeTypes" value="jmix:googleanalytics" />
-		<property name="skipOnConfiguration" value="include,wrapper" />
-		<property name="priority" value="98" />
-	</bean>
 	<bean class="org.jahia.services.render.filter.TemplateScriptFilter">
 		<property name="priority" value="99" />
 	</bean>

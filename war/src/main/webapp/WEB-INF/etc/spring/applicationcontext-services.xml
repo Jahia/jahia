@@ -151,10 +151,6 @@
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
     </bean>
 
-
-    <bean id="GoogleAnalyticsService" class="org.jahia.services.analytics.GoogleAnalyticsService"
-          factory-method="getInstance"/>
-
     <bean id="org.jahia.services.seo.jcr.VanityUrlManager" class="org.jahia.services.seo.jcr.VanityUrlManager"/>
     <bean id="org.jahia.services.seo.jcr.VanityUrlService" class="org.jahia.services.seo.jcr.VanityUrlService">
         <property name="vanityUrlManager" ref="org.jahia.services.seo.jcr.VanityUrlManager"/>

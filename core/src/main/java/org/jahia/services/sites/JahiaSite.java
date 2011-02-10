@@ -45,7 +45,6 @@ package org.jahia.services.sites;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.utils.LanguageCodeConverters;
 
 import java.io.Serializable;
@@ -102,8 +101,6 @@ public class JahiaSite implements Serializable {
 
     private String JCRLocalPath;
 
-    private GoogleAnalyticsProfile googleAnalyticsProfil;
-    
     private String uuid;
 
     /**
@@ -401,27 +398,6 @@ public class JahiaSite implements Serializable {
 
     public void setJCRLocalPath(String JCRLocalPath) {
         this.JCRLocalPath = JCRLocalPath;
-    }
-
-    public  GoogleAnalyticsProfile getGoogleAnalytics() {
-        return  googleAnalyticsProfil;
-    }
-
-
-    public void setGoogleAnalyticsProfile(String typeUrl, boolean trackingEnabled, String password, String login, String profile, String account){
-        if (googleAnalyticsProfil == null) {
-            googleAnalyticsProfil = new GoogleAnalyticsProfile(typeUrl, password,login,profile,account);
-        } else {
-            googleAnalyticsProfil.setLogin(login);
-            googleAnalyticsProfil.setPassword(password);
-            googleAnalyticsProfil.setProfile(profile);
-            googleAnalyticsProfil.setAccount(account);
-            googleAnalyticsProfil.setTypeUrl(typeUrl);
-        }
-    }
-
-    public GoogleAnalyticsProfile getGoogleAnalyticsProfil(){
-        return googleAnalyticsProfil;
     }
 
     /**

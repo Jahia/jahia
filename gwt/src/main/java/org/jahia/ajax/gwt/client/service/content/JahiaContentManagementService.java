@@ -236,15 +236,6 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     public List<GWTJahiaUrlMapping> getUrlMappings(GWTJahiaNode node, String locale) throws GWTJahiaServiceException;
 
-    /**
-     * Get analytics data
-     *
-     * @param query
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query) throws GWTJahiaServiceException;
-
     void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException;
 
     GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType) throws GWTJahiaServiceException;

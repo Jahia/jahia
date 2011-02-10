@@ -95,8 +95,6 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
 
-    <bean name="AnalyticsHelper" class="org.jahia.ajax.gwt.helper.AnalyticsHelper"/>
-
     <bean name="CacheHelper" class="org.jahia.ajax.gwt.helper.CacheHelper">
         <property name="cacheFactory" ref="JahiaCacheService"/>
         <property name="cacheProvider" ref="ModuleCacheProvider"/>

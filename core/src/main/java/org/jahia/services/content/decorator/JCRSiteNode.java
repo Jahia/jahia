@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -295,25 +294,6 @@ public class JCRSiteNode extends JCRNodeDecorator {
     public String getTemplatePackageName() {
         return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                 .getTemplatePackageByFileName(getTemplateFolder()).getName();
-    }
-
-    public GoogleAnalyticsProfile getGoogleAnalyticsProfile(){
-        String account = this.getPropertyAsString("j:gaAccount");
-        String login = this.getPropertyAsString("j:gaLogin");
-        String password = this.getPropertyAsString("j:gaPassword");
-        String profile = this.getPropertyAsString("j:gaProfile");
-        String typeUrl = this.getPropertyAsString("j:gaTypeUrl");
-        return new GoogleAnalyticsProfile(typeUrl, password, login, profile, account);
-    }
-
-
-    public boolean hasGoogleAnalyticsProfile(){
-        return getGoogleAnalyticsProfile().isEnabled();
-    }
-
-
-    public boolean hasActivatedGoogleAnalyticsProfile(){
-        return getGoogleAnalyticsProfile().isEnabled();
     }
 
 }

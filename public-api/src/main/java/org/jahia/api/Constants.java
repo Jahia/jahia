@@ -152,7 +152,6 @@ public class Constants {
     public static final String JAHIANT_SYMLINK = "jnt:symLink";
     public static final String JAHIANT_SYSTEMNODE = "jnt:systemNode";
     public static final String JAHIANT_VIRTUALSITE = "jnt:virtualsite";
-    public static final String JAHIANT_GOOGLEANALYTICS = "jnt:googleanalytics";
     public static final String JAHIANT_SYSTEM = "jnt:system";
     public static final String JAHIANT_AXISFOLDER = "jnt:axisFolder";
     public static final String JAHIANT_USER = "jnt:user";

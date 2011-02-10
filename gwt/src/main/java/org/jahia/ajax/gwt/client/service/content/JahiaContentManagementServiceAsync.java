@@ -239,14 +239,6 @@ public interface JahiaContentManagementServiceAsync {
      */
     void getUrlMappings(GWTJahiaNode node, String locale, AsyncCallback<List<GWTJahiaUrlMapping>> async);
 
-    /**
-     * Get analytics data
-     *
-     * @param query
-     * @param async
-     */
-    void getAnalyticsData(GWTJahiaAnalyticsQuery query, AsyncCallback<List<GWTJahiaAnalyticsData>> async);
-
     void deployTemplates(String templatesPath, String sitePath, AsyncCallback asyncCallback);
 
     void createTemplateSet(String key, String baseSet, String siteType, AsyncCallback<GWTJahiaNode> asyncCallback);

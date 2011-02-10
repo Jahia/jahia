@@ -41,7 +41,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.JahiaAfterInitializationService;
-import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
@@ -211,14 +210,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             languagesList.add(language.getString());
         }
         site.setMandatoryLanguages(languagesList);
-        String account = node.getPropertyAsString("j:gaAccount");
-        String login = node.getPropertyAsString("j:gaLogin");
-        String password = node.getPropertyAsString("j:gaPassword");
-        String profile = node.getPropertyAsString("j:gaProfile");
-        String typeUrl = node.getPropertyAsString("j:gaTypeUrl");
-        boolean enabled = true;
-        site.setGoogleAnalyticsProfile(typeUrl, enabled, password, login, profile, account);
-
         site.setUuid(node.getIdentifier());
 
         for (String setting : SitesSettings.HTML_SETTINGS) {

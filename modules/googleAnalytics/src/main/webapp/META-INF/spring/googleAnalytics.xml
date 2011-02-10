@@ -9,7 +9,4 @@
         <property name="name" value="getData"/>
     </bean>
 -->
-    <bean id="GoogleAnalyticsService" class="org.jahia.modules.googleAnalytics.services.GoogleAnalyticsService"
-          factory-method="getInstance"/>
-
 </beans>

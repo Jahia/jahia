@@ -71,45 +71,10 @@
 
     -->
 
-
-    <!-- Inboound rules
-
-    The following are only examples and should be rearanged according to your needs and to your specific implementation of Jahia
-
-
-    Example usage:
-
-    http://localhost:8080/jahia/page25.html <-> http://localhost:8080/jahia/Jahia/pid/25
-    http://localhost:8080/jahia/Jahia/page25.html <-> http://localhost:8080/jahia/Jahia/Urlkey1/UrlKey2/pid/25 (iterativelly you can have as many urlkey as you want)
-
-    If you type in the following path on your browser, it will still work:
-
-    http://localhost:8080/jahia/Jahia/page5_en.html <-> http://localhost:8080/jahia/Jahia/lang/op/normal/en/pid/25
-    http://localhost:8080/jahia/Jahia/UrlKey1/page5.html <-> http://localhost:8080/jahia/Jahia/Urlkey1/lang/en/pid/25
-    http://localhost:8080/jahia/Jahia/UrlKey1/UrlKey2/page5_en.html <-> http://localhost:8080/jahia/Jahia/Urlkey1/UrlKey2/lang/en/pid/25
-
-
-    These rules support multilingual websites
-
-
-    -->
-
-    <!-- rule for site export and other pages that could cause problems-->
-    <!--<rule>-->
-        <!--<from>^/(.*?)/page([0-9]+).html/(.*?)$</from>-->
-        <!--<to last="true">/$1/pid/$2/$3</to>-->
-    <!--</rule>-->
-
-    <!-- rule for any regular page-->
-    <!--<rule>-->
-        <!--<from>^/(.*?)/page([0-9]+).html$</from>-->
-        <!--<to>/$1/pid/$2</to>-->
-    <!--</rule>-->
-
     <!-- GXT resources-->
      <rule>
         <from>^(.*?)/gwt/(.*?)/ckeditor(.*?)/(.*?)</from>
-        <to last="true">$1/gwt/resources/ckeditor$3/$4</to>
+        <to last="true">$1/modules/assets/javascript/ckeditor$3/$4</to>
     </rule>
     <rule>
         <from>^(.*?)/gwt/(.*?)/images/(.*?)</from>
@@ -143,26 +108,6 @@
         <from>/rewrite-status</from>
         <to>/test/status/</to>
     </outbound-rule>
-    <!-- rule for the export module -->
-    <outbound-rule>
-        <from>/engineName/(.*?)/pid/([0-9]+)$</from>
-        <to last="true">/engineName/$1/pid/$2</to>
-    </outbound-rule>
-
-    <!-- rule for any regular page-->
-    <!--<outbound-rule>-->
-        <!--<from>/pid/([0-9]+)$</from>-->
-        <!--<to>/page$1.html</to>-->
-    <!--</outbound-rule>-->
-
-    <!--<outbound-rule>
-        <from>/jahia/cms/render/live/en/sites/mySite/([a-zA-Z_0-9/\.]+html)$</from>
-        <to>/$1</to>
-    </outbound-rule>
-    <outbound-rule>
-        <from>/jahia/cms/render/live/en/users/([a-zA-Z_0-9/\.]+html)$</from>
-        <to>/users/$1</to>
-    </outbound-rule>-->
 
 </urlrewrite>
 

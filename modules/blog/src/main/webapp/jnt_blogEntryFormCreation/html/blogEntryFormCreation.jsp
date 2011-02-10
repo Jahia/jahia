@@ -3,10 +3,9 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <template:addResources type="css" resources="blog.css"/>
-<template:addResources type="javascript"
-                       resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="text" var="text"/>
@@ -18,16 +17,11 @@
         $.each(['addContent'], function(index, element) {
             if ($('#' + element).length > 0) {
                 $('label[for="' + element + '"]').hide();
-                CKEDITOR.replace(element, { toolbar : 'User',
-                	filebrowserBrowseUrl : null,
-                	filebrowserImageBrowseUrl : null,
-                	filebrowserFlashBrowseUrl : null,
-                	filebrowserLinkBrowseUrl : null
-                });
             }
         });
     });
 </script>
+<uiComponents:ckeditor selector="#addContent"/>
 
     <template:tokenizedForm>
         <form id="formPost" method="post" action="${renderContext.mainResource.node.name}.addBlogEntry.do" name="blogPost">

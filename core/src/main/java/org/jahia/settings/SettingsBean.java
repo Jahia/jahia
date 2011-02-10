@@ -104,7 +104,6 @@ public class SettingsBean implements ServletContextAware {
     private String jahiaImportsDiskPath;
     private String jahiaSharedTemplatesDiskPath;
     private String jahiaDatabaseScriptsPath;
-    private String jahiaCkEditorDiskPath;
 
     public String getJahiaDatabaseScriptsPath() {
         return jahiaDatabaseScriptsPath;
@@ -258,7 +257,6 @@ public class SettingsBean implements ServletContextAware {
             }
             jahiaImportsDiskPath = convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
-            jahiaCkEditorDiskPath = convertContexted (getString("jahiaCkEditorDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
 
             jahiaHostHttpPath = getString("jahiaHostHttpPath");
@@ -1000,10 +998,6 @@ public class SettingsBean implements ServletContextAware {
 
     public int getFileDumpMaxRegroupingOfPreviousException() {
         return fileDumpMaxRegroupingOfPreviousException;
-    }
-
-    public String getJahiaCkEditorDiskPath() {
-        return jahiaCkEditorDiskPath;
     }
 
     /**

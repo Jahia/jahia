@@ -47,7 +47,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.settings.SettingsBean;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -56,8 +55,6 @@ import javax.servlet.jsp.PageContext;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- *
  * @author rfelden
  * @version 10 mars 2008 - 10:46:13
  */
@@ -98,7 +95,6 @@ public class GWTInitializer {
 
         String context = request.getContextPath();
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/").append(SettingsBean.getInstance().getJahiaCkEditorDiskPath()).append("/contents.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/edit.css\" rel=\"stylesheet\"/>\n");
@@ -218,7 +214,7 @@ public class GWTInitializer {
      */
     public static String getJahiaGWTConfig(Map params) {
         StringBuilder s = new StringBuilder();
-        s.append("var " + JahiaGWTParameters.JAHIA_GWT_PARAMETERS + " = {");
+        s.append("var " + JahiaGWTParameters.JAHIA_GWT_PARAMETERS + "={");
         if (params != null) {
             Iterator keys = params.keySet().iterator();
             boolean b = false;
@@ -251,5 +247,4 @@ public class GWTInitializer {
     private static String buildServiceBaseEntrypointUrl(HttpServletRequest request) {
         return new StringBuilder(request.getContextPath()).append("/gwt/").toString();
     }
-
 }

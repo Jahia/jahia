@@ -35,8 +35,8 @@
         }, {
             type    : 'textarea',
             onblur : 'ignore',
-            submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>Ok</button>',
-            cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
+            submit : '<button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message key="label.ok"/></button>',
+            cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span><fmt:message key="label.cancel"/></button>',
             tooltip : 'Edit'
         });
     });

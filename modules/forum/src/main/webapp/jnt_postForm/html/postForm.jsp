@@ -15,6 +15,8 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:linker property="j:bindedComponent"/>
 <template:addResources type="css" resources="forum.css"/>
+<uiComponents:ckeditor selector="textarea.jahia-ckeditor"/>
+
 <c:set var="linked" value="${uiComponents:getBindedComponentPath(currentNode, renderContext, 'j:bindedComponent')}"/>
 <template:addResources type="css" resources="forum.css"/>
 <script type="text/javascript">
@@ -47,7 +49,7 @@
             tabindex="1"/> </p>
           <p class="field">
             <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content"
-                                      tabindex="2"><c:if test="${not empty reply.properties['content'].string}"><blockquote>${reply.properties['content'].string}</blockquote></c:if></textarea>
+                                      tabindex="2" class="jahia-ckeditor"><c:if test="${not empty reply.properties['content'].string}"><blockquote>${reply.properties['content'].string}</blockquote></c:if></textarea>
           </p>
           <p class="forum_button">
             <input type="reset" value="<fmt:message key='label.reset'/>" class="button" tabindex="3"/>

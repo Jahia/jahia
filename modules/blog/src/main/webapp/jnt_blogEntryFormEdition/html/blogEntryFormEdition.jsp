@@ -3,6 +3,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:title" var="title"/>
@@ -10,24 +11,18 @@
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:created" var="created"/>
 <template:addResources type="css" resources="blog.css"/>
-<template:addResources type="javascript"
-                       resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <script type="text/javascript">
     $(document).ready(function() {
         $.each(['editContent'], function(index, element) {
             if ($('#' + element).length > 0) {
                 $('label[for="' + element + '"]').hide();
-                CKEDITOR.replace(element, { toolbar : 'User',
-                	filebrowserBrowseUrl : null,
-                	filebrowserImageBrowseUrl : null,
-                	filebrowserFlashBrowseUrl : null,
-                	filebrowserLinkBrowseUrl : null
-                });
             }
         });
     });
 </script>
+<uiComponents:ckeditor selector="#editContent"/>
+
     <form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
         <input type="hidden" name="autoCheckin" value="true">
         <input type="hidden" name="nodeType" value="jnt:blogContent">

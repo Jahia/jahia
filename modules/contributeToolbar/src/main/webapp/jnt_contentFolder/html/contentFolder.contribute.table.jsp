@@ -20,10 +20,7 @@
 <template:addResources type="javascript" resources="jquery.form.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.js"/>
-<template:addResources type="javascript"
-                       resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
-<template:addResources type="javascript"
-                       resources="${url.context}/gwt/resources/${url.ckEditor}/adapters/jquery.js"/>
+<template:addResources type="javascript" resources="ckeditor/ckeditor.js,ckeditor/adapters/jquery.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>

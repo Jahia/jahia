@@ -52,6 +52,13 @@ CKEDITOR.editorConfig = function( config )
         //['TextColor','BGColor'],
         ['Maximize', 'ShowBlocks','-','About']
     ];
+    config.toolbar_Mini = [
+        ['Bold','Italic','Underline','Strike'],
+        ['NumberedList','BulletedList','-','Blockquote'],
+        ['Link','Unlink'],
+        ['Image','Smiley'],
+        ['TextColor','BGColor']
+    ];
     config.toolbar_Light = [
         ['Bold','Italic','Underline','Strike','-','NumberedList','BulletedList']
     ];

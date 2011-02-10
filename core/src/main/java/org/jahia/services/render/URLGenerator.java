@@ -40,7 +40,6 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Captcha;
@@ -97,7 +96,6 @@ public class URLGenerator {
     private String baseContribute;
     private String baseEdit;
     private String basePreview;
-    private String ckeditor;
     private String convert;
     private String myProfile;
 
@@ -127,7 +125,6 @@ public class URLGenerator {
         baseContribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         contribute = baseContribute + resourcePath;
         studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
-        ckeditor = SettingsBean.getInstance().getJahiaCkEditorDiskPath();
         if (context.getSite() != null) {
             try {
                 if (context.getSite().hasProperty("j:templatesSet")) {
@@ -309,10 +306,6 @@ public class URLGenerator {
 
     public String getBasePreview() {
         return basePreview;
-    }
-
-    public String getCkEditor() {
-        return ckeditor;
     }
 
     public String getConvert() {

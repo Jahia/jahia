@@ -50,8 +50,6 @@ jahiaSharedTemplatesDiskPath                           =
 jahiaImportsDiskPath                                   =
 jahiaWebAppsDiskPath                                   =
 
-jahiaCkEditorDiskPath                                  =    ckeditor
-
 ######################################################################
 ### URL's  ###########################################################
 ######################################################################

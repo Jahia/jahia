@@ -1253,7 +1253,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException {
+    	logger.info("Deploying templates {} to the target {}", templatesPath, sitePath);
         contentManager.deployTemplates(templatesPath, sitePath, retrieveCurrentSession());
+    	logger.info("...template deployment done.");
     }
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType) throws GWTJahiaServiceException {

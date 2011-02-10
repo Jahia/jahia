@@ -46,6 +46,7 @@ import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
 import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.core.query.FacetedQueryResult;
@@ -189,7 +190,24 @@ public class QueryResultWrapper implements QueryResult {
     }
 
     public NodeIterator getNodes() throws RepositoryException {
-        final NodeIterator ni = result.getNodes();
+        final NodeIterator ni ;
+        if (result.getSelectorNames().length == 1) {
+            ni = result.getNodes();
+
+        } else {
+            ni = new NodeIteratorAdapter(result.getRows()) {
+                @Override
+                public Object next() {
+                    Row row = (Row) super.next();
+                    try {
+                        return row.getNode(result.getSelectorNames()[0]);
+                    } catch (RepositoryException e) {
+                        throw new RuntimeException(
+                                "Unable to access the node in " + row, e);
+                    }
+                }
+            };
+        }
         return new NodeIteratorWrapper(ni, session, provider);
     }
 

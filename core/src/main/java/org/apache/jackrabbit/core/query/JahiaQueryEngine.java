@@ -73,4 +73,17 @@ public class JahiaQueryEngine extends QueryEngine {
         }
     }
 
+    @Override
+    protected QueryResult execute(Column[] columns, Join join, Constraint constraint, Ordering[] orderings, long offset, long limit) throws RepositoryException {
+        QueryResult result = super.execute(columns, join, constraint, orderings, offset, limit);
+        result = new JahiaSimpleQueryResult(result.getColumnNames(), result.getSelectorNames(), result.getRows());
+        return result;
+    }
+
+    @Override
+    public QueryResult execute(Column[] columns, Source source, Constraint constraint, Ordering[] orderings, long offset, long limit) throws RepositoryException {
+        QueryResult result = super.execute(columns, source, constraint, orderings, offset, limit);
+        result = new JahiaSimpleQueryResult(result.getColumnNames(), result.getSelectorNames(), result.getRows());
+        return result;
+    }
 }

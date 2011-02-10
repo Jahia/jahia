@@ -16,6 +16,9 @@
                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Bookmarks"/>
                     </bookmarks>
                 </profilepageitems>
+                <portalComponents jcr:primaryType="jnt:contentFolder">
+                    <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks"/>
+                </portalComponents>
             </contents>
             <templates jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder">
@@ -23,11 +26,7 @@
                         <default jcr:primaryType="jnt:folder"/>
                     </themes>
                 </files>
-                <contents jcr:primaryType="jnt:contentFolder">
-                    <portalComponents jcr:primaryType="jnt:contentFolder">
-                        <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks"/>
-                    </portalComponents>
-                </contents>
+                <contents jcr:primaryType="jnt:contentFolder"/>
                 <base j:view="apps" jcr:primaryType="jnt:template">
                     <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                         <user-bookmarks j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"

@@ -86,6 +86,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 		}
 	}
 
+	private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
+        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
+            if (o1.isDefault()) return 99;
+            if (o2.isDefault()) return -99;
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
+
 	private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
     private TemplatePackageDeployer templatePackageDeployer;
@@ -140,17 +148,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public SortedSet<JahiaTemplatesPackage> getSortedAvailableTemplatePackagesForModule(String moduleName,final RenderContext context) {
         List<JahiaTemplatesPackage> r = templatePackageRegistry.getPackagesPerModule().get(moduleName);
-        Comparator<JahiaTemplatesPackage> packageComparator = new Comparator<JahiaTemplatesPackage>() {
-            public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
-                if (o1.isDefault()) return 99;
-                if (o2.isDefault()) return -99;
-                if (context.getSite() != null) {
-//                    if (o1.getName().equals(context.getSite().getTemplatePackageName())) return -99;
-//                    if (o2.getName().equals(context.getSite().getTemplatePackageName())) return 99;
-                }
-                return o1.getName().compareTo(o2.getName());
-            }
-        };
+		Comparator<JahiaTemplatesPackage> packageComparator = TEMPLATE_PACKAGE_COMPARATOR;
         SortedSet<JahiaTemplatesPackage> sortedPackages = new TreeSet<JahiaTemplatesPackage>(
                             packageComparator);
         if (r != null) {
@@ -390,10 +388,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 File defaultTpl = new File(settingsBean.getJahiaTemplatesDiskPath() + "/default/jnt_template/html/template.jsp");
                 if (defaultTpl.exists()) {
                     File out = new File(tmplRootFolder, "jnt_template/html/template."+moduleName+".jsp");
+                    FileInputStream source = null;
+                    FileOutputStream target = null;
                     try {
-                        IOUtils.copy(new FileInputStream(defaultTpl), new FileOutputStream(out));
+                    	source = new FileInputStream(defaultTpl);
+                    	target = new FileOutputStream(out);
+                        IOUtils.copy(source, target);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
+                    } finally {
+                    	IOUtils.closeQuietly(source);
+                    	IOUtils.closeQuietly(target);
                     }
                 }
             }
@@ -417,7 +422,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 writer.newLine();
                 writer.close();
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e.getMessage(), e);
             }
             templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
             logger.info("Package '" + moduleName + "' successfully created");
@@ -443,17 +448,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             .getInstance().exportZip(session.getNode("/templateSets/"+moduleName), session.getRootNode(),
                             new FileOutputStream(importFile), params);
                 } catch (JahiaException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(), e);
                 } catch (RepositoryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(), e);
                 } catch (SAXException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(), e);
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(), e);
                 } catch (JDOMException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(), e);
                 }
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;
             }
         });
     }
@@ -481,7 +486,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         ReferencesHelper.resolveCrossReferences(session, references);
                         session.save();
 
-                        JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getUUID(), "default", "live", null, true, null);
+                        JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getIdentifier(), "default", "live", null, true, null);
 
                         return null;
                     }

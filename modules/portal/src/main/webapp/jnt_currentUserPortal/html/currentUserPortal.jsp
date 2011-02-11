@@ -23,11 +23,11 @@
 <c:set var="writeable" value="${currentResource.workspace eq 'live'}"/>
 <c:if test="${writeable}">
     <c:if test="${empty portal}">
-        <form action="${url.base}${user.path}/myportal${fn:replace(renderContext.mainResource.node.path,'/','_')}"
+        <form action="${url.base}${user.path}.createPortal.do"
               method="post">
-            <input type="hidden" name="nodeType" value="jnt:portal"/>
+            <input type="hidden" name="portalPath" value="myportal${fn:replace(renderContext.mainResource.node.path,'/','_')}"/>
             <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-            <input type="hidden" name="componentsFolder" value="${currentNode.properties['componentsFolder'].string}"/>
+            <input type="hidden" name="defaultPortal" value="${currentNode.properties['defaultPortal'].string}"/>
             <c:set var="ps" value=""/>
             <c:forEach items="${param}" var="p">
                 <c:if test="${not empty ps}">

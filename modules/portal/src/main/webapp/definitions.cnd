@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:portal] > jnt:content, mix:title
+[jnt:portal] > jmix:siteComponent, jnt:content, mix:title
  - componentsFolder (weakreference, picker) < jnt:contentFolder
  - columns (long) = 3 autocreated
  + column1 (jnt:contentList) = jnt:contentList autocreated
@@ -13,4 +13,4 @@
  - script (string) mandatory indexed=no
 
 [jnt:currentUserPortal] > jmix:siteComponent, jmix:bindedComponent
- - componentsFolder (weakreference, picker) < jnt:contentFolder
+ - defaultPortal (weakreference, picker) < jnt:portal

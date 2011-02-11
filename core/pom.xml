@@ -1009,25 +1009,7 @@
 		</dependency>
         <!-- end of Google Data API -->
         
-        <!-- Google analytics -->
-        <dependency>
-	      <groupId>com.google.gdata</groupId>
-	      <artifactId>gdata-analytics-meta</artifactId>
-	      <version>2.1</version>
-	    </dependency>
-        <dependency>
-	      <groupId>com.google.gdata</groupId>
-	      <artifactId>gdata-analytics</artifactId>
-	      <version>2.1</version>
-	    </dependency>
-        <dependency>
-	      <groupId>com.google.gdata</groupId>
-	      <artifactId>jsr305</artifactId>
-	      <version>1.0</version>
-	    </dependency>
-        <!-- end of Google analytics -->
-        
-        <!-- Google Data API -->
+        <!-- Google Docs API -->
 		<dependency>
 			<groupId>com.google.gdata</groupId>
 			<artifactId>gdata-docs</artifactId>
@@ -1038,7 +1020,7 @@
 			<artifactId>gdata-docs-meta</artifactId>
 			<version>3.0</version>
 		</dependency>
-        <!-- end of Google Data API -->
+        <!-- end of Google Docs API -->
         
         <!-- Apache Shiro -->
         <dependency>

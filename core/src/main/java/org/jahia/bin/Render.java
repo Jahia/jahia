@@ -587,12 +587,16 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             URLResolver urlResolver = new URLResolver(req.getPathInfo(), req.getServerName(), req);
 
             // check permission
-            if (!hasAccess(urlResolver.getNode())) {
-                if (JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
-                    throw new JahiaUnauthorizedException();
-                } else {
-                    throw new JahiaForbiddenAccessException();
+            try {
+                if (!hasAccess(urlResolver.getNode())) {
+                    if (JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
+                        throw new JahiaUnauthorizedException();
+                    } else {
+                        throw new JahiaForbiddenAccessException();
+                    }
                 }
+            } catch (PathNotFoundException e) {
+
             }
 
             session.setAttribute("workspace", urlResolver.getWorkspace());

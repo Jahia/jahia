@@ -382,45 +382,21 @@ public class URLResolver {
                             throws RepositoryException {
                         String nodePath = path.endsWith("/*")?path.substring(0,path.lastIndexOf("/*")):path;
                         JCRNodeWrapper node = null;
-                        // remove extension
-                        if (nodePath.indexOf(".") > 0 && nodePath.lastIndexOf("/") < nodePath.lastIndexOf(".")) {
-                            nodePath = nodePath.substring(0, nodePath.lastIndexOf("."));
-                        }
-                        try {
-                            if (method.equals(Render.METHOD_GET)) {
-                                while (true) {
-                                    try {
-                                        node = session.getNode(nodePath);
-                                        break;
-                                    } catch (PathNotFoundException ex) {
-                                        if (nodePath.lastIndexOf("/") < nodePath.lastIndexOf(".")) {
-                                            nodePath = nodePath.substring(0,nodePath.lastIndexOf("."));
-                                        } else {
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (node == null) {
+                        while (true) {
+                            try {
+                                node = session.getNode(nodePath);
+                                break;
+                            } catch (PathNotFoundException ex) {
+                                if (nodePath.lastIndexOf("/") < nodePath.lastIndexOf(".")) {
+                                    nodePath = nodePath.substring(0,nodePath.lastIndexOf("."));
+                                } else {
                                     throw new PathNotFoundException("'" + nodePath + "'not found");
                                 }
                             }
-                            else {
-                                while (nodePath.lastIndexOf("/") > 0) {
-                                    try {
-                                        node = session.getNode(nodePath);
-                                        break;
-                                    } catch (PathNotFoundException ex) {
-                                        nodePath = nodePath.substring(0,nodePath.lastIndexOf("/"));
-                                    }
-                                }
-                            }
-                        } catch (PathNotFoundException ex) {
-                            throw new PathNotFoundException("'" + nodePath + "'not found");
                         }
-                        if (node == null) {
-                            throw new PathNotFoundException("'" + nodePath + "'not found");
-                        }
+
                         JCRSiteNode site = node.getResolveSite();
+
                         JCRSessionWrapper userSession = site != null
                                 && site.getDefaultLanguage() != null
                                 && site.isMixLanguagesActive() ? JCRSessionFactory

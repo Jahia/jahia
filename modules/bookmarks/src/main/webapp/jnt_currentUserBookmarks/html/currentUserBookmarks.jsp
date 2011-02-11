@@ -48,7 +48,9 @@
 </c:if>
 
 <c:if test="${currentResource.workspace ne 'live'}">
-
+    <c:if test="${not empty currentNode.properties['jcr:title']}">
+        <h3>${currentNode.properties['jcr:title'].string}</h3>
+    </c:if>
     <script type="text/javascript">
         function deleteBookmark(source) {
             $.post('${url.base}' + source, {"methodToCall":"delete"},

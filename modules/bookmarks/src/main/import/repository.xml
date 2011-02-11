@@ -12,12 +12,14 @@
                 <profilepageitems jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="profilePageItems"/>
                     <bookmarks divClass="user-bookmarks" jcr:primaryType="jnt:componentLink"
-                           targetTemplate="user-bookmarks">
+                               targetTemplate="user-bookmarks">
                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Bookmarks"/>
                     </bookmarks>
                 </profilepageitems>
                 <portalComponents jcr:primaryType="jnt:contentFolder">
-                    <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks"/>
+                    <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks">
+                        <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="My bookmarks"/>
+                    </currentUserBookmarks>
                 </portalComponents>
             </contents>
             <templates jcr:primaryType="jnt:templatesFolder">
@@ -32,7 +34,10 @@
                         <user-bookmarks j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
                                         jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks"/>
+                                <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks">
+                                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation"
+                                                      jcr:title="My bookmarks"/>
+                                </currentUserBookmarks>
                             </pagecontent>
                         </user-bookmarks>
                     </user-base>

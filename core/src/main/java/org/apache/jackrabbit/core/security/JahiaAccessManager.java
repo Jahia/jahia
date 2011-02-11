@@ -394,6 +394,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             int depth = 1;
             while (!itemExists) {
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
+                itemExists = getSecuritySession().itemExists(jcrPath);
             }
 
             Item i = getSecuritySession().getItem(jcrPath);

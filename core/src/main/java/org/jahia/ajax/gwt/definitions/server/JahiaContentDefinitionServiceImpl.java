@@ -77,10 +77,6 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getSubNodetypes(baseTypes, new HashMap<String, Object>(), getUILocale());
     }
 
-    public List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException {
-        return contentDefinition.getPageTemplates(retrieveCurrentSession(), getSite());
-    }
-
     public GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException {
 //        try {

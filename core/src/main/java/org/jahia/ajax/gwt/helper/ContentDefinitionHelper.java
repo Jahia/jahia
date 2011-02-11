@@ -107,24 +107,6 @@ public class ContentDefinitionHelper {
         return gwtMixin;
     }
 
-
-    public List<GWTJahiaNode> getPageTemplates(JCRSessionWrapper currentUserSession, JCRSiteNode site)
-            throws GWTJahiaServiceException {
-        try {
-            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-            JCRNodeWrapper node = site.getNode("templates");
-            NodeIterator iterator = node.getNodes();
-            while (iterator.hasNext()) {
-                JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();
-                nodes.add(navigation.getGWTJahiaNode(jcrNodeWrapper));
-            }
-            return nodes;
-        } catch (RepositoryException e) {
-            logger.error("Cannot find type", e);
-            throw new GWTJahiaServiceException(e.toString());
-        }
-    }
-
     public GWTJahiaNodeType getGWTJahiaNodeType(ExtendedNodeType nodeType, Locale uiLocale) {
         GWTJahiaNodeType gwt = new GWTJahiaNodeType();
         gwt.setName(nodeType.getName());

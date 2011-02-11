@@ -59,8 +59,6 @@ public interface JahiaContentDefinitionServiceAsync {
 
     void getSubNodetypes(String baseType, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
 
-    void getPageTemplates(AsyncCallback<List<GWTJahiaNode>> async);
-
     void getWFFormForNodeAndNodeType(String formResourceName,
                                      AsyncCallback<GWTJahiaNodeType> asyncCallback);
 }

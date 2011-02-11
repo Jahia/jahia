@@ -98,8 +98,6 @@ public interface JahiaContentDefinitionService extends RemoteService {
      */
     Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(String baseType) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException;
-
     GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException;
 

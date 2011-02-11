@@ -10,4 +10,4 @@
  orderable
  + * (jnt:bookmark)
 
-[jnt:currentUserBookmarks] > jmix:profileComponentContent, jmix:bindedComponent
+[jnt:currentUserBookmarks] > jnt:content, jmix:profileComponentContent, jmix:bindedComponent

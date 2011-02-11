@@ -54,7 +54,7 @@
                     <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
                          src="${url.templatesPath}/default/images/icons/locked.gif">
                 </c:if>
-                <a href="${url.base}${child.path}.html">
+                <a href="${url.base}${child.path}.viewContent.html">
                     ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
                 </a>
             </div>

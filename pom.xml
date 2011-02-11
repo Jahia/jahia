@@ -51,7 +51,7 @@
 
         <driver.derby.version>10.7.1.1</driver.derby.version>
         <driver.mysql.version>5.1.15</driver.mysql.version>
-        <driver.postgresql.version>8.4-702.jdbc3</driver.postgresql.version>
+        <driver.postgresql.version>9.0-801.jdbc3</driver.postgresql.version>
 
         <!-- MANIFEST.MF information -->
         <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>

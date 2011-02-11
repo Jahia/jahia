@@ -21,7 +21,7 @@
                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Content"/>
                     </content>
                     <settings divClass="user-edit-details" jcr:primaryType="jnt:componentLink"
-                                targetTemplate="user-edit-details">
+                              targetTemplate="user-edit-details">
                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Settings"/>
                     </settings>
                     <tasks divClass="user-tasks" j:requireLoggedUser="false" j:requirePrivilegedUser="true"
@@ -50,7 +50,7 @@
                     <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col511" jcr:primaryType="jnt:row"/>
-                            <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area"/>
+                            <user-content-row column="1col16" jcr:primaryType="jnt:row"/>
                         </pagecontent>
                         <row-col2 jcr:primaryType="jnt:contentList">
                             <contentList j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style"
@@ -155,6 +155,12 @@
                             <profilepageitems j:node="/templateSets/profile/contents/profilepageitems"
                                               jcr:primaryType="jnt:contentReference"/>
                         </row-col1>
+                        <user-content-row-col1 j:skin="skins.box6" j:style="blue"
+                                               jcr:mixinTypes="jmix:skinnable jmix:style"
+                                               jcr:primaryType="jnt:contentList">
+                            <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area"/>
+                        </user-content-row-col1>
+
                     </user-base>
                 </base>
             </templates>

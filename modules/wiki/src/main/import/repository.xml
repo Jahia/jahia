@@ -57,12 +57,11 @@
           </wiki>
           <wiki-content j:applyOn="jnt:wikiPage" j:defaultTemplate="true" j:requiredMode="live" jcr:primaryType="jnt:contentTemplate">
             <pagecontent jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay j:mainResourceView="title" jcr:primaryType="jnt:mainResourceDisplay" />
-              <row column="2col124" jcr:primaryType="jnt:row" />
+              <row column="2col124" jcr:primaryType="jnt:row"/>
             </pagecontent>
             <row-col1 jcr:primaryType="jnt:contentList">
               <tabularList jcr:primaryType="jnt:tabularList">
-                <pagecontent j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                <pagecontent j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
                   <mainResourceDisplay j:mainResourceView="syntax" jcr:primaryType="jnt:mainResourceDisplay" />
                 </pagecontent>

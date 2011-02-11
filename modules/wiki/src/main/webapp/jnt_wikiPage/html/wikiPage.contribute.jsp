@@ -2,6 +2,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <template:addResources type="css" resources="wiki.css"/>
+<h2>${currentNode.properties["jcr:title"].string}</h2>
 <template:tokenizedForm>
 <form class="formWiki" action="${currentNode.name}" method="post">
     <input type="hidden" name="autoCheckin" value="true">

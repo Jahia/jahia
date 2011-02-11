@@ -4,6 +4,7 @@
 <template:addResources type="css" resources="wiki.css"/>
 
 <div class="wiki">
+    <h2>${currentNode.properties["jcr:title"].string}</h2>
     <template:module node="${currentNode}" template="syntax"/>
     <div class="clear"></div>
 </div>

@@ -57,11 +57,13 @@
 <jcr:propertyInitializers node="${user}" name="j:gender" var="genderInit"/>
 <jcr:propertyInitializers node="${user}" name="j:title" var="titleInit"/>
 
-<script>
+<template:addResources>
+<script type="text/javascript">
     $(document).ready(function() {
         initEditFields("${currentNode.identifier}");
     });
 </script>
+</template:addResources>
 
 <ul class="user-profile-list">
     <c:if test="${currentNode.properties['j:firstName'].boolean}">

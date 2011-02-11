@@ -137,9 +137,9 @@ function initEditFields(id) {
 }
 
 function wcagCompliant(id, richTextElement, userTriggered) {
-	var ctx = jahiaGWTParameters ? jahiaGWTParameters.contextPath : '';
+	var ctx = typeof jahiaGWTParameters != 'undefined' ? jahiaGWTParameters.contextPath : '';
 	if (!userTriggered) {
-		var wcag = jahiaGWTParameters ? jahiaGWTParameters.wcag : false;
+		var wcag = typeof jahiaGWTParameters != 'undefined' ? jahiaGWTParameters.wcag : false;
 		if (!wcag) {
 			return true;
 		}

@@ -37,14 +37,11 @@
         plugin : function(settings, original) {
             var id = get_id(original);
             remove_ck(id);
-            var ckeditorType = settings.ckeditorType || 'User';
-            var ckeditorConfig = {toolbar: ckeditorType};
-            if (ckeditorType == 'Mini') {
-            	ckeditorConfig = $.extend(ckeditorConfig, {filebrowserBrowseUrl: null, filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: null, filebrowserLinkBrowseUrl: null});
-            }
-            if (settings.ckeditorConfig) {
-            	ckeditorConfig = $.extend(ckeditorConfig, settings.ckeditorConfig);
-            }
+            var ckeditorType = settings.ckeditorType || (typeof jahiaGWTParameters != 'undefined' ? 'User' : 'Mini');
+            ckeditorType = $(original).attr('ckeditor:type') || ckeditorType;
+            var ckeditorConfig = ckeditorType == 'Mini' ? {toolbar: 'Mini', filebrowserBrowseUrl: null, filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: null, filebrowserLinkBrowseUrl: null} : {toolbar: ckeditorType};
+            eval('var originalConfig = ' + $(original).attr('ckeditor:config'));
+          	ckeditorConfig = $.extend(ckeditorConfig, settings.ckeditorConfig, originalConfig);
             var ckeditorInstance=CKEDITOR.replace(id, ckeditorConfig);
             if (typeof wcagCompliant == 'function') {
             	ckeditorInstance.checkWCAGCompliance=wcagCompliant;

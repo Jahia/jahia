@@ -34,9 +34,13 @@ package org.jahia.services.content;
 
 import org.jahia.data.beans.CategoryBean;
 
-import javax.jcr.Property;
-import javax.jcr.ValueFormatException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.Calendar;
 
 /**
  * Interface for wrappers for javax.jcr.property to allow more data format.
@@ -51,4 +55,27 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
      * @throws RepositoryException
      */
     CategoryBean getCategory() throws ValueFormatException, RepositoryException;
+
+    void addValue(String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValue(InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValue(long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValue(double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValue(Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValue(boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
+    void addValues(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
+
 }

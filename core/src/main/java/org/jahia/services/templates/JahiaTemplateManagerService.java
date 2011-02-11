@@ -488,6 +488,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                         JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getIdentifier(), "default", "live", null, true, null);
 
+                        JCRPropertyWrapper installedModules = destinationNode.getProperty("j:installedModules");
+                        Value[] values = installedModules.getValues();
+                        for (Value value : values) {
+                            if (value.getString().equals(originalNode.getName())) {
+                                return null;
+                            }
+                        }
+                        destinationNode.checkout();
+                        installedModules.addValue(originalNode.getName());
+                        session.save();
+
                         return null;
                     }
                 });

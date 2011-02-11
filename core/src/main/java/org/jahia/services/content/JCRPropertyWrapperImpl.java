@@ -44,7 +44,10 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Wrapper for javax.jcr.property to allow more data format.
@@ -176,6 +179,56 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         } else {
             remove();
         }
+    }
+
+    public void addValue(String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value));
+    }
+
+    public void addValue(InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value));
+    }
+
+    public void addValue(long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value));
+    }
+
+    public void addValue(double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value));
+    }
+
+    public void addValue(Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value));
+    }
+
+    public void addValue(boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value));
+    }
+
+    public void addValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value));
+    }
+
+    public void addValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value));
+    }
+
+    public void addValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValue(getSession().getValueFactory().createValue(value));
+    }
+
+    public void addValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        addValues(new Value[] { value });
+    }
+
+    public void addValues(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        List<Value> newValues = new ArrayList<Value>(Arrays.asList(getValues()));
+        for (Value value : values) {
+            if (!newValues.contains(value)) {
+                newValues.add(value);
+            }
+        }
+        setValue(newValues.toArray(new Value[newValues.size()]));
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {

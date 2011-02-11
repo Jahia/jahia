@@ -32,8 +32,6 @@
 
 package org.jahia.bin;
 
-import org.apache.camel.CamelExecutionException;
-import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
@@ -115,12 +113,10 @@ public class Notifications extends JahiaMultiActionController {
 			sendEmail(host, from, to, subject, text);
 
 			response.setStatus(HttpServletResponse.SC_OK);
-		} catch (CamelExecutionException e) {
+		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().append(e.getCause().getMessage());
 			logger.warn("Error sending test e-mail message. Cause: " + e.getMessage(), e);
-		} catch (Exception e) {
-			DefaultErrorHandler.getInstance().handle(e, request, response);
 		}
 	}
 

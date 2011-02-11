@@ -72,5 +72,13 @@
 
     <bean class="org.jahia.modules.defaultmodule.actions.AddComment" >
         <property name="name" value="addComment"/>
+        <property name="requiredPermission" value="publish" />
     </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.PublishAction">
+        <property name="name" value="publish"/>
+        <property name="publicationService" ref="jcrPublicationService"/>
+        <property name="requiredPermission" value="publish" />
+    </bean>
+
 </beans>

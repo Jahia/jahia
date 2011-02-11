@@ -142,10 +142,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
         try {
             // path is null in main resource display
-            if (path != null) {
-                Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
-                templateNode = t;
+            Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
+            templateNode = t;
 
+            if (path != null) {
                 if (currentResource.getNode().isNodeType("jnt:area") && t != null) {
                     // Skip to next node automatically if you're in an area to avoid loop
                     t = t.next;

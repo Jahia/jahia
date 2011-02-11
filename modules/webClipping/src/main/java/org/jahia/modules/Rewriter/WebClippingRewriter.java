@@ -1,8 +1,36 @@
-package org.jahia.modules.Rewriter;
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
 
-import au.id.jericho.lib.html.*;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
+package org.jahia.modules.Rewriter;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -13,12 +41,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.htmlparser.jericho.*;
+
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+
 /**
- * Created by IntelliJ IDEA.
  * User: Dorth
  * Date: 30 déc. 2010
  * Time: 12:07:04
- * To change this template use File | Settings | File Templates.
  */
 public final class WebClippingRewriter {
     // ------------------------------ FIELDS ------------------------------
@@ -35,7 +66,7 @@ public final class WebClippingRewriter {
         OutputDocument document = outputDocument;
         // Manage the javascript
         Source source = new Source(document.toString());
-        List scripts = source.findAllStartTags(tag);
+        List scripts = source.getAllStartTags(tag);
         StartTag body;
         for (int i = scripts.size() - 1; i >= 0; i--) {
             StartTag startTag = (StartTag) scripts.get(i);
@@ -46,7 +77,7 @@ public final class WebClippingRewriter {
             } else {
                 end = startTag.getEnd();
             }
-            final List tags = source.findAllStartTags(Tag.BODY);
+            final List tags = source.getAllStartTags(HTMLElementName.BODY);
             if (tags != null && tags.size() > 0) {
                 body = (StartTag) tags.get(0);
                 if (end < body.getBegin()) {
@@ -65,7 +96,7 @@ public final class WebClippingRewriter {
         OutputDocument document = outputDocument;
         // Manage the javascript
         Source source = new Source(document.toString());
-        List scripts = source.findAllStartTags(text);
+        List scripts = source.getAllStartTags(text);
         for (int i = scripts.size() - 1; i >= 0; i--) {
             StartTag startTag = (StartTag) scripts.get(i);
             int begin = startTag.getBegin();
@@ -79,7 +110,7 @@ public final class WebClippingRewriter {
             int endPos = 0;
             StartTag trunkTag;
             if (!"".equals(tag)) {
-                List tags = source.findAllStartTags(tag);
+                List tags = source.getAllStartTags(tag);
                 for (int j = 0; j < tags.size(); j++) {
                     trunkTag = (StartTag) tags.get(j);
                     if (!"".equals(attributName)) {
@@ -101,13 +132,13 @@ public final class WebClippingRewriter {
             }
             if (end < startPos) {
                 // This script isn't enclose in the trunked tag so we must move it to ensure everything working
-                StartTag body = ((StartTag) new Source(outputDocument.toString()).findAllStartTags().get(0));
+                StartTag body = ((StartTag) new Source(outputDocument.toString()).getAllStartTags().get(0));
                 outputDocument.insert(body.getElement().getEnd(), startTag.getElement().toString());
                 outputDocument.remove(startTag);
                 document = moveScriptInTrunkedHtml(origin, outputDocument, text, tag, attributName, attributValue);
             } else if (begin > endPos) {
                 // This script isn't enclose in the trunked tag so we must move it to ensure everything working
-                EndTag body = ((StartTag) new Source(outputDocument.toString()).findAllStartTags().get(0)).getElement().getEndTag();
+                EndTag body = ((StartTag) new Source(outputDocument.toString()).getAllStartTags().get(0)).getElement().getEndTag();
                 outputDocument.insert(body.getElement().getBegin() - 1, startTag.getElement().toString());
                 outputDocument.remove(startTag);
                 document = moveScriptInTrunkedHtml(origin, outputDocument, text, tag, attributName, attributValue);
@@ -141,7 +172,7 @@ public final class WebClippingRewriter {
         Source source = new Source(responseBody);
         OutputDocument document = new OutputDocument(source);
         StringBuffer stringBuffer = new StringBuffer(responseBody.length());
-        StartTag baseTag = source.findNextStartTag(0, Tag.BASE);
+        StartTag baseTag = source.getNextStartTag(0, HTMLElementName.BASE);
         if (baseTag != null) {
             final Attribute attribute = baseTag.getAttributes().get("href");
             if (attribute != null) {
@@ -219,7 +250,7 @@ public final class WebClippingRewriter {
         StartTag startTag;
         if (!"".equals(tag)) {
             // Get the list of the specified tag
-            List tags = origin.findAllStartTags(tag.toLowerCase());
+            List tags = origin.getAllStartTags(tag.toLowerCase());
             for (int i = 0; i < tags.size(); i++) {
                 startTag = (StartTag) tags.get(i);
                 if (!"".equals(attributeName)) {
@@ -239,17 +270,17 @@ public final class WebClippingRewriter {
         }
         outputDocument = new OutputDocument(new Source(outputDocument.toString()));
         if (!isTrunked) {
-            outputDocument = WebClippingRewriter.moveScriptInNonTrunkedHtml(outputDocument, Tag.SCRIPT);
-            outputDocument = WebClippingRewriter.moveScriptInNonTrunkedHtml(outputDocument, Tag.LINK);
-            outputDocument = WebClippingRewriter.moveScriptInNonTrunkedHtml(outputDocument, Tag.STYLE);
+            outputDocument = WebClippingRewriter.moveScriptInNonTrunkedHtml(outputDocument, HTMLElementName.SCRIPT);
+            outputDocument = WebClippingRewriter.moveScriptInNonTrunkedHtml(outputDocument, HTMLElementName.LINK);
+            outputDocument = WebClippingRewriter.moveScriptInNonTrunkedHtml(outputDocument, HTMLElementName.STYLE);
         } else {
-            outputDocument = WebClippingRewriter.moveScriptInTrunkedHtml(origin, outputDocument, Tag.SCRIPT, tag, attributeName, attributeValue);
-            outputDocument = WebClippingRewriter.moveScriptInTrunkedHtml(origin, outputDocument, Tag.LINK,  tag, attributeName, attributeValue);
-            outputDocument = WebClippingRewriter.moveScriptInTrunkedHtml(origin, outputDocument, Tag.STYLE,  tag, attributeName, attributeValue);
+            outputDocument = WebClippingRewriter.moveScriptInTrunkedHtml(origin, outputDocument, HTMLElementName.SCRIPT, tag, attributeName, attributeValue);
+            outputDocument = WebClippingRewriter.moveScriptInTrunkedHtml(origin, outputDocument, HTMLElementName.LINK,  tag, attributeName, attributeValue);
+            outputDocument = WebClippingRewriter.moveScriptInTrunkedHtml(origin, outputDocument, HTMLElementName.STYLE,  tag, attributeName, attributeValue);
         }
         Source source = new Source(outputDocument.toString());
         OutputDocument document = new OutputDocument(source);
-        List tags = source.findAllStartTags(Tag.BODY);
+        List tags = source.getAllStartTags(HTMLElementName.BODY);
         if (tags != null && tags.size() > 0) {
             StartTag body = (StartTag) tags.get(0);
             Attributes attributes = body.getAttributes();
@@ -267,7 +298,7 @@ public final class WebClippingRewriter {
         }
         final String s = document.toString();
         source = new Source(s);
-        tags = source.findAllStartTags(Tag.BODY);
+        tags = source.getAllStartTags(HTMLElementName.BODY);
         StartTag body;
         if (tags != null && tags.size() > 0)
             body = (StartTag) tags.get(0);
@@ -276,7 +307,7 @@ public final class WebClippingRewriter {
     }
 
     private void rewriteATag(Source source, StringBuffer stringBuffer, OutputDocument document, RenderContext context) {
-        List aStartTag = source.findAllStartTags(Tag.A);
+        List aStartTag = source.getAllStartTags(HTMLElementName.A);
         for (int i = 0; i < aStartTag.size(); i++) {
             try {
                 StartTag startTag = (StartTag) aStartTag.get(i);
@@ -353,7 +384,7 @@ public final class WebClippingRewriter {
     }
 
     private void rewriteAreaTag(Source source, StringBuffer stringBuffer, OutputDocument document, RenderContext context) throws MalformedURLException {
-        List aStartTag = source.findAllStartTags(Tag.AREA);
+        List aStartTag = source.getAllStartTags(HTMLElementName.AREA);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             Attributes attributes = startTag.getAttributes();
@@ -426,7 +457,7 @@ public final class WebClippingRewriter {
 
     private void rewriteBackgroundAttribute(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
-        List aStartTag = source.findAllStartTags();
+        List aStartTag = source.getAllStartTags();
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             Attributes attributes = startTag.getAttributes();
@@ -453,7 +484,7 @@ public final class WebClippingRewriter {
     }
 
     private void rewriteFormTag(Source source, StringBuffer stringBuffer, OutputDocument document, RenderContext context) throws MalformedURLException {
-        List formStartTag = source.findAllStartTags(Tag.FORM);
+        List formStartTag = source.getAllStartTags(HTMLElementName.FORM);
         for (int i = 0; i < formStartTag.size(); i++) {
             StartTag startTag = (StartTag) formStartTag.get(i);
             Attributes attributes = startTag.getAttributes();
@@ -481,7 +512,7 @@ public final class WebClippingRewriter {
 
     private void rewriteFrameTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
-        List aStartTag = source.findAllStartTags(Tag.FRAME);
+        List aStartTag = source.getAllStartTags(HTMLElementName.FRAME);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             Attributes attributes = startTag.getAttributes();
@@ -507,7 +538,7 @@ public final class WebClippingRewriter {
 
     private void rewriteIFrameTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
-        List aStartTag = source.findAllStartTags(Tag.IFRAME);
+        List aStartTag = source.getAllStartTags(HTMLElementName.IFRAME);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             Attributes attributes = startTag.getAttributes();
@@ -533,7 +564,7 @@ public final class WebClippingRewriter {
 
     private void rewriteImgTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
-        List aStartTag = source.findAllStartTags(Tag.IMG);
+        List aStartTag = source.getAllStartTags(HTMLElementName.IMG);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             Attributes attributes = startTag.getAttributes();
@@ -559,7 +590,7 @@ public final class WebClippingRewriter {
 
     private void rewriteStyleAttribute(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
-        List aStartTag = source.findAllStartTags();
+        List aStartTag = source.getAllStartTags();
         for (Object tag : aStartTag) {
             StartTag startTag = (StartTag) tag;
             Attributes attributes = startTag.getAttributes();
@@ -595,7 +626,7 @@ public final class WebClippingRewriter {
 
     private void rewriteObjectTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
-        List aStartTag = source.findAllStartTags(Tag.PARAM);
+        List aStartTag = source.getAllStartTags(HTMLElementName.PARAM);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             Attributes attributes = startTag.getAttributes();
@@ -624,7 +655,7 @@ public final class WebClippingRewriter {
 
     private void rewriteInputImageTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
-        List aStartTag = source.findAllStartTags(Tag.INPUT);
+        List aStartTag = source.getAllStartTags(HTMLElementName.INPUT);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             Attributes attributes = startTag.getAttributes();
@@ -652,7 +683,7 @@ public final class WebClippingRewriter {
     private void rewriteLinkTag(Source source, StringBuffer stringBuffer, OutputDocument document, Resource resource)
             throws MalformedURLException {
         boolean includeCss = Boolean.valueOf(resource.getNode().getPropertyAsString("includeCss"));
-        List aStartTag = source.findAllStartTags(Tag.LINK);
+        List aStartTag = source.getAllStartTags(HTMLElementName.LINK);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             Attributes attributes = startTag.getAttributes();
@@ -681,7 +712,7 @@ public final class WebClippingRewriter {
     private void rewriteStyleTag(Source source, StringBuffer stringBuffer, OutputDocument document, Resource resource)
             throws MalformedURLException {
         boolean includeCss = Boolean.valueOf(resource.getNode().getPropertyAsString("includeCss"));
-        List aStartTag = source.findAllStartTags(Tag.STYLE);
+        List aStartTag = source.getAllStartTags(HTMLElementName.STYLE);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             if (!includeCss) {
@@ -692,7 +723,7 @@ public final class WebClippingRewriter {
 
     private void rewriteScriptTag(Source source, StringBuffer stringBuffer, OutputDocument document)
             throws MalformedURLException {
-        List aStartTag = source.findAllStartTags(Tag.SCRIPT);
+        List aStartTag = source.getAllStartTags(HTMLElementName.SCRIPT);
         for (int i = 0; i < aStartTag.size(); i++) {
             StartTag startTag = (StartTag) aStartTag.get(i);
             Attributes attributes = startTag.getAttributes();

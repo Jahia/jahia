@@ -70,7 +70,20 @@
        that DOESN'T CONTAIN ANY SPACES IN THE PATH, for example :
          C:/java/m2repository
 
-    6. In the main directory, type :
+    6. When you use a new Tomcat server make sure you give it enough memory and adjust its options.
+       This can be increase by editing bin/catalina.sh and add the following lines:
+         CATALINA_OPTS="$CATALINA_OPTS -Xms1024m -Xmx1024m -Djava.awt.headless=true -XX:MaxPermSize=256m -server -Dhibernate.jdbc.use_streams_for_binary=true -verbose:gc"
+         export CATALINA_OPTS
+         CATALINA_PID=/tmp/jahia-6.5.pid
+         export CATALINA_PID
+       before the line
+         # OS specific support.
+       On Windows systems, edit the bin\catalina.bat file and add:
+         set CATALINA_OPTS=%CATALINA_OPTS% -Dsun.io.useCanonCaches=false -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -server -Dhibernate.jdbc.use_streams_for_binary=true -verbose:gc
+       before the line
+         rem Guess CATALINA_HOME if not defined
+
+    7. In the main directory, type :
        mvn install jahia:deploy jahia:configure
 
        This should compile and deploy into your local repository all of Jahia, deploy and install everything in the
@@ -81,10 +94,10 @@
        machine takes 2 minutes 40 seconds. These times do not include JSP or
        GWT compilation.
 
-    7. Point your browser to http://localhost:8080/
+    8. Point your browser to http://localhost:8080/
     	 Default root password is root1234
 
-    8. Create your first virtual site and enjoy.
+    9. Create your first virtual site and enjoy.
 
  Deploying to other application servers
 ------------------------------------------------------------------------------
@@ -327,7 +340,7 @@ The plugin will use the url set in the parameter " <jahia.test.url> " in your se
 
 - Open the file target/site/surefire-report.html and look at the result.
 
-- To excecute selenium tests, server selenium is require. You have to download selenium RC here : http://seleniumhq.org/download/
+- To execute selenium tests, server selenium is require. You have to download selenium RC here : http://seleniumhq.org/download/
  This tests are configure to be run through http://localhost:8080/cms
 
 

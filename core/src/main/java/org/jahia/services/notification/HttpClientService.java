@@ -356,7 +356,7 @@ public class HttpClientService implements ServletContextAware {
         this.servletContext = servletContext;
     }
 
-    public void shuddown() {
+    public void shutdown() {
         logger.info("Shutting down HttpClient...");
         try {
             if (httpClient.getHttpConnectionManager() instanceof MultiThreadedHttpConnectionManager) {

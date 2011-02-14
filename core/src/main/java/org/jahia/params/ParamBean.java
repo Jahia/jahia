@@ -114,7 +114,6 @@ package org.jahia.params;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.slf4j.Logger;
-import org.apache.struts.Globals;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
@@ -534,7 +533,7 @@ public class ParamBean extends ProcessingContext {
     public void changeLanguage(final Locale locale) throws JahiaException {
         super.changeLanguage(locale);
         // added by PAP: for Struts and JSTL applications
-        this.getSession().setAttribute(Globals.LOCALE_KEY, locale);
+        this.getSession().setAttribute("org.apache.struts.action.LOCALE", locale);
         Config.set(this.getSession(), Config.FMT_LOCALE, locale);
 
     }

@@ -39,8 +39,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -58,17 +56,6 @@ final class PolicyEnforcementResultConvertor {
 
     private static final Pattern POLICY_PARAM_PATTERN = Pattern
             .compile("params\\['(.+)'\\]");
-
-    static final ActionMessages toActionMessages(
-            PolicyEnforcementResult evalResult) {
-        ActionMessages msgs = new ActionMessages();
-
-        for (EngineMessage engineMsg : toEngineMessages(evalResult).getMessages()) {
-			msgs.add("password", new ActionMessage(engineMsg.getKey(), engineMsg.getValues()));
-        }
-
-        return msgs;
-    }
 
     static final EngineMessages toEngineMessages(
             PolicyEnforcementResult evalResult) {

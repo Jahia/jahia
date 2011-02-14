@@ -32,7 +32,7 @@
 
  package org.jahia.engines;
 
-import org.apache.struts.action.ActionMessage;
+import java.io.Serializable;
 
 
 /**
@@ -44,28 +44,105 @@ import org.apache.struts.action.ActionMessage;
  * @version 1.0
  */
 
-public class EngineMessage extends ActionMessage {
+public class EngineMessage implements Serializable {
 
     private static final long serialVersionUID = 8836639382833159715L;
 
+    /**
+     * <p>The message key for this message.</p>
+     */
+    private String key = null;
+
+    /**
+     * <p>The replacement values for this mesasge.</p>
+     */
+    private Object[] values = null;
+
+    /**
+     * <p>Indicates whether the key is taken to be as a  bundle key [true] or
+     * literal value [false].</p>
+     */
+    private boolean resource = true;
+    
     public EngineMessage() {
-        this((String)null);
+        super();
     }
     
     
     public EngineMessage(String key) {
-        super(key);
+    	this();
+        this.key = key;
     }
 
     public EngineMessage(String key, boolean resource) {
-        super(key, resource);
+        this(key);
+        this.resource = resource;
     }
 
     public EngineMessage(String key, Object... values) {
-        super(key, values);
+        this(key);
+        this.values = values;
     }
 
     public EngineMessage(String key, String... values) {
-        super(key, values);
+        this(key);
+        this.values = values;
+    }
+    
+    /**
+     * <p>Get the message key for this message.</p>
+     *
+     * @return The message key for this message.
+     */
+    public String getKey() {
+        return (this.key);
+    }
+
+    /**
+     * <p>Get the replacement values for this message.</p>
+     *
+     * @return The replacement values for this message.
+     */
+    public Object[] getValues() {
+        return (this.values);
+    }
+
+    /**
+     * <p>Indicate whether the key is taken to be as a  bundle key [true] or
+     * literal value [false].</p>
+     *
+     * @return <code>true</code> if the key is a bundle key;
+     *         <code>false</code> otherwise.
+     */
+    public boolean isResource() {
+        return (this.resource);
+    }
+
+    /**
+     * <p>Returns a String in the format: key[value1, value2, etc].</p>
+     *
+     * @return String representation of this message
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        StringBuffer buff = new StringBuffer();
+
+        buff.append(this.key);
+        buff.append("[");
+
+        if (this.values != null) {
+            for (int i = 0; i < this.values.length; i++) {
+                buff.append(this.values[i]);
+
+                // don't append comma to last entry
+                if (i < (this.values.length - 1)) {
+                    buff.append(", ");
+                }
+            }
+        }
+
+        buff.append("]");
+
+        return buff.toString();
     }
 }

@@ -60,7 +60,6 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.struts.Globals;
 import org.jahia.admin.AdministrationModule;
 import org.jahia.admin.AdministrationModulesRegistry;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -863,7 +862,7 @@ public class JahiaAdministration extends HttpServlet {
                         && languageSettingsAsLocales.size() > 0
                         && !languageSettingsAsLocales.contains(localeSession)) {
                     Locale locale = languageSettingsAsLocales.get(0);
-                    session.setAttribute(Globals.LOCALE_KEY, locale);
+                    session.setAttribute("org.apache.struts.action.LOCALE", locale);
                     session.setAttribute(ProcessingContext.SESSION_LOCALE,
                             locale);
                 }

@@ -38,13 +38,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.util.RequestUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicy;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.admin.AbstractAdministrationModule;
+import org.springframework.web.util.WebUtils;
 
 /**
  * Handles displaying of the password policy management dialog.
@@ -77,7 +78,11 @@ public class ManagePasswordPolicies extends AbstractAdministrationModule {
 			for (JahiaPasswordPolicyRule rule : pwdPolicy.getRules()) {
 	            rule.setActive(false);
             }
-			RequestUtils.populate(pwdPolicy, request);
+	        try {
+	        	BeanUtils.populate(pwdPolicy, WebUtils.getParametersStartingWith(request, ""));
+	        } catch (Exception e) {
+	            throw new ServletException("BeanUtils.populate", e);
+	        }
 			service.updatePolicy(pwdPolicy);
 			request.setAttribute("confirmationMessage",
 			        "label.changeSaved");

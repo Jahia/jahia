@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.struts.action.ActionMessages;
 import org.jahia.engines.EngineMessages;
 
 /**
@@ -91,20 +90,6 @@ public class PolicyEnforcementResult {
 			}
 		}
 
-	}
-
-	/**
-	 * Returns the result of the evaluation as the {@link ActionMessages}
-	 * object, that can be displayed in the front-end. Each message is composed
-	 * using an I18N key and a list of arguments to be substituted.
-	 * 
-	 * @return the result of the evaluation as the {@link ActionMessages}
-	 *         object, that can be displayed in the front-end. Each message is
-	 *         composed using an I18N key and a list of arguments to be
-	 *         substituted
-	 */
-	public ActionMessages getActionMessages() {
-		return PolicyEnforcementResultConvertor.toActionMessages(this);
 	}
 
 	/**

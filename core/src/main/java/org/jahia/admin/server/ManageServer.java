@@ -47,7 +47,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
-import org.apache.struts.util.RequestUtils;
+import org.springframework.web.util.WebUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.JahiaData;
@@ -150,7 +151,11 @@ public class ManageServer extends AbstractAdministrationModule {
     {
         // get form values...
         MailSettings cfg = new MailSettings();
-        RequestUtils.populate(cfg, request);
+        try {
+        	BeanUtils.populate(cfg, WebUtils.getParametersStartingWith(request, ""));
+        } catch (Exception e) {
+            throw new ServletException("BeanUtils.populate", e);
+        }
         session.setAttribute(CLASS_NAME + "jahiaMailSettings", cfg);
         JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         ProcessingContext jParams = null;

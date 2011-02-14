@@ -15,7 +15,6 @@
 <%@ page import="java.util.Set" %>
 <%@ page import="org.apache.commons.lang.WordUtils" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
@@ -124,20 +123,20 @@
     <%=userMessage%>
 </p>
 <% } %>
-<logic:present name="engineMessages">
-    <logic:equal name="engineMessages" property="size" value="1">
-        <logic:iterate name="engineMessages" property="messages" id="msg">
+<c:if test="${not empty engineMessages && engineMessages.size > 0}">
+<c:if test="${engineMessages.size == 1}">
+        <c:forEach items="${engineMessages.messages}" var="msg">
             <span class="errorbold"><internal:message name="msg"/></span>
-        </logic:iterate>
-    </logic:equal>
-    <logic:notEqual name="engineMessages" property="size" value="1">
+        </c:forEach>
+</c:if>
+<c:if test="${engineMessages.size != 1}">
         <ul>
-            <logic:iterate name="engineMessages" property="messages" id="msg">
+            <c:forEach items="${engineMessages.messages}" var="msg">
                 <li class="errorbold"><internal:message name="msg"/></li>
-            </logic:iterate>
+            </c:forEach>
         </ul>
-    </logic:notEqual>
-</logic:present>
+</c:if>
+</c:if>
 
 <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response, isSuperAdminProp == null ? "users" : "profile","&sub=processEdit")%>'
       method="post">

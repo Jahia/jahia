@@ -1,133 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
-  <templateSets jcr:primaryType="jnt:templateSets">
-    <wiki changefreq="monthly" j:installedModules="wiki" j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
-      <home changefreq="monthly" j:templateNode="/templateSets/wiki/templates/base/wiki" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5" />
-      <contents jcr:primaryType="jnt:contentFolder" />
-      <files jcr:primaryType="jnt:folder">
-        <jahiapp-wiki.png j:height="50" j:width="116" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-          <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-          <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-          <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-        </jahiapp-wiki.png>
-      </files>
-      <portlets jcr:primaryType="jnt:portletFolder" />
-      <templates jcr:primaryType="jnt:templatesFolder">
-        <base j:view="apps" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
-          <wiki jcr:primaryType="jnt:pageTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <row column="2col124" jcr:primaryType="jnt:row" />
-            </pagecontent>
-            <information jcr:primaryType="jnt:contentList" />
-            <row-col1 jcr:primaryType="jnt:contentList">
-              <lists jcr:primaryType="jnt:tabularList">
-                <welcome jcr:primaryType="jnt:contentList">
-                  <welcome j:allowedTypes="" jcr:primaryType="jnt:area" />
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Welcome" />
-                </welcome>
-                <create-new-page j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                  <new-article j:requireLoggedUser="false" j:requiredMode="live" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:wikiPageFormCreation">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="New Article" />
-                  </new-article>
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Create New Article" />
-                </create-new-page>
-                <latest-articles j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Latest Articles" />
-                  <contentRetrieval j:classname="hilightList" j:criteria="jcr:created" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:wikiPage" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentRetrieval" maxItems="20">
-                    <j:translation_en j:noResultsMessage="No Page Yet" jcr:language="en" jcr:primaryType="jnt:translation" />
-                  </contentRetrieval>
-                </latest-articles>
-              </lists>
-            </row-col1>
-            <row-col2 jcr:primaryType="jnt:contentList">
-              <jahiapp-wiki-logo.png j:node="/templateSets/wiki/templates/base/wiki-content/row-col2/jahiapp-wiki-logo.png" jcr:primaryType="jnt:contentReference" />
-              <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki search" />
-                <simpleSearchForm jcr:primaryType="jnt:simpleSearchForm" result="/templateSets/wiki/search-result">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />
-                </simpleSearchForm>
-              </wiki-search>
-              <wiki-syntax j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki syntax" />
-                <bigText jcr:primaryType="jnt:bigText">
-                  <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;ul class=&quot;simple&quot;&gt;  &lt;li&gt;   [[link]]&lt;/li&gt;  &lt;li&gt;   **bold**&lt;/li&gt;  &lt;li&gt;   __underline__&lt;/li&gt;  &lt;li&gt;   //italic//&lt;/li&gt;  &lt;li&gt;   --strike--&lt;/li&gt;  &lt;li&gt;   ^^superscript^^&lt;/li&gt;  &lt;li&gt;   ,,subscript,,&lt;/li&gt;  &lt;li&gt;   = level 1 =&lt;/li&gt;  &lt;li&gt;   == level 2 ==&lt;/li&gt;  &lt;li&gt;   * list item level 1&lt;/li&gt;  &lt;li&gt;   ** list item level 2&lt;/li&gt; &lt;/ul&gt; " />
-                </bigText>
-              </wiki-syntax>
-            </row-col2>
-          </wiki>
-          <wiki-content j:applyOn="jnt:wikiPage" j:defaultTemplate="true" j:requiredMode="live" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <row column="2col124" jcr:primaryType="jnt:row"/>
-            </pagecontent>
-            <row-col1 jcr:primaryType="jnt:contentList">
-              <tabularList jcr:primaryType="jnt:tabularList">
-                <pagecontent j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
-                  <mainResourceDisplay j:mainResourceView="syntax" jcr:primaryType="jnt:mainResourceDisplay" />
+    <templateSets jcr:primaryType="jnt:templateSets">
+        <wiki changefreq="monthly" j:installedModules="wiki" j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
+            <home changefreq="monthly" j:templateNode="/templateSets/wiki/templates/base/wiki" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5" />
+            <contents jcr:primaryType="jnt:contentFolder" />
+            <files jcr:primaryType="jnt:folder">
+                <jahiapp-wiki.png j:height="50" j:width="116" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
+                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                </jahiapp-wiki.png>
+            </files>
+            <portlets jcr:primaryType="jnt:portletFolder" />
+            <templates jcr:primaryType="jnt:templatesFolder">
+                <base j:view="apps" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
+                    <wiki jcr:primaryType="jnt:pageTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <row column="2col124" jcr:primaryType="jnt:row" />
+                        </pagecontent>
+                        <information jcr:primaryType="jnt:contentList" />
+                        <row-col1 jcr:primaryType="jnt:contentList">
+                            <lists jcr:primaryType="jnt:tabularList">
+                                <welcome jcr:primaryType="jnt:contentList">
+                                    <welcome j:allowedTypes="" jcr:primaryType="jnt:area" />
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Welcome" />
+                                </welcome>
+                                <create-new-page j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                    <new-article j:requireLoggedUser="false" j:requiredMode="live" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:wikiPageFormCreation">
+                                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="New Article" />
+                                    </new-article>
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Create New Article" />
+                                </create-new-page>
+                                <latest-articles j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Latest Articles" />
+                                    <contentRetrieval j:classname="hilightList" j:criteria="jcr:created" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:wikiPage" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentRetrieval" maxItems="20">
+                                        <j:translation_en j:noResultsMessage="No Page Yet" jcr:language="en" jcr:primaryType="jnt:translation" />
+                                    </contentRetrieval>
+                                </latest-articles>
+                            </lists>
+                        </row-col1>
+                        <row-col2 jcr:primaryType="jnt:contentList">
+                            <jahiapp-wiki-logo.png j:node="/templateSets/wiki/templates/base/wiki-content/row-col2/jahiapp-wiki-logo.png" jcr:primaryType="jnt:contentReference" />
+                            <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki search" />
+                                <simpleSearchForm jcr:primaryType="jnt:simpleSearchForm" result="/templateSets/wiki/search-result">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />
+                                </simpleSearchForm>
+                            </wiki-search>
+                            <wiki-syntax j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki syntax" />
+                                <bigText jcr:primaryType="jnt:bigText">
+                                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;ul class=&quot;simple&quot;&gt;  &lt;li&gt;   [[link]]&lt;/li&gt;  &lt;li&gt;   **bold**&lt;/li&gt;  &lt;li&gt;   __underline__&lt;/li&gt;  &lt;li&gt;   //italic//&lt;/li&gt;  &lt;li&gt;   --strike--&lt;/li&gt;  &lt;li&gt;   ^^superscript^^&lt;/li&gt;  &lt;li&gt;   ,,subscript,,&lt;/li&gt;  &lt;li&gt;   = level 1 =&lt;/li&gt;  &lt;li&gt;   == level 2 ==&lt;/li&gt;  &lt;li&gt;   * list item level 1&lt;/li&gt;  &lt;li&gt;   ** list item level 2&lt;/li&gt; &lt;/ul&gt; " />
+                                </bigText>
+                            </wiki-syntax>
+                        </row-col2>
+                    </wiki>
+                    <wiki-content j:applyOn="jnt:wikiPage" j:defaultTemplate="true" j:requiredMode="live" jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <row column="2col124" jcr:primaryType="jnt:row"/>
+                        </pagecontent>
+                        <row-col1 jcr:primaryType="jnt:contentList">
+                            <tabularList jcr:primaryType="jnt:tabularList">
+                                <pagecontent j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
+                                    <mainResourceDisplay j:mainResourceView="syntax" jcr:primaryType="jnt:mainResourceDisplay" />
+                                </pagecontent>
+                                <contribute j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/editWikiContent" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Contribute" />
+                                    <mainResourceDisplay j:mainResourceView="contribute" jcr:primaryType="jnt:mainResourceDisplay" />
+                                </contribute>
+                                <history j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/viewWikiHistory" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="History" />
+                                    <history j:mainResourceView="history" jcr:primaryType="jnt:mainResourceDisplay" />
+                                    <compare-results j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Compare results" />
+                                        <compare j:mainResourceView="compare" jcr:primaryType="jnt:mainResourceDisplay" />
+                                    </compare-results>
+                                </history>
+                            </tabularList>
+                        </row-col1>
+                        <rol-col2 jcr:primaryType="jnt:contentList" />
+                        <row-col2 jcr:primaryType="jnt:contentList">
+                            <jahiapp-wiki-logo.png j:node="/templateSets/wiki/templates/files/jahiapp-wiki-logo.png" jcr:primaryType="jnt:imageReference">
+                                <j:translation_en j:alternateText="jahiapp wiki" jcr:language="en" jcr:primaryType="jnt:translation" />
+                            </jahiapp-wiki-logo.png>
+                            <contentInfo j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:contentInfo" />
+                            <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki search" />
+                                <search jcr:primaryType="jnt:simpleSearchForm" result="/templateSets/wiki/search-result">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />
+                                </search>
+                            </wiki-search>
+                            <wiki-syntax j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki syntax" />
+                                <bigText jcr:primaryType="jnt:bigText">
+                                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;ul class=&quot;listwiki&quot;&gt;  &lt;li&gt;[[link]]&lt;/li&gt;  &lt;li&gt;**bold**&lt;/li&gt;  &lt;li&gt;__underline__&lt;/li&gt;  &lt;li&gt;//italic//&lt;/li&gt;  &lt;li&gt;--strike--&lt;/li&gt;  &lt;li&gt;^^superscript^^&lt;/li&gt;  &lt;li&gt;,,subscript,,&lt;/li&gt;  &lt;li&gt;= level 1 =&lt;/li&gt;  &lt;li&gt;== level 2 ==&lt;/li&gt;  &lt;li&gt;* list item level 1&lt;/li&gt;  &lt;li&gt;** list item level 2&lt;/li&gt; &lt;/ul&gt;" />
+                                </bigText>
+                            </wiki-syntax>
+                        </row-col2>
+                        <information jcr:primaryType="jnt:contentList">
+                            <contentInfo j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:contentInfo" />
+                        </information>
+                    </wiki-content>
+                    <wiki-searchResults j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate" />
+                    <row column="2col124" jcr:primaryType="jnt:row" />
+                    <row-col2 jcr:primaryType="jnt:contentList">
+                        <search jcr:primaryType="jnt:simpleSearchForm">
+                            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />
+                        </search>
+                        <information j:allowedTypes="" jcr:primaryType="jnt:area" />
+                    </row-col2>
+                </base>
+                <contents jcr:primaryType="jnt:contentFolder" />
+                <files jcr:primaryType="jnt:folder">
+                    <jahiapp-wiki-logo.png j:height="60" j:width="116" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
+                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                    </jahiapp-wiki-logo.png>
+                </files>
+            </templates>
+            <search-result changefreq="monthly" j:templateNode="/templateSets/wiki/templates/base/wiki-searchResults" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki Search Results" />
+                <pagecontent jcr:primaryType="jnt:contentList">
+                    <search-results autoSuggest="true" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2" jcr:primaryType="jnt:searchResults">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search Results" />
+                    </search-results>
                 </pagecontent>
-                <contribute j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/editWikiContent" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Contribute" />
-                  <mainResourceDisplay j:mainResourceView="contribute" jcr:primaryType="jnt:mainResourceDisplay" />
-                </contribute>
-                <history j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/viewWikiHistory" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="History" />
-                  <history j:mainResourceView="history" jcr:primaryType="jnt:mainResourceDisplay" />
-                  <compare-results j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Compare results" />
-                    <compare j:mainResourceView="compare" jcr:primaryType="jnt:mainResourceDisplay" />
-                  </compare-results>
-                </history>
-              </tabularList>
-            </row-col1>
-            <rol-col2 jcr:primaryType="jnt:contentList" />
-            <row-col2 jcr:primaryType="jnt:contentList">
-              <jahiapp-wiki-logo.png j:node="/templateSets/wiki/templates/files/jahiapp-wiki-logo.png" jcr:primaryType="jnt:imageReference">
-                <j:translation_en j:alternateText="jahiapp wiki" jcr:language="en" jcr:primaryType="jnt:translation" />
-              </jahiapp-wiki-logo.png>
-              <contentInfo j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:contentInfo" />
-              <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki search" />
-                <search jcr:primaryType="jnt:simpleSearchForm" result="/templateSets/wiki/search-result">
-                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />
-                </search>
-              </wiki-search>
-              <wiki-syntax j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki syntax" />
-                <bigText jcr:primaryType="jnt:bigText">
-                  <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;ul class=&quot;listwiki&quot;&gt;  &lt;li&gt;[[link]]&lt;/li&gt;  &lt;li&gt;**bold**&lt;/li&gt;  &lt;li&gt;__underline__&lt;/li&gt;  &lt;li&gt;//italic//&lt;/li&gt;  &lt;li&gt;--strike--&lt;/li&gt;  &lt;li&gt;^^superscript^^&lt;/li&gt;  &lt;li&gt;,,subscript,,&lt;/li&gt;  &lt;li&gt;= level 1 =&lt;/li&gt;  &lt;li&gt;== level 2 ==&lt;/li&gt;  &lt;li&gt;* list item level 1&lt;/li&gt;  &lt;li&gt;** list item level 2&lt;/li&gt; &lt;/ul&gt;" />
-                </bigText>
-              </wiki-syntax>
-            </row-col2>
-            <information jcr:primaryType="jnt:contentList">
-              <contentInfo j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:contentInfo" />
-            </information>
-          </wiki-content>
-          <wiki-searchResults j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate" />
-          <row column="2col124" jcr:primaryType="jnt:row" />
-          <row-col2 jcr:primaryType="jnt:contentList">
-            <search jcr:primaryType="jnt:simpleSearchForm">
-              <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />
-            </search>
-            <information j:allowedTypes="" jcr:primaryType="jnt:area" />
-          </row-col2>
-        </base>
-        <contents jcr:primaryType="jnt:contentFolder" />
-        <files jcr:primaryType="jnt:folder">
-          <jahiapp-wiki-logo.png j:height="60" j:width="116" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-          </jahiapp-wiki-logo.png>
-        </files>
-      </templates>
-      <search-result changefreq="monthly" j:templateNode="/templateSets/wiki/templates/base/wiki-searchResults" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
-        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki Search Results" />
-        <pagecontent jcr:primaryType="jnt:contentList">
-          <search-results autoSuggest="true" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2" jcr:primaryType="jnt:searchResults">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search Results" />
-          </search-results>
-        </pagecontent>
-      </search-result>
-    </wiki>
-  </templateSets>
+            </search-result>
+        </wiki>
+    </templateSets>
+    <permissions jcr:primaryType="jnt:permission">
+        <actions jcr:primaryType="jnt:permission">
+            <wiki jcr:primaryType="jnt:permission">
+                <editWikiContent jcr:primaryType="jnt:permission"/>
+                <viewWikiHistory jcr:primaryType="jnt:permission"/>
+            </wiki>
+        </actions>
+    </permissions>
+
+    <roles>
+        <visitor jcr:primaryType="jnt:role"
+                 j:permissions="/permissions/actions/wiki"/>
+    </roles>
 </content>

@@ -92,7 +92,7 @@ when we flush this entry we will flush the whole cache-->
             </set>
         </property>
     </bean>-->
-
+    <!--
     <bean id="moduleGeneratorQueue" class="org.jahia.services.render.filter.cache.ModuleGeneratorQueue">
         <property name="maxModulesToGenerateInParallel" value="50"/>
         <property name="moduleGenerationWaitTime" value="10000"/>
@@ -131,7 +131,7 @@ when we flush this entry we will flush the whole cache-->
         <property name="generatorQueue" ref="moduleGeneratorQueue"/>
         <property name="skipOnMainResource" value="true"/>
     </bean>
-
+    -->
     <bean name="cacheMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>

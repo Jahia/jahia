@@ -35,6 +35,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -259,7 +260,7 @@ public class RulesListener extends DefaultEventListener {
         }
 
         final JCRSessionWrapper session = ((JCREventIterator) eventIterator).getSession();
-        final String userId = session.getUser() != null ? session.getUser().getName() : "";
+        final String userId = session.getUser() != null ? session.getUser().getName() : null;
         final Locale locale = session.getLocale();
 
         final Map<String, AddedNodeFact> eventsMap = new HashMap<String, AddedNodeFact>();
@@ -459,7 +460,11 @@ public class RulesListener extends DefaultEventListener {
         Map<String, Object> globals = new HashMap<String, Object>();
 
         globals.put("logger", logger);
-        globals.put("user", new User(username));
+        if (username != null) {
+            globals.put("user", new User(username));
+        } else {
+            globals.put("user", new User(JahiaLoginModule.SYSTEM));
+        }
         globals.put("workspace", workspace);
         globals.put("delayedUpdates", delayedUpdates);
         for (Map.Entry<String, Object> entry : globalObjects.entrySet()) {

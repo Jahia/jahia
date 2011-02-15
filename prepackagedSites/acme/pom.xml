@@ -29,6 +29,7 @@
                             </descriptors>
                             <attach>false</attach>
                             <finalName>ACME</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
 
                         <phase>validate</phase>
@@ -36,13 +37,7 @@
                             <goal>single</goal>
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
 
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-
-                <executions>
                     <execution>
                         <id>users</id>
                         <configuration>
@@ -51,6 +46,7 @@
                             </descriptors>
                             <attach>false</attach>
                             <finalName>users</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
 
                         <phase>validate</phase>
@@ -58,13 +54,7 @@
                             <goal>single</goal>
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
 
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-
-                <executions>
                     <execution>
                         <id>systemsite</id>
                         <configuration>
@@ -73,6 +63,7 @@
                             </descriptors>
                             <attach>false</attach>
                             <finalName>systemsite</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>                            
                         </configuration>
 
                         <phase>validate</phase>
@@ -80,19 +71,14 @@
                             <goal>single</goal>
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
 
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-
-                <executions>
                     <execution>
                         <id>root</id>
                         <configuration>
                             <descriptors>
                                 <descriptor>src/main/assembly/root.xml</descriptor>
                             </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
 
                         <phase>package</phase>

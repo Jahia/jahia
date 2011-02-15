@@ -1,4 +1,5 @@
 <assembly>
+    <id>users</id>
     <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
         <format>zip</format>

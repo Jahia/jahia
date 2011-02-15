@@ -131,7 +131,7 @@
                                         <artifactItem>
                                             <groupId>org.apache.ant</groupId>
                                             <artifactId>ant</artifactId>
-                                            <version>1.7.1</version>
+                                            <version>${ant.version}</version>
                                             <type>jar</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/artifacts</outputDirectory>
@@ -139,7 +139,7 @@
                                         <artifactItem>
                                             <groupId>org.apache.ant</groupId>
                                             <artifactId>ant-launcher</artifactId>
-                                            <version>1.7.1</version>
+                                            <version>${ant.version}</version>
                                             <type>jar</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/artifacts</outputDirectory>
@@ -165,7 +165,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.3</version>
+                        <version>${antrun.plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>i18n-resources</id>

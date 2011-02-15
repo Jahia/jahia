@@ -70,6 +70,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-eclipse-plugin</artifactId>
+                        <version>${eclipse.plugin.version}</version>
                         <configuration>
                             <wtpversion>1.5</wtpversion>
                             <additionalProjectnatures>
@@ -99,6 +100,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-site-plugin</artifactId>
+                        <version>${site.plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>generate-resources</phase>
@@ -124,7 +126,7 @@
 		            <plugin>
 		                <groupId>org.apache.maven.plugins</groupId>
 		                <artifactId>maven-antrun-plugin</artifactId>
-		                <version>1.3</version>
+		                <version>${antrun.plugin.version}</version>
 		                <dependencies>
 					        <dependency>
 					            <groupId>org.jahia.server</groupId>
@@ -225,6 +227,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
                 <configuration>
                     <archiveClasses>true</archiveClasses>
                     <attachClasses>true</attachClasses>
@@ -248,7 +251,7 @@
 	                    	<Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
 	                        <package-name>${project.name}</package-name>
                             <depends>Jahia Static Assets</depends>
-                            <root-folder>${artifactId}</root-folder>
+                            <root-folder>${project.artifactId}</root-folder>
 	                    </manifestEntries>
 	                </archive>
                 </configuration>
@@ -260,6 +263,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${project.info.reports.plugin.version}</version>
                 <reportSets>
                     <reportSet>
                         <reports>

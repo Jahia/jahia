@@ -62,7 +62,7 @@
             </releases>
         </repository>
         <repository>
-            <id>openqa.org</id>
+            <id>snapshots.openqa.org</id>
             <name>Openqa Snapshot Repository</name>
             <url>http://archiva.openqa.org/repository/snapshots</url>
             <layout>default</layout>
@@ -124,6 +124,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-eclipse-plugin</artifactId>
+                        <version>${eclipse.plugin.version}</version>
                         <configuration>
                             <wtpversion>1.5</wtpversion>
                             <additionalProjectnatures>
@@ -152,7 +153,7 @@
     	<dependency>
     		<groupId>org.apache.ant</groupId>
     		<artifactId>ant</artifactId>
-    		<version>1.8.2</version>
+    		<version>${ant.version}</version>
     	</dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium.client-drivers</groupId>

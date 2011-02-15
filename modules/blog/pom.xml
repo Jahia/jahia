@@ -70,6 +70,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-eclipse-plugin</artifactId>
+                        <version>${eclipse.plugin.version}</version>
                         <configuration>
                             <wtpversion>1.5</wtpversion>
                             <additionalProjectnatures>
@@ -99,6 +100,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-site-plugin</artifactId>
+                        <version>${site.plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>generate-resources</phase>
@@ -141,8 +143,9 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-
+                <version>${assembly.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>import</id>
@@ -152,6 +155,8 @@
                             </descriptors>
                             <attach>false</attach>
                             <finalName>import</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <outputDirectory>src/main/webapp</outputDirectory>                            
                         </configuration>
 
                         <phase>generate-resources</phase>
@@ -165,40 +170,8 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.3</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant-jsch</artifactId>
-                        <version>1.7.1</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.jcraft</groupId>
-                        <artifactId>jsch</artifactId>
-                        <version>0.1.38</version>
-                    </dependency>
-                </dependencies>
-
-                <executions>
-                    <execution>
-                        <id>packaging</id>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <copy file="./target/import.zip" todir="${project.basedir}/src/main/webapp" overwrite="true"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <warSourceExcludes>resources/*.properties</warSourceExcludes>
@@ -220,7 +193,7 @@
                             <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
                             <depends>Default Jahia Templates</depends>
-                            <root-folder>${artifactId}</root-folder>
+                            <root-folder>${project.artifactId}</root-folder>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -228,6 +201,7 @@
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>maven-jahia-plugin</artifactId>
+                <version>${jahia.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>

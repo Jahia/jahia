@@ -70,6 +70,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-eclipse-plugin</artifactId>
+                        <version>${eclipse.plugin.version}</version>
                         <configuration>
                             <wtpversion>1.5</wtpversion>
                             <additionalProjectnatures>
@@ -99,6 +100,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-site-plugin</artifactId>
+                        <version>${site.plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>generate-resources</phase>
@@ -131,6 +133,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
                 <configuration>
                     <warSourceExcludes>resources/*.properties</warSourceExcludes>
                     <webResources>
@@ -151,7 +154,7 @@
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
                             <depends>Default Jahia Templates</depends>
-                            <root-folder>${artifactId}</root-folder>
+                            <root-folder>${project.artifactId}</root-folder>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -159,6 +162,7 @@
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>maven-jahia-plugin</artifactId>
+                <version>${jahia.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>

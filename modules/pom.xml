@@ -34,6 +34,7 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-eclipse-plugin</artifactId>
+              <version>${eclipse.plugin.version}</version>
               <configuration>
                 <wtpversion>1.5</wtpversion>
                 <additionalProjectnatures>
@@ -63,6 +64,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-site-plugin</artifactId>
+                        <version>${site.plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>generate-resources</phase>

@@ -48,6 +48,7 @@
         <camel.version>2.4.0</camel.version>
         <gwt.version>2.1.1</gwt.version>
         <clover.version>2.6.3</clover.version>
+        <ant.version>1.8.2</ant.version>
 
         <driver.derby.version>10.7.1.1</driver.derby.version>
         <driver.mysql.version>5.1.15</driver.mysql.version>
@@ -58,6 +59,25 @@
         <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
         <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
         <jahia.manifest.vendor.email>info@jahia.org</jahia.manifest.vendor.email>
+        
+        <license.plugin.version>1.8.0</license.plugin.version>
+        <javadoc.plugin.version>2.7</javadoc.plugin.version>
+        <assembly.plugin.version>2.2</assembly.plugin.version>
+        <maven3.site.plugin.version>3.0-beta-3</maven3.site.plugin.version>
+        <site.plugin.version>2.2</site.plugin.version>
+        <war.plugin.version>2.1-beta-1</war.plugin.version>
+        <enforcer.plugin.version>1.0</enforcer.plugin.version>
+        <compiler.plugin.version>2.3.2</compiler.plugin.version>
+        <buildnumber.plugin.version>1.0-beta-4</buildnumber.plugin.version>
+        <source.plugin.version>2.1.2</source.plugin.version>
+        <project.info.reports.plugin.version>2.2</project.info.reports.plugin.version>
+        <jxr.plugin.version>2.2</jxr.plugin.version>
+        <antrun.plugin.version>1.6</antrun.plugin.version>
+        <jar.plugin.version>2.3.1</jar.plugin.version>
+        <surefire.plugin.version>2.7.2</surefire.plugin.version>
+        <eclipse.plugin.version>2.8</eclipse.plugin.version>
+        
+        <jahia.plugin.version>2.21</jahia.plugin.version>
     </properties>
 
     <scm>
@@ -274,7 +294,7 @@
                     <plugin>
                         <groupId>com.mycila.maven-license-plugin</groupId>
                         <artifactId>maven-license-plugin</artifactId>
-                        <version>1.8.0</version>
+                        <version>${license.plugin.version}</version>
                         <configuration>
                             <basedir>${basedir}</basedir>
                             <header>header.txt</header>
@@ -330,6 +350,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${javadoc.plugin.version}</version>
                         <configuration>
                             <failOnError>false</failOnError>
                         </configuration>
@@ -366,6 +387,39 @@
                 <module>patches</module>
             </modules>
         </profile>
+        <profile>
+            <id>maven-3</id>
+            <activation>
+                <file>
+                <!--  This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363) -->
+                    <exists>${basedir}</exists>
+                </file>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-site-plugin</artifactId>
+                            <version>${maven3.site.plugin.version}</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-descriptor</id>
+                                <goals>
+                                    <goal>attach-descriptor</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <modules>
@@ -397,14 +451,18 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${assembly.plugin.version}</version>
+                </plugin>            
+                <plugin>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>2.1.1</version>
+                    <version>${site.plugin.version}</version>
                 </plugin>
                 <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we
      need to force the version of the plugin to version 2.1-beta-1 -->
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>2.1-beta-1</version>
+                    <version>${war.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -412,6 +470,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${enforcer.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -434,6 +493,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.plugin.version}</version> 
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
@@ -443,7 +503,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.0-beta-4</version>
+                <version>${buildnumber.plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -468,7 +528,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
+                <version>${source.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -486,6 +546,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${project.info.reports.plugin.version}</version>
                 <reportSets>
                     <reportSet>
                         <reports>

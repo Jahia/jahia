@@ -33,6 +33,7 @@
 			<!-- configure maven-war-plugin to use updated web.xml -->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>${war.plugin.version}</version>
 				<configuration>
 					<webXml>${project.build.directory}/pluto-resources/web.xml</webXml>
 				</configuration>

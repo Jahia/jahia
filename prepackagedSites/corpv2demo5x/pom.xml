@@ -25,6 +25,7 @@
                                 <descriptor>src/main/assembly/demo.xml</descriptor>
                             </descriptors>
                             <finalName>demo</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>                            
                         </configuration>
 
                         <phase>validate</phase>
@@ -32,13 +33,7 @@
                             <goal>single</goal>
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
 
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-
-                <executions>
                     <execution>
                         <id>shared</id>
                         <configuration>
@@ -46,6 +41,7 @@
                                 <descriptor>src/main/assembly/shared.xml</descriptor>
                             </descriptors>
                             <finalName>shared</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>                            
                         </configuration>
 
                         <phase>validate</phase>
@@ -53,19 +49,14 @@
                             <goal>single</goal>
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-
-                <executions>
+                    
                     <execution>
                         <id>root</id>
                         <configuration>
                             <descriptors>
                                 <descriptor>src/main/assembly/root.xml</descriptor>
                             </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>                            
                         </configuration>
 
                         <phase>package</phase>

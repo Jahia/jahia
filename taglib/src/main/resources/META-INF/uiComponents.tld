@@ -392,34 +392,21 @@
     </tag>
 
     <tag-file>
-        <description>
-        	Renders a date picker control using corresponding jQuery UI component (http://docs.jquery.com/UI/Datepicker).
-        	Datepicker options (see http://docs.jquery.com/UI/Datepicker#options) can be specified as a body of this tag in form {option1: value1, option2: value2 ...}.
-        	The template module that will use this tag should have Default Jahia Templates module as a dependency.
-        </description>
         <name>dateSelector</name>
         <path>/META-INF/tags/dateSelector.tag</path>
     </tag-file>
     
     <tag-file>
-        <description>Renders the link to the folder path selection engine (as a popup window)</description>
         <name>folderSelector</name>
         <path>/META-INF/tags/folderSelector.tag</path>
     </tag-file>
 
     <tag-file>
-        <description>Renders the link to the category selection engine (as a popup window)</description>
         <name>categorySelector</name>
         <path>/META-INF/tags/categorySelector.tag</path>
     </tag-file>
 
     <tag-file>
-    	<description>
-    		Initializes the CKEditor configuration and replaces all elements, matching the specified selector (jQuery selector syntax) with CKEditor instances.
-    		The body of the tag contains the CKEditor configuration options to override the defaults in the form {option1: value, option2: value}.
-    		By default the CKEditor will use a simplified toolbar and no Jahia-specific content (file, image, link, etc.) pickers.
-    		The tag is supposed to be used in the content of Jahia rendering templates as it expects the renderContext bean being available.
-    	</description>
         <name>ckeditor</name>
         <path>/META-INF/tags/ckeditor.tag</path>
         <example>
@@ -436,7 +423,6 @@
     </tag-file>
     
     <tag-file>
-        <description>Renders the link to the file selection engine (as a popup window)</description>
         <name>fileSelector</name>
         <path>/META-INF/tags/fileSelector.tag</path>
     </tag-file>
@@ -464,19 +450,16 @@
     </tag-file>
         
     <tag-file>
-        <description>Renders the link to the page selection engine (as a popup window)</description>
         <name>pageSelector</name>
         <path>/META-INF/tags/pageSelector.tag</path>
     </tag-file>
 
     <tag-file>
-        <description>Displays a RSS feed button</description>
         <name>rssButton</name>
         <path>/META-INF/tags/rssButton.tag</path>
     </tag-file>
 
     <tag-file>
-        <description>Renders the trigger link and the tree control to select an item.</description>
         <name>treeItemSelector</name>
         <path>/META-INF/tags/treeItemSelector.tag</path>
     </tag-file>

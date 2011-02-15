@@ -184,12 +184,10 @@
     </tag>
 
     <tag-file>
-        <description>Displays the content manager engine</description>
         <name>contentManager</name>
         <path>/META-INF/tags/ajax/contentmanager.tag</path>
     </tag-file>
     <tag-file>
-        <description>Displays a content picker</description>
         <name>contentPicker</name>
         <path>/META-INF/tags/ajax/contentpicker.tag</path>
     </tag-file>

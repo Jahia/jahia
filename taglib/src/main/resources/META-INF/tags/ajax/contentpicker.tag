@@ -1,4 +1,4 @@
-<%@ tag import="org.jahia.params.ProcessingContext" %>
+<%@ tag import="org.jahia.params.ProcessingContext" description="Displays a content picker" %>
 <%@ tag import="org.jahia.registries.ServicesRegistry" %>
 <%@ tag import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ tag import="org.jahia.services.content.JCRStoreService" %>

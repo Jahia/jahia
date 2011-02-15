@@ -1,4 +1,4 @@
-<%@ tag body-content="empty" description="Renders the trigger link and the tree control to select a folder." %>
+<%@ tag body-content="empty" description="Renders the link to the folder path selection engine (as a popup window)." %>
 <%@ attribute name="fieldId" required="true" type="java.lang.String"
               description="The input field name and ID to synchronize the seletcted item value with." %>
 <%@ attribute name="displayFieldId" required="false" type="java.lang.String"

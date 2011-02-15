@@ -513,17 +513,10 @@
     </tag>
 
     <tag-file>
-    	<description>
-    		Includes external resources (CSS, JavaScrip), which are required for current page
-    		and were registered using addResources tag.
-    	</description>
     	<name>includeResources</name>
     	<path>/META-INF/tags/includeResources.tag</path>
     </tag-file>
     <tag-file>
-    	<description>
-    		Display pagination after call to initPager tag.
-    	</description>
     	<name>displayPagination</name>
     	<path>/META-INF/tags/displayPagination.tag</path>
     </tag-file>

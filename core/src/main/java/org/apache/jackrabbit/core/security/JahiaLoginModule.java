@@ -39,6 +39,7 @@ import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 
 import javax.jcr.Credentials;
 import javax.jcr.SimpleCredentials;
@@ -109,7 +110,13 @@ public class JahiaLoginModule implements LoginModule {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
 
-                    JahiaUser user = userService.lookupUser(name);
+                    JahiaUser user = null;
+                    if (userService != null) {
+                        user = userService.lookupUser(name);
+                    } else {
+                        // this can happen if we are still starting up.
+                        user = JCRUserManagerProvider.getInstance().lookupUser(name);
+                    }
 
                     if ((token != null) || user.verifyPassword(key)) {
                         principals.add(new JahiaPrincipal(name));

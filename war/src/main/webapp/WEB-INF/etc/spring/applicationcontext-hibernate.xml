@@ -19,7 +19,7 @@
                 <value>org.jahia.services.history.HistoryEntry</value>
             </list>
         </property>
-        <property name="packagesToScan" value="org.jahia.modules."/>
+        <property name="packagesToScan" value="org.jahia.modules"/>
 
         <property name="mappingResources">
             <list>

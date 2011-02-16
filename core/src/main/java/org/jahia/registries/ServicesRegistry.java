@@ -58,6 +58,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
@@ -73,6 +74,8 @@ import java.util.Set;
  * @author Fulco Houkes
  */
 public class ServicesRegistry {
+
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ServicesRegistry.class);
     /**
      * It's a Singleton *
      */
@@ -181,8 +184,10 @@ public class ServicesRegistry {
         ApplicationContext context = (ApplicationContext) SpringContextSingleton.getInstance().getContext();
         if (context != null) {
 			jahiaService = (JahiaService) context.getBean(serviceName);
-        servicesCache.put(serviceName, jahiaService);
-		}
+            servicesCache.put(serviceName, jahiaService);
+		} else {
+            logger.warn("Application context is not (yet) available when trying to retrieve service " + serviceName + ", will return null !");
+        }
         return jahiaService;
     } // end getService
 

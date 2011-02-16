@@ -53,6 +53,10 @@ import java.util.*;
  */
 
 public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
+
+    private static transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(
+            JahiaUserManagerRoutingService.class);
+
 // ------------------------------ FIELDS ------------------------------
 
     static private JahiaUserManagerRoutingService mInstance = null;
@@ -96,6 +100,7 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
 
     public void start() throws JahiaInitializationException {
     	// do nothing
+        logger.info("User manager routing service now started.");
     }
 
     public void stop() throws JahiaException {

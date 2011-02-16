@@ -55,7 +55,7 @@
     </bean>
 
     <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
-          factory-method="getInstance" lazy-init="true">
+          factory-method="getInstance" lazy-init="true" depends-on="springContextSingleton">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="decorators">
             <map>

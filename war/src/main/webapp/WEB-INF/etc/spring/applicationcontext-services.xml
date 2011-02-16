@@ -4,10 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean class="org.jahia.services.SpringContextSingleton" factory-method="getInstance"/>
+    <bean id="springContextSingleton" class="org.jahia.services.SpringContextSingleton" factory-method="getInstance"/>
 
     <bean id="jahiaServiceTemplate" class="org.jahia.services.JahiaService" abstract="true" init-method="start"
-          destroy-method="stop">
+          destroy-method="stop" depends-on="springContextSingleton">
         <property name="settingsBean" ref="settingsBean"/>
     </bean>
 

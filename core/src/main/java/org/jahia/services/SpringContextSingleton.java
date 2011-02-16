@@ -43,6 +43,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
+import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -57,6 +58,8 @@ import org.springframework.core.io.Resource;
  * @author Sergiy Shyrkov
  */
 public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener {
+
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(SpringContextSingleton.class);
 
     private static SpringContextSingleton ourInstance;
     private Map<String, Resource[]> resourcesCache;
@@ -111,6 +114,9 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
      * @return the Spring application context instance
      */
     public ApplicationContext getContext() {
+        if (!initialized) {
+            logger.warn("Trying to access Spring context before it is available ! Please refactor code to avoid this !");
+        }
         return context;
     }
 

@@ -865,6 +865,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
                 FileInputStream fis = new FileInputStream(f);
                 try {
+                    if (node.getParent().isVersioned()) {
+                        session.getWorkspace().getVersionManager().checkout(node.getParent().getPath());
+                    }
                     ((JCRNodeWrapper) node.getParent()).uploadFile(target, fis, node.getFileContent().getContentType());
                     session.save();
                 } finally {

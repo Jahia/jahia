@@ -1,0 +1,32 @@
+Actions provided by the default module
+
+TO BE COMPLETED
+
+* Introduction
+
+* Permissions
+
+ In order to use some actions, you might need to setup permissions if you intend to perform them with users other
+ than the root user.
+
+* General actions
+
+ publishAction
+
+ addMemberToGroup
+
+ startWorkflow
+
+ chainAction
+
+ moveAction
+
+* Comments
+
+ addComment
+
+* Tasks
+
+ commentTaskAction
+
+ executeTaskAction

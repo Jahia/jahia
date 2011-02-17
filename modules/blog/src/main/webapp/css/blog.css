@@ -819,7 +819,7 @@ display:block
 }
 
 #bodywrapper a.postdelete {
-	background:url(img/blog/postedit.png) no-repeat scroll 0 50% transparent;
+	background:url(img/blog/postdelete.png) no-repeat scroll 0 50% transparent;
 	clear:both;
 	display:inline;
 	margin-right:8px;

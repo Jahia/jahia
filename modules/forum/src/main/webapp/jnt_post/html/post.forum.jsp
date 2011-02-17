@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="forum.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.cuteTime.js"/>
 <%-- Get all contents --%>
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>

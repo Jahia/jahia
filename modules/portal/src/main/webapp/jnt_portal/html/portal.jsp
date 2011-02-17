@@ -16,7 +16,7 @@
     </script>
 </template:addResources>
 <template:addResources type="javascript"
-                       resources="jquery.min.js,jquery-ui.min.js,inettuts.js,ajaxreplace.js"/>
+                       resources="jquery.js,jquery-ui.min.js,inettuts.js,ajaxreplace.js"/>
 <template:addResources>
     <script type="text/javascript">
         function addWidget(source, newName) {

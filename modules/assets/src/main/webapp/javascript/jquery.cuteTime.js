@@ -3,8 +3,8 @@
 	jQuery.cuteTime
 
 	Author Jeremy Horn
-	Version 1.1.1
-	Date: 2/1/2010
+	Version 1.1.3
+	Date: 4/6/2010
 
 	Copyright (c) 2009 Jeremy Horn- jeremydhorn(at)gmail(dot)c0m | http://tpgblog.com
 	Dual licensed under MIT and GPL.
@@ -552,10 +552,10 @@
 						TZ_hour_offset = iso_date[18];
 						TZ_minute_offset = iso_date[19];
 						
-						if (!isEmpty(iso_date[16])) {
+						if (iso_date[16] == '-') { // is the time offset negative ?
 							TZ_hour_offset *= -1;
 							TZ_minute_offset *= -1;
-						}
+						} // otherwise: timeoffset is positive & do nothing
 					}
 					
 					if (!isEmpty(iso_date[8])) {
@@ -623,7 +623,7 @@
 	function get_time_value(obj) {
 		var time_value = Number.NaN;
 
-		time_string = get_cutetime_attr(obj); // returns string or NULL
+		var time_string = get_cutetime_attr(obj); // returns string or NULL
 		if (time_string != null) {
 			time_value = date_value(time_string);
 		}

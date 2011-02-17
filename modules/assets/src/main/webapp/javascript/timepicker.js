@@ -203,7 +203,7 @@ jQuery.fn.datetime = function() {
 
         function parseTime(obj) {
 
-            var time = ($(obj).val() || $(this).val()).split(" ");
+            var time = ($(obj).val()).split(" ");
 
             if (time.length < 2) {
                 var now = new Date();

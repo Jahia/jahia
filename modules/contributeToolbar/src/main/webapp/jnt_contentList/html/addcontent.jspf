@@ -46,7 +46,8 @@
                     'autoScale':false,
                     'autoDimensions':false,
                     'onComplete':function() {
-                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; })
+                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; });
+
                     },
 
                     'onCleanup':function() {
@@ -58,6 +59,6 @@
     </script>
 
 </c:if>
-<div id="temp" style="display:none;" >
+<div id="addNewContent" style="display:none;" >
     
 </div>

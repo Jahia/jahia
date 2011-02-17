@@ -58,7 +58,7 @@ public class MultipleCutAction extends Action {
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        List<String> uuids = parameters.get("uuids");
+        List<String> uuids = parameters.get(MultipleCopyAction.UUIDS);
         assert uuids != null && uuids.size()>0;
         List<String> sessionUUIDS = (List<String>) req.getSession().getAttribute(UUIDS_TO_CUT);
         uuids = SetUniqueList.decorate(uuids);

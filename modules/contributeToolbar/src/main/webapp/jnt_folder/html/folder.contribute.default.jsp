@@ -15,7 +15,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="contentlist.css"/>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>

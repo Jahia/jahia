@@ -22,7 +22,7 @@
             </div>
         </c:if>
         <c:if test="${!(renderContext.editModeConfigName eq 'studiomode')}">
-            <template:addResources type="javascript" resources="jquery.min.js"/>
+            <template:addResources type="javascript" resources="jquery.js"/>
             <div id="liveList${currentNode.identifier}"></div>
             <script type="text/javascript">
                 $('#liveList${currentNode.identifier}').load('${url.baseLive}${currentNode.path}.html.ajax');

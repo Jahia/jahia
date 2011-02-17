@@ -11,7 +11,7 @@
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:created" var="created"/>
 <template:addResources type="css" resources="blog.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.jeditable.js"/>
 <script type="text/javascript">
     $(document).ready(function() {
         $.each(['editContent'], function(index, element) {

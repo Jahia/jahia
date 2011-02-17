@@ -781,6 +781,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 resp.setStatus(result.getResultCode());
                 if (req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && result.getJson() != null) {
                     try {
+                        resp.setContentType("application/json");
                         result.getJson().write(resp.getWriter());
                     } catch (JSONException e) {
                         logger.error(e.getMessage(), e);

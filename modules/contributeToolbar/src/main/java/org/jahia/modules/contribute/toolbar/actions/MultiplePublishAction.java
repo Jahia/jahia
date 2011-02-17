@@ -70,7 +70,7 @@ public class MultiplePublishAction extends Action {
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        List<String> uuids = parameters.get("uuids");
+        List<String> uuids = parameters.get(MultipleCopyAction.UUIDS);
 
         Set<String> locales = new LinkedHashSet<String>(Arrays.asList(
                 renderContext.getMainResourceLocale().toString()));

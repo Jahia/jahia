@@ -12,7 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.fancybox.pack.js,jquery.fancybox.load.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.fancybox.js,jquery.fancybox.load.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 
 <template:include template="hidden.header"/>

@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
+<template:addResources type="javascript" resources="jquery.fancybox.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <c:set var="target" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 

@@ -22,7 +22,7 @@
 		<%-- Subscriptions are available in live mode only --%>
 		<template:addResources type="css" resources="jquery.fancybox.css"/>
 		<template:addResources type="css" resources="jahia.fancybox-form.css"/>
-		<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fancybox.pack.js"/>
+		<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,jquery.fancybox.js"/>
 		
 		<template:addResources>
 			<script type="text/javascript">

@@ -19,14 +19,14 @@
 <template:addResources type="css" resources="tasks.css"/>
 <template:addResources type="css" resources="contentlist.css"/>
 
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
-<template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="i18n/jquery.ui.min.js"/>
 <template:addResources type="javascript" resources="timepicker.js"/>
 <template:addResources type="css" resources="timepicker.css"/>
 <c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>

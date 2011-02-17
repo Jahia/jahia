@@ -9,8 +9,7 @@
 <template:addResources type="css" resources="thickbox.css" />
 <template:addResources type="css" resources="simplesearchform.css" />
 
-<template:addResources type="javascript" resources="jquery.min.js"/>
-<template:addResources type="javascript" resources="jquery.ajaxQueue.js" />
+<template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="javascript" resources="jquery.autocomplete.js" />
 <template:addResources type="javascript" resources="jquery.bgiframe.min.js" />
 <template:addResources type="javascript" resources="thickbox-compressed.js" />

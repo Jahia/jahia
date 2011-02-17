@@ -19,7 +19,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="bookmarks.css"/>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 

@@ -1,7 +1,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.js"/>
 <a href="${url.context}/administration">
     <c:if test="${!empty currentNode.properties['jcr:title']}">
         ${currentNode.properties["jcr:title"].string}

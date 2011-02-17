@@ -23,7 +23,7 @@
 <c:if test="${not empty bindedComponent}">
     <c:choose>
         <c:when test="${not renderContext.liveMode}">
-            <template:addResources type="javascript" resources="jquery.min.js"/>
+            <template:addResources type="javascript" resources="jquery.js"/>
             <div id="commentsList${bindedComponent.identifier}"></div>
             <script type="text/javascript">
                 $('#commentsList${bindedComponent.identifier}').load('${url.baseLive}${bindedComponent.path}/comments.hidden.commentsoutoflivemode.html.ajax');

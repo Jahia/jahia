@@ -16,7 +16,7 @@
 
 <template:include template="hidden.load"/>
 
-<template:addResources type="javascript" resources="jquery.min.js,jquery.bxSlider.js,jquery.bxSlider.load.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.bxSlider.js,jquery.bxSlider.load.js"/>
 <template:addResources type="css" resources="jquery.bxSlider.css"/>
 
 <c:if test="${empty editable}">

@@ -8,8 +8,8 @@
 <template:addResources type="css" resources="jahia.fancybox-form.css"/>
 <template:addResources type="css" resources="social.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
-<template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="jahia.social.js"/>
 <c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 

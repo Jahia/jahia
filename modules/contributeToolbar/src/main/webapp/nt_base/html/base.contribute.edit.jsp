@@ -21,16 +21,16 @@
 <template:addResources type="css" resources="datepicker.css"/>
 <template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="css" resources="formcontribute.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="datepicker.js,timepicker.js,jquery.jeditable.datepicker.js"/>
-<template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${renderContext.mainResourceLocale.language}.js"/>
+<template:addResources type="javascript" resources="jquery.ui.min.js"/>
 <template:addResources type="css" resources="jquery.treeview.css,jquery.fancybox.css"/>
 <template:addResources type="javascript"
-                       resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.pack.js"/>
+                       resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
 <template:addResources type="css" resources="timepicker.css"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>

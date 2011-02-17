@@ -12,7 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
 <template:addResources type="css" resources="formbuilder.css"/>
 <jcr:node var="actionNode" path="${currentNode.path}/action"/>
 <jcr:node var="fieldsetsNode" path="${currentNode.path}/fieldsets"/>

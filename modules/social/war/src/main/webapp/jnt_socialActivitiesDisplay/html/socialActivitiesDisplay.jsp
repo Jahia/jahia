@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="social" uri="http://www.jahia.org/tags/socialLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 <script type="text/javascript">
     $(document).ready(function() {

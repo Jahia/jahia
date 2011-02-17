@@ -195,8 +195,7 @@ public class RenderContext {
         String type = assetType + key;
         Set<String> assets = getStaticAssets(type);
         boolean isInlined = "inline".equalsIgnoreCase(assetType);
-        String resourceFilename = "javascript".equalsIgnoreCase(assetType) ? StringUtils.substringAfterLast(asset, "/") : asset;
-        if (isInlined || !resourceFileNames.contains(resourceFilename)) {
+        if (isInlined || !resourceFileNames.contains(asset)) {
             if (insert) {
                 LinkedHashSet<String> my = new LinkedHashSet<String>();
                 my.add(asset);
@@ -212,7 +211,7 @@ public class RenderContext {
             }
             staticAssets.put(type, assets);
             if (!isInlined) {
-                resourceFileNames.add(resourceFilename);
+                resourceFileNames.add(asset);
             }
         }
     }

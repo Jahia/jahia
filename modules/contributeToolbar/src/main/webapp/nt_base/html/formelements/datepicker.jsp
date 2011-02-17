@@ -20,7 +20,7 @@
 <template:addResources type="css" resources="formbuilder.css"/>
 <template:addResources type="css" resources="ui.slider.css"/>
 <template:addResources type="css" resources="datepicker.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js"/>
 <c:set var="dateTimePicker" value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
 <c:if test="${not empty workflowTaskFormTask}">
     <c:set var="now" value="${workflowTaskFormTask.variables[propertyDefinition.name][0].valueAsDate}"/>

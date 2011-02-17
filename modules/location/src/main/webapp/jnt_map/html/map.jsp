@@ -11,7 +11,7 @@
     <c:if test="${!renderContext.editMode}">
 	    <c:set var="targetProps" value="${bindedComponent.propertiesAsString}"/>
 	    <template:addResources type="javascript" resources="http://maps.google.com/maps/api/js?sensor=false&amp;language=${currentResource.locale.language}"/>
-	    <template:addResources type="javascript" resources="jquery.min.js"/>
+	    <template:addResources type="javascript" resources="jquery.js"/>
 	    <template:addResources type="javascript" resources="jquery.jahia-googlemaps.js"/>
 	
 	    <c:choose>

@@ -13,7 +13,7 @@
     <c:set var="avg" value="0.0"/>
 </c:if>
 <template:addResources type="css" resources="uni-form.css,ui.stars.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,ui.stars.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js"/>
 <script type="text/javascript">
     $(document).ready(function() {
         $("#avg${id}").children().not(":input").hide();

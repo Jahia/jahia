@@ -6,7 +6,7 @@
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <template:addResources type="css" resources="blog.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.jeditable.js"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="text" var="text"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:createdBy" var="createdBy"/>

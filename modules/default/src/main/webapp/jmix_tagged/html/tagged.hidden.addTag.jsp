@@ -5,11 +5,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.js"/>
 
 <template:addResources type="css" resources="jquery.autocomplete.css" />
 <template:addResources type="css" resources="thickbox.css" />
-<template:addResources type="javascript" resources="jquery.ajaxQueue.js" />
 <template:addResources type="javascript" resources="jquery.autocomplete.js" />
 <template:addResources type="javascript" resources="jquery.bgiframe.min.js" />
 <template:addResources type="javascript" resources="thickbox-compressed.js" />

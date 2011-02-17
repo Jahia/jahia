@@ -12,7 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.validate.js"/>
 <c:if test="${not renderContext.liveMode || not renderContext.loggedIn}">
     <script type="text/javascript">
         $(document).ready(function() {

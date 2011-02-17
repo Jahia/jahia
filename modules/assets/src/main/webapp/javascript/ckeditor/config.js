@@ -5,9 +5,9 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 CKEDITOR.editorConfig = function( config )
 {
-    config.contextPath = (typeof jahiaGWTParameters != 'undefined') ? jahiaGWTParameters.contextPath : '';
-    config.language = (typeof jahiaGWTParameters != 'undefined') ? jahiaGWTParameters.uilang : 'en';
-    config.siteUuid = (typeof jahiaGWTParameters != 'undefined') ? jahiaGWTParameters.siteUuid : '';
+    config.contextPath = (typeof jahiaJsParameters != 'undefined') ? jahiaJsParameters.contextPath : '';
+    config.language = (typeof jahiaJsParameters != 'undefined') ? jahiaJsParameters.uilang : 'en';
+    config.siteUuid = (typeof jahiaJsParameters != 'undefined') ? jahiaJsParameters.siteUuid : '';
     config.skin = 'jahia';
     
     config.filebrowserWindowWidth = '810';

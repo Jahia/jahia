@@ -4,7 +4,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="css" resources="advancedsearchform.css"/>
 
 <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>

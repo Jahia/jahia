@@ -37,7 +37,7 @@
         plugin : function(settings, original) {
             var id = get_id(original);
             remove_ck(id);
-            var ckeditorType = settings.ckeditorType || (typeof jahiaGWTParameters != 'undefined' ? 'User' : 'Mini');
+            var ckeditorType = settings.ckeditorType || (typeof jahiaJsParameters != 'undefined' ? 'User' : 'Mini');
             ckeditorType = $(original).attr('ckeditor:type') || ckeditorType;
             var ckeditorConfig = ckeditorType == 'Mini' ? {toolbar: 'Mini', filebrowserBrowseUrl: null, filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: null, filebrowserLinkBrowseUrl: null} : {toolbar: ckeditorType};
             eval('var originalConfig = ' + $(original).attr('ckeditor:config'));

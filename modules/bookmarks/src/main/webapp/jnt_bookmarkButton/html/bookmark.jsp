@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>

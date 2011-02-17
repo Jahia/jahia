@@ -35,7 +35,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="jquery.treeview.css,jquery.fancybox.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.pack.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="treeselector.js"/>
 <c:set var="root" value="${functions:default(root, renderContext.site.path)}"/>
 <c:set var="displayIncludeChildren" value="${functions:default(displayIncludeChildren, 'true')}"/>

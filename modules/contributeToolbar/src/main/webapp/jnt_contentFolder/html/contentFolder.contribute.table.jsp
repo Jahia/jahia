@@ -15,7 +15,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="contentlist.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="timepicker.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
@@ -26,7 +26,7 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript"
-                       resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.pack.js"/>
+                       resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="jquery.defer.js"/>
 <template:addResources type="javascript" resources="treeselector.js"/>
 <template:addResources type="css" resources="timepicker.css,datepicker.css,jquery.treeview.css,jquery.fancybox.css,contentlist.css,formcontribute.css"/>

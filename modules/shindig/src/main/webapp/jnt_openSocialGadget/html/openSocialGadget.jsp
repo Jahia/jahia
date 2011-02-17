@@ -16,7 +16,7 @@
         <template:addResources type="javascript" resources="${base}/util.js"/>
         <template:addResources type="javascript" resources="${base}/gadgets.js"/>
         <template:addResources type="javascript" resources="${base}/cookiebaseduserprefstore.js"/>
-        <template:addResources type="javascript" resources="jquery.min.js"/>
+        <template:addResources type="javascript" resources="jquery.js"/>
 
         <template:addResources>
             <script type="text/javascript">

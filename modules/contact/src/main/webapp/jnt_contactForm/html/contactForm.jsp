@@ -142,7 +142,7 @@
 </div>
 
 <c:if test="${jcr:hasPermission(currentNode,'viewContacts')}">
-    <template:addResources type="javascript" resources="jquery.min.js"/>
+    <template:addResources type="javascript" resources="jquery.js"/>
     <fieldset>
         <legend>Results</legend>
 

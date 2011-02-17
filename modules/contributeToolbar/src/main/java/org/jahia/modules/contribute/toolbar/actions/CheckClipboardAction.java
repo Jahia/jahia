@@ -44,6 +44,7 @@ import org.json.JSONObject;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,6 @@ import java.util.Map;
  */
 public class CheckClipboardAction extends Action {
     private transient static Logger logger = Logger.getLogger(CheckClipboardAction.class);
-    public static final String UUIDS_TO_COPY = "org.jahia.uuids.to.copy";
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
@@ -70,7 +70,7 @@ public class CheckClipboardAction extends Action {
         }
         if (uuids != null && uuids.size() > 0) {
             JSONObject json = new JSONObject();
-            json.put("uuids", uuids);
+            json.put(URLEncoder.encode(MultipleCopyAction.UUIDS,"UTF-8"), uuids);
             List<String> paths = new LinkedList<String>();
             for (String uuid : uuids) {
                 try {

@@ -19,7 +19,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <jsp:useBean id="datas" class="java.util.LinkedHashMap"/>
 <template:addResources type="css" resources="fullcalendar.css"/>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="javascript" resources="fullcalendar.js"/>
 
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>

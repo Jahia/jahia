@@ -16,7 +16,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="forum.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js,jquery.jeditable.mini.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.cuteTime.js,jquery.jeditable.mini.js"/>
 
 <template:linker property="j:bindedComponent"/>
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>

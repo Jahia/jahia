@@ -17,7 +17,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="selectorType" type="org.jahia.services.content.nodetypes.SelectorType"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.defer.js"/>
@@ -44,7 +44,7 @@
                 },
 
                 'onCleanup':function() {
-                    $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
+                    $(\".newContentCketempditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
                 }
              }
             );
@@ -52,7 +52,7 @@
         fancyboxOptions="{
             onStart: function() {
                 $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
-                $('#temp').append($('.FormContribute'))
+                $('#addNewContent').append($('.FormContribute'))
             }
         }"/>
 <span><fmt:message key="label.or"/></span>

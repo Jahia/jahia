@@ -2,7 +2,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="portal.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,inettuts.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,inettuts.js"/>
 <jcr:node path="${param['path']}" var="widgets"/>
 <div class="content clearfix">
     <div class="left">

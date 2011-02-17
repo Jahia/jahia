@@ -16,7 +16,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="forum.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js,jquery.jeditable.mini.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.cuteTime.js,jquery.jeditable.mini.js"/>
 
 <jcr:nodeProperty node="${currentNode}" name="limit" var="limit"/>
 <jcr:nodeProperty node="${currentNode}" name="reverseOrder" var="reverseOrder"/>

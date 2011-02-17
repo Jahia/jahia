@@ -235,6 +235,57 @@
                 <hashTree/>
               </hashTree>
             </hashTree>
+            <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Add users to site-privileged group" enabled="true">
+              <boolProp name="LoopController.continue_forever">true</boolProp>
+              <stringProp name="LoopController.loops">${NumberOfUsers}</stringProp>
+            </LoopController>
+            <hashTree>
+              <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Source de donn�es CSV" enabled="true">
+                <stringProp name="delimiter">,</stringProp>
+                <stringProp name="fileEncoding"></stringProp>
+                <stringProp name="filename">users.txt</stringProp>
+                <boolProp name="quotedData">false</boolProp>
+                <boolProp name="recycle">true</boolProp>
+                <stringProp name="shareMode">Toutes les unit�s</stringProp>
+                <boolProp name="stopThread">false</boolProp>
+                <stringProp name="variableNames">username,password,firstname,lastname,email,organisation,emailsNotificationsDisabled,preferredLanguage</stringProp>
+              </CSVDataSet>
+              <hashTree/>
+              <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Add user to site privileged group" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="userKey" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">${username}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">userKey</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol"></stringProp>
+                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/${SITE_KEY}/groups/site-privileged.addMember.do</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSampler>
+              <hashTree>
+                <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Compteur de temps al�atoire uniforme" enabled="true">
+                  <stringProp name="ConstantTimer.delay">${maxOffsetWaitTime}</stringProp>
+                  <stringProp name="RandomTimer.range">${maxWaitTime}</stringProp>
+                </UniformRandomTimer>
+                <hashTree/>
+              </hashTree>
+            </hashTree>
             <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="get live sitemap" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                 <collectionProp name="Arguments.arguments"/>

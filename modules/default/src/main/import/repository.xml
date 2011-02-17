@@ -11,6 +11,7 @@
                 <executeTask jcr:primaryType="jnt:permission"/>
                 <commentTask jcr:primaryType="jnt:permission"/>
                 <move jcr:primaryType="jnt:permission"/>
+                <addMemberToGroup jcr:primaryType="jnt:permission"/>
             </default>
             <comments jcr:primaryType="jnt:permission">
                 <addComment jcr:primaryType="jnt:permission"/>

@@ -1,0 +1,80 @@
+package org.jahia.modules.defaultmodule.actions;
+
+import org.jahia.bin.Action;
+import org.jahia.bin.ActionResult;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLResolver;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: loom
+ * Date: 17.02.11
+ * Time: 09:26
+ * To change this template use File | Settings | File Templates.
+ */
+public class AddMemberToGroupAction extends Action {
+
+    private JahiaGroupManagerService jahiaGroupManagerService;
+    private JahiaUserManagerService jahiaUserManagerService;
+    private JahiaSitesService jahiaSitesService;
+
+    public void setJahiaGroupManagerService(JahiaGroupManagerService jahiaGroupManagerService) {
+        this.jahiaGroupManagerService = jahiaGroupManagerService;
+    }
+
+    public void setJahiaUserManagerService(JahiaUserManagerService jahiaUserManagerService) {
+        this.jahiaUserManagerService = jahiaUserManagerService;
+    }
+
+    public void setJahiaSitesService(JahiaSitesService jahiaSitesService) {
+        this.jahiaSitesService = jahiaSitesService;
+    }
+
+    @Override
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+        String groupPath = resource.getNode().getPath();
+        String[] splitGroupPath = groupPath.split("/");
+        int siteID = 0;
+        String groupName = null;
+        // path to site group is something like /sites/siteKey/groups/groupName
+        if (groupPath.startsWith("/sites")) {
+            String siteKey = splitGroupPath[2];
+            JahiaSite jahiaSite = jahiaSitesService.getSiteByKey(siteKey);
+            siteID = jahiaSite.getID();
+            groupName = splitGroupPath[4];
+        } else {
+            // path to general group is /groups/groupName
+            groupName = splitGroupPath[2];
+        }
+        JahiaGroup targetJahiaGroup = jahiaGroupManagerService.lookupGroup(siteID, groupName);
+
+        if (parameters.get("userKey") != null) {
+            String userKey = parameters.get("userKey").get(0);
+            JahiaUser jahiaUser = jahiaUserManagerService.lookupUserByKey(userKey);
+            if (!targetJahiaGroup.isMember(jahiaUser)) {
+                targetJahiaGroup.addMember(jahiaUser);
+            }
+        } else if (parameters.get("groupKey") != null) {
+            String groupKey = parameters.get("groupKey").get(0);
+            JahiaGroup jahiaGroup = jahiaGroupManagerService.lookupGroup(groupKey);
+            if (!targetJahiaGroup.isMember(jahiaGroup)) {
+                targetJahiaGroup.addMember(jahiaGroup);
+            }
+        } else {
+            return ActionResult.BAD_REQUEST;
+        }
+        return ActionResult.OK_JSON;
+    }
+}

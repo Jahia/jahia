@@ -7,29 +7,32 @@ import org.jahia.taglibs.AbstractJahiaTag
  * @since JAHIA 6.5
  */
 if (renderContext.editMode && renderContext.mainResource.contextConfiguration == 'page') {
-    println GWTInitializer.generateInitializerStructure(renderContext.request,renderContext.request.session);
-    println GWTIncluder.generateGWTImport(renderContext.request,renderContext.response, "org.jahia.ajax.gwt.module.edit.Edit");
-    println AbstractJahiaTag.getGwtDictionnaryInclude(renderContext.request,AbstractJahiaTag.getUILocale(renderContext,renderContext.request.session,renderContext.request));
+  println GWTInitializer.generateInitializerStructure(renderContext.request,renderContext.request.session);
+  println GWTIncluder.generateGWTImport(renderContext.request,renderContext.response, "org.jahia.ajax.gwt.module.edit.Edit");
+  println AbstractJahiaTag.getGwtDictionnaryInclude(renderContext.request,AbstractJahiaTag.getUILocale(renderContext,renderContext.request.session,renderContext.request));
 }
 
-if (renderContext.contributionMode && renderContext.mainResource.contextConfiguration == 'page') {
-    println "<script type=\"text/javascript\">"
-    println "\tvar jahiaGWTParameters={contextPath:\"${url.context}\",uilang:\"${renderContext.mainResourceLocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}";
-    println "</script>";
+if (renderContext.mainResource.contextConfiguration == 'page') {
+  println "<script type=\"text/javascript\">"
+  println "\tvar jahiaJsParameters={contextPath:\"${url.context}\",uilang:\"${renderContext.mainResourceLocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}";
+  println "</script>";
 }
 
-renderContext.staticAssets.css.eachWithIndex { resource, i ->
-    println "<link id=\"staticAssetCSS${i}\" rel=\"stylesheet\" href=\"${resource}\" media=\"screen\" type=\"text/css\"/>";
-}
 
-renderContext.staticAssets.opensearch.eachWithIndex { resource, i ->
-    println "<link rel=\"search\" type=\"application/opensearchdescription+xml\" href=\"${resource}\" title=\"" + (renderContext.staticAssetOptions[resource].title != null ? renderContext.staticAssetOptions[resource].title : 'Jahia search') + "\" />";
-}
-
-renderContext.staticAssets.javascript.eachWithIndex { resource, i ->
-    println "<script id=\"staticAssetJavascript${i}\" type=\"text/javascript\" src=\"${resource}\"></script>";
-}
-
-renderContext.staticAssets.inline.eachWithIndex { resource, i ->
-    println "${resource}";
+renderContext.staticAssets.each { resource ->
+  resource.each { type ->
+    switch ( type.key ) {
+      case "css" :
+        type.value.eachWithIndex { css, i -> println "<link id=\"staticAssetCSS${i}\" rel=\"stylesheet\" href=\"${css.value}\" media=\"screen\" type=\"text/css\"/>";  }
+        break;
+      case "opensearch" :
+        type.value.each { opensearch -> println "<link rel=\"search\" type=\"application/opensearchdescription+xml\" href=\"${opensearch.value}\" title=\"" + (renderContext.staticAssetOptions[opensearch.value].title != null ? renderContext.staticAssetOptions[opensearch.value].title : 'Jahia search') + "\" />"; }
+        break;
+      case "javascript" :
+        type.value.eachWithIndex { javascript, i -> println "<script id=\"staticAssetJavascript${i}\" type=\"text/javascript\" src=\"${javascript.value}\"></script>"; }
+        break;
+      default:
+       type.value.each { inline ->  println "${inline}"; }
+    }
+  }
 }

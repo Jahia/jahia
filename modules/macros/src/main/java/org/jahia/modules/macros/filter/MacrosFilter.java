@@ -136,12 +136,14 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
         bindings.put("currentNode", resource.getNode());
         bindings.put("currentResource", resource);
         bindings.put("renderContext", renderContext);
-        bindings.put( "url", new URLGenerator(renderContext, resource));
-        int i = 1;
-        for (String s : StringUtils.split(matcher.group(2), ",")) {
-            s = StringUtils.substringAfter(s,"\"");
-            s = StringUtils.substringBeforeLast(s,"\"");
-            bindings.put("param"+(i++), s);
+        bindings.put("url", new URLGenerator(renderContext, resource));
+        if (matcher.group(2) != null) {
+            int i = 1;
+            for (String s : StringUtils.split(matcher.group(2), ",")) {
+                s = StringUtils.substringAfter(s, "\"");
+                s = StringUtils.substringBeforeLast(s, "\"");
+                bindings.put("param" + (i++), s);
+            }
         }
         try {
             bindings.put("currentAliasUser", renderContext.getMainResource().getNode().getSession().getAliasedUser());

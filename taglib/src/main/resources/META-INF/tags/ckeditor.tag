@@ -9,15 +9,17 @@
 <template:addResources type="javascript" resources="${empty includeJQuery || includeJQuery ? 'jquery.js,' : ''}ckeditor/ckeditor.js,ckeditor/adapters/jquery.js"/>
 <jsp:doBody var="config"/>
 <template:addResources>
-<script type="text/javascript">
-$(document).ready(function() {
-    $("${selector}").ckeditor($.extend({
-                toolbar: 'Mini',
+    <script type="text/javascript">
+        $(document).ready( function()
+        {
+            CKEDITOR.replace( '${selector}',
+            { toolbar: 'Mini',
                 filebrowserBrowseUrl: null,
                 filebrowserFlashBrowseUrl: null,
                 filebrowserImageBrowseUrl: null,
                 filebrowserLinkBrowseUrl: null
-            }, ${not empty config ? config : '{}'}));
-});
-</script>
+            }, ${not empty config ? config : '{}'
+			} );
+        });
+    </script>
 </template:addResources>

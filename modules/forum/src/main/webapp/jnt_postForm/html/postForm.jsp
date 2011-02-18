@@ -15,7 +15,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:linker property="j:bindedComponent"/>
 <template:addResources type="css" resources="forum.css"/>
-<uiComponents:ckeditor selector="textarea.jahia-ckeditor"/>
+<uiComponents:ckeditor selector="jahia-ckeditor"/>
 
 <c:set var="linked" value="${uiComponents:getBindedComponentPath(currentNode, renderContext, 'j:bindedComponent')}"/>
 <template:addResources type="css" resources="forum.css"/>

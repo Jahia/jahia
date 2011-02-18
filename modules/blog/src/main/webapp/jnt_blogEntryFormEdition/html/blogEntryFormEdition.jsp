@@ -21,7 +21,7 @@
         });
     });
 </script>
-<uiComponents:ckeditor selector="#editContent"/>
+<uiComponents:ckeditor selector="editContent"/>
 
     <form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
         <input type="hidden" name="autoCheckin" value="true">

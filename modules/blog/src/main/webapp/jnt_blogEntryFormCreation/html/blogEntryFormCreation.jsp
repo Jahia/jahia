@@ -21,7 +21,7 @@
         });
     });
 </script>
-<uiComponents:ckeditor selector="#addContent"/>
+<uiComponents:ckeditor selector="addContent"/>
 
     <template:tokenizedForm>
         <form id="formPost" method="post" action="${renderContext.mainResource.node.name}.addBlogEntry.do" name="blogPost">

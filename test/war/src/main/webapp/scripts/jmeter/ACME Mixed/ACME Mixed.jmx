@@ -57,6 +57,11 @@
             <stringProp name="Argument.value">2</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="PATH" elementType="Argument">
+            <stringProp name="Argument.name">PATH</stringProp>
+            <stringProp name="Argument.value">../generated</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -79,13 +84,13 @@
       <hashTree>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Gestionnaire de Cookie HTTP" enabled="true">
           <collectionProp name="CookieManager.cookies"/>
-          <boolProp name="CookieManager.clearEachIteration">true</boolProp>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
         </CookieManager>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data users Config" enabled="true">
-          <stringProp name="filename">usersacme.txt</stringProp>
+          <stringProp name="filename">${PATH}/usersacme.txt</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="variableNames">username,password</stringProp>
+          <stringProp name="variableNames">username,password,firstname,lastname,email,organisation,emailsNotificationsDisabled,preferredLanguage</stringProp>
           <stringProp name="delimiter">,</stringProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -100,10 +105,10 @@
             <stringProp name="-803558304">pageUrl</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="386257465">
+            <collectionProp name="-2071237516">
               <stringProp name="-1416580655">${_StringFromFile(scanAllUrls/jobsSearchKeyword.txt)}</stringProp>
               <stringProp name="-983328412">${_StringFromFile(scanAllUrls/globalSearchKeyword.txt)}</stringProp>
-              <stringProp name="-1072279866">${_StringFromFile(sitemaps/editSiteMaps.txt)}</stringProp>
+              <stringProp name="-49401291">${_StringFromFile(${PATH}/editSiteMaps.txt)}</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>
@@ -325,9 +330,9 @@
         </CookieManager>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data users Config" enabled="true">
-          <stringProp name="filename">usersacme.txt</stringProp>
+          <stringProp name="filename">${PATH}/usersacme.txt</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="variableNames">username,password</stringProp>
+          <stringProp name="variableNames">username,password,firstname,lastname,email,organisation,emailsNotificationsDisabled,preferredLanguage</stringProp>
           <stringProp name="delimiter">,</stringProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -342,10 +347,10 @@
             <stringProp name="-803558304">pageUrl</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="-448119996">
+            <collectionProp name="140033035">
               <stringProp name="-1416580655">${_StringFromFile(scanAllUrls/jobsSearchKeyword.txt)}</stringProp>
               <stringProp name="-983328412">${_StringFromFile(scanAllUrls/globalSearchKeyword.txt)}</stringProp>
-              <stringProp name="1830814216">${_StringFromFile(sitemaps/liveSitemaps.txt)}</stringProp>
+              <stringProp name="-1441274505">${_StringFromFile(${PATH}/liveSitemaps.txt)}</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>
@@ -567,9 +572,9 @@
         </CookieManager>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data users Config" enabled="true">
-          <stringProp name="filename">usersacme.txt</stringProp>
+          <stringProp name="filename">${PATH}/usersacme.txt</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="variableNames">username,password</stringProp>
+          <stringProp name="variableNames">username,password,firstname,lastname,email,organisation,emailsNotificationsDisabled,preferredLanguage</stringProp>
           <stringProp name="delimiter">,</stringProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -584,10 +589,10 @@
             <stringProp name="-803558304">pageUrl</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="-448119996">
+            <collectionProp name="140033035">
               <stringProp name="-1416580655">${_StringFromFile(scanAllUrls/jobsSearchKeyword.txt)}</stringProp>
               <stringProp name="-983328412">${_StringFromFile(scanAllUrls/globalSearchKeyword.txt)}</stringProp>
-              <stringProp name="1830814216">${_StringFromFile(sitemaps/liveSitemaps.txt)}</stringProp>
+              <stringProp name="-1441274505">${_StringFromFile(${PATH}/liveSitemaps.txt)}</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>
@@ -761,9 +766,9 @@
         </CSVDataSet>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Users Config" enabled="true">
-          <stringProp name="filename">usersacme.txt</stringProp>
+          <stringProp name="filename">${PATH}/usersacme.txt</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
-          <stringProp name="variableNames">username,password</stringProp>
+          <stringProp name="variableNames">username,password,firstname,lastname,email,organisation,emailsNotificationsDisabled,preferredLanguage</stringProp>
           <stringProp name="delimiter">,</stringProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>

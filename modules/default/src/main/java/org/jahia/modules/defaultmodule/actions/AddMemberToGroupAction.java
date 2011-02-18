@@ -12,6 +12,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class AddMemberToGroupAction extends Action {
+
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddMemberToGroupAction.class);
 
     private JahiaGroupManagerService jahiaGroupManagerService;
     private JahiaUserManagerService jahiaUserManagerService;
@@ -63,12 +66,20 @@ public class AddMemberToGroupAction extends Action {
         if (parameters.get("userKey") != null) {
             String userKey = parameters.get("userKey").get(0);
             JahiaUser jahiaUser = jahiaUserManagerService.lookupUserByKey(userKey);
+            if (jahiaUser == null) {
+                logger.warn("User " + userKey + " could not be found, will not add as member of group " + targetJahiaGroup.getGroupKey());
+                return ActionResult.BAD_REQUEST;
+            }
             if (!targetJahiaGroup.isMember(jahiaUser)) {
                 targetJahiaGroup.addMember(jahiaUser);
             }
         } else if (parameters.get("groupKey") != null) {
             String groupKey = parameters.get("groupKey").get(0);
             JahiaGroup jahiaGroup = jahiaGroupManagerService.lookupGroup(groupKey);
+            if (jahiaGroup == null) {
+                logger.warn("Group " + groupKey + " could not be found, will not add as member of group " + targetJahiaGroup.getGroupKey());
+                return ActionResult.BAD_REQUEST;
+            }
             if (!targetJahiaGroup.isMember(jahiaGroup)) {
                 targetJahiaGroup.addMember(jahiaGroup);
             }

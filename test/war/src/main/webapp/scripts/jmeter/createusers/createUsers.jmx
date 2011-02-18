@@ -9,12 +9,12 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="maxWaitTime" elementType="Argument">
             <stringProp name="Argument.name">maxWaitTime</stringProp>
-            <stringProp name="Argument.value">450</stringProp>
+            <stringProp name="Argument.value">0</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="maxOffsetWaitTime" elementType="Argument">
             <stringProp name="Argument.name">maxOffsetWaitTime</stringProp>
-            <stringProp name="Argument.value">50</stringProp>
+            <stringProp name="Argument.value">0</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="CONTEXT" elementType="Argument">
@@ -39,7 +39,12 @@
           </elementProp>
           <elementProp name="NumberOfUsers" elementType="Argument">
             <stringProp name="Argument.name">NumberOfUsers</stringProp>
-            <stringProp name="Argument.value">400</stringProp>
+            <stringProp name="Argument.value">50</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PATH" elementType="Argument">
+            <stringProp name="Argument.name">PATH</stringProp>
+            <stringProp name="Argument.value">./</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -136,58 +141,56 @@
             <stringProp name="LoopController.loops">${NumberOfUsers}</stringProp>
           </LoopController>
           <hashTree>
-            <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV User Data Set Config" enabled="true">
-              <stringProp name="delimiter">,</stringProp>
-              <stringProp name="fileEncoding"></stringProp>
-              <stringProp name="filename">users.txt</stringProp>
-              <boolProp name="quotedData">false</boolProp>
-              <boolProp name="recycle">true</boolProp>
-              <stringProp name="shareMode">Toutes les unit�s</stringProp>
-              <boolProp name="stopThread">false</boolProp>
-              <stringProp name="variableNames">username,password,firstname,lastname,email,organisation,emailsNotificationsDisabled,preferredLanguage</stringProp>
-            </CSVDataSet>
+            <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
+              <stringProp name="CounterConfig.start">1</stringProp>
+              <stringProp name="CounterConfig.end">10000</stringProp>
+              <stringProp name="CounterConfig.incr">1</stringProp>
+              <stringProp name="CounterConfig.name">USER_COUNTER</stringProp>
+              <stringProp name="CounterConfig.format"></stringProp>
+              <boolProp name="CounterConfig.per_user">false</boolProp>
+            </CounterConfig>
             <hashTree/>
             <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="User create" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                 <collectionProp name="Arguments.arguments">
                   <elementProp name="username" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${username}</stringProp>
+                    <stringProp name="Argument.value">user${USER_COUNTER}</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">username</stringProp>
                   </elementProp>
                   <elementProp name="password" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${password}</stringProp>
+                    <stringProp name="Argument.value">password</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">password</stringProp>
                   </elementProp>
                   <elementProp name="confirm_password" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${password}</stringProp>
+                    <stringProp name="Argument.value">password</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">confirm_password</stringProp>
                   </elementProp>
                   <elementProp name="desired_email" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${email}</stringProp>
+                    <stringProp name="Argument.value">user${USER_COUNTER}@organization.com</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">desired_email</stringProp>
                   </elementProp>
                   <elementProp name="desired_firstname" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${firstname}</stringProp>
+                    <stringProp name="Argument.value">firstname${USER_COUNTER}</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">desired_firstname</stringProp>
                   </elementProp>
                   <elementProp name="desired_lastname" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${lastname}</stringProp>
+                    <stringProp name="Argument.value">lastname${USER_COUNTER}</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">desired_lastname</stringProp>
@@ -230,6 +233,40 @@
               </UniformRandomTimer>
               <hashTree/>
             </hashTree>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">true</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">if (prev.isSuccessful()) {
+    String userCounter = vars.get(&quot;USER_COUNTER&quot;);
+    String path = vars.get(&quot;PATH&quot;);
+    Random random = new Random();
+    try {
+        File p = new File(path);
+        if (!p.exists()) {
+            p.mkdirs();
+        }
+        File f = new File(path + &quot;usersacme.txt&quot;);
+        BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
+        int languageRandom = random.nextInt(2);
+        String language = &quot;fr&quot;;
+        if (languageRandom == 1) {
+          language = &quot;en&quot;;
+        }
+        int emailNotificationsDisabledRandom = random.nextInt(2);
+        String emailNotificationsDisabled = &quot;false&quot;;
+        if (emailNotificationsDisabledRandom == 1) {
+            emailNotificationsDisabled = &quot;true&quot;;
+        }
+        int organizationRandom = random.nextInt(4); out.write(&quot;user&quot;+userCounter+&quot;,password,firstname&quot;+userCounter+&quot;,lastname&quot;+userCounter+&quot;,user&quot;+userCounter+&quot;@organisation.com,organisation&quot;+organizationRandom+&quot;,&quot;+emailNotificationsDisabled+&quot;,&quot; + language);
+        out.write(&quot;\n&quot;);
+        out.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">

@@ -1,0 +1,63 @@
+Jahia JMeter performance tests
+
+Introduction
+------------
+
+This document quickly explains how to use the JMeter performance scripts available in this directory.
+
+Requirements
+------------
+
+- JMeter 2.4 or more recent
+- JDK 5 minimum
+- A default Jahia 6.5 installation, as delivered by either compiling it from source (including configuration), or
+installed with the package installer.
+
+Steps
+-----
+
+1. Startup your Jahia server.
+
+2. Make sure you have put JMeter in your path, so you can launch it from anywhere. Here is an exemple for UNIX-based
+system :
+  export JMETER_HOME=~/java/technologies/jakarta-jmeter-2.4
+  export PATH=$JMETER_HOME/bin:$PATH
+   You could save this in your .profile or .bash_profile file
+
+3. Launch JMeter from the scripts/jmeter directory but NOT in one of the scripts' subdirectories. This is important
+because some scripts depend on the results of others (such as the mixed script depending on create script's results).
+
+4. First let's launch the create users script. You can do this by launching jmeter :
+
+   On Mac OS / Linux :
+   jmeter
+
+   On Windows :
+
+   jmeter.bat
+
+5. Then in the File menu, click Load and select the createUsers.jmx script that's located in the createusers directory.
+
+6. Make sure you adjust the variables on the first (top) node. Adjust the CONTEXT and number of users to fit your
+platform and requirements.
+
+7. Run the script and wait for it to complete. Usually it's a good idea to keep an eye on Jahia's console to make sure
+no errors are present, and in JMeter to look at the aggregate results node to see the progress of the tests as well as
+the current performance.
+
+8. Once the script has completed and created all the users, you can load the createACMESites.jmx that's located in the
+ createAcmeSitesAndGetSitemaps directory. Again adjust the variables in the top node to make your environment.
+ Depending on the number of sites you need to create, this script make take a lot of time to execute. For example,
+ creating 40 sites may take a few hours !
+
+9. Once the site creation script has completed, you can then use the more complex ACME Mixed.jmx script located in the
+ACME Mixed directory. Here you will want to maybe activate/deactivate some of the tests included in order to fit your
+needs. Also, there are more variables that need adjusting, not only at the top level but throughout the different loops.
+It is recommended to get familiar with this test as it covers a lot of different usage scenarios.
+
+Others scripts
+--------------
+
+There are other tests in the scripts/jmeter directory that focus on specific topics, so feel free to look at them. Some
+of them may have some requirements such as creating an ACME site first, so make sure you look at the test first to
+understand what the assumptions are.

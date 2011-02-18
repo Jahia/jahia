@@ -6,7 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addResources type="javascript" resources="${empty includeJQuery || includeJQuery ? 'jquery.min.js,' : ''}ckeditor/ckeditor.js,ckeditor/adapters/jquery.js"/>
+<template:addResources type="javascript" resources="${empty includeJQuery || includeJQuery ? 'jquery.js,' : ''}ckeditor/ckeditor.js,ckeditor/adapters/jquery.js"/>
 <jsp:doBody var="config"/>
 <template:addResources>
 <script type="text/javascript">

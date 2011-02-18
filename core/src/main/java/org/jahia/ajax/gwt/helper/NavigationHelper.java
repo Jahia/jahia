@@ -1178,7 +1178,7 @@ public class NavigationHelper {
             final JahiaTemplatesPackage aPackage =
                     ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(folder);
             if (aPackage != null) {
-                folder = aPackage.getRootFolder();
+                folder = aPackage.getRootFolder().equals("default")?"assets":aPackage.getRootFolder();
             } else {
                 folder = "assets"; // todo handle portlets 
             }

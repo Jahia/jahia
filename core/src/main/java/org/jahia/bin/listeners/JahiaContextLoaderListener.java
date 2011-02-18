@@ -65,6 +65,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener {
     private static ServletContext servletContext;
 
     public void contextInitialized(ServletContextEvent event) {
+        long startupTime = System.currentTimeMillis();
+        logger.info("Starting up Jahia, please wait...");
+
         servletContext = event.getServletContext();
         String jahiaWebAppRoot = servletContext.getRealPath("/");
         System.setProperty("jahiaWebAppRoot", jahiaWebAppRoot);
@@ -86,7 +89,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener {
                 ApplicationsManagerServiceImpl.getInstance().registerListeners();
             }
             Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, configExists ? SettingsBean
-                    .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());                
+                    .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
         } finally {

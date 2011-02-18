@@ -41,6 +41,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
     private int numberOfParents = 0;
     private int numberOfChilds = 0;
     private int numberOfSubChilds = 0;
+    private String siteKey = null;
 
     public void setNumberOfParents(int numberOfParents) {
         this.numberOfParents = numberOfParents;
@@ -52,6 +53,10 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
 
     public void setNumberOfSubChilds(int numberOfSubChilds) {
         this.numberOfSubChilds = numberOfSubChilds;
+    }
+
+    public void setSiteKey(String siteKey) {
+        this.siteKey = siteKey;
     }
 
     private ServletContext servletContext;
@@ -90,6 +95,9 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
             if (httpServletRequest.getParameter("subchilds") != null) {
                 this.setNumberOfSubChilds(Integer.valueOf(httpServletRequest.getParameter("subchilds")));
             }
+            if (httpServletRequest.getParameter("siteKey") != null) {
+                this.setSiteKey(httpServletRequest.getParameter("siteKey"));
+            }
             final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
@@ -97,7 +105,10 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
                         int numberOfSites = 0;
                         try {
                             numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
-                            TestHelper.createSite("ACME" + numberOfSites, "localhost" + numberOfSites, TestHelper.WEB_BLUE_TEMPLATES,
+                            if (siteKey == null) {
+                                siteKey = "ACME" + numberOfSites;
+                            }
+                            TestHelper.createSite(siteKey, "localhost" + numberOfSites, TestHelper.WEB_BLUE_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
                                             + "/prepackagedSites/acme.zip", "ACME.zip");
                             JCRNodeWrapper homeNode = session.getRootNode().getNode("sites/ACME" + (numberOfSites) + "/home");
@@ -125,7 +136,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
                             jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME" + (numberOfSites) + "/home")
                                     .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                             session.save();
-
+                            siteKey = null;
 
                         } catch (Exception e) {
                             logger.error("Cannot create site", e);

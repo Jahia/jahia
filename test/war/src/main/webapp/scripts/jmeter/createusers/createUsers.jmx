@@ -42,9 +42,9 @@
             <stringProp name="Argument.value">50</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="PATH" elementType="Argument">
-            <stringProp name="Argument.name">PATH</stringProp>
-            <stringProp name="Argument.value">./</stringProp>
+          <elementProp name="OUTPUT_PATH" elementType="Argument">
+            <stringProp name="Argument.name">OUTPUT_PATH</stringProp>
+            <stringProp name="Argument.value">../generated</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -143,7 +143,7 @@
           <hashTree>
             <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
               <stringProp name="CounterConfig.start">1</stringProp>
-              <stringProp name="CounterConfig.end">10000</stringProp>
+              <stringProp name="CounterConfig.end">1000000</stringProp>
               <stringProp name="CounterConfig.incr">1</stringProp>
               <stringProp name="CounterConfig.name">USER_COUNTER</stringProp>
               <stringProp name="CounterConfig.format"></stringProp>
@@ -237,16 +237,19 @@
               <boolProp name="resetInterpreter">true</boolProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
-              <stringProp name="script">if (prev.isSuccessful()) {
+              <stringProp name="script">import org.apache.jmeter.services.FileServer;
+
+if (prev.isSuccessful()) {
+    String baseDir = FileServer.getFileServer().getBaseDir();
     String userCounter = vars.get(&quot;USER_COUNTER&quot;);
-    String path = vars.get(&quot;PATH&quot;);
+    String path = vars.get(&quot;OUTPUT_PATH&quot;);
     Random random = new Random();
     try {
-        File p = new File(path);
+        File p = new File(baseDir, path);
         if (!p.exists()) {
             p.mkdirs();
         }
-        File f = new File(path + &quot;usersacme.txt&quot;);
+        File f = new File(baseDir, path + &quot;/usersacme.txt&quot;);
         BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
         int languageRandom = random.nextInt(2);
         String language = &quot;fr&quot;;

@@ -13,6 +13,12 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="wiki.css"/>
+<template:addResources type="css" resources="markitupStyle.css"/>
+<template:addResources type="css" resources="markitupWikiStyle.css"/>
+<template:addResources type="javascript" resources="jquery.js"/>
+<template:addResources type="javascript" resources="jquery.markitup.js"/>
+<template:addResources type="javascript" resources="markitupWikiSet.js"/>
+
 <c:set var="pageName" value="*"/>
 <c:if test="${not empty param.newPageName}">
     <c:set var="pageName" value="${param['newPageName']}"/>
@@ -22,24 +28,35 @@
     <c:set var="pageNode" value="${renderContext.mainResource.node}"/>
 </c:if>
 <template:tokenizedForm>
-<form class="formWiki" method="post" action="${url.base}${pageNode.path}/${pageName}">
-    <input type="hidden" name="autoCheckin" value="true">
-    <input type="hidden" name="nodeType" value="jnt:wikiPage">
-    <c:choose>
-    <c:when test="${not empty param.newPageName}">
-    <input type="hidden" name="jcr:title" value="${param['newPageName']}">
-    </c:when>
-        <c:otherwise>
-            <label for="title-${currentNode.identifier}"><fmt:message key="label.title"/>: </label>
-            <input type="text" name="jcr:title" id="title-${currentNode.identifier}"/>
-        </c:otherwise>
-    </c:choose>
-    <label for="text-${currentNode.identifier}"><fmt:message key="jnt_wiki.Content"/>: </label>
-    <textarea class="textareawiki" name="text" rows="30" cols="85" id="text-${currentNode.identifier}"><fmt:message key="jnt_wiki.typeContentHere"/></textarea>
-    <p>
-        <label for="comment-${currentNode.identifier}"><fmt:message key="jnt_wiki.addComment"/>: </label><input name="lastComment" id="comment-${currentNode.identifier}"/>
-        
-    </p>
-    <input class="button" type="submit"/>
-</form>
+    <form class="formWiki" method="post" action="${url.base}${pageNode.path}/${pageName}">
+        <input type="hidden" name="autoCheckin" value="true">
+        <input type="hidden" name="nodeType" value="jnt:wikiPage">
+        <c:choose>
+            <c:when test="${not empty param.newPageName}">
+                <input type="hidden" name="jcr:title" value="${param['newPageName']}">
+            </c:when>
+            <c:otherwise>
+                <label for="title-${currentNode.identifier}"><fmt:message key="label.title"/>: </label>
+                <input type="text" name="jcr:title" id="title-${currentNode.identifier}"/>
+            </c:otherwise>
+        </c:choose>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // Add markItUp! to your textarea in one line
+                // $('textarea').markItUp( { Settings }, { OptionalExtraSettings } );
+                $('#text-${currentNode.identifier}').markItUp(mySettings);
+
+            });
+        </script>
+        <label for="text-${currentNode.identifier}"><fmt:message key="jnt_wiki.Content"/>: </label>
+        <textarea class="textareawiki" name="text" rows="30" cols="85" id="text-${currentNode.identifier}"><fmt:message
+                key="jnt_wiki.typeContentHere"/></textarea>
+
+        <p>
+            <label for="comment-${currentNode.identifier}"><fmt:message key="jnt_wiki.addComment"/>: </label><input
+                name="lastComment" id="comment-${currentNode.identifier}"/>
+
+        </p>
+        <input class="button" type="submit"/>
+    </form>
 </template:tokenizedForm>

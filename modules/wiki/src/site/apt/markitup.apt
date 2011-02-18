@@ -1,0 +1,112 @@
+Markitup universal markup jQuery editor
+
+* presentation:
+
+markItUp! is a JavaScript plugin built on the jQuery library. It allows you to turn any textarea into a markup editor.
+Html, Textile, Wiki Syntax, Markdown, BBcode or even your own Markup system can be easily implemented.
+
+* how it's implemented ?
+
+you need to import jquery and markitup javascript libraries, also markitup css and associated images;
+
++--------------------------------------------------------------------------------------------
+<template:addResources type="javascript" resources="jquery.js"/>
+<template:addResources type="javascript" resources="jquery.markitup.js"/>
+<template:addResources type="css" resources="markitupStyle.css"/>
++--------------------------------------------------------------------------------------------
+
+markitup need a set for work on the model you want, here is the custom set for wiki module in Jahia.
+a default set exist in the instalattion folder of markitup
+the set is the JSon file with the css and images.
+
+for the wiki:
++--------------------------------------------------------------------------------------------
+
+mySettings = {
+    previewParserPath:    '',
+    onShiftEnter:        {keepDefault:false, replaceWith:'\n\n'},
+    markupSet: [
+        {name:'Heading 1', key:'1', openWith:'= ', closeWith:' =', placeHolder:'Your title here...' },
+        {name:'Heading 2', key:'2', openWith:'== ', closeWith:' ==', placeHolder:'Your title here...' },
+        {name:'Heading 3', key:'3', openWith:'=== ', closeWith:' ===', placeHolder:'Your title here...' },
+        {name:'Heading 4', key:'4', openWith:'==== ', closeWith:' ====', placeHolder:'Your title here...' },
+        {name:'Heading 5', key:'5', openWith:'===== ', closeWith:' =====', placeHolder:'Your title here...' },
+        {separator:'---------------' },
+        {name:'Bold', key:'B', openWith:"**", closeWith:"**"},
+        {name:'Italic', key:'I', openWith:"//", closeWith:"//"},
+        {name:'Underline', key:'U', openWith:"__", closeWith:"__"},
+        {name:'Stroke through', key:'S', openWith:'--', closeWith:'--'},
+        {separator:'---------------' },
+        {name:'Bulleted list', dropMenu: [
+            {name:'First level list', openWith:'(!(* |!|*)!)'},
+            {name:'Second level list', openWith:'(!(** |!|**)!)'},
+            {name:'Third level list', openWith:'(!(*** |!|**)!)'}
+        ]},
+        {name:'Link', key:"L", openWith:"[[[![Link]!]", closeWith:']]'},
+        {separator:'---------------' },
+        {name:'Quotes', openWith:'(!(> |!|>)!)', placeHolder:''},
+        {name:'Script', dropMenu: [
+            {name:'Superscript', openWith:"^^", closeWith:"^^"},
+            {name:'Subscript', openWith:",,", closeWith:",,"}
+        ]}
+
+    ]
+}
+
++--------------------------------------------------------------------------------------------------
+
+you can directcly specify the mySettings in the page:
+
++--------------------------------------------------------------------------------------------------
+
+<script type="text/javascript" >
+   mySettings = { ... }
+</script>
+
++--------------------------------------------------------------------------------------------------
+
+don't forget to add the css, and file associated to the mySettings.
+
+* all buttons in the toolbar are indexed, so we can add custom icone to this, in the css of yours:
+
++--------------------------------------------------------------------------------------------------
+.markItUp .markItUpButton1 a {
+	background-image:url(img/h1.png);
+}
+.markItUp .markItUpButton2 a {
+	background-image:url(img/h2.png);
+}
+.markItUp .markItUpButton3 a {
+	background-image:url(img/h3.png);
+}
+.markItUp .markItUpButton4 a {
+	background-image:url(img/h4.png);
+}
++--------------------------------------------------------------------------------------------------
+
+* bind to a textArea in the html:
+
+ after all settings create, you need to bind there to your textArea tag:
+
+ +--------------------------------------------------------------------------------------------------
+    <script type="text/javascript">
+            $(document).ready(function() {
+                // Add markItUp! to your textarea in one line
+                // $('textarea').markItUp( { Settings }, { OptionalExtraSettings } );
+                $('#text-${currentNode.identifier}').markItUp(mySettings);
+
+            });
+        </script>
+ +--------------------------------------------------------------------------------------------------
+
+
+* custom options ?
+
+there are many choice, and options to create buttons, dropdown, toolbars...
+for see more on this:
+
+    http://markitup.jaysalvat.com/documentation/
+
+* version ?
+
+    1.1.9

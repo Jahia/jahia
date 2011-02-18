@@ -265,7 +265,8 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             
             if (processedCount % 2000 == 0) {
                 long nowTime = System.currentTimeMillis();
-                double rate = ((double)processedSinceLastReport) / ((double)(nowTime - timeSinceLastReport));
+                double elapsedTimeInSeconds = ((double)(nowTime - timeSinceLastReport)) / 1000.0;
+                double rate = ((double)processedSinceLastReport) / elapsedTimeInSeconds;
 				logger.info("Total count of processed content history messages: {}. Ignored: {}. Inserted: {}. Rate={} msgs/sec.", new Object[] {processedCount, ignoredCount, insertedCount, rate});
                 processedSinceLastReport = 0;
                 timeSinceLastReport = nowTime;

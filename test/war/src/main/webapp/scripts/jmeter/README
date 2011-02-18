@@ -30,6 +30,7 @@ because some scripts depend on the results of others (such as the mixed script d
 4. First let's launch the create users script. You can do this by launching jmeter :
 
    On Mac OS / Linux :
+
    jmeter
 
    On Windows :

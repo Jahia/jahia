@@ -68,14 +68,19 @@
                     </blog>
                     <blog-edit j:applyOn="jnt:blogContent" j:requiredPermissions="/permissions/actions/blog/editBlogEntry" jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="1col16" jcr:primaryType="jnt:row" />
+                            <row column="2col124" jcr:primaryType="jnt:row" />
                         </pagecontent>
-                        <row-col1 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                        <row-col1 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Blog edit" />
                             <edit j:requireLoggedUser="false" j:requiredMode="live" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:blogEntryFormEdition">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Edit" />
                             </edit>
                         </row-col1>
+                        <row-col2 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                            <fileUpload jcr:primaryType="jnt:fileUpload" />
+                            <fileList jcr:primaryType="jnt:fileList" />
+                            <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Resources" />
+                        </row-col2>
                     </blog-edit>
                     <blog-content j:applyOn="jnt:blogContent" j:defaultTemplate="true" jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">

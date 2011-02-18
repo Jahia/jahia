@@ -4,6 +4,7 @@
 
 [jnt:blogContent] > jnt:content, jmix:blogContent, mix:title, jmix:tagged, jmix:comments
  - text (string, richtext) i18n
+ + * (jnt:file)
 
 [jnt:blogEntryFormCreation] > jnt:content, jmix:blogContent, mix:title
 

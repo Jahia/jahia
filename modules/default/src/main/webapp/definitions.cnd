@@ -183,3 +183,6 @@
  - targetTemplate (string)
  - aClass (string)
  - divClass (string)
+
+[jnt:fileUpload] > jnt:content, jmix:siteComponent
+ - target (weakreference)

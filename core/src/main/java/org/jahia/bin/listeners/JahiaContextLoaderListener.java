@@ -32,6 +32,7 @@
 
 package org.jahia.bin.listeners;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +48,17 @@ import org.springframework.web.context.ContextLoader;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 import javax.servlet.jsp.jstl.core.Config;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Startup listener for the Spring's application context.
@@ -59,13 +66,18 @@ import java.util.Locale;
  * Date: 22 juil. 2008
  * Time: 17:01:22
  */
-public class JahiaContextLoaderListener extends PortalStartupListener {
+public class JahiaContextLoaderListener extends PortalStartupListener implements ServletRequestListener, HttpSessionListener {
     
     private static final transient Logger logger = LoggerFactory
             .getLogger(JahiaContextLoaderListener.class);
 
     private static ServletContext servletContext;
     private static long startupTime;
+
+    private static long sessionCount = 0;
+    private static long requestCount = 0;
+
+    private static Map requestTimes = Collections.synchronizedMap(new LRUMap(1000));
 
     public void contextInitialized(ServletContextEvent event) {
         startupTime = System.currentTimeMillis();
@@ -193,5 +205,34 @@ public class JahiaContextLoaderListener extends PortalStartupListener {
 
     public static long getStartupTime() {
         return startupTime;
+    }
+
+    public void sessionCreated(HttpSessionEvent se) {
+        sessionCount++;
+    }
+
+    public void sessionDestroyed(HttpSessionEvent se) {
+        sessionCount--;
+    }
+
+    public void requestDestroyed(ServletRequestEvent sre) {
+        if (requestCount > 0) {
+            requestCount--;
+        }
+        long requestStartTime = (Long) requestTimes.remove(sre.getServletRequest());
+        long requestTotalTime = System.currentTimeMillis() - requestStartTime;
+    }
+
+    public void requestInitialized(ServletRequestEvent sre) {
+        requestCount++;
+        requestTimes.put(sre.getServletRequest(), System.currentTimeMillis());
+    }
+
+    public static long getSessionCount() {
+        return sessionCount;
+    }
+
+    public static long getRequestCount() {
+        return requestCount;
     }
 }

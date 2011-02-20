@@ -351,14 +351,14 @@
     <listener>
         <listener-class>org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet</listener-class>
     </listener>
-
+<!--
+    <listener>
+        <listener-class>org.jahia.osgi.http.bridge.StartupListener</listener-class>
+    </listener>
+-->
     <servlet>
-        <servlet-name>
-            Jahia
-        </servlet-name>
-        <servlet-class>
-            org.jahia.bin.Jahia
-        </servlet-class>
+        <servlet-name>Jahia</servlet-name>
+        <servlet-class>org.jahia.bin.Jahia</servlet-class>
         <!-- Make sure this is consistant with the servlet mappings below -->
         <init-param>
             <param-name>admin_servlet_path</param-name>
@@ -642,6 +642,23 @@
     </servlet>
 <!-- End of Quercus PHP servlet -->
 
+    <!-- OSGi Proxy Servlet -->
+<!--
+    <servlet>
+        <servlet-name>osgiProxy</servlet-name>
+        <servlet-class>org.apache.felix.http.proxy.ProxyServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>    
+-->
+
+    <!-- This servlet is used to indicate the end of the initialization process of Jahia, so it should always have
+         the highest load-on-startup value. This servlet may also be queried to check if the server has completed
+         initialization or not. -->
+    <servlet>
+        <servlet-name>initializationCompletedServlet</servlet-name>
+        <servlet-class>org.jahia.bin.EndInit</servlet-class>
+        <load-on-startup>999</load-on-startup>
+    </servlet>
 
     <!-- Servlet mappings -->
     <servlet-mapping>
@@ -766,16 +783,29 @@
         <url-pattern>/social/rpc/*</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/oauth/*</url-pattern>
-    </servlet-mapping>
 <!-- End of Shindig servlet mappings -->
 
 <!-- Quercus PHP mapping -->
     <servlet-mapping>
       <servlet-name>Quercus Servlet</servlet-name>
       <url-pattern>*.php</url-pattern>
+    </servlet-mapping>
+
+<!--
+    <servlet-mapping>
+        <servlet-name>osgiProxy</servlet-name>
+        <url-pattern>/osgi/*</url-pattern>
+    </servlet-mapping>
+-->
+
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/oauth/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>initializationCompletedServlet</servlet-name>
+        <url-pattern>/initializationCompleted/*</url-pattern>
     </servlet-mapping>
 
     <!-- Session timeout value is set in minutes. Comment this section out

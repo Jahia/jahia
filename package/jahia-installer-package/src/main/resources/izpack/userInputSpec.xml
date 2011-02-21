@@ -13,7 +13,7 @@
         
         <field type="space" />
         
-        <field type="radio" variable="installation.type" alight="left">
+        <field type="radio" variable="installation.type" align="left">
             <spec>
                 <choice txt="Express install" id="installation.type.express" value="express" set="true"/>
                 <choice txt="Custom install (advanced)" id="installation.type.advanced" value="advanced"/>
@@ -37,7 +37,7 @@
     <panel order="2" topBuffer="0">
         <field type="title" txt="Database connection settings" id="dbSettings.title"/>
         <field type="space" />
-        <field type="radio" variable="dbSettings.dbms.type" alight="left" conditionid="cnd.db.mode.standalone">
+        <field type="radio" variable="dbSettings.dbms.type" align="left" conditionid="cnd.db.mode.standalone">
             <description align="left" txt="Choose your DBMS type" id="dbSettings.dbms.type"/>
             <spec>
                 <choice txt="MySQL 5.x" id="dbSettings.dbms.type.mysql" value="mysql" set="true"/>
@@ -81,8 +81,6 @@
             <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.derby}"/>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
         </field>
-        
-
         <field type="text" align="left" variable="dbSettings.connection.username">
             <spec txt="Database username" id="dbSettings.connection.username" size="20" set="jahia"/>
         </field>
@@ -92,16 +90,70 @@
             </spec>
         </field>
         <field type="space"/>
-        <field type="check" variable="dbSettings.dbms.storeFilesInDB" alight="left">
+        <field type="check" variable="dbSettings.dbms.storeFilesInDB" align="left">
             <spec txt="Store binary data in the database?" id="dbSettings.dbms.storeFilesInDB" true="true" false="false" set="false"/>
         </field>
         <field type="space"/>
-        <field type="check" variable="dbSettings.dbms.createTables" alight="left">
+        <field type="check" variable="dbSettings.dbms.createTables" align="left">
             <spec txt="Create required database tables?" id="dbSettings.dbms.createTables" true="true" false="false" set="true"/>
         </field>
     </panel>
     
     <panel order="4">
+        <field type="title" txt="Application and server settings" id="appServer.title"/>
+        <field type="staticText" align="left" id="appServer.tomcat.description" txt="Apache Tomcat configuration" conditionid="cnd.pack.tomcat"/>
+        <field type="divider" align="top" conditionid="cnd.pack.tomcat"/>
+        <field type="text" align="left" variable="tomcat.httpPort" conditionid="cnd.pack.tomcat">
+            <spec txt="HTTP connector port (*)" id="appServer.httpPort" size="4" set="8080"/>
+            <validator class="com.izforge.izpack.util.RegularExpressionValidator" txt="HTTP connector port is a mandatory field and should contain a valid TCP port number" id="appServer.httpPort.validator">
+                <param name="pattern" value="[0-9]{2,5}"/>
+            </validator>
+        </field>
+        <field type="text" align="left" variable="tomcat.sslPort" conditionid="cnd.pack.tomcat">
+            <spec txt="HTTPS redirect port (*)" id="appServer.sslPort" size="4" set="8443"/>
+            <validator class="com.izforge.izpack.util.RegularExpressionValidator" txt="HTTPS redirect port is a mandatory field and should contain a valid TCP port number" id="appServer.sslPort.validator">
+                <param name="pattern" value="[0-9]{2,5}"/>
+            </validator>
+        </field>
+        <field type="text" align="left" variable="tomcat.ajpPort" conditionid="cnd.pack.tomcat">
+            <spec txt="AJP connector port (*)" id="appServer.ajpPort" size="4" set="8009"/>
+            <validator class="com.izforge.izpack.util.RegularExpressionValidator" txt="AJP connector port is a mandatory field and should contain a valid TCP port number" id="appServer.ajpPort.validator">
+                <param name="pattern" value="[0-9]{2,5}"/>
+            </validator>
+        </field>
+        <field type="text" align="left" variable="tomcat.serverPort" conditionid="cnd.pack.tomcat">
+            <spec txt="Server shutdown port (*)" id="appServer.serverPort" size="4" set="8005"/>
+            <validator class="com.izforge.izpack.util.RegularExpressionValidator" txt="Server shutdown port is a mandatory field and should contain a valid TCP port number" id="appServer.serverPort.validator">
+                <param name="pattern" value="[0-9]{2,5}"/>
+            </validator>
+        </field>
+        <field type="space" conditionid="cnd.pack.tomcat"/>
+        <field type="staticText" align="left" id="appServer.webApp.description" txt="Web application settings"/>
+        <field type="divider" align="top"/>
+        <field type="text" align="left" variable="jahia.war.contextName">
+            <spec txt="Context name (context path without /)" id="appServer.contextName" size="10" set=""/>
+            <validator class="com.izforge.izpack.util.RegularExpressionValidator" txt="The Web application context name should be a valid alpha-numeric no whitespace text, omitting the leading /" id="appServer.contextName.validator">
+                <param name="pattern" value="[a-zA-Z0-9_-]{0,}"/>
+            </validator>
+        </field>
+        <field type="space"/>
+        <field type="text" align="left" variable="jahiaManager.username">
+            <spec txt="Jahia tools manager username (*)" id="appServer.username" size="10" set="jahia"/>
+        </field>
+        <field type="password" align="left" variable="jahiaManager.password">
+            <spec>
+                <pwd set="jahia" size="10" txt="Jahia tools manager password (*)" id="appServer.password"/>
+            </spec>
+        </field>
+        <field type="check" variable="developmentMode" align="left">
+            <spec txt="Use development mode for templates?" id="appServer.developmentMode" true="true" false="false" set="true"/>
+        </field>
+        <field type="space"/>
+        <field type="divider" align="bottom"/>
+        <field type="staticText" align="left" txt="(*) - this field is required" id="common.requiredFieldHint"/>
+    </panel>
+    
+    <panel order="5">
         <field type="title" txt="System administrator (root) settings" id="superUser.title"/>
         <!-- Allow changing the root username when we will support it
         <field type="text" align="left" variable="superUser.username">
@@ -135,7 +187,7 @@
         <field type="staticText" align="left" txt="(*) - this field is required" id="common.requiredFieldHint"/>
     </panel>
     
-    <panel order="5">
+    <panel order="6">
         <field type="title" txt="Mail settings (optional)" id="mailSettings.title"/>
         <field type="staticText" txt="The settings below are optional. Leave them empty to disable E-Mail notification. Specifying them will enable the E-Mail notification feature." id="mailSettings.description"/>
         <field type="space"/>
@@ -152,16 +204,16 @@
         <field type="staticText" txt="See http://jira.jahia.org/browse/JKB-20 for Mail server configuration options in Jahia 6.5" id="mailSettings.link" align="right"/>
     </panel>
 
-    <panel order="6">
+    <panel order="7">
         <field type="title" txt="Installation" id="afterInstall.title"/>
         <field type="staticText" txt="Installation successful" id="afterInstall.description"/>
-        <field type="check" variable="afterInstall.launchJahia" alight="left" conditionid="cnd.pack.tomcat">
+        <field type="check" variable="afterInstall.launchJahia" align="left" conditionid="cnd.pack.tomcat">
             <spec txt="Launch Jahia" id="afterInstall.launchJahia" true="true" false="false" set="true"/>
         </field>
-        <field type="check" variable="afterInstall.viewHowToInstall" alight="left" conditionid="!cnd.pack.tomcat">
+        <field type="check" variable="afterInstall.viewHowToInstall" align="left" conditionid="!cnd.pack.tomcat">
             <spec txt="Open How To Install file" id="afterInstall.viewHowToInstall" true="true" false="false" set="true"/>
         </field>
-        <field type="check" variable="afterInstall.viewReadme" alight="left" conditionid="cnd.pack.tomcat">
+        <field type="check" variable="afterInstall.viewReadme" align="left" conditionid="cnd.pack.tomcat">
             <spec txt="Open README file" id="afterInstall.viewReadme" true="true" false="false" set="true"/>
         </field>
     </panel>

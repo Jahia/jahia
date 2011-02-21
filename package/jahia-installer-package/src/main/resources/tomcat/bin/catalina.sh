@@ -116,7 +116,7 @@ PRGDIR=`dirname "$PRG"`
 # Only set CATALINA_HOME if not already set
 [ -z "$CATALINA_HOME" ] && CATALINA_HOME=`cd "$PRGDIR/.." >/dev/null; pwd`
 
-CATALINA_OPTS="$CATALINA_OPTS -Dderby.system.home=$CATALINA_HOME/webapps/ROOT/WEB-INF/var/dbdata"
+CATALINA_OPTS="$CATALINA_OPTS -Dderby.system.home=$CATALINA_HOME/webapps/%{jahia.war.target.dir.name}/WEB-INF/var/dbdata"
 export CATALINA_OPTS
 
 # Ensure that any user defined CLASSPATH variables are not used on startup,

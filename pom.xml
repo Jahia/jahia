@@ -29,6 +29,10 @@
     <description>Jahia Full Package</description>
     <url>http://www.jahia.org</url>
     <properties>
+        <!-- general encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+              
         <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
         <jahia.project.structure.version>2</jahia.project.structure.version>
 
@@ -77,7 +81,23 @@
         <surefire.plugin.version>2.7.2</surefire.plugin.version>
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
         
-        <jahia.plugin.version>2.21</jahia.plugin.version>
+        <!-- Jahia Maven plugin version and default settings -->
+        <jahia.plugin.version>2.22</jahia.plugin.version>
+        <!-- common settings -->
+		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB> 
+		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+        <jahia.deploy.processingServer>true</jahia.deploy.processingServer>
+        <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
+        <jahia.deploy.war.contextPath></jahia.deploy.war.contextPath>
+        <jahia.test.url>http://localhost:8080/cms</jahia.test.url>
+        <!-- DBMS -->
+        <jahia.configure.databaseType>derby_embedded</jahia.configure.databaseType>
+        <jahia.configure.databaseUrl>jdbc:derby:directory:jahia;create=true</jahia.configure.databaseUrl>
+        <jahia.configure.databaseUsername></jahia.configure.databaseUsername>
+        <jahia.configure.databasePassword></jahia.configure.databasePassword>
+        <!-- Application server -->
+        <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+        <!-- end of Jahia Maven plugin default settings -->
     </properties>
 
     <scm>

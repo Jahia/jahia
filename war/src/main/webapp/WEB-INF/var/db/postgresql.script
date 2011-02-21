@@ -1,6 +1,6 @@
 # Jahia PostgreSQL Database configuration file
 
-jahia.database.name     =  PostgreSQL 8.x
+jahia.database.name     =  PostgreSQL 8.x/9.x
 jahia.database.driver   =  org.postgresql.Driver
 jahia.database.url      =  jdbc:postgresql://localhost:5432/jahia
 jahia.database.user     =  jahia

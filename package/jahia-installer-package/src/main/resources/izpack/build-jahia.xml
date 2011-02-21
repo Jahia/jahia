@@ -23,7 +23,7 @@
 		<java jar="${INSTALL_PATH}/archivers.jar" fork="true" failonerror="true" maxmemory="512m">
 			<arg value="-cm"/>
 			<arg value="${INSTALL_PATH}/build"/>
-			<arg value="${INSTALL_PATH}/ROOT.war"/>
+			<arg value="${INSTALL_PATH}/${jahia.war.target.dir.name}.war"/>
 			<arg value="${server.type}"/>
 		</java>
 		<echo>...packaging done.</echo>

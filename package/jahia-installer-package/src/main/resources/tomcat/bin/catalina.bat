@@ -100,7 +100,7 @@ echo This environment variable is needed to run this program
 goto end
 :okHome
 
-set CATALINA_OPTS=%CATALINA_OPTS% -Dderby.system.home=%CATALINA_HOME%\webapps\ROOT\WEB-INF\var\dbdata
+set CATALINA_OPTS=%CATALINA_OPTS% -Dderby.system.home=%CATALINA_HOME%\webapps\%{jahia.war.target.dir.name}\WEB-INF\var\dbdata
 
 rem Ensure that any user defined CLASSPATH variables are not used on startup,
 rem but allow them to be specified in setenv.bat, in rare case when it is needed.

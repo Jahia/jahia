@@ -8,6 +8,7 @@
 		</antcall>
 		<antcall order="afterpacks" buildresource="AntBuildFile" verbose="true" messageid="jahia.configuring" logfile="$INSTALL_PATH/logs/install.log">
 			<property name="INSTALL_PATH" value="${INSTALL_PATH}"/>
+            <property name="jahia.war.target.dir.name" value="${jahia.war.target.dir.name}"/>
 			<property name="jahia.war.target.path" value="${jahia.war.target.path}"/>
 			<property name="use.bundled.tomcat" value="${jahia.tomcat.pack.selected}"/>
 			<property name="server.type" value="${server.type}"/>

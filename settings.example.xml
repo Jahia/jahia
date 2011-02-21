@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <localRepository>C:/java/m2repository</localRepository>
+
+    <servers>
+        <server>
+            <id>jahiaRepository</id>
+            <username>maven</username>
+            <privateKey>C:/putty/maven.jahia.org.private</privateKey>
+        </server>
+    </servers>
+    <profiles>
+        <profile>
+            <id>jahia-common</id>
+            <properties>
+            <!-- Uncomment the following lines and adjust if needed
+                <jahia.configure.jahiaRootPassword>root1234</jahia.configure.jahiaRootPassword>
+        		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB> 
+        		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+                <jahia.test.url>http://localhost:8080/cms</jahia.test.url>
+            -->
+            </properties>
+        </profile>
+        <profile>
+            <id>jahia-mysql</id>
+            <properties>
+                <jahia.configure.databaseType>mysql</jahia.configure.databaseType>
+                <jahia.configure.databaseUrl>jdbc:mysql://localhost/jahia?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</jahia.configure.databaseUrl>
+                <jahia.configure.databaseUsername>root</jahia.configure.databaseUsername>
+                <jahia.configure.databasePassword></jahia.configure.databasePassword>
+            </properties>
+        </profile>
+        <profile>
+            <id>jahia-postgresql</id>
+            <properties>
+                <jahia.configure.databaseType>postgresql</jahia.configure.databaseType>
+                <jahia.configure.databaseUrl>jdbc:postgresql://localhost:5432/jahia</jahia.configure.databaseUrl>
+                <jahia.configure.databaseUsername>jahia</jahia.configure.databaseUsername>
+                <jahia.configure.databasePassword>jahia</jahia.configure.databasePassword>
+            </properties>
+        </profile>
+        <profile>
+            <id>jahia-derby-embedded</id>
+            <properties>
+                <jahia.configure.databaseType>derby_embedded</jahia.configure.databaseType>
+                <jahia.configure.databaseUrl>jdbc:derby:directory:jahia;create=true</jahia.configure.databaseUrl>
+                <jahia.configure.databaseUsername></jahia.configure.databaseUsername>
+                <jahia.configure.databasePassword></jahia.configure.databasePassword>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>jahia-tomcat</id>
+            <properties>
+                <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+                <jahia.deploy.targetServerDirectory>C:/jahia/apache-tomcat-6.0.32</jahia.deploy.targetServerDirectory>
+                <!-- Uncomment these lines if you wish deploy Jahia into e.g. /jahia and not ROOT context (by default)
+                <jahia.deploy.war.dirName>jahia</jahia.deploy.war.dirName>
+                <jahia.deploy.war.contextPath>/jahia</jahia.deploy.war.contextPath>
+                 -->
+            </properties>
+        </profile>
+        <profile>
+            <!-- Jahia JBoss 4.2.3 development -->
+            <id>jahia-jboss</id>
+            <properties>
+                <jahia.deploy.targetServerType>jboss</jahia.deploy.targetServerType>
+                <jahia.deploy.targetServerDirectory>C:/jahia/jboss-4.2.3.GA</jahia.deploy.targetServerDirectory>
+                <jahia.deploy.war.dirName>ROOT.war</jahia.deploy.war.dirName>
+                <!-- If you wish to deploy Jahia into e.g. /jahia and not ROOT context (by default) than use the following settings
+                <jahia.deploy.war.dirName>jahia.war</jahia.deploy.war.dirName>
+                <jahia.deploy.war.contextPath>/jahia</jahia.deploy.war.contextPath>
+                 -->
+            </properties>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>jahia-common</activeProfile>
+        <activeProfile>jahia-mysql</activeProfile>
+        <activeProfile>jahia-tomcat</activeProfile>
+        <!--
+        <activeProfile>eclipse-integration</activeProfile>
+        -->
+    </activeProfiles>
+
+    <pluginGroups>
+        <pluginGroup>org.jahia.server</pluginGroup>
+    </pluginGroups>
+</settings>

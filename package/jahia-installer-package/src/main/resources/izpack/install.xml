@@ -37,13 +37,27 @@
         <variable name="TargetPanel.dir.windows" value="C:\Jahia_xCM_CE_v${jahia.package.version}"/>
     </variables>
     <dynamicvariables>
-        <variable name="jahia.war.contextPath" value=""/>
-        <variable name="jahia.war.target.path" value="$INSTALL_PATH/tomcat/webapps/ROOT" condition="cnd.pack.tomcat"/>
+        <variable name="jahia.war.contextName" value="" condition="cnd.installation.type.express"/>
+        <variable name="jahia.war.contextPath" value="" condition="cnd.installation.type.express|cnd.contextPath.root"/>
+        <variable name="jahia.war.contextPath" value="/${jahia.war.contextName}" condition="cnd.installation.type.advanced+!cnd.contextPath.root"/>
+        <variable name="jahia.war.target.dir.name" value="ROOT" condition="cnd.contextPath.root"/>
+        <variable name="jahia.war.target.dir.name" value="${jahia.war.contextName}" condition="!cnd.contextPath.root"/>
+        <variable name="jahia.war.target.path" value="$INSTALL_PATH/tomcat/webapps/${jahia.war.target.dir.name}" condition="cnd.pack.tomcat"/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/build" condition="!cnd.pack.tomcat"/>
         <variable name="jahia.tomcat.pack.selected" value="true" condition="cnd.pack.tomcat"/>
         <variable name="jahia.tomcat.pack.selected" value="false" condition="!cnd.pack.tomcat"/>
         
         <variable name="server.type" value="tomcat"/>
+        
+        <variable name="tomcat.httpPort" value="8080" condition="cnd.installation.type.express|!cnd.pack.tomcat"/>
+        <variable name="tomcat.sslPort" value="8443" condition="cnd.installation.type.express|!cnd.pack.tomcat"/>
+        <variable name="tomcat.ajpPort" value="8009" condition="cnd.installation.type.express|!cnd.pack.tomcat"/>
+        <variable name="tomcat.serverPort" value="8005" condition="cnd.installation.type.express|!cnd.pack.tomcat"/>
+        
+        <variable name="jahiaManager.username" value="jahia" condition="cnd.installation.type.express"/>
+        <variable name="jahiaManager.password" value="password" condition="cnd.installation.type.express"/>
+        
+        <variable name="developmentMode" value="true" condition="cnd.installation.type.express"/>
 
         <!-- embedded Derby defaults -->
         <variable name="dbSettings.dbms.type" value="derby_embedded" condition="cnd.installation.type.express|cnd.db.dbms.derby_embedded"/>
@@ -123,6 +137,9 @@
             <name>afterInstall.viewHowToInstall</name>
             <value>true</value>
         </condition>
+        <condition type="com.izforge.izpack.rules.EmptyVariableCondition" id="cnd.contextPath.root">
+            <variable>jahia.war.contextName</variable>
+        </condition>
     </conditions>
     <guiprefs height="480" resizable="yes" width="640">
         <modifier key="useFlags" value="no"/>
@@ -195,6 +212,7 @@
         		<action stage="postvalidate" classname="org.jahia.izpack.DbConnectionValidationPanelAction"/>
         	</actions>
         </panel>
+        <panel classname="UserInputPanel" id="appServer" condition="cnd.installation.type.advanced"/>
         <panel classname="UserInputPanel" id="superUser"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="mailSettings"/>
         <panel classname="SummaryPanel"/>
@@ -203,17 +221,17 @@
         		<action stage="preactivate" classname="org.jahia.izpack.LockPrevButtonPanelAction"/>
         	</actions>
         </panel>
+        <panel classname="ShortcutPanel" id="shortcutPanel">
+            <actions>
+                <action stage="preactivate" classname="org.jahia.izpack.LockPrevButtonPanelAction"/>
+            </actions>
+        </panel>
         <panel classname="UserInputPanel" id="afterInstall" condition="izpack.windowsinstall">
         	<actions>
         		<action stage="preactivate" classname="org.jahia.izpack.LockPrevButtonPanelAction"/>
         	</actions>
         </panel>
         <panel classname="ProcessPanel" condition="cnd.launch.jahia|cnd.view.readme|cnd.view.howtoinstall"/>
-        <panel classname="ShortcutPanel" id="shortcutPanel">
-        	<actions>
-        		<action stage="preactivate" classname="org.jahia.izpack.LockPrevButtonPanelAction"/>
-        	</actions>
-        </panel>
         <panel classname="SimpleFinishPanel"/>
     </panels>
     
@@ -295,8 +313,14 @@
             <parsable targetfile="$INSTALL_PATH/stopJahia.sh" type="shell" os="unix"/>
             <parsable targetfile="$INSTALL_PATH/stopJahia.sh" type="shell" os="mac"/>
             
+            <parsable targetfile="$INSTALL_PATH/tomcat/bin/catalina.bat" type="shell" os="windows"/>
+            <parsable targetfile="$INSTALL_PATH/tomcat/bin/catalina.sh" type="shell" os="unix" />
+            <parsable targetfile="$INSTALL_PATH/tomcat/bin/catalina.sh" type="shell" os="mac" />
+            
             <parsable targetfile="$INSTALL_PATH/OpenJahia.URL"/>
             <parsable targetfile="$INSTALL_PATH/OpenJahiaAdministration.URL"/>
+            
+            <parsable targetfile="$INSTALL_PATH/tomcat/conf/server.xml"/>
             
             <executable targetfile="$INSTALL_PATH/tomcat/bin/catalina.sh" />
             <executable targetfile="$INSTALL_PATH/tomcat/bin/digest.sh" />

@@ -919,8 +919,7 @@ public class SettingsBean implements ServletContextAware {
     }
 
     public boolean isDevelopmentMode() {
-        // TODO change it back when the problem with maven plugin will be fixed
-        return true || developmentMode;
+        return developmentMode;
     }
 
     /**

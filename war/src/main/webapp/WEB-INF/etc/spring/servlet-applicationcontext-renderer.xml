@@ -83,6 +83,11 @@
                 <entry key="/wcag/**">
 					<bean class="org.jahia.services.htmlvalidator.WCAGController"/>
                 </entry>
+                <entry key="/serverStats/**">
+                    <bean class="org.jahia.bin.ServerStats">
+                        <property name="requestLoadAverage" ref="RequestLoadAverage" />
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>

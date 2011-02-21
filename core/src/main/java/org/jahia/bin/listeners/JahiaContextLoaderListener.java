@@ -75,7 +75,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     private static long startupTime;
 
     private static long sessionCount = 0;
-    private static long requestCount = 0;
 
     private static Map requestTimes = Collections.synchronizedMap(new LRUMap(1000));
 
@@ -216,15 +215,11 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public void requestDestroyed(ServletRequestEvent sre) {
-        if (requestCount > 0) {
-            requestCount--;
-        }
         long requestStartTime = (Long) requestTimes.remove(sre.getServletRequest());
         long requestTotalTime = System.currentTimeMillis() - requestStartTime;
     }
 
     public void requestInitialized(ServletRequestEvent sre) {
-        requestCount++;
         requestTimes.put(sre.getServletRequest(), System.currentTimeMillis());
     }
 
@@ -233,6 +228,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public static long getRequestCount() {
-        return requestCount;
+        return requestTimes.size();
     }
 }

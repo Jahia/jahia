@@ -207,6 +207,16 @@
  + * (jnt:tag) = jnt:tag
 
 //---------------------------------------------------------
+// Constants
+//---------------------------------------------------------
+[jnt:constants] > nt:base, jmix:nodenameInfo, jmix:list, jmix:basemetadata
++ * (jnt:constant) = jnt:constant
+
+[jnt:constant] > nt:base, jmix:nodenameInfo, jmix:basemetadata
+- constantKey (string)
+- constantValue (string)
+
+//---------------------------------------------------------
 // Preferences
 //---------------------------------------------------------
 

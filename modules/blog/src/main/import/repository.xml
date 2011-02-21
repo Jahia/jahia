@@ -91,7 +91,7 @@
                             <document-history j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Comments" />
                                 <commentsList j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay" jcr:primaryType="jnt:commentsList" />
-                                <addComment j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay" j:requireLoggedUser="false" j:requiredMode="live" j:requiredPermissions="/permissions/actions/blog/commentBlog" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:addComment" />
+                                <addComment j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay" j:requireLoggedUser="false" j:requiredMode="live" j:requiredPermissions="/permissions/actions/comments/addComment" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:addComment" />
                             </document-history>
                             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Blog content" />
                         </row-col1>
@@ -127,7 +127,6 @@
         <actions jcr:primaryType="jnt:permission">
             <blog jcr:primaryType="jnt:permission">
                 <createNewBlog jcr:primaryType="jnt:permission"/>
-                <commentBlog jcr:primaryType="jnt:permission"/>
                 <addBlogEntry jcr:primaryType="jnt:permission"/>
                 <editBlogEntry jcr:primaryType="jnt:permission"/>
             </blog>
@@ -136,7 +135,7 @@
 
     <roles>
         <visitor jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/actions/blog/createNewBlog /permissions/actions/blog/commentBlog"/>
+                 j:permissions="/permissions/actions/blog/createNewBlog"/>
     </roles>
 </content>
 

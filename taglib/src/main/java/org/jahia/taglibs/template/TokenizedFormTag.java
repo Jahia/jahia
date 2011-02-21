@@ -77,7 +77,7 @@ public class TokenizedFormTag extends BodyTagSupport {
                 hiddenInputs.put("captcha",java.util.UUID.randomUUID().toString());
             }
 
-            outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(\"" + id + "\")##\"/>");
+            outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(" + id + ")##\"/>");
 
 
             Map<String,Map<String,String>> forms = (Map<String, Map<String, String>>) pageContext.getAttribute("form-parameter", PageContext.REQUEST_SCOPE);

@@ -50,6 +50,7 @@ import javax.jcr.RepositoryException;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
+import javax.script.SimpleBindings;
 import java.io.File;
 import java.io.FileReader;
 import java.io.StringWriter;
@@ -131,18 +132,17 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
     }
 
     private Bindings getBindings(RenderContext renderContext, Resource resource, ScriptContext scriptContext, Matcher matcher) {
-        Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+        Bindings bindings = new SimpleBindings();
         bindings.put("currentUser", renderContext.getUser());
         bindings.put("currentNode", resource.getNode());
         bindings.put("currentResource", resource);
         bindings.put("renderContext", renderContext);
-        bindings.put("url", new URLGenerator(renderContext, resource));
-        if (matcher.group(2) != null) {
+        bindings.put( "url", new URLGenerator(renderContext, resource));
+        String group = matcher.group(3);
+        if(group!=null) {
             int i = 1;
-            for (String s : StringUtils.split(matcher.group(2), ",")) {
-                s = StringUtils.substringAfter(s, "\"");
-                s = StringUtils.substringBeforeLast(s, "\"");
-                bindings.put("param" + (i++), s);
+            for (String s : StringUtils.split(group, ",")) {
+                bindings.put("param"+(i++), s);
             }
         }
         try {

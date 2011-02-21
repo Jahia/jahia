@@ -78,6 +78,10 @@ pageContext.setAttribute("displayMsg", request.getAttribute(JahiaAdministration.
 <script language="javascript" type="text/javascript">
   setFocus();
 </script>
-<div id="adminLoginFooter">
-<%@include file="/admin/include/footer.inc" %>
-</div>
+ <c:if test="${empty requestScope['jahia.engines.gwtModuleIncluded']}">
+<internal:gwtGenerateDictionary/>        
+<internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin"/>
+</c:if>
+</body>
+</html>
+<% out.flush(); %>

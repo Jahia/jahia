@@ -27,9 +27,7 @@
     <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
     <input type="hidden" name="newNodeOutputFormat" value="${renderContext.mainResource.template}"/>
     <input type="hidden" name="newNodeOutputFormat" value="${renderContext.mainResource.template}"/>
-    <div class="hidden">
-        <input type="file" name="file" multiple>
-    </div>
+    <input type="file" name="file" multiple>
     <button>Upload</button>
     <div>Upload files</div>
 </form>

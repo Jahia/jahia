@@ -97,6 +97,7 @@
         <jahia.configure.databasePassword></jahia.configure.databasePassword>
         <!-- Application server -->
         <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+        <jahia.deploy.targetServerVersion>6</jahia.deploy.targetServerVersion>
         <!-- end of Jahia Maven plugin default settings -->
     </properties>
 

@@ -128,7 +128,7 @@
               <illustration j:level="1" jcr:primaryType="jnt:levelAbsoluteArea" j:allowedTypes="jnt:imageReference" />
             </illustration>
           </events>
-          <news-template jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:news" j:defaultTemplate="true">
+          <news-template jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:news" j:defaultTemplate="true" j:priority="100">
             <pagecontent jcr:primaryType="jnt:contentList">
               <row column="1col16" jcr:primaryType="jnt:row" />
             </pagecontent>

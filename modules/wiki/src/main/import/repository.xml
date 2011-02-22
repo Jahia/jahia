@@ -55,7 +55,7 @@
                             </wiki-syntax>
                         </row-col2>
                     </wiki>
-                    <wiki-content j:applyOn="jnt:wikiPage" j:defaultTemplate="true" j:requiredMode="live" jcr:primaryType="jnt:contentTemplate">
+                    <wiki-content j:applyOn="jnt:wikiPage" j:defaultTemplate="true" j:requiredMode="live" jcr:primaryType="jnt:contentTemplate" j:priority="10">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row"/>
                         </pagecontent>

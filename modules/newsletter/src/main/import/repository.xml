@@ -65,7 +65,7 @@
             <templates jcr:primaryType="jnt:templatesFolder">
                 <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
                     <newsletters jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletters jnt:newsletter"
-                                 j:defaultTemplate="true">
+                                 j:defaultTemplate="true" j:priority="10">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <mainResourceDisplay j:mainResourceView="default"
                                                  jcr:primaryType="jnt:mainResourceDisplay"/>
@@ -78,7 +78,7 @@
                 </base>
                 <newsletter-issue jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:contentTemplate"
                                   j:view="newsletter" j:hiddenTemplate="false" j:applyOn="jnt:newsletterIssue"
-                                  j:defaultTemplate="true">
+                                  j:defaultTemplate="true" j:priority="10">
                 </newsletter-issue>
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <files jcr:primaryType="jnt:folder"/>

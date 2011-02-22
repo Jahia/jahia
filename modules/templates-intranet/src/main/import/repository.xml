@@ -141,7 +141,7 @@
                             <listB jcr:primaryType="jnt:area" j:allowedTypes="" />
                         </row-col2>
                     </summary>
-                    <contentTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="false" j:defaultTemplate="true">
+                    <contentTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="false" j:defaultTemplate="true" j:priority="1">
                       <pagecontent jcr:primaryType="jnt:contentList">
                         <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
                       </pagecontent>

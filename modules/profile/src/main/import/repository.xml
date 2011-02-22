@@ -138,7 +138,7 @@
                         <user-content j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
                                       j:requireLoggedUser="false" j:requirePrivilegedUser="false"
                                       j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default"
-                                      jcr:primaryType="jnt:contentTemplate">
+                                      jcr:primaryType="jnt:contentTemplate" j:priority="20">
                             <pagecontent jcr:primaryType="jnt:contentList">
                                 <my-pages j:bindedComponent="" j:classname="userMyContentList" j:criteria="jcr:created"
                                           j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:page"

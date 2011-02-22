@@ -66,7 +66,7 @@
                             <illustration j:allowedTypes="jnt:imageReference" j:level="1" jcr:primaryType="jnt:levelAbsoluteArea" />
                         </illustration>
                     </blog>
-                    <blog-edit j:applyOn="jnt:blogContent" j:requiredPermissions="/permissions/actions/blog/editBlogEntry" jcr:primaryType="jnt:contentTemplate">
+                    <blog-edit j:applyOn="jnt:blogContent" j:requiredPermissions="/permissions/actions/blog/editBlogEntry" jcr:primaryType="jnt:contentTemplate" j:priority="10">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row" />
                         </pagecontent>
@@ -82,7 +82,7 @@
                             <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Resources" />
                         </row-col2>
                     </blog-edit>
-                    <blog-content j:applyOn="jnt:blogContent" j:defaultTemplate="true" jcr:primaryType="jnt:contentTemplate">
+                    <blog-content j:applyOn="jnt:blogContent" j:defaultTemplate="true" jcr:primaryType="jnt:contentTemplate" j:priority="10">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row" />
                         </pagecontent>

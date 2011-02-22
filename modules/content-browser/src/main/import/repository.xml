@@ -20,7 +20,7 @@
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <base jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
                     <folderTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:folder jnt:contentFolder"
-                                    j:hiddenTemplate="false" j:defaultTemplate="true">
+                                    j:hiddenTemplate="false" j:defaultTemplate="true" j:priority="10">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <facets jcr:primaryType="jnt:facets"
                                     j:bindedComponent="/templateSets/content-browser/templates/base/folderTemplate/pagecontent/mainResourceDisplay">
@@ -42,7 +42,7 @@
                     <editContent
                             j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default"
                             j:requiredMode="contribute" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content"
-                            j:hiddenTemplate="true">
+                            j:hiddenTemplate="true" j:priority="10">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <mainResourceDisplay-table j:mainResourceView="contribute.table"
                                                        jcr:primaryType="jnt:mainResourceDisplay"/>
@@ -93,7 +93,7 @@
                             </tabularList>
                         </pagecontent>
                     </editContent>
-                    <viewContent jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="true" j:applyOn="jnt:content">
+                    <viewContent jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="true" j:applyOn="jnt:content" j:priority="10">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <mainResourceDisplay-table j:mainResourceView="contribute.table"
                                                        jcr:primaryType="jnt:mainResourceDisplay"/>
@@ -101,7 +101,7 @@
                                                  jcr:primaryType="jnt:mainResourceDisplay"/>
                         </pagecontent>
                     </viewContent>
-                    <fileTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:file" j:defaultTemplate="true">
+                    <fileTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:file" j:defaultTemplate="true" j:priority="10">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <mainResourceDisplay-table j:mainResourceView="contribute.table"
                                                        jcr:primaryType="jnt:mainResourceDisplay"/>

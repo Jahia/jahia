@@ -59,7 +59,7 @@
                 </post>
               </pagecontent>
             </forum-newTopic>
-            <forum-topic j:applyOn="jnt:topic" j:defaultTemplate="true" j:hiddenTemplate="false" jcr:primaryType="jnt:contentTemplate">
+            <forum-topic j:applyOn="jnt:topic" j:defaultTemplate="true" j:hiddenTemplate="false" jcr:primaryType="jnt:contentTemplate" j:priority="10">
               <pagecontent jcr:primaryType="jnt:contentList">
                 <add-a-new-post-1 aClass="forum-post-icon" divClass="forum-buttons" j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic" j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/forum/createPost" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:componentLink" targetTemplate="forum-topic-newPost">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Add a new post" />
@@ -73,7 +73,7 @@
                 </add-a-new-post>
               </pagecontent>
             </forum-topic>
-            <forum-topic-newPost j:applyOn="jnt:topic" j:defaultTemplate="false" j:hiddenTemplate="false" jcr:primaryType="jnt:contentTemplate">
+            <forum-topic-newPost j:applyOn="jnt:topic" j:defaultTemplate="false" j:hiddenTemplate="false" jcr:primaryType="jnt:contentTemplate" j:priority="10">
               <pagecontent jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList">
                 <contentList j:skin="skins.box9" j:style="grey" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                   <post j:bindedComponent="/templateSets/forum/templates/base/forum/forum-topic-newPost" j:requireLoggedUser="false" j:requiredMode="live" j:requiredPermissions="/permissions/actions/forum/createPost" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:postForm">

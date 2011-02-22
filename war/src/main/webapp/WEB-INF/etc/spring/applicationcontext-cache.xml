@@ -95,9 +95,9 @@ when we flush this entry we will flush the whole cache-->
     </bean>-->
 
     <bean id="moduleGeneratorQueue" class="org.jahia.services.render.filter.cache.ModuleGeneratorQueue">
-        <property name="maxModulesToGenerateInParallel" value="50"/>
-        <property name="moduleGenerationWaitTime" value="10000"/>
-        <property name="minimumIntervalAfterLastAutoThreadDump" value="60000"/>
+        <property name="maxModulesToGenerateInParallel" value="${maxModulesToGenerateInParallel}"/>
+        <property name="moduleGenerationWaitTime" value="${moduleGenerationWaitTime}"/>
+        <property name="minimumIntervalAfterLastAutoThreadDump" value="${minimumIntervalAfterLastAutoThreadDump}"/>
     </bean>
 
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">

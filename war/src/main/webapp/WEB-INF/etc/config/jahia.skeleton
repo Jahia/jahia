@@ -300,3 +300,19 @@ dumpErrorsToFiles = true
 # dumped anyway, just so that we are still informed in case this is the only
 # error sent.
 fileDumpMaxRegroupingOfPreviousException = 500
+
+######################################################################
+### Concurrent processing options ####################################
+######################################################################
+# This variable controls how many threads are allowed to do heavy weight
+# processing (module creation not served from the cache)
+maxModulesToGenerateInParallel = 50
+# This variable controls how long threads are waiting to be able to start
+# generating modules in heavy load situations (value in milliseconds)
+moduleGenerationWaitTime = 10000
+# When Jahia does not respond fast enough (see moduleGenerationWaitTime) an 
+# automatic thread dump will be created to help figuring out what caused the 
+# slowdown. In order to not spam the log file, a minimum interval between two 
+# dumps can be defined. If the interval is set to -1, then automatic thread 
+# dumps will be disabled.
+minimumIntervalAfterLastAutoThreadDump = 60000

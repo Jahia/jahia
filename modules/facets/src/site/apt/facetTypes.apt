@@ -208,6 +208,6 @@ Facet types and their parameters
   This is a multilingual property, in which you can set the label, which should be displayed for this facet value.
   For the label you can also make use of {{{../macros/index.html}Jahia macros}}. For instance if you used the dynamic 
   {{{http://lucene.apache.org/solr/api/org/apache/solr/util/DateMathParser.html}DateMathParser}} expressions, you can for the above example to print 
-  the current month use the macro <<<##DynamicDateLabel("NOW/MONTH","date","MMMM")##>>> . The first parameter is the date expression and for the optional 
+  the current month use the macro <<<##DynamicDateLabel(NOW/MONTH,date,MMMM)##>>> . The first parameter is the date expression and for the optional 
   second and third parameter, we use the same <FormatType> and <FormatStyle> like used and described in the Java 
   {{{http://download.oracle.com/javase/1.5.0/docs/api/java/text/MessageFormat.html}MessageFormat}} class.  

@@ -103,32 +103,6 @@ rule "Import file"
         Log "Import file fired for node " + node.getPath()
 end
 
-rule "Image type"
-#Assign jmix:image type for an image node
-    salience 50
-    no-loop
-    when
-        A new node is created
-             - the mimetype matches image/.*
-    then
-        Log "Assign image type (jmix:image) for node " + node.getPath()
-        Add the type jmix:image
-end
-
-rule "Image update"
-    salience 25
-#Rebuild thumbnail for an updated image and update height/width
-    when
-        A file content has been modified
-             - the mimetype matches image/.*
-    then
-        Create an image "thumbnail" of size 150
-        Create an image "thumbnail2" of size 350
-        Set the property j:width of the node with the width of the image
-        Set the property j:height of the node with the height of the image
-        Log "Image updated " + node.getPath()
-end
-
 rule "Profile Image update"
     salience 25
     when

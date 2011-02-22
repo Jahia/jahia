@@ -22,22 +22,21 @@
 <c:if test="${!empty currentNode.properties.target}">
     <c:set var="targetNode" value="${currentNode.properties.target.node}"/>
 </c:if>
-<form id="file_upload" action="${url.base}${targetNode.path}" method="POST" enctype="multipart/form-data">
+<form id="file_upload${currentNode.identifier}" action="${url.base}${targetNode.path}" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="nodeType" value="jnt:file"/>
     <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-    <input type="hidden" name="newNodeOutputFormat" value="${renderContext.mainResource.template}"/>
-    <input type="hidden" name="newNodeOutputFormat" value="${renderContext.mainResource.template}"/>
+    <input type="hidden" name="newNodeOutputFormat" value="${renderContext.mainResource.template}.html"/>
     <input type="file" name="file" multiple>
     <button>Upload</button>
     <div>Upload files</div>
 </form>
-<table id="files"></table>
+<table id="files${currentNode.identifier}"></table>
 <script>
 /*global $ */
 $(function () {
-    $('file_upload').fileUploadUI({
-        uploadTable: $('files'),
-        downloadTable: $('files'),
+    $('#file_upload${currentNode.identifier}').fileUploadUI({
+        uploadTable: $('#files${currentNode.identifier}'),
+        downloadTable: $('#files${currentNode.identifier}'),
         buildUploadRow: function (files, index) {
             return $('<tr><td>' + files[index].name + '<\/td>' +
                     '<td class="file_upload_progress"><div><\/div><\/td>' +

@@ -19,7 +19,9 @@ import java.io.IOException;
  */
 public class EndInit extends HttpServlet {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(EndInit.class);
+    private static final long serialVersionUID = -2221764992780224013L;
+
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(EndInit.class);
 
     private boolean initialized = false;
 
@@ -27,13 +29,13 @@ public class EndInit extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         long initializationTime = System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime() ;
-        logger.info("Jahia is now ready. Initialization completed in " + initializationTime + "ms.");
+        logger.info("Jahia is now ready. Initialization completed in " + (initializationTime/1000)+ " s.");
         initialized = true;
     }
 
     @Override
     public void destroy() {
-        super.destroy();    //To change body of overridden methods use File | Settings | File Templates.
+        super.destroy();
         logger.info("Jahia is shutting down, please wait...");
     }
 

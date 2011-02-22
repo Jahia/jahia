@@ -66,11 +66,11 @@ public class EhCacheImpl implements CacheImplementation {
         if (ehCacheManager.getCache(name) == null) {
             ehCacheManager.addCache(name);
         }
-        if (ehCacheManager.getCache(name + "-groups") == null) {
-            ehCacheManager.addCache(name + "-groups");
+        if (ehCacheManager.getCache(name + "Groups") == null) {
+            ehCacheManager.addCache(name + "Groups");
         }
         ehCache = ehCacheManager.getCache(name);
-        ehCacheGroups = ehCacheManager.getCache(name + "-groups");
+        ehCacheGroups = ehCacheManager.getCache(name + "Groups");
         this.name = name;
         this.ehCacheProvider = ehCacheProvider;
         groupsSizeLimit = ehCacheProvider.getGroupsSizeLimit();

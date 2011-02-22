@@ -82,7 +82,7 @@
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.derby}" condition="cnd.db.dbms.derby" />
 
 		<!-- Store binary data on filesystem by default -->
-		<variable name="dbSettings.dbms.storeFilesInDB" value="false" condition="cnd.installation.type.express"/>
+		<variable name="dbSettings.dbms.storeFilesInDB" value="false" condition="cnd.installation.type.express|cnd.db.dbms.derby_embedded"/>
 		
         <!-- mail settings -->
         <variable name="mailSettings.administrator" value="" condition="cnd.installation.type.express"/>
@@ -125,6 +125,10 @@
             <value>derby</value>
         </condition>
 
+        <condition type="variable" id="cnd.start.tomcat">
+            <name>afterInstall.startTomcat</name>
+            <value>true</value>
+        </condition>
         <condition type="variable" id="cnd.launch.jahia">
             <name>afterInstall.launchJahia</name>
             <value>true</value>
@@ -274,7 +278,7 @@
                 <include name="jahia.ico"/>
                 <include name="jahia.png"/>
             </fileset>
-            <singlefile override="true" src="../scripts/openUrl.sh" target="$INSTALL_PATH/bin/openUrl.sh"/>
+            <singlefile override="true" src="../scripts/openUrl.sh" target="$INSTALL_PATH/bin/openUrl.sh" os="unix"/>
             <singlefile override="true" src="install.properties" target="$INSTALL_PATH/logs/install.properties"/>
             <singlefile override="true" src="../dependency/configurators-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
             <singlefile override="true" src="../dependency/archivers-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
@@ -283,7 +287,7 @@
             <parsable targetfile="$INSTALL_PATH/logs/install.properties" type="javaprop"/>
             <parsable targetfile="$INSTALL_PATH/docs/Readme.URL" condition="cnd.pack.tomcat"/>
             <parsable targetfile="$INSTALL_PATH/docs/HowToInstall.URL" condition="!cnd.pack.tomcat"/>
-            <executable targetfile="$INSTALL_PATH/bin/openUrl.sh" />
+            <executable targetfile="$INSTALL_PATH/bin/openUrl.sh" os="unix"/>
         </pack>
         <pack name="Apache Tomcat" id="tomcat" preselected="yes" required="no">
             <description/>

@@ -30,10 +30,10 @@ serverHome                                             =
 maintenanceMode                                        = false
 
 ######################################################################
-### Jahia Manager ####################################################
+### Jahia Tool Manager ###############################################
 ######################################################################
-jahiaManagerUsername                                   = jahia
-jahiaManagerPassword                                   = password
+jahiaToolManagerUsername                               = jahia
+jahiaToolManagerPassword                               = password
 
 ######################################################################
 ### Disk Paths  ######################################################
@@ -300,7 +300,6 @@ dumpErrorsToFiles = true
 # dumped anyway, just so that we are still informed in case this is the only
 # error sent.
 fileDumpMaxRegroupingOfPreviousException = 500
-
 ######################################################################
 ### Concurrent processing options ####################################
 ######################################################################

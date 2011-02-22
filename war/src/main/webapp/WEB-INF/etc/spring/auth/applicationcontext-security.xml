@@ -36,8 +36,14 @@
     <bean name="textConfigurationRealm" class="org.jahia.services.security.shiro.SpringTextConfigurationRealm">
         <property name="userDefinitions">
             <value>
-                ${jahiaManagerUsername}=${jahiaManagerPassword},toolManager,templateManager
+                ${jahiaToolManagerUsername}=${jahiaToolManagerPassword},toolManager,templateManager
             </value>
+        </property>
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="SHA-1"/>
+                <property name="storedCredentialsHexEncoded" value="false"/>
+            </bean>
         </property>
     </bean>
     

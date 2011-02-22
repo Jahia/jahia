@@ -37,7 +37,7 @@
         <jahia.project.structure.version>2</jahia.project.structure.version>
 
         <jahia.archivers.version>2.2</jahia.archivers.version>
-        <jahia.configurators.version>2.12</jahia.configurators.version>
+        <jahia.configurators.version>2.13</jahia.configurators.version>
         <jahia.deployers.version>2.1</jahia.deployers.version>
 
         <jahia.war.classifier></jahia.war.classifier>
@@ -82,7 +82,7 @@
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
         
         <!-- Jahia Maven plugin version and default settings -->
-        <jahia.plugin.version>2.22</jahia.plugin.version>
+        <jahia.plugin.version>2.23</jahia.plugin.version>
         <!-- common settings -->
 		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB> 
 		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>

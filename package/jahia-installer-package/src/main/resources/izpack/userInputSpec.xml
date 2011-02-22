@@ -138,12 +138,14 @@
         </field>
         <field type="space"/>
         <field type="text" align="left" variable="jahiaManager.username">
-            <spec txt="Jahia tools manager username (*)" id="appServer.username" size="10" set="jahia"/>
+            <spec txt="Jahia tool manager username (*)" id="appServer.username" size="10" set="jahia"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Jahia tool manager username is a mandatory field" id="appServer.username.mandatory"/>
         </field>
         <field type="password" align="left" variable="jahiaManager.password">
             <spec>
-                <pwd set="jahia" size="10" txt="Jahia tools manager password (*)" id="appServer.password"/>
+                <pwd set="password" size="10" txt="Jahia tool manager password (*)" id="appServer.password"/>
             </spec>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Jahia tool manager password is a mandatory field" id="appServer.password.mandatory"/>
         </field>
         <field type="check" variable="developmentMode" align="left">
             <spec txt="Use development mode for templates?" id="appServer.developmentMode" true="true" false="false" set="true"/>
@@ -207,14 +209,17 @@
     <panel order="7">
         <field type="title" txt="Installation" id="afterInstall.title"/>
         <field type="staticText" txt="Installation successful" id="afterInstall.description"/>
-        <field type="check" variable="afterInstall.launchJahia" align="left" conditionid="cnd.pack.tomcat">
-            <spec txt="Launch Jahia" id="afterInstall.launchJahia" true="true" false="false" set="true"/>
-        </field>
         <field type="check" variable="afterInstall.viewHowToInstall" align="left" conditionid="!cnd.pack.tomcat">
             <spec txt="Open How To Install file" id="afterInstall.viewHowToInstall" true="true" false="false" set="true"/>
         </field>
         <field type="check" variable="afterInstall.viewReadme" align="left" conditionid="cnd.pack.tomcat">
             <spec txt="Open README file" id="afterInstall.viewReadme" true="true" false="false" set="true"/>
+        </field>
+        <field type="check" variable="afterInstall.startTomcat" align="left" conditionid="cnd.pack.tomcat">
+            <spec txt="Start Apache Tomcat server" id="afterInstall.startTomcat" true="true" false="false" set="true"/>
+        </field>
+        <field type="check" variable="afterInstall.launchJahia" align="left" conditionid="cnd.pack.tomcat">
+            <spec txt="Wait for server startup and launch Jahia" id="afterInstall.launchJahia" true="true" false="false" set="false"/>
         </field>
     </panel>
 </userInput>

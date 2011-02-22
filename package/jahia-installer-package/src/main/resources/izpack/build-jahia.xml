@@ -32,8 +32,14 @@
 	<target name="cleanup">
 		<delete file="${INSTALL_PATH}/archivers.jar" />
 		<delete file="${INSTALL_PATH}/configurators.jar" />
+		<propertyfile file="${INSTALL_PATH}/logs/install.properties">
+			<entry key="databasePassword" value="***"/>
+			<entry key="jahiaRootPassword" value="***"/>
+			<entry key="jahiaToolManagerPassword" value="***"/>
+			<entry key="mailServer" value="***"/>
+		</propertyfile>
 	</target>
-
+	
 	<target name="jahia-cleanup-install-dir" if="cnd.install.dir.exists">
 		<delete includeemptydirs="true" verbose="true">
 			<fileset dir="${INSTALL_PATH}" includes="**/*" excludes="logs/**"/>

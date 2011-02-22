@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <processing>
 	<logfiledir>$INSTALL_PATH/logs</logfiledir>
-    <job name="Start Apache Tomcat" condition="cnd.launch.jahia">
+    <job name="Start Apache Tomcat" condition="cnd.start.tomcat">
         <executeForPack name="Apache Tomcat"/>
         <os family="windows" />
         <executefile name="cmd">

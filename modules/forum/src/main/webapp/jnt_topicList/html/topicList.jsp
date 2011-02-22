@@ -14,7 +14,7 @@
              sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${linked.path}'])"/>
     <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
     <jcr:sql var="numberOfThreadsQuery"
-             sql="select [jcr:uuid] from [jnt:page] as t  where isdescendantnode(t,['${linked.path}'])"/>
+             sql="select [jcr:uuid] from [jnt:topic] as t  where isdescendantnode(t,['${linked.path}'])"/>
     <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
     <template:addResources type="css" resources="forum.css"/>
     <template:addCacheDependency node="${linked}"/>
@@ -39,6 +39,7 @@
             <ul class="forum-list forums">
                 <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
                     <c:if test="${jcr:isNodeType(subchild, 'jnt:topic')}">
+                        <template:addCacheDependency node="${subchild}"/>
                         <li class="row">
                             <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
                         </li>

@@ -38,6 +38,7 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.CacheEntry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -100,7 +101,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     static private ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
     private static long lastThreadDumpTime = 0L;
     private Byte[] threadDumpCheckLock = new Byte[0];
-    private static final String FORM_TOKEN = "form_token";
+    public static final String FORM_TOKEN = "form_token";
     private Map<String,String> moduleParamsProperties;
 
     @Override
@@ -113,12 +114,16 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             renderContext.getRequest().setAttribute("servedFromCache", servedFromCache);
         }
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
+        boolean isBinded = resource.getNode().isNodeType("jmix:bindedComponent");
         if (script != null) {
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+            if(isBinded) {
+                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
+            } else {
+                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
-
+            }
             if (Boolean.valueOf(script.getTemplate().getProperties().getProperty(
                     "cache.additional.key.useMainResourcePath", "false"))) {
                 resource.getModuleParams().put("module.cache.additional.key",
@@ -204,12 +209,17 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
+        boolean isBinded = resource.getNode().isNodeType("jmix:bindedComponent");
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
         if (script != null) {
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+            if(isBinded) {
+                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
+            } else {
+                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+            }
         }
         resource.getDependencies().add(resource.getNode().getPath());
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);

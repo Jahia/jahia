@@ -64,11 +64,16 @@ public class CacheFilter extends AbstractFilter {
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
+            boolean isBinded = resource.getNode().isNodeType("jmix:bindedComponent");
             if (script != null) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
                         script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                        script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+                if (isBinded) {
+                    chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
+                } else {
+                    chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                            script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+                }
             }
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
@@ -107,11 +112,16 @@ public class CacheFilter extends AbstractFilter {
             throws Exception {
         if (!(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
+            boolean isBinded = resource.getNode().isNodeType("jmix:bindedComponent");
             if (script!=null) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.perUser",
                         Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+                if (isBinded) {
+                    chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
+                } else {
+                    chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                            script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+                }
             }
             resource.getDependencies().add(resource.getNode().getPath());
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
@@ -162,6 +172,9 @@ public class CacheFilter extends AbstractFilter {
                 dependenciesCache.put(new Element(path, dependencies));
             }
             CacheEntry<String> cacheEntry = new CacheEntry<String>(previousOut);
+            if (resource.getFormInputs() != null) {
+                    cacheEntry.setProperty(AggregateCacheFilter.FORM_TOKEN, resource.getFormInputs());
+                }
             Element cachedElement = new Element(perUserKey, cacheEntry);
             Cache cache = cacheProvider.getCache();
             if (expiration >= 0) {

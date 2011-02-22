@@ -21,7 +21,7 @@
   <template:addCacheDependency node="${linked}"/>
   <div class="topics">
     <jcr:nodeProperty node="${linked}" name="jcr:title" var="topicSubject"/>
-    <c:forEach items="${linked.nodes}" var="room">
+    <c:forEach items="${jcr:getChildrenOfType(linked,'jnt:page')}" var="room">
       <template:addCacheDependency node="${room}"/>
       <div class="forum-box forum-box-style1 topics">
         <ul class="forum-list">
@@ -32,13 +32,13 @@
                   <li class="delete-post-icon">
                   	<fmt:message key="confirm.delete.room" var="confirmMsg"/>
                   	<a title="<fmt:message key='delete.room'/>" href="#"
-						onclick="if (window.confirm('${functions:escapeJavaScript(confirmMsg)}')) {document.getElementById('jahia-forum-room-delete-${room.UUID}').submit();} return false;"><span><fmt:message key='delete.room'/></span></a></li>
+						onclick="if (window.confirm('${functions:escapeJavaScript(confirmMsg)}')) {document.getElementById('jahia-forum-room-delete-${room.identifier}').submit();} return false;"><span><fmt:message key='delete.room'/></span></a></li>
                 </ul>
                 <a href="${url.base}${room.path}.html">${room.properties['jcr:title'].string}</a>
                 <c:if test="${jcr:hasPermission(room, 'deleteRoom')}">
                   <template:tokenizedForm>
                     <form action="${url.base}${room.path}" method="post"
-                                              id="jahia-forum-room-delete-${room.UUID}">
+                                              id="jahia-forum-room-delete-${room.identifier}">
                       <input type="hidden" name="redirectTo"
                                                    value="${url.base}${renderContext.mainResource.node.path}"/>
                       <%-- Define the output format for the newly created node by default html or by redirectTo--%>
@@ -62,6 +62,7 @@
         <ul class="forum-list forums">
           <c:forEach items="${room.nodes}" var="section">
             <c:if test="${jcr:isNodeType(section, 'jnt:page')}">
+                <template:addCacheDependency node="${section}"/>
               <li class="row">
                 <%--<template:module node="${section}" template="section"/>--%>
                 <jcr:sql var="numberOfPostsQuery"
@@ -81,7 +82,7 @@
                 <c:if test="${jcr:hasPermission(section, 'deleteSection')}">
                   <template:tokenizedForm>
                     <form action="${url.base}${section.path}" method="post"
-                                              id="jahia-forum-section-delete-${section.UUID}">
+                                              id="jahia-forum-section-delete-${section.identifier}">
                       <input type="hidden" name="redirectTo"
                                                    value="${url.base}${renderContext.mainResource.node.path}"/>
                       <%-- Define the output format for the newly created node by default html or by redirectTo--%>
@@ -96,7 +97,7 @@
                       <ul class="forum-profile-icons">
                       	<fmt:message key='confirm.delete.section' var="confirmMsg"/>
                         <li class="delete-post-icon"><a title="<fmt:message key='delete.section'/>" href="#"
-                                                                            onclick="if (window.confirm('${functions:escapeJavaScript(confirmMsg)}')) { document.getElementById('jahia-forum-section-delete-${section.UUID}').submit(); } return false;"><span><fmt:message key='delete.section'/></span></a></li>
+                                                                            onclick="if (window.confirm('${functions:escapeJavaScript(confirmMsg)}')) { document.getElementById('jahia-forum-section-delete-${section.identifier}').submit(); } return false;"><span><fmt:message key='delete.section'/></span></a></li>
                       </ul>
                     </c:if>
                     <a class="forum-title"

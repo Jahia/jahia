@@ -42,6 +42,7 @@
       <ul class="forum-list forums">
         <c:forEach items="${linked.nodes}" var="section">
           <c:if test="${jcr:isNodeType(section, 'jnt:page')}">
+              <template:addCacheDependency node="${section}"/>
             <li class="row">
               <jcr:sql var="numberOfPostsQuery"
                                      sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${section.path}']) order by post.[jcr:lastModified] desc"/>

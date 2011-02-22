@@ -643,19 +643,18 @@ public class ManageUsers extends AbstractAdministrationModule {
         throws IOException, ServletException, JahiaException {
 
         logger.debug("Started");
-        String selectedUsers = request.getParameter("selectedUsers");
-        selectedUsers = StringUtils.replace(selectedUsers, "&nbsp;", " ");
-        if (selectedUsers == null || "null".equals(selectedUsers)) {
+        String[] selectedUsers = request.getParameterValues("selectedUsers");
+        if (selectedUsers == null || selectedUsers.length == 0) {
           userMessage = getMessage("org.jahia.admin.userMessage.selectUser.label");
             displayUsers(request, response, session);
         } else {
             // set request attributes...
-            
-            JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-            JahiaUser user = userService.lookupUserByKey(selectedUsers.substring(1));
-
-            request.setAttribute("userReadOnly", JahiaUserManagerService.isGuest(user) || user.isRoot() || Boolean.valueOf(userService.getProvider(user.getProviderName()).isReadOnly()));
-            request.setAttribute("selectedUser", user);
+        	List<String> users = new LinkedList<String>();
+        	for (String theUser : selectedUsers) {
+	            users.add(theUser.substring(1));
+            }
+//            request.setAttribute("userReadOnly", JahiaUserManagerService.isGuest(user) || user.isRoot() || Boolean.valueOf(userService.getProvider(user.getProviderName()).isReadOnly()));
+            request.setAttribute("selectedUsers", users);
             session.setAttribute("userMessage", userMessage);
             session.setAttribute("isError", isError);
             request.setAttribute("jspSource", JSP_PATH + "user_management/user_remove.jsp");
@@ -684,17 +683,16 @@ public class ManageUsers extends AbstractAdministrationModule {
     throws IOException, ServletException, JahiaException
     {
         session.setAttribute("selectedUsers", null);
-        String userName = request.getParameter("username");
+        String[] userNames = request.getParameterValues("username");
+        Set<String> deleted = new HashSet<String>();
+       	for (String userName : userNames) {
             // try to delete the user and memberships...
             try {
                 JahiaUser user = userManager.lookupUser(userName);
                 JahiaUser currentUser = (JahiaUser)session.getAttribute(ProcessingContext.SESSION_USER);
                 if (!user.getUserKey().equals(currentUser.getUserKey())) {
                     userManager.deleteUser(user);
-                    userMessage = getMessage("label.user");
-                    userMessage += " [" + userName + "] ";
-                    userMessage += getMessage("org.jahia.admin.userMessage.removed.label");
-                    isError = false;
+                    deleted.add(userName);
                   } else {
                       userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveYourUser.label");
                 }
@@ -702,6 +700,24 @@ public class ManageUsers extends AbstractAdministrationModule {
                 logger.error(e.getMessage(), e);
                 userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveUser.label") + " " + userName + ".";
             }
+        }
+       	if (userNames.length > 1) {
+       		if (!deleted.isEmpty()) {
+	            userMessage = getMessage("label.user");
+	            userMessage += " [" + StringUtils.join(deleted, ", ") + "] ";
+	            userMessage += getMessage("org.jahia.admin.userMessage.removed.label");
+	            isError = false;
+       		} else {
+       			userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveUser.label") + " " + StringUtils.join(userNames, ", ") + ".";       			
+       		}
+       	} else {
+       		if (userMessage == null && deleted.size() == 1) {
+	            userMessage = getMessage("label.user");
+	            userMessage += " [" + deleted.iterator().next() + "] ";
+	            userMessage += getMessage("org.jahia.admin.userMessage.removed.label");
+	            isError = false;
+       		}
+       	}
         displayUsers( request, response, session);
     }
 
@@ -752,6 +768,7 @@ public class ManageUsers extends AbstractAdministrationModule {
     throws IOException, ServletException, JahiaException
     {
         logger.debug("Started");
+        long timer = System.currentTimeMillis();
 
         FileUpload fileUpload = ((ParamBean) jParams).getFileUpload();
         if (fileUpload != null) {
@@ -818,6 +835,8 @@ public class ManageUsers extends AbstractAdministrationModule {
             isError = false;
 
         }
+
+        logger.info("Batch user create took " + (System.currentTimeMillis() - timer) + " ms");
 
         displayUsers( request, response, session);
     }

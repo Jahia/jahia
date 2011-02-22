@@ -370,7 +370,7 @@
      <span class="dex-PushButton">
       <span class="first-child">
          <a class="ico-ok"
-            href="javascript:document.mainForm.submit();<%if(isPopup){%>closeWindowAndReloadParent();<%}%>"><fmt:message key="label.ok"/></a>
+            href="#ok" onclick="showWorkInProgress(); document.mainForm.submit(); <%if(isPopup){%>closeWindowAndReloadParent();<%}%> return false;"><fmt:message key="label.ok"/></a>
       </span>
      </span>
 

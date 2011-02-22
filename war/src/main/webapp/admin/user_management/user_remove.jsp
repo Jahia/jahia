@@ -2,6 +2,7 @@
 <%@page import = "org.jahia.data.JahiaData"%>
 <%@page import = "java.util.*"%>
 <%@page import="org.jahia.bin.*"%>
+<%@page import="org.jahia.services.usermanager.JahiaUserManagerService"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -11,6 +12,7 @@
 <%
     JahiaData jData = (JahiaData)request.getAttribute("org.jahia.data.JahiaData");    
     int stretcherToOpen   = 1;
+    JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
 %>
 <!-- Adiministration page position -->
 <div id="topTitle">
@@ -42,30 +44,37 @@
 </div>
 <div class="content-item"><!-- Remove user -->
 <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=processRemove")%>' method="post">
-    <c:if test="${not requestScope.userReadOnly}">
-        <p>
-          <b><fmt:message key="label.username"/>:</b>&nbsp;&nbsp;&nbsp;${selectedUser.username}
-          <input type="hidden" name="username" value="${selectedUser.username}">
-        </p>
-        <p>
-          <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.label"/>
-        </p>
-        <p>
-          <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.files.label"/>&nbsp;
-          (<a href="<c:url value='/cms/export/default/users/${selectedUser.username}.zip?cleanup=simple'/>" target="_blank"><fmt:message key="label.export"/></a>)
-        </p>
-        <p>
-          <fmt:message key="org.jahia.admin.users.ManageUsers.areYouSure.label"/>
-        </p>
-    </c:if>        
-    <c:if test="${requestScope.userReadOnly}">
-        <p>
-          <b><fmt:message key="label.username"/>:</b>&nbsp;&nbsp;&nbsp;${selectedUser.username}
-        </p>
-        <p>
-          <fmt:message key="org.jahia.admin.users.ManageUsers.cannotRemove.label"/>
-        </p>
-    </c:if>        
+    <c:set var="doRemove" value="false"/>
+    <c:forEach items="${selectedUsers}" var="userKey">
+        <%
+            JahiaUser user = userService.lookupUserByKey((String) pageContext.getAttribute("userKey"));
+            pageContext.setAttribute("selectedUser", user);    
+            pageContext.setAttribute("userReadOnly", JahiaUserManagerService.isGuest(user) || user.isRoot() || Boolean.valueOf(userService.getProvider(user.getProviderName()).isReadOnly()));
+        %>
+        <c:if test="${not userReadOnly}">
+            <p>
+              <b><fmt:message key="label.username"/>:</b>&nbsp;&nbsp;&nbsp;${selectedUser.username}
+              <input type="hidden" name="username" value="${selectedUser.username}">
+            </p>
+            <p>
+              <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.label"/><br/>
+              <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.files.label"/>&nbsp;
+              (<a href="<c:url value='/cms/export/default/users/${selectedUser.username}.zip?cleanup=simple'/>" target="_blank"><fmt:message key="label.export"/></a>)          
+            </p>
+            <c:set var="doRemove" value="true"/>
+        </c:if>        
+        <c:if test="${userReadOnly}">
+            <p>
+              <b><fmt:message key="label.username"/>:</b>&nbsp;&nbsp;&nbsp;${selectedUser.username}
+            </p>
+            <p>
+              <fmt:message key="org.jahia.admin.users.ManageUsers.cannotRemove.label"/>
+            </p>
+        </c:if>
+    </c:forEach>
+    <c:if test="${doRemove}">
+        <p><fmt:message key="org.jahia.admin.users.ManageUsers.areYouSure.label"/></p>
+    </c:if>
 </form>
 </div>
 	</div>		
@@ -86,10 +95,10 @@
          <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=display")%>'><fmt:message key="label.cancel"/></a>
       </span>
      </span>
-     <c:if test="${not requestScope.userReadOnly}">     
+     <c:if test="${doRemove}">     
      <span class="dex-PushButton"> 
       <span class="first-child">
-         <a class="ico-ok" href="javascript:document.mainForm.submit();" ><fmt:message key="label.ok"/></a>
+         <a class="ico-ok" href="#ok" onclick="showWorkInProgress(); document.mainForm.submit(); return false;" ><fmt:message key="label.ok"/></a>
       </span>
      </span>      
      </c:if>

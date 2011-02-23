@@ -17,7 +17,7 @@ Facet module and components
   Release the mouse button (no drag&drop) and move the mouse pointer (should display a chain icon) to the <<Maincontent area>> and click 
   on the area. Now you should see the message <<facets - Linked to: maincontent>> in the component.
   
-[./images/facets/linkfacets.png] Link (bind) facets component to list  
+[./images/facets/linkfacets.png] Link (bind) facets component to mainarea, which will display the list  
   
   Now let's create a facet on the news date. For that we first need to make the property facetable. Modify the definition of <<<jnt:news>>> 
   and add the attribute <<<facetable>>> to the date property. 
@@ -35,13 +35,14 @@ Facet module and components
   
   Now in the dropped facets list component select the button in <Add to facets:> <<Abstract facet>>. In the popup choose the <<Date facet>>.
   
-  Then fill out the next form with the following values:
+  In order to display a facet with news starting from 1.1.2010 until now grouped by month with a label of "month-name (year)", fill out the form 
+  with the following values (more infos about all parameters can be found {{{./facetTypes.html}here}}):
   
   <<facet:>> <<<date>>>\
   <<label:>> <<<Date>>>\
   <<field:>> <<<Date (News entry)>>>\
   <<mincount:>> <<<1>>>\
-  <<start:>> <<<2000-01-01T00:00:00Z>>>\
+  <<start:>> <<<2010-01-01T00:00:00Z>>>\
   <<end:>> <<<NOW>>>\
   <<hardend:>> <<<true>>>\
   <<format:>> <<<MMMM (yyyy)>>>
@@ -52,12 +53,43 @@ Facet module and components
   
   Now you can deploy the template, by choosing in the top-menu <<Deploy templates -> ACME>>.
   
-  Go to the news page in <<Edit>> or <<Preview>> mode (reload the page) and you should see the applied facets list in the right area.
+  Go to the news page in for instance <<Preview>> mode (or reload the page if you already had opened it in parallel) and you should see the facet in the right area.
   
-[./images/facets/facetinnewspage.png]    
+[./images/facets/facetinnewspage.png] Facets in news page
+
+  Now when you select a facet value, it will be included as filter when querying the list in the mainarea and you will see the selected
+  facet in the active facets area, where you can again remove it, if you want.
+  
+[./images/facets/facetinnewspage.png] Active facet in news page      
 
 ** Drill-down urls
 
-** Active facets
+  For applying facet values as filters, we are using a query parameter named "N-<bindedcomponent.name>" and we are encoding the value of the parameter as for query
+  facets the parameter is a Lucene query string. For some customers it could be a security hole if end-users would see the Lucene query and try to modify it, in order to 
+  get access to other data. If you would like to have shorter URLs, you could also implement a mapping of certain keys to facet values or queries on your own.    
+
+** Applying and displaying facets
+
+  The applied facets are acting as filters on top of the regular query creating the list. This functionality is implemented in Jahia's default module in the file
+  <<<jmix_list\html\list.hidden.header.jsp>>>, where the list and the facets are getting loaded. 
+  
+  The display of the applied facet values and the remaining facets is then implemented in the facets module's <<<jnt_facets\html\facets.jsp>>>. 
 
 * Site Tag cloud
+
+  The second out-of-the-box component using faceting in the backend is the tag cloud, which can be found under {{Site components -> Site Tag cloud}}.
+  
+  This component can either be dropped to a page in <<Edit>> mode, or to a template in the <<Studio>>, but if you do the latter, you will have to still link the site's search 
+  <<results page>> to the component in <<Edit>> mode.  
+  
+[./images/facets/edittagcloud.png] Edit tag cloud component  
+
+  Setting the search <<results page>> is needed to create the URLs on the tags in the cloud, so that they point to a proper page, which is able to display the
+  resulting components using the selected tag.
+  Besides this setting you can also specify the <<threshold>> to define the minimum number of references a tag must have for being displayed in the cloud.
+  In the <<limit>> property you set the maximum number of tags displayed in the cloud.
+  
+  In order to use the tag cloud in the ACME demo, you first need to apply some tags to content objects. The font-size of the tags in the cloud depends on the
+  number of times a tag is used in the site. The bigger the font, the higher the usage and the number of content objects in the result list, when clicking on the tag. 
+  
+  The tag cloud component is implemented in the facets module's <<<jnt_tagCloud\html\tagCloud.jsp>>>.    

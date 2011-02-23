@@ -54,6 +54,8 @@ import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Source;
 
+import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
+import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -87,6 +89,13 @@ public class QueryManagerImpl implements QueryManager {
                 final QueryObjectModel qom = ServicesRegistry.getInstance().getQueryService().modifyAndOptimizeQuery(
                         (Source) args[0], (Constraint) args[1], (Ordering[]) args[2], (Column[]) args[3],
                         underlying, session);
+                if (provider.isDefault() && qom instanceof JahiaQueryObjectModelImpl) {
+                    JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) qom)
+                            .getLuceneQueryFactory();
+                    
+                    lqf.setProvider(provider);
+                    lqf.setJcrSession(session);
+                }                
                 return Proxy.newProxyInstance(qom.getClass().getClassLoader(), new Class[] { QueryObjectModel.class },
                         new QOMInvocationHandler(qom, provider));
             } else {

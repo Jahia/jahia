@@ -1,6 +1,7 @@
 package org.apache.jackrabbit.core.query;
 
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
+import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
@@ -32,5 +33,9 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
         return engine.execute(
                 getColumns(), getSource(), getConstraint(),
                 getOrderings(), offset, limit);
+    }
+    
+    public LuceneQueryFactory getLuceneQueryFactory() {
+        return this.lqf;
     }
 }

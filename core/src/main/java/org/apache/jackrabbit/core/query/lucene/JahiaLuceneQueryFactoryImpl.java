@@ -14,8 +14,9 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.search.facets.JahiaQueryParser;
-import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -25,7 +26,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
-import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 
 /**
  * Override LuceneQueryFactory
@@ -36,7 +36,8 @@ import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
  * - handles rep:filter in fulltext constraint  
  */
 public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaLuceneQueryFactoryImpl.class);
+    private JCRStoreProvider provider;    
+    private JCRSessionWrapper jcrSession;
 
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, SearchIndex index, Map<String, Value> bindVariables) throws RepositoryException {
         super(session, index, bindVariables);
@@ -83,7 +84,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                     try {
                         Row row = new SelectorRow(
                                 columns, evaluator, selector.getSelectorName(),
-                                session.getNodeById(node.getNodeId()),
+                                provider.getNodeWrapper(session.getNodeById(node.getNodeId()), jcrSession),
                                 node.getScore());
                         if (filter.evaluate(row)) {
                             rows.add(row);
@@ -206,6 +207,22 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         }
 
         return super.mapConstraintToQueryAndFilter(query,constraint, selectorMap, searcher, reader);
+    }
+
+    public JCRStoreProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(JCRStoreProvider provider) {
+        this.provider = provider;
+    }
+
+    public JCRSessionWrapper getJcrSession() {
+        return jcrSession;
+    }
+
+    public void setJcrSession(JCRSessionWrapper jcrSession) {
+        this.jcrSession = jcrSession;
     }
 
 

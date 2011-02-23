@@ -34,6 +34,8 @@ package org.jahia.services.query;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.SessionImpl;
+import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
+import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
@@ -107,10 +109,18 @@ class QueryWrapper implements Query {
             QueryManager qm = jcrStoreProvider.getQueryManager(session);
             if (qm != null) {
                 Query query = qm.createQuery(statement, language);
-                if (jcrStoreProvider.isDefault() &&
-                        Query.JCR_SQL2.equals(language)) {
-                    query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
-                            (QueryObjectModel) query, qm.getQOMFactory(), session);
+                if (jcrStoreProvider.isDefault()) {
+                    if (Query.JCR_SQL2.equals(language)) {
+                        query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
+                                (QueryObjectModel) query, qm.getQOMFactory(), session);
+                    }
+                    if (query instanceof JahiaQueryObjectModelImpl) {
+                        JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
+                                .getLuceneQueryFactory();
+                        
+                        lqf.setProvider(jcrStoreProvider);
+                        lqf.setJcrSession(session);
+                    }
                 }
                 queries.put(jcrStoreProvider, query);
             }

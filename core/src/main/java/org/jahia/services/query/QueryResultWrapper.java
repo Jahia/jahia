@@ -155,7 +155,8 @@ public class QueryResultWrapper implements QueryResult {
         }
 
         private Node wrap(Node node) throws RepositoryException {
-            return node != null ? getProvider().getNodeWrapper(node, getSession()) : null;
+            return node != null && !(node instanceof JCRNodeWrapper) ? getProvider()
+                    .getNodeWrapper(node, getSession()) : null;
         }
 
         public String getSpellcheck() throws ItemNotFoundException, RepositoryException {

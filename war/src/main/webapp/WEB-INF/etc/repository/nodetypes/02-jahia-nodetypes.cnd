@@ -124,9 +124,7 @@
 
 [jmix:publication] mixin
 
-[jnt:simpleTimebasedPublished] > mix:title, nt:base
- - startDate (date,datetimepicker[format='yyyy-MM-dd HH:mm'])
- - endDate (date,datetimepicker[format='yyyy-MM-dd HH:mm'])
+[jnt:simpleWorkflow] > mix:title, nt:base
 
 //---------------------------------------------------------
 // Locks

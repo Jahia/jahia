@@ -69,12 +69,7 @@ public class Publish implements ExternalActivityBehaviour {
         jobDataMap.put(PublicationJob.LOCK, "publication-process-" + execution.getProcessInstance().getId());
 
         ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
-        List<WorkflowVariable> workflowVariables = (List<WorkflowVariable>) execution.getVariable("endDate");
-        if (workflowVariables.isEmpty()) {
-            execution.take("to end");
-        } else {
-            execution.take("timeBasedUnpublish");
-        }
+        execution.take("to end");
     }
 
     public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {

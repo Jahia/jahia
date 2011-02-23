@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <process key="1-step-publication" name="1 Step Publication Process" xmlns="http://jbpm.org/4.3/jpdl">
-    <start form="jnt:simpleTimebasedPublished" g="19,219,80,40" name="start">
+    <start form="jnt:simpleWorkflow" g="19,219,80,40" name="start">
         <transition to="lock"/>
     </start>
+
     <custom class="org.jahia.services.workflow.jbpm.custom.Lock" g="88,222,80,40" name="lock">
         <transition g="-29,8" name="to review" to="sendStartMail"/>
     </custom>
+
     <mail name="sendStartMail" class="org.jahia.services.workflow.jbpm.JBPMMailProducer">
         <property name='template'>
             <object method='getTemplate'>
@@ -20,12 +22,14 @@
         </property>
         <transition to="review"/>
     </mail>
-    <task form="jnt:simpleTimebasedPublished" g="227,223,80,40" name="review">
+
+    <task form="jnt:simpleWorkflow" g="227,223,80,40" name="review">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
         <transition g="-26,4" name="reject" to="alertReject"/>
         <transition g="-18,-17" name="accept" to="alertPublish">
         </transition>
     </task>
+
     <mail name="alertReject" class="org.jahia.services.workflow.jbpm.JBPMMailProducer">
         <property name='template'>
             <object method='getTemplate'>
@@ -39,6 +43,7 @@
         </property>
         <transition to="unlock"/>
     </mail>
+
     <mail name="alertPublish" class="org.jahia.services.workflow.jbpm.JBPMMailProducer">
         <property name='template'>
             <object method='getTemplate'>
@@ -50,36 +55,16 @@
                 </arg>
             </object>
         </property>
-        <transition to="publication"/>
+        <transition to="publish"/>
     </mail>
 
     <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" g="527,376,80,40" name="unlock">
         <transition to="end"/>
     </custom>
-    <decision name="publication" g="402,211,80,40">
-        <transition to="publish">
-            <condition expr="#{empty startDate}"/>
-        </transition>
-        <transition to="timeBasedPublication">
-            <condition expr="#{not empty startDate}"/>
-        </transition>
-    </decision>
-    <state name="timeBasedPublication" g="407,75,80,40">
-        <transition name="timeout" to="publish" g="-46,-18">
-            <timer duedate="#{startDate[0].value}"/>
-        </transition>
-    </state>
+
     <custom class="org.jahia.services.workflow.jbpm.custom.Publish" g="541,220,80,40" name="publish">
-        <transition name="timeBasedUnpublish" to="timeBasedUnpublication" g="-114,-18"/>
         <transition g="-2,-22" name="to end" to="end"/>
     </custom>
-    <state name="timeBasedUnpublication" g="677,53,80,40">
-        <transition name="timeout" to="unpublish" g="-46,-18">
-            <timer duedate="#{endDate[0].value}"/>
-        </transition>
-    </state>
-    <custom class="org.jahia.services.workflow.jbpm.custom.Unpublish" g="777,132,101,40" name="unpublish">
-        <transition to="end"/>
-    </custom>
+
     <end g="800,228,80,40" name="end"/>
 </process>

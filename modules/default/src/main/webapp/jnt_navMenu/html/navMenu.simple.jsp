@@ -77,11 +77,15 @@
         <%--iterate over each menu item--%>
         <c:set var="inpath" value="${fn:startsWith(renderContext.mainResource.node.path, menuItem.path)}"/>
         <%--test if the item and current menu type matches--%>
-        <c:forEach items="${menuItem.properties['j:displayInMenu']}" var="display">
-            <c:if test="${display.string eq currentNode.properties['j:menuType'].string}">
-                <c:set var="correctType" value="${display.string eq currentNode.properties['j:menuType'].string}"/>
-            </c:if>
-        </c:forEach>
+        <c:set var="correctType" value="true"/>
+        <c:if test="${!empty menuItem.properties['j:displayInMenu']}">
+            <c:set var="correctType" value="false"/>
+            <c:forEach items="${menuItem.properties['j:displayInMenu']}" var="display">
+                <c:if test="${display.node eq currentNode}">
+                    <c:set var="correctType" value="${display.node eq currentNode}"/>
+                </c:if>
+            </c:forEach>
+        </c:if>
         <c:set var="hasChildren" value="${navMenuLevel < maxDepth.long && jcr:hasChildrenOfType(menuItem,'jnt:page,jnt:nodeLink,jnt:externalLink')}"/>
         <c:choose>
             <c:when test="${startLevelValue < navMenuLevel}">

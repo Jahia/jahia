@@ -25,7 +25,7 @@ public class CaptchaTag extends TagSupport {
 
             out.print("<img src=\"");
             out.print(((URLGenerator)pageContext.findAttribute("url")).getCaptcha());
-            out.print("?token=##formtoken(\""+id+"\")##\" />" );
+            out.print("?token=##formtoken("+id+")##\" />" );
 
             TokenizedFormTag formTag = (TokenizedFormTag) findAncestorWithClass(this, TokenizedFormTag.class);
             formTag.setHasCaptcha(true);

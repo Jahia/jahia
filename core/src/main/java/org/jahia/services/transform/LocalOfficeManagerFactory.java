@@ -46,7 +46,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  * 
  * @author Sergiy Shyrkov
  */
-public class LocalOfficeManagerFactory extends AbstractFactoryBean {
+public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager> {
 
     private DefaultOfficeManagerConfiguration cfg;
 
@@ -66,7 +66,7 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean {
      * ()
      */
     @Override
-    protected Object createInstance() throws Exception {
+    protected OfficeManager createInstance() throws Exception {
         return cfg.buildOfficeManager();
     }
 

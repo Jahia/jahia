@@ -41,7 +41,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  * 
  * @author Sergiy Shyrkov
  */
-public class EhCacheConfigFactoryBean extends AbstractFactoryBean {
+public class EhCacheConfigFactoryBean extends AbstractFactoryBean<String> {
 
 	private String baseResource;
 
@@ -63,13 +63,13 @@ public class EhCacheConfigFactoryBean extends AbstractFactoryBean {
 	}
 
 	@Override
-	protected Object createInstance() throws Exception {
+	protected String createInstance() throws Exception {
 		return clusterActivated ? StringUtils.substringBeforeLast(baseResource, ".") + "-cluster."
 		        + StringUtils.substringAfterLast(baseResource, ".") : baseResource;
 	}
 
 	@Override
-	public Class<?> getObjectType() {
+	public Class<String> getObjectType() {
 		return String.class;
 	}
 }

@@ -44,7 +44,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  * 
  * @author Sergiy Shyrkov
  */
-public class RemoteOfficeManagerFactory extends AbstractFactoryBean {
+public class RemoteOfficeManagerFactory extends AbstractFactoryBean<OfficeManager> {
 
     private ExternalOfficeManagerConfiguration cfg;
 
@@ -64,7 +64,7 @@ public class RemoteOfficeManagerFactory extends AbstractFactoryBean {
      * ()
      */
     @Override
-    protected Object createInstance() throws Exception {
+    protected OfficeManager createInstance() throws Exception {
         return cfg.buildOfficeManager();
     }
 

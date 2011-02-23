@@ -339,13 +339,15 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
 
         String pathPart = originalValue;
         final boolean isCmsContext;
-
+        String workspace = "";
         if (pathPart.startsWith(dmsContext)) {
             // Remove DOC context part
+            workspace = StringUtils.substringAfter(pathPart, dmsContext).substring(0,StringUtils.substringAfter(pathPart, dmsContext).indexOf("/"));
             pathPart = StringUtils.substringAfter(StringUtils.substringAfter(pathPart, dmsContext), "/");
             isCmsContext = false;
         } else if (pathPart.startsWith(cmsContext)) {
             // Remove CMS context part
+            workspace = StringUtils.substringAfter(pathPart, cmsContext).substring(0,StringUtils.substringAfter(pathPart, cmsContext).indexOf("/"));
             Matcher m = cmsPattern.matcher(pathPart);
             if (!m.matches()) {
                 throw new ConstraintViolationException("Invalid link "+pathPart);
@@ -358,7 +360,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
 
         final String path = "/" + pathPart;
 
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null, new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String value = originalValue;
                 String ext = null;
@@ -463,7 +465,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
 
         final String path = "/" + pathPart;
 
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, null, new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String value = originalValue;
                 try {

@@ -36,10 +36,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 
@@ -92,11 +89,13 @@ public interface JahiaContentDefinitionService extends RemoteService {
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type.
      *
+     *
      * @param baseType   the node type name to find sub-types
+     * @param displayStudioElement
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(String baseType) throws GWTJahiaServiceException;
+    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(String baseType, boolean displayStudioElement) throws GWTJahiaServiceException;
 
     GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException;

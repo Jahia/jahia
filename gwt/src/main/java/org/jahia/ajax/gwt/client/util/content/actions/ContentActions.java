@@ -265,8 +265,7 @@ public class ContentActions {
 
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent) {
         if (parent != null && !parent.isFile()) {
-            JahiaContentDefinitionService.App.getInstance().getSubNodetypes(nodeTypes,
-                    new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+            JahiaContentDefinitionService.App.getInstance().getSubNodetypes(nodeTypes, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                         public void onApplicationFailure(Throwable caught) {
                             MessageBox.alert("Alert",
                                     "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),

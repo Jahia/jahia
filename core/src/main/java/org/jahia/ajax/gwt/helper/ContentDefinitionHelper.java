@@ -374,16 +374,18 @@ public class ContentDefinitionHelper {
      * sub-types of the specified base type or that are allowed to be created in
      * the specified parent node (if the baseType parameter is null).
      *
+     *
      * @param baseTypes the node type name to find sub-types
      * @param ctx       current processing context instance
      * @param uiLocale
+     * @param displayStudioElement
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type or that are allowed to be
      *         created in the specified parent node (if the baseType parameter
      *         is null)
      */
     public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(String baseTypes, Map<String, Object> ctx,
-                                                                         Locale uiLocale) {
+                                                                         Locale uiLocale, boolean displayStudioElement) {
         Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
         NodeTypeRegistry registry = NodeTypeRegistry.getInstance();
         try {
@@ -422,19 +424,25 @@ public class ContentDefinitionHelper {
                     ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
                     if (nodeTypes.contains(nodeType)) {
                         final GWTJahiaNodeType nt = getGWTJahiaNodeType(nodeType, uiLocale);
-                        l.add(nt);
+                        if(!displayStudioElement && !Arrays.asList(nodeType.getDeclaredSupertypeNames()).contains("jmix:studioOnly")) {
+                            l.add(nt);
+                        } else if(displayStudioElement) {
+                            l.add(nt);
+                        }
                         nodeTypes.remove(nodeType);
                     }
                 }
                 if (!l.isEmpty()) {
-                    map.put(getGWTJahiaNodeType(mainType, uiLocale), l);
+                        map.put(getGWTJahiaNodeType(mainType, uiLocale), l);
                 }
             }
             if (!nodeTypes.isEmpty()) {
                 List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
                 for (ExtendedNodeType nodeType : nodeTypes) {
-                    final GWTJahiaNodeType nt = getGWTJahiaNodeType(nodeType, uiLocale);
-                    l.add(nt);
+                    if(!displayStudioElement && !Arrays.asList(nodeType.getDeclaredSupertypeNames()).contains("jmix:studioOnly")) {
+                        final GWTJahiaNodeType nt = getGWTJahiaNodeType(nodeType, uiLocale);
+                        l.add(nt);
+                    }
                 }
                 map.put(null, l);
             }

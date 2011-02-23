@@ -284,6 +284,7 @@
                     <property name="icon" value="tab-createcontent"/>
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateContentTabItem">
+                            <property name="displayStudioElement" value="true"/>
                         </bean>
                     </property>
 

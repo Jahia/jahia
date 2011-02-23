@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
@@ -68,13 +67,15 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type.
      * 
+     *
      * @param baseTypes
      *            the node type name to find sub-types
+     * @param displayStudioElement
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(String baseTypes) throws GWTJahiaServiceException {
-        return contentDefinition.getSubNodetypes(baseTypes, new HashMap<String, Object>(), getUILocale());
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(String baseTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
+        return contentDefinition.getSubNodetypes(baseTypes, new HashMap<String, Object>(), getUILocale(), displayStudioElement);
     }
 
     public GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)

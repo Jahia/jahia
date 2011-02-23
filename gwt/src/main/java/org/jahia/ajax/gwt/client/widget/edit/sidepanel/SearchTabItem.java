@@ -257,8 +257,7 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setForceSelection(true);
         ArrayList<String> list = new ArrayList<String>();
         list.add("nt:base");
-        JahiaContentDefinitionService.App.getInstance().getSubNodetypes("jmix:editorialContent",
-                new BaseAsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>>() {
+        JahiaContentDefinitionService.App.getInstance().getSubNodetypes("jmix:editorialContent", false, new BaseAsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>>() {
                     public void onSuccess(Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> result) {
                         for (GWTJahiaNodeType key : result.keySet()) {
                             combo.getStore().add(result.get(key));

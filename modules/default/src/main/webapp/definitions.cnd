@@ -184,5 +184,5 @@
  - aClass (string)
  - divClass (string)
 
-[jnt:fileUpload] > jnt:content, jmix:siteComponent
+[jnt:fileUpload] > jnt:content, jmix:siteComponent, jmix:bindedComponent
  - target (weakreference)

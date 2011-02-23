@@ -18,36 +18,37 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="jquery.fileupload.css"/>
 <template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,jquery.fileupload.js,jquery.fileupload-ui.js"/>
+<c:set var="linked" value="${ui:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:set var="targetNode" value="${renderContext.mainResource.node}"/>
 <c:if test="${!empty currentNode.properties.target}">
     <c:set var="targetNode" value="${currentNode.properties.target.node}"/>
 </c:if>
-<form id="file_upload${currentNode.identifier}" action="${url.base}${targetNode.path}" method="POST" enctype="multipart/form-data">
+<form id="file_upload${currentNode.identifier}" action="${url.base}${targetNode.path}" method="POST" enctype="multipart/form-data"  accept="application/json">
     <input type="hidden" name="nodeType" value="jnt:file"/>
+	<input type="hidden" name="returnContentType" value="json"/>
     <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
     <input type="hidden" name="newNodeOutputFormat" value="${renderContext.mainResource.template}.html"/>
     <input type="file" name="file" multiple>
     <button>Upload</button>
-    <div>Upload files</div>
 </form>
 <table id="files${currentNode.identifier}"></table>
 <script>
-/*global $ */
-$(function () {
-    $('#file_upload${currentNode.identifier}').fileUploadUI({
-        uploadTable: $('#files${currentNode.identifier}'),
-        downloadTable: $('#files${currentNode.identifier}'),
-        buildUploadRow: function (files, index) {
-            return $('<tr><td>' + files[index].name + '<\/td>' +
-                    '<td class="file_upload_progress"><div><\/div><\/td>' +
-                    '<td class="file_upload_cancel">' +
-                    '<button class="ui-state-default ui-corner-all" title="Cancel">' +
-                    '<span class="ui-icon ui-icon-cancel">Cancel<\/span>' +
-                    '<\/button><\/td><\/tr>');
-        },
-        buildDownloadRow: function (file) {
-            return $('<tr><td>' + file.name + '<\/td><\/tr>');
-        }
+    /*global $ */
+    $(function () {
+        $('#file_upload${currentNode.identifier}').fileUploadUI({
+            onComplete: function (event, files, index, xhr, handler) {
+                $('#fileList${linked.identifier}').load('${url.base}${linked.path}.html.ajax?targetNodePath=${renderContext.mainResource.node.path}');
+            },
+            uploadTable: $('#files${currentNode.identifier}'),
+            buildUploadRow: function (files, index) {
+                return $('<tr><td>' + files[index].name + '<\/td>' +
+                        '<td class="file_upload_progress"><div><\/div><\/td>' +
+                        '<td class="file_upload_cancel">' +
+                        '<button class="ui-state-default ui-corner-all" title="Cancel">' +
+                        '<span class="ui-icon ui-icon-cancel">Cancel<\/span>' +
+                        '<\/button><\/td><\/tr>');
+            }
+        });
     });
-});
 </script>
+<template:linker property="j:bindedComponent" />

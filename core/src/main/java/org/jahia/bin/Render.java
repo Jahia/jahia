@@ -120,6 +120,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String AUTO_ASSIGN_ROLE = "autoAssignRole";
     public static final String ALIAS_USER = "alias";
     public static final String PARENT_TYPE = "parentType";
+    public static final String RETURN_CONTENTTYPE = "returnContentType";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -156,6 +157,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(SUBMIT);
         reservedParameters.add(AUTO_ASSIGN_ROLE);
         reservedParameters.add(PARENT_TYPE);
+        reservedParameters.add(RETURN_CONTENTTYPE);
     }
 
     private transient ServletConfig servletConfig;
@@ -779,7 +781,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (result != null) {
             if (result.getResultCode() < 300) {
                 resp.setStatus(result.getResultCode());
-                if (req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && result.getJson() != null) {
+                boolean doJson = "json".equals(parameters.get(RETURN_CONTENTTYPE)!=null?parameters.get(RETURN_CONTENTTYPE).get(0):"");
+                if ((req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") || doJson) && result.getJson() != null) {
                     try {
                         resp.setContentType("application/json");
                         result.getJson().write(resp.getWriter());

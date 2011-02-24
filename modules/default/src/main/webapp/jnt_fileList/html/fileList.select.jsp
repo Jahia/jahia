@@ -31,12 +31,10 @@
                         </c:when>
                         <c:otherwise>
                             <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
-                            <div onclick="return false;" ondblclick="CKEDITOR.instances.editContent.insertHtml('<a href=\'${subchild.url}\' title=\'${fn:escapeXml(not empty title.string ? title.string : subchild.name)}\'>  ${fn:escapeXml(not empty refTitle ? refTitle : not empty title.string ? title.string : subchild.name)} </a>')">
+                            <c:set var="title" value="${fn:escapeXml(not empty title.string ? title.string : subchild.name)}"/>
+                            <div onclick="return false;" ondblclick="CKEDITOR.instances.editContent.insertHtml('<a href=\'${subchild.url}\' title=\'${title}\'>${title}</a>')">
                                 <span class="icon <%=FileUtils.getFileIcon( ((JCRNodeWrapper) pageContext.findAttribute("subchild")).getName()) %>"></span>
-                                <a href="${subchild.url}" onmousedown="return false;"
-                                   title="${fn:escapeXml(not empty title.string ? title.string : subchild.name)}">
-                                        ${fn:escapeXml(not empty refTitle ? refTitle : not empty title.string ? title.string : subchild.name)}
-                                </a>
+                                <a href="${subchild.url}" onmousedown="return false;" title="${title}">${title}</a>
                             </div>
                         </c:otherwise>
                     </c:choose>
@@ -50,7 +48,13 @@
                                 $(document).ready(function() {
                                     // bind 'myForm' and provide a simple callback function
                                     var options = {
-                                        success: function() { $('#fileList${currentNode.identifier}').load('${url.base}${currentNode.path}.html.ajax?targetNodePath=${targetNode.path}'); }
+                                        success: function() {
+                                            $('#fileList${currentNode.identifier}').load('${url.base}${currentNode.path}.html.ajax?targetNodePath=${targetNode.path}');
+                                            var dataText =CKEDITOR.instances.editContent.getData();
+                                            dataText = dataText.replace('<img src="${subchild.url}" />',"");
+                                            dataText = dataText.replace('<a href="${subchild.url}" title="${title}">${title}</a>',"");
+                                            CKEDITOR.instances.editContent.setData(dataText);
+                                        }
                                     }
                                     $('#jahia-blog-item-delete-${subchild.UUID}').ajaxForm(options);
                                 });

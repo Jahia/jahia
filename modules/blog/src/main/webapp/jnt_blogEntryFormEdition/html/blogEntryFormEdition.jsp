@@ -21,7 +21,11 @@
         });
     });
 </script>
-<uiComponents:ckeditor selector="editContent"/>
+<uiComponents:ckeditor selector="editContent">
+{
+   height : 600
+}
+</uiComponents:ckeditor>
 
     <form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
         <input type="hidden" name="autoCheckin" value="true">

@@ -13,13 +13,13 @@
         $(document).ready( function()
         {
             CKEDITOR.replace( '${selector}',
-            { toolbar: 'Mini',
+            $.extend({ toolbar: 'Mini',
                 filebrowserBrowseUrl: null,
                 filebrowserFlashBrowseUrl: null,
                 filebrowserImageBrowseUrl: null,
                 filebrowserLinkBrowseUrl: null
             }, ${not empty config ? config : '{}'
-			} );
+			}) );
         });
     </script>
 </template:addResources>

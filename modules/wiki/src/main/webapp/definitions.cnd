@@ -2,8 +2,9 @@
 
 [jnt:wikiPage] > jnt:content, mix:title, jmix:retrievableContent
  - lastComment (string)
- - text (string, richtext)
+ - wikiContent (string, richtext)
  + * (jnt:wikiPage)
+ + * (jnt:file)
 
 [jnt:wikiPageFormCreation] > jnt:content, jmix:siteComponent, mix:title
 

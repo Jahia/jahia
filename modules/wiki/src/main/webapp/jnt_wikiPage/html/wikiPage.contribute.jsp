@@ -11,7 +11,7 @@
 
 <h2>${currentNode.properties["jcr:title"].string}</h2>
 <template:tokenizedForm>
-<form class="formWiki" action="${currentNode.name}" method="post">
+<form name="formWiki" class="formWiki" action="${currentNode.name}" method="post">
     <input type="hidden" name="autoCheckin" value="true">
     <input type="hidden" name="nodeType" value="jnt:wikiPage">
     <script type="text/javascript">
@@ -22,7 +22,7 @@
 
             });
     </script>
-    <textarea class="textareawiki" name="text" id="text-${currentNode.identifier}" rows="30" cols="85">${currentNode.properties['text'].string}</textarea>
+    <textarea class="textareawiki" name="wikiContent" id="text-${currentNode.identifier}" rows="30" cols="85">${currentNode.properties['wikiContent'].string}</textarea>
 
     <p>
         <label><fmt:message key="jnt_wiki.addComment"/>: </label> <input name="lastComment"/>

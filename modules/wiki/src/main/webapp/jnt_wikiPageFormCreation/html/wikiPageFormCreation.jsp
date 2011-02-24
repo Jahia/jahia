@@ -28,7 +28,7 @@
     <c:set var="pageNode" value="${renderContext.mainResource.node}"/>
 </c:if>
 <template:tokenizedForm>
-    <form class="formWiki" method="post" action="${url.base}${pageNode.path}/${pageName}">
+    <form name="formWiki" class="formWiki" method="post" action="${url.base}${pageNode.path}/${pageName}">
         <input type="hidden" name="autoCheckin" value="true">
         <input type="hidden" name="nodeType" value="jnt:wikiPage">
         <c:choose>
@@ -49,7 +49,7 @@
             });
         </script>
         <label for="text-${currentNode.identifier}"><fmt:message key="jnt_wiki.Content"/>: </label>
-        <textarea class="textareawiki" name="text" rows="30" cols="85" id="text-${currentNode.identifier}"><fmt:message
+        <textarea class="textareawiki" name="wikiContent" rows="30" cols="85" id="text-${currentNode.identifier}"><fmt:message
                 key="jnt_wiki.typeContentHere"/></textarea>
 
         <p>

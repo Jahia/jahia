@@ -8,8 +8,8 @@
     <jcr:nodeVersion var="diff" node="${currentNode}" versionName="${param['diff']}"/>
     <jcr:nodeVersion var="oldid" node="${currentNode}" versionName="${param['oldid']}"/>
 
-    <utility:textDiff oldText="${oldid.frozenNode.properties['text'].string}"
-                      newText="${diff.frozenNode.properties['text'].string}"/>
+    <utility:textDiff oldText="${oldid.frozenNode.properties['wikiContent'].string}"
+                      newText="${diff.frozenNode.properties['wikiContent'].string}"/>
 </c:if>
 <c:if test="${empty param['diff'] or empty param['oldid']}">
     <fmt:message key="jnt_wiki.selectTwoVersions"/>

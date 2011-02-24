@@ -37,7 +37,6 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.usermanager.JahiaUser;
 

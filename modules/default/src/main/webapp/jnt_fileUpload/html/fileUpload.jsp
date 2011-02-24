@@ -23,13 +23,14 @@
 <c:if test="${!empty currentNode.properties.target}">
     <c:set var="targetNode" value="${currentNode.properties.target.node}"/>
 </c:if>
-<form id="file_upload${currentNode.identifier}" action="${url.base}${targetNode.path}" method="POST" enctype="multipart/form-data"  accept="application/json">
+<form class="file_upload" id="file_upload${currentNode.identifier}" action="${url.base}${targetNode.path}" method="POST" enctype="multipart/form-data"  accept="application/json">
+    <fmt:message key="label.dropHere"/>
     <input type="hidden" name="nodeType" value="jnt:file"/>
 	<input type="hidden" name="returnContentType" value="json"/>
     <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
     <input type="hidden" name="newNodeOutputFormat" value="${renderContext.mainResource.template}.html"/>
     <input type="file" name="file" multiple>
-    <button>Upload</button>
+    <button><fmt:message key="label.upload"/></button>
 </form>
 <table id="files${currentNode.identifier}"></table>
 <script>
@@ -37,7 +38,7 @@
     $(function () {
         $('#file_upload${currentNode.identifier}').fileUploadUI({
             onComplete: function (event, files, index, xhr, handler) {
-                $('#fileList${linked.identifier}').load('${url.base}${linked.path}.html.ajax?targetNodePath=${renderContext.mainResource.node.path}');
+                $('#fileList${linked.identifier}').load('${url.base}${linked.path}.html.ajax?targetNodePath=${targetNode.path}');
             },
             uploadTable: $('#files${currentNode.identifier}'),
             buildUploadRow: function (files, index) {

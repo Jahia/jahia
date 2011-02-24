@@ -4,7 +4,7 @@
   direction: ltr;
   cursor: pointer;
   text-align: center;
-  color: #333;
+  color: #CCC;
   font-weight: bold;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -12,16 +12,16 @@
   width: 200px;
   height: 30px;
   line-height: 30px;
-  background: palegreen;
-  border: 1px solid limegreen;
+  background: #043b9d;
+  border: 1px solid #003366;
 }
 
 .file_upload_small {
   width: 200px;
   height: 30px;
   line-height: 30px;
-  background: palegreen;
-  border: 1px solid limegreen;
+  background: #043b9d;
+  border: 1px solid #003366;
 }
 
 .file_upload_large {
@@ -29,12 +29,12 @@
   height: 150px;
   line-height: 150px;
   font-size: 20px;
-  background: palegreen;
-  border: 1px solid limegreen;
+  background: #043b9d;
+  border: 1px solid #003366;
 }
 
 .file_upload_highlight {
-  background: lawngreen;
+  background: #043b9d;
 }
 
 .file_upload input {

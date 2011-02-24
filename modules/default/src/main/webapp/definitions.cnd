@@ -34,7 +34,7 @@
  - pageSize (long) = 10 autocreated
  - displayPager (boolean) = true autocreated
 
-[jnt:fileList] > jnt:content, jmix:structuredContent, jmix:editorialContent
+[jnt:fileList] > jnt:content, jmix:structuredContent, jmix:editorialContent, jmix:bindedComponent
  - folder (weakreference, picker[type='folder'])
 
 [jnt:frame] > jnt:content, mix:title, jmix:structuredContent, jmix:editorialContent

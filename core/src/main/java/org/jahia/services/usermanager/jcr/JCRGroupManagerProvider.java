@@ -772,7 +772,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     private Cache<String, JCRGroup> getCache() throws JahiaInitializationException {
         if (cache == null) {
             if (cacheService != null) {
-                cache = cacheService.createCacheInstance("JCRGroupCache");
+                cache = cacheService.getCache("JCRGroupCache", true);
             }
         }
 
@@ -782,7 +782,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     private Cache<String, List<String>> getMembershipCache() throws JahiaInitializationException {
         if (membershipCache == null) {
             if (cacheService != null) {
-                membershipCache = cacheService.createCacheInstance(JCR_GROUPMEMBERSHIP_CACHE);
+                membershipCache = cacheService.getCache(JCR_GROUPMEMBERSHIP_CACHE, true);
             }
         }
         return membershipCache;

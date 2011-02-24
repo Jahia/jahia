@@ -35,50 +35,56 @@ package org.jahia.services.cache.ehcache;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheListener;
 import org.jahia.services.cache.GroupCacheKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Serge Huber
- * Date: 29 mars 2007
- * Time: 17:25:50
+ * Ehcache based caching implementation.
  * 
+ * @author Serge Huber
  */
 public class EhCacheImpl implements CacheImplementation {
 
-    final private static org.slf4j.Logger logger =
-        org.slf4j.LoggerFactory.getLogger (EhCacheImpl.class);
+    final private static Logger logger = LoggerFactory.getLogger (EhCacheImpl.class);
 
-    EhCacheProvider ehCacheProvider;
-    String name;
-    Cache ehCache;
-    Cache ehCacheGroups;
-    int groupsSizeLimit;
+    private String name;
+    private Cache ehCache;
+    private Cache ehCacheGroups;
+    private int groupsSizeLimit;
 
-    protected EhCacheImpl(String name, CacheManager ehCacheManager, EhCacheProvider ehCacheProvider) {
+    protected EhCacheImpl(String name, CacheManager ehCacheManager, EhCacheProvider provider) {
+    	super();
+        this.name = name;
+        this.groupsSizeLimit = provider.getGroupsSizeLimit();
+        
         if (ehCacheManager.getCache(name) == null) {
             ehCacheManager.addCache(name);
         }
-        if (ehCacheManager.getCache(name + "Groups") == null) {
-            ehCacheManager.addCache(name + "Groups");
-        }
         ehCache = ehCacheManager.getCache(name);
-        ehCacheGroups = ehCacheManager.getCache(name + "Groups");
-        this.name = name;
-        this.ehCacheProvider = ehCacheProvider;
-        groupsSizeLimit = ehCacheProvider.getGroupsSizeLimit();
+        ehCache.setStatisticsEnabled(provider.isStatisticsEnabled());
+        
+        if (groupsSizeLimit > 0) {
+	        if (ehCacheManager.getCache(name + "Groups") == null) {
+	            ehCacheManager.addCache(name + "Groups");
+	        }
+	        ehCacheGroups = ehCacheManager.getCache(name + "Groups");
+	        ehCacheGroups.setStatisticsEnabled(provider.isStatisticsEnabled());
+        }
     }
 
     public boolean containsKey(Object key) {
         // we cannot use EHCache's isKeyInCache because the element might have expired, so we use
-        // an actual retrival to test for expiration.
+        // an actual retrieval to test for expiration.
         return get(key) != null;
     }
 
@@ -106,10 +112,13 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     public long getGroupsSize() {
-        return ehCacheGroups.getSize();
+        return ehCacheGroups != null ? ehCacheGroups.getSize() : 0;
     }
 
     public long getGroupsKeysTotal() {
+    	if (ehCacheGroups == null) {
+    		return 0;
+    	}
         long totalSize = 0;
         Iterator groupIterator = ehCacheGroups.getKeysWithExpiryCheck().iterator();
         while (groupIterator.hasNext()) {
@@ -124,7 +133,9 @@ public class EhCacheImpl implements CacheImplementation {
 
     public void flushAll(boolean propagate) {
         ehCache.removeAll();
-        ehCacheGroups.removeAll();
+        if (ehCacheGroups != null) {
+        	ehCacheGroups.removeAll();
+        }
     }
 
     public void remove(Object key) {
@@ -145,30 +156,12 @@ public class EhCacheImpl implements CacheImplementation {
     public void removeListener(CacheListener listener) {
     }
 
-    public long getCacheLimit() {
-        return -1;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setCacheLimit(long limit) {
-    }
-
-    /**
-     * Not supported.
-     * @return
-     */
-    public long getCacheGroupsLimit() {
-        return -1;
-    }
-
-    /**
-     * Not supported.
-     * @param groupsLimit
-     */
-    public void setCacheGroupsLimit(long groupsLimit) {
-    }
-
     public void flushGroup(String groupName) {
-        Set keysToFlush = null;
+    	if (ehCacheGroups == null) {
+    		return;
+    	}
+        
+    	Set keysToFlush = null;
         Element element = ehCacheGroups.get(groupName);
         if (element == null) {
             return;
@@ -185,6 +178,9 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     public Set getGroupKeys(String groupName) {
+    	if (ehCacheGroups == null) {
+    		return Collections.emptySet();
+    	}
         Set keysToFlush = null;
         Element element = ehCacheGroups.get(groupName);
         if (element == null) {
@@ -214,7 +210,7 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     private void addToGroups(Object key) {
-        if (!(key instanceof GroupCacheKey)) {
+        if (ehCacheGroups == null || !(key instanceof GroupCacheKey)) {
             return;
         }
         GroupCacheKey groupCacheKey = (GroupCacheKey) key;
@@ -228,6 +224,9 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     private void addToGroup(String groupName, Object key) {
+    	if (ehCacheGroups == null) {
+    		return;
+    	}
         Element element =  ehCacheGroups.get(groupName);
         Set currentKeys = null;
         if (element == null) {
@@ -293,7 +292,7 @@ public class EhCacheImpl implements CacheImplementation {
     }
 
     public boolean isEmpty() {
-        return ehCache.getSize() == 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return ehCache.getSize() == 0;
     }
     
     public Collection<Object> getKeys() {

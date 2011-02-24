@@ -115,16 +115,6 @@ characterEncoding                                      =   UTF-8
 ######################################################################
 ### Cache settings ###################################################
 ######################################################################
-# These settings controls all the caches that are integrated in Jahia,
-# except for the Hibernate ones that are controlled from the
-# WEB-INF/etc/spring/applicationcontext-hibernate.xml configuration
-# file.
-#
-# The entry allow you to specify the amount of free memory you want to keep in your jvm
-# If we reach this limit jahia will remove entries of his cache until if get under this limit
-# this limit must be express in MB size
-freeMemoryLimit = 64MB
-
 # caches may use groups that work like categories on cache entries. By default
 # groups are limited in numbers of 20000, with an LRU (least recently used)
 # algorithm for removing a group. When a group is removed, so are all the

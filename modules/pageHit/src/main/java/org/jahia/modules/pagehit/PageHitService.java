@@ -170,10 +170,12 @@ public class PageHitService implements Processor, CamelContextAware, Initializin
 
     public void afterPropertiesSet() throws Exception {
         CacheManager cacheManager = cacheProviders.getCacheManager();
-        if (!cacheManager.cacheExists("PageHitsCache")) {
-            cacheManager.addCache("PageHitsCache");
-        }
         pageHitCache = cacheManager.getCache("PageHitsCache");
+        if (pageHitCache == null) {
+            cacheManager.addCache("PageHitsCache");
+            pageHitCache = cacheManager.getCache("PageHitsCache");
+        }
+        pageHitCache.setStatisticsEnabled(cacheProviders.isStatisticsEnabled());
     }
 
     public void setCacheProviders(EhCacheProvider cacheProviders) {

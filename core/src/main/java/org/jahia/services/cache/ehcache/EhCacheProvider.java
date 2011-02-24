@@ -56,10 +56,11 @@ public class EhCacheProvider implements CacheProvider {
 
     final private static Logger logger = org.slf4j.LoggerFactory.getLogger (EhCacheProvider.class);
 
-    CacheManager cacheManager = null;
+    private CacheManager cacheManager = null;
     private int groupsSizeLimit = 100;
     private String configurationResource = "/ehcache-jahia.xml";
     private String managedBeanServerName = "SimpleAgent";
+    private boolean statisticsEnabled;
     
     public void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException {
    		cacheManager = CacheManager.create(getClass().getResource(configurationResource));
@@ -77,20 +78,7 @@ public class EhCacheProvider implements CacheProvider {
         logger.info("Cache provider shutdown completed in " + totalTime + "[ms]");
     }
 
-    public void enableClusterSync() throws JahiaInitializationException {
-    }
-
-    public void stopClusterSync() {
-    }
-
-    public void syncClusterNow() {
-    }
-
-    public boolean isClusterCache() {
-        return false;
-    }
-
-    public CacheImplementation newCacheImplementation(String name) {
+    public CacheImplementation<?, ?> newCacheImplementation(String name) {
         return new EhCacheImpl(name, cacheManager, this);
     }
 
@@ -112,5 +100,13 @@ public class EhCacheProvider implements CacheProvider {
 
 	public void setManagedBeanServerName(String managedBeanServerName) {
     	this.managedBeanServerName = managedBeanServerName;
+    }
+
+	public void setStatisticsEnabled(boolean statisticsEnabled) {
+	    this.statisticsEnabled = statisticsEnabled;
+    }
+
+	public boolean isStatisticsEnabled() {
+	    return statisticsEnabled;
     }
 }

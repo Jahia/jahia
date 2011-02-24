@@ -493,7 +493,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
 
     public void start() throws JahiaInitializationException {
         if (cacheService != null) {
-            cache = cacheService.createCacheInstance("JCRUserCache");
+            cache = cacheService.getCache("JCRUserCache", true);
         }
     }
 

@@ -180,7 +180,6 @@
                     cacheCounter++;
                     Cache curCache = (Cache) objectCache;
                     String resourceKey = "org.jahia.admin.status.ManageStatus.cache." + curCache.getName() + ".description.label";
-                    long cacheLimit = curCache.getCacheLimit()/(1024*1024);
                     String efficiencyStr = "0";
                     if (!Double.isNaN(curCache.getCacheEfficiency())) {
                         efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
@@ -192,7 +191,7 @@
         %>
         <tr class="<%=cacheLineClass%>">
             <td width="100%">
-                <%=curCache.getName()%>: <strong><fmt:message key="<%=resourceKey%>"/></strong>
+                <strong><%=curCache.getName()%></strong>: <strong><fmt:message key="<%=resourceKey%>"/></strong>
                 <br>
                 <%=curCache.size()%>&nbsp;
                 <% if(curCache.size() != 1){
@@ -267,7 +266,7 @@
         	%>
         	<tr class="${status.index % 2 == 0 ? 'evenLine' : 'oddLine'}">
         		<td width="100%">
-        			${ehcacheName}: <strong><fmt:message key="org.jahia.admin.status.ManageStatus.cache.${ehcacheName}.description.label"/></strong>
+        			<strong>${ehcacheName}</strong>: <strong><fmt:message key="org.jahia.admin.status.ManageStatus.cache.${ehcacheName}.description.label"/></strong>
         			<br/>
         			${ehcacheStats.objectCount}&nbsp;<fmt:message key="org.jahia.admin.${ehcacheStats.objectCount != 1 ? 'entries' : 'entrie'}.label"/>
         			<br/>

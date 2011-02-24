@@ -58,7 +58,7 @@ public class ModuleCacheProvider implements InitializingBean {
 
     private static Logger logger = LoggerFactory.getLogger(ModuleCacheProvider.class);
     private Cache regexpDependenciesCache;
-
+    
     /**
      * Returns an instance of this class
      * 
@@ -88,19 +88,30 @@ public class ModuleCacheProvider implements InitializingBean {
      */
     public void afterPropertiesSet() throws Exception {
         CacheManager cacheManager = cacheProvider.getCacheManager();
-        if (!cacheManager.cacheExists(CACHE_NAME)) {
+        blockingCache = cacheManager.getCache(CACHE_NAME);
+        if (blockingCache == null) {
             cacheManager.addCache(CACHE_NAME);
+            blockingCache = cacheManager.getCache(CACHE_NAME);
+//          blockingCache.setTimeoutMillis(blockingTimeout);
         }
-        if (!cacheManager.cacheExists(DEPS_CACHE_NAME)) {
+        blockingCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
+        
+        dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
+        if (dependenciesCache == null) {
             cacheManager.addCache(DEPS_CACHE_NAME);
+            dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         }
         if (!cacheManager.cacheExists(REGEXPDEPS_CACHE_NAME)) {
             cacheManager.addCache(REGEXPDEPS_CACHE_NAME);
         }
-        blockingCache = cacheManager.getCache(CACHE_NAME);
-//        blockingCache.setTimeoutMillis(blockingTimeout);
-        dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
+        dependenciesCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
+        
         regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
+        if (regexpDependenciesCache == null) {
+        	cacheManager.addCache(REGEXPDEPS_CACHE_NAME);
+            regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
+        }
+        regexpDependenciesCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
     }
 
     /**

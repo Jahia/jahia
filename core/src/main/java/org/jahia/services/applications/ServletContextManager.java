@@ -118,7 +118,7 @@ public class ServletContextManager implements ServletContextAware {
     public void start()
             throws JahiaInitializationException {
         if (!initialized) {
-            mRegistry = cacheService.createCacheInstance(REGISTRY_CACHE_NAME);
+            mRegistry = cacheService.getCache(REGISTRY_CACHE_NAME, true);
             initialized = true;
         }
     }

@@ -171,9 +171,9 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public void start()
             throws JahiaInitializationException {
 
-        siteCacheByID = cacheService.createCacheInstance(SITE_CACHE_BYID);
-        siteCacheByName = cacheService.createCacheInstance(SITE_CACHE_BYNAME);
-        siteCacheByKey = cacheService.createCacheInstance(SITE_CACHE_BYKEY);
+        siteCacheByID = cacheService.getCache(SITE_CACHE_BYID, true);
+        siteCacheByName = cacheService.getCache(SITE_CACHE_BYNAME, true);
+        siteCacheByKey = cacheService.getCache(SITE_CACHE_BYKEY, true);
     }
 
     public void stop() {
@@ -228,7 +228,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
      * @return JahiaSite the JahiaSite bean
      */
     public JahiaSite getSite(final int id) throws JahiaException {
-        JahiaSite site = siteCacheByID.get(new Integer(id));
+        JahiaSite site = siteCacheByID.get(Integer.valueOf(id));
         if (site != null) {
             return site;
         }

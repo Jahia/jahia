@@ -195,8 +195,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * Initialze disk path
      */
     public void start() throws JahiaInitializationException {
-        applicationCache = cacheService.createCacheInstance("ApplicationCache");
-        entryPointCache = cacheService.createCacheInstance("ApplicationEntryPointCache");
+        applicationCache = cacheService.getCache("ApplicationCache", true);
+        entryPointCache = cacheService.getCache("ApplicationEntryPointCache", true);
 
         supportedPortletModes.add(PortletMode.VIEW);
         supportedPortletModes.add(PortletMode.EDIT);

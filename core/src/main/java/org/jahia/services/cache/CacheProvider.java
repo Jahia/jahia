@@ -36,11 +36,9 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.exceptions.JahiaInitializationException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Serge Huber
- * Date: Jul 12, 2005
- * Time: 2:33:06 PM
+ * Jahia cache provider definition.
  * 
+ * @author Serge Huber
  */
 public interface CacheProvider {
 
@@ -48,13 +46,5 @@ public interface CacheProvider {
 
     void shutdown();
 
-    void enableClusterSync() throws JahiaInitializationException;
-
-    void stopClusterSync();
-
-    void syncClusterNow();
-
-    boolean isClusterCache();
-
-    CacheImplementation newCacheImplementation(String name);
+    CacheImplementation<?, ?> newCacheImplementation(String name);
 }

@@ -46,18 +46,20 @@ import java.util.Map;
  */
 public abstract class CacheService extends JahiaService {
 
-    /** <p>Creates a new instance of type <code>Cache</code>.</p>
-     * <p>When the region is <code>null</code> the cache creation is canceled and a
+    /** 
+     * <p>Returns the requested cache and creates it if does not exist and <code>forceCreation</code>  is set to <code>true</code>.</p>
+     * <p>When the name is <code>null</code> the cache creation is canceled and a
      * <code>null</code> instance will be returned.</p>
      *
      * @param name        the cache region
+     * @param forceCreation do we need to create a new cache if it does not exist yet? 
      *
      * @return  the new cache instance
      *
      * @exception org.jahia.exceptions.JahiaInitializationException
      *      when the cache could not be initialized
      */
-    public abstract <K,V> Cache<K, V> createCacheInstance (String name)
+    public abstract <K,V> Cache<K, V> getCache(String name, boolean forceCreation)
             throws JahiaInitializationException;
 
     public abstract <K,V> Cache<K, V> getCache(String name);
@@ -74,18 +76,6 @@ public abstract class CacheService extends JahiaService {
      * the method is synchronized and each accessed cache has to be synchronized too.</p>
      */
     public abstract void flushAllCaches ();
-
-    /** <p>Checks if the cache synchronization is enabled.</p>
-     *
-     * @return  <code>true</code> when the cache synchronization is enabled
-     */
-    public abstract boolean isClusterCache();
-
-    public abstract void enableClusterSync() throws JahiaInitializationException;
-
-    public abstract void stopClusterSync();
-
-    public abstract void syncClusterNow();
 
     public abstract Map<String, CacheProvider> getCacheProviders();
 

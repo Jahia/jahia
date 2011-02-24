@@ -358,13 +358,11 @@ public class ErrorFileDumper {
                     Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache(curCacheName);
                     if (objectCache instanceof Cache) {
                         Cache curCache = (Cache) objectCache;
-                        long cacheLimit = curCache.getCacheLimit();
                         String efficiencyStr = "0";
                         if (!Double.isNaN(curCache.getCacheEfficiency())) {
                             efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
                         }
-                        strOut.println("name=" + curCacheName + " size=" + curCache.size() + " limit=" +
-                                cacheLimit / (1024 * 1024) + "MB" + " successful hits=" + curCache.getSuccessHits() +
+                        strOut.println("name=" + curCacheName + " size=" + curCache.size() + " successful hits=" + curCache.getSuccessHits() +
                                 " total hits=" + curCache.getTotalHits() + " efficiency=" + efficiencyStr + "%");
                     }
                 }

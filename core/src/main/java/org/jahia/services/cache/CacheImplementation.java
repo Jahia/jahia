@@ -89,32 +89,5 @@ public interface CacheImplementation<K, V> {
     void addListener(CacheListener listener);
     void removeListener(CacheListener listener);
 
-    /** <p>Returns the maximum size allowed for the cache.</p>
-     *
-     * @return  an integer representing the maximum cache size. Returns -1 if
-     *           there is no limit set.
-     */
-    long getCacheLimit ();
-
-    /** <p>Set the cache size limit. -1 will define an unlimited cache size.</p>
-     *
-     * @param limit     the new size limit
-     */
-    void setCacheLimit (long limit);
-
-    /** <p>Returns the maximum size allowed for the cache groups.</p>
-     *
-     * @return  an integer representing the maximum cache groups size. Returns -1 if
-     *           there is no limit set.
-     */
-    long getCacheGroupsLimit ();
-
-
-    /** <p>Set the cache groups size limit. -1 will define an unlimited cache size.</p>
-     *
-     * @param groupsLimit the new size limit
-     */
-    void setCacheGroupsLimit (long groupsLimit);
-
     Set<GroupCacheKey> getGroupKeys(String groupName);
 }

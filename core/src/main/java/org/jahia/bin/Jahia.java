@@ -256,12 +256,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	        // Initialize all the registered services.
             initServicesRegistry();
 
-            // Activate the JMS synchronization if needed
-            final CacheService factory = ServicesRegistry.getInstance().getCacheService();
-            if (factory.isClusterCache()) {
-                factory.enableClusterSync();
-            }
-
             JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 
             if (SpringContextSingleton.getInstance().isInitialized()) {
@@ -428,9 +422,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             if (accessLogger.isDebugEnabled()) {
                 accessLogger.debug(new StringBuilder(255).append(";").append(jParams.getRealRequest().getRemoteAddr()).append(";").append(jParams.getSiteID()).append(";").append(jParams.getPageID()).append(";").append(jParams.getLocale().toString()).append(";").append(jParams.getUser().getUsername()).toString());
             }
-            paramBeanThreadLocal.set(null);
-            servletThreadLocal.set(null);
-            ServicesRegistry.getInstance().getCacheService().syncClusterNow();
         } catch (Exception e) {
             DefaultErrorHandler.getInstance().handle(e, request, response);
         } finally {

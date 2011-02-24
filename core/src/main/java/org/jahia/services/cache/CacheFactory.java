@@ -34,7 +34,9 @@ package org.jahia.services.cache;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.cache.dummy.DummyCacheProvider;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -60,50 +62,23 @@ public class CacheFactory extends CacheService {
     /** caches table. */
     final private Map<String, Cache<?, ?>> caches = new ConcurrentHashMap<String, Cache<?, ?>> (53);
 
-    private Map<String,CacheProvider> cacheProviders = null;
-    private Map<String,String> cacheProviderForCache = null;
-    // hashmap containing the cache size limits specified in Jahia config.
-    private Map<String, Long> cacheLimits = null;
-    private Map<String, Long> cacheGroupsLimits = null;
-    private long freeMemoryLimit;
-    public static final String DEFAULT_CACHE = "DEFAULT_CACHE";
+    private Map<String,CacheProvider> cacheProviders = new HashMap<String, CacheProvider>();
+    private Map<String,String> cacheProviderForCache = new HashMap<String, String>();
+    public static final String DEFAULT_CACHE = "default";
 
     /** Default constructor, creates a new <code>JahiaCacheFactory</code> instance.
      */
     protected CacheFactory () {
+    	super();
     }
 
-    public void start()
-        throws JahiaInitializationException
-    {
-        // do nothing when settings are missing
-        if (settingsBean == null) {
-            cacheLimits = new ConcurrentHashMap<String, Long>(2503);
-            return;
-        }
-        Iterator<CacheProvider> providerIterator = cacheProviders.values().iterator();
-        while (providerIterator.hasNext()) {
-            CacheProvider cacheProvider = providerIterator.next();
+    public void start() throws JahiaInitializationException {
+    	if (cacheProviders.isEmpty()) {
+    		logger.warn("No cache provider are configured. Using no-cache provider as a default one.");
+    		cacheProviders.put(DEFAULT_CACHE, new DummyCacheProvider());
+    	}
+    	for (CacheProvider cacheProvider : cacheProviders.values()) {
             cacheProvider.init(settingsBean,this);
-        }
-
-        cacheLimits = settingsBean.getMaxCachedValues();
-        cacheGroupsLimits = settingsBean.getMaxCachedGroupsValues();
-        freeMemoryLimit = new Long(settingsBean.getFreeMemoryLimit().split("MB")[0]).longValue()*(1024*1024);
-
-        // now we set the limits for caches that have already been created, because this could happen before
-        // the init of this service.
-        for (Cache<?, ?> cache : caches.values()) {
-            if (cacheLimits.containsKey(cache.getName())) {
-                Long cacheLimit = (Long) cacheLimits.get(cache.getName());
-                cache.setCacheLimit(cacheLimit.longValue());
-            } else {
-                cache.setCacheLimit(freeMemoryLimit);
-            }
-            if (cacheGroupsLimits.containsKey(cache.getName())) {
-                Long cacheGroupsLimit = (Long) cacheGroupsLimits.get(cache.getName());
-                cache.setCacheGroupsLimit(cacheGroupsLimit.longValue());
-            }
         }
     }
 
@@ -117,10 +92,12 @@ public class CacheFactory extends CacheService {
         // flushAllCaches();
         caches.clear();
 
-        Iterator<CacheProvider> providerIterator = cacheProviders.values().iterator();
-        while (providerIterator.hasNext()) {
-            CacheProvider cacheProvider = providerIterator.next();
-            cacheProvider.shutdown();
+        for (CacheProvider provider : cacheProviders.values()) {
+	        try {
+	        	provider.shutdown();
+	        } catch (Exception e) {
+	        	// ignore
+	        }
         }
     }
 
@@ -128,22 +105,30 @@ public class CacheFactory extends CacheService {
      *
      * @return  the class' unique instance.
      */
-    public static synchronized CacheFactory getInstance () {
+    public static CacheFactory getInstance () {
         if (instance == null) {
-            instance = new CacheFactory ();
+        	synchronized (CacheFactory.class) {
+        		if (instance == null) {
+                    instance = new CacheFactory();
+        		}
+        	}
         }
         return instance;
     }
-    public synchronized <K, V> Cache<K, V> createCacheInstance (String name)
-            throws JahiaInitializationException{
+    public <K, V> Cache<K, V> getCache(String name, boolean forceCreation)
+            throws JahiaInitializationException {
+    	Cache<K, V> cache = getCache(name);
+    	if (cache != null || !forceCreation) {
+    		return cache;
+    	}
         String provider = cacheProviderForCache.get(name);
         if(provider == null)
         provider = DEFAULT_CACHE;
         return createCacheInstance(name, provider);
     }
-    public synchronized <K, V> Cache<K, V> createCacheInstance (String name, String cacheProvider)
-            throws JahiaInitializationException
-    {
+    
+    protected synchronized <K, V> Cache<K, V> createCacheInstance (String name, String cacheProvider)
+            throws JahiaInitializationException {
         // validity check
         if (name == null)
             return null;
@@ -154,27 +139,10 @@ public class CacheFactory extends CacheService {
             return cache;
         }
 
-        if (cacheLimits == null) {
-            cacheLimits = new ConcurrentHashMap<String, Long>(2503);
-        }
-        if (cacheGroupsLimits == null) {
-            cacheGroupsLimits = new ConcurrentHashMap<String, Long>(2503);
-        }
-
-        // instanciate the new cache, can throw an JahiaInitialization exception
+        // instantiate the new cache, can throw an JahiaInitialization exception
         cache = new Cache(name, cacheProviders.get(cacheProvider).newCacheImplementation(name));
 
-        if (cacheLimits.containsKey(name)) {
-            Long cacheLimit = (Long) cacheLimits.get(name);
-            cache.setCacheLimit(cacheLimit.longValue());
-        } else {
-            cache.setCacheLimit(freeMemoryLimit);
-        }
-        if (cacheGroupsLimits.containsKey(cache.getName())) {
-            Long cacheGroupsLimit = (Long) cacheGroupsLimits.get(cache.getName());
-            cache.setCacheGroupsLimit(cacheGroupsLimit.longValue());
-        }
-        logger.debug ("Created cache instance [" + name + "]");
+        logger.info("Created cache instance [{}]", name);
 
         if (registerCache (cache)) {
             return cache;
@@ -209,7 +177,7 @@ public class CacheFactory extends CacheService {
     }
 
 
-    public synchronized void flushAllCaches () {
+    public void flushAllCaches () {
 
         Iterator<String> cacheNames = getNames().iterator();
         while (cacheNames.hasNext ()) {
@@ -219,44 +187,18 @@ public class CacheFactory extends CacheService {
             cache.flush();
         }
 
-        logger.info ("Flushed all caches.");
+        logger.info("Flushed all caches.");
     }
 
-
-    public boolean isClusterCache() {
-        return cacheProviders.get(DEFAULT_CACHE).isClusterCache();
-    }
-
-    public void enableClusterSync() throws JahiaInitializationException {
-        Iterator<CacheProvider> providerIterator = cacheProviders.values().iterator();
-        while (providerIterator.hasNext()) {
-            CacheProvider cacheProvider = providerIterator.next();
-            cacheProvider.enableClusterSync();
-        }
-    }
-
-    public void stopClusterSync() {
-        Iterator<CacheProvider> providerIterator = cacheProviders.values().iterator();
-        while (providerIterator.hasNext()) {
-            CacheProvider cacheProvider = providerIterator.next();
-            cacheProvider.stopClusterSync();
-        }
-    }
-
-    public void syncClusterNow() {
-        Iterator<CacheProvider> providerIterator = cacheProviders.values().iterator();
-        while (providerIterator.hasNext()) {
-            CacheProvider cacheProvider = providerIterator.next();
-            cacheProvider.syncClusterNow();
-        }
-    }
 
     public Map<String, CacheProvider> getCacheProviders() {
         return cacheProviders;
     }
 
     public void setCacheProviders(Map<String, CacheProvider> cacheProviders) {
-        this.cacheProviders = cacheProviders;
+    	if (cacheProviders != null) {
+    		this.cacheProviders.putAll(cacheProviders);
+    	}
     }
 
     public Map<String, String> getCacheProviderForCache() {
@@ -264,6 +206,8 @@ public class CacheFactory extends CacheService {
     }
 
     public void setCacheProviderForCache(Map<String, String> cacheProviderForCache) {
-        this.cacheProviderForCache = cacheProviderForCache;
+    	if (cacheProviderForCache != null) {
+    		this.cacheProviderForCache.putAll(cacheProviderForCache);
+    	}
     }
 }

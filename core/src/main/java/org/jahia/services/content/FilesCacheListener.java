@@ -57,7 +57,7 @@ public class FilesCacheListener extends DefaultEventListener {
 
     public FilesCacheListener() {
         try {
-            cache = CacheFactory.getInstance().createCacheInstance("WebdavCache");
+            cache = CacheFactory.getInstance().getCache("WebdavCache", true);
         } catch (JahiaInitializationException e) {
             e.printStackTrace();
         }

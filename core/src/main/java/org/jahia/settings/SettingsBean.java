@@ -116,10 +116,6 @@ public class SettingsBean implements ServletContextAware {
 
     private String jahiaJavaScriptHttpPath;
     private String classDiskPath;
-    // map containing all max_cached_*...
-    private Map<String, Long> maxCachedValues;
-    // map containing all max_cachedgroups_*...
-    private Map<String, Long> maxCachedGroupsValues;
 
     // this is the list of jahia.properties files values...
     private long jahiaFileUploadMaxSize;
@@ -154,10 +150,6 @@ public class SettingsBean implements ServletContextAware {
     private int siteURLPortOverride = -1;
 
     private boolean isSiteErrorEnabled;
-
-    private String freeMemoryLimit= new Double((Runtime.getRuntime().maxMemory()*0.2)/ (1024*1024)).longValue() + "MB";
-
-    private int clusterCacheMaxBatchSize = 100000;
 
     private int cacheMaxGroups = 10000;
 
@@ -324,58 +316,6 @@ public class SettingsBean implements ServletContextAware {
             // paranoia settings...
             mail_paranoia = getString("mail_paranoia", "Disabled");
 
-            // load MaxCached values (max_cached_*)
-            maxCachedValues = new HashMap<String, Long>();
-            for (Enumeration<?> e = properties.propertyNames (); e.hasMoreElements();) {
-                String key = (String)e.nextElement();
-                String lowerKey = key.toLowerCase ().trim ();
-                // yes this is a max_cached value
-                if (lowerKey.indexOf ("max_cached_") == 0) {
-                    String cacheKey = key.trim().substring ("max_cached_".length());
-                    String value = properties.getProperty (key);
-                    if ((cacheKey != null) && (value != null)) {
-                        Long maxSize = null;
-                        try {
-                            maxSize = Long.valueOf(value);
-                        } catch (NumberFormatException nfe) {
-                            logger.error("Error while parsing value for cache size " + cacheKey + ", ignoring...");
-                            maxSize = null;
-                        }
-                        if (maxSize != null) {
-                            maxCachedValues.put (cacheKey, maxSize);
-                        }
-                    } else {
-                        logger.debug ("Ignoring cache key : " + key + " because value or key is invalid (value=" + value + ")");
-                    }
-                }
-            }
-
-            // load MaxGroups values (max_cachedgroups_*)
-            maxCachedGroupsValues = new HashMap<String, Long>();
-            for (Enumeration<?> e = properties.propertyNames (); e.hasMoreElements();) {
-                String key = (String)e.nextElement();
-                String lowerKey = key.toLowerCase ().trim ();
-                // yes this is a max_cached value
-                if (lowerKey.indexOf ("max_cachedgroups_") == 0) {
-                    String cacheKey = key.trim().substring ("max_cachedgroups_".length());
-                    String value = properties.getProperty (key);
-                    if ((cacheKey != null) && (value != null)) {
-                        Long maxGroupSize = null;
-                        try {
-                            maxGroupSize = Long.valueOf(value);
-                        } catch (NumberFormatException nfe) {
-                            logger.error("Error while parsing value for cache group size " + cacheKey + ", ignoring...");
-                            maxGroupSize = null;
-                        }
-                        if (maxGroupSize != null) {
-                            maxCachedGroupsValues.put (cacheKey, maxGroupSize);
-                        }
-                    } else {
-                        logger.debug ("Ignoring cache groups key : " + key + " because value or key is invalid (value=" + value + ")");
-                    }
-                }
-            }
-
             isProcessingServer = getBoolean("processingServer", true);
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
@@ -387,12 +327,7 @@ public class SettingsBean implements ServletContextAware {
             doRedirectOnLogout = getBoolean("doRedirectOnLogout", true);
             
             isSiteErrorEnabled = getBoolean("site.error.enabled",false);
-            String tmp = getString("freeMemoryLimit",new Double((Runtime.getRuntime().maxMemory()*0.2)/ (1024*1024)).longValue() + "MB");
-            if(tmp.indexOf("MB")>=0) {
-                freeMemoryLimit = tmp;
-            }
 
-            clusterCacheMaxBatchSize = getInt("clusterCacheMaxBatchSize", 100000);
             cacheMaxGroups = getInt("cacheMaxGroups", 10000);
 
             developmentMode = getBoolean("developmentMode",true);
@@ -812,12 +747,6 @@ public class SettingsBean implements ServletContextAware {
     public String getJahiaJspDiskPath() {
         return jahiaJspDiskPath;
     }
-    public Map<String, Long> getMaxCachedValues() {
-        return maxCachedValues;
-    }
-    public Map<String, Long> getMaxCachedGroupsValues() {
-        return maxCachedGroupsValues;
-    }
     public String getJahiaImportsDiskPath() {
         return jahiaImportsDiskPath;
     }
@@ -900,23 +829,6 @@ public class SettingsBean implements ServletContextAware {
     public boolean isDoRedirectOnLogout() {
         return doRedirectOnLogout;
     }    
-
-    public String getFreeMemoryLimit() {
-        return freeMemoryLimit;
-    }
-
-    public void setFreeMemoryLimit(String freeMemoryLimit) {
-        if(freeMemoryLimit.indexOf("MB")<=0) return;
-        this.freeMemoryLimit = freeMemoryLimit;
-    }
-
-    public int getClusterCacheMaxBatchSize() {
-        return clusterCacheMaxBatchSize;
-    }
-
-    public void setClusterCacheMaxBatchSize(int clusterCacheMaxBatchSize) {
-        this.clusterCacheMaxBatchSize = clusterCacheMaxBatchSize;
-    }
 
     public boolean isDevelopmentMode() {
         return developmentMode;

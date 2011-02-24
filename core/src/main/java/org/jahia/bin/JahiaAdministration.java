@@ -236,11 +236,12 @@ public class JahiaAdministration extends HttpServlet {
 
                     try {
                         userRequestDispatcher(request, response, session); // ok continue admin...
-                        ServicesRegistry.getInstance().getCacheService().syncClusterNow();
                     } catch (JahiaException je) {
                         DefaultErrorHandler.getInstance().handle(je, request, response);
                     } catch (Exception t) {
                         DefaultErrorHandler.getInstance().handle(t, request, response);
+                    } finally {
+                        Jahia.setThreadParamBean(null);
                     }
             } else {
                 request.setAttribute("jahiaLaunch", "installation"); // call jahia to init and launch install...

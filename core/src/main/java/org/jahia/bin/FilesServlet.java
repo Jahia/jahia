@@ -76,7 +76,7 @@ public class FilesServlet extends HttpServlet {
 
     static {
         try {
-            cache = CacheFactory.getInstance().createCacheInstance("WebdavCache");
+            cache = CacheFactory.getInstance().getCache("WebdavCache", true);
         } catch (JahiaInitializationException e) {
             e.printStackTrace();
         }

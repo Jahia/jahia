@@ -52,23 +52,7 @@ public class DummyCacheProvider implements CacheProvider {
         // do nothing
     }
 
-    public void enableClusterSync() throws JahiaInitializationException {
-        // do nothing
-    }
-
-    public void stopClusterSync() {
-        // do nothing
-    }
-
-    public void syncClusterNow() {
-        // do nothing
-    }
-
-    public boolean isClusterCache() {
-        return false;  // do nothing
-    }
-
-    public CacheImplementation newCacheImplementation(String name) {
+    public CacheImplementation<?, ?> newCacheImplementation(String name) {
         return new DummyCacheImpl(name);
     }
 }

@@ -251,14 +251,9 @@ public class Cache<K, V> {
 
     }
 
-    private synchronized boolean internalPut (K entryKey, CacheEntry<V> entry) {
+    private boolean internalPut (K entryKey, CacheEntry<V> entry) {
         if ((entryKey == null) || (entry == null)) {
             logger.debug ("null cache entry key or entry object, cannot cache such an object!");
-            return false;
-        }
-
-        if (getCacheLimit () == 0) {
-            logger.debug ("cache is deactivated. Aborting store.");
             return false;
         }
 
@@ -341,43 +336,6 @@ public class Cache<K, V> {
     }
 
 
-    /** <p>Returns the maximum size allowed for the cache.</p>
-     *
-     * @return  an integer representing the maximum cache size. Returns -1 if
-     *           there is no limit set.
-     */
-    final public long getCacheLimit () {
-        return cacheImplementation.getCacheLimit();
-    }
-
-
-    /** <p>Set the cache size limit. -1 will define an unlimited cache size.</p>
-     *
-     * @param limit     the new size limit
-     */
-    final public void setCacheLimit (long limit) {
-        cacheImplementation.setCacheLimit(limit);
-    }
-
-    /** <p>Returns the maximum size allowed for the cache groups.</p>
-     *
-     * @return  an integer representing the maximum cache groups size. Returns -1 if
-     *           there is no limit set.
-     */
-    final public long getCacheGroupsLimit () {
-        return cacheImplementation.getCacheGroupsLimit();
-    }
-
-
-    /** <p>Set the cache groups size limit. -1 will define an unlimited cache size.</p>
-     *
-     * @param groupsLimit the new size limit
-     */
-    final public void setCacheGroupsLimit (long groupsLimit) {
-        cacheImplementation.setCacheGroupsLimit(groupsLimit);
-    }
-
-
     /** <p>Retrieves the cache name.</p>
      *
      * @return  the cache region name
@@ -399,16 +357,14 @@ public class Cache<K, V> {
      */
     public void flush(boolean propagate) {
 
-        synchronized (this) {
-            // clears the cache
-            cacheImplementation.flushAll(propagate);
+		// clears the cache
+		cacheImplementation.flushAll(propagate);
 
-            // reset the cache statistics
-            successHitCount = 0;
-            totalHitCount = 0;
-        }
+		// reset the cache statistics
+		successHitCount = 0;
+		totalHitCount = 0;
 
-        logger.debug("Flushed all entries from cache [" + name + "]");
+        logger.debug("Flushed all entries from cache [{}]", name);
 
         // when requested, propagate the flush event to the cache listeners and the JMS
         if (propagate) {
@@ -504,9 +460,8 @@ public class Cache<K, V> {
             return;
 
         // remove the object from the cache
-        synchronized (this) {
         cacheImplementation.remove (entryKey);
-        }
+
         if (logger.isDebugEnabled()) {
             logger.debug ("Removed the entry [" + entryKey.toString () +
                           "] from cache [" + name + "]!");

@@ -424,14 +424,19 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
      */
     public void afterPropertiesSet() throws Exception {
         CacheManager cacheManager = cacheProvider.getCacheManager();
-        if (!cacheManager.cacheExists(CACHE_NAME)) {
-            cacheManager.addCache(CACHE_NAME);
-        }
         cache = cacheManager.getCache(CACHE_NAME);
-        if (!cacheManager.cacheExists(PROPERTY_CACHE_NAME)) {
-            cacheManager.addCache(PROPERTY_CACHE_NAME);
+        if (cache == null) {
+            cacheManager.addCache(CACHE_NAME);
+            cache = cacheManager.getCache(CACHE_NAME);
         }
+        cache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
+
         permissionCache = cacheManager.getCache(PROPERTY_CACHE_NAME);
+        if (permissionCache == null) {
+            cacheManager.addCache(PROPERTY_CACHE_NAME);
+            permissionCache = cacheManager.getCache(PROPERTY_CACHE_NAME);
+        }
+        permissionCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
     }
 
     public void setTemplate(JCRTemplate template) {

@@ -34,18 +34,18 @@ package org.jahia.services.cache.dummy;
 
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheListener;
+import org.jahia.services.cache.GroupCacheKey;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
- * User: rincevent
- * Date: 27 août 2008
- * Time: 14:10:29
+ * An implementation of the {@link CacheImplementation} that disables caching.
  * 
+ * @author rincevent
  */
-public class DummyCacheImpl implements CacheImplementation {
+public class DummyCacheImpl<K, V> implements CacheImplementation<K, V> {
 
     private String name;
 
@@ -54,51 +54,51 @@ public class DummyCacheImpl implements CacheImplementation {
     }
 
     public boolean containsKey(Object key) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  
     }
 
-    public Object get(Object key) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public V get(Object key) {
+        return null;  
     }
 
     public void put(Object key, String[] groups, Object value) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public boolean isEmpty() {
-        return true;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;  
     }
 
     public int size() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;  
     }
 
-    public Collection<Object> getKeys() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Collection<K> getKeys() {
+        return null;  
     }
 
     public long getGroupsSize() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;  
     }
 
     public long getGroupsKeysTotal() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return 0;  
     }
 
     public void flushAll(boolean propagate) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void flushGroup(String groupName) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void remove(Object key) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public String getName() {
-        return name;  //To change body of implemented methods use File | Settings | File Templates.
+        return name;  
     }
 
     public void setName(String name) {
@@ -106,30 +106,14 @@ public class DummyCacheImpl implements CacheImplementation {
     }
 
     public void addListener(CacheListener listener) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
     public void removeListener(CacheListener listener) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 
-    public long getCacheLimit() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setCacheLimit(long limit) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public long getCacheGroupsLimit() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setCacheGroupsLimit(long groupsLimit) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Set getGroupKeys(String groupName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Set<GroupCacheKey> getGroupKeys(String groupName) {
+        return Collections.emptySet(); 
     }
 }

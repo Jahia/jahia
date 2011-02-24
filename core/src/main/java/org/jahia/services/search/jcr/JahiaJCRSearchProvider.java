@@ -36,9 +36,11 @@ import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
 import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -108,6 +110,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         SearchResponse response = new SearchResponse();
 
         List<Hit<?>> results = new LinkedList<Hit<?>>();
+        Set<String> addedHits = new HashSet<String>();
         try {
             JCRSessionWrapper session = ServicesRegistry
                     .getInstance()
@@ -127,7 +130,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
                             node = node.getParent();
                         }
-                        results.add(buildHit(row, node, context));
+
+                        Hit<?> hit = buildHit(row, node, context);
+                        if (addedHits.add(hit.getLink())) {
+                            results.add(hit);
+                        }
                     } catch (Exception e) {
                         logger.warn("Error resolving search hit", e);
                     }

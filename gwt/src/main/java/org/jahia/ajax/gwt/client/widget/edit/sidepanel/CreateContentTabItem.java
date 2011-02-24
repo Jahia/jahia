@@ -57,6 +57,7 @@ class CreateContentTabItem extends SidePanelTabItem {
     private transient ContentTypeTree contentTypeTree;
     private transient CreateGridDragSource gridDragSource;
     private boolean displayStudioElement = false;
+    private String baseType = null;
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
@@ -65,7 +66,7 @@ class CreateContentTabItem extends SidePanelTabItem {
         contentTypeTree = new ContentTypeTree(null);
 
         JahiaContentDefinitionService.App.getInstance()
-                .getSubNodetypes(null,displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+                .getSubNodetypes(baseType,displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                     public void onApplicationFailure(Throwable caught) {
                         MessageBox.alert("Alert",
                                 "Unable to load content definitions. Cause: " + caught.getLocalizedMessage(), null);
@@ -89,5 +90,9 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     public void setDisplayStudioElement(boolean displayStudioElement) {
         this.displayStudioElement = displayStudioElement;
+    }
+
+    public void setBaseType(String baseType) {
+        this.baseType = baseType;
     }
 }

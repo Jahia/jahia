@@ -41,7 +41,6 @@
 
 package org.jahia.tools.files;
 
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.scheduler.SchedulerService;
 import org.quartz.*;
 
@@ -181,12 +180,12 @@ public class FileWatcher extends Observable implements Serializable {
         jobDetail.setVolatility(true);
 
         try {
-            schedulerService.deleteRamJob(jobName + "_Job", Scheduler.DEFAULT_GROUP);
-        } catch (JahiaException e) {
+            schedulerService.getRAMScheduler().deleteJob(jobName + "_Job", Scheduler.DEFAULT_GROUP);
+        } catch (SchedulerException e) {
         }
         try {
-            schedulerService.scheduleRamJob(jobDetail, trigger);
-        } catch (JahiaException je) {
+            schedulerService.getRAMScheduler().scheduleJob(jobDetail, trigger);
+        } catch (SchedulerException je) {
             logger.error("Error while scheduling file watch for " + m_FolderPath, je);
         }
 

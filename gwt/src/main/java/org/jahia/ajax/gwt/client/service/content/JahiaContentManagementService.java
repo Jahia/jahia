@@ -40,8 +40,6 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
-import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
@@ -295,6 +293,14 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     PagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames) throws GWTJahiaServiceException;
 
+    /**
+     * Deletes all completed job details.
+     *
+     * @return the number of deleted jobs 
+     * @throws GWTJahiaServiceException in case of an error
+     */
+    Integer deleteAllCompletedJobs() throws GWTJahiaServiceException;
+    
     /**
      * Deletes a job either already executed or not yet executed. Don't try to call this on a running job as the
      * behavior will not be determined.

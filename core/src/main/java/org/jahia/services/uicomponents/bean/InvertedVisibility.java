@@ -30,15 +30,26 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.scheduler;
+package org.jahia.services.uicomponents.bean;
+
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
- * Job that implements BackgroundJob but scheduled with ramscheduler must immplement this
- * interface
- * User: hollis
- * Date: 12 mars 2007
- * Time: 10:05:02
- *
+ * Utility bean for inverted visibility. It returns the negated value of the
+ * evaluated visibility.
+ * 
+ * @author Sergiy Shyrkov
  */
-public interface RamJob {
+public class InvertedVisibility extends Visibility {
+
+	@Override
+	public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale,
+	        HttpServletRequest request) {
+		return !super.getRealValue(contextNode, jahiaUser, locale, request);
+	}
 }

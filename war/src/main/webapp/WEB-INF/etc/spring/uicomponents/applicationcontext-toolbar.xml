@@ -19,11 +19,32 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.WorkInProgress" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.WorkInProgressAdmin" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="icon" value="workInProgress"/>
         <property name="titleKey" value="label.backgroundJobs"/>
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem"/>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="permission" value="view-all-jobs"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="Toolbar.Item.WorkInProgress" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="icon" value="workInProgress"/>
+        <property name="titleKey" value="label.backgroundJobs"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem">
+                <property name="adminMode" value="false"/>
+            </bean>
+        </property>
+        <property name="visibility">
+            <!-- using "inverted" visibility -->
+            <bean class="org.jahia.services.uicomponents.bean.InvertedVisibility">
+                <property name="permission" value="view-all-jobs"/>
+            </bean>
         </property>
     </bean>
     

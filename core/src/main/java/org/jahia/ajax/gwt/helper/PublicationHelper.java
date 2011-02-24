@@ -46,7 +46,6 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.api.Constants;
 import org.jahia.bin.Render;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.notification.HttpClientService;
@@ -57,6 +56,7 @@ import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -388,7 +388,7 @@ public class PublicationHelper {
             jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
 
             ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
-        } catch (JahiaException e) {
+        } catch (SchedulerException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }

@@ -470,7 +470,7 @@ public class Service extends JahiaService {
     }
 
     public void executeRuleLater(AddedNodeFact node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)
-            throws JahiaException, RepositoryException {
+            throws SchedulerException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
         final JobDetail jobDetail = BackgroundJob.createJahiaJob("Rule job: " + ruleToExecute + " on node " + uuid, RuleJob.class);
         jobDetail.setName(ruleToExecute + "-" + uuid);
@@ -482,18 +482,18 @@ public class Service extends JahiaService {
         map.put(RuleJob.JOB_WORKSPACE, ((String) drools.getWorkingMemory().getGlobal("workspace")));
 
         // cancel the scheduled job if exists 
-        schedulerService.deleteJob(jobDetail.getName(), jobDetail.getGroup());
+        schedulerService.getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
         try {
         	final Property property = node.getNode().getProperty(propertyName);
         	// schedule the job
-            schedulerService.scheduleJob(jobDetail, getTrigger(node, property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString(), jobDetail.getName(), jobDetail.getGroup()));
+            schedulerService.getScheduler().scheduleJob(jobDetail, getTrigger(node, property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString(), jobDetail.getName(), jobDetail.getGroup()));
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
         }
     }
 
     public void executeActionLater(AddedNodeFact node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
-            throws JahiaException, RepositoryException {
+            throws SchedulerException, RepositoryException {
         final Property property = node.getNode().hasProperty(propertyName) ? node.getNode().getProperty(propertyName) : null;
 	    try {
 	        doScheduleAction(node, actionToExecute, getTrigger(node, property != null ? (property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString()) : null, null, null), drools);
@@ -503,7 +503,7 @@ public class Service extends JahiaService {
     }
 
 	public void scheduleAction(AddedNodeFact node, final String actionToExecute,
-	        final String cronExpression, KnowledgeHelper drools) throws JahiaException,
+	        final String cronExpression, KnowledgeHelper drools) throws SchedulerException,
 	        RepositoryException {
 		try {
 			doScheduleAction(node, actionToExecute, getTrigger(node, cronExpression, null, null),
@@ -513,7 +513,7 @@ public class Service extends JahiaService {
 		}
 	}
 
-	private void doScheduleAction(AddedNodeFact node, final String actionToExecute, final Trigger trigger, KnowledgeHelper drools) throws JahiaException,
+	private void doScheduleAction(AddedNodeFact node, final String actionToExecute, final Trigger trigger, KnowledgeHelper drools) throws SchedulerException,
 	    RepositoryException {
 		final String uuid = node.getNode().getIdentifier();
 		final JobDetail jobDetail = BackgroundJob.createJahiaJob("Action job: " + actionToExecute + " on node " + uuid, ActionJob.class);
@@ -524,19 +524,19 @@ public class Service extends JahiaService {
 		map.put(ActionJob.JOB_NODE_UUID, uuid);
 		map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
 		// cancel the scheduled job if exists 
-		schedulerService.deleteJob(jobDetail.getName(), jobDetail.getGroup());
+		schedulerService.getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
 		if (trigger != null) {
 			// schedule the job
 			trigger.setName(jobDetail.getName() + "TRIGGER");
-			schedulerService.scheduleJob(jobDetail, trigger);
+			schedulerService.getScheduler().scheduleJob(jobDetail, trigger);
 		}
 	}
 
 	public void cancelActionExecution(NodeFact node, final String actionToCancel,
-	        KnowledgeHelper drools) throws JahiaException, RepositoryException {
+	        KnowledgeHelper drools) throws RepositoryException, SchedulerException {
 		String jobGroup = ActionJob.getJobGroup(actionToCancel);
 		String jobName = ActionJob.getJobName(actionToCancel, node.getIdentifier());
-		if (schedulerService.deleteJob(jobName, jobGroup)) {
+		if (schedulerService.getScheduler().deleteJob(jobName, jobGroup)) {
 			logger.info("Action job with the name {} and group {} canceled successfully", jobName, jobGroup);
 		}
 	}

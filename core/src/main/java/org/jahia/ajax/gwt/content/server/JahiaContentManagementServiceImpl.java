@@ -49,8 +49,6 @@ import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
-import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -1885,5 +1883,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 	private String encryptPassword(String pwd) {
 		return StringUtils.isNotEmpty(pwd) ? EncryptionUtils.passwordBaseEncrypt(pwd) : StringUtils.EMPTY;
 	}
+
+	public Integer deleteAllCompletedJobs() throws GWTJahiaServiceException {
+	    return schedulerHelper.deleteAllCompletedJobs();
+    }
 
 }

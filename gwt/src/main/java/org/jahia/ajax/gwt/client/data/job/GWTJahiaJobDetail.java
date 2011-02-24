@@ -13,7 +13,7 @@ import java.util.List;
  * Time: 2:13:35 PM
  * 
  */
-public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Comparable {
+public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Comparable<GWTJahiaJobDetail> {
 
     public GWTJahiaJobDetail() {
     }
@@ -29,7 +29,7 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
                              String jobClassName,
                              Long beginTime,
                              Long endTime,
-                             Integer durationInSeconds,
+                             Long duration,
                              String locale,
                              String fileName,
                              String targetNodeIdentifier,
@@ -46,7 +46,7 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         setJobClassName(jobClassName);
         setBeginTime(beginTime);
         setEndTime(endTime);
-        setDurationInSeconds(durationInSeconds);
+        setDuration(duration);
         setLocale(locale);
         setFileName(fileName);
         setTargetNodeIdentifier(targetNodeIdentifier);
@@ -150,12 +150,12 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         set("endTime", endTime);
     }
 
-    public Integer getDurationInSeconds() {
-        return get("durationInSeconds");
+    public Long getDuration() {
+        return get("duration");
     }
 
-    public void setDurationInSeconds(Integer durationInSeconds) {
-        set("durationInSeconds", durationInSeconds);
+    public void setDuration(Long duration) {
+        set("duration", duration);
     }
 
     public String getLocale() {
@@ -219,12 +219,12 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         return getName() != null ? getName().hashCode() : 0;
     }
 
-    public int compareTo(Object o) {
+    public int compareTo(GWTJahiaJobDetail o) {
         if (getCreationTime() != null) {
-            return getCreationTime().compareTo(((GWTJahiaJobDetail) o).getCreationTime());
+            return getCreationTime().compareTo(o.getCreationTime());
         } else {
             if (getBeginTime() != null) {
-                return getBeginTime().compareTo(((GWTJahiaJobDetail) o).getBeginTime());
+                return getBeginTime().compareTo(o.getBeginTime());
             }
         }
         return 0;

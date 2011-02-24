@@ -32,124 +32,273 @@
 
 package org.jahia.services.scheduler;
 
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.JahiaService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.quartz.*;
+import static org.jahia.services.scheduler.BackgroundJob.*;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.JahiaService;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 /**
- * @version $Id$
+ * Jahia background task scheduling and management service.
+ * 
+ * @author Sergiy Shyrkov
  */
-public abstract class SchedulerService extends JahiaService {
-    public static final String SYSTEM_JOB_GROUP = "system";
+public class SchedulerService extends JahiaService implements JahiaAfterInitializationService {
+	
+    /**
+     * Jahia Spring factory bean that creates, but does not start Quartz scheduler instance.
+     * So the instance remain in standby mode until the scheduler is explicitly started.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class JahiaSchedulerFactoryBean extends SchedulerFactoryBean {
+
+    	@Override
+    	public void start() {
+    	    // do nothing
+    	}
+    }
 
     public static final String INSTANT_TRIGGER_GROUP = "instant";
-    public static final String SCHEDULED_TRIGGER_GROUP = "scheduled";
-    public static final String REPEATED_TRIGGER_GROUP = "repeated";
+    
+    static Logger logger = LoggerFactory.getLogger(SchedulerService.class);
 
-    public abstract void scheduleJobNow(JobDetail jobDetail)
-            throws JahiaException;
+    private static final Map<Pattern, Long> PURGE_ALL_STRATEGY = Collections.singletonMap(Pattern.compile(".*"), Long.valueOf(0));
 
-    public abstract void scheduleJob(JobDetail jobDetail, Trigger trigger)
-            throws JahiaException;
+    public static final String SYSTEM_JOB_GROUP = "system";
+    
+    private Scheduler ramScheduler = null;
+    
+    private Scheduler scheduler = null;
+    
+	public Integer deleteAllCompletedJobs() throws SchedulerException {
+		return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true);
+	}
 
-    public abstract void unscheduleJob(JobDetail detail) throws JahiaException;
+    public Integer deleteAllCompletedJobs(Map<Pattern, Long> purgeStrategy,
+	        boolean purgeWithNoEndDate) throws SchedulerException {
+		logger.info("Start looking for completed jobs");
+		int deletedCount = 0;
 
-    public abstract void scheduleRamJob(JobDetail jobDetail, Trigger trigger)
-            throws JahiaException;
+		for (String jobGroup : scheduler.getJobGroupNames()) {
+			String[] jobNames = scheduler.getJobNames(jobGroup);
+			logger.info("Processing job group {} with {} jobs", jobGroup, jobNames.length);
+			for (String jobName : scheduler.getJobNames(jobGroup)) {
+				logger.debug("Checking job {}.{}", jobGroup, jobName);
+				if (ArrayUtils.isEmpty(scheduler.getTriggersOfJob(jobName, jobGroup))) {
+					Long age = getAge(jobName, jobGroup, purgeStrategy);
+					if (age != null && age.longValue() >= 0) {
+						JobDetail job = scheduler.getJobDetail(jobName, jobGroup);
+						if (job == null) {
+							logger.warn("Unable to find job {}.{}", jobGroup, jobName);
+							continue;
+						}
+						String status = job.getJobDataMap().getString(JOB_STATUS);
+						if (STATUS_SUCCESSFUL.equals(status) || STATUS_FAILED.equals(status)) {
+							Long ended = job.getJobDataMap().containsKey(JOB_END) ? job
+							        .getJobDataMap().getLongFromString(JOB_END) : null;
+							if (ended != null && (System.currentTimeMillis() - ended > age)
+							        || ended == null && purgeWithNoEndDate) {
+								logger.debug("Job {} matches purge policy. Deleting it.",
+								        job.getFullName());
+								try {
+									scheduler.deleteJob(jobName, jobGroup);
+									deletedCount++;
+								} catch (SchedulerException e) {
+									logger.warn("Error deleting job " + jobGroup + "." + jobName, e);
+								}
+							}
+						}
+					}
+				}
+			}
 
-    public abstract void unscheduleRamJob(JobDetail detail) throws JahiaException;
+		}
 
-    public abstract void unscheduleJob(JobDetail detail, boolean ramScheduler) throws JahiaException;
+		logger.info("Removed {} completed jobs", deletedCount);
 
-    /**
-     * Delete the given Ram Job
-     *
-     * @param jobName
-     * @param groupName
-     * @throws JahiaException
-     */
-    public abstract void deleteRamJob(String jobName, String groupName)
-            throws JahiaException;
+		return deletedCount;
+	}
 
-    public abstract JobDetail getRamJobDetail(String jobName, String groupName)
-            throws JahiaException;
+	protected Long getAge(String jobName, String jobGroup, Map<Pattern, Long> purgeStrategy) {
+		Long expiration = null;
+		String key = jobGroup + "." + jobName;
+		for (Map.Entry<Pattern, Long> purgeEntry : purgeStrategy.entrySet()) {
+			if (purgeEntry.getKey().matcher(key).matches()) {
+				expiration = purgeEntry.getValue();
+				break;
+			}
+		}
 
-    /**
-     * Delete the given Job and associated trigger
-     *
-     * @param jobName
-     * @param groupName
-     * @throws JahiaException
-     */
-    public abstract boolean deleteJob(String jobName, String groupName)
-            throws JahiaException;
+		return expiration;
+	}
 
-    public abstract JobDetail getJobDetail(String jobName, String groupName)
-            throws JahiaException;
+    public List<JobDetail> getAllActiveJobs() throws SchedulerException {
+		List<JobDetail> l = new LinkedList<JobDetail>();
+		for (String group : scheduler.getTriggerGroupNames()) {
+			l.addAll(getAllActiveJobs(group));
+		}
+		return l;
+    }
 
-    public abstract JobDetail getJobDetail(String jobName, String groupName, boolean ramScheduler)
-            throws JahiaException;
+	public List<JobDetail> getAllActiveJobs(String triggerGroup) throws SchedulerException {
 
-    public abstract List<JobDetail> getAllActiveJobsDetails() throws JahiaException;
+        String group = StringUtils.isNotEmpty(triggerGroup) ? triggerGroup : Scheduler.DEFAULT_GROUP;
 
-    public abstract List<JobDetail> getAllActiveJobsDetails(String groupname)
-            throws JahiaException;
+		String[] trigs = scheduler.getTriggerNames(group);
+		if (trigs == null || trigs.length == 0)  {
+			return Collections.emptyList();
+		}
+		List<JobDetail> all = new LinkedList<JobDetail>();
+		
+		for (String name : trigs) {
+			Trigger t = scheduler.getTrigger(name, group);
+			if (t != null && !SYSTEM_JOB_GROUP.equals(t.getJobGroup())) {
+				JobDetail jd = scheduler.getJobDetail(t.getJobName(), t.getJobGroup());
+				if (jd != null) {
+					if (STATUS_EXECUTING.equals(jd.getJobDataMap().getString(JOB_STATUS))) {
+						all.add(jd);
+					}
+				}
+			}
+		}
+		
+		return all;
+    }
 
-    public abstract List<JobDetail> getAllJobsDetails() throws JahiaException;
+    public List<JobDetail> getAllJobs() throws SchedulerException {
+		List<JobDetail> l = new LinkedList<JobDetail>();
+		for (String group : scheduler.getJobGroupNames()) {
+			l.addAll(getAllJobs(group));
+		}
+		return l;
+	}
 
-    public abstract List<JobDetail> getAllJobsDetails(String groupname)
-            throws JahiaException;
+    public List<JobDetail> getAllJobs(String groupname) throws SchedulerException {
+        return getAllJobs(groupname, false);
+    }
 
-    /**
-     * To get a list of scheduled waiting jobdetails.<br>
-     *
-     * @param user      the current jahia user
-     * @param groupname (could be empty or null)
-     * @return a list of jobdetails available for this user
-     * @throws JahiaException
-     */
-    public abstract List<JobDetail> getJobsDetails(JahiaUser user, String groupname)
-            throws JahiaException;
+    public List<JobDetail> getAllJobs(String groupname, boolean useRamScheduler) throws SchedulerException {
 
-    /**
-     * A convenient method to Get a list of scheduled and queued jobdetails.<br>
-     *
-     * @param user         the current jahia user
-     * @param groupname    (could be empty or null)
-     * @param ramScheduler if true, use the ram scheduler
-     * @return a list of jobdetails available for this user
-     * @throws JahiaException
-     */
-    public abstract List<JobDetail> getJobsDetails(JahiaUser user, String groupname, boolean ramScheduler)
-            throws JahiaException;
+        String group = StringUtils.isNotEmpty(groupname) ? groupname : Scheduler.DEFAULT_GROUP;
 
-    /**
-     * Returns the list of currenlty executing jobs
-     *
-     * @return
-     * @throws JahiaException
-     */
-    public abstract List<JobExecutionContext> getCurrentlyExecutingJobs() throws JahiaException;
+        List<JobDetail> all = new LinkedList<JobDetail>();
+        for (String process : getScheduler(useRamScheduler).getJobNames(group)) {
+            all.add(getScheduler(useRamScheduler).getJobDetail(process, group));
+        }
+        return all;
+    }
 
-    /**
-     * Returns the list of currenlty executing ram jobs
-     *
-     * @return
-     * @throws JahiaException
-     */
-    public abstract List<JobExecutionContext> getCurrentlyExecutingRamJobs() throws JahiaException;
+    public Scheduler getRAMScheduler() {
+    	return ramScheduler;
+    }
 
-    public abstract String[] getJobNames(String jobGroupName)
-            throws JahiaException;
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
 
-    public abstract void triggerJobWithVolatileTrigger(String jobName, String jobGroupName)
-            throws JahiaException;
+    protected Scheduler getScheduler(boolean isRamScheduler) {
+        return isRamScheduler ? ramScheduler : scheduler;
+    }
 
-    public abstract String[] getSchedulerInfos(JahiaUser user) throws JahiaException;
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+		try {
+	        ramScheduler.start();
+	        
+	        if (settingsBean.isProcessingServer()) {
+	            if (logger.isDebugEnabled()) {
+	                logger.debug("Starting scheduler...\n instanceId:"
+	                        + scheduler.getMetaData().getSchedulerInstanceId() +
+	                        " instanceName:" + scheduler.getMetaData().getSchedulerName()
+	                        + "\n" + scheduler.getMetaData().getSummary());
+	            }
+	            
+	            scheduler.start();
+	        }
+        } catch (SchedulerException e) {
+        	logger.error(e.getMessage(), e);
+        	throw new JahiaInitializationException(e.getMessage(), e);
+        }
+    }
 
-    public abstract Scheduler getScheduler();
+    public void scheduleJobNow(JobDetail jobDetail) throws SchedulerException {
+		JobDataMap data = jobDetail.getJobDataMap();
+		SimpleTrigger trigger = new SimpleTrigger(jobDetail.getName() + "_Trigger",
+		        INSTANT_TRIGGER_GROUP);
+		trigger.setVolatility(jobDetail.isVolatile());// volatility of trigger
+													  // depending of the
+													  // jobdetail's volatility
+
+		data.put(JOB_STATUS, STATUS_ADDED);
+		if (logger.isDebugEnabled()) {
+			logger.debug("schedule job " + jobDetail.getName() + " volatile("
+			        + jobDetail.isVolatile() + ") @ " + new Date(System.currentTimeMillis()));
+		}
+		scheduler.scheduleJob(jobDetail, trigger);
+	}
+
+    public void setRamScheduler(Scheduler ramscheduler) {
+        this.ramScheduler = ramscheduler;
+    }
+
+	public void setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+	
+	public void start() throws JahiaInitializationException {
+
+        try {
+            ramScheduler.addSchedulerListener(new JahiaSchedulerListener(ramScheduler));
+            scheduler.addSchedulerListener(new JahiaSchedulerListener(scheduler));
+            
+            ramScheduler.addGlobalJobListener(new JahiaJobListener(true));
+            scheduler.addGlobalJobListener(new JahiaJobListener(false));
+            
+//            new LoggingJobHistoryPlugin().initialize("LoggingJobListener", scheduler);
+//            new LoggingJobHistoryPlugin().initialize("RAMLoggingJobListener", ramScheduler);
+        } catch (SchedulerException se) {
+            if (se.getUnderlyingException() != null) {
+                throw new JahiaInitializationException(
+                        "Error while initializing scheduler service",
+                        se.getUnderlyingException());
+            } else {
+                throw new JahiaInitializationException(
+                        "Error while initializing scheduler service",
+                        se);
+            }
+        }
+    }
+
+	public void stop() {
+    	if (scheduler == null || ramScheduler == null) {
+    		return;
+    	}
+        try {
+                scheduler.shutdown(true);
+                ramScheduler.shutdown(true);
+                scheduler = null;
+                ramScheduler = null;
+        } catch (Exception se) {
+            logger.error(se.getMessage(), se);
+        }
+    }
 
 }

@@ -109,11 +109,9 @@
                             </property>
                         </bean>
                         <bean class="org.jahia.services.content.textextraction.TextExtractionListener">
-                            <property name="settingsBean" ref="settingsBean"/>
                             <property name="extractionService"
                                       ref="org.jahia.services.content.rules.ExtractionService"/>
                             <property name="schedulerService" ref="SchedulerService"/>
-                            <property name="userManagerService" ref="JahiaUserManagerService"/>
                         </bean>
                         <bean class="org.jahia.services.content.FilesCacheListener"/>
                         <bean class="org.jahia.services.logging.MetricsLoggingJCReventListener">

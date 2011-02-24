@@ -34,15 +34,13 @@ package org.jahia.services.content.textextraction;
 
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.settings.SettingsBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -65,12 +63,8 @@ public class TextExtractionListener extends DefaultEventListener {
 
     private SchedulerService schedulerService;
 
-    private SettingsBean settingsBean;
-
-    private JahiaUserManagerService userManagerService;
-
     protected void doHandle(Node node, Event event, JCRSessionWrapper s) throws AccessDeniedException,
-            ItemNotFoundException, RepositoryException, JahiaException {
+            ItemNotFoundException, RepositoryException, SchedulerException {
         String mimeType = null;
         try {
             mimeType = node.getProperty(Constants.JCR_MIMETYPE).getString();
@@ -166,7 +160,7 @@ public class TextExtractionListener extends DefaultEventListener {
         }
     }
 
-    protected void scheduleBackgroundExtraction(JCRNodeWrapper fileNode, String user) throws JahiaException {
+    protected void scheduleBackgroundExtraction(JCRNodeWrapper fileNode, String user) throws SchedulerException {
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + fileNode.getName(),
                 TextExtractorJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
@@ -192,19 +186,5 @@ public class TextExtractionListener extends DefaultEventListener {
      */
     public void setSchedulerService(SchedulerService schedulerService) {
         this.schedulerService = schedulerService;
-    }
-
-    /**
-     * @param settingsBean the settingsBean to set
-     */
-    public void setSettingsBean(SettingsBean settingsBean) {
-        this.settingsBean = settingsBean;
-    }
-
-    /**
-     * @param userManagerService the userManagerService to set
-     */
-    public void setUserManagerService(JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
     }
 }

@@ -35,7 +35,7 @@ package org.jahia.services.scheduler;
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.slf4j.Logger;
-import org.jahia.exceptions.JahiaException;
+import org.slf4j.LoggerFactory;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
@@ -45,49 +45,31 @@ import org.quartz.*;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
- * Date: 25 oct. 2005 - 16:34:07
+ * Base class for Jahia background tasks.
  *
  * @author toto
- * @version $Id$
  */
 public abstract class BackgroundJob implements StatefulJob {
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(BackgroundJob.class);
+    private final static Logger logger = LoggerFactory.getLogger(BackgroundJob.class);
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
 
-    //jobdetails Constants
+    //job details constants
     public static final String JOB_CREATED = "created";
-    public static final String JOB_SCHEDULED = "scheduled";
     public static final String JOB_BEGIN = "begin";
     public static final String JOB_END = "end";
-    public static final String JOB_SERVER = "server";
     public static final String JOB_STATUS = "status";
     public static final String JOB_DURATION = "duration";
     public static final String JOB_CURRENT_LOCALE = "currentLocale";
-    public static final String JOB_SCHEME = "scheme";
-    public static final String JOB_SERVERNAME = "servername";
-    public static final String JOB_PARAMETER_MAP = "parameterMap";
-    public static final String JOB_SERVERPORT = "serverport";
-    public static final String JOB_OPMODE = "opmode";
     public static final String JOB_SITEKEY = "sitekey";
     public static final String JOB_USERKEY = "userkey";
-    public static final String JOB_PID = "pid";
-    public static final String JOB_DESTINATION_SITE = "sitedest";
-    public static final String JOB_LOCKS = "locks";
-    public static final String JOB_TITLE = "title";
     public static final String JOB_MESSAGE = "message";
 
-    public static final String ACTIONS = "actions";
-    public static final String RESULT = "result";
-
+    public static final String STATUS_ADDED = "added";
+    public static final String STATUS_SCHEDULED = "scheduled";
+    public static final String STATUS_EXECUTING = "executing";
     public static final String STATUS_SUCCESSFUL = "successful";
-    public static final String STATUS_RUNNING = "executing";
-    public static final String STATUS_WAITING = "waiting";
-    public static final String STATUS_POOLED = "pooled";
     public static final String STATUS_FAILED = "failed";
-    public static final String STATUS_ABORTED = "aborted";
-    public static final String STATUS_INTERRUPTED = "interrupted";
 
     public static JobDetail createJahiaJob(String desc, Class<? extends BackgroundJob> jobClass) {
         // jobdetail is non-volatile,durable,non-recoverable
@@ -99,7 +81,8 @@ public abstract class BackgroundJob implements StatefulJob {
                 false);
         jobDetail.setDescription(desc);
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(JOB_CREATED, new Date()); //creation
+        jobDataMap.put(JOB_CREATED, new Date()); // creation date
+        jobDataMap.put(JOB_STATUS, STATUS_ADDED); // status "added"
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getUserKey());
         jobDataMap.put(JOB_CURRENT_LOCALE, sessionFactory.getCurrentLocale() != null ? sessionFactory
@@ -114,83 +97,41 @@ public abstract class BackgroundJob implements StatefulJob {
         return name.substring(name.lastIndexOf('.') + 1);
     }
 
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
-        // First some sanity checks, mostly because we could be executing jobs before Jahia has finished initializing
-        if (ServicesRegistry.getInstance() == null) {
-            return;
-        }
-        if (ServicesRegistry.getInstance().getJahiaUserManagerService() == null) {
-            return;
-        }
-
-        JobDetail jobDetail = jobExecutionContext.getJobDetail();
+    public void execute(JobExecutionContext ctx) throws JobExecutionException {
+        JobDetail jobDetail = ctx.getJobDetail();
         JobDataMap data = jobDetail.getJobDataMap();
-        long now = System.currentTimeMillis();
-        logger.info("Background job " + jobDetail.getName() + " (of type " + jobDetail.getGroup() + ") started @ " + new Date(now));
-        String status = STATUS_FAILED;
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {
-            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY));
-            sessionFactory.setCurrentUser(user);
-            sessionFactory.setCurrentLocale(LanguageCodeConverters.languageCodeToLocale((String) data.get(JOB_CURRENT_LOCALE)));
-
-            executeJahiaJob(jobExecutionContext);
-
-            status = data.getString(BackgroundJob.JOB_STATUS);
-            if (!(BackgroundJob.STATUS_ABORTED.equals(status) ||
-                    BackgroundJob.STATUS_FAILED.equals(status) ||
-                    BackgroundJob.STATUS_INTERRUPTED.equals(status))) {
-                status = STATUS_SUCCESSFUL;
-            }
+        	String userKey = data.getString(JOB_USERKEY);
+        	if (userKey!= null) {
+	            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY));
+	            if (user != null) {
+	            	sessionFactory.setCurrentUser(user);
+	            	logger.debug("Executing job as user {}", userKey);
+	            } else {
+	            	logger.warn("Unable to lookup job user for key {}", userKey);
+	            }
+        	}
+        	String langKey = data.getString(JOB_CURRENT_LOCALE);
+        	if (langKey != null) {
+        		sessionFactory.setCurrentLocale(LanguageCodeConverters.languageCodeToLocale(langKey));
+            	logger.debug("Executing job with locale {}", langKey);
+        	}
+        	
+        	// do execute job
+            executeJahiaJob(ctx);
+            
         } catch (Exception e) {
-            logger.error("Cannot execute job " + (jobDetail != null ? jobDetail.getKey().toString() : "n/a"), e);
-            data.put(JOB_MESSAGE, e.toString());
+            logger.error("Error executing job " + jobDetail.getKey(), e);
             throw new JobExecutionException(e);
         } finally {
-
-            ServicesRegistry.getInstance().getCacheService().syncClusterNow();
-
-            data.putAsString(JOB_END, System.currentTimeMillis());
-            // job begin is set by trigger listener in SchedulerService
-            int duration = (int) ((Long.parseLong((String) data.get(JOB_END)) - Long.parseLong((String) data.get(JOB_BEGIN))) / 1000);
-            data.putAsString(JOB_DURATION, duration);//duration
-
-            logger.info("Background job " + jobDetail.getName() + " (of type " + jobDetail.getGroup() + ") ended with status " + status + " in " + duration + "s");
-
-            Date nextFireTime = jobExecutionContext.getNextFireTime();
             try {
-                // Look for other triggers for next fire time
-                Trigger[] trigs = jobExecutionContext.getScheduler().getTriggersOfJob(jobDetail.getName(), jobDetail.getGroup());
-                for (int i = 0; i < trigs.length; i++) {
-                    Trigger trig = trigs[i];
-                    Date thisTriggerNextFireTime = trig.getNextFireTime();
-                    if (thisTriggerNextFireTime != null && (nextFireTime == null || thisTriggerNextFireTime.before(nextFireTime))) {
-                        nextFireTime = thisTriggerNextFireTime;
-                    }
-                }
-            } catch (SchedulerException e) {
-                logger.error("Cannot get triggers for job " + (jobDetail != null ? jobDetail.getKey().toString() : "n/a"), e);
+            	this.postExecution(ctx);
+            } finally {
+	            sessionFactory.setCurrentUser(null);
+	            sessionFactory.setCurrentLocale(null);
+	            sessionFactory.closeAllSessions();
             }
-
-            if (status == STATUS_FAILED) {
-                try {
-                    boolean ramScheduler = this instanceof RamJob;
-                    ServicesRegistry.getInstance().getSchedulerService().unscheduleJob(jobDetail, ramScheduler);
-                } catch (JahiaException e) {
-                    logger.error("Cannot unschedule job " + (jobDetail != null ? jobDetail.getKey().toString() : "n/a"), e);
-                }
-            } else {
-                if (nextFireTime != null) {
-                    status = STATUS_POOLED;
-                    data.putAsString(JOB_SCHEDULED, nextFireTime.getTime());
-                }
-            }
-            data.put(JOB_STATUS, status);
-            this.postExecution(jobExecutionContext);
-            sessionFactory.setCurrentUser(null);
-            sessionFactory.setCurrentLocale(null);
-            sessionFactory.closeAllSessions();
         }
     }
 
@@ -198,12 +139,11 @@ public abstract class BackgroundJob implements StatefulJob {
             throws Exception;
 
     /**
-     * Sub class can perform specific post execution task hehe
+     * Sub class can perform specific post execution task
      *
      * @param jobExecutionContext
      */
     protected void postExecution(JobExecutionContext jobExecutionContext) {
         // by default do nothing
     }
-
 }

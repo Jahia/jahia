@@ -14,18 +14,18 @@ public class JobListWindow extends Window {
 
     private final Linker linker;
 
-    public JobListWindow(Linker linker) {
+    public JobListWindow(Linker linker, boolean adminMode) {
         super();
         this.linker = linker;
         setLayout(new FitLayout());
-        init();
+        init(adminMode);
     }
 
-    private void init() {
+    private void init(boolean adminMode) {
         setHeading(Messages.get("label.jobList", "Background Job List"));
         setLayout(new FitLayout());
         setSize(800, 600);
 
-        add(new JobListPanel());
+        add(new JobListPanel(adminMode));
     }
 }

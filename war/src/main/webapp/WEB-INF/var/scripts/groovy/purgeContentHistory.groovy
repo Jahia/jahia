@@ -6,7 +6,6 @@ import org.jahia.services.history.ContentHistoryService;
  * User: loom
  * Date: Oct 8, 2010
  * Time: 10:01:53 AM
- * To change this template use File | Settings | File Templates.
  */
 
 if (SpringContextSingleton.getInstance() != null) {

@@ -32,6 +32,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,14 +56,17 @@ public class JobListPanel extends LayoutContainer {
     private Button deleteButton;
     private PagingToolBar pagingToolBar;
     private static final String STATUS_EXECUTING = "executing";
-    public static final String STATUS_WAITING = "waiting";
-    public static final String STATUS_POOLED = "pooled";
+    public static final String STATUS_ADDED = "added";
+    public static final String STATUS_SCHEDULED = "scheduled";
     private int autoRefreshInterval = 10;
     private boolean autoRefreshActivated = false;
     private List<String> activeGroupNames = null;
 
-    public JobListPanel() {
+	private boolean adminMode;
+
+    public JobListPanel(boolean adminMode) {
         super(new BorderLayout());
+        this.adminMode = adminMode;
         init();
     }
 
@@ -135,20 +139,25 @@ public class JobListPanel extends LayoutContainer {
         column.setRenderer(new GridCellRenderer<GWTJahiaJobDetail>() {
             public Object render(GWTJahiaJobDetail jobDetail, String property, ColumnData config, int rowIndex,
                                  int colIndex, ListStore<GWTJahiaJobDetail> store, Grid<GWTJahiaJobDetail> grid) {
-                Integer duration = jobDetail.getDurationInSeconds();
+                Long duration = jobDetail.getDuration();
                 String display = "-";
                 if (duration != null) {
-                    int time = duration.intValue();
-                    if (time < 60) {
-                        display = time + " " + Messages.get("label.seconds.short", "sec");
-                    } else if (time < 60 * 60) {
-                        display = ((int) (time / (60))) + " " + Messages.get("label.minutes.short", "min") + " "
-                                + ((int) ((time % (60)))) + " " + Messages.get("label.seconds.short", "sec");
-                    } else {
-                        display = ((int) (time / (60 * 60))) + " " + Messages.get("label.hours.short", "h") + " "
-                                + ((int) ((time % (60 * 60)) / (60))) + " "
-                                + Messages.get("label.minutes.short", "min");
-                    }
+					if (duration < 1000) {
+						display = duration + " " + Messages.get("label.milliseconds.short", "ms");
+					} else if (duration < 60 * 1000L) {
+						display = ((int) (duration / 1000L)) + " "
+						        + Messages.get("label.seconds.short", "sec");
+					} else if (duration < 60 * 60 * 1000L) {
+						display = ((int) (duration / (60 * 1000L))) + " "
+						        + Messages.get("label.minutes.short", "min") + " "
+						        + (((int) (duration / 1000L)) % 60) + " "
+						        + Messages.get("label.seconds.short", "sec");
+					} else {
+						display = ((int) (duration / (60 * 60 * 1000L))) + " "
+						        + Messages.get("label.hours.short", "h") + " "
+						        + (((int) (duration / 60 * 1000L)) % 60) + " "
+						        + Messages.get("label.minutes.short", "min");
+					}
                 }
                 if (STATUS_EXECUTING.equals(jobDetail.getStatus())) {
                     return new Label(Messages.get("label.executingSince", "Executing since ") + display + "...");
@@ -221,34 +230,22 @@ public class JobListPanel extends LayoutContainer {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaJobDetail> gwtJahiaJobDetailSelectionChangedEvent) {
                 selectedItems = gwtJahiaJobDetailSelectionChangedEvent.getSelection();
-                for (GWTJahiaJobDetail jobDetail : selectedItems) {
-                    if (STATUS_EXECUTING.equals(jobDetail.getStatus()) ||
-                            STATUS_POOLED.equals(jobDetail.getStatus())) {
-                        deleteButton.disable();
-                        break;
-                    } else {
-                        deleteButton.enable();
-                    }
+                if (adminMode) {
+	                for (GWTJahiaJobDetail jobDetail : selectedItems) {
+	                    if (STATUS_EXECUTING.equals(jobDetail.getStatus()) ||
+	                            STATUS_SCHEDULED.equals(jobDetail.getStatus())) {
+	                        deleteButton.disable();
+	                        break;
+	                    } else {
+	                        deleteButton.enable();
+	                    }
+	                }
                 }
                 updateDetails();
             }
         });
 
         ToolBar topToolBar = new ToolBar();
-        deleteButton = new Button();
-        deleteButton.setText(Messages.get("label.delete", "Delete"));
-        deleteButton.disable();
-        deleteButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                showDeleteConfirmation();
-            }
-        });
-        topToolBar.add(deleteButton);
-
-        topToolBar.add(new SeparatorToolItem());
-
         Button filterButton = new Button(Messages.get("label.typeFilter", "Type filter"));
         final Menu filterMenu = new Menu();
         service.getAllJobGroupNames(new BaseAsyncCallback<List<String>>() {
@@ -335,6 +332,29 @@ public class JobListPanel extends LayoutContainer {
         Label secondsLabel = new Label(" " + Messages.get("label.seconds", "seconds"));
         topToolBar.add(secondsLabel);
 
+        if (adminMode) {
+	        topToolBar.add(new SeparatorToolItem());
+			deleteButton = new Button(Messages.get("label.delete", "Delete"),
+			        StandardIconsProvider.STANDARD_ICONS.delete(),
+			        new SelectionListener<ButtonEvent>() {
+				        @Override
+				        public void componentSelected(ButtonEvent ce) {
+					        showDeleteConfirmation(false);
+				        }
+			        });
+	        deleteButton.disable();
+	        topToolBar.add(deleteButton);
+
+			topToolBar.add(new Button(Messages.get("label.deleteCompletedJobs",
+			        "Delete all completed"), StandardIconsProvider.STANDARD_ICONS.delete(),
+			        new SelectionListener<ButtonEvent>() {
+				        @Override
+				        public void componentSelected(ButtonEvent ce) {
+					        showDeleteConfirmation(true);
+				        }
+			        }));
+        }
+
         ContentPanel listPanel = new ContentPanel();
         listPanel.setFrame(true);
         listPanel.setCollapsible(false);
@@ -393,29 +413,44 @@ public class JobListPanel extends LayoutContainer {
         }
     }
 
-    public void showDeleteConfirmation() {
+    protected void showDeleteConfirmation(final boolean deleteAllCompleted) {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
         final Dialog dialog = new Dialog();
         dialog.setHeading(Messages.get("label.delete", "Delete"));
         dialog.setButtons(Dialog.YESNO);
-        dialog.addText(Messages.get("label.delete.confirm", "Do you really want to delete the current selection ?"));
+        dialog.addText(deleteAllCompleted ? Messages.get("label.deleteCompletedJobs.confirm", "Do you really want to delete all completed jobs?") : Messages.get("label.delete.confirm", "Do you really want to delete the current selection?"));
         dialog.setHideOnButtonClick(true);
         dialog.addListener(Events.Hide, new Listener<WindowEvent>() {
             public void handleEvent(WindowEvent be) {
                 if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
-                    for (GWTJahiaJobDetail jobDetail : selectedItems) {
-                        service.deleteJob(jobDetail.getName(), jobDetail.getGroup(), new BaseAsyncCallback<Boolean>() {
-
+                	if (deleteAllCompleted) {
+                        service.deleteAllCompletedJobs(new BaseAsyncCallback<Integer>() {
                             public void onApplicationFailure(Throwable caught) {
                                 com.google.gwt.user.client.Window.alert(Messages.get("fm_fail") + "\n" + caught.getLocalizedMessage());
                                 Log.error(Messages.get("fm_fail"), caught);
                             }
-
-                            public void onSuccess(Boolean result) {
-                                pagingToolBar.refresh();
+                            public void onSuccess(Integer result) {
+                            	MessageBox.info(Messages.get("label.delete", "Delete"), Messages.getWithArgs("label.deleteCompletedJobs.success", "Deleted {0} completed jobs", new Object[] {result}), null);
+                            	if (result != null && result > 0) {
+                                    pagingToolBar.refresh();
+                            	}
                             }
                         });
-                    }
+                	} else {
+	                    for (GWTJahiaJobDetail jobDetail : selectedItems) {
+	                        service.deleteJob(jobDetail.getName(), jobDetail.getGroup(), new BaseAsyncCallback<Boolean>() {
+	
+	                            public void onApplicationFailure(Throwable caught) {
+	                                com.google.gwt.user.client.Window.alert(Messages.get("fm_fail") + "\n" + caught.getLocalizedMessage());
+	                                Log.error(Messages.get("fm_fail"), caught);
+	                            }
+	
+	                            public void onSuccess(Boolean result) {
+	                                pagingToolBar.refresh();
+	                            }
+	                        });
+	                    }
+                	}
                 }
             }
         });
@@ -500,7 +535,7 @@ public class JobListPanel extends LayoutContainer {
             addDetail("label.message", "Message", jobDetail.getMessage());
             addTimeDetail("label.beginTime", "Start time", jobDetail.getBeginTime());
             addTimeDetail("label.endTime", "End time", jobDetail.getEndTime());
-            addDetail("label.duration", "Duration", jobDetail.getDurationInSeconds());
+            addDetail("label.duration", "Duration", jobDetail.getDuration());
             addDetail("label.locale", "Locale code", jobDetail.getLocale());
             addDetail("label.targetNodeIdentifier", "Target node identifier", jobDetail.getTargetNodeIdentifier());
             addDetail("label.targetAction", "Target action", jobDetail.getTargetAction());

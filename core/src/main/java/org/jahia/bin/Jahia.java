@@ -54,7 +54,6 @@ import org.apache.commons.io.IOUtils;
 import org.jahia.params.*;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -333,35 +332,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 }
             }
 	}
-
-	public void destroy() {
-
-        logger.info("Shutdown requested");
-
-        try {
-            // first we shutdown the scheduler, because it might be running lots of
-            // jobs.
-            ServicesRegistry.getInstance().getSchedulerService().stop();
-        } catch (Exception je) {
-            logger.debug("Error while stopping job scheduler", je);
-            if (!logger.isDebugEnabled()) {
-                logger.info("Unable to stop job scheduler");
-            }
-        }
-        try {
-            ServicesRegistry.getInstance().shutdown();
-        } catch (Exception je) {
-            logger.debug("Error while shutting down services", je);
-            if (!logger.isDebugEnabled()) {
-                logger.info("Unable to shut down services");
-            }
-        }
-        super.destroy();
-
-        logger.info("...done shutting down");
-
-    }
-
 
     /*
      * Default service inherited from HttpServlet.

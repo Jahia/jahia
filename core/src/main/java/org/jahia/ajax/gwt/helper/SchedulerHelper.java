@@ -1,9 +1,9 @@
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.content.rules.ActionJob;
 import org.jahia.services.content.rules.RuleJob;
@@ -20,18 +20,20 @@ import org.quartz.SchedulerException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Sep 17, 2010
  * Time: 2:04:17 PM
  * 
  */
 public class SchedulerHelper {
+	
+	private static final Comparator<GWTJahiaJobDetail> JOB_COMPARATOR = new Comparator<GWTJahiaJobDetail>() {
+        public int compare(GWTJahiaJobDetail o1, GWTJahiaJobDetail o2) {
+            return -o1.compareTo(o2);
+        }
+    };
+    
     private SchedulerService scheduler;
-
-    public SchedulerService getScheduler() {
-        return scheduler;
-    }
 
     public void setScheduler(SchedulerService scheduler) {
         this.scheduler = scheduler;
@@ -44,20 +46,13 @@ public class SchedulerHelper {
         return Long.parseLong(jobDataMap.getString(key));
     }
 
-    private Integer getInteger(JobDataMap jobDataMap, String key) {
-        if (jobDataMap.get(key) == null) {
-            return null;
-        }
-        return Integer.parseInt(jobDataMap.getString(key));
-    }
-
     private List<GWTJahiaJobDetail> convertToGWTJobs(List<JobDetail> jobDetails, Locale locale, JahiaUser jahiaUser) {
         List<GWTJahiaJobDetail> jobs = new ArrayList<GWTJahiaJobDetail>();
         for (JobDetail jobDetail : jobDetails) {
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
             Date created = (Date) jobDataMap.get(BackgroundJob.JOB_CREATED);
             final String status = jobDataMap.getString(BackgroundJob.JOB_STATUS);
-            final String user = jobDataMap.getString(BackgroundJob.JOB_USERKEY);
+            final String user = StringUtils.substringAfter(jobDataMap.getString(BackgroundJob.JOB_USERKEY), "}");
             final String message = jobDataMap.getString(BackgroundJob.JOB_MESSAGE);
             final Long beginTime = getLong(jobDataMap, BackgroundJob.JOB_BEGIN);
             final Long endTime = getLong(jobDataMap, BackgroundJob.JOB_END);
@@ -65,29 +60,29 @@ public class SchedulerHelper {
                 // this can happen for cron scheduler jobs.
                 created = new Date(beginTime);
             }
-            Integer durationInSeconds = getInteger(jobDataMap, BackgroundJob.JOB_DURATION);
-            if ((durationInSeconds == null) && (beginTime != null) && (endTime == null) && BackgroundJob.STATUS_RUNNING.equals(status)) {
+            Long duration = getLong(jobDataMap, BackgroundJob.JOB_DURATION);
+            if ((duration == null) && (beginTime != null) && (endTime == null) && BackgroundJob.STATUS_EXECUTING.equals(status)) {
                 // here we have a currently running job, let's calculate the duration until now.
-                long timeUntilNow = System.currentTimeMillis() - beginTime.longValue();
-                durationInSeconds = (int) (timeUntilNow / 1000);
+                duration = System.currentTimeMillis() - beginTime.longValue();
             }
             final String jobLocale = jobDataMap.getString(BackgroundJob.JOB_CURRENT_LOCALE);
             String targetNodeIdentifier = null;
             String targetAction = null;
             String targetWorkspace = null;
 
-            if ((jahiaUser != null) && (!jahiaUser.getUserKey().equals(user))) {
+//            if ((jahiaUser != null) && (!jahiaUser.getUserKey().equals(user))) {
                 // we must check whether the user has the permission to view other users's jobs
 //                if (!jahiaUser.isPermitted(new PermissionIdentity("view-all-jobs"))) {
 //                    // he doesn't we skip this entry.
 //                    continue;
 //                }
-            }
+//            }
 
             String description = jobDetail.getDescription();
             final List<String> targetPaths = new ArrayList<String>();
             String fileName = jobDataMap.getString(ImportJob.FILENAME);
             if (BackgroundJob.getGroupName(PublicationJob.class).equals(jobDetail.getGroup())) {
+                @SuppressWarnings("unchecked")
                 List<GWTJahiaNodeProperty> publicationInfos = (List<GWTJahiaNodeProperty>) jobDataMap.get(PublicationJob.PUBLICATION_PROPERTIES);
                 if (publicationInfos != null && publicationInfos.size() > 0) {
                     description += " " + publicationInfos.get(0).getValues();
@@ -115,14 +110,13 @@ public class SchedulerHelper {
                 targetWorkspace = workspace;
             } else if (BackgroundJob.getGroupName(TextExtractorJob.class).equals(jobDetail.getGroup())) {
                 String path = jobDataMap.getString(TextExtractorJob.JOB_PATH);
-                String provider = jobDataMap.getString(TextExtractorJob.JOB_PROVIDER);
                 String extractNodePath = jobDataMap.getString(TextExtractorJob.JOB_EXTRACTNODE_PATH);
                 targetPaths.add(path);
                 targetPaths.add(extractNodePath);
             }
             GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), created, user, description,
                     status, message, targetPaths,
-                    jobDetail.getGroup(), jobDetail.getJobClass().getName(), beginTime, endTime, durationInSeconds, jobLocale, fileName, targetNodeIdentifier, targetAction, targetWorkspace);
+                    jobDetail.getGroup(), jobDetail.getJobClass().getName(), beginTime, endTime, duration, jobLocale, fileName, targetNodeIdentifier, targetAction, targetWorkspace);
             job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + jobDetail.getGroup() + ".task", locale));
             jobs.add(job);
         }
@@ -131,9 +125,9 @@ public class SchedulerHelper {
 
     public List<GWTJahiaJobDetail> getActiveJobs(Locale locale) throws GWTJahiaServiceException {
         try {
-            List<JobDetail> l = scheduler.getAllActiveJobsDetails();
+            List<JobDetail> l = scheduler.getAllActiveJobs();
             return convertToGWTJobs(l, locale, null);
-        } catch (JahiaException e) {
+        } catch (Exception e) {
             throw new GWTJahiaServiceException("Error retrieving active jobs", e);
         }
     }
@@ -142,22 +136,18 @@ public class SchedulerHelper {
         try {
             List<JobDetail> jobDetails = null;
             if (groupNames == null) {
-                jobDetails = scheduler.getAllJobsDetails();
+                jobDetails = scheduler.getAllJobs();
             } else {
                 jobDetails = new ArrayList<JobDetail>();
                 for (String groupName : groupNames) {
-                    jobDetails.addAll(scheduler.getAllJobsDetails(groupName));
+                    jobDetails.addAll(scheduler.getAllJobs(groupName));
                 }
             }
             List<GWTJahiaJobDetail> gwtJobList = convertToGWTJobs(jobDetails, locale, jahiaUser);
             // do an inverse sort.
-            Collections.sort(gwtJobList, new Comparator<GWTJahiaJobDetail>() {
-                public int compare(GWTJahiaJobDetail o1, GWTJahiaJobDetail o2) {
-                    return -o1.compareTo(o2);
-                }
-            });
+            Collections.sort(gwtJobList, JOB_COMPARATOR);
             return gwtJobList;
-        } catch (JahiaException e) {
+        } catch (Exception e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
 
@@ -165,8 +155,8 @@ public class SchedulerHelper {
 
     public Boolean deleteJob(String jobName, String groupName) throws GWTJahiaServiceException {
         try {
-            return scheduler.deleteJob(jobName, groupName);
-        } catch (JahiaException e) {
+            return scheduler.getScheduler().deleteJob(jobName, groupName);
+        } catch (SchedulerException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
@@ -174,6 +164,14 @@ public class SchedulerHelper {
     public List<String> getAllJobGroupNames() throws GWTJahiaServiceException {
         try {
             return Arrays.asList(scheduler.getScheduler().getJobGroupNames());
+        } catch (SchedulerException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+	public Integer deleteAllCompletedJobs() throws GWTJahiaServiceException {
+        try {
+            return scheduler.deleteAllCompletedJobs();
         } catch (SchedulerException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }

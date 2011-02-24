@@ -284,6 +284,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> async);
 
+    void deleteAllCompletedJobs(AsyncCallback<Integer> async);
+    
     void deleteJob(String jobName, String groupName, AsyncCallback<Boolean> async);
 
     void getAllJobGroupNames(AsyncCallback<List<String>> async);

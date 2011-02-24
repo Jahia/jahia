@@ -7,7 +7,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
@@ -16,11 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Aug 30, 2010
  * Time: 8:16:07 PM
- * 
  */
 public class WorkInProgressActionItem extends BaseActionItem {
 
@@ -30,6 +27,8 @@ public class WorkInProgressActionItem extends BaseActionItem {
     private List<GWTJahiaJobDetail> processes = new ArrayList<GWTJahiaJobDetail>();
 
     private transient Timer timer;
+    
+    private boolean adminMode = true;
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -114,7 +113,11 @@ public class WorkInProgressActionItem extends BaseActionItem {
     }
 
     public void onComponentSelection() {
-        new JobListWindow(linker).show();
+        new JobListWindow(linker, adminMode).show();
+    }
+
+	public void setAdminMode(boolean adminMode) {
+    	this.adminMode = adminMode;
     }
 
 }

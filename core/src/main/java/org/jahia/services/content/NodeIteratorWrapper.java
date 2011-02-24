@@ -41,7 +41,8 @@ public class NodeIteratorWrapper implements NodeIterator {
                         }
                     }
                     try {
-                        nextNode = provider.getNodeWrapper(n, session);
+                        nextNode = (n instanceof JCRNodeWrapper ? (JCRNodeWrapper) n : provider
+                                .getNodeWrapper(n, session));
                         break;
                     } catch (ItemNotFoundException e) {
                         // continue

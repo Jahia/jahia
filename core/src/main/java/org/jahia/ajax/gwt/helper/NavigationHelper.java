@@ -645,12 +645,14 @@ public class NavigationHelper {
                                            List<String> filtersToApply, List<String> fields)
             throws RepositoryException {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
+        Set<String> addedIds = new HashSet<String>();
         QueryResult qr = q.execute();
         NodeIterator ni = qr.getNodes();
         while (ni.hasNext()) {
             try {
                 JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
-                if (n.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                if (n.isNodeType(Constants.JAHIANT_TRANSLATION)
+                        || Constants.JCR_CONTENT.equals(n.getName())) {
                     n = n.getParent();
                 }
                 if (!n.isNodeType(Constants.NT_FROZENNODE) &&
@@ -665,7 +667,7 @@ public class NavigationHelper {
                     }
                     boolean matchFilter =
                             matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n, mimeTypesToMatch);
-                    if (matchFilter || hasNodes) {
+                    if ((matchFilter || hasNodes) && addedIds.add(n.getIdentifier())) {
                         GWTJahiaNode node = getGWTJahiaNode(n, fields);
                         node.setMatchFilters(matchFilter);
                         result.add(node);

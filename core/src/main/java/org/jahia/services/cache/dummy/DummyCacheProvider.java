@@ -39,38 +39,36 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.settings.SettingsBean;
 
 /**
- * Created by IntelliJ IDEA.
- * User: rincevent
- * Date: 27 août 2008
- * Time: 14:21:22
+ * Provider for the {@link DummyCacheImpl} that disables caching completely.
  * 
+ * @author rincevent
  */
 public class DummyCacheProvider implements CacheProvider {
     public void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     public void shutdown() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     public void enableClusterSync() throws JahiaInitializationException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     public void stopClusterSync() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     public void syncClusterNow() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     public boolean isClusterCache() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;  // do nothing
     }
 
     public CacheImplementation newCacheImplementation(String name) {
-        return new DummyCacheImpl(name);  //To change body of implemented methods use File | Settings | File Templates.
+        return new DummyCacheImpl(name);
     }
 }

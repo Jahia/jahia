@@ -49,13 +49,11 @@
  - alt (string) i18n indexed=no
 
 [jnt:video] > jnt:content, mix:title, jmix:multimediaContent
- - name (string)
  - source (weakreference, picker[type='file'])
- - width (long) = '0'
- - height (long) = '0'
- - autostart (boolean)
+ - width (long) = '300'
+ - height (long) = '200'
  - autoplay (boolean)
- - showcontrols (boolean)
+ - forceFlashPlayer (boolean)
 
 [jnt:flash] > jnt:content, mix:title, jmix:multimediaContent
  - flashSource (weakreference, picker[type='file'])

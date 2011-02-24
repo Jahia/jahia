@@ -8,23 +8,31 @@ Jahia Test Package
  First you need to modify your settings.xml file in order to point to your Jahia instance :
 
 --------------------
-<jahia.test.url>http://localhost:8080/jahia</jahia.test.url>
+<jahia.test.url>http://localhost:8080/jahia/cms</jahia.test.url>
 --------------------
 
  Then execute maven with the testJahia profile enabled :
 
 --------------------
- mvn -P testJahia install
+ mvn -P jahia-test install jahia:deploy
 --------------------
 
  If you want to execute a single test, you can use the test system parameter with the class name of the test to
  execute. For example :
 
 --------------------
- mvn -P testJahia -Dtest=org.jahia.services.content.ContentTest install
+ mvn -P jahia-test -Dtest=org.jahia.services.content.ContentTest jahia:test
 --------------------
 
- will execute one single test, ContentTest. 
+ will execute one single test, ContentTest.
+
+  If you want to execute all tests :
+
+--------------------
+ mvn -P jahia-test jahia:test
+--------------------
+
+ will execute one single test, ContentTest.
 
 * Jmeter test
 

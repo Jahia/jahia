@@ -50,7 +50,7 @@ public class AddCacheDependencyTag extends TagSupport {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddCacheDependencyTag.class);
     protected JCRNodeWrapper node;
     protected String stringDependency;
-
+    protected String flushOnPathMatchingRegexp;
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
     }
@@ -61,6 +61,10 @@ public class AddCacheDependencyTag extends TagSupport {
 
     public void setPath(String path) {
         this.stringDependency = path;
+    }
+
+    public void setFlushOnPathMatchingRegexp(String flushOnPathMatchingRegexp) {
+        this.flushOnPathMatchingRegexp = flushOnPathMatchingRegexp;
     }
 
     /**
@@ -77,6 +81,8 @@ public class AddCacheDependencyTag extends TagSupport {
             resource.getDependencies().add(node.getPath());
         } else if (stringDependency != null) {
             resource.getDependencies().add(stringDependency);
+        } else if(flushOnPathMatchingRegexp != null) {
+            resource.getRegexpDependencies().add(flushOnPathMatchingRegexp);
         }
         node = null;
         return super.doEndTag();    //To change body of overridden methods use File | Settings | File Templates.

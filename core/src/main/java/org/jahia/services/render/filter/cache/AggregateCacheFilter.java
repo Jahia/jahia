@@ -38,7 +38,6 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.CacheEntry;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -61,7 +60,6 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.*;
@@ -272,7 +270,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 final Cache dependenciesCache = cacheProvider.getDependenciesCache();
                 Set<String> depNodeWrappers = resource.getDependencies();
                 for (String path : depNodeWrappers) {
-
                     Element element1 = dependenciesCache.get(path);
                     Set<String> dependencies;
                     if (element1 != null) {
@@ -283,6 +280,22 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     dependencies.add(perUserKey);
                     dependenciesCache.put(new Element(path, dependencies));
                 }
+                resource.getDependencies().clear();
+                final Cache regexpDependenciesCache = cacheProvider.getRegexpDependenciesCache();
+                Set<String> regexpDepNodeWrappers = resource.getRegexpDependencies();
+                for (String regexp : regexpDepNodeWrappers) {
+                    Element element1 = regexpDependenciesCache.get(regexp);
+                    Set<String> dependencies;
+                    if (element1 != null) {
+                        dependencies = (Set<String>) element1.getValue();
+                    } else {
+                        dependencies = new LinkedHashSet<String>();
+                    }
+                    dependencies.add(perUserKey);
+                    regexpDependenciesCache.put(new Element(regexp, dependencies));
+                }
+                resource.getRegexpDependencies().clear();
+
                 // append cache:include tag
                 String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll(
                         "</esi:include>");

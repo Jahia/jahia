@@ -68,6 +68,7 @@ public class Resource {
     private ExtendedNodeType resourceNodeType;
     private Map<String, Object> moduleParams = new HashMap<String, Object>();
     private HashMap<String,Map<String,String>> formInputs;
+    private Set<String> regexpDependencies;
 
     /**
      * Creates a resource from the specified parameter
@@ -84,7 +85,7 @@ public class Resource {
         this.contextConfiguration = contextConfiguration;
         dependencies = new LinkedHashSet<String>();
         dependencies.add(node.getPath());
-
+        regexpDependencies = new LinkedHashSet<String>();
         missingResources = new ArrayList<String>();
         wrappers = new Stack<String>();
         options = new ArrayList<Option>();
@@ -172,6 +173,10 @@ public class Resource {
 
     public Set<String> getDependencies() {
         return dependencies;
+    }
+
+    public Set<String> getRegexpDependencies() {
+        return regexpDependencies;
     }
 
     public List<String> getMissingResources() {

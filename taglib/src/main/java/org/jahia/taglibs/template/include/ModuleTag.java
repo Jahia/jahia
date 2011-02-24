@@ -260,10 +260,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         }
 
                         render(renderContext, resource);
-
+                        //Copy dependencies to parent Resource
+                        currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
+                        currentResource.getDependencies().addAll(resource.getDependencies());
                         printModuleEnd();
                     } else {
                         render(renderContext, resource);
+                        //Copy dependencies to parent Resource
+                        currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
+                        currentResource.getDependencies().addAll(resource.getDependencies());
                     }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);

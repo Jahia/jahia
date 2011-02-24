@@ -477,22 +477,29 @@
         <tag-class>org.jahia.taglibs.template.include.AddCacheDependencyTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <description>Node to be addes as a dependency</description>
+            <description>Node to be added as a dependency</description>
             <name>node</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>org.jahia.services.content.JCRNodeWrapper</type>
         </attribute>
         <attribute>
-            <description>Node to be addes as a dependency</description>
+            <description>Node to be added as a dependency</description>
             <name>path</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>Node to be addes as a dependency</description>
+            <description>Node to be added as a dependency</description>
             <name>uuid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Regexp matching path that should flush this component</description>
+            <name>flushOnPathMatchingRegexp</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>

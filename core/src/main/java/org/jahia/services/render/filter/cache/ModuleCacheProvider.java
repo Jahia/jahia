@@ -54,9 +54,11 @@ public class ModuleCacheProvider implements InitializingBean {
 
     private static final String CACHE_NAME = "HTMLCache";
     private static final String DEPS_CACHE_NAME = "HTMLDependenciesCache";
+    private static final String REGEXPDEPS_CACHE_NAME = "HTMLREGEXPDependenciesCache";
 
     private static Logger logger = LoggerFactory.getLogger(ModuleCacheProvider.class);
-    
+    private Cache regexpDependenciesCache;
+
     /**
      * Returns an instance of this class
      * 
@@ -92,9 +94,13 @@ public class ModuleCacheProvider implements InitializingBean {
         if (!cacheManager.cacheExists(DEPS_CACHE_NAME)) {
             cacheManager.addCache(DEPS_CACHE_NAME);
         }
+        if (!cacheManager.cacheExists(REGEXPDEPS_CACHE_NAME)) {
+            cacheManager.addCache(REGEXPDEPS_CACHE_NAME);
+        }
         blockingCache = cacheManager.getCache(CACHE_NAME);
 //        blockingCache.setTimeoutMillis(blockingTimeout);
         dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
+        regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
     }
 
     /**
@@ -106,6 +112,10 @@ public class ModuleCacheProvider implements InitializingBean {
     @SuppressWarnings("unchecked")
     public void invalidate(String nodePath) {
         Set<String> deps = (Set<String>) dependenciesCache.get(nodePath).getValue();
+        invalidateDependencies(deps);
+    }
+
+    private void invalidateDependencies(Set<String> deps) {
         for (String dep : deps) {
             boolean removed = blockingCache.remove(dep);
             if(logger.isDebugEnabled() && ! removed) {
@@ -158,5 +168,16 @@ public class ModuleCacheProvider implements InitializingBean {
         blockingCache.flush();
         dependenciesCache.removeAll();
         dependenciesCache.flush();
+        regexpDependenciesCache.removeAll();
+        regexpDependenciesCache.flush();
+    }
+
+    public Cache getRegexpDependenciesCache() {
+        return regexpDependenciesCache;
+    }
+
+    public void invalidateRegexp(String key) {
+        Set<String> deps = (Set<String>) regexpDependenciesCache.get(key).getValue();
+        invalidateDependencies(deps);
     }
 }

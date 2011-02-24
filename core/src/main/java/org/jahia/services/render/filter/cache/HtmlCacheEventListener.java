@@ -44,6 +44,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -81,6 +82,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
      */
     public void onEvent(EventIterator events) {
         final Cache depCache = cacheProvider.getDependenciesCache();
+        final Cache regexpDepCache = cacheProvider.getRegexpDependenciesCache();
         final Set<String> flushed = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
@@ -120,6 +122,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                     } catch (PathNotFoundException e) {
                         //
                     }
+                    flushRegexpDependenciesOfPath(regexpDepCache,path);
                     flushSharedNode(depCache, flushed, path);
                     if (flushParent) {
                         path = StringUtils.substringBeforeLast(path, "/");
@@ -129,6 +132,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                         } catch (PathNotFoundException e) {
                             //
                         }
+                        flushRegexpDependenciesOfPath(regexpDepCache,path);
                         flushSharedNode(depCache, flushed, path);
                     }
                 }
@@ -179,6 +183,19 @@ public class HtmlCacheEventListener extends DefaultEventListener {
             cacheProvider.invalidate(path);
             depCache.remove(element.getKey());
         }
+    }
+
+    private void flushRegexpDependenciesOfPath(Cache depCache, String path) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Flushing dependencies for path : " + path);
+        }
+        List<String> keys = depCache.getKeys();
+        for (String key : keys) {
+            if(path.matches(key)) {
+                cacheProvider.invalidateRegexp(key);
+            }
+        }
+
     }
 
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {

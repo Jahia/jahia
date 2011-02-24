@@ -541,7 +541,7 @@ extends = jnt:content
 
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
  orderable
- - jcr:title (string) i18n mandatory
+ - jcr:title (string) i18n mandatory boost=2.0
  - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
  + * (nt:base) = nt:base version
  + * (jmix:navMenuItem)

@@ -105,7 +105,7 @@
  */
 [mix:title]
   mixin
-  - jcr:title (STRING) i18n
+  - jcr:title (STRING) i18n boost=2.0
 /** Moved to jmix:description
   - jcr:description (STRING,textarea) i18n itemtype = metadata
   */

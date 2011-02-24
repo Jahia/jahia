@@ -23,9 +23,6 @@
 	<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 	<jcr:nodeProperty name="autoSuggest" node="${currentNode}" var="autoSuggest"/>
 	<div id="${currentNode.UUID}">
-	<c:if test="${not empty title.string}">
-		<h3>${fn:escapeXml(title.string)}</h3>
-	</c:if>
 	<div class="resultsList">
         <c:if test="${moduleMap.begin == 0 && autoSuggest.boolean}">
         	<%-- spelling auto suggestions are enabled --%>
@@ -53,7 +50,8 @@
         	</c:if>
         </c:if>
 		<c:if test="${count > 0}">
-	    	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
+            <c:set var="termKey" value="src_terms[0].term"/>
+	    	<h3><fmt:message key="search.results.found"><fmt:param value="${fn:escapeXml(param[termKey])}"/><fmt:param value="${count}"/></fmt:message></h3>
             <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
             <c:set var="beginName" value="begin_${currentNode.identifier}"/>
             <c:set var="endName" value="end_${currentNode.identifier}"/>

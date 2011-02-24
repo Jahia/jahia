@@ -107,6 +107,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private JahiaFileWatcherService fileWatcherService;
     private JCRStoreService jcrStoreService;
     private CategoryService categoryService;
+
+	private long observerInterval = 10000;
     private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
 
     public static ImportExportBaseService getInstance() {
@@ -125,7 +127,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void start() {
         try {
-            new ImportFileObserver(org.jahia.settings.SettingsBean.getInstance().getJahiaImportsDiskPath(), false, 10000, true);
+            new ImportFileObserver(org.jahia.settings.SettingsBean.getInstance().getJahiaImportsDiskPath(), false, observerInterval , true);
         } catch (JahiaException je) {
             logger.error("exception with FilesObserver", je);
         }
@@ -1095,5 +1097,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         public Enumeration keys() {
             return keys.elements();
         }
+    }
+
+	private void setObserverInterval(long observerInterval) {
+    	this.observerInterval = observerInterval;
     }
 }

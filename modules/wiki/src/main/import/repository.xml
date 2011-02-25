@@ -22,8 +22,18 @@
                         <row-col1 jcr:primaryType="jnt:contentList">
                             <lists jcr:primaryType="jnt:tabularList">
                                 <welcome jcr:primaryType="jnt:contentList">
-                                    <welcome j:allowedTypes="" jcr:primaryType="jnt:area" />
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Welcome" />
+                                    <welcome j:allowedTypes="" jcr:primaryType="jnt:area">
+                                        <contentRetrieval j:classname="hilightList" j:criteria="jcr:created" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:wikiPage" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentRetrieval" maxItems="20">
+                                            <j:translation_en j:noResultsMessage="No Page Yet" jcr:language="en" jcr:primaryType="jnt:translation"/>
+                                        </contentRetrieval>
+                                    </welcome>
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Welcome"/>
+                                    <pages j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                        <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Pages"/>
+                                        <contentRetrieval j:classname="hilightList" j:criteria="jcr:lastModified" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:wikiPage" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentRetrieval" maxItems="30">
+                                            <j:translation_en j:noResultsMessage="no wiki pages created yet" jcr:language="en" jcr:primaryType="jnt:translation"/>
+                                        </contentRetrieval>
+                                    </pages>
                                 </welcome>
                                 <create-new-page j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                                     <new-article j:requireLoggedUser="false" j:requiredMode="live" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:wikiPageFormCreation">
@@ -31,28 +41,21 @@
                                     </new-article>
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Create New Article" />
                                 </create-new-page>
-                                <latest-articles j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style jmix:cache" jcr:primaryType="jnt:contentList" j:expiration="900" j:perUser="false">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Latest Articles" />
-                                    <contentRetrieval j:classname="hilightList" j:criteria="jcr:created" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:wikiPage" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentRetrieval" maxItems="20">
-                                        <j:translation_en j:noResultsMessage="No Page Yet" jcr:language="en" jcr:primaryType="jnt:translation" />
-                                    </contentRetrieval>
-                                </latest-articles>
                             </lists>
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList">
-                            <jahiapp-wiki-logo.png j:node="/templateSets/wiki/templates/base/wiki-content/row-col2/jahiapp-wiki-logo.png" jcr:primaryType="jnt:contentReference" />
                             <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki search" />
                                 <simpleSearchForm jcr:primaryType="jnt:simpleSearchForm" result="/templateSets/wiki/search-result">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />
                                 </simpleSearchForm>
                             </wiki-search>
-                            <wiki-syntax j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki syntax" />
-                                <bigText jcr:primaryType="jnt:bigText">
-                                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;ul class=&quot;simple&quot;&gt;  &lt;li&gt;   [[link]]&lt;/li&gt;  &lt;li&gt;   **bold**&lt;/li&gt;  &lt;li&gt;   __underline__&lt;/li&gt;  &lt;li&gt;   //italic//&lt;/li&gt;  &lt;li&gt;   --strike--&lt;/li&gt;  &lt;li&gt;   ^^superscript^^&lt;/li&gt;  &lt;li&gt;   ,,subscript,,&lt;/li&gt;  &lt;li&gt;   = level 1 =&lt;/li&gt;  &lt;li&gt;   == level 2 ==&lt;/li&gt;  &lt;li&gt;   * list item level 1&lt;/li&gt;  &lt;li&gt;   ** list item level 2&lt;/li&gt; &lt;/ul&gt; " />
-                                </bigText>
-                            </wiki-syntax>
+                            <lastest-articles j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Lastest articles"/>
+                                <contentRetrieval j:classname="hilightList" j:criteria="jcr:created" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:wikiPage" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentRetrieval" maxItems="20">
+                                    <j:translation_en j:noResultsMessage="No Page Yet" jcr:language="en" jcr:primaryType="jnt:translation"/>
+                                </contentRetrieval>
+                            </lastest-articles>
                         </row-col2>
                     </wiki>
                     <wiki-content j:applyOn="jnt:wikiPage" j:defaultTemplate="true" j:requiredMode="live" jcr:primaryType="jnt:contentTemplate" j:priority="10">
@@ -65,15 +68,15 @@
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
                                     <mainResourceDisplay j:mainResourceView="syntax" jcr:primaryType="jnt:mainResourceDisplay" />
                                 </pagecontent>
-                                <contribute j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/editWikiContent" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Contribute" />
-                                    <mainResourceDisplay j:mainResourceView="contribute" jcr:primaryType="jnt:mainResourceDisplay" />
-                                <wiki-syntax j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Upload images (Double click an image to add to the text)" />
-                                    <fileUpload j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/contribute/wiki-syntax/fileList" jcr:primaryType="jnt:fileUpload" />
-                                    <fileList j:view="wikiSelect" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:fileList" />
-                                  </wiki-syntax>
-                                </contribute>
+                                <modify j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/editWikiContent" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Modify"/>
+                                    <mainResourceDisplay j:mainResourceView="contribute" jcr:primaryType="jnt:mainResourceDisplay"/>
+                                    <upload-image j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Manage files"/>
+                                        <fileUpload jcr:primaryType="jnt:fileUpload"/>
+                                        <fileList j:view="wikiSelect" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:fileList"/>
+                                    </upload-image>
+                                </modify>
                                 <history j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/viewWikiHistory" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="History" />
                                     <history j:mainResourceView="history" jcr:primaryType="jnt:mainResourceDisplay" />
@@ -84,11 +87,11 @@
                                 </history>
                             </tabularList>
                         </row-col1>
-                        <rol-col2 jcr:primaryType="jnt:contentList" />
+                        <!--rol-col2 jcr:primaryType="jnt:contentList" /-->
                         <row-col2 jcr:primaryType="jnt:contentList">
-                            <jahiapp-wiki-logo.png j:node="/templateSets/wiki/templates/files/jahiapp-wiki-logo.png" jcr:primaryType="jnt:imageReference">
-                                <j:translation_en j:alternateText="jahiapp wiki" jcr:language="en" jcr:primaryType="jnt:translation" />
-                            </jahiapp-wiki-logo.png>
+                            <backToParentPage jcr:primaryType="jnt:backToParentPage">
+                                <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Back to Wiki home page"/>
+                            </backToParentPage>
                             <contentInfo j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:contentInfo" />
                             <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki search" />
@@ -96,12 +99,6 @@
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />
                                 </search>
                             </wiki-search>
-                            <wiki-syntax j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki syntax" />
-                                <bigText jcr:primaryType="jnt:bigText">
-                                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;ul class=&quot;listwiki&quot;&gt;  &lt;li&gt;[[link]]&lt;/li&gt;  &lt;li&gt;**bold**&lt;/li&gt;  &lt;li&gt;__underline__&lt;/li&gt;  &lt;li&gt;//italic//&lt;/li&gt;  &lt;li&gt;--strike--&lt;/li&gt;  &lt;li&gt;^^superscript^^&lt;/li&gt;  &lt;li&gt;,,subscript,,&lt;/li&gt;  &lt;li&gt;= level 1 =&lt;/li&gt;  &lt;li&gt;== level 2 ==&lt;/li&gt;  &lt;li&gt;* list item level 1&lt;/li&gt;  &lt;li&gt;** list item level 2&lt;/li&gt; &lt;/ul&gt;" />
-                                </bigText>
-                            </wiki-syntax>
                         </row-col2>
                         <information jcr:primaryType="jnt:contentList">
                             <contentInfo j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:contentInfo" />

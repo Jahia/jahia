@@ -4,8 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="javascript" resources="jquery.js"/>
-<template:addResources type="javascript" resources="jquery.fancybox.js"/>
-<template:addResources type="css" resources="jquery.fancybox.css"/>
+<template:addResources type="javascript" resources="jquery.form.js"/>
 
 <c:set var="targetNodePath" value="${renderContext.mainResource.node.path}"/>
 <c:if test="${!empty param.targetNodePath}">
@@ -23,6 +22,7 @@
     <template:addResources type="css" resources="fileList.css"/>
     <jcr:node var="targetNode" path="${targetNodePath}"/>
     <ul class="filesList">
+        <li><fmt:message key="label.dblClickToAddInWiki"/></li>
         <c:forEach items="${targetNode.nodes}" var="subchild">
             <c:if test="${jcr:isNodeType(subchild, 'jnt:file')}">
                 <li>

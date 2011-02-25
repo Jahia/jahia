@@ -52,9 +52,9 @@
                                 <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay" />
                             </contentList>
                             <calendar endDateProperty="jcr:created" j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content" jcr:primaryType="jnt:calendar" startDateProperty="jcr:created" />
-                            <facets j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content" j:expiration="900" j:perUser="false" jcr:mixinTypes="jmix:cache" jcr:primaryType="jnt:facets">
+                            <facets j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content" j:expiration="900" j:perUser="false" j:view="tagcloud" jcr:mixinTypes="jmix:renderable jmix:cache" jcr:primaryType="jnt:facets">
                                 <fieldFacet facet="tags" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" limit="100" mincount="1" missing="false" offset="0" sort="true">
-                                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" label="Tags" />
+                                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" label="Tags"/>
                                 </fieldFacet>
                             </facets>
                             <last-comments j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">

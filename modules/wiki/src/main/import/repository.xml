@@ -66,7 +66,7 @@
                             <tabularList jcr:primaryType="jnt:tabularList">
                                 <pagecontent j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
-                                    <mainResourceDisplay j:mainResourceView="syntax" jcr:primaryType="jnt:mainResourceDisplay" />
+                                    <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
                                 </pagecontent>
                                 <modify j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/editWikiContent" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Modify"/>

@@ -25,7 +25,7 @@
     <textarea class="textareawiki" name="wikiContent" id="text-${currentNode.identifier}" rows="30" cols="85">${currentNode.properties['wikiContent'].string}</textarea>
 
     <p>
-        <label><fmt:message key="jnt_wiki.addComment"/>: </label> <input name="lastComment"/>
+        <label><fmt:message key="jnt_wiki.addComment"/>: </label> <input name="lastComment" value=" "/>
     </p>
     <input class="button" type="submit"/>
 </form>

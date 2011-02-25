@@ -1210,8 +1210,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return getI18N(locale, true);
     }
 
-    private boolean hasI18N(Locale locale) throws RepositoryException {
-        return ((i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode("j:translation_" + locale));
+    private boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
+        boolean b = (i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode(
+                "j:translation_" + locale);
+        if(!b && fallback) {
+            final Locale fallbackLocale = getSession().getFallbackLocale();
+            if (fallbackLocale != null && fallbackLocale != locale) {
+                b = (i18NobjectNodes != null && i18NobjectNodes.containsKey(fallbackLocale)) || objectNode.hasNode(
+                "j:translation_" + fallbackLocale);
+            }
+        }
+        return b;
     }
 
     protected Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
@@ -1745,7 +1754,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(propertyName);
                 if (epd != null && epd.isInternationalized()) {
-                    if (hasI18N(locale)) {
+                    if (hasI18N(locale, true)) {
                         final Node localizedNode = getI18N(locale);
                         return localizedNode.hasProperty(propertyName);
                     }
@@ -1765,7 +1774,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (result) return true;
         final Locale locale = getSession().getLocale();
         if (locale != null) {
-            if (hasI18N(locale)) {
+            if (hasI18N(locale, true)) {
                 return getI18N(locale).hasProperties();
             }
         }
@@ -2171,7 +2180,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new LockException("Node not locked");
         }
 
-        if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale())) {
+        if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale(),
+                false)) {
             Node trans = getI18N(session.getLocale(), false);
             if (trans.isLocked()) {
                 unlock(trans, type);
@@ -2227,7 +2237,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new LockException("Node not locked");
         }
 
-        if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale())) {
+        if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale(),
+                false)) {
             Node trans = getI18N(session.getLocale(), false);
             if (trans.isLocked()) {
                 clearAllLocks(trans);
@@ -3028,7 +3039,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale)
             throws RepositoryException {
         Node i18n = null;
-        if (hasI18N(locale)) {
+        if (hasI18N(locale,false)) {
             i18n = getI18N(locale, false);
         }
         for (ExtendedPropertyDefinition def : getPrimaryNodeType().getPropertyDefinitionsAsMap().values()) {

@@ -91,7 +91,7 @@ public class MultiLanguageTest extends TestCase {
 
         JCRSessionWrapper frenchEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         JCRNodeWrapper frenchTextNode = frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/text1");
-        String frenchTextPropertyValue = frenchTextNode.getPropertyAsString("text");
+        String frenchTextPropertyValue = frenchTextNode.getProperty("text").getValue().getString();
 
         assertEquals("English text node should be available in edit workspace when mixed language is activated.", "English text", frenchTextPropertyValue);
 

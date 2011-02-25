@@ -21,7 +21,7 @@ Jahia Test Package
  execute. For example :
 
 --------------------
- mvn -P jahia-test -Dtest=org.jahia.services.content.ContentTest jahia:test
+ mvn -P jahia-test -o -Dtest=org.jahia.services.content.ContentTest jahia:test surefire-report:report-only
 --------------------
 
  will execute one single test, ContentTest.

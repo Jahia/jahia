@@ -45,9 +45,7 @@
               <pagetitle jcr:primaryType="jnt:pageTitle" />
               <pageBreadcrumb jcr:primaryType="jnt:pageBreadcrumb" displayCurrentPage="true" displayHome="true" displayLinkOnCurrentPage="false" />
                 <maincontent j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:canDeleteInContribution="true" jcr:primaryType="jnt:area" j:contributeTypes="jnt:mainContent jnt:bigText" j:allowedTypes="" j:editableInContribution="true" />
-              <add-comments jcr:primaryType="jnt:addComment" j:bindedComponent="/templateSets/templates-web-blue/templates/base/simple/content-col1/maincontent" />
-              <comments-list jcr:primaryType="jnt:commentsList" j:bindedComponent="/templateSets/templates-web-blue/templates/base/simple/content-col1/maincontent" />
-            </content-col1>
+              </content-col1>
           </simple>
           <pagecontent jcr:primaryType="jnt:contentList">
             <header divID="header" jcr:primaryType="jnt:customRow" customColumn="6,10" />

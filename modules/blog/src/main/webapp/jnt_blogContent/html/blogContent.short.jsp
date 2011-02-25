@@ -46,7 +46,7 @@
     </ul>
     <div class="post-resume">
         <p>
-            ${fn:substring(text.string,0,1200)}
+            ${fn:substring(functions:removeHtmlTags(text.string),0,1200)}
         </p>
     </div>
     <p class="read-more"><a title="#" href="${url.base}${currentNode.path}.html"><fmt:message key="jnt_blog.readPost"/></a></p>

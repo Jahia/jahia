@@ -16,19 +16,19 @@
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="New Blog" />
                                 </new-blog>
                             </create-new-blog>
-                            <topBlog j:expiration="900" j:perUser="false" j:requireLoggedUser="false" j:requiredMode="live" j:skin="skins.box8" j:style="grey" j:subNodesView="blogList" jcr:mixinTypes="jmix:style jmix:cache jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:topBlog">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Top Blog" />
-                            </topBlog>
+                            <newestBlog j:expiration="900" j:perUser="false" j:requireLoggedUser="false" j:requiredMode="live" j:skin="skins.box8" j:style="grey" j:subNodesView="blogList" jcr:mixinTypes="jmix:style jmix:cache jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:latestBlog">
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Newly created blog" />
+                            </newestBlog>
                             <list j:columns="2" j:view="columns" jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="list" />
-                                <top-content j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Top Blog Content" />
-                                    <topBlogContent j:className="simple" j:expiration="900" j:perUser="false" j:subNodesView="blogList" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:columns jmix:cache" jcr:primaryType="jnt:topBlogContent" />
-                                </top-content>
-                                <top-blog-coment j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Top blog Coment" />
-                                    <topBlogComment j:className="simple" j:expiration="900" j:perUser="false" j:subNodesView="blogList" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:cache" jcr:primaryType="jnt:topBlogComment" />
-                                </top-blog-coment>
+                                <latest-content j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Latest blog entries" />
+                                    <latestBlogContent j:className="simple" j:expiration="900" j:perUser="false" j:subNodesView="blogList" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:columns jmix:cache" jcr:primaryType="jnt:latestBlogContent" />
+                                </latest-content>
+                                <latest-blog-coment j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Latest comments" />
+                                    <latestBlogComment j:className="simple" j:expiration="900" j:perUser="false" j:subNodesView="blogList" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:cache" jcr:primaryType="jnt:latestBlogComment" />
+                                </latest-blog-coment>
                             </list>
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList" />
@@ -59,7 +59,7 @@
                             </facets>
                             <last-comments j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Last comments" />
-                                <topBlogComment j:className="simple" j:expiration="900" j:perUser="false" j:requireLoggedUser="false" j:requiredMode="live" j:subNodesView="blogList" j:view="unordered" jcr:mixinTypes="jmix:cache jmix:renderable jmix:requiredPermissions jmix:listOrdered" jcr:primaryType="jnt:topBlogComment" />
+                                <latestBlogComment j:className="simple" j:expiration="900" j:perUser="false" j:requireLoggedUser="false" j:requiredMode="live" j:subNodesView="blogList" j:view="unordered" jcr:mixinTypes="jmix:cache jmix:renderable jmix:requiredPermissions jmix:listOrdered" jcr:primaryType="jnt:latestBlogComment" />
                             </last-comments>
                         </row-col2>
                         <illustration jcr:primaryType="jnt:contentList">

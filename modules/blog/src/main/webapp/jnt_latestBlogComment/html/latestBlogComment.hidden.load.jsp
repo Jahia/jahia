@@ -15,7 +15,20 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="blog.css"/>
-<query:definition var="result"
-             statement="select * from [jnt:blogContent] as blogContent  where isdescendantnode(blogContent, ['${renderContext.mainResource.node.path}']) order by blogContent.[jcr:lastModified] desc"/>
-<c:set target="${moduleMap}" property="editable" value="false" />
-<c:set target="${moduleMap}" property="listQuery" value="${result}" />
+<query:definition var="listQuery"
+                  statement="select * from [jnt:post] as comments  where isdescendantnode(comments, ['${renderContext.mainResource.node.path}']) order by comments.[jcr:lastModified] desc"
+                  limit="20"/>
+<c:set target="${moduleMap}" property="editable" value="false"/>
+<c:set target="${moduleMap}" property="listQuery" value="${listQuery}"/>
+<template:addCacheDependency flushOnPathMatchingRegexp="${renderContext.mainResource.node.path}/.*/comments"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.cuteTime.js"/>
+<template:addResources type="inlinejavascript" key="cuteTimeInitialisation">
+    <script>
+        function initCuteTime() {
+            $('.timestamp').cuteTime({ refresh: 60000 });
+        }
+        $(document).ready(function () {
+            $('.timestamp').cuteTime({ refresh: 60000 });
+        });
+    </script>
+</template:addResources>

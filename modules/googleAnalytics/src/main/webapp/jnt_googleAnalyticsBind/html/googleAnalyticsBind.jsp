@@ -15,22 +15,11 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 
 <c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:if test="${empty gaMap}">
+    <jsp:useBean id="gaMap" class="java.util.HashMap" scope="request"/>
+</c:if>
 <c:if test="${!empty renderContext.site.properties['webPropertyID'].string}">
-<template:addResources>
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', '${renderContext.site.properties["webPropertyID"].string}']);
-  _gaq.push(['_trackPageview', ${bindedComponent.url}]);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
-</template:addResources>
+<c:set target="${gaMap}" property="${currentNode.identifier}" value="${bindedComponent.url}"/>
 </c:if>
 
 <c:if test="${renderContext.editMode}">

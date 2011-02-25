@@ -13,19 +13,8 @@
         </files>
         <contents jcr:primaryType="jnt:contentFolder" />
         <base j:view="apps" jcr:primaryType="jnt:template">
-          <googleAnalytics j:applyOn="jnt:googleAnalyticsAccounts jnt:googleAnalyticsAccount" j:defaultTemplate="true" j:hiddenTemplate="false" j:view="apps" jcr:primaryType="jnt:contentTemplate" j:priority="10">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-            </pagecontent>
-          </googleAnalytics>
-          <data j:applyOn="jnt:googleAnalyticsAccount" j:defaultTemplate="false" j:hiddenTemplate="false" jcr:primaryType="jnt:contentTemplate" j:priority="10">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay j:mainResourceView="data" jcr:primaryType="jnt:mainResourceDisplay" />
-            </pagecontent>
-          </data>
         </base>
       </templates>
-      <googleAnalytics jcr:primaryType="jnt:googleAnalyticsAccounts" />
     </googleAnalytics>
   </templateSets>
 </content>

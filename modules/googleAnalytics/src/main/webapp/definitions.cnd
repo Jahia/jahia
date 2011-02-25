@@ -2,14 +2,9 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jmix:googleAnalytics] mixin
+ extends=jnt:virtualsite
+ itemtype=options
  - webPropertyID (string) nofulltext
 
-
-[jnt:googleAnalyticsAccounts] > jnt:content, mix:title, jmix:list, jmix:visibleInPagesTree
- + * (jnt:googleAnalyticsAccount)
-
-[jnt:googleAnalyticsAccount] > jnt:content
- - login (string) nofulltext
- - password (string) nofulltext
 
 [jnt:googleAnalyticsBind] > jnt:content, jmix:bindedComponent, jmix:siteComponent

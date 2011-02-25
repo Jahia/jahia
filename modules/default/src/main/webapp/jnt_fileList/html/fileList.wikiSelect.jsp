@@ -30,6 +30,7 @@
                         <img name="" width="100" src="${subchild.url}"
                              ondblclick="insertImgSyntax('\n [[image:${subchild.url}||width=${subchild.properties["j:width"].string} height=${subchild.properties["j:height"].string}]]')"
                              alt="${fn:escapeXml(subchild.name)}"/>
+                         ${fn:escapeXml(not empty title.string ? title.string : subchild.name)}
                         <c:if test="${jcr:hasPermission(subchild,'jcr:removeNode')}">
                             <form action="${url.base}${subchild.path}" method="post"
                                   id="jahia-wiki-item-delete-${subchild.UUID}">

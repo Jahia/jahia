@@ -131,6 +131,10 @@
 
 }
 
+#bodywrapper .label-placeholder {
+    display:inline;
+}
+
 #bodywrapper button.button-placeholder {
     padding: 0px !important;
     border:none !important;

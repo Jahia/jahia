@@ -38,7 +38,11 @@ import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.SwallowEvent;
+import com.extjs.gxt.ui.client.widget.CollapsePanel;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -63,7 +67,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
  * 
  */
 public class PlaceholderModule extends Module {
-    private HorizontalPanel panel;
+    private LayoutContainer panel;
 
     public PlaceholderModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
@@ -73,16 +77,14 @@ public class PlaceholderModule extends Module {
         } else {
             setBorders(true);
         }
-
-        setHeight(20);
-
-        panel = new HorizontalPanel();
-        panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
+        panel = new LayoutContainer();
+        //panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
         panel.addStyleName("x-small-editor");
         panel.addStyleName("x-panel-header");
         panel.addStyleName("x-panel-placeholder");
 
         html = new HTML(Messages.get("label.add") + " : &nbsp;");
+        html.setStyleName("label-placeholder");
         panel.add(html);
         add(panel);
     }

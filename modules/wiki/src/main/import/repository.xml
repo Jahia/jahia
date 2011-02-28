@@ -58,26 +58,26 @@
                             </lastest-articles>
                         </row-col2>
                     </wiki>
-                    <wiki-content j:applyOn="jnt:wikiPage" j:defaultTemplate="true" j:requiredMode="live" jcr:primaryType="jnt:contentTemplate" j:priority="10">
+                    <wiki-content j:applyOn="jnt:wikiPage" j:defaultTemplate="true" j:priority="10" j:requiredMode="live" jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="2col124" jcr:primaryType="jnt:row"/>
+                            <row column="2col124" jcr:primaryType="jnt:row" />
                         </pagecontent>
                         <row-col1 jcr:primaryType="jnt:contentList">
                             <tabularList jcr:primaryType="jnt:tabularList">
-                                <pagecontent j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                <pagecontent j:skin="skins.box3style1" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
                                     <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
                                 </pagecontent>
-                                <modify j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/editWikiContent" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Modify"/>
-                                    <mainResourceDisplay j:mainResourceView="contribute" jcr:primaryType="jnt:mainResourceDisplay"/>
+                                <modify j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/editWikiContent" j:skin="skins.box3style1" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Modify" />
+                                    <mainResourceDisplay j:mainResourceView="contribute" jcr:primaryType="jnt:mainResourceDisplay" />
                                     <upload-image j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Manage files"/>
-                                        <fileUpload j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/modify/upload-image/fileList" jcr:primaryType="jnt:fileUpload"/>
-                                        <fileList j:view="wikiSelect" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:fileList"/>
+                                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Manage files" />
+                                        <fileUpload j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/modify/upload-image/fileList" jcr:primaryType="jnt:fileUpload" />
+                                        <fileList j:view="wikiSelect" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:fileList" />
                                     </upload-image>
                                 </modify>
-                                <history j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/viewWikiHistory" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                <history j:requireLoggedUser="false" j:requiredPermissions="/permissions/actions/wiki/viewWikiHistory" j:skin="skins.box3style1" j:style="blue" jcr:mixinTypes="jmix:style jmix:requiredPermissions jmix:skinnable" jcr:primaryType="jnt:contentList">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="History" />
                                     <history j:mainResourceView="history" jcr:primaryType="jnt:mainResourceDisplay" />
                                     <compare-results j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
@@ -87,13 +87,12 @@
                                 </history>
                             </tabularList>
                         </row-col1>
-                        <!--rol-col2 jcr:primaryType="jnt:contentList" /-->
                         <row-col2 jcr:primaryType="jnt:contentList">
                             <backToParentPage jcr:primaryType="jnt:backToParentPage">
-                                <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Back to Wiki home page"/>
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Back to Wiki home page" />
                             </backToParentPage>
                             <contentInfo j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:contentInfo" />
-                            <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                            <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki search" />
                                 <search jcr:primaryType="jnt:simpleSearchForm" result="/templateSets/wiki/search-result">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />

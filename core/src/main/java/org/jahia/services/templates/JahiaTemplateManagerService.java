@@ -480,11 +480,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         if (originalNode.hasProperty("j:siteType") && originalNode.getProperty("j:siteType").getString().equals("module")) {
                             moduleName = originalNode.getName();
                         }
-
-                        synchro(originalNode, destinationNode, session, moduleName, references);
+                        List<String> newNodes = new ArrayList<String>();
+                        synchro(originalNode, destinationNode, session, moduleName, references, newNodes);
 
                         ReferencesHelper.resolveCrossReferences(session, references);
                         session.save();
+
+                        for (String newNode : newNodes) {
+                            JCRPublicationService.getInstance().publishByMainId(newNode, "default", "live", null, true, null);
+                        }
 
                         JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getIdentifier(), "default", "live", null, true, null);
 
@@ -505,7 +509,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,
-                        Map<String, List<String>> references) throws RepositoryException {
+                        Map<String, List<String>> references, List<String> newNodes) throws RepositoryException {
         if (source.isNodeType("jnt:virtualsite")) {
             session.getUuidMapping().put(source.getIdentifier(), destinationNode.getIdentifier());
             NodeIterator ni = source.getNodes();
@@ -522,13 +526,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     newNode = true;
                 }
 
-                templatesSynchro(child, node, session, references, newNode, false, true, moduleName, child.isNodeType("jnt:templatesFolder"));
+                templatesSynchro(child, node, session, references, newNodes, newNode, false, true, moduleName, child.isNodeType("jnt:templatesFolder"));
             }
         }
     }
 
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
-                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doUpdate, boolean doRemove, boolean doChildren, String moduleName, boolean inTemplatesFolder)
+                                 JCRSessionWrapper session, Map<String, List<String>> references, List<String> newNodes, boolean doUpdate, boolean doRemove, boolean doChildren, String moduleName, boolean inTemplatesFolder)
             throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
@@ -631,15 +635,18 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 } else {
                     node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
                     newNode = true;
+                    if (!inTemplatesFolder) {
+                        newNodes.add(node.getIdentifier());
+                    }
                     if (moduleName != null && node.isNodeType("jnt:template")) {
                         node.setProperty("j:moduleTemplate", moduleName);
                         currentModule = true;
                     }
                 }
                 if (isTemplateNode) {
-                    templatesSynchro(child, node, session, references, currentModule, currentModule, currentModule, moduleName, inTemplatesFolder);
+                    templatesSynchro(child, node, session, references, newNodes, currentModule, currentModule, currentModule, moduleName, inTemplatesFolder);
                 } else {
-                    templatesSynchro(child, node, session, references, inTemplatesFolder || newNode, doRemove, doChildren && !(isPageNode && !newNode), moduleName, inTemplatesFolder);
+                    templatesSynchro(child, node, session, references, newNodes, inTemplatesFolder || newNode, doRemove, doChildren && !(isPageNode && !newNode), moduleName, inTemplatesFolder);
                 }
             }
         }

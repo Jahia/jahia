@@ -105,10 +105,10 @@
             <stringProp name="-803558304">pageUrl</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="-2071237516">
+            <collectionProp name="-385812500">
               <stringProp name="-1416580655">${_StringFromFile(scanAllUrls/jobsSearchKeyword.txt)}</stringProp>
               <stringProp name="-983328412">${_StringFromFile(scanAllUrls/globalSearchKeyword.txt)}</stringProp>
-              <stringProp name="-49401291">${_StringFromFile(${PATH}/editSiteMaps.txt)}</stringProp>
+              <stringProp name="-1823672793">${_StringFromFile(generated/editSiteMaps.txt)}</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>
@@ -347,10 +347,10 @@
             <stringProp name="-803558304">pageUrl</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="140033035">
+            <collectionProp name="743662154">
               <stringProp name="-1416580655">${_StringFromFile(scanAllUrls/jobsSearchKeyword.txt)}</stringProp>
               <stringProp name="-983328412">${_StringFromFile(scanAllUrls/globalSearchKeyword.txt)}</stringProp>
-              <stringProp name="-1441274505">${_StringFromFile(${PATH}/liveSitemaps.txt)}</stringProp>
+              <stringProp name="1079421289">${_StringFromFile(generated/liveSitemaps.txt)}</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>
@@ -556,8 +556,8 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">2000</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">30</stringProp>
+        <stringProp name="ThreadGroup.num_threads">400</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">120</stringProp>
         <longProp name="ThreadGroup.start_time">1238679268000</longProp>
         <longProp name="ThreadGroup.end_time">1238679268000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -589,10 +589,10 @@
             <stringProp name="-803558304">pageUrl</stringProp>
           </collectionProp>
           <collectionProp name="UserParameters.thread_values">
-            <collectionProp name="140033035">
+            <collectionProp name="743662154">
               <stringProp name="-1416580655">${_StringFromFile(scanAllUrls/jobsSearchKeyword.txt)}</stringProp>
               <stringProp name="-983328412">${_StringFromFile(scanAllUrls/globalSearchKeyword.txt)}</stringProp>
-              <stringProp name="-1441274505">${_StringFromFile(${PATH}/liveSitemaps.txt)}</stringProp>
+              <stringProp name="1079421289">${_StringFromFile(generated/liveSitemaps.txt)}</stringProp>
             </collectionProp>
           </collectionProp>
           <boolProp name="UserParameters.per_iteration">true</boolProp>

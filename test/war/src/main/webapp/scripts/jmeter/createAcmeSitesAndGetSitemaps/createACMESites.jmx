@@ -59,7 +59,7 @@
           </elementProp>
           <elementProp name="NumberOfUsers" elementType="Argument">
             <stringProp name="Argument.name">NumberOfUsers</stringProp>
-            <stringProp name="Argument.value">400</stringProp>
+            <stringProp name="Argument.value">50</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="NumberOfSites" elementType="Argument">
@@ -339,6 +339,8 @@ if (prev.isSuccessful()) {
     log.info(&quot;Base dir = &quot; + baseDir);
     String live = vars.get(&quot;LIVE_SITEMAP&quot;);
     live = live.replaceAll(&quot;    &quot;, &quot;&quot;);
+    live = live.replaceAll(&quot;\n\n\n\n&quot;, &quot;\n&quot;);
+    live = live.replaceAll(&quot;\n\n\n&quot;, &quot;\n&quot;);
     live = live.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
     String path = vars.get(&quot;PATH&quot;);
     try {
@@ -410,6 +412,8 @@ if (prev.isSuccessful()) {
     String baseDir = FileServer.getFileServer().getBaseDir();
     String edit = vars.get(&quot;EDIT_SITEMAP&quot;);
     edit = edit.replaceAll(&quot;    &quot;, &quot;&quot;);
+    edit = edit.replaceAll(&quot;\n\n\n\n&quot;, &quot;\n&quot;);
+    edit = edit.replaceAll(&quot;\n\n\n&quot;, &quot;\n&quot;);
     edit = edit.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
     edit = edit.replaceAll(&quot;/edit/&quot;, &quot;/render/&quot;);
     String path = vars.get(&quot;PATH&quot;);

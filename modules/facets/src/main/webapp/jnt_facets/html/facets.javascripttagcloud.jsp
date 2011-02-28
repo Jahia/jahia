@@ -17,7 +17,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="facets.css"/>
-<template:addResources type="css" resources="jcloud.css"/>
+<template:addResources type="css" resources="jqcloud.css"/>
 <template:addResources type="javascript" resources="jquery.js,jqcloud.js"/>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
@@ -193,7 +193,7 @@
                     </script>
                 </template:addResources>
             </c:forEach>
-            <div id="wordcloud" style="width: 200px; height: 200px; position: relative;"></div>
+            <div id="wordcloud" style="width: 280px; height: 200px;"></div>
         </c:if>
     </c:if>
 </c:if>

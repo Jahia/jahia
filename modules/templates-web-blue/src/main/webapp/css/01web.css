@@ -355,10 +355,11 @@ Search form top
 
 #bodywrapper h1 {
 	color:#000;
-	font-weight:normal;
+	font-weight:bold;
 	font-size:2em;
 	line-height:normal;
 	padding:0 0 0.5em 0;
+	text-transform: uppercase;
 }
 
 #bodywrapper h2 {
@@ -380,14 +381,15 @@ Search form top
 }
 #bodywrapper h3 {
 	font-weight:normal;
-	font-size:1.6em;
+	font-size:1.5em;
 	margin-bottom:10px;
 	margin-top:10px;
+	
 }
 
 #bodywrapper h4 {
 	font-weight:bold;
-	font-size:1.4em;
+	font-size:1.3em;
 	margin-bottom:10px;
 	margin-top:10px;
 }

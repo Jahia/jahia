@@ -55,4 +55,4 @@
         </c:forEach>
     </ul>
 </div>
-<template:addCacheDependency node="${currentNode.parent}"/>
+<template:addCacheDependency node="${targetNodePath}"/>

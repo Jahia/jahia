@@ -20,8 +20,8 @@ a default set exist in the instalattion folder of markitup
 the set is the JSon file with the css and images.
 
 for the wiki:
-+--------------------------------------------------------------------------------------------
 
++--------------------------------------------------------------------------------------------
 mySettings = {
     previewParserPath:    '',
     onShiftEnter:        {keepDefault:false, replaceWith:'\n\n'},
@@ -52,10 +52,9 @@ mySettings = {
 
     ]
 }
-
 +--------------------------------------------------------------------------------------------------
 
-you can directcly specify the mySettings in the page:
+you can directly specify the mySettings in the page:
 
 +--------------------------------------------------------------------------------------------------
 
@@ -88,7 +87,7 @@ don't forget to add the css, and file associated to the mySettings.
 
  after all settings create, you need to bind there to your textArea tag:
 
- +--------------------------------------------------------------------------------------------------
++--------------------------------------------------------------------------------------------------
     <script type="text/javascript">
             $(document).ready(function() {
                 // Add markItUp! to your textarea in one line
@@ -97,7 +96,7 @@ don't forget to add the css, and file associated to the mySettings.
 
             });
         </script>
- +--------------------------------------------------------------------------------------------------
++--------------------------------------------------------------------------------------------------
 
 
 * custom options ?

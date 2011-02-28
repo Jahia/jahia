@@ -1,4 +1,4 @@
-<%@ tag body-content="empty" description="Renders the label of a facet." %>
+<%@ tag body-content="empty" description="Renders the label of a facet value." %>
 <%@ tag import="org.apache.solr.schema.DateField"%>
 <%@ tag import="java.util.Date"%>
 <%@ tag import="java.text.SimpleDateFormat"%>

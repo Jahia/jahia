@@ -64,7 +64,7 @@
     </function>
 
     <function>
-        <description>Create the URL to remove the facet from value the filter</description>
+        <description>Create the URL to remove the facet value from the filter</description>
         <name>getDeleteFacetUrl</name>
         <function-class>org.jahia.taglibs.facet.Functions</function-class>
         <function-signature>java.lang.String getDeleteFacetUrl(java.lang.Object, org.apache.commons.collections.KeyValue, java.lang.String)

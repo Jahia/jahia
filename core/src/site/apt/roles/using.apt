@@ -1,4 +1,4 @@
-!OBSOLETE! Using roles/permissions
+Using permissions
 
   Jahia provides ways to utilize the role/permission concept in JSP templates as well as in custom Java services.
   
@@ -9,40 +9,53 @@
   
   Here are simple examples that show the usage of those functions:
   
-  * Querying roles for current user
-  
 +-------------
-  <c:if test="${functions:isUserInRole('user-manager')}">
-      Current user has 'user-manager' role and is authorized to perform users/groups management tasks
-  </c:if>
-  <c:if test="${functions:isUserInRoleForSite('editor-in-chief', renderContext.site.siteKey)}">
-      Current user has 'editor-in-chief' role for the current site
-  </c:if>
-+-------------
-
-  * Checking permissions for current user
-  
-+-------------
-  <c:if test="${functions:isUserPermitted('global/password-policy')}">
-      The user is allowed to manage password policies
-  </c:if>
-
-  <c:if test="${functions:isUserPermittedForSite('admin/site-languages', renderContext.site.siteKey)}">
-      The user is authorized to manage languages for the current site
-  </c:if>
+    <c:if test="${jcr:hasPermission(currentNode,'jcr:write')}">
+      The user is allowed to modify the node
+    </c:if>
 +-------------
 
     
 * {Java} API
 
-  We provide dedicated services and API to manage roles/permissions from creation and assignment
-  to applying different policies.
-  
-  Following services are provided:
-  
-  * <<<org.jahia.services.rbac.jcr.RoleManager>>> - provides mean for creating, modifying and removing
-    roles and permissions as well as granting/revoking them to principals. 
+  A permission is always checked for a user on a specific node. The JCR API provides a method to check
+  permissions on a node :
 
-  * <<<org.jahia.services.usermanager.JahiaPrincipal>>> - is the common interface of all Jahia principals,
-    including users and groups. It provides methods for checking roles and permissions of a current principal.
++---------------------
+    boolean AccessControlManager.hasPrivileges(String absPath, Privilege[] privileges)
++---------------------
+
+  A convenient method is also provided in JCRNodeWrapper to check a single permission :
+
++---------------------
+    boolean hasPermission(String permission)
++---------------------
+
+  Global permissions are checked on the root node. Site permissions can be checked on the site node.
+
+* Custom {actions}
+
+  If the property <<<requiredPermission>>> is set on an action, the Jahia controller will check the permission before
+  trying to call the <<<doExecute>>> method.
+
+  For instance, the action to create a new blog entry is defined with the <<<requiredPermission>>> property :
+
++---------------------
+    <bean class="org.jahia.modules.blog.AddBlogEntryAction">
+        <property name="name" value="addBlogEntry"/>
+        <property name="requiredPermission" value="addBlogEntry"/>
+    </bean>
++---------------------
+
+* {Views}
+
+  The properties file associated to a view can contain a <<<requirePermissions>>> property. If this property is set, the
+  RenderService will check that permission before calling the script.
+
+  In the example module <<<contact>>>, the file contactForm.properties associated to contactForm.jsp contains the following line :
+
++-----------------
+    requirePermissions=viewContacts
++-----------------
+
 

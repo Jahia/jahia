@@ -1,35 +1,28 @@
-!OBSOLETE! Roles/permissions management UI
+Roles/permissions management UI
 
-  Roles and permissions can be created on the server and on a virtual-site level.
-  This allows having global roles/permissions for the server and more flexible access control
-  for each virtual site.
+  Roles can be created on the {{{management}server administration}}.
 
-  Management UI can be accessed via <Jahia Administration> -> <Server Settings> -> <Manager server roles> menu for the server-level
-  and via <Jahia Administration> -> <Site settings> -> <Manage site roles> for a per-site role/permission management.
-  Management includes:
+  They are assigned to users and groups on content nodes in the edit mode {{{engine}engine tab}}.
 
-  * {{{creation} Role creation}} - role manager with the overview of available roles and the possibility to create new roles or modify existing.
+* Roles {management}
 
-  * {{{permissions} Granting permissions to roles}} - this screen allows selection of particular permissions for each available role.
+  Management UI can be accessed via <Jahia Administration> -> <Server Settings> -> <Manager server roles> menu.
 
-  * {{{roles} Granting roles to principals}} - this panel allows granting/revoking of roles to users and groups.
-
-* Role {creation}
-
-  The overview panel provides simple actions for managing roles: create, rename, edit, delete etc.
+  The UI provides simple actions for managing roles: create, delete, import, export etc.
   
-[./images/roles/ui-roles.png]
+** Role definition
 
+  The <Content> tab allows to set the title, description, and the optional list of types on which the roles can be applied.
 
-* Granting {permissions} to roles
+** Granting {permissions} to roles
 
-  Selection of permissions for each role in a grid view.
+  The <Permissions> tab displays a tree of all available permissions in the system. Permissions can be set or removed from the role.
   
-[./images/roles/ui-permissions.png]
+* Roles {engine} tab
+
+  Roles can be granted in the <Roles> engine tab on a specific node.
+
+  The <Roles> engine tab is a table with one line per user / group, and one column per role. A role can be assigned to
+  a user or a group by checking the corresponding checkbox.
 
 
-* Granting {roles} to principals
-
-  Roles can be granted in the user/group details view (accessed via <Manage Users>/<Manager Groups>):
-
-[./images/roles/ui-granting-roles-details.png]

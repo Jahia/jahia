@@ -19,23 +19,7 @@
             <item name="Workflow" href="workflow/workflow.html"/>
             <item name="Publication" href="publication/publication.html"/>
             <item name="History" href="history/history.html"/>
-	        <item name="Roles">
-	            <item name="Introduction" href="roles/index.html">
-	            	<item name="Overview" href="roles/index.html#Overview"/>
-	            	<item name="Basic concepts" href="roles/index.html#concepts"/>
-	            </item>
-	            <item name="Roles/permissions management UI" href="roles/ui.html"/>
-	            <item name="Customizing built-in roles and permissions" href="roles/customizing.html">
-	                <item name="Built-in roles/permissions" href="roles/customizing.html#Built-in"/>
-	                <item name="Customizing" href="roles/customizing.html#Customizing"/>
-	            </item>
-	            <item name="Business rules" href="roles/rules.html"/>
-	            <item name="Using roles/permissions" href="roles/using.html">
-	            	<item name="JSP templates" href="roles/using.html#JSP"/>
-	            	<item name="Java API" href="roles/using.html#Java"/>
-	            </item>
-	        </item>
-            
+	        <item name="Roles" href="roles/index.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

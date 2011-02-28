@@ -1,8 +1,12 @@
-!OBSOLETE! Jahia Roles/Permissions Module
+Jahia Authorization system
 
 * {Overview}
 
-  Module is aimed to provide out-of-the-box set of roles and permissions to facilitate fine-grained access control and separation of concerns.
+  Jahia Authorization system is aimed to provide out-of-the-box set of roles and permissions to facilitate fine-grained access control and separation of concerns.
+
+  * Permissions system concepts
+
+    Description of the {{{./concepts.html} concepts}} of authorization system
 
   * Managing roles and permissions
 
@@ -12,23 +16,7 @@
 
     A "How To" for {{{./customizing.html} customizing pre-packaged set of roles and permissions}}.
     
-  * Using rules
-
-    Short {{{./rules.html} summary of business rules}}, provided for role/permission management 
-    
   * Using roles/permissions
     
-    Overview of the Java API and JSP tags that allow {{{./using.html} rules/permission usage}}. 
+    Overview of the Java API and JSP tags that allow {{{./using.html} permission usage}}.
     
-* Basic {concepts}
-
-  Roles and permission are defined on the server-level as well as on a per-site level.
-  Permissions additionally are split in groups.
-  Thus a role is defined by its unique name and the site (if not specified the server-level role is assumed).
-  Permissions are defined by the name, group and site (for site-level permissions).
-  
-  The persistence of roles and permissions is managed in the JCR repository in <default> workspace ("edit") and
-  does not undergo any publishing or versioning process.
-  They can be seen in the <Content Manager>:
-  
-[./images/roles/ui-content-manager.png]

@@ -1,0 +1,66 @@
+Jahia Authorization system concepts
+
+* {Permission}
+
+    Permission (or Privilege) defines an atomic action that can be performed on a node.
+
+    Permissions are stored as a tree of <<<jnt:permission>>> nodes - leaves are atomic permissions, non-leaves can be
+    used as aggregates of all sub-nodes. Although they are organized as a tree, a permission can be identified by its name -
+    which means there should never be multiple permissions with the same name.
+
+** System permissions
+
+    The JCR defines a default set of permissions that match the low level operations available on a node.
+    <<<jcr:read>>>, <<<jcr:addChildNodes>>> , <<<jcr:modifyProperties>>>, ... are examples of JCR system permissions.
+
+    JCR system permissions are organized in <<</permissions/repository-permissions>>>.
+
+    Jahia uses different permissions for the different workspaces - for every workspace (default and live), a distinct set of
+    permissions is created under <<</permissions/repository-permissions/<workspace-name>>>>.
+    Permissions are suffixed with the workspace name - in order to add nodes in live workspace, the user should have the <<<jcr:addChildNodes_live>>> permission.
+
+    In order to handle distinct permission per language, the <<<jcr:modifyProperties>>> is split in multiple sub-permissions, one
+    for every language. The <<<jcr:modifyProperties_default>>> will allow to change any property, but the
+    <<<jcr:modifyProperties_default_en>>> will allow only modification of internationalized properties in english.
+
+** Applicative permissions
+
+    Permissions relative to edit, contribute or studio are stored in <<</permissions/editMode>>>, <<</permissions/contributeMode>>>,
+    <<</permissions/studioMode>>>. Every manager, selector tab, engine tab or action item can have an associated permission, that will
+    be required to use it. See {{{./customizing.html#Built-in}built-in roles/permissions}} for more details.
+
+** Module permissions
+
+    A module can define any number of specific permission, that will be checked by module specific actions, or directly by the JSPs.
+    For more information about customizing roles, see {{{./customizing.html#Modules}modules roles/permissions}}
+
+
+* {Roles}
+
+    Roles are created by the Jahia administrator to gather different permissions in a more understandable way for end users.
+    They are managed with the {{{./ui.html#management}roles manager}}.
+    The role <<<contributor>>> contains all permissions required to use the contribute mode. If the administrator decides that
+    contributors cannot delete items, the permission to delete items can be removed from the role.
+
+    Roles are stored as a flat list of <<<jnt:role>>> nodes under <<</roles>>>
+
+* {Access Control Lists}
+
+    An ACL (access control list) defines which roles are granted to a user or group on a specific node. It defines the
+    access policy on a node and its sub-tree : ACLs are inherited on all sub-nodes. ACL are structured in multiple Access
+    Control Entries - one entry for every user and every group that need to have a roles.
+
+    ACL are stored as a <<<jnt:acl>>> sub-node on the node where it is set. It contains a list of <<<jnt:ace>>>.
+
+    Roles are assigned to users and groups by the editor, through the {{{./ui.html#engine}<Roles> tab}} of the node engines. Each line in the
+    table corresponds to an entry in the ACL.
+
+    A user will have a specific permission if he (or a group he's member of) has been assigned at least one role containing
+    that permission.
+
+    It is possible to partially break the role inheritance at one level by "removing" the role to a user or a group. In that
+    case, the ACE node will contain "DENY" in the <<<j:aceType>>> property.
+
+    In order to completely redefine ACL on a node, the "Break all inheritance" can be used. The property <<<j:inherit>>> is
+    set to false, and the permission check will not look into the ancestors ACLs.
+

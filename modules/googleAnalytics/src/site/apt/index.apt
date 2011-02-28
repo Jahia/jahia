@@ -1,1 +1,40 @@
-googleAnalytics
+Google Analytics module
+
+* {How it works ?}
+  two things :
+
+  - a filter that render the javascript.
+  when Google analytics is activated and set, a filter add in each page (page template, or content template) the
+  google analytics javascript.
+  - a binded component.
+  with a binded component you can select on wich content or content type a google analytics information will be store.
+
+* {Activate Google Analytics}
+
+  In the option panel of the site node
+  [./images/selectEditSite.png]
+  Enter your google analytics
+  [./images/setOpion.png]
+
+* {How to customize}
+
+  The filter can be configured with a spring configuration file located in META-INF/spring/googleAnalytics.xml
+
++----------
+    <bean class="org.jahia.modules.googleAnalytics.GoogleAnalyticsFilter">
+        <property name="applyOnConfigurations" value="page" />
+        <property name="skipOnConfiguration" value="include,wrapper" />
+        <property name="applyOnModes" value="live" />
+        <property name="priority" value="3" />
+        <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
+        <property name="template" value="modules/googleAnalytics/scripts/googleAnalytics.groovy"/>
+        <property name="scriptMap" value="gaMap"/>
+    </bean>
++----------
+
+  specific properties of the filter :
+  - scriptMap : name of the map that contains all contents assigned with the binded component
+
+  - template :  script that will be executed to render the javascript. the variables available in the context are :
+    - webPropertyID : the google web ID set in the website
+    - scriptMap (gaMap in the example) : a map that contains all references to the binded component meet in context

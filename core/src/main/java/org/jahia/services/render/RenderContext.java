@@ -46,7 +46,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.collections.map.LazyMap;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;

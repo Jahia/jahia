@@ -172,7 +172,7 @@ public abstract class AbstractFilter implements RenderFilter {
         }
 
         public String getValue(RenderContext renderContext, Resource resource) {
-            return ((Script) renderContext.getRequest().getAttribute("script")).getTemplate().getModule().getName();
+            return ((Script) renderContext.getRequest().getAttribute("script")).getView().getModule().getName();
         }
     }
 

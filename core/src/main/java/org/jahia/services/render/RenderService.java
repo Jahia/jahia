@@ -34,7 +34,10 @@ package org.jahia.services.render;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRValueWrapperImpl;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
@@ -47,7 +50,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -160,13 +169,13 @@ public class RenderService {
     }
 
 
-    public boolean hasTemplate(JCRNodeWrapper node, String key) {
+    public boolean hasView(JCRNodeWrapper node, String key) {
         try {
-            if (hasTemplate(node.getPrimaryNodeType(), key)) {
+            if (hasView(node.getPrimaryNodeType(), key)) {
                 return true;
             }
             for (ExtendedNodeType type : node.getMixinNodeTypes()) {
-                if (hasTemplate(type, key)) {
+                if (hasView(type, key)) {
                     return true;
                 }
             }
@@ -175,29 +184,213 @@ public class RenderService {
         }
         return false;
     }
-    public boolean hasTemplate(ExtendedNodeType nt, String key) {
+    public boolean hasView(ExtendedNodeType nt, String key) {
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            if (scriptResolver.hasTemplate(nt, key)) {
+            if (scriptResolver.hasView(nt, key)) {
                 return true;
             }
         }
         return false;
     }
 
-    public SortedSet<Template> getAllTemplatesSet() {
-        SortedSet<Template> set = new TreeSet<Template>();
+    public SortedSet<View> getAllViewsSet() {
+        SortedSet<View> set = new TreeSet<View>();
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            set.addAll(scriptResolver.getAllTemplatesSet());
+            set.addAll(scriptResolver.getAllViewsSet());
         }
         return set;
     }
 
-    public SortedSet<Template> getTemplatesSet(ExtendedNodeType nt) {
-        SortedSet<Template> set = new TreeSet<Template>();
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt) {
+        SortedSet<View> set = new TreeSet<View>();
         for (ScriptResolver scriptResolver : scriptResolvers) {
-            set.addAll(scriptResolver.getTemplatesSet(nt));
+            set.addAll(scriptResolver.getViewsSet(nt));
         }
         return set;
     }
+    
+    public org.jahia.services.render.Template resolveTemplate(Resource resource, RenderContext renderContext) throws Exception{
+        final JCRNodeWrapper node = resource.getNode();
+        String templateName = resource.getTemplate();
+        if ("default".equals(templateName)) {
+            templateName = null;
+        }
+        JCRNodeWrapper current = node;
+
+
+        org.jahia.services.render.Template template = null;
+        try {
+            JCRNodeWrapper site;
+            String jsite = renderContext.getRequest().getParameter("jsite");
+            if (jsite == null) {
+                jsite = (String) renderContext.getMainResource().getModuleParams().get("jsite");
+            }
+            if(jsite!=null) {
+                site = node.getSession().getNodeByIdentifier(jsite);
+                renderContext.setSite((JCRSiteNode) site);
+            } else {
+                site = node.getResolveSite();
+            }
+            JCRNodeWrapper templatesNode = null;
+            if (site != null && site.hasNode("templates")) {
+                templatesNode = site.getNode("templates");
+            }
+
+            if (current.isNodeType("jnt:template")) {
+                // Display a template node in studio
+                JCRNodeWrapper parent = current.getParent();
+                while (!(parent.isNodeType("jnt:templatesFolder"))) {
+                    template = new org.jahia.services.render.Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
+                            templateName, parent.getIdentifier(), template);
+                    parent = parent.getParent();
+                }
+            } else {
+                if (resource.getTemplate().equals("default") && current.hasProperty("j:templateNode")) {
+                    // A template node is specified on the current node
+                    JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
+                    if (!checkTemplatePermission(resource, renderContext, templateNode)) {
+                        throw new AccessDeniedException(resource.getTemplate());
+                    }
+                    template = new org.jahia.services.render.Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
+                            templateName, templateNode.getIdentifier(), template);
+                } else if (templatesNode != null) {
+                    template = addTemplates(resource, renderContext, templatesNode);
+                }
+
+                if (template == null) {
+                    template = addTemplates(resource, renderContext,
+                            node.getSession().getNode(JCRContentUtils.getSystemSitePath() + "/templates"));
+                }
+
+                if (template != null) {
+                    // Add cascade of parent templates
+                    JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.getNode()).getParent();
+                    while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
+                        template = new org.jahia.services.render.Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
+                                null, templateNode.getIdentifier(), template);
+                        templateNode = templateNode.getParent();
+                    }
+                } else {
+                    throw new TemplateNotFoundException(resource.getTemplate());
+                }
+            }
+        } catch (AccessDeniedException e) {
+            throw e;
+        } catch (RepositoryException e) {
+            logger.error("Cannot find template", e);
+        }
+        return template;
+    }
+
+    private org.jahia.services.render.Template addTemplates(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {
+        String type = "contentTemplate";
+        if (resource.getNode().isNodeType("jnt:page")) {
+            type = "pageTemplate";
+        }
+
+        String query =
+                "select * from [jnt:" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() + "'])";
+        if (resource.getTemplate() != null && !resource.getTemplate().equals("default")) {
+            query += " and name(w)='"+ resource.getTemplate()+"'";
+        } else {
+            query += " and [j:defaultTemplate]=true";
+        }
+        query += " order by [j:priority] desc";
+        Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query,
+                Query.JCR_SQL2);
+        QueryResult result = q.execute();
+        NodeIterator ni = result.getNodes();
+
+        List<Template> templates = new ArrayList<Template>();
+//        SortedMap<String, View> templates = new TreeMap<String, View>(new Comparator<String>() {
+//            public int compare(String o1, String o2) {
+//                if (o1 == o2) {
+//                    return 0;
+//                }
+//                if (o1 == null) {
+//                    return 1;
+//                } else if (o2 == null) {
+//                    return -1;
+//                }
+//                try {
+//                    if (NodeTypeRegistry.getInstance().getNodeType(o1).isNodeType(o2)) {
+//                        return -1;
+//                    } else {
+//                        return 1;
+//                    }
+//                } catch (NoSuchNodeTypeException e) {
+//                    e.printStackTrace();
+//                    return 1;
+//                }
+//            }
+//        });
+        while (ni.hasNext()) {
+            final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
+            addTemplate(resource, renderContext, contentTemplateNode, templates);
+        }
+        if (templates.isEmpty()) {
+            return null;
+        } else {
+            return templates.get(0);
+        }
+    }
+
+    private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, List<Template> templates)
+            throws RepositoryException {
+        boolean ok = true;
+        if (templateNode.hasProperty("j:applyOn")) {
+            ok = false;
+            Value[] values = templateNode.getProperty("j:applyOn").getValues();
+            for (Value value : values) {
+                if (resource.getNode().isNodeType(value.getString())) {
+                    ok = true;
+                    break;
+                }
+            }
+            if (values.length == 0) {
+                ok = true;
+            }
+        }
+        if (!checkTemplatePermission(resource, renderContext, templateNode)) return;
+
+        if (ok) {
+            templates.add(new Template(
+                    templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
+                            null, templateNode.getIdentifier(), null));
+        }
+    }
+
+    private boolean checkTemplatePermission(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {
+        if (templateNode.hasProperty("j:requiredMode")) {
+            String req = templateNode.getProperty("j:requiredMode").getString();
+            if (renderContext.isContributionMode() && !req.equals("contribute")) {
+                return false;
+            } else if (!renderContext.isContributionMode() && !req.equals("live")) {
+                return false;
+            }
+
+        }
+        if (templateNode.hasProperty("j:requiredPermissions")) {
+            Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
+            for (Value value : values) {
+                if (!resource.getNode().hasPermission(((JCRValueWrapperImpl) value).getNode().getName())) {
+                    return false;
+                }
+            }
+
+        }
+        if (templateNode.hasProperty("j:requireLoggedUser") && templateNode.getProperty("j:requireLoggedUser").getBoolean()) {
+            if (!renderContext.isLoggedIn()) {
+                return false;
+            }
+        }
+        if (templateNode.hasProperty("j:requirePrivilegedUser") && templateNode.getProperty("j:requirePrivilegedUser").getBoolean()) {
+            if (!renderContext.getUser().isMemberOfGroup(0,"privileged")) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
 
 }

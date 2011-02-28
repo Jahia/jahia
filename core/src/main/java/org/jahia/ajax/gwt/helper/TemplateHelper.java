@@ -129,7 +129,7 @@ public class TemplateHelper {
         return result;
     }
 
-    public List<String[]> getTemplatesSet(String path, JCRSessionWrapper currentUserSession)
+    public List<String[]> getViewsSet(String path, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         List<String[]> templatesPath = new ArrayList<String[]>();
         try {
@@ -140,8 +140,8 @@ public class TemplateHelper {
                 def = node.getProperty("j:view").getString();
             }
 
-            SortedSet<Template> set = getTemplatesSet(node);
-            for (Template s : set) {
+            SortedSet<View> set = getViewsSet(node);
+            for (View s : set) {
                 String tpl;
                 if (s.getModule() == null) {
                     tpl = "Default";
@@ -168,10 +168,10 @@ public class TemplateHelper {
      * @return
      * @throws RepositoryException
      */
-    public SortedSet<Template> getTemplatesSet(JCRNodeWrapper node) throws RepositoryException {
+    public SortedSet<View> getViewsSet(JCRNodeWrapper node) throws RepositoryException {
         ExtendedNodeType nt = node.getPrimaryNodeType();
-        SortedSet<Template> set;
-        SortedSet<Template> result = new TreeSet<Template>();
+        SortedSet<View> set;
+        SortedSet<View> result = new TreeSet<View>();
 //        if (node.getPrimaryNodeTypeName().equals("jnt:nodeReference")) {
 //
 //            set = getTemplatesSet((JCRNodeWrapper) node.getProperty("j:node").getNode());
@@ -182,13 +182,13 @@ public class TemplateHelper {
 //                set.addAll(getTemplatesSet(c));
 //            }
 //        } else {
-        set = renderService.getTemplatesSet(nt);
+        set = renderService.getViewsSet(nt);
 //        }
-        for (Template template : set) {
-            final String key = template.getKey();
+        for (View view : set) {
+            final String key = view.getKey();
             if (!key.startsWith("wrapper.") && !key.startsWith("skins.") && !key.startsWith("debug.") &&
                     !key.matches("^.*\\\\.hidden\\\\..*")) {
-                result.add(template);
+                result.add(view);
             }
         }
 

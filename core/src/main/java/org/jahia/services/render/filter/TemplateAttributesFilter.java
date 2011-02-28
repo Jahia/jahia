@@ -85,7 +85,7 @@ public class TemplateAttributesFilter extends AbstractFilter {
 
         Script script = (Script) request.getAttribute("script");
         chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request", new LocalizationContext(
-                new JahiaResourceBundle(resource.getLocale(), script.getTemplate().getModule().getName()),
+                new JahiaResourceBundle(resource.getLocale(), script.getView().getModule().getName()),
                 resource.getLocale()));
         return null;
     }

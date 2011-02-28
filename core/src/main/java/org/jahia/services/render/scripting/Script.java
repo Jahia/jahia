@@ -35,7 +35,7 @@ package org.jahia.services.render.scripting;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.Template;
+import org.jahia.services.render.View;
 
 /**
  * A template script, used to render a resource
@@ -54,7 +54,7 @@ public interface Script {
 
     /**
      * Provides access to the template associated with this script
-     * @return the Template instance that will be executed
+     * @return the View instance that will be executed
      */
-    public Template getTemplate();
+    public View getView();
 }

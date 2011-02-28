@@ -43,7 +43,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.render.RenderService;
-import org.jahia.services.render.Template;
+import org.jahia.services.render.View;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PropertyType;
@@ -72,7 +72,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         ExtendedNodeType realNodeType = (ExtendedNodeType) context.get("contextType");
         String propertyName = context.containsKey("dependentProperties") ? ((List<String>)context.get("dependentProperties")).get(0) : null; 
         
-        SortedSet<Template> templates = new TreeSet<Template>();
+        SortedSet<View> views = new TreeSet<View>();
 
         try {
             final List<String> nodeTypeList = new ArrayList<String>();
@@ -180,10 +180,10 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 nodeTypeList.add("nt:base");
             }
 
-            templates = new TreeSet<Template>();
+            views = new TreeSet<View>();
 
             for (String s : nodeTypeList) {
-                templates.addAll(RenderService.getInstance().getTemplatesSet(
+                views.addAll(RenderService.getInstance().getViewsSet(
                         NodeTypeRegistry.getInstance().getNodeType(s)));
             }
 
@@ -192,21 +192,21 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         }
 
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
-        for (Template template : templates) {
-            if (!"false".equals(template.getProperties().getProperty("visible")) &&
-                    ((StringUtils.isEmpty(param) && template.getProperties().get("type") == null) ||
-                            param.equals(template.getProperties().get("type"))) &&
-                    !template.getKey().startsWith("wrapper.") && !template.getKey().contains("hidden.")
+        for (View view : views) {
+            if (!"false".equals(view.getProperties().getProperty("visible")) &&
+                    ((StringUtils.isEmpty(param) && view.getProperties().get("type") == null) ||
+                            param.equals(view.getProperties().get("type"))) &&
+                    !view.getKey().startsWith("wrapper.") && !view.getKey().contains("hidden.")
 //                    && (site == null || !"siteLayout".equals(template.getModule().getModuleType()) ||
 //                            template.getModule().getName().equals(site.getTemplatePackageName()))
                     ) {
                 HashMap<String, Object> map = new HashMap<String, Object>();
-                Properties properties = template.getProperties();
+                Properties properties = view.getProperties();
                 for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                     map.put(entry.getKey().toString(), entry.getValue());
                 }
-                vs.add(new ChoiceListValue(template.getKey(), map,
-                        new ValueImpl(template.getKey(), PropertyType.STRING, false)));
+                vs.add(new ChoiceListValue(view.getKey(), map,
+                        new ValueImpl(view.getKey(), PropertyType.STRING, false)));
             }
         }
         return vs;

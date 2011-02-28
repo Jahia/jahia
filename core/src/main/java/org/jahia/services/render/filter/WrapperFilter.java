@@ -78,7 +78,7 @@ public class WrapperFilter extends AbstractFilter {
             Resource wrapperResource = new Resource(node, resource.getTemplateType(),
                     wrapper,
                     Resource.CONFIGURATION_WRAPPER);
-            if (service.hasTemplate(node, wrapper)) {
+            if (service.hasView(node, wrapper)) {
                 Object wrappedContent = renderContext.getRequest().getAttribute("wrappedContent");
                 try {
                     renderContext.getRequest().setAttribute("wrappedContent", output);

@@ -55,7 +55,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         Script script = (Script) renderContext.getRequest().getAttribute("script");
         JCRNodeWrapper node = resource.getNode();
         if (script != null) {
-            String requirePermissions = script.getTemplate().getProperties().getProperty("requirePermissions");
+            String requirePermissions = script.getView().getProperties().getProperty("requirePermissions");
             if (requirePermissions != null) {
                 chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
                 String[] perms = requirePermissions.split(" ");

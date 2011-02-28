@@ -45,9 +45,9 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.Template;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-import org.jahia.services.render.filter.Template;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.tools.jvm.ThreadMonitor;
@@ -115,14 +115,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         boolean isBinded = resource.getNode().isNodeType("jmix:bindedComponent");
         if (script != null) {
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+                    script.getView().getProperties().getProperty("cache.perUser", "false")));
             if(isBinded) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
             } else {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+                    script.getView().getProperties().getProperty("cache.mainResource", "false")));
             }
-            if (Boolean.valueOf(script.getTemplate().getProperties().getProperty(
+            if (Boolean.valueOf(script.getView().getProperties().getProperty(
                     "cache.additional.key.useMainResourcePath", "false"))) {
                 resource.getModuleParams().put("module.cache.additional.key",
                         renderContext.getMainResource().getNode().getPath());
@@ -211,12 +211,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
         if (script != null) {
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+                    script.getView().getProperties().getProperty("cache.perUser", "false")));
             if(isBinded) {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.TRUE);
             } else {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+                    script.getView().getProperties().getProperty("cache.mainResource", "false")));
             }
         }
         resource.getDependencies().add(resource.getNode().getPath());
@@ -227,7 +227,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         if (key.contains("_mr_")) {
             resource.getDependencies().add(renderContext.getMainResource().getNode().getPath());
-            if (script != null && Boolean.valueOf(script.getTemplate().getProperties().getProperty(
+            if (script != null && Boolean.valueOf(script.getView().getProperties().getProperty(
                     "cache.mainResource.flushParent", "false"))) {
                 try {
                     resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
@@ -265,7 +265,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
                 String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
                 Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
-                        script != null ? script.getTemplate().getProperties().getProperty("cache.expiration",
+                        script != null ? script.getView().getProperties().getProperty("cache.expiration",
                                 "-1") : "-1");
                 final Cache dependenciesCache = cacheProvider.getDependenciesCache();
                 Set<String> depNodeWrappers = resource.getDependencies();

@@ -41,7 +41,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.filter.Template;
+import org.jahia.services.render.Template;
 import org.slf4j.Logger;
 
 import javax.jcr.PathNotFoundException;

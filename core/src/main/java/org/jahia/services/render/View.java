@@ -30,30 +30,42 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.render.scripting;
+package org.jahia.services.render;
 
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.View;
-import org.jahia.services.render.TemplateNotFoundException;
-import org.jahia.services.render.scripting.Script;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 
-import java.util.SortedSet;
+import java.util.Properties;
 
 /**
- * A ScriptResolver is responsible for resolving the script to be used to render the resource.
+ * Created by IntelliJ IDEA.
  * User: toto
- * Date: Sep 28, 2009
- * Time: 7:22:55 PM
+ * Date: Nov 16, 2009
+ * Time: 11:05:46 AM
  * 
  */
-public interface ScriptResolver {
-    public Script resolveScript(Resource resource, RenderContext context) throws TemplateNotFoundException;
+public interface View {
+    String getKey();
 
-    public boolean hasView(ExtendedNodeType nt, String s);
+    JahiaTemplatesPackage getModule();
 
-    public SortedSet<View> getAllViewsSet();
+    String getDisplayName();
 
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt);
+    String getFileExtension();
+
+    public String getPath();    
+
+    /**
+     * Return printable information about the script : type, localization, file, .. in order to help
+     * template developer to find the original source of the script
+     *
+     * @return
+     */
+    String getInfo();
+
+    /**
+     * Return properties of the template
+     *
+     * @return
+     */
+    Properties getProperties();
 }

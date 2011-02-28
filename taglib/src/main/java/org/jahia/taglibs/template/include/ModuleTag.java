@@ -253,7 +253,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    script.getTemplate().getInfo(), null);
+                                    script.getView().getInfo(), null);
                         } catch (TemplateNotFoundException e) {
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found",
                                     null);

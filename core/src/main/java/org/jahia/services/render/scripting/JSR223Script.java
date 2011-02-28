@@ -53,14 +53,14 @@ public class JSR223Script implements Script {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JSR223Script.class);
 
-    private Template template;
+    private View view;
 
     /**
      * Builds the script object
      *
      */
-    public JSR223Script(Template template) {
-        this.template = template;
+    public JSR223Script(View view) {
+        this.view = view;
     }
 
     /**
@@ -75,7 +75,7 @@ public class JSR223Script implements Script {
     public String execute(Resource resource, RenderContext context) throws RenderException {
         ScriptEngine scriptEngine = null;
         try {
-            scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(template.getFileExtension());
+            scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(view.getFileExtension());
         } catch (ScriptException e) {
             logger.error(e.getMessage(), e);
         }
@@ -89,7 +89,7 @@ public class JSR223Script implements Script {
                     bindings.put(currentAttributeName, context.getRequest().getAttribute(currentAttributeName));
                 }
             }
-            InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template.getPath());
+            InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(view.getPath());
             if (scriptInputStream != null) {
                 Reader scriptContent = null;
                 try {
@@ -101,7 +101,7 @@ public class JSR223Script implements Script {
                     StringWriter writer = (StringWriter) scriptContext.getWriter();
                     return writer.toString();
                 } catch (ScriptException e) {
-                    throw new RenderException("Error while executing script " + template.getPath(), e);
+                    throw new RenderException("Error while executing script " + view.getPath(), e);
                 } finally {
                     if (scriptContent != null) {
                         IOUtils.closeQuietly(scriptContent);
@@ -113,12 +113,12 @@ public class JSR223Script implements Script {
     }
 
     /**
-     * Provides access to the template associated with this script
+     * Provides access to the view associated with this script
      *
-     * @return the Template instance that will be executed
+     * @return the View instance that will be executed
      */
-    public Template getTemplate() {
-        return template;
+    public View getView() {
+        return view;
     }
 
 }

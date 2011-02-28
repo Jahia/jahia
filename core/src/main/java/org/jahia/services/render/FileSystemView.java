@@ -47,13 +47,13 @@ import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 
 /**
- * Implementation of the {@link Template} that uses {@link RequestDispatcher} to forward to a JSP resource.
+ * Implementation of the {@link View} that uses {@link RequestDispatcher} to forward to a JSP resource.
  * User: toto
  * Date: Sep 28, 2009
  * Time: 7:20:38 PM
  */
-public class FileSystemTemplate implements Comparable<FileSystemTemplate>, Template {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FileSystemTemplate.class);
+public class FileSystemView implements Comparable<FileSystemView>, View {
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FileSystemView.class);
     private String path;
     private String fileExtension;
     private String key;
@@ -67,7 +67,7 @@ public class FileSystemTemplate implements Comparable<FileSystemTemplate>, Templ
         propCache.clear();
     }
 
-    public FileSystemTemplate(String path, String key, JahiaTemplatesPackage ownerPackage, String displayName) {
+    public FileSystemView(String path, String key, JahiaTemplatesPackage ownerPackage, String displayName) {
         this.path = path;
         this.key = key;
         this.ownerPackage = ownerPackage;
@@ -145,7 +145,7 @@ public class FileSystemTemplate implements Comparable<FileSystemTemplate>, Templ
             return false;
         }
 
-        FileSystemTemplate template = (FileSystemTemplate) o;
+        FileSystemView template = (FileSystemView) o;
 
         if (displayName != null ? !displayName.equals(template.displayName) : template.displayName != null) {
             return false;
@@ -172,7 +172,7 @@ public class FileSystemTemplate implements Comparable<FileSystemTemplate>, Templ
         return result;
     }
 
-    public int compareTo(FileSystemTemplate template) {
+    public int compareTo(FileSystemView template) {
         if (ownerPackage == null) {
             if (template.ownerPackage != null ) {
                 return 1;

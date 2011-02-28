@@ -49,7 +49,7 @@ import java.util.Enumeration;
  * This class uses the standard request dispatcher to execute a JSP / Quercus script or any file handled by the
  * application server.
  *
- * The template path will be used as a resource path on which the request will be dispatched.
+ * The view path will be used as a resource path on which the request will be dispatched.
  *
  * @author toto
  */
@@ -61,14 +61,14 @@ public class RequestDispatcherScript implements Script {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    private Template template;
+    private View view;
 
     /**
      * Builds the script object
      *
      */
-    public RequestDispatcherScript(Template template) {
-        this.template = template;
+    public RequestDispatcherScript(View view) {
+        this.view = view;
     }
 
     /**
@@ -80,20 +80,20 @@ public class RequestDispatcherScript implements Script {
      * @throws org.jahia.services.render.RenderException
      */
     public String execute(Resource resource, RenderContext context) throws RenderException {
-        if (template == null) {
-            throw new RenderException("Template not found for : " + resource);
+        if (view == null) {
+            throw new RenderException("View not found for : " + resource);
         } else {
             if (logger.isDebugEnabled()) {
-                logger.debug("Template '" + template + "' resolved for resource: " + resource);
+                logger.debug("View '" + view + "' resolved for resource: " + resource);
             }
         }
 
         this.request = context.getRequest();
         this.response = context.getResponse();
-        rd = request.getRequestDispatcher(template.getPath());
+        rd = request.getRequestDispatcher(view.getPath());
 
         Object oldModule = request.getAttribute("currentModule");
-        request.setAttribute("currentModule", template.getModule());
+        request.setAttribute("currentModule", view.getModule());
 
         if (logger.isDebugEnabled()) {
             // Let's enumerate request attribute to see what we are exposing.
@@ -127,12 +127,12 @@ public class RequestDispatcherScript implements Script {
     }
 
     /**
-     * Provides access to the template associated with this script
+     * Provides access to the view associated with this script
      *
-     * @return the Template instance that will be executed
+     * @return the View instance that will be executed
      */
-    public Template getTemplate() {
-        return template;
+    public View getView() {
+        return view;
     }
 
 }

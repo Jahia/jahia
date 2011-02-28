@@ -58,7 +58,7 @@ public class BaseAttributesFilter extends AbstractFilter {
         try {
             final Script script = service.resolveScript(resource, context);
             chain.pushAttribute(request, "script", script);
-            chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
+            chain.pushAttribute(request, "scriptInfo", script.getView().getInfo());
         } catch (TemplateNotFoundException e) {
             chain.pushAttribute(request, "script", null);
             chain.pushAttribute(request, "scriptInfo", null);

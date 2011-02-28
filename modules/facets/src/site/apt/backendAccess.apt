@@ -1,8 +1,69 @@
 Using faceting in the Jahia backend
 
-* Integration of Solr in Jackrabbit
+* Integration of Solr faceting in Jackrabbit
+
+  Jahia has extended Jackrabbit and allows to use the custom functions <<<rep:facet()>>> and <<<rep:filter()>>> within SQL-2 or QOM queries. These functions are not (yet) supported for
+  the deprecated XPATH queries.
 
 * Using the API
 
+  The following code snippet shows how to create a query using the query object model (QOM) and specifying two facets: one on the <<<eventsType>>> and the other on the <<<startDate>>>. 
+  The parameters within the <<<rep:facet()>>> function are described in {{{./facetTypes.html} Facet types and their parameters}}. You can prefix the parameters with <<<facet.>>>, if you 
+  don't, then Jahia will do it internally.
+
++-----------
+        QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
+        QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
+
+        qomBuilder.setSource(factory.selector("jnt:event", "event"));
+        qomBuilder.andConstraint(factory.descendantNode("event", "/sites/jcrFacetTest"));
+        
+        qomBuilder.getColumns().add(factory.column("event", "eventsType", "rep:facet(facet.mincount=1&key=1)"))
+        qomBuilder.getColumns().add(factory.column("event", "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2000-03-01T00:00:00Z&date.gap=+1MONTH&key=2)"))        
+
+        QueryObjectModel qom = qomBuilder.createQOM();
+        QueryResultWrapper res = (QueryResultWrapper) qom.execute();
++-----------
+
+  From the result object, you can then retrieve the facet values for each facet, like this (the example is simply printing 
+  the facet values into the output console):
+
++-----------
+
+        field = res.getFacetField("eventsType");
+        for (FacetField.Count count : field.getValues().iterator()) {
+            System.out.println(count.getName() + ": " + count.getCount());
+        }
+
++----------- 
+
+  In order to apply a facet value as a filter to narrow down a query you have to use <<<count.getFilterQuery()>>> within a <<<rep:filter()>>> function constraint, like this
+  (for multiple filters you simply add more with calling more <<<andConstraint>>> methods): 
+
++-----------
+        QOMBuilder qomBuilderForDrilldown = new QOMBuilder(factory, session.getValueFactory());
+
+        qomBuilderForDrilldown.setSource(factory.selector("jnt:event", "event"));
+        qomBuilderForDrilldown.andConstraint(factory.descendantNode("event", "/sites/jcrFacetTest"));
+        
+        qomBuilderForDrilldown.getColumns().add(factory.column("event", "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2000-03-01T00:00:00Z&date.gap=+1MONTH&key=2)"))        
+
+        qomBuilderForDrilldown.andConstraint(factory.fullTextSearch("event", "rep:filter("
+                        + Text.escapeIllegalJcrChars(count.getFilterQuery()) + ")", 
+                        factory.literal(session.getValueFactory().createValue("eventsType"))));
+                        
+        QueryObjectModel qomForDrilldown = qomBuilderForDrilldown.createQOM();
+        QueryResultWrapper drilldownRes = (QueryResultWrapper) qomForDrilldown.execute();
+                        
++-----------
+                        
+  In web applications there will obviously be an interaction step in between, where the user will choose a facet value. This means that the
+  filter-query either needs to be passed to the client and back, or you find some caching solution (e.g. in the session). Jahia's facet component passes 
+  the filter-query to the browser by encoding it, which reduces its size and hides the real names of the fields used in the Lucene index from the
+  end-user. The encoding is done with <<<org.jahia.utils.Url.encodeUrlParam>>> and the decoding with <<<org.jahia.utils.Url.decodeUrlParam>>>.                           
+                        
 * Using the JSP tags 
 
+  For displaying the facets and facet values with the right labels and to create the URLs (with the mentioned encodings) to drilldown facet values, and to 
+  display the currently applied facet values to the query and to create the right URL to remove an applied facet, Jahia provides convenient JSP tags and
+  functions, which you will find in the Jahia taglib documentation. 

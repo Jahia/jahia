@@ -5,10 +5,10 @@ Facet module and components
 
 * Facets list
 
-  This component can be found under {{Site components -> Facets list}}.
+  This component can be found under <<Site components -> Facets list>>.
   
   If for instance you want to add a Facets list on the News template, simply open the Studio, select your template-set and then navigate to 
-  the news template in the left side-panel. Find the {{Site components -> Facets list}} component and drag&drop it to the 
+  the news template in the left side-panel. Find the <<Site components -> Facets list>> component and drag&drop it to the 
   <<right column area>>. In the popup click on <<Save>>.
   
 [./images/facets/facetslist.png] Facets list component in left side-panel of the Studio
@@ -60,7 +60,7 @@ Facet module and components
   Now when you select a facet value, it will be included as filter when querying the list in the mainarea and you will see the selected
   facet in the active facets area, where you can again remove it, if you want.
   
-[./images/facets/facetinnewspage.png] Active facet in news page      
+[./images/facets/activefacet.png] Active facet in news page      
 
 ** Drill-down urls
 
@@ -77,7 +77,7 @@ Facet module and components
 
 * Site Tag cloud
 
-  The second out-of-the-box component using faceting in the backend is the tag cloud, which can be found under {{Site components -> Site Tag cloud}}.
+  The second out-of-the-box component using faceting in the backend is the tag cloud, which can be found under <<Site components -> Site Tag cloud>>.
   
   This component can either be dropped to a page in <<Edit>> mode, or to a template in the <<Studio>>, but if you do the latter, you will have to still link the site's search 
   <<results page>> to the component in <<Edit>> mode.  

@@ -9,7 +9,7 @@ Facet types and their parameters
   
 * Common parameters for all facet types
 
-** facet 
+** field (in the query: <<<key>>>)
 
   This is an id, you can choose for the facet classification. Elements with the same facet id will be grouped together. 
   
@@ -23,7 +23,7 @@ Facet types and their parameters
  
   This is a multilingual property holding the label for the facet, which will be displayed as facet classification title above the facet values.
     
-** field
+** field (in the query the nodetype is set with <<<nodetype>>>, but the property name is passed in the column name)
  
   This property allows you to specify a field, which should be treated as a facet. In Jahia this is a property definition in a nodetype 
   (e.g. <<<jnt:event;eventsType>>> or <<<jmix:categorized;j:defaultCategory>>>). 

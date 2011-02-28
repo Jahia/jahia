@@ -1,8 +1,9 @@
 #bodywrapper .contentinfos {
-    background: none repeat scroll 0 0 #cde6ff;
-    border: 1px solid #99ccff;
-    margin: 0.5em 0;
+    background: none;
+    border: 1px solid #ccc;
+    margin: 1em 0;
     padding: 0.5em;
+	color:#666;
 }
 #bodywrapper .contentinfos h3 {
 

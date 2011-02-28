@@ -125,7 +125,7 @@
         }
 
         function onresizewindow() {
-            h = window.innerHeight- $("#contributeToolbar").height();
+            h = document.documentElement.clientHeight - $("#contributeToolbar").height();
             $("#bodywrapper").attr("style","position:relative; overflow:auto; height:"+ h +"px");
         }
 
@@ -192,4 +192,3 @@
         <template:module path="/users/${renderContext.user.username}" template="tasklist" var="temp"/>
     </div>
 </div>
-

@@ -1,0 +1,33 @@
+###############################################################################
+package org.jahia.modules.event.rules
+
+#list any import classes here.
+import org.jahia.services.content.*
+import org.jahia.services.content.rules.*
+import org.jahia.services.render.*
+import org.jahia.services.search.*
+import org.apache.commons.lang.time.*
+import org.slf4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global SearchURLService urlService
+global RenderContext renderContext
+###############################################################################
+
+rule "Event search result hit"
+  when
+        A search result hit is present
+            - the node is of type jnt:event
+  then
+        Append URL query-parameter "filter" with getEventPageFilter((JCRNodeWrapper)searchHit.getRawHit())
+		Append URL query-parameter "calStartDate" with DateFormatUtils.format(((JCRNodeWrapper)searchHit.getRawHit()).getProperty("startDate").getDate(), "yyyy-MM-dd")
+end
+
+function String getEventPageFilter( JCRNodeWrapper node ) {
+        return "{name:\"startDate\",value:\"" + DateFormatUtils.format(node.getProperty("startDate").getDate(), "yyyy-MM-dd") + "\",op:\"eq\",uuid:\"" + node.getParent().getIdentifier() + "\",format:\"yyyy-MM-dd\",type:\"date\"}";
+}

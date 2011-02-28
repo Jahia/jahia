@@ -3,6 +3,8 @@ package org.jahia.modules.search.rules
 
 #list any import classes here.
 import org.jahia.services.content.rules.*
+import org.jahia.services.render.*
+import org.jahia.services.search.*
 import org.slf4j.Logger
 
 expander rules.dsl
@@ -11,5 +13,7 @@ expander rules.dsl
 global User user
 global Service service
 global Logger logger
+global SearchURLService urlService
+global RenderContext renderContext
 ###############################################################################
 

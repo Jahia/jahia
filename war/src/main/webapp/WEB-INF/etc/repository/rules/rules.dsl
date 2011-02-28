@@ -7,7 +7,6 @@
 [condition][]A property {property} has been set on a node=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
 [condition][]A property {property} has been removed from a node=property : DeletedPropertyFact ( name == "{property}", propertyName : name, node : node )
 [condition][]A new page is created with template {template}=page : AddedNodeFact() ; property : ChangedPropertyFact ( name == "j:templateNode", stringValue matches "/.*/{template}", node == page )
-[condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
 [condition][]The metadata field "{name}" has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {name} : value )
 [condition][]The metadata field "{name}" identified by {field} has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {field} : value )
 [condition][]A metadata field has been extracted=metadata : ExtractedVariable ( node == node.path, metadataName : name, metadataValue : value, knownType : correspondingNodeTypeName, knownProperty : correspondingPropertyName )

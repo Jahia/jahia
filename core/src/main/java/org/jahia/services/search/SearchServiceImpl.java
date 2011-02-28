@@ -32,10 +32,14 @@
 
 package org.jahia.services.search;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.render.RenderContext;
 
 /**
@@ -69,8 +73,20 @@ public class SearchServiceImpl extends SearchService {
     
     @Override
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
-        return getProvider().search(criteria, context);
+        SearchResponse response = getProvider().search(criteria, context);
+        return executeURLModificationRules(response, context);
     }
+    
+    protected static SearchResponse executeURLModificationRules(
+            SearchResponse searchResult, RenderContext context) {
+        Map<String, Object> globals = new HashMap<String, Object>();
+        globals.put("renderContext", context);
+        globals.put("urlService", SearchURLService.getInstance());        
+        RulesListener.getInstance(context.getMainResource().getWorkspace()).executeRules(
+                (Collection<?>) searchResult.getResults(), globals);
+        return searchResult;
+    }
+    
 
     @Override
     public void start() throws JahiaInitializationException {

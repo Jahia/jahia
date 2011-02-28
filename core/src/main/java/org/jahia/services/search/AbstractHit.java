@@ -47,6 +47,7 @@ public abstract class AbstractHit<T> implements Hit<T> {
     protected T resource;
     private float score;
     protected RenderContext context;
+    private String queryParameter = "";
 
     /**
      * Initializes an instance of this class.
@@ -101,6 +102,14 @@ public abstract class AbstractHit<T> implements Hit<T> {
     @Override
     public boolean equals(Object obj) {
         return resource.equals(obj);
+    }
+
+    public String getQueryParameter() {
+        return queryParameter;
+    }
+
+    public void setQueryParameter(String queryParameter) {
+        this.queryParameter = queryParameter;
     }
 
 }

@@ -21,16 +21,15 @@
         <c:forEach items="${targetNode.nodes}" var="subchild">
             <c:if test="${jcr:isNodeType(subchild, 'jnt:file')}">
                 <li>
-
+                    <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
                     <c:choose>
                         <c:when test="${fn:startsWith(subchild.fileContent.contentType,'image/')}">
                             <div onclick="return false;" ondblclick="CKEDITOR.instances.editContent.insertHtml('<img src=\'${subchild.url}\'/>')">
                                 <img width="100" src="${subchild.url}"  alt="${fn:escapeXml(subchild.name)}" onmousedown="return false;" />
-                                    ${fn:escapeXml(not empty title.string ? title.string : subchild.name)}
+                                    ${fn:escapeXml(not empty title ? title : subchild.name)}
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
                             <c:set var="title" value="${fn:escapeXml(not empty title.string ? title.string : subchild.name)}"/>
                             <div onclick="return false;" ondblclick="CKEDITOR.instances.editContent.insertHtml('<a href=\'${subchild.url}\' title=\'${title}\'>${title}</a>')">
                                 <span class="icon <%=FileUtils.getFileIcon( ((JCRNodeWrapper) pageContext.findAttribute("subchild")).getName()) %>"></span>
@@ -51,8 +50,16 @@
                                         success: function() {
                                             $('#fileList${currentNode.identifier}').load('${url.base}${currentNode.path}.html.ajax?targetNodePath=${targetNode.path}');
                                             var dataText =CKEDITOR.instances.editContent.getData();
-                                            dataText = dataText.replace('<img src="${subchild.url}" />',"");
-                                            dataText = dataText.replace('<a href="${subchild.url}" title="${title}">${title}</a>',"");
+                                            while ((i = dataText.search('${subchild.url}')) > 0 ) {
+                                                var before = dataText.substring(0,i);
+                                                var after = dataText.substring(i);
+                                                dataText = before.substring(0,before.lastIndexOf('<'));
+                                                if (after.substring(after.indexOf(">")-1,after.indexOf(">")) == "/") {
+                                                    dataText += after.substring(after.indexOf("/>") + 2);
+                                                } else {
+                                                    dataText += after.substring(after.indexOf("/a>") + 3);
+                                                }
+                                            }
                                             CKEDITOR.instances.editContent.setData(dataText);
                                         }
                                     }

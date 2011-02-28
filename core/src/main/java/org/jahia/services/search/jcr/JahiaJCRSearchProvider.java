@@ -74,6 +74,7 @@ import org.jahia.services.search.JCRNodeHit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchProvider;
 import org.jahia.services.search.SearchResponse;
+import org.jahia.services.search.SearchServiceImpl;
 import org.jahia.services.search.Suggestion;
 import org.jahia.services.search.SearchCriteria.DateValue;
 import org.jahia.services.search.SearchCriteria.NodeProperty;
@@ -132,6 +133,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         }
 
                         Hit<?> hit = buildHit(row, node, context);
+                        
+                        SearchServiceImpl.executeURLModificationRules(hit, context);
+                        
                         if (addedHits.add(hit.getLink())) {
                             results.add(hit);
                         }

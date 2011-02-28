@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
@@ -50,6 +51,9 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.Template;
 
 /**
  * Search result item, represented by the JCR node. Used as a view object in JSP
@@ -60,6 +64,8 @@ import org.jahia.services.render.RenderContext;
 public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     private static Logger logger = LoggerFactory.getLogger(JCRNodeHit.class);
+    
+    private String link  = null;
 
     private Map<String, JCRPropertyWrapper> propertiesFacade;
 
@@ -94,7 +100,10 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public String getLink() {
-        return context.getURLGenerator().buildURL(resource, null, "html") + getQueryParameter();
+        if (link == null) {
+            link = resolveURL() + getQueryParameter();
+        }
+        return link;
     }
 
     public String getPath() {
@@ -191,4 +200,27 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         return usages;
     }
 
+    private String resolveURL() {
+        Template template = null;
+        JCRNodeWrapper currentNode = resource;
+        try {
+            while (template == null && currentNode != null) {
+                try {
+                    template = RenderService.getInstance().resolveTemplate(
+                            new Resource(currentNode, "html", null, Resource.CONFIGURATION_PAGE), context);
+                } catch (Exception e) {
+                    // template cannot be resolved, so try on the parent
+                }
+                if (template == null) {
+                    currentNode = currentNode.getParent();
+                }
+            }
+        } catch (Exception e) {
+            currentNode = resource;
+        }
+        if (currentNode == null) {
+            currentNode = resource;
+        }
+        return context.getURLGenerator().buildURL(currentNode, null, "html");
+    }
 }

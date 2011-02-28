@@ -73,18 +73,17 @@ public class SearchServiceImpl extends SearchService {
     
     @Override
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
-        SearchResponse response = getProvider().search(criteria, context);
-        return executeURLModificationRules(response, context);
+        return getProvider().search(criteria, context);
     }
     
-    protected static SearchResponse executeURLModificationRules(
-            SearchResponse searchResult, RenderContext context) {
+    public static void executeURLModificationRules(
+            Hit<?> searchHit, RenderContext context) {
         Map<String, Object> globals = new HashMap<String, Object>();
         globals.put("renderContext", context);
         globals.put("urlService", SearchURLService.getInstance());        
-        RulesListener.getInstance(context.getMainResource().getWorkspace()).executeRules(
-                (Collection<?>) searchResult.getResults(), globals);
-        return searchResult;
+        RulesListener.getInstance(context.getMainResource().getWorkspace()).executeRules(searchHit,
+                globals);
+        return;
     }
     
 

@@ -2,7 +2,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-
+<c:if test="${currentNode.parent.name eq 'sites'}">
+    Virtual site
+</c:if>
+<c:if test="${currentNode.parent.name eq 'templateSets'}">
+    Templates Set
+</c:if>
 <h1>Site: ${currentNode.name}</h1>
 <p>Title: <jcr:nodeProperty node="${currentNode}" name="j:title"/></p>
 <p>Server name: <jcr:nodeProperty node="${currentNode}" name="j:serverName"/></p>

@@ -27,28 +27,35 @@
             <c:if test="${jcr:isNodeType(subchild, 'jnt:file')}">
                 <li>
                     <c:if test="${fn:startsWith(subchild.fileContent.contentType,'image/')}">
-                        <img name="" width="100" src="${subchild.url}"
-                             ondblclick="insertImgSyntax('\n [[image:${subchild.url}||width=${subchild.properties["j:width"].string} height=${subchild.properties["j:height"].string}]]')"
-                             alt="${fn:escapeXml(subchild.name)}"/>
-                         ${fn:escapeXml(not empty title.string ? title.string : subchild.name)}
-                        <c:if test="${jcr:hasPermission(subchild,'jcr:removeNode')}">
-                            <form action="${url.base}${subchild.path}" method="post"
-                                  id="jahia-wiki-item-delete-${subchild.UUID}">
-                                <input type="hidden" name="methodToCall" value="delete"/>
-                                <button><fmt:message key="label.delete"/></button>
-                                <script type="text/javascript">
-                                    $(document).ready(function() {
-                                        // bind 'myForm' and provide a simple callback function
-                                        var options = {
-                                            success: function() {
-                                                $('#fileList${currentNode.identifier}').load('${url.base}${currentNode.path}.html.ajax?targetNodePath=${targetNode.path}');
-                                            }
+                        <div onclick="return false;" ondblclick="insertImgSyntax('\n [[image:${subchild.url}||width=${subchild.properties["j:width"].string} height=${subchild.properties["j:height"].string}]]')">
+                            <img name="" width="100" src="${subchild.url}" alt="${fn:escapeXml(subchild.name)}" onmousedown="return false;" />
+                                ${fn:escapeXml(not empty title.string ? title.string : subchild.name)}
+                        </div>
+                    </c:if>
+                    <c:if test="${!fn:startsWith(subchild.fileContent.contentType,'image/')}">
+                        <div onclick="return false;" ondblclick="insertImgSyntax('\n[[${fn:escapeXml(not empty title.string ? title.string : subchild.name)}>>${subchild.url}]]')">
+                            <a href="${subchild.url}" title="${fn:escapeXml(subchild.name)}" onmousedown="return false;" >
+                                    ${fn:escapeXml(not empty title.string ? title.string : subchild.name)}
+                            </a>
+                        </div>
+                    </c:if>
+                    <c:if test="${jcr:hasPermission(subchild,'jcr:removeNode')}">
+                        <form action="${url.base}${subchild.path}" method="post"
+                              id="jahia-wiki-item-delete-${subchild.UUID}">
+                            <input type="hidden" name="methodToCall" value="delete"/>
+                            <button><fmt:message key="label.delete"/></button>
+                            <script type="text/javascript">
+                                $(document).ready(function() {
+                                    // bind 'myForm' and provide a simple callback function
+                                    var options = {
+                                        success: function() {
+                                            $('#fileList${currentNode.identifier}').load('${url.base}${currentNode.path}.html.ajax?targetNodePath=${targetNode.path}');
                                         }
-                                        $('#jahia-wiki-item-delete-${subchild.UUID}').ajaxForm(options);
-                                    });
-                                </script>
-                            </form>
-                        </c:if>
+                                    }
+                                    $('#jahia-wiki-item-delete-${subchild.UUID}').ajaxForm(options);
+                                });
+                            </script>
+                        </form>
                     </c:if>
                 </li>
             </c:if>

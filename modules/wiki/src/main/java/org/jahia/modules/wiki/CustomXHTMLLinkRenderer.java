@@ -228,7 +228,8 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
             } else {
 
                 // modified in order to be compatible with jahia
-                aAttributes.put(HREF, link.getReference() + ".html");
+                String s = link.getReference().startsWith("/")?"":".html";
+                aAttributes.put(HREF, link.getReference() + s);
                 if(pageExist(link)){
                     aAttributes.put(CLASS, "wikidef");
                 }else{
@@ -326,7 +327,7 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
      */
     private boolean pageExist(Link link) {
         try {
-            return renderContext.getMainResource().getNode().getParent().hasNode(link.getReference());
+            return link.getReference().startsWith("/") || renderContext.getMainResource().getNode().getParent().hasNode(link.getReference());
         } catch (RepositoryException e) {
             return false;
         }

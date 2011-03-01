@@ -46,6 +46,7 @@
                                 <row column="2col115" jcr:primaryType="jnt:row"/>
                             </pagecontent>
                             <row-col2 jcr:primaryType="jnt:contentList">
+                                <currentUserTasks j:view="simple" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:currentUserTasks" viewWorkflowTasks="true" workflowTypes="jBPM:user-connection" />
                                 <currentUserConnections jcr:primaryType="jnt:currentUserConnections"/>
                             </row-col2>
                             <row-col1 jcr:primaryType="jnt:contentList">

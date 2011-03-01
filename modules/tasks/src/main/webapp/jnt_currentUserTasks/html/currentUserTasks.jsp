@@ -200,14 +200,8 @@
                     <img alt="" src="${url.currentModule}/images/workflow.png"/>
                 </td>
                 <td headers="Title">
-                    <c:if test="${'user-connection' == task.variables.workflow.key}" var="isUserConnectionRequest">
-                        <c:set var="taskTitle"
-                               value="${not empty task.displayName ? task.displayName : task.name} (${task.variables.fromUser})"/>
-                    </c:if>
-                    <c:if test="${not isUserConnectionRequest}">
-                        <c:set var="taskTitle"
-                               value="${not empty task.formResourceName and not empty task.variables['jcr:title'] ? task.variables['jcr:title'][0].value : (not empty task.displayName ? task.displayName : task.name)}"/>
-                    </c:if>
+                    <c:set var="taskTitle"
+                           value="${not empty task.displayName ? task.displayName : task.name} - ${task.variables['jcr:title'][0].value}"/>
                     <c:if test="${jcr:isNodeType(node,'jnt:page')}">
                         <c:set var="path" value="${node.path}"/>
                     </c:if>
@@ -230,7 +224,7 @@
                             <c:otherwise>
                                 <c:forEach items="${task.outcomes}" var="outcome">
                                     <input class="workflowaction" type="button" value="${outcome}"
-                                           onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}','window.location=window.location;')"/>
+                                           onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}.ajax','window.location=window.location;')"/>
                                 </c:forEach>
                             </c:otherwise>
                         </c:choose>

@@ -33,16 +33,7 @@
 package org.jahia.modules.social;
 
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -53,6 +44,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.workflow.WorkflowVariable;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
@@ -446,6 +438,10 @@ public class SocialService {
         args.put("from", fromUserKey);
         args.put("to", toUserKey);
         args.put("connectionType", connectionType);
+
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        values.add(new WorkflowVariable(from.getUsername(), 1));
+        args.put("jcr:title", values);
 
         JCRTemplate.getInstance().doExecuteWithSystemSession(from.getUsername(), null, Locale.ENGLISH, new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {

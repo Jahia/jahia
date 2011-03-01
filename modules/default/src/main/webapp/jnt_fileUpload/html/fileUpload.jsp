@@ -24,23 +24,33 @@
     <c:set var="targetNode" value="${currentNode.properties.target.node}"/>
 </c:if>
 <form class="file_upload" id="file_upload${currentNode.identifier}" action="${url.base}${targetNode.path}" method="POST" enctype="multipart/form-data"  accept="application/json">
-    <fmt:message key="label.dropHere"/>
-    <input type="hidden" name="nodeType" value="jnt:file"/>
-	<input type="hidden" name="returnContentType" value="json"/>
-    <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-    <input type="hidden" name="newNodeOutputFormat" value="${renderContext.mainResource.template}.html"/>
-    <input type="file" name="file" multiple>
-    <button><fmt:message key="label.upload"/></button>
+    <div id="file_upload_container">
+    	<input type="file" name="file" multiple>
+	    <button><fmt:message key="label.upload"/></button>
+	    <div><fmt:message key="label.dropHere"/></div>
+    </div>
+
 </form>
-<table id="files${currentNode.identifier}"></table>
+<table id="files${currentNode.identifier}" class="table"></table>
 <script>
     /*global $ */
     $(function () {
         $('#file_upload${currentNode.identifier}').fileUploadUI({
+            namespace: 'file_upload_${currentNode.identifier}',
             onComplete: function (event, files, index, xhr, handler) {
                 $('#fileList${linked.identifier}').load('${url.base}${linked.path}.html.ajax?targetNodePath=${targetNode.path}');
             },
             uploadTable: $('#files${currentNode.identifier}'),
+			dropZone: $('#file_upload_container'),
+			beforeSend: function (event, files, index, xhr, handler, callBack) {
+				handler.formData = {
+					nodeType:"jnt:file",
+					returnContentType:"json",
+					redirectTo:"${url.base}${renderContext.mainResource.node.path}",
+					newNodeOutputFormat:"${renderContext.mainResource.template}.html"
+				};
+				callBack();
+			},
             buildUploadRow: function (files, index) {
                 return $('<tr><td>' + files[index].name + '<\/td>' +
                         '<td class="file_upload_progress"><div><\/div><\/td>' +

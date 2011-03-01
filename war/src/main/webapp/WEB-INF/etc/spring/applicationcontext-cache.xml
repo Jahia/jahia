@@ -104,7 +104,6 @@ when we flush this entry we will flush the whole cache
         <property name="minimumIntervalAfterLastAutoThreadDump" value="${minimumIntervalAfterLastAutoThreadDump}"/>
     </bean>
 
-    <!-- 
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
         <property name="priority" value="16" />
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
@@ -118,7 +117,6 @@ when we flush this entry we will flush the whole cache
             </map>
         </property>
     </bean>
-    -->
 <!--
     <bean id="mainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
         <property name="priority" value="16" />

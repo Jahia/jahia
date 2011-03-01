@@ -69,7 +69,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.AdminParamBean;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.applications.ServletIncludeRequestWrapper;
@@ -144,7 +143,6 @@ public class JahiaAdministration extends HttpServlet {
     static private String servletPath = null;
 
     private String servletURI = null;
-    public static String installerURL = "";
     private static SettingsBean jSettings;
     private static String contentServletPath = null;
 
@@ -227,8 +225,6 @@ public class JahiaAdministration extends HttpServlet {
         } else { // jahia is running...
         	jSettings = SettingsBean.getInstance();
             if (jSettings != null) {
-                installerURL = jSettings.getJahiaEnginesHttpPath();
-
                 // set Jahia running mode to Admin
                 session.setAttribute(ProcessingContext.SESSION_JAHIA_RUNNING_MODE,
                                      Jahia.ADMIN_MODE);
@@ -442,7 +438,7 @@ public class JahiaAdministration extends HttpServlet {
 
         session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", "");
 
-        request.setAttribute("URL", installerURL);
+        request.setAttribute("URL", null);
         request.setAttribute("requestURI", request.getRequestURI());
 
         if (request.getAttribute("title") == null) {
@@ -617,7 +613,6 @@ public class JahiaAdministration extends HttpServlet {
      * @param session  Servlet session for the current user.
      * @param rootName String containing root username fo bypass login.
      * @param rootPass String containing root password fo bypass login.
-     * @todo FIXME we need to change this so that siteadmins can also login,
      * without accessing server settings. Actually a global implementation
      * would grant permissions to each administration action.
      */
@@ -1076,7 +1071,6 @@ public class JahiaAdministration extends HttpServlet {
                 intRequestMethod,
                 site,
                 user);
-        jParams.setUrlGenerator(new ServletURLGeneratorImpl(request, response));
 
         JahiaData jData = new JahiaData(jParams, false);
 

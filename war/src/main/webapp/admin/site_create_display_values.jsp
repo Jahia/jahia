@@ -54,13 +54,6 @@
     <!--
 
     function sendForm(){
-        <%if(isConfigWizard){%>
-        var openrf = document.getElementById('openReadmeFile');
-        if(openrf != null && openrf.checked){
-            openReadmeFile();
-        }
-        <%}%>
-        //setWaitingCursor();
         document.jahiaAdmin.submit();
     }
 
@@ -75,33 +68,24 @@
 
     -->
 </script>
-<%if(!isConfigWizard){%>
 <div id="topTitle">
 <h1>Jahia</h1>
 <h2 class="edit">
-<%if(!isConfigWizard){%>
       <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
-      <%}else{%>
-      <fmt:message key="org.jahia.createSite.siteFactory"/>
-      <%}%>
 </h2>
 </div>
-<% } %>
 
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"
 	cellspacing="0">
 	<tbody>
-		<%if(!isConfigWizard){%>
         <tr>
 			<td style="vertical-align: top;" align="left">
 				<%@include file="/admin/include/tab_menu.inc"%>
 			</td>
 		</tr>
-        <% } %>
 		<tr>
 			<td style="vertical-align: top;" align="left" height="100%">
-			<%if(!isConfigWizard){%>
             <div class="dex-TabPanelBottom">
 			<div class="tabContent">
                 <jsp:include page="/admin/include/left_menu.jsp">
@@ -109,19 +93,13 @@
                 </jsp:include>
 			
 			<div id="content" class="fit">
-            <% } else { %>
-            <div class="dex-TabPanelBottom-full">            
-            <div id="content" class="full">
-            <% } %>
             <div class="head headtop">
                 <div class="object-title">
                      <fmt:message key="org.jahia.createSite.button"/>
                 </div>
-<%if(!isConfigWizard){%>
     <div  class="object-shared">
         <fmt:message key="label.step"/> 3 / 3
     </div>
-   <% } %>
              </div>
 
       <div class="content-body">
@@ -270,9 +248,6 @@ if (!"2".equals(siteAdminOption)) {
 </table>
 </div>
 <div id="actionBar">
-   <%
-if (!isConfigWizard) {
-%>
   
     <span class="dex-PushButton"> 
       <span class="first-child">
@@ -281,16 +256,6 @@ if (!isConfigWizard) {
       </span>
      </span>
       
-<%} else {%>
-
-        <span class="dex-PushButton"> 
-            <span class="first-child">
-            <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processtemplatesetchoice&selectTmplSet="+selectedTmplSet+"&languageList="+selectedLocale)%>' onclick="showWorkInProgress(); return true;">
-                <fmt:message key="org.jahia.back.button"/>
-            </a>
-            </span> 
-        </span>
-        <%}%>
         <span class="dex-PushButton"> 
             <span class="first-child">                  
              <a class="ico-ok" href="javascript:sendForm();" onclick="showWorkInProgress(); return true;">

@@ -116,8 +116,7 @@ public class ErrorServlet extends HttpServlet {
 
 			JahiaSite site = null;
 			SettingsBean settings = SettingsBean.getInstance();
-			String jspPath = settings.getJspContext()
-			        + (!settings.getJspContext().endsWith("/") ? "/" : "");
+			String jspPath = "/";
 
 			if (settings.getSiteErrorEnabled()) {
 				// site information available?

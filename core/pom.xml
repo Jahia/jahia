@@ -1146,11 +1146,17 @@
         </dependency>
         
         <dependency>
-        	<!-- We use for bi-derectional encryption of passwords for remote publication -->
+        	<!-- We use it for bi-derectional encryption of passwords for remote publication -->
         	<groupId>org.jasypt</groupId>
         	<artifactId>jasypt</artifactId>
         	<version>1.7</version>
         	<classifier>lite</classifier>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.tuckey</groupId>
+            <artifactId>urlrewritefilter</artifactId>
+            <version>3.2.0</version>
         </dependency>
     </dependencies>
     <build>

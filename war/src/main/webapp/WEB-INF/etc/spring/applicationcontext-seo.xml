@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="org.jahia.services.render.StaticAssetMappingRegistry" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map/>
+        </property>
+    </bean>
+
+    <bean id="UrlRewriteService" class="org.jahia.services.seo.urlrewrite.UrlRewriteService">
+        <property name="configurationResource" value="WEB-INF/urlrewrite.xml" />
+        <property name="confReloadCheckInterval" value="5" />
+    </bean>
+                        
+    <bean class="org.jahia.services.render.filter.URLFilter">
+        <constructor-arg ref="org.jahia.services.render.filter.URLTraverser" />
+        <property name="priority" value="19" />
+        <property name="applyOnConfigurations" value="page" />
+        <property name="applyOnModes" value="live"/>
+        <property name="handlers">
+            <list>
+                <bean class="org.jahia.services.seo.urlrewrite.UrlRewriteVisitor">
+                    <property name="applyOnModes" value="live"/>
+                    <property name="urlRewriteService" ref="UrlRewriteService"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="UrlRewriteFilter" class="org.jahia.services.seo.urlrewrite.UrlRewriteFilterBean">
+        <property name="enabled" value="true"/>
+        <property name="outboundRulesEnabled" value="true"/>
+        <property name="urlRewriteService" ref="UrlRewriteService"/>
+    </bean>
+    
+</beans>

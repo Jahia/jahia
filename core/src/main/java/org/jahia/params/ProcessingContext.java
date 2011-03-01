@@ -121,6 +121,7 @@ import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -244,8 +245,6 @@ public class ProcessingContext {
     private String remoteAddr;
 
     private String contentType;
-
-    private URLGenerator urlGenerator = new BasicURLGeneratorImpl();
 
     private Map<String, Object> attributeMap = new HashMap<String, Object>();
 
@@ -1045,11 +1044,7 @@ public class ProcessingContext {
      * @return true if servername supplied is valid.
      */
     private boolean isValidServerName(final String aServerName) {
-        if (aServerName == null)
-            return false;
-        if (aServerName.equals("localhost"))
-            return false;
-        return !aServerName.equals("127.0.0.1");
+        return aServerName != null && !URLGenerator.isLocalhost(aServerName);
     }
 
     /**
@@ -1389,11 +1384,7 @@ public class ProcessingContext {
      * @return the encoded URL string.
      */
     public String encodeURL(final String inputURL) {
-        if (inputURL.indexOf(";jsessionid=") != -1) {
-            return inputURL;
-        }
-        final String encodedURL = getUrlGenerator().encodeURL(inputURL);
-        return encodedURL;
+        return inputURL;
     }
 
     /**
@@ -1660,14 +1651,6 @@ public class ProcessingContext {
 
     public void setLocaleList(final List<Locale> localeList) {
         this.localeList = localeList;
-    }
-
-    public URLGenerator getUrlGenerator() {
-        return urlGenerator;
-    }
-
-    public void setUrlGenerator(final URLGenerator anUrlGenerator) {
-        this.urlGenerator = anUrlGenerator;
     }
 
     public SessionState getSessionState() {

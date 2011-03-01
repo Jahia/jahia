@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 import org.jahia.services.seo.VanityUrl;
@@ -48,7 +49,6 @@ import org.jahia.services.seo.jcr.VanityUrlService;
  * can be exchanged with vanity URLs.
  *
  * @author Benjamin Papez
- *
  */
 public class VanityUrlSetter implements HtmlTagAttributeVisitor {
     private transient static Logger logger = LoggerFactory
@@ -64,11 +64,11 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
      */
     public String visit(final String attrValue, RenderContext context, Resource resource) {
         String value = attrValue;
-        if (StringUtils.isNotEmpty(attrValue) && !"localhost".equals(context.getRequest().getServerName())) {
+        if (StringUtils.isNotEmpty(attrValue) && !URLGenerator.isLocalhost(context.getRequest().getServerName())) {
             URLResolver urlResolver = new URLResolver(attrValue, context);
             if (urlResolver.isMapped()) {
                 try {
-                    VanityUrl vanityUrl = getVanityUrlService()
+                    VanityUrl vanityUrl = vanityUrlService
                             .getVanityUrlForWorkspaceAndLocale(
                                     urlResolver.getNode(),
                                     urlResolver.getWorkspace(),
@@ -85,15 +85,6 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
         return value;
     }
 
-
-    /**
-     * Gets the injected VanityUrlService
-     * @return the VanityUrlService
-     */
-    public VanityUrlService getVanityUrlService() {
-        return vanityUrlService;
-    }
-    
     /**
      * Injects the dependency to {@link VanityUrlService}.
      * 

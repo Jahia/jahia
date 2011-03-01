@@ -60,6 +60,7 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
@@ -90,11 +91,11 @@ public class WelcomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (request.getRequestURI().endsWith("start")) {
+            if (request.getRequestURI().endsWith("/start")) {
                 userRedirect(request, response, getServletContext());
             } else {
-        defaultRedirect(request, response, getServletContext());
-    }
+		        defaultRedirect(request, response, getServletContext());
+		    }
         } catch (Exception e) {
             List<ErrorHandler> handlers = ServicesRegistry.getInstance()
                     .getJahiaTemplateManagerService().getErrorHandler();
@@ -110,7 +111,7 @@ public class WelcomeServlet extends HttpServlet {
     protected void userRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
         if (!JahiaUserManagerService.isGuest(user)) {
-            response.sendRedirect(request.getContextPath() + "/cms/render/live/en/users/" + user.getUsername() + ".html");
+            response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/cms/render/live/en/users/" + user.getUsername() + ".html"));
         } else {
             throw new AccessDeniedException();
         }
@@ -119,8 +120,9 @@ public class WelcomeServlet extends HttpServlet {
     protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
             request.getSession(true);
             JahiaSite site = resolveSite(request);
+            String redirect = null;
             if (site == null) {
-                response.sendRedirect(request.getContextPath() + "/administration");
+                redirect = request.getContextPath() + "/administration";
             } else {
                 String language = resolveLanguage(request, site);
                 String base;
@@ -158,14 +160,15 @@ public class WelcomeServlet extends HttpServlet {
 	                }
                 }
 
-                response.sendRedirect(base + jcrPath + ".html");
-
+                redirect = base + jcrPath + ".html";
             }
+
+            response.sendRedirect(response.encodeRedirectURL(redirect));
     }
 
     protected JahiaSite resolveSite(HttpServletRequest request) throws JahiaException {
         JahiaSitesService siteService = JahiaSitesBaseService.getInstance();
-        JahiaSite resolvedSite = !"localhost".equals(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
+        JahiaSite resolvedSite = !URLGenerator.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
         if (resolvedSite == null) {
             resolvedSite = siteService.getDefaultSite();
         }

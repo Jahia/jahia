@@ -16,7 +16,7 @@
     <%
 
     String  jahiaDisplayMessage  = (String) request.getAttribute("jahiaDisplayMessage");
-    String  URL = (String) request.getAttribute("URL");
+    String  URL = request.getContextPath() + "/engines/";
     JahiaData jData = (JahiaData)request.getAttribute("org.jahia.data.JahiaData");
 
     String  userAgent                        = request.getHeader("user-agent");
@@ -44,30 +44,23 @@
         copyright=copyright + "&nbsp;" +c;
     }
 
-    final String behaviorPath = request.getContextPath() + "/css/pngbehavior.jsp";
-
     final String contextPath = request.getContextPath();
 
-    final boolean isConfigWizard = session.getAttribute(JahiaAdministration.CLASS_NAME + "redirectToJahia") != null || request.getAttribute(JahiaAdministration.CLASS_NAME + "configWizard") != null;
     int stretcherToOpen = 1;
 %>
 <head>
     <title><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <c:if test="${not empty sessionScope['org.jahia.usermanager.jahiauser'] && sessionScope['org.jahia.usermanager.jahiauser'].username != 'guest'}">
     <internal:gwtInit/>
-    <link rel="stylesheet" href="<%=contextPath%>/css/jahia65.css" type="text/css" />
-    <!--[if lte IE 6]>
-    <style type="text/css" media="all">@import "<%=contextPath%>/css/jahia65_ie6.css";</style>
-    <style type="text/css">
-        img {
-            behavior: url("<%=contextPath%>/css/pngbehavior.jsp")}
-    </style>
+    </c:if>
+    <link rel="stylesheet" href="<c:url value='/css/jahia65.css'/>" type="text/css" />
 
+    <%-- 
+    <script type="text/javascript" src="<c:url value='/javascript/jahia.js'/>"></script>
+     --%>
 
-    <![endif]-->
-
-    <script type="text/javascript" src="<%=contextPath%>/javascript/jahia.js"></script>
-
+    <c:if test="${not empty sessionScope['org.jahia.usermanager.jahiauser'] && sessionScope['org.jahia.usermanager.jahiauser'].username != 'guest'}">
     <script type="text/javascript">
         function showWorkInProgress() {
             if (typeof workInProgressOverlay != 'undefined') {
@@ -75,6 +68,7 @@
             }
         }
     </script>
+    </c:if>
 </head>
-<body class="jahiaAdministration" ${not empty jahiaAdministrationLogin ? 'id="bodyLogin"' : ''} onunload="closeEngineWin()" onclose="closeEngineWin()">
+<body class="jahiaAdministration" ${not empty jahiaAdministrationLogin ? 'id="bodyLogin"' : ''}>
 <div id="mainAdminLayout">

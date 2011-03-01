@@ -84,7 +84,7 @@
 		<property name="priority" value="20" />
 		<property name="applyOnConfigurations" value="page" />
 		<property name="applyOnTemplateTypes" value="html,edit" />
-		<property name="skipOnAJaxRequest" value="true" />
+		<property name="skipOnAjaxRequest" value="true" />
 		<property name="attributesToKeep">
 			<list>
 				<value type="java.lang.String">v</value>
@@ -126,35 +126,35 @@
 	<bean class="org.jahia.services.render.filter.WrapperFilter">
 		<property name="priority" value="40" />
 		<property name="skipOnConfiguration" value="include,wrapper" />
-		<property name="skipOnAJaxRequest" value="true" />
+		<property name="skipOnAjaxRequest" value="true" />
 	</bean>
 	<bean class="org.jahia.services.render.filter.TemplateScriptFilter">
 		<property name="priority" value="99" />
 	</bean>
 
     <bean id="org.jahia.services.render.filter.URLTraverser" class="org.jahia.services.render.filter.HtmlTagAttributeTraverser">
-    	<constructor-arg>
-    		<map>
-    			<entry key="a">
-    				<set><value>href</value></set>
-    			</entry>
-    			<entry key="embed">
-    				<set><value>src</value></set>
-    			</entry>
-    			<entry key="img">
-    				<set><value>src</value></set>
-    			</entry>
-    			<entry key="param">
-    				<set><value>value</value></set>
-    			</entry>
-    		</map>
-    	</constructor-arg>
-    </bean>
-
-    <bean id="org.jahia.services.render.StaticAssetMappingRegistry" class="org.springframework.beans.factory.config.MapFactoryBean">
-        <property name="sourceMap">
-            <map/>
-        </property>
+        <constructor-arg>
+            <map>
+                <entry key="a">
+                    <set><value>href</value></set>
+                </entry>
+                <entry key="embed">
+                    <set><value>src</value></set>
+                </entry>
+                <entry key="form">
+                    <set><value>action</value></set>
+                </entry>
+                <entry key="img">
+                    <set><value>src</value></set>
+                </entry>
+                <entry key="link">
+                    <set><value>href</value></set>
+                </entry>
+                <entry key="param">
+                    <set><value>value</value></set>
+                </entry>
+            </map>
+        </constructor-arg>
     </bean>
 
 </beans>

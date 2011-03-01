@@ -124,7 +124,7 @@ public class URLResolver {
                 servletPart.length() + 2, getUrlPathInfo().length());
         if (!resolveUrlMapping(serverName)) {
             init();
-            if (!"localhost".equals(serverName) && isMappable()
+            if (!URLGenerator.isLocalhost(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
                     VanityUrl defaultVanityUrl = getVanityUrlService()
@@ -206,7 +206,7 @@ public class URLResolver {
             String siteKeyInPath = StringUtils.substringBetween(getPath(), "/sites/", "/");
             if (!StringUtils.isEmpty(siteKeyInPath)) {
                 setSiteKey(siteKeyInPath);
-            } else if (!"localhost".equals(serverName)) {
+            } else if (!URLGenerator.isLocalhost(serverName)) {
                 try {
                     JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByServerName(
                             serverName);
@@ -219,7 +219,7 @@ public class URLResolver {
             }
         }
 
-        if (isServletAllowingUrlMapping() && !"localhost".equals(serverName)) {
+        if (isServletAllowingUrlMapping() && !URLGenerator.isLocalhost(serverName)) {
             String tempPath = null;
             try {
                 String tempWorkspace = StringUtils.defaultIfEmpty(StringUtils

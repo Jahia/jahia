@@ -317,7 +317,6 @@
 </div>
 <% }
 else { %>
-<%if (!isConfigWizard) { %>
 <div id="topTitle">
     <h1>Jahia</h1>
 
@@ -457,109 +456,6 @@ else { %>
 
 
 </div>
-
-    <% } %>
-
-
-    <%if (isConfigWizard) { %>
-<div class="dex-TabPanelBottom-full">
-    <div id="content" class="full">
-
-        <div class="head headtop">
-            <div class="object-title">
-                1.&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<fmt:message key="label.virtualSitesManagement.default"/>
-            </div>
-        </div>
-        <div  class="content-item">
-
-            <form name="siteImportPrepackaged"
-                  action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
-                  method="post"
-                  enctype="multipart/form-data">
-                <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
-                    <tr>
-                        <td><input type="radio" id="siteImportPrepackaged" name="siteImportPrepackaged" checked="checked" value="siteImportPrepackaged" onclick="setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], 'siteImportPrepackaged'); setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                            <label for="siteImportPrepackaged"><fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/></label>&nbsp;
-                        </td>
-                        <td>
-                            &nbsp;<select name="importpath">
-                            <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
-                            <c:forEach var="file" items="${files}">
-                                <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
-                                <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
-                                <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
-                            </c:forEach>
-                        </select>
-                        </td>
-                        <td>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-
-        <div class="head headtop">
-            <div class="object-title">
-                2.&nbsp;<fmt:message key="label.virtualSitesManagement.configwizard"/>
-            </div>
-        </div>
-
-        <div class="content-item">
-            <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
-                <tr>
-                    <td>
-                        <form name="blank"  action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>' method="post" >
-                            <input type="radio" id="blank" name="blank" value="blank" onclick="setCheckedValue(document.forms['blank'].elements['blank'], 'blank'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');">
-                            <label for="blank"><fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/></label>
-                        </form>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-
-        <!--   import backup -->
-        <div class="head headtop">
-            <div class="object-title">
-                3.&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
-            </div>
-        </div>
-        <div  class="content-item">
-            <% if (warningMsg != "" && sub.equals("prepareimport")) { %>
-            <p class="errorbold">
-                <%=warningMsg %>
-            </p>
-            <% } %>
-            <form name="siteImport"
-                  action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
-                  method="post"
-                  enctype="multipart/form-data">
-                <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
-                    <tr>
-                        <td>
-                            <input type="radio" id="siteImport" name="siteImport" value="siteImport" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                            <label for="siteImport"><fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/></label>
-                        </td>
-                        <td>
-                            :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                        </td>
-
-                    </tr>
-                </table>
-            </form>
-        </div>
-
-
-        <% } %>
-
-
-
-
-
-
-
-
-
         <% } %>
     </div>
 </div>
@@ -579,16 +475,6 @@ else { %>
                               </span>
                             </span>
 
-
-    <%
-        } %>
-    <%if (isConfigWizard) { %>
-					<span class="dex-PushButton">
-            <span class="first-child">
-              <a class="ico-next" href="javascript:submitform();"><fmt:message key="label.nextStep"/>
-              </a>
-            </span>
-          </span>
 
     <%
         } %>

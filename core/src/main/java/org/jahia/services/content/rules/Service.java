@@ -51,6 +51,7 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSitesService;
@@ -167,7 +168,7 @@ public class Service extends JahiaService {
                         boolean siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
                                 infos.get("sitekey"));
                         String serverName = (String) infos.get("siteservername");
-                        boolean serverNameEx = (sitesService.getSite(serverName) != null && !"localhost".equals(serverName)) || "".equals(serverName);
+                        boolean serverNameEx = (sitesService.getSite(serverName) != null && !URLGenerator.isLocalhost(serverName)) || "".equals(serverName);
                         if (!user.getJahiaUser().isRoot()) {
                             return;
                         }

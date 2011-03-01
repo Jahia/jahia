@@ -10,12 +10,6 @@
     <short-name>internal</short-name>
     <uri>http://www.jahia.org/tags/internalLib</uri>
     <tag>
-        <description>Load the Jahia Javascript files</description>
-        <name>JSTools</name>
-        <tag-class>org.jahia.taglibs.internal.utility.JSToolsTag</tag-class>
-        <body-content>JSP</body-content>
-    </tag>
-    <tag>
         <description>Lowest level support for resource bundle messages. This is inspired
             by the Struts been message tag except that it checks a session
             variable (org.jahia.services.multilang.currentlocale) to determine

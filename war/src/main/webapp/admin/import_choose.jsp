@@ -104,6 +104,7 @@ function sendForm(){
                         for (Iterator iterator = importsInfosSorted.iterator(); iterator.hasNext();) {
                             File file = (File) iterator.next();
                             Map infos = (Map) importInfosMap.get(file);
+                            pageContext.setAttribute("infos", infos);
                             String filename = (String) infos.get("importFileName");
                             String fileType = (String) infos.get("type");
                             String siteKey = file.getName();
@@ -112,111 +113,46 @@ function sendForm(){
                                 lineClass = "evenLine";
                             }
                             lineCounter++;
-                            if(isConfigWizard){%>
-
-
-                    <%if(importsInfos.size()==1){ %>
-                    style="display:none;"
-                    <%} %>
-
-                    <input type="hidden" name="<%=file.getName()%>selected" value="checked"
-                        <% if (infos.get("selected")!=null) { %>
-                           checked
-                        <% } %>
-                            >
-
-
-                    <% if ("site".equals(fileType)) { %>
-                    <td>
-                        <table border="0" cellpadding="0" width="100%">
-                            <tr>
-                                <td>
-                                    <fmt:message key="org.jahia.admin.site.ManageSites.siteTitle.label"/>*&nbsp;
-                                </td>
-                                <td>
-                                    <input class="input" type="text" name="<%=siteKey+"siteTitle"%>" value="<%=infos.get("sitetitle")%>" size="<%=inputSize%>" maxlength="100">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteServerNameExists")))  { %>
-                                    <div class="error">
-                                        <fmt:message key="org.jahia.admin.warningMsg.chooseAnotherServerName.label"/>
-                                    </div><% } %>
-                                </td>
-                                <td>
-                                    <input class="input" type="text" name="<%=siteKey+"siteServerName"%>" value="<%= infos.get("siteservername") %>" size="<%=inputSize%>" maxlength="200">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteKeyExists")))  { %>
-                                    <div class="error">
-                                        <fmt:message key="org.jahia.admin.warningMsg.chooseAnotherSiteKey.label"/>
-                                    </div><% } %>
-                                </td>
-                                <td>
-                                    <input type="hidden" name="<%=siteKey+"oldSiteKey"%>" value="<%= infos.get("oldsitekey") %>">
-                                    <input class="input" type="text" name="<%=siteKey+"siteKey"%>" value="<%= infos.get("sitekey") %>" size="<%=inputSize%>" maxlength="50">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <% if (tpls != null){
-                                        for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
-                                            JCRNodeWrapper pack = (JCRNodeWrapper) iterator1.next();
-                                            if (pack.getName().equals(infos.get("templates"))) {
-
-                                    %>
-                                    <input type="hidden" name="<%=siteKey + "templates"%>" value="<%=pack.getName()%>">
-                                    <%}
-                                    %>
-                                    <% }
-                                    } %>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                    <% } %>
-
-
-                    <% } else { %>
+                    %>
 
                     <tr class="<%=lineClass%>">
                         <td<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> align="center">
-                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"<% if (infos.get("selected")!=null) { %>checked<% } %>>
+                            <input type="checkbox" name="<%=file.getName()%>selected" value="on"${not empty infos.selected ? 'checked' : ''}>
                         </td>
                         <td>
                             <% if ("site".equals(fileType)) { %>
                             <table border="0" cellpadding="0" width="100%">
                                 <tr>
                                     <td>
-                                        <fmt:message key="org.jahia.admin.site.ManageSites.siteTitle.label"/>*&nbsp;
+                                        <fmt:message key="org.jahia.admin.site.ManageSites.siteTitle.label"/>*&nbsp;<c:if test="${infos.siteTitleInvalid}">
+                                        <div class="error">
+                                            <fmt:message key="org.jahia.admin.warningMsg.completeRequestInfo.label"/>
+                                        </div></c:if>
                                     </td>
                                     <td>
-                                        <input class="input" type="text" name="<%=siteKey+"siteTitle"%>" value="<%=infos.get("sitetitle")%>" size="<%=inputSize%>" maxlength="100">
+                                        <input class="input" type="text" name="<%=siteKey+"siteTitle"%>" value="${fn:escapeXml(infos.sitetitle)}" size="<%=inputSize%>" maxlength="100">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteServerNameExists")))  { %>
+                                        <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;<c:if test="${infos.siteServerNameInvalid || infos.siteServerNameExists}">
                                         <div class="error">
-                                            <fmt:message key="org.jahia.admin.warningMsg.chooseAnotherServerName.label"/>
-                                        </div><% } %>
+                                            <fmt:message key="${empty infos.siteservername ? 'org.jahia.admin.warningMsg.completeRequestInfo.label' : (infos.siteServerNameInvalid ? 'org.jahia.admin.warningMsg.invalidServerName.label' : 'org.jahia.admin.warningMsg.chooseAnotherServerName.label')}"/>
+                                        </div></c:if>
                                     </td>
                                     <td>
-                                        <input class="input" type="text" name="<%=siteKey+"siteServerName"%>" value="<%= infos.get("siteservername") %>" size="<%=inputSize%>" maxlength="200">
+                                        <input class="input" type="text" name="<%=siteKey+"siteServerName"%>" value="${fn:escapeXml(infos.siteservername)}" size="<%=inputSize%>" maxlength="200">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteKeyExists")))  { %>
+                                        <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>*&nbsp;<c:if test="${infos.siteKeyInvalid || infos.siteKeyExists}">
                                         <div class="error">
-                                            <fmt:message key="org.jahia.admin.warningMsg.chooseAnotherSiteKey.label"/>
-                                        </div><% } %>
+                                            <fmt:message key="${empty infos.sitekey ? 'org.jahia.admin.warningMsg.completeRequestInfo.label' : (infos.siteKeyInvalid ? 'org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label' : 'org.jahia.admin.warningMsg.chooseAnotherSiteKey.label')}"/>
+                                        </div></c:if>
                                     </td>
                                     <td>
-                                        <input type="hidden" name="<%=siteKey+"oldSiteKey"%>" value="<%= infos.get("oldsitekey") %>"><input class="input" type="text" name="<%=siteKey+"siteKey"%>" value="<%= infos.get("sitekey") %>" size="<%=inputSize%>" maxlength="50">
+                                        <input type="hidden" name="<%=siteKey+"oldSiteKey"%>" value="<%= infos.get("oldsitekey") %>"><input class="input" type="text" name="<%=siteKey+"siteKey"%>" value="${fn:escapeXml(infos.sitekey)}" size="<%=inputSize%>" maxlength="50">
                                     </td>
                                 </tr>
                                 <tr>
@@ -245,7 +181,6 @@ function sendForm(){
                             <fmt:message key='<%="org.jahia.admin.site.ManageSites.fileImport."+filename %>'/><% } %>
                         </td>
                     </tr>
-                    <% } %>
                     <%} %>
                     </tbody>
                 </form>

@@ -91,16 +91,10 @@ public class SettingsBean implements ServletContextAware {
     private String jahiaHomeDiskPath;
     private String jahiaTemplatesDiskPath;
     private String jahiaWebAppsDiskPath;
-    private String jahiaEnginesDiskPath;
-    private String jahiaJspDiskPath;
     private String jahiaFilesDiskPath;
     private String jahiaEtcDiskPath;
     private String jahiaVarDiskPath;
-    private String jahiaHostHttpPath;
-    private String jahiaTemplatesHttpPath;
-    private String jahiaEnginesHttpPath;
     private String jahiaWebAppsDeployerBaseURL;
-    private String jahiaJavaScriptDiskPath;
     private String jahiaImportsDiskPath;
     private String jahiaSharedTemplatesDiskPath;
     private String jahiaDatabaseScriptsPath;
@@ -109,12 +103,6 @@ public class SettingsBean implements ServletContextAware {
         return jahiaDatabaseScriptsPath;
     }
 
-    private String jspContext;
-    private String templatesContext;
-    private String enginesContext;
-    private String javascriptContext;
-
-    private String jahiaJavaScriptHttpPath;
     private String classDiskPath;
 
     // this is the list of jahia.properties files values...
@@ -230,10 +218,7 @@ public class SettingsBean implements ServletContextAware {
             
             maintenanceMode = getBoolean("maintenanceMode", false);
             
-            jahiaTemplatesDiskPath = pathResolver.resolvePath (getString("jahiaTemplatesDiskPath"));
-            jahiaJspDiskPath = pathResolver.resolvePath (getString("jahiaJspDiskPath"));
-            jahiaEnginesDiskPath = pathResolver.resolvePath (getString("jahiaEnginesDiskPath"));
-            jahiaJavaScriptDiskPath = pathResolver.resolvePath (getString("jahiaJavaScriptDiskPath"));
+            jahiaTemplatesDiskPath = pathResolver.resolvePath ("/modules/");
             classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
             jahiaFilesDiskPath = convertContexted (getString("jahiaFilesDiskPath"), pathResolver);
             jahiaEtcDiskPath = convertContexted (getString("jahiaEtcDiskPath"), pathResolver);
@@ -250,15 +235,6 @@ public class SettingsBean implements ServletContextAware {
             jahiaImportsDiskPath = convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
-
-            jahiaHostHttpPath = getString("jahiaHostHttpPath");
-            jahiaTemplatesHttpPath = convertWebContexted(getString("jahiaTemplatesHttpPath"));
-            jahiaEnginesHttpPath = convertWebContexted(getString("jahiaEnginesHttpPath"));
-            jahiaJavaScriptHttpPath = convertWebContexted(getString("jahiaJavaScriptHttpPath"));
-            jspContext = getString("jahiaJspDiskPath");
-            templatesContext = getString("jahiaTemplatesDiskPath");
-            enginesContext = getString("jahiaEnginesDiskPath");
-            javascriptContext = getString("jahiaJavaScriptDiskPath");
 
             // jahia real path...
             File jahiaContextFolder = new File (pathResolver.resolvePath("." + File.separator));
@@ -610,28 +586,6 @@ public class SettingsBean implements ServletContextAware {
     } // end getJahiaTemplatesDiskPath
 
     /**
-     * Used to get the engines disk path.
-     *
-     * @return  The engines disk path.
-     */
-    public String getJahiaEnginesDiskPath() {
-        return jahiaEnginesDiskPath;
-    } // end getJahiaEnginesDiskPath
-
-    /**
-     * Used to get the jahiafiles disk path.
-     * @author  Eric Vassalli
-     *
-     * @return  The jahiafiles disk path.
-     */
-    /** todo removed by Serge Huber because of disk reorganisation */
-    /*
-    public String getJahiaFilesDiskPath() {
-        return jahiaFilesDiskPath;
-    } // end getJahiaFilesDiskPath
-    */
-
-    /**
      * Used to get the jahiafiles /etc disk path.
      *
      * @return  The jahiafiles /etc disk path.
@@ -660,69 +614,6 @@ public class SettingsBean implements ServletContextAware {
     }
 
 
-    /**
-     * Used to get the templates http path.
-     *
-     * @return  The templates http path.
-     */
-    public String getJahiaTemplatesHttpPath() {
-        return jahiaTemplatesHttpPath;
-    } // end getJahiaTemplatesHttpPath
-
-    /**
-     * Used to get the engines http path.
-     *
-     * @return  The engines http path.
-     */
-    public String getJahiaEnginesHttpPath() {
-        return jahiaEnginesHttpPath;
-    } // end getJahiaEnginesHttpPath
-
-    /**
-     * Used to get the javascript http path.
-     * (returns the URL of the Javascript file needed by Jahia)
-     * @return  The javascript http path.
-     */
-    public String getJsHttpPath() {
-        return jahiaJavaScriptHttpPath;
-    } // end getJsHttpPath
-
-    /**
-     * Used to get the jsp context.
-     *
-     * @return  The jsp context.
-     */
-    public String getJspContext() {
-        return jspContext;
-    } // end getJspContext
-
-    /**
-     * Used to get the templates context.
-     *
-     * @return  The templates context.
-     */
-    public String getTemplatesContext() {
-        return templatesContext;
-    }
-
-    /**
-     * Used to get the engines context.
-     *
-     * @return  The engines context.
-     */
-    public String getEnginesContext() {
-        return enginesContext;
-    }
-
-    /**
-     * Used to get the javascript context.
-     *
-     * @return  The javascript context.
-     */
-    public String getJavascriptContext() {
-        return javascriptContext;
-    }
-
     public String getClassDiskPath() {
         return classDiskPath;
     }
@@ -735,18 +626,7 @@ public class SettingsBean implements ServletContextAware {
     public String getJahiaHomeDiskPath() {
         return jahiaHomeDiskPath;
     }
-    public String getJahiaHostHttpPath() {
-        return jahiaHostHttpPath;
-    }
-    public String getJahiaJavaScriptDiskPath() {
-        return jahiaJavaScriptDiskPath;
-    }
-    public String getJahiaJavaScriptHttpPath() {
-        return jahiaJavaScriptHttpPath;
-    }
-    public String getJahiaJspDiskPath() {
-        return jahiaJspDiskPath;
-    }
+
     public String getJahiaImportsDiskPath() {
         return jahiaImportsDiskPath;
     }
@@ -784,11 +664,6 @@ public class SettingsBean implements ServletContextAware {
 
     public boolean isProcessingServer() {
         return isProcessingServer;
-    }
-
-    public String getJetspeedDeploymentDirectory() {
-        return null;
-        //throw new UnsupportedOperationException("jetspeedDeploymentDirectory no longer supported!");
     }
 
     public int getSiteURLPortOverride() {
@@ -965,5 +840,13 @@ public class SettingsBean implements ServletContextAware {
 
     public ServletContext getServletContext() {
         return servletContext;
+    }
+    /**
+     * Used to get the templates context.
+     *
+     * @return  The templates context.
+     */
+    public String getTemplatesContext() {
+        return "/modules/";
     }
 }

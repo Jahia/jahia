@@ -32,8 +32,10 @@
 
 package org.jahia.services.render;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
@@ -41,6 +43,7 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.bin.Captcha;
 import org.jahia.bin.Contribute;
@@ -62,11 +65,15 @@ import org.jahia.settings.SettingsBean;
  * User: toto
  * Date: Sep 14, 2009
  * Time: 11:13:37 AM
- *
- * @todo Ideally instances of this class should be created by a factory that is configured through Spring.
  */
 public class URLGenerator {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLGenerator.class);
+    private static Logger logger = LoggerFactory.getLogger(URLGenerator.class);
+    
+    private static final Set<String> LOCALHOSTS = Collections.singleton("localhost");
+    
+    public static boolean isLocalhost(String host) {
+    	return host != null && LOCALHOSTS.contains(host);
+    }
 
     private String base;
 
@@ -350,24 +357,14 @@ public class URLGenerator {
         StringBuilder url = new StringBuilder();
         String scheme = context.getRequest().getScheme();
         String host = context.getSite().getServerName();
-        int port = 0;
-        if (host !=null && host.contains(":")) {
-            // the server name of the site already has
-            host = StringUtils.substringBefore(host, ":");
-            port = Integer.valueOf(StringUtils.substringAfterLast(host, ":"));
-        }
-        if ("localhost".equals(host)) {
+        if (isLocalhost(host)) {
             host = context.getRequest().getServerName();
         }
-        if (port == 0) {
-            port = SettingsBean.getInstance().getSiteURLPortOverride();
-        }
+        
+        int port = SettingsBean.getInstance().getSiteURLPortOverride();
+        
         if (port == 0) {
             port = context.getRequest().getServerPort();
-        }
-        if (port == 443) {
-            // use HTTPS
-            scheme = "https";
         }
         
         url.append(scheme).append("://").append(host);

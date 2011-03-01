@@ -42,11 +42,6 @@ jahiaToolManagerPassword                               = password
 # such as temporary files or content files, or even in some cases where
 # it will retrieve additional configuration from.
 
-jahiaJspDiskPath                                       =   /
-jahiaEnginesDiskPath                                   =   /engines/
-jahiaTemplatesDiskPath                                 =   /modules/
-jahiaJavaScriptDiskPath                                =   /javascript/
-
 jahiaFilesDiskPath                                     =   $context/WEB-INF
 jahiaEtcDiskPath                                       =
 jahiaVarDiskPath                                       =
@@ -60,10 +55,7 @@ jahiaWebAppsDiskPath                                   =
 ### URL's  ###########################################################
 ######################################################################
 
-jahiaHostHttpPath                                      =
 jahiaTemplatesHttpPath                                 =
-jahiaEnginesHttpPath                                   =
-jahiaJavaScriptHttpPath                                =
 
 # Provide your custom URL for the WAR deployer, if you use non-standard one  
 jahiaWebAppsDeployerBaseURL                            = http://127.0.0.1:8080/manager/html/

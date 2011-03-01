@@ -72,27 +72,7 @@
 
     <filter>
     	<filter-name>UrlRewriteFilter</filter-name>
-        <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
-        <init-param>
-        	<description>
-           	set the amount of seconds the conf file will be checked for reload
-           	can be a valid integer (0 denotes check every time,
-           	-1 denotes no reload check, default -1)
-            </description>
-            <param-name>confReloadCheckInterval</param-name>
-            <param-value>20</param-value>
-		</init-param>
-        <init-param>
-        	<description>
-           	sets up log level (will be logged to context log)
-           	can be: TRACE, DEBUG, INFO (default), WARN, ERROR, FATAL, log4j, commons,
-           	sysout:{level} (ie, sysoutbiggrin/EBUG)
-           	if you are having trouble using normal levels use sysoutbiggrin/DEBUG
-           	(default WARN)
-            </description>
-            <param-name>logLevel</param-name>
-            <param-value>INFO</param-value>
-		</init-param>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
 
     <filter>
@@ -221,6 +201,9 @@
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>*.html</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>ERROR</dispatcher>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
@@ -248,19 +231,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/monitor/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>/modules/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/Jahia</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/Jahia/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
@@ -269,6 +240,10 @@
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>/files/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/tools/*</url-pattern>
     </filter-mapping>
 
     <filter-mapping>
@@ -279,6 +254,8 @@
     <filter-mapping>
        <filter-name>UrlRewriteFilter</filter-name>
        <url-pattern>/*</url-pattern>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
 
     <filter-mapping>
@@ -359,7 +336,7 @@
     <servlet>
         <servlet-name>Jahia</servlet-name>
         <servlet-class>org.jahia.bin.Jahia</servlet-class>
-        <!-- Make sure this is consistant with the servlet mappings below -->
+        <!-- Make sure this is consistent with the servlet mappings below -->
         <init-param>
             <param-name>admin_servlet_path</param-name>
             <param-value>/administration/</param-value>

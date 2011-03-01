@@ -94,8 +94,6 @@ public class ManageGroups extends AbstractAdministrationModule {
 
     ProcessingContext jParams;
 
-    private GroupMembersTool groupMembersTool = null;
-
     /**
      * Default constructor.
      *
@@ -177,8 +175,6 @@ public class ManageGroups extends AbstractAdministrationModule {
             } else {
                 displayGroupCopy(request, response, session);
             }
-        } else if (operation.equals("groupmembers")) {
-            processGroupMembers(request, response, session);
         }
     }
 
@@ -892,26 +888,6 @@ public class ManageGroups extends AbstractAdministrationModule {
 //        }
 //        return resultList;
 //    }
-
-    /**
-     * Apply the GroupMembersTool object displaying the users search module.
-     *
-     * @param request
-     * @param response
-     * @param session
-     * @throws Exception
-     */
-    private void processGroupMembers(HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     HttpSession session)
-    throws Exception
-    {
-        if (groupMembersTool == null) {
-            groupMembersTool = new GroupMembersTool(request, response, session);
-        } else {
-            groupMembersTool.requestDispatcher(request, response, session);
-        }
-    }
 
     private static org.slf4j.Logger logger =
             org.slf4j.LoggerFactory.getLogger(ManageGroups.class);

@@ -126,19 +126,7 @@ public abstract class AbstractFilter implements RenderFilter {
      */
     public static class ModeCondition implements ExecutionCondition {
 
-        private String mode;
-
-        /**
-         * Initializes an instance of this class.
-         *
-         * @param mode the target mode to check for
-         */
-        public ModeCondition(String mode) {
-            super();
-            this.mode = mode;
-        }
-
-        public boolean matches(RenderContext renderContext, Resource resource) {
+        public static boolean matches(RenderContext renderContext, String mode) {
             boolean matches = false;
             if ("live".equals(mode)) {
                 matches = renderContext.isLiveMode();
@@ -152,6 +140,22 @@ public abstract class AbstractFilter implements RenderFilter {
                 throw new IllegalArgumentException("Unsupported mode '" + mode + "'");
             }
             return matches;
+        }
+        
+        private String mode;
+
+        /**
+         * Initializes an instance of this class.
+         *
+         * @param mode the target mode to check for
+         */
+        public ModeCondition(String mode) {
+            super();
+            this.mode = mode;
+        }
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return matches(renderContext, mode);
         }
     }
 
@@ -697,11 +701,9 @@ public abstract class AbstractFilter implements RenderFilter {
         addCondition(new NotCondition(condition));
     }
 
-    public void setSkipOnAJaxRequest(Boolean skip) {
-        ExecutionCondition condition = null;
+    public void setSkipOnAjaxRequest(Boolean skip) {
         if(skip) {
-            condition = new AjaxRequestCondition();
-            addCondition(new NotCondition(condition));
+            addCondition(new NotCondition(new AjaxRequestCondition()));
         }
     }
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.1//EN"
-        "http://tuckey.org/res/dtds/urlrewrite3.1.dtd">
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
 
 <!--
 
@@ -11,103 +10,57 @@
 -->
 <urlrewrite>
 
+    <!-- GWT resources-->
     <rule>
-        <note>
-            The rule means that requests to /test/status/ will be redirected to /rewrite-status
-            the url will be rewritten.
-        </note>
-        <from>/test/status/</from>
-        <to type="redirect">%{context-path}/rewrite-status</to>
-    </rule>
-
-    <!--
-
-    INSTALLATION
-
-        in your web.xml add...
-
-        <filter>
-            <filter-name>UrlRewriteFilter</filter-name>
-            <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
-            <init-param>
-                <param-name>logLevel</param-name>
-                <param-value>WARN</param-value>
-            </init-param>
-        </filter>
-        <filter-mapping>
-            <filter-name>UrlRewriteFilter</filter-name>
-            <url-pattern>/*</url-pattern>
-        </filter-mapping>
-
-     EXAMPLES
-
-     Redirect one url
-        <rule>
-            <from>/some/old/page.html</from>
-            <to type="redirect">/very/new/page.html</to>
-        </rule>
-
-    Redirect a directory
-        <rule>
-            <from>/some/olddir/(.*)</from>
-            <to type="redirect">/very/newdir/$1</to>
-        </rule>
-
-    Clean a url
-        <rule>
-            <from>/products/([0-9]+)</from>
-            <to>/products/index.jsp?product_id=$1</to>
-        </rule>
-    eg, /products/1234 will be passed on to /products/index.jsp?product_id=1234 without the user noticing.
-
-    Browser detection
-        <rule>
-            <condition name="user-agent">Mozilla/[1-4]</condition>
-            <from>/some/page.html</from>
-            <to>/some/page-for-old-browsers.html</to>
-        </rule>
-    eg, will pass the request for /some/page.html on to /some/page-for-old-browsers.html only for older
-    browsers whose user agent srtings match Mozilla/1, Mozilla/2, Mozilla/3 or Mozilla/4.
-
-    -->
-
-    <!-- GXT resources-->
-     <rule>
-        <from>^(.*?)/gwt/(.*?)/ckeditor(.*?)/(.*?)</from>
-        <to last="true">$1/modules/assets/javascript/ckeditor$3/$4</to>
+        <note>GWT CKEditor resources</note>
+        <from>^/gwt/(.*)/ckeditor(.*?)/(.*)</from>
+        <to last="true">/modules/assets/javascript/ckeditor$2/$3</to>
     </rule>
     <rule>
-        <from>^(.*?)/gwt/(.*?)/images/(.*?)</from>
-        <to last="true">$1/gwt/resources/images/$3</to>
+        <note>GWT CSS</note>
+        <from>^/gwt/org\.(.*)/(.*)\.css</from>
+        <to last="true">/gwt/resources/$2.css</to>
     </rule>
     <rule>
-        <from>^(.*?)/gwt/(.*?)/(.*?).css</from>
-        <to last="true">$1/gwt/resources/$3.css</to>
+        <note>GWT images</note>
+        <from>^/gwt/org\.(.*)/images/(.*)</from>
+        <to last="true">/gwt/resources/images/$2</to>
     </rule>
-    <rule>
-        <from>^(.*?)/gwt/(.*?)/clear.gif</from>
-        <to last="true">$1/gwt/resources/clear.gif</to>
-    </rule>
+    <!-- end of GWT resources-->
 
-    <!-- rule for any gwt page-->
     <rule>
-        <from>^(.*?)/gwt/(.*?)</from>
-        <to last="true">$1/gwt/$2</to>
+        <note>Map server name to site key</note>
+        <condition type="request-uri" operator="notequal">^/cms/(.*)$</condition>
+        <condition type="server-name" operator="notequal">^$</condition>
+        <condition type="server-name" operator="notequal">localhost</condition>
+        <condition type="request-uri" operator="equal">^/(welcome|start|.*\.html)?(\?.*)?$</condition>
+        <run class="org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper" method="map"/>
     </rule>
-
+    <rule>
+        <note>Add the key of the site if it was resolved by server name</note>
+        <condition type="attribute" name="jahiaServerNameSiteKey" operator="notequal">^$</condition>
+        <condition type="request-uri" operator="notequal">^(.*)/sites/(.*)/home(\.|/.*\.)html(\?.*)?$</condition>
+        <from>^(.*)/home(\.|/.*\.)html(\?.*)?$</from>
+        <to>$1/sites/%{attribute:jahiaServerNameSiteKey}/home$2html$3</to>
+    </rule>
+    
+    <rule>
+        <note>Append /cms/render/live to all page requests, which do not have it yet</note>
+        <condition type="request-uri" operator="notequal">^/cms/.*$</condition>
+        <from>^(.*)/home(\.|/.*\.)html(\?.*)?$</from>
+        <to last="true">/cms/render/live$1/home$2.html$3</to>
+    </rule>
+    
     <!-- Outbound rules-->
     <outbound-rule>
-        <note>
-            The outbound-rule specifies that when response.encodeURL is called (if you are using JSTL c:url)
-            the url /rewrite-status will be rewritten to /test/status/.
-
-            The above rule and this outbound-rule means that end users should never see the
-            url /rewrite-status only /test/status/ both in thier location bar and in hyperlinks
-            in your pages.
-        </note>
-        <from>/rewrite-status</from>
-        <to>/test/status/</to>
+        <condition type="attribute" name="jahiaServerNameSiteKey" operator="notequal">^$</condition>
+        <from>^/cms/render/live/(.*)/sites/(.*)/home(\.|/.*\.)html(\?.*)?$</from>
+        <to last="true">/$1/home$3html$4</to>
     </outbound-rule>
-
+    <outbound-rule>
+        <condition type="attribute" name="jahiaServerNameSiteKey" operator="equal">^$</condition>
+        <from>^/cms/render/live/(.*)/sites/(.*)/home(\.|/.*\.)html(\?.*)?$</from>
+        <to last="true">/$1/sites/$2/home$3html$4</to>
+    </outbound-rule>
 </urlrewrite>
 

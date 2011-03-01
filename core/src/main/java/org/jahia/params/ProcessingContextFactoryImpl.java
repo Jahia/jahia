@@ -53,7 +53,6 @@ public class ProcessingContextFactoryImpl implements ProcessingContextFactory {
                                 final HttpServletResponse response,
                                 final ServletContext servletContext)
             throws JahiaException, JahiaSiteNotFoundException, JahiaPageNotFoundException {
-        final URLGenerator urlGenerator = new ServletURLGeneratorImpl(request, response);
         final long startTime = System.currentTimeMillis();
         // get the main http method...
         final String requestMethod = request.getMethod();
@@ -67,20 +66,6 @@ public class ProcessingContextFactoryImpl implements ProcessingContextFactory {
         final ParamBean paramBean = new ParamBean(request, response, servletContext,
                 org.jahia.settings.SettingsBean.getInstance(), startTime,
                 intRequestMethod);
-        paramBean.setUrlGenerator(urlGenerator);
         return paramBean;
-    }
-
-    public ProcessingContext getContext(SessionState sessionState) {
-        if (sessionState == null) {
-            // todo Generate a new session ID in a meaningful way.
-            String id = "internal_session_id";
-            sessionState = new BasicSessionState(id);
-        }
-        final URLGenerator urlGenerator = new BasicURLGeneratorImpl();
-        final ProcessingContext processingContext = new ProcessingContext();
-        processingContext.setUrlGenerator(urlGenerator);
-        processingContext.setSessionState(sessionState);
-        return processingContext;
     }
 }

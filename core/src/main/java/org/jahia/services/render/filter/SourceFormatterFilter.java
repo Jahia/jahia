@@ -59,7 +59,9 @@ public class SourceFormatterFilter extends AbstractFilter {
 
         String out = sourceFormatter.toString();
         
-        logger.info("Formatting took " + (System.currentTimeMillis() - timer));
+        if (logger.isDebugEnabled()) {
+        	logger.debug("Formatting took {} ms", System.currentTimeMillis() - timer);
+        }
         
         return out;
     }

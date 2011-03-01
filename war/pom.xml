@@ -1318,12 +1318,7 @@
             <version>1.2.16</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>org.tuckey</groupId>
-            <artifactId>urlrewritefilter</artifactId>
-            <version>3.1.0</version>
-            <scope>runtime</scope>
-        </dependency>
+        
         <!-- Pluto 2.0 shared lib-->
         <dependency>
             <groupId>org.apache.portals</groupId>

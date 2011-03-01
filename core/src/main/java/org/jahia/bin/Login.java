@@ -96,7 +96,7 @@ public class Login extends HttpServlet implements Controller {
         String result = (String) request.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
         if (LoginEngineAuthValveImpl.OK.equals(result)) {
             if (redirectActive) {
-                response.sendRedirect(redirect);
+                response.sendRedirect(response.encodeRedirectURL(redirect));
             } else {
                 response.getWriter().append("OK");
             }

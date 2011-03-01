@@ -61,14 +61,4 @@ public interface ProcessingContextFactory {
                                 ServletContext servletContext)
             throws JahiaException, JahiaSiteNotFoundException, JahiaPageNotFoundException;
 
-
-    /**
-     * Get a processing context for a non-servlet context. This is mostly used by test cases
-     * but can also be used in other setups where Jahia is not interacting through HTTP
-     * interfaces.
-     * @param sessionState a session state object that contains the data related to the
-     * current session. May be null if no session state exists for the moment.
-     */
-    public ProcessingContext getContext(SessionState sessionState);
-
 }

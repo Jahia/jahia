@@ -191,10 +191,6 @@ public class ParamBean extends ProcessingContext {
               final long aStartTime, final int aHttpMethod,
               final JahiaSite aSite, final JahiaUser user) throws JahiaException {
 
-        if (response != null) {
-            setUrlGenerator(new ServletURLGeneratorImpl(request, response));
-        }
-        
         this.context = aContext;
 
         copyRequestData(request);
@@ -286,10 +282,6 @@ public class ParamBean extends ProcessingContext {
         
             Jahia.setThreadParamBean(this);
 
-            if (response != null) {
-                setUrlGenerator(new ServletURLGeneratorImpl(request, response));
-            }
-            
             this.context = aContext;
 
             copyRequestData(request);
@@ -626,7 +618,7 @@ public class ParamBean extends ProcessingContext {
      * @return the encoded URL string.
      */
     public String encodeURL(final String inputURL) {
-        return super.encodeURL(inputURL);
+        return inputURL != null && mRealResponse != null && !inputURL.contains(";jsessionid=") ? mRealResponse.encodeURL(inputURL) : inputURL;
     }
 
     /**

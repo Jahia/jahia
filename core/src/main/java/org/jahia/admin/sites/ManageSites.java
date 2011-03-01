@@ -68,6 +68,7 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
 import org.jahia.services.sites.JahiaSitesBaseService;
@@ -104,10 +105,11 @@ import java.util.zip.ZipInputStream;
  */
 public class ManageSites extends AbstractAdministrationModule {
 
-    // authorized chars
-    private static final char[] AUTHORIZED_CHARS =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-".toCharArray();
+	// authorized chars
+    private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
     
+    private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml", "users.xml", "users.zip", JahiaSitesBaseService.SYSTEM_SITE_KEY + ".zip"));
+
     private static final Map<String, Integer> RANK;
     static {
         RANK = new HashMap<String, Integer>(3);
@@ -332,7 +334,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     defaultSite = Boolean.TRUE;
                 }
             } catch (JahiaException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e.getMessage(), e);
                 defaultSite = Boolean.TRUE;
             }
         }
@@ -438,7 +440,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 } else if (siteServerName.equals("default")) {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
-                } else if (!"localhost".equals(siteServerName) && sMgr.getSite(siteServerName) != null) {
+                } else if (!URLGenerator.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                 } else if (sMgr.getSiteByKey(siteKey) != null) {
@@ -501,8 +503,8 @@ public class ManageSites extends AbstractAdministrationModule {
         }
     } // end processAdd
 
-    private boolean isServerNameValid(String serverName) {
-        return !serverName.contains(" ");
+    public static boolean isServerNameValid(String serverName) {
+        return StringUtils.isNotEmpty(serverName) && !serverName.contains(" ") && !serverName.contains(":");
     }
 
     /**
@@ -1365,7 +1367,7 @@ public class ManageSites extends AbstractAdministrationModule {
                             getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                     processError = true;
                 } else if (!site.getServerName().equals(siteServerName)) {
-                    if (!"localhost".equals(siteServerName) && sMgr.getSite(siteServerName) != null) {
+                    if (!URLGenerator.isLocalhost(siteServerName) && sMgr.getSite(siteServerName) != null) {
                         warningMsg = 
                                 getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                         processError = true;
@@ -1842,20 +1844,24 @@ public class ManageSites extends AbstractAdministrationModule {
                     importInfos.put("description", "");
                     importInfos.put("mixLanguage", "false");
                     importInfos.put("templates", "");
+                    importInfos.put("siteKeyInvalid", Boolean.TRUE);
                     importInfos.put("siteKeyExists", Boolean.TRUE);
+                    importInfos.put("siteServerNameInvalid", Boolean.TRUE);
                     importInfos.put("siteServerNameExists", Boolean.TRUE);
                 } else {
                     try {
                         String siteKey = (String) importInfos.get("sitekey");
-                        importInfos.put("siteKeyExists", Boolean.valueOf(
-                                ServicesRegistry.getInstance().getJahiaSitesService()
-                                        .getSiteByKey(siteKey) != null && !siteKey.equals(JahiaSitesBaseService.SYSTEM_SITE_KEY) ||
-                                        "".equals(importInfos.get("sitekey"))));
+                        boolean valid = isSiteKeyValid(siteKey);
+                        importInfos.put("siteKeyInvalid", !valid);
+						importInfos.put("siteKeyExists", valid
+						        && ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey) != null);
                         String serverName = (String) importInfos.get("siteservername");
-                        importInfos.put("siteServerNameExists", Boolean.valueOf(
-                                (ServicesRegistry.getInstance().getJahiaSitesService()
-                                        .getSite(serverName) != null  && !"localhost".equals(serverName)) ||
-                                        "".equals(serverName)));
+                        valid = isServerNameValid(serverName);
+                        importInfos.put("siteServerNameInvalid", !valid);
+						importInfos.put("siteServerNameExists",
+						        valid
+						                && !URLGenerator.isLocalhost(serverName)
+						                && ServicesRegistry.getInstance().getJahiaSitesService().getSite(serverName) != null);
                     } catch (JahiaException e) {
                         logger.error("Error while preparing site import", e);
                     }
@@ -1894,36 +1900,33 @@ public class ManageSites extends AbstractAdministrationModule {
 
             if (request.getParameter(file.getName() + "selected") != null) {
                 try {
-                    if (infos.get("importFileName").equals("serverPermissions.xml") ||
-                            infos.get("importFileName").equals("users.xml")) {
+                    if (NON_SITE_IMPORTS.contains(infos.get("importFileName"))) {
 
                     } else {
+                       	infos.put("siteTitleInvalid", StringUtils.isEmpty((String) infos.get("sitetitle"))); 
+	                    
                         String siteKey = (String) infos.get("sitekey");
-                        infos.put("siteKeyExists", Boolean.valueOf(jahiaSitesService
-                                .getSiteByKey(siteKey) != null && !siteKey.equals(JahiaSitesBaseService.SYSTEM_SITE_KEY) ||
-                                "".equals(siteKey)));
-                        String serverName = (String) infos.get("siteservername");                        
-                        infos.put("siteServerNameExists", Boolean.valueOf(
-                                (jahiaSitesService
-                                        .getSite(serverName) != null  && !"localhost".equals(serverName)) ||
-                                        "".equals(serverName)));
+	                    boolean valid = isSiteKeyValid(siteKey);
+	                    infos.put("siteKeyInvalid", !valid);
+                       	infos.put("siteKeyExists", valid && jahiaSitesService.getSiteByKey(siteKey) != null);
 
-                        if ("".equals(infos.get("sitekey")) || "".equals(infos.get("siteservername")) ||
-                                "".equals(infos.get("sitetitle"))) {
-                            // todo display an error message
-                            stillBad = true;
-                        }
-
-                        if (Boolean.TRUE.equals(infos.get("siteKeyExists")) ||
-                                Boolean.TRUE.equals(infos.get("siteServerNameExists"))) {
-                            stillBad = true;
-                        }
+                       	String serverName = (String) infos.get("siteservername");                        
+	                    valid = isServerNameValid(serverName);
+	                    infos.put("siteServerNameInvalid", !valid);
+                       	infos.put("siteServerNameExists", valid && !URLGenerator.isLocalhost(serverName) && jahiaSitesService.getSite(serverName) != null);
+                       	
+						stillBad = (Boolean) infos.get("siteKeyInvalid")
+						        || (Boolean) infos.get("siteKeyExists")
+						        || (Boolean) infos.get("siteServerNameInvalid")
+						        || (Boolean) infos.get("siteServerNameExists");
                     }
                 } catch (JahiaException e) {
                     logger.error("Error while processing file import", e);
                 }
             } else {
+                infos.put("siteKeyInvalid", Boolean.FALSE);
                 infos.put("siteKeyExists", Boolean.FALSE);
+                infos.put("siteServerNameInvalid", Boolean.FALSE);
                 infos.put("siteServerNameExists", Boolean.FALSE);
 
             }
@@ -1934,7 +1937,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
                 request.setAttribute("tmplSets", new ArrayList<JCRNodeWrapper>(orderedTemplateSets.values()));
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            	logger.error(e.getMessage(), e);
             }
 
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "import_choose.jsp");
@@ -2078,35 +2081,23 @@ public class ManageSites extends AbstractAdministrationModule {
         return val;
     }
 
-    private static boolean isSiteKeyValid(String name) {
-        if (name == null) {
-            return false;
-        }
-        if (name.length() == 0) {
+    public static boolean isSiteKeyValid(String name) {
+        if (StringUtils.isEmpty(name)) {
             return false;
         }
 
-        char[] chars = AUTHORIZED_CHARS;
-        char[] nameBuffer = name.toCharArray();
-
-        boolean badCharFound = false;
-        int i = 0;
-        while ((i < nameBuffer.length) && (!badCharFound)) {
-            int j = 0;
-            boolean ok = false;
-            while ((j < chars.length) && (!ok)) {
-                if (chars[j] == nameBuffer[i]) {
-                    ok = true;
-                }
-                j++;
-            }
-            badCharFound = (!ok);
-            if (badCharFound) {
-            	logger.error("JahiaTools.isAlphaValid", "--/ Bad character found in [" + name + "] at position " + Integer.toString(i));
-            }
-            i++;
+        if (JahiaSitesBaseService.SYSTEM_SITE_KEY.equals(name)) {
+        	return false;
         }
-        return (!badCharFound);
-    } // end isAlphaValid
+        
+        boolean valid = true;
+        for (char toBeTested : name.toCharArray()) {
+        	if (AUTHORIZED_CHARS.indexOf(toBeTested) == -1) {
+        		valid = false;
+        		break;
+        	}
+        }
 
+        return valid;
+    }
 }

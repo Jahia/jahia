@@ -18,28 +18,23 @@
     stretcherToOpen   = 0;
 %>
 
-<%if(!isConfigWizard){%>
 <div id="topTitle">
     <h1>Jahia</h1>
     <h2 class="edit">
     	
     	<fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/></h2>
 </div>
-<% } %>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"
        cellspacing="0">
 <tbody>
-        <%if(!isConfigWizard){%>
 <tr>
     <td style="vertical-align: top;" align="left">
         <%@include file="/admin/include/tab_menu.inc"%>
     </td>
 </tr>
-        <% } %>
 <tr>
 <td style="vertical-align: top;" align="left" height="100%">
-            <%if(!isConfigWizard){%>
 <div class="dex-TabPanelBottom">
 <div class="tabContent">
 <jsp:include page="/admin/include/left_menu.jsp">
@@ -47,20 +42,13 @@
 </jsp:include>
 
 <div id="content" class="fit">
-            <% } else { %>
-             <div class="dex-TabPanelBottom-full">
-                      
-            <div id="content" class="full">
-            <% } %>
 <div class="head">
     <div class="object-title">
         <fmt:message key="org.jahia.admin.site.ManageSites.siteProperties.label"/>
     </div>
-    <%if(!isConfigWizard){%>
     <div  class="object-shared">
         <fmt:message key="label.step"/> 1 / 3
     </div>
-   <% } %>
 </div>
 <% if ( ( newJahiaSite != null ) && ( (siteLimit.intValue()==-1) || (nbSites.intValue()<siteLimit.intValue()) ) ) { %>
 

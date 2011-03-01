@@ -37,19 +37,12 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 
 import javax.jcr.RepositoryException;
-import java.util.regex.Pattern;
 
 public class SiteParameterAdder implements HtmlTagAttributeVisitor {
 
     public String visit(String value, RenderContext context, Resource resource) {
-        if (value != null) {
-            if (value.startsWith(context.getURLGenerator().getBase())) {
+        if (value != null && value.startsWith(context.getURLGenerator().getBase())) {
                 if (!value.startsWith(context.getURLGenerator().getBase() + "/sites/") && !value.contains("jsite=")) {
-                    if (!value.contains("?")) {
-                        value += "?";
-                    } else {
-                        value += "&";
-                    }
                     String jsite = context.getRequest().getParameter("jsite");
                     if (jsite == null) {
                         jsite = (String) context.getMainResource().getModuleParams().get("jsite");
@@ -61,9 +54,8 @@ public class SiteParameterAdder implements HtmlTagAttributeVisitor {
                             return value;
                         }
                     }
-                    value += "jsite=" + jsite;
+                    value += (!value.contains("?") ? "?jsite=" : "&jsite=") + jsite;
                 }
-            }
         }
 
         return value;

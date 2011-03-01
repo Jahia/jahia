@@ -48,6 +48,9 @@ public class Name {
     private String prefix;
     private String uri;
 
+    private String preComputedToString;
+    private int preComputedHashCode;
+
     public Name(String localName, String prefix, String uri) {
         this.localName = localName;
         this.prefix = prefix;
@@ -99,10 +102,15 @@ public class Name {
     }
 
     public String toString() {
+        if (preComputedToString != null) {
+            return preComputedToString;
+        }
         if (prefix.equals("")) {
-            return localName;
+            preComputedToString = localName;
+            return preComputedToString;
         } else {
-            return prefix + ":" + localName;
+            preComputedToString = prefix + ":" + localName;
+            return preComputedToString;
         }
     }
 
@@ -119,10 +127,14 @@ public class Name {
     }
 
     public int hashCode() {
+        if (preComputedHashCode != 0) {
+            return preComputedHashCode;
+        }
         int result;
         result = (localName != null ? localName.hashCode() : 0);
         result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
         result = 31 * result + (uri != null ? uri.hashCode() : 0);
-        return result;
+        preComputedHashCode = result;
+        return preComputedHashCode;
     }
 }

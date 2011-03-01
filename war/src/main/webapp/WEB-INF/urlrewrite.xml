@@ -28,39 +28,4 @@
     </rule>
     <!-- end of GWT resources-->
 
-    <rule>
-        <note>Map server name to site key</note>
-        <condition type="request-uri" operator="notequal">^/cms/(.*)$</condition>
-        <condition type="server-name" operator="notequal">^$</condition>
-        <condition type="server-name" operator="notequal">localhost</condition>
-        <condition type="request-uri" operator="equal">^/(welcome|start|.*\.html)?(\?.*)?$</condition>
-        <run class="org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper" method="map"/>
-    </rule>
-    <rule>
-        <note>Add the key of the site if it was resolved by server name</note>
-        <condition type="attribute" name="jahiaServerNameSiteKey" operator="notequal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(.*)/sites/(.*)/home(\.|/.*\.)html(\?.*)?$</condition>
-        <from>^(.*)/home(\.|/.*\.)html(\?.*)?$</from>
-        <to>$1/sites/%{attribute:jahiaServerNameSiteKey}/home$2html$3</to>
-    </rule>
-    
-    <rule>
-        <note>Append /cms/render/live to all page requests, which do not have it yet</note>
-        <condition type="request-uri" operator="notequal">^/cms/.*$</condition>
-        <from>^(.*)/home(\.|/.*\.)html(\?.*)?$</from>
-        <to last="true">/cms/render/live$1/home$2.html$3</to>
-    </rule>
-    
-    <!-- Outbound rules-->
-    <outbound-rule>
-        <condition type="attribute" name="jahiaServerNameSiteKey" operator="notequal">^$</condition>
-        <from>^/cms/render/live/(.*)/sites/(.*)/home(\.|/.*\.)html(\?.*)?$</from>
-        <to last="true">/$1/home$3html$4</to>
-    </outbound-rule>
-    <outbound-rule>
-        <condition type="attribute" name="jahiaServerNameSiteKey" operator="equal">^$</condition>
-        <from>^/cms/render/live/(.*)/sites/(.*)/home(\.|/.*\.)html(\?.*)?$</from>
-        <to last="true">/$1/sites/$2/home$3html$4</to>
-    </outbound-rule>
 </urlrewrite>
-

@@ -46,11 +46,10 @@ import javax.servlet.ServletResponse;
  * the chain.
  * 
  * @author Sergiy Shyrkov
- * 
  */
-public class NoOpFilter implements Filter {
+public class PassThroughFilter implements Filter {
 
-    public static final NoOpFilter INSTANCE = new NoOpFilter();
+    public static final PassThroughFilter INSTANCE = new PassThroughFilter();
 
     public void destroy() {
         // do nothing

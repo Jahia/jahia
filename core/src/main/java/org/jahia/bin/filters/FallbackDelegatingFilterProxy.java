@@ -41,25 +41,25 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 
 /**
  * Extends the behaviour of standard Spring's {@link DelegatingFilterProxy} by
- * falling back to a {@link NoOpFilter} (pass through) filter if the target
- * filter cannot be found.
+ * falling back to a {@link PassThroughFilter} (pass through) filter if the
+ * target filter cannot be found.
  * 
  * @author Sergiy Shyrkov
  * 
  */
 public class FallbackDelegatingFilterProxy extends DelegatingFilterProxy {
 
-    @Override
-    protected Filter initDelegate(WebApplicationContext wac) throws ServletException {
-        Filter delegate = null;
+	@Override
+	protected Filter initDelegate(WebApplicationContext wac) throws ServletException {
+		Filter delegate = null;
 
-        try {
-            delegate = super.initDelegate(wac);
-        } catch (NoSuchBeanDefinitionException e) {
-            delegate = NoOpFilter.INSTANCE;
-        }
+		try {
+			delegate = super.initDelegate(wac);
+		} catch (NoSuchBeanDefinitionException e) {
+			delegate = PassThroughFilter.INSTANCE;
+		}
 
-        return delegate;
-    }
+		return delegate;
+	}
 
 }

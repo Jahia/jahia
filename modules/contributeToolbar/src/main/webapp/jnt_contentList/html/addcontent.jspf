@@ -32,7 +32,8 @@
     <ul class="pagecontributeToolbar">
     <c:forEach items="${types}" var="nodeType" varStatus="status">
         <li><a href="${url.base}${currentNode.path}.contribute.add.html.ajax?resourceNodeType=${nodeType.name}" id="addButton${currentNode.identifier}-${status.index}">
-		<img title="" align="absmiddle" alt="" src="${url.templatesPath}/${empty nodeType.templatePackage.rootFolder ? 'assets' : nodeType.templatePackage.rootFolder eq 'default' ? 'assets' : nodeType.templatePackage.rootFolder}/icons/${fn:replace(nodeType.name,':' ,'_' )}.png"/> ${jcr:label(nodeType, renderContext.mainResourceLocale)}
+        <jcr:icon var="icon" node="${child}"/>
+		<img title="" align="absmiddle" alt="" src="${url.templatesPath}/${icon}.png"/> ${jcr:label(nodeType, renderContext.mainResourceLocale)}
         </a></li>                                  
     </c:forEach>
     </ul>

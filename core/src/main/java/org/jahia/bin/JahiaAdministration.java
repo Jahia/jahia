@@ -945,7 +945,7 @@ public class JahiaAdministration extends HttpServlet {
             }
             JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
 
-            if (theSite != null) {
+            if (theSite != null && !StringUtils.isEmpty(theSite.getSiteKey())) {
 
                 JahiaGroup theGroup = gMgr.getAdministratorGroup(theSite.getID());
                 if (theGroup == null) {
@@ -969,12 +969,13 @@ public class JahiaAdministration extends HttpServlet {
                 } else {
                     logger.debug("Couldn't validate login session for: " + theUser.getUsername());
                 }
-            } else if (theUser.hashCode() == 0) {
+            } else if (theUser.isAdminMember(0)) {
 
                 session.setAttribute(CLASS_NAME + "isSuperAdmin", Boolean.TRUE);
                 session.setAttribute(CLASS_NAME + "manageSiteID", 0);
                 session.setAttribute(CLASS_NAME + "accessGranted", Boolean.TRUE);
                 session.setAttribute(CLASS_NAME + "jahiaLoginUsername", theUser.getUsername());
+                isValid = true;
             }
 
         } catch (Exception e) {

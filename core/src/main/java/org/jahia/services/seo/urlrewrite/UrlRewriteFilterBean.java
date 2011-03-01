@@ -96,7 +96,7 @@ public class UrlRewriteFilterBean implements Filter {
 		// check for status request
 		String uri = hsRequest.getRequestURI();
 		
-		logger.info("Handling {}", uri);
+		logger.debug("Handling {}", uri);
 		
 		if (statusEnabled
 		        && uri != null

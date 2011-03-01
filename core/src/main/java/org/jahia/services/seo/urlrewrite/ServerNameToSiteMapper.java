@@ -82,7 +82,7 @@ public class ServerNameToSiteMapper {
 		if (mapping == null || !mapping.containsKey(host)) {
 			if (mapping == null) {
 				mapping = new HashMap<String, String>();
-				request.setAttribute(ATTR_NAME, mapping);
+				request.setAttribute(MAPPING_ATTR_NAME, mapping);
 			}
 			mapping.put(host, lookupSiteKeyByServerName(host));
 		}

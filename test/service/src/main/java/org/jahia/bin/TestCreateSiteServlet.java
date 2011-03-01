@@ -72,7 +72,8 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
             // should send response wrapper !
             ctx = pcf.getContext(httpServletRequest, httpServletResponse, servletContext);
         } catch (JahiaException e) {
-            ctx = pcf.getContext(new BasicSessionState("123"));
+            logger.error("Error while trying to build ProcessingContext", e);
+            return;
         }
 
         try {
@@ -83,6 +84,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
             ctx.setTheUser(admin);
         } catch (JahiaException e) {
             logger.error("Error getting user", e);
+            return;
         }
 
         if (httpServletRequest.getParameter("site").equals("ACME")) {

@@ -104,7 +104,8 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
             // should send response wrapper !
             ctx = pcf.getContext(httpServletRequest, httpServletResponse, servletContext);
         } catch (JahiaException e) {
-            ctx = pcf.getContext(new BasicSessionState("123"));
+            logger.error("Error while trying to build ProcessingContext", e);
+            return;
         }
 
         try {

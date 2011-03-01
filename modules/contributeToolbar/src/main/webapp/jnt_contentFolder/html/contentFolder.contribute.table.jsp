@@ -65,12 +65,8 @@
                     <input type="checkbox" name="${child.identifier}" ${child.locked ? 'disabled=true':''}/>
                 </td>
                 <td>
-                    <c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">
-                        <img src="${url.templatesPath}/${child.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_large.png"/>
-                    </c:if>
-                    <c:if test="${empty child.primaryNodeType.templatePackage.rootFolder}">
-                        <img src="${url.templatesPath}/default/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_large.png"/>
-                    </c:if>
+                    <jcr:icon var="icon" node="${child}"/>
+                    <img src="${url.templatesPath}/${icon}_large.png"/>
                 </td>
                 <td>
                     <c:if test="${child.locked}">

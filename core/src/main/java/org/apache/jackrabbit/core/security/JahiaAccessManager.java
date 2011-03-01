@@ -467,10 +467,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public boolean canRead(Path path, ItemId itemId) throws RepositoryException {
-        if (itemId != null) {
-            return isGranted(itemId, JahiaAccessManager.READ);
-        } else if (path != null) {
+        if (path != null) {
             return isGranted(path, Permission.READ);
+        } else if (itemId != null) {
+            return isGranted(itemId, JahiaAccessManager.READ);
         }
         return false;
     }

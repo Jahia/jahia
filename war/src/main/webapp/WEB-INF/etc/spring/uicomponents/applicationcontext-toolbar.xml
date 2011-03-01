@@ -785,14 +785,6 @@
         <property name="icon" value="newFolder"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewGadget" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewGadgetActionItem"/>
-        </property>
-        <property name="titleKey" value="label.newGoogleGadgetPortlet"/>
-        <property name="icon" value="newGadget"/>
-    </bean>
-
     <bean id="Toolbar.Item.NewPortlet" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewPortletActionItem"/>
@@ -810,14 +802,6 @@
                 <property name="useEngine" value="false"/>
             </bean>
         </property>
-    </bean>
-
-    <bean id="Toolbar.Item.NewRss" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRssActionItem"/>
-        </property>
-        <property name="titleKey" value="label.newRssPortlet"/>
-        <property name="icon" value="newRss"/>
     </bean>
 
     <bean id="Toolbar.Item.Crop" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">

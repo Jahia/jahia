@@ -321,8 +321,6 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewPortlet"/>
-                        <ref bean="Toolbar.Item.NewRss"/>
-                        <ref bean="Toolbar.Item.NewGadget"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Copy"/>
@@ -342,8 +340,6 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewPortlet"/>
-                        <ref bean="Toolbar.Item.NewRss"/>
-                        <ref bean="Toolbar.Item.NewGadget"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Copy"/>

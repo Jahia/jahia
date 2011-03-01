@@ -230,8 +230,6 @@
                                 <list>
                                     <ref bean="Toolbar.Item.NewPortletFolder"/>
                                     <ref bean="Toolbar.Item.NewPortlet"/>
-                                    <ref bean="Toolbar.Item.NewRss"/>
-                                    <ref bean="Toolbar.Item.NewGadget"/>
                                 </list>
                             </property>
                         </bean>
@@ -269,8 +267,6 @@
                     <list>
                         <ref bean="Toolbar.Item.NewPortletFolder"/>
                         <ref bean="Toolbar.Item.NewPortlet"/>
-                        <ref bean="Toolbar.Item.NewRss"/>
-                        <ref bean="Toolbar.Item.NewGadget"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Copy"/>
@@ -626,8 +622,6 @@
                                     <ref bean="Toolbar.Item.NewContent"/>
                                     <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.NewPortlet"/>
-                                    <ref bean="Toolbar.Item.NewRss"/>
-                                    <ref bean="Toolbar.Item.NewGadget"/>
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.Webfolder"/>
@@ -707,8 +701,6 @@
                         <ref bean="Toolbar.Item.NewContent"/>
                         <ref bean="Toolbar.Item.NewPage"/>
                         <ref bean="Toolbar.Item.NewPortlet"/>
-                        <ref bean="Toolbar.Item.NewRss"/>
-                        <ref bean="Toolbar.Item.NewGadget"/>
                         <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.Lock"/>

@@ -32,6 +32,9 @@
 [condition][]- the parent has the type {type}=parent.types contains "{type}"
 [condition][]- the value is not "{value}"=stringValue != "{value}"
 [condition][]- the value is {value}=stringValue == {value}
+[condition][]A search result hit is present=searchHit : JCRNodeHit ( )
+[condition][]- the node is of type {type}=type == "{type}"
+[consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Remove the type {type}=node.removeType ( "{type}", drools );
 [consequence][]Break all ACL inheritance on the {node}=service.setAclInheritanceBreak({node},true);

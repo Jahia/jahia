@@ -26,3 +26,4 @@
     })
 </script>
 </template:addResources>
+</div>

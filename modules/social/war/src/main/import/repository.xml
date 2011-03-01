@@ -9,7 +9,17 @@
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder">
-                <portalComponents jcr:primaryType="jnt:contentFolder"/>
+                <portalComponents jcr:primaryType="jnt:contentFolder">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                                      jcr:title="Portal components"/>
+                </portalComponents>
+                <profilePageItems jcr:primaryType="jnt:contentFolder">
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
+                    <user-connections divClass="user-bookmarks" jcr:primaryType="jnt:componentLink"
+                               targetTemplate="user-bookmarks">
+                        <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="My connections"/>
+                    </user-connections>
+                </profilePageItems>
             </contents>
             <templates jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder">
@@ -23,6 +33,9 @@
                 <contents jcr:primaryType="jnt:contentFolder"/>
 
                 <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:template" j:theme="/templatesSet/files/themes/default">
+                    <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
+                        <user-connections j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" jcr:primaryType="jnt:contentTemplate" />
+                    </user-base>
                 </base>
 
             </templates>

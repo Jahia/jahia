@@ -9,14 +9,16 @@
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder">
-                <profilepageitems jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="profilePageItems"/>
+                <profilePageItems jcr:primaryType="jnt:contentFolder">
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
                     <bookmarks divClass="user-bookmarks" jcr:primaryType="jnt:componentLink"
                                targetTemplate="user-bookmarks">
                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Bookmarks"/>
                     </bookmarks>
-                </profilepageitems>
+                </profilePageItems>
                 <portalComponents jcr:primaryType="jnt:contentFolder">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                                      jcr:title="Portal components"/>
                     <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks">
                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="My bookmarks"/>
                     </currentUserBookmarks>

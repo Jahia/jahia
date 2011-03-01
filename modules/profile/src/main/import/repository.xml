@@ -10,8 +10,8 @@
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder">
-                <profilepageitems jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="profilePageItems"/>
+                <profilePageItems jcr:primaryType="jnt:contentFolder">
+                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
                     <jahia divClass="user-jahia-home" j:requireLoggedUser="false" j:requirePrivilegedUser="true"
                            j:requiredPermissions="" jcr:mixinTypes="jmix:requiredPermissions"
                            jcr:primaryType="jnt:componentLink" targetTemplate="user-jahia-home">
@@ -29,7 +29,7 @@
                            jcr:primaryType="jnt:componentLink" targetTemplate="user-tasks">
                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Tasks"/>
                     </tasks>
-                </profilepageitems>
+                </profilePageItems>
             </contents>
             <templates jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder">
@@ -152,7 +152,7 @@
                         </user-content>
                         <row-col1 j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable"
                                   jcr:primaryType="jnt:contentList">
-                            <profilepageitems j:node="/templateSets/profile/contents/profilepageitems"
+                            <profilePageItems j:node="/templateSets/profile/contents/profilePageItems"
                                               jcr:primaryType="jnt:contentReference"/>
                         </row-col1>
                         <user-content-row-col1 j:skin="skins.box6" j:style="blue"

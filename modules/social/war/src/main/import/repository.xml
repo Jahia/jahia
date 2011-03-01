@@ -5,39 +5,61 @@
          xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
         <social changefreq="monthly" j:installedModules="profile" j:siteType="module" j:wcagCompliance="true"
-                 jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
+                jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder">
                 <portalComponents jcr:primaryType="jnt:contentFolder">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
                                       jcr:title="Portal components"/>
+                    <!--<currentUserMessages jcr:primaryType="jnt:currentUserMessages"/>-->
+                    <!--<currentUserConnections jcr:primaryType="jnt:currentUserConnections"/>-->
+                    <!--<currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed"/>-->
                 </portalComponents>
                 <profilePageItems jcr:primaryType="jnt:contentFolder">
-                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
-                    <user-connections divClass="user-bookmarks" jcr:primaryType="jnt:componentLink"
-                               targetTemplate="user-bookmarks">
-                        <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="My connections"/>
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                                      jcr:title="Profile Page Items"/>
+                    <user-messages divClass="user-messages" jcr:primaryType="jnt:componentLink"
+                                   targetTemplate="user-messages">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                                          jcr:title="My messages"/>
+                    </user-messages>
+                    <user-connections divClass="user-connections" jcr:primaryType="jnt:componentLink"
+                                      targetTemplate="user-connections">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                                          jcr:title="My connections"/>
                     </user-connections>
                 </profilePageItems>
             </contents>
             <templates jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder">
                     <themes jcr:primaryType="jnt:folder">
-                        <default jcr:primaryType="jnt:folder">
-
-                        </default>
+                        <default jcr:primaryType="jnt:folder"/>
                     </themes>
                 </files>
-
                 <contents jcr:primaryType="jnt:contentFolder"/>
-
-                <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:template" j:theme="/templatesSet/files/themes/default">
+                <base j:view="apps" jcr:primaryType="jnt:template">
                     <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
-                        <user-connections j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" jcr:primaryType="jnt:contentTemplate" />
+                        <user-connections j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                          jcr:primaryType="jnt:contentTemplate">
+                            <pagecontent jcr:primaryType="jnt:contentList">
+                                <row column="2col115" jcr:primaryType="jnt:row"/>
+                            </pagecontent>
+                            <row-col2 jcr:primaryType="jnt:contentList">
+                                <currentUserConnections jcr:primaryType="jnt:currentUserConnections"/>
+                            </row-col2>
+                            <row-col1 jcr:primaryType="jnt:contentList">
+                                <currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed"/>
+                            </row-col1>
+                        </user-connections>
+                        <user-messages j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                       jcr:primaryType="jnt:contentTemplate">
+                            <pagecontent jcr:primaryType="jnt:contentList">
+                                <currentUserMessages jcr:primaryType="jnt:currentUserMessages"/>
+                            </pagecontent>
+                        </user-messages>
                     </user-base>
                 </base>
-
             </templates>
         </social>
     </templateSets>

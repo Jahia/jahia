@@ -55,6 +55,10 @@
 [jnt:socialActivitiesDisplay] > jnt:content, jmix:bindedComponent, jmix:socialComponent
  - j:activitiesLimit (long)
 
-[jnt:currentUserConnections] > jmix:profileComponentContent, jmix:bindedComponent
+[jmix:socialContent] > jmix:droppableContent
 
-[jnt:currentUserMessages] > jmix:profileComponentContent, jmix:bindedComponent
+[jnt:currentUserConnections] > jnt:content, jmix:socialContent, jmix:bindedComponent
+
+[jnt:currentUserMessages] > jnt:content, jmix:socialContent, jmix:bindedComponent
+
+[jnt:currentUserNewsFeed] > jnt:content, jmix:socialContent, jmix:bindedComponent

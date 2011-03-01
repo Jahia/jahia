@@ -5,8 +5,10 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="social" uri="http://www.jahia.org/tags/socialLib" %>
-<social:get-connections var="userConnections" path="${currentNode.path}" />
+
+<social:get-connections var="userConnections" path="${param.user}" />
 <social:get-activities var="activities" sourcePaths="${userConnections}" />
+<template:addCacheDependency flushOnPathMatchingRegexp="${param.user}/activities/.*" />
 <c:if test="${empty activities}">
     <fmt:message key="message.noActivitiesFound"/>
 </c:if>

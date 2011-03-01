@@ -105,9 +105,9 @@ function requestConnection(userURL, toUserKey) {
 }
 
 
-function submitStatusUpdate(userURL, userId, updateText) {
+function submitStatusUpdate(base, modulePath, userPath, userId, updateText) {
     $.ajax({
-        url: userURL + '/activities/*',
+        url: base + userPath + '/activities/*',
         type : 'post',
         dataType : 'json',
         data : {
@@ -116,14 +116,14 @@ function submitStatusUpdate(userURL, userId, updateText) {
 	    	'j:from': userId
     	},
         success : function (data) {
-            loadActivities(userURL);
+            loadActivities(base, modulePath, userPath);
         }
     });
 }
 
-function loadActivities(userURL) {
+function loadActivities(base, moduleUrl, userPath) {
     $.ajax({
-        url: userURL + '.activities.html.ajax',
+        url: base + moduleUrl + '.activities.html.ajax?user='+userPath,
         type: 'get',
         dataType : "html",
         success : function (data) {

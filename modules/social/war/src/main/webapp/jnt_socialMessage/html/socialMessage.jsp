@@ -7,9 +7,9 @@
 
 <c:set var="fromUser" value="${currentNode.properties['j:from'].node}"/>
 <ul class="messageActionList">
-   <li><a class="messageActionDelete" title="<fmt:message key='deleteMessage'/>" href="#delete" rel="${currentNode.identifier}"><span><fmt:message
+   <li><a class="messageActionDelete" title="<fmt:message key='deleteMessage'/>" href="#delete" info="${currentNode.identifier}"><span><fmt:message
         key="deleteMessage"/></span></a></li>
-  <li><a class="messageActionReply" title="<fmt:message key='replyToMessage'/>" href="#divSendMessage" rel="${fromUser.name}|${fn:escapeXml(currentNode.propertiesAsString['j:subject'])}"><span><fmt:message key="replyToMessage"/></span></a></li>
+  <li><a class="messageActionReply" title="<fmt:message key='replyToMessage'/>" href="#divSendMessage" info="${fromUser.name}|${fn:escapeXml(currentNode.propertiesAsString['j:subject'])}"><span><fmt:message key="replyToMessage"/></span></a></li>
 
 </ul>
 <div class='image'>
@@ -30,7 +30,7 @@
     <a href="${url.base}${fromUser.path}.html"><c:out value="${jcr:userFullName(fromUser)}"/></a>
 </h5><jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/><span class="timestamp"><fmt:formatDate
 value="${lastModified.time}" pattern="yyyy/MM/dd HH:mm"/></span>
-<h5><a class="messageDetailLink" href="#socialMessageDetail" rel="${url.base}${currentNode.path}.detail.html.ajax">${fn:escapeXml(currentNode.propertiesAsString['j:subject'])}</a></h5>
+<h5><a class="messageDetailLink" href="#socialMessageDetail" info="${url.base}${currentNode.path}.detail.html.ajax">${fn:escapeXml(currentNode.propertiesAsString['j:subject'])}</a></h5>
 <p>${fn:escapeXml(fn:substring(currentNode.propertiesAsString['j:body'], 0, 100))}...</p>
 
 <div class='clear'></div>

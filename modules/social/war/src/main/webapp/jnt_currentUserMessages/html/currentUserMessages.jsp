@@ -26,10 +26,10 @@
 </c:if>
 <script type="text/javascript">
 
-    function tabCallback() {
+    function userMessagesCallback() {
         $(".messageDetailLink").click(function() {
             $.ajax({
-                url: $(this).attr('rel'),
+                url: $(this).attr('info'),
                 type : 'get',
                 success : function (data) {
                     $(".social-message-detail").html(data);
@@ -72,7 +72,7 @@
     function initActionDeleteLinks(links) {
         links.click(function(e){
             e.preventDefault();
-            var msgId = $(this).attr('rel');
+            var msgId = $(this).attr('info');
             if (confirm("<fmt:message key='message.removeSocialMessage.confirm'/>")) {
                 removeSocialMessage('${url.base}/${user.path}', msgId,
                         function() {
@@ -95,7 +95,7 @@
             'transitionOut'      : 'none',
             'centerOnScroll'     : true,
             'onStart'            : function(selectedArray, selectedIndex, selectedOpts) {
-                var info = $(selectedArray).attr('rel');
+                var info = $(selectedArray).attr('info');
                 if (info.indexOf('details-') == 0) {
                     info = info.substring('details-'.length);
                 }
@@ -111,14 +111,14 @@
     }
     <c:if test="${not renderContext.ajaxRequest}">
     $(document).ready(function() {
-        tabCallback();
+        userMessagesCallback();
     });
     </c:if>
 </script>
 <c:if test="${renderContext.ajaxRequest}">
     <template:addResources>
         <script type="text/javascript">
-            tabCallback();
+            userMessagesCallback();
         </script>
     </template:addResources>
 </c:if>

@@ -52,7 +52,7 @@
         $('.timestamp').cuteTime({ refresh: 60000 });
     }
 
-    function tabCallback() {
+    function userConnectionsCallback() {
 
         $("#sendMessage").submit(function() {
             if ($("#messagesubject").val().length < 1) {
@@ -147,13 +147,6 @@
             searchUsers('${url.findPrincipal}', '${url.base}${user.path}', term, "<fmt:message key='addAsFriend'/>");
             return false;
         });
-        $("#statusUpdateSubmit").click(function() {
-            // validate and process form here
-            var updateText = $("textarea#statusUpdateText").val();
-            // alert('Sending text ' + updateText);
-            submitStatusUpdate('${url.base}${user.path}', '${user.identifier}', updateText);
-            return false;
-        });
 
         $("a.removeFriendAction").click(function(e){
             e.preventDefault();
@@ -170,65 +163,22 @@
             }
         });
 
-        loadActivities('${url.base}${user.path}');
-
     }
 
     <c:if test="${not renderContext.ajaxRequest}">
     $(document).ready(function() {
-        tabCallback();
+        userConnectionsCallback();
     });
     </c:if>
 </script>
 <c:if test="${renderContext.ajaxRequest}">
     <template:addResources>
         <script type="text/javascript">
-            tabCallback();
+            userConnectionsCallback();
         </script>
     </template:addResources>
 </c:if>
 
-<div class='grid_12 alpha'><!--start grid_12-->
-    <div class="boxsocial"><!--start boxsocial -->
-        <div class="boxsocialpadding16 boxsocialmarginbottom16">
-            <div class="boxsocial-inner">
-                <div class="boxsocial-inner-border">
-                    <h3><fmt:message key="userActivities"/></h3>
-
-                    <form class="statusUpdateForm" name="statusUpdateForm" action="" method="post">
-                        <textarea rows="2" cols="20" class="" onfocus="if(this.value==this.defaultValue)this.value='';"
-                                  onblur="if(this.value=='')this.value=this.defaultValue;"
-                                  name="statusUpdateText" id="statusUpdateText"><fmt:message
-                                key="statusUpdateDefaultText"/></textarea>
-
-                        <p>
-                            <input class="button" id="statusUpdateSubmit" type="submit"
-                                   title="<fmt:message key='statusUpdateSubmit'/>"/>
-                        </p>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class='clear'></div>
-    </div>
-
-    <h4 class="boxsocial-title"><fmt:message key="activitiesList"/></h4>
-
-    <div class="boxsocial">
-        <div class="boxsocialpadding10 boxsocialmarginbottom16">
-            <div class="boxsocial-inner">
-                <div class="boxsocial-inner-border"><!--start boxsocial -->
-                    <ul class="activitiesList">
-                        <li><fmt:message key="userLoadingStatus"/></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class='clear'></div>
-    </div>
-</div>
-<!--stop grid_12-->
-<div class='grid_4 omega'><!--start grid_4-->
 
     <h3><fmt:message key="userSearch"/></h3>
 
@@ -274,7 +224,7 @@
                    rel="${socialConnection.properties['j:connectedFrom'].node.identifier}:${socialConnection.properties['j:connectedTo'].node.identifier}:${socialConnection.properties['j:type'].string}"><span><fmt:message
                         key="removeFriend"/></span></a>
                 <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" rel="${connectedToUser.name}"
-                   href="currentUserConnections.jsp#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
+                   href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
                 <h4>
                     <a href="${url.base}${connectedToUser.path}.html"><c:out value="${jcr:userFullName(connectedToUser)}"/></a>
                 </h4>
@@ -286,10 +236,6 @@
 
 
     <div class='clear'></div>
-
-
-</div>
-<!--stop grid_4-->
 
 <div class='clear'></div>
 <div class="jahiaFancyboxForm">

@@ -394,8 +394,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             workflow.setDuedate(job.getDueDate());
         }
         workflow.setStartTime(historyService.createHistoryProcessInstanceQuery().processInstanceId(instance.getId()).orderAsc(HistoryProcessInstanceQuery.PROPERTY_STARTTIME).uniqueResult().getStartTime());
-        
-        workflow.setStartUser(executionService.getVariable(instance.getId(), "user").toString());
+
+        Object user = executionService.getVariable(instance.getId(), "user");
+        if (user != null) {
+            workflow.setStartUser(user.toString());
+        }
 
         Set<String> variableNames = executionService.getVariableNames(instance.getId());
         workflow.setVariables(executionService.getVariables(instance.getId(), variableNames));

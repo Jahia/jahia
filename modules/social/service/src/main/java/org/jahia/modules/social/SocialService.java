@@ -447,7 +447,7 @@ public class SocialService {
         args.put("to", toUserKey);
         args.put("connectionType", connectionType);
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, Locale.ENGLISH, new JCRCallback<Boolean>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(from.getUsername(), null, Locale.ENGLISH, new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 workflowService.startProcess(from.getNode(session), "user-connection", "jBPM", args);
                 return true;

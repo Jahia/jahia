@@ -47,8 +47,8 @@
     <c:forEach items="${param}" var="p" varStatus="status">
         <c:if test="${status.first}"><c:set var="sep" value="?"/></c:if>
         <c:if test="${not status.first}"><c:set var="sep" value="&"/></c:if>
-    <c:set var="ps" value="${ps}${sep}${p.key}=${p.value}" />
-</c:forEach>
+        <c:set var="ps" value="${ps}${sep}${p.key}=${p.value}"/>
+    </c:forEach>
     <script type="text/javascript">
         $('#tasks${user.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax${ps}');
     </script>
@@ -129,22 +129,23 @@
     <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
 <template:initPager pageSize="25" totalSize="${nodes.size}"
                     id="${user.identifier}"/>
-
-<c:forEach items="${nodes}" var="task"
-           begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
-    <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
-        <td class="center" headers="Type"><img alt=""
-                                               src="${url.currentModule}/images/flag_16.png" height="16" width="16"/>
-        </td>
-        <td headers="Title"><a
-                href="${url.base}${task.path}.html">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a></td>
-        <td class="center" headers="Priority">
-                ${task.propertiesAsString.priority}
-        </td>
-        <td class="center" headers="State">
-            <c:choose>
-                <c:when test="${task.propertiesAsString.state == 'active'}">
-                    <span><img alt="" src="${url.currentModule}/images/right_16.png" height="16" width="16"/></span>
+<c:if test="${currentNode.properties['viewUserTasks'].boolean}">
+    <c:forEach items="${nodes}" var="task"
+               begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
+        <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
+            <td class="center" headers="Type"><img alt=""
+                                                   src="${url.currentModule}/images/flag_16.png" height="16"
+                                                   width="16"/>
+            </td>
+            <td headers="Title"><a
+                    href="${url.base}${task.path}.html">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a></td>
+            <td class="center" headers="Priority">
+                    ${task.propertiesAsString.priority}
+            </td>
+            <td class="center" headers="State">
+                <c:choose>
+                    <c:when test="${task.propertiesAsString.state == 'active'}">
+                        <span><img alt="" src="${url.currentModule}/images/right_16.png" height="16" width="16"/></span>
                         <span>
                             <a href="javascript:send('${task.path}','suspended')"><fmt:message
                                     key="jnt_task.suspended"/></a>&nbsp;
@@ -153,147 +154,167 @@
                             <a href="javascript:send('${task.path}','finished')"><fmt:message
                                     key="jnt_task.complete"/></a>
                         </span>
-                </c:when>
-                <c:when test="${task.propertiesAsString.state == 'finished'}">
-                    <img alt="" src="${url.currentModule}/images/tick_16.png" height="16" width="16"/>
-                </c:when>
-                <c:when test="${task.propertiesAsString.state == 'suspended'}">
-                    <span><img alt="" src="${url.currentModule}/images/bubble_16.png" height="16" width="16"/></span>
+                    </c:when>
+                    <c:when test="${task.propertiesAsString.state == 'finished'}">
+                        <img alt="" src="${url.currentModule}/images/tick_16.png" height="16" width="16"/>
+                    </c:when>
+                    <c:when test="${task.propertiesAsString.state == 'suspended'}">
+                        <span><img alt="" src="${url.currentModule}/images/bubble_16.png" height="16"
+                                   width="16"/></span>
                         <span>
                             <a href="javascript:send('${task.path}','cancelled')"><fmt:message
                                     key="jnt_task.cancel"/></a>&nbsp;
                             <a href="javascript:send('${task.path}','active')"><fmt:message
                                     key="jnt_task.continue"/></a>
                         </span>
-                </c:when>
-                <c:when test="${task.propertiesAsString.state == 'canceled'}">
-                    <img alt="" src="${url.currentModule}/images/warning_16.png" height="16" width="16"/>
-                </c:when>
-            </c:choose>
-        </td>
-        <td headers="Date"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
-                                           dateStyle="short" type="date"/></td>
-    </tr>
-</c:forEach>
-<workflow:tasksForNode var="wfTasks" user="${renderContext.user}"/>
-<c:forEach items="${wfTasks}" var="task" varStatus="status">
-    <jcr:node var="node" uuid="${task.variables.nodeId}"/>
-    <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'}">
-        <td class="center" headers="Type">
-            <img alt="" src="${url.currentModule}/images/workflow.png"/>
-        </td>
-        <td headers="Title">
-            <c:if test="${'user-connection' == task.variables.workflow.key}" var="isUserConnectionRequest">
-                <c:set var="taskTitle"
-                       value="${not empty task.displayName ? task.displayName : task.name} (${task.variables.fromUser})"/>
-            </c:if>
-            <c:if test="${not isUserConnectionRequest}">
-                <c:set var="taskTitle"
-                       value="${not empty task.formResourceName and not empty task.variables['jcr:title'] ? task.variables['jcr:title'][0].value : (not empty task.displayName ? task.displayName : task.name)}"/>
-            </c:if>
-            <c:if test="${jcr:isNodeType(node,'jnt:page')}">
-                <c:set var="path" value="${node.path}"/>
-            </c:if>
-            <c:if test="${!jcr:isNodeType(node,'jnt:page')}">
-                <c:set var="path" value="${jcr:getParentOfType(node,'jnt:page').path}"/>
-            </c:if>
-            <a target="_blank"
-               href="${url.context}/cms/render/${task.variables.workspace}/${task.variables.locale}${path}.html">${fn:escapeXml(taskTitle)}</a>
-        </td>
-        <td colspan="3">
-            <div class="listEditToolbar">
-                <c:choose>
-                    <c:when test="${not empty task.formResourceName}">
-                        <script type="text/javascript">
-                            animatedcollapse.addDiv('task${node.identifier}-${task.id}', 'fade=1,speed=100');
-                        </script>
-                        <input class="workflowaction" type="button" value="${task.name}"
-                               onclick="animatedcollapse.toggle('task${node.identifier}-${task.id}');$('#taskrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
                     </c:when>
-                    <c:otherwise>
-                        <c:forEach items="${task.outcomes}" var="outcome">
-                            <input class="workflowaction" type="button" value="${outcome}"
-                                   onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}','window.location=window.location;')"/>
-                        </c:forEach>
-                    </c:otherwise>
+                    <c:when test="${task.propertiesAsString.state == 'canceled'}">
+                        <img alt="" src="${url.currentModule}/images/warning_16.png" height="16" width="16"/>
+                    </c:when>
                 </c:choose>
-                    <%--
-                    <template:addResources>
-                        <script type="text/javascript">
-                            animatedcollapse.addDiv('comments${node.identifier}-${task.id}', 'fade=1,speed=100');
-                        </script>
-                    </template:addResources>
-                    <input class="workflowaction" type="button" value="<fmt:message key="jnt_task.comments"/>"
-                           onclick="animatedcollapse.toggle('comments${node.identifier}-${task.id}');$('#commentsrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
-                    --%>
-            </div>
-        </td>
-    </tr>
-    <c:if test="${not empty task.formResourceName}">
-        <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'} hidden" id="taskrow${node.identifier}-${task.id}">
-            <td colspan="5">
-                <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
-                    <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                    <template:module node="${node}" template="contribute.add">
-                        <template:param name="resourceNodeType" value="${task.formResourceName}"/>
-                        <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
-                        <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
-                        <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
-                        <template:param name="workflowTaskFormCallbackURL" value="${url.current}.ajax"/>
-                        <template:param name="workflowTaskFormCallbackJS"
-                                        value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();"/>
-                    </template:module>
+            </td>
+            <td headers="Date"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
+                                               dateStyle="short" type="date"/></td>
+        </tr>
+    </c:forEach>
+</c:if>
+<c:if test="${currentNode.properties['viewWorkflowTasks'].boolean}">
+    <jcr:nodeProperty node="${currentNode}" name="workflowTypes" var="workflowTypes"/>
+    <workflow:tasksForNode var="wfTasks" user="${renderContext.user}"/>
+    <c:forEach items="${wfTasks}" var="task" varStatus="status">
+        <workflow:workflow id="${task.processId}" provider="${task.provider}" var="wf"/>
+        <c:set var="found" value="false"/>
+
+        <c:forEach items="${workflowTypes}" var="type">
+            <c:set var="currentType">${wf.workflowDefinition.provider}:${wf.workflowDefinition.key}</c:set>
+            <c:if test="${type.string eq currentType}">
+                <c:set var="found" value="true"/>
+            </c:if>
+
+        </c:forEach>
+
+        <c:if test="${empty workflowTypes or found}">
+            <jcr:node var="node" uuid="${task.variables.nodeId}"/>
+            <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'}">
+                <td class="center" headers="Type">
+                    <img alt="" src="${url.currentModule}/images/workflow.png"/>
+                </td>
+                <td headers="Title">
+                    <c:if test="${'user-connection' == task.variables.workflow.key}" var="isUserConnectionRequest">
+                        <c:set var="taskTitle"
+                               value="${not empty task.displayName ? task.displayName : task.name} (${task.variables.fromUser})"/>
+                    </c:if>
+                    <c:if test="${not isUserConnectionRequest}">
+                        <c:set var="taskTitle"
+                               value="${not empty task.formResourceName and not empty task.variables['jcr:title'] ? task.variables['jcr:title'][0].value : (not empty task.displayName ? task.displayName : task.name)}"/>
+                    </c:if>
+                    <c:if test="${jcr:isNodeType(node,'jnt:page')}">
+                        <c:set var="path" value="${node.path}"/>
+                    </c:if>
+                    <c:if test="${!jcr:isNodeType(node,'jnt:page')}">
+                        <c:set var="path" value="${jcr:getParentOfType(node,'jnt:page').path}"/>
+                    </c:if>
+                    <a target="_blank"
+                       href="${url.context}/cms/render/${task.variables.workspace}/${task.variables.locale}${path}.html">${fn:escapeXml(taskTitle)}</a>
+                </td>
+                <td colspan="3">
+                    <div class="listEditToolbar">
+                        <c:choose>
+                            <c:when test="${not empty task.formResourceName}">
+                                <script type="text/javascript">
+                                    animatedcollapse.addDiv('task${node.identifier}-${task.id}', 'fade=1,speed=100');
+                                </script>
+                                <input class="workflowaction" type="button" value="${task.name}"
+                                       onclick="animatedcollapse.toggle('task${node.identifier}-${task.id}');$('#taskrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach items="${task.outcomes}" var="outcome">
+                                    <input class="workflowaction" type="button" value="${outcome}"
+                                           onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}','window.location=window.location;')"/>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                            <%--
+                            <template:addResources>
+                                <script type="text/javascript">
+                                    animatedcollapse.addDiv('comments${node.identifier}-${task.id}', 'fade=1,speed=100');
+                                </script>
+                            </template:addResources>
+                            <input class="workflowaction" type="button" value="<fmt:message key="jnt_task.comments"/>"
+                                   onclick="animatedcollapse.toggle('comments${node.identifier}-${task.id}');$('#commentsrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
+                            --%>
+                    </div>
+                </td>
+            </tr>
+            <c:if test="${not empty task.formResourceName}">
+                <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'} hidden"
+                    id="taskrow${node.identifier}-${task.id}">
+                    <td colspan="5">
+                        <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
+                            <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
+                            <template:module node="${node}" template="contribute.add">
+                                <template:param name="resourceNodeType" value="${task.formResourceName}"/>
+                                <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
+                                <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
+                                <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
+                                <template:param name="workflowTaskFormCallbackURL" value="${url.current}.ajax"/>
+                                <template:param name="workflowTaskFormCallbackJS"
+                                                value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();"/>
+                            </template:module>
+                        </div>
+                    </td>
+                </tr>
+            </c:if>
+        </c:if>
+        <%--
+            <c:choose>
+                <c:when test="${((status.count + 1)) % 2 == 0}">
+                    <tr class="odd hidden" id="commentsrow${node.identifier}-${task.id}">
+                </c:when>
+                <c:otherwise>
+                    <tr class="even hidden" id="commentsrow${node.identifier}-${task.id}">
+                </c:otherwise>
+            </c:choose>
+            <td colspan="5" class="tdTaskComments">
+                <div style="display:none;" id="comments${node.identifier}-${task.id}" class="taskformdiv">
+                    <c:forEach items="${task.taskComments}" var="taskComment">
+                        <p class="TasksComment">
+                            <span>${taskComment.comment}</span>
+                            <span class="TasksCommentDate">&nbsp;at&nbsp;<fmt:formatDate dateStyle="medium" type="both" value="${taskComment.time}"/></span>
+                        </p>
+                    </c:forEach>
+                    <form class="Form-tasksComments" action="${url.base}${currentNode.path}.commentTask.do" method="post" id="commentsForm${task.id}">
+                        <input type="hidden" name="task" value="${task.provider}:${task.id}"/>
+                        <textarea rows="10" cols="80" name="comment"></textarea>
+                        <div class="divButton">
+                            <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message
+                                    key="jnt_task.comments.add"/></button>
+                        </div>
+                    </form>
+                    <script type="text/javascript">
+                        var options${task.id} = {
+                            success: function() {
+                                replace('${currentNode.identifier}', '${url.current}', "$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();$('#commentsForm${task.id}').ajaxForm(options${task.id});");
+
+                                $.each(richTextEditors, function(key, value) {
+                                    value.setData("");
+                                });
+                            },
+                            dataType: "json",
+                            resetForm : true
+                        };// wait for the DOM to be loaded
+                        $(document).ready(function() {
+                            // bind 'myForm' and provide a simple callback function
+                            $('#commentsForm${task.id}').ajaxForm(options${task.id});
+                        });
+                    </script>
                 </div>
             </td>
-        </tr>
-    </c:if>
-    <%--
-        <c:choose>
-            <c:when test="${((status.count + 1)) % 2 == 0}">
-                <tr class="odd hidden" id="commentsrow${node.identifier}-${task.id}">
-            </c:when>
-            <c:otherwise>
-                <tr class="even hidden" id="commentsrow${node.identifier}-${task.id}">
-            </c:otherwise>
-        </c:choose>
-        <td colspan="5" class="tdTaskComments">
-            <div style="display:none;" id="comments${node.identifier}-${task.id}" class="taskformdiv">
-                <c:forEach items="${task.taskComments}" var="taskComment">
-                    <p class="TasksComment">
-                        <span>${taskComment.comment}</span>
-                        <span class="TasksCommentDate">&nbsp;at&nbsp;<fmt:formatDate dateStyle="medium" type="both" value="${taskComment.time}"/></span>
-                    </p>
-                </c:forEach>
-                <form class="Form-tasksComments" action="${url.base}${currentNode.path}.commentTask.do" method="post" id="commentsForm${task.id}">
-                    <input type="hidden" name="task" value="${task.provider}:${task.id}"/>
-                    <textarea rows="10" cols="80" name="comment"></textarea>
-                    <div class="divButton">
-                        <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message
-                                key="jnt_task.comments.add"/></button>
-                    </div>
-                </form>
-                <script type="text/javascript">
-                    var options${task.id} = {
-                        success: function() {
-                            replace('${currentNode.identifier}', '${url.current}', "$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();$('#commentsForm${task.id}').ajaxForm(options${task.id});");
+            </tr>
+        --%>
+    </c:forEach>
+</c:if>
 
-                            $.each(richTextEditors, function(key, value) {
-                                value.setData("");
-                            });
-                        },
-                        dataType: "json",
-                        resetForm : true
-                    };// wait for the DOM to be loaded
-                    $(document).ready(function() {
-                        // bind 'myForm' and provide a simple callback function
-                        $('#commentsForm${task.id}').ajaxForm(options${task.id});
-                    });
-                </script>
-            </div>
-        </td>
-        </tr>
-    --%>
-</c:forEach>
 </tbody>
 </table>
 

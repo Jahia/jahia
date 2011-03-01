@@ -105,7 +105,7 @@
                                     j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default"
                                     jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <currentUserTasks jcr:primaryType="jnt:currentUserTasks"/>
+                                <currentUserTasks jcr:primaryType="jnt:currentUserTasks" viewUserTasks="true" viewWorkflowTasks="true"/>
                             </pagecontent>
                         </user-tasks>
                         <user-jahia-home j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false"

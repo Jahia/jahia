@@ -10,6 +10,32 @@
     <short-name>workflow</short-name>
     <uri>http://www.jahia.org/tags/workflow</uri>
     <tag>
+        <description>Exposes the identified workflow.</description>
+        <name>workflow</name>
+        <tag-class>org.jahia.taglibs.workflow.WorkflowTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>provider</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <description>Exposes the possible workflow for the specified node.</description>
         <name>workflowsForNode</name>
         <tag-class>org.jahia.taglibs.workflow.AvailableWorkflowsTag</tag-class>

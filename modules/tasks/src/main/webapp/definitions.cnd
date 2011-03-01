@@ -14,3 +14,6 @@
 
 
 [jnt:currentUserTasks] > jmix:profileComponentContent, jmix:bindedComponent
+ - viewUserTasks (boolean)
+ - viewWorkflowTasks (boolean)
+ - workflowTypes (string, choicelist[workflow]) multiple

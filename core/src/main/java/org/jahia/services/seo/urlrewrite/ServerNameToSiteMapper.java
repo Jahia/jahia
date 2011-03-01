@@ -89,9 +89,9 @@ public class ServerNameToSiteMapper {
 		String targetSiteKey = mapping.get(host);
 		if (targetSiteKey != null) {
 			request.setAttribute(ATTR_NAME, targetSiteKey);
-			logger.info("Mapping server name {} to site key {}", host, targetSiteKey);
-		} else {
-			logger.info("No site mapping found for server name {}", host);
+			logger.debug("Mapping server name {} to site key {}", host, targetSiteKey);
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("No site mapping found for server name {}", host);
 		}
 
 	}

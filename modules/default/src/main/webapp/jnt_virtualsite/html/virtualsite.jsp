@@ -1,20 +1,85 @@
+<%@ page import="org.jahia.services.content.nodetypes.NodeTypeRegistry" %>
+<%@ page import="javax.jcr.nodetype.NodeTypeIterator" %>
+<%@ page import="org.jahia.services.templates.JahiaTemplateManagerService" %>
+<%@ page import="org.jahia.registries.ServicesRegistry" %>
+<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
+<%@ page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
+<%@ page import="org.jahia.services.content.JCRContentUtils" %>
+<%@ page import="org.jahia.services.content.nodetypes.ExtendedNodeType" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <c:if test="${currentNode.parent.name eq 'sites'}">
-    Virtual site
+    <h1>Site: ${currentNode.name}</h1>
+
+    <p>Title: <jcr:nodeProperty node="${currentNode}" name="j:title"/></p>
+
+    <p>Server name: <jcr:nodeProperty node="${currentNode}" name="j:serverName"/></p>
+
+    <p>Description: <jcr:nodeProperty node="${currentNode}" name="j:description"/></p>
+
+    <p>Nodes:</p>
+    <ul>
+        <c:forEach var="child" items="${currentNode.nodes}">
+            <li><a href="${url.base}${child.path}.html">${child.name}</a></li>
+        </c:forEach>
+    </ul>
 </c:if>
 <c:if test="${currentNode.parent.name eq 'templateSets'}">
-    Templates Set
+    <c:if test="${currentNode.properties['j:siteType'].string eq 'module'}">
+        <h1>Module : ${currentNode.name}</h1>
+    </c:if>
+    <c:if test="${currentNode.properties['j:siteType'].string eq 'templatesSet'}">
+        <h1>Templates Set : ${currentNode.name}</h1>
+    </c:if>
+
+    <p>Title: <jcr:nodeProperty node="${currentNode}" name="j:title"/></p>
+
+    <p>Description: <jcr:nodeProperty node="${currentNode}" name="j:description"/></p>
+
+    <jcr:jqom statement="select * from [jnt:template] as template where ISDESCENDANTNODE(template,'${currentNode.path}')" var="templates"/>
+
+    <c:if test="${templates.nodes.size > 0}">
+    <p>Template:</p>
+        <ul>
+        <c:forEach items="${templates.nodes}" var="template">
+            <li>
+                <a href="${url.base}${template.path}">${template.name}</a>
+            </li>
+        </c:forEach>
+        </ul>
+    </c:if>
+
+    <jcr:jqom statement="select * from [jnt:page] as page where ISDESCENDANTNODE(page,'${currentNode.path}')" var="pages"/>
+    <c:if test="${pages.nodes.size > 0}">
+        <p>Prepackaged pages:</p>
+        <ul>
+        <c:forEach items="${pages.nodes}" var="page">
+            <li>
+                <a href="${url.base}${page.path}">${page.name}</a>
+            </li>
+        </c:forEach>
+        </ul>
+    </c:if>
+    
+    
+    <%
+        JCRNodeWrapper currentNode = (JCRNodeWrapper) pageContext.findAttribute("currentNode");
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(currentNode.getName());
+        NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pack.getName());
+        pageContext.setAttribute("nodeTypes",nti);
+    %>
+    <c:if test="${nodeTypes.size > 0}">
+        <p>Nodetype:</p>
+        <ul>
+            <c:forEach items="${nodeTypes}" var="nodeType">
+                <li>
+                    <jcr:icon var="icon" type="${nodeType}"/>
+                    <img src="${url.templatesPath}/${icon}.png"/>
+                        ${jcr:label(nodeType,currentResource.locale)}
+                </li>
+            </c:forEach>
+        </ul>
+    </c:if>
 </c:if>
-<h1>Site: ${currentNode.name}</h1>
-<p>Title: <jcr:nodeProperty node="${currentNode}" name="j:title"/></p>
-<p>Server name: <jcr:nodeProperty node="${currentNode}" name="j:serverName"/></p>
-<p>Description: <jcr:nodeProperty node="${currentNode}" name="j:description"/></p>
-<p>Nodes:</p>
-<ul>
-<c:forEach var="child" items="${currentNode.nodes}">
-    <li><a href="${url.base}${child.path}.html">${child.name}</a></li>
-</c:forEach>
-</ul>

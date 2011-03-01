@@ -39,8 +39,14 @@ import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
 import org.jahia.api.Constants;
@@ -64,6 +70,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -782,6 +789,78 @@ public final class JCRContentUtils {
             }
         }
         return node;
+    }
+
+    public static String getIcon(JCRNodeWrapper f) throws RepositoryException {
+        String folder = JCRContentUtils.getIconsFolder(f.getPrimaryNodeType());
+        if (f.isFile()) {
+            return folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
+        } else if (f.isPortlet()) {
+            try {
+                JCRPortletNode portletNode = new JCRPortletNode(f);
+                if (portletNode.getContextName().equalsIgnoreCase("/rss")) {
+                    return folder + "jnt_portlet_rss";
+                } else {
+                    return folder + "jnt_portlet";
+                }
+            } catch (RepositoryException e) {
+                return folder + "jnt_portlet";
+            }
+        } else {
+            final ExtendedNodeType type = f.getPrimaryNodeType();
+            String icon = JCRContentUtils.getIcon(type);
+            return icon;
+        }
+    }
+
+
+    public static String getIcon(ExtendedNodeType type) throws RepositoryException {
+        String icon = getIconsFolder(type) + type.getName().replace(':', '_');
+        if (check(icon)) {
+            return icon;
+        }
+        for (ExtendedNodeType nodeType : type.getSupertypes()) {
+            icon = getIconsFolder(nodeType) + nodeType.getName().replace(':', '_');
+            if (check(icon)) {
+                return icon;
+            }
+        }
+        return null;
+    }
+
+    private  static Map<String, Boolean> iconsPresence = new HashMap<String, Boolean>();
+
+    public static boolean check(String icon) {
+        try {
+            synchronized (iconsPresence) {
+                if (!iconsPresence.containsKey(icon)) {
+                    iconsPresence.put(icon,
+                            Jahia.getStaticServletConfig().getServletContext().getResource("/modules/" + icon + ".png") !=
+                                    null);
+                }
+            }
+            return iconsPresence.get(icon);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return false;
+    }
+
+    public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
+        String folder = primaryNodeType.getSystemId();
+        if (folder.startsWith("system-")) {
+            folder = "assets";
+        } else {
+            final JahiaTemplatesPackage aPackage =
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(folder);
+            if (aPackage != null) {
+                folder = aPackage.getRootFolder().equals("default")?"assets":aPackage.getRootFolder();
+            } else {
+                folder = "assets"; // todo handle portlets
+            }
+        }
+        folder += "/icons/";
+        return folder;
     }
 
 

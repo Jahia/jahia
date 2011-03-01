@@ -61,6 +61,36 @@
         </attribute>
     </tag>
     <tag>
+        <description>Get the icon for a node or a nodetype</description>
+        <name>icon</name>
+        <tag-class>org.jahia.taglibs.jcr.node.JCRNodeIconTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>the name of the exposed bean</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the node</description>
+            <name>node</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the node type</description>
+            <name>type</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the scope of the bean (see PageContext)</description>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <description>Exposes a JCR node as a JCRNodeWrapper object</description>
         <name>sort</name>
         <tag-class>org.jahia.taglibs.jcr.node.JCRSortTag</tag-class>

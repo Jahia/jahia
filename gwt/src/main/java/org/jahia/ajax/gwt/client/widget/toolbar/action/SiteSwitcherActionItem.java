@@ -111,7 +111,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                         JahiaGWTParameters.setSite(jahiaNode, linker);
                         ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
                         if (root.get(0).startsWith("/templateSets")) {
-                            ((EditLinker) linker).onMainSelection(jahiaNode.getPath()+"/templates/base", null, null);
+                            ((EditLinker) linker).onMainSelection(jahiaNode.getPath(), null, null);
                         } else {
                             ((EditLinker) linker).onMainSelection(jahiaNode.getPath()+"/home", null, null);
                         }

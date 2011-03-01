@@ -108,6 +108,11 @@
                             <mainResourceDisplay j:mainResourceView="detail" jcr:primaryType="jnt:mainResourceDisplay"/>
                         </pagecontent>
                     </fileTemplate>
+                    <siteTemplate j:applyOn="jnt:virtualsite" j:defaultTemplate="true" j:hiddenTemplate="false" jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+                        </pagecontent>
+                    </siteTemplate>
                 </base>
             </templates>
         </content-browser>

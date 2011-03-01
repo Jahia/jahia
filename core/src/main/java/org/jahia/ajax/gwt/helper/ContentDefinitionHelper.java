@@ -37,16 +37,13 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
+import org.jahia.services.content.*;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.services.content.ExternalReferenceValue;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
@@ -217,7 +214,7 @@ public class ContentDefinitionHelper {
         }
         gwt.setSuperTypes(supertypesNames);
         try {
-            gwt.setIcon(navigation.getIcon(nodeType));
+            gwt.setIcon(JCRContentUtils.getIcon(nodeType));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

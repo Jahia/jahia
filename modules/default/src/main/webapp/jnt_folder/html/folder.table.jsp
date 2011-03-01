@@ -42,15 +42,21 @@
                varStatus="status">
         <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
         <td>${child.properties["jcr:mimeType"].string}
-            <c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">
-                <img src="${url.templatesPath}/${child.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_${functions:fileIcon(child.name)}_large.png"/>
-            </c:if>
-            <c:if test="${empty child.primaryNodeType.templatePackage.rootFolder}">
-				<c:if test="${functions:fileIcon(child.name) != 'file'}">
-					<c:set var="icon" value="_${functions:fileIcon(child.name)}"/>
-				</c:if>
-                <img src="${url.templatesPath}/default/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}${icon}_large.png"/>
-            </c:if>
+
+            <jcr:icon var="icon" node="${child}"/>
+            <img src="${url.templatesPath}/${icon}_large.png"/>
+            <%--<c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">--%>
+                <%--<jcr:icon var="icon" node="${child}"/>--%>
+                <%--<img src="${url.templatesPath}/${icon}_large.png"/>--%>
+
+                <%--&lt;%&ndash;<img src="${url.templatesPath}/${child.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_${functions:fileIcon(child.name)}_large.png"/>&ndash;%&gt;--%>
+            <%--</c:if>--%>
+            <%--<c:if test="${empty child.primaryNodeType.templatePackage.rootFolder}">--%>
+				<%--<c:if test="${functions:fileIcon(child.name) != 'file'}">--%>
+					<%--<c:set var="icon" value="_${functions:fileIcon(child.name)}"/>--%>
+				<%--</c:if>--%>
+                <%--<img src="${url.templatesPath}/default/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}${icon}_large.png"/>--%>
+            <%--</c:if>--%>
         </td>
         <td>
             <div class="jahia-template-gxt" jahiatype="module" id="module${child.identifier}" type="existingNode"

@@ -13,7 +13,7 @@
   			<value>/WEB-INF/etc/config/jahia.properties</value>
   			<value>/WEB-INF/etc/config/jahia.advanced.properties</value>
   			<value>/WEB-INF/etc/config/jahia.custom.properties</value>
-  			<value>classpath:org/jahia/config/jahia.properties</value>
+  			<value>classpath:org/jahia/config/jahia*.properties</value>
   		</list>
   	</property>
   </bean>

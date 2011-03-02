@@ -234,9 +234,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 }
                 query.append("]");
             }
+/*          do the search in the entire site, not only under node home
             if (!isFileSearch(params)) {
                 query.append("/home");
             }
+*/
             query.append("//element(*,").append(getNodeType(params))
                     .append(")");
         } else {

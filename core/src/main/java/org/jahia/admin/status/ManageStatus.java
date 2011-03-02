@@ -147,7 +147,22 @@ public class ManageStatus extends AbstractAdministrationModule {
                     cache.clearStatistics();
                 }
             }
-        }
+        } else if (request.getParameter ("flushOutputCaches") != null) {
+            logger.info("Flushing all HTML output caches");
+            for (String cacheName : ehcacheManager.getCacheNames()) {
+                if (!cacheName.startsWith("HTML")) {
+                    continue;
+                }
+                net.sf.ehcache.Cache cache = ehcacheManager.getCache(cacheName);
+                if (cache != null) {
+                    // flush without notifying the other cluster nodes
+                    cache.removeAll(true);
+                    // reset statistics
+                    cache.clearStatistics();
+                    logger.info("...done flushing {}", cacheName);
+                }
+            }
+        } 
 
         // get the cache factory instance
         CacheService cacheFactory = ServicesRegistry.getInstance().getCacheService();

@@ -160,6 +160,14 @@
                 <input type="submit" name="flushAllCaches" value="<fmt:message key='org.jahia.admin.status.ManageStatus.flushAllCaches.label'/>">
             </td>
         </tr>
+        <tr class="evenLine">
+            <td width="100%">
+                <strong><fmt:message key="org.jahia.admin.status.ManageStatus.flushOutputCaches.label"/>:</strong><br>
+            </td>
+            <td>
+                <input type="submit" name="flushOutputCaches" value="<fmt:message key='org.jahia.admin.status.ManageStatus.flushOutputCaches.label'/>">
+            </td>
+        </tr>
     </table>
     <br>
     <table class="evenOddTable full" border="0" cellspacing="0" cellpadding="5">

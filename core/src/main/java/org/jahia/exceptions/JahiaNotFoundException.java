@@ -30,26 +30,43 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-// $Id: JahiaForbiddenAccessException.java 14745 2006-07-20 14:58:38Z shuber $
-//
-
-
 package org.jahia.exceptions;
 
-
 /**
- * This exception is raised when the user tries to access a resource, for which
- * the mode is not valid (e.g. edit mode on a read-only cluster node)
+ * Indicates a malformed URL or a missing target resource.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class JahiaInvalidModeException extends JahiaException
-{
+public class JahiaNotFoundException extends JahiaRuntimeException {
 
-    //-------------------------------------------------------------------------
-    /** Default constructor
+    private static final long serialVersionUID = 1850748871691931049L;
+
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param message
      */
-    public JahiaInvalidModeException ()
-    {
-        super ("403 Invalid mode", "403 Invalid mode",
-                UNAVAILABLE_ERROR, ERROR_SEVERITY);
+    public JahiaNotFoundException(String message) {
+        super(message);
     }
+
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param message
+     * @param cause
+     */
+    public JahiaNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param cause
+     */
+    public JahiaNotFoundException(Throwable cause) {
+        super(cause);
+    }
+
 }

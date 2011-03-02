@@ -32,6 +32,7 @@
 
 package org.jahia.services.render;
 
+import static org.jahia.api.Constants.EDIT_WORKSPACE;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 import java.util.Date;
@@ -47,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaNotFoundException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
@@ -170,8 +172,7 @@ public class URLResolver {
     }
 
     private void init() {
-        workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(
-                path, "/"), DEFAULT_WORKSPACE);
+        workspace = verifyWorkspace(StringUtils.substringBefore(path, "/"));
         path = StringUtils.substringAfter(path, "/");
         String langCode = StringUtils.substringBefore(path, "/");
 
@@ -222,8 +223,7 @@ public class URLResolver {
         if (isServletAllowingUrlMapping() && !URLGenerator.isLocalhost(serverName)) {
             String tempPath = null;
             try {
-                String tempWorkspace = StringUtils.defaultIfEmpty(StringUtils
-                        .substringBefore(getPath(), "/"), DEFAULT_WORKSPACE);
+                String tempWorkspace = verifyWorkspace(StringUtils.substringBefore(getPath(), "/"));
                 tempPath = StringUtils.substringAfter(getPath(), "/");
                 List<VanityUrl> vanityUrls = getVanityUrlService()
                         .findExistingVanityUrls("/" + tempPath,
@@ -606,5 +606,17 @@ public class URLResolver {
 
     public void setVanityUrl(String vanityUrl) {
         this.vanityUrl = vanityUrl;
+    }
+    
+    protected String verifyWorkspace(String workspace) {
+        if (StringUtils.isEmpty(workspace)) {
+            workspace = DEFAULT_WORKSPACE;
+        } else {
+            if (!LIVE_WORKSPACE.equals(workspace) && !EDIT_WORKSPACE.equals(workspace)) {
+                throw new JahiaNotFoundException("Unknown workspace '" + workspace + "'");
+            }
+        }
+        
+        return workspace;
     }
 }

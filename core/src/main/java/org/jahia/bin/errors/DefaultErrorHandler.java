@@ -55,7 +55,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
-import org.jahia.exceptions.JahiaInvalidModeException;
+import org.jahia.exceptions.JahiaNotFoundException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
@@ -155,8 +155,7 @@ public class DefaultErrorHandler implements ErrorHandler {
         } else if (e instanceof JahiaException) {
             if (e instanceof JahiaSessionExpirationException) {
                 code = SC_BAD_REQUEST;
-            } else if (e instanceof JahiaForbiddenAccessException
-                    || e instanceof JahiaInvalidModeException) {
+            } else if (e instanceof JahiaForbiddenAccessException) {
                 code = SC_FORBIDDEN;
             } else {
                 code = getErrorCode(e);
@@ -166,6 +165,8 @@ public class DefaultErrorHandler implements ErrorHandler {
                 code = SC_BAD_REQUEST;
             } else if (e instanceof JahiaUnauthorizedException) {
                 code = SC_UNAUTHORIZED;
+            } else if (e instanceof JahiaNotFoundException) {
+                code = SC_NOT_FOUND;
             } else {
 //                throw (JahiaRuntimeException) e;
             }

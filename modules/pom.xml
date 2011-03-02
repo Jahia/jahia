@@ -11,6 +11,21 @@
     <name>Jahia Modules</name>
     <packaging>pom</packaging>
 
+    <repositories>
+        <repository>
+            <id>jahiaRepository</id>
+            <name>Jahia's Maven Repository</name>
+            <url>http://maven.jahia.org/maven2</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jahiaRepository</id>
+            <name>Jahia's Maven Repository</name>
+            <url>http://maven.jahia.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+    
     <dependencies>
         <!--Cross project dependencies-->
         <dependency>
@@ -77,6 +92,26 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>module-docs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>${site.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <modules>
@@ -97,6 +132,7 @@
         <module>faq</module>
         <module>formbuilder</module>
         <module>forum</module>
+        <module>googleAnalytics</module>
         <module>grid</module>
         <module>job</module>
         <module>location</module>
@@ -137,6 +173,34 @@
 		<module>videostreaming</module>
         <module>webClipping</module>
         <module>wiki</module>
-        <module>googleAnalytics</module>
   </modules>
+  
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <version>${jahia.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>native2ascii</id>
+                        <goals>
+                            <goal>native2ascii</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>ISO-8859-1</encoding>
+                            <src>${basedir}/src/main/webapp/resources</src>
+                            <addToProjectResources>false</addToProjectResources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>package-imports</id>
+                        <goals>
+                            <goal>package-imports</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

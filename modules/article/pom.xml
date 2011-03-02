@@ -93,26 +93,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>module-docs</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <version>${site.plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
     <dependencies>
         <dependency>
@@ -158,23 +138,6 @@
                         </manifestEntries>
                     </archive>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jahia.server</groupId>
-                <artifactId>maven-jahia-plugin</artifactId>
-                <version>${jahia.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>native2ascii</goal>
-                        </goals>
-                        <configuration>
-                            <encoding>ISO-8859-1</encoding>
-                            <src>${basedir}/src/main/webapp/resources</src>
-                            <addToProjectResources>false</addToProjectResources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

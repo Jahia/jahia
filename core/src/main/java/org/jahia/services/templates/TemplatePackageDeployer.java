@@ -35,7 +35,9 @@ package org.jahia.services.templates;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -81,21 +83,36 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         }
 
         private void initTimestamps() {
+            // list WEB-INF/var/shared_modules
             File[] existingFiles = getPackageFiles(sharedTemplatesFolder);
             for (File pkgFile : existingFiles) {
+                logger.debug("Monitoring {} for changes", pkgFile.toString());
                 timestamps.put(pkgFile.getPath(), pkgFile.lastModified());
             }
-            File[] deployedFolders = deployedTemplatesFolder.listFiles();
-            for (File deployedFolder : deployedFolders) {
-                if (deployedFolder.isDirectory()) {
-                    File[] files = deployedFolder.listFiles();
+            
+            if (settingsBean.isDevelopmentMode()) {
+                // list first level folders under /modules
+                for (File deployedFolder : deployedTemplatesFolder.listFiles((FileFilter) FileFilterUtils.directoryFileFilter())) {
+                    logger.debug("Monitoring {} for changes", deployedFolder.toString());
                     timestamps.put(deployedFolder.getPath(), deployedFolder.lastModified());
-                    for (File file : files) {
+                    // list direct files (not recursing into sub-folders)
+                    for (File file : deployedFolder.listFiles((FileFilter) FileFilterUtils.fileFileFilter())) {
+                        logger.debug("Monitoring {} for changes", file.toString());
                         timestamps.put(file.getPath(), file.lastModified());
                     }
-                    File spring = new File(deployedFolder,"META-INF/spring");
-                    if (spring.exists()) {
-                        for (File file : spring.listFiles()) {
+                    // watch for everything under module's META-INF/
+                    File metaInf = new File(deployedFolder, "META-INF");
+                    if (metaInf.exists()) {
+                        for (File file : FileUtils.listFiles(metaInf, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
+                            logger.debug("Monitoring {} for changes", file.toString());
+                            timestamps.put(file.getPath(), file.lastModified());
+                        }
+                    }
+                    // watch for everything under module's WEB-INF/
+                    File webInf = new File(deployedFolder, "WEB-INF");
+                    if (webInf.exists()) {
+                        for (File file : FileUtils.listFiles(webInf, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
+                            logger.debug("Monitoring {} for changes", file.toString());
                             timestamps.put(file.getPath(), file.lastModified());
                         }
                     }
@@ -105,60 +122,90 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
         @Override
         public void run() {
+            boolean reloadSpringContext = false;
+            boolean changed = false;
+
+            // list WEB-INF/var/shared_modules
             File[] existingFiles = getPackageFiles(sharedTemplatesFolder);
             for (File file : existingFiles) {
                 if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
                     timestamps.put(file.getPath(), file.lastModified());
+                    logger.debug("Detected modified resource {}", file.getPath());
                     deployPackage(file);
+                    reloadSpringContext = true;
+                    changed = true;
                 }
             }
-
-            List<JahiaTemplatesPackage> remaining = new LinkedList<JahiaTemplatesPackage>();
-
-            boolean reloadSpringContext = false;
-
-            File[] deployedFolders = deployedTemplatesFolder.listFiles();
-            for (File deployedFolder : deployedFolders) {
-                if (deployedFolder.isDirectory()) {
-                    File[] files = deployedFolder.listFiles();
-                    for (File file : files) {
-                        if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
+            if (settingsBean.isDevelopmentMode()) {
+                List<File> remaining = new LinkedList<File>();
+    
+                // list first level folders under /modules
+                for (File deployedFolder : deployedTemplatesFolder
+                        .listFiles((FileFilter) FileFilterUtils.directoryFileFilter())) {
+                    // list direct files (not recursing into sub-folders)
+                    for (File file : deployedFolder.listFiles((FileFilter) FileFilterUtils
+                            .fileFileFilter())) {
+                        if (!timestamps.containsKey(file.getPath())
+                                || timestamps.get(file.getPath()) != file.lastModified()) {
                             timestamps.put(file.getPath(), file.lastModified());
-
-                            JahiaTemplatesPackage packageHandler = getPackage(deployedFolder);
-                            if (packageHandler != null) {
-                                remaining.add(packageHandler);
-                            }
+                            logger.debug("Detected modified resource {}", file.getPath());
+                            remaining.add(deployedFolder);
                             if (file.getName().startsWith("import.")) {
                                 reloadSpringContext = true;
                             }
                         }
                     }
 
-                    File spring = new File(deployedFolder,"META-INF/spring");
-                    if (spring.exists()) {
-                        for (File file : spring.listFiles()) {
-                            if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
+                    // watch for everything under module's META-INF/
+                    File metaInf = new File(deployedFolder, "META-INF");
+                    if (metaInf.exists()) {
+                        for (File file : FileUtils.listFiles(metaInf, TrueFileFilter.INSTANCE,
+                                TrueFileFilter.INSTANCE)) {
+                            if (!timestamps.containsKey(file.getPath())
+                                    || timestamps.get(file.getPath()) != file.lastModified()) {
                                 timestamps.put(file.getPath(), file.lastModified());
+                                logger.debug("Detected modified resource {}", file.getPath());
                                 reloadSpringContext = true;
                             }
                         }
                     }
 
-                    if (!timestamps.containsKey(deployedFolder.getPath()) || timestamps.get(deployedFolder.getPath()) != deployedFolder.lastModified()) {
-                        timestamps.put(deployedFolder.getPath(), deployedFolder.lastModified());
-
-                        JahiaTemplatesPackage packageHandler = getPackage(deployedFolder);
-                        if (packageHandler != null) {
-                            remaining.add(packageHandler);
+                    // watch for everything under module's WEB-INF/
+                    File webInf = new File(deployedFolder, "WEB-INF");
+                    if (webInf.exists()) {
+                        for (File file : FileUtils.listFiles(webInf, TrueFileFilter.INSTANCE,
+                                TrueFileFilter.INSTANCE)) {
+                            if (!timestamps.containsKey(file.getPath())
+                                    || timestamps.get(file.getPath()) != file.lastModified()) {
+                                timestamps.put(file.getPath(), file.lastModified());
+                                logger.debug("Detected modified resource {}", file.getPath());
+                                reloadSpringContext = true;
+                            }
                         }
                     }
+
+                    if (!timestamps.containsKey(deployedFolder.getPath())
+                            || timestamps.get(deployedFolder.getPath()) != deployedFolder
+                                    .lastModified()) {
+                        timestamps.put(deployedFolder.getPath(), deployedFolder.lastModified());
+                        logger.debug("Detected modified resource {}", deployedFolder.getPath());
+                        remaining.add(deployedFolder);
+                    }
                 }
-            }
-            boolean changed = false;
-            for (JahiaTemplatesPackage pack : getOrderedPackages(remaining).values()) {
-                templatePackageRegistry.register(pack);
-                changed = true;
+
+                if (!remaining.isEmpty()) {
+                    List<JahiaTemplatesPackage> remainingPackages = new LinkedList<JahiaTemplatesPackage>();
+                    for (File pkgFolder : remaining) {
+                        JahiaTemplatesPackage packageHandler = getPackage(pkgFolder);
+                        if (packageHandler != null) {
+                            remainingPackages.add(packageHandler);
+                        }
+                    }
+                    for (JahiaTemplatesPackage pack : getOrderedPackages(remainingPackages).values()) {
+                        templatePackageRegistry.register(pack);
+                        changed = true;
+                    }
+                }
             }
             
             if (changed) {
@@ -355,18 +402,19 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         
         for (String imp : pack.getInitialImports()) {
             String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
-            logger.info("... importing " + imp + " into " + targetPath);
+            File importFile = new File(pack.getFilePath(), imp);
+            logger.info("... importing " + importFile + " into " + targetPath);
             try {
                 if (imp.toLowerCase().endsWith(".xml")) {
                     InputStream is = null;
                     try {
-                        is = new FileInputStream(new File(pack.getFilePath(), imp));
+                        is = new FileInputStream(importFile);
                         importExportService.importXML(targetPath, is, true);
                     } finally {
                         IOUtils.closeQuietly(is);
                     }
                 } else {
-                    importExportService.importZip(targetPath, new File(pack.getFilePath(), imp), true);
+                    importExportService.importZip(targetPath, importFile, true);
                 }
             } catch (Exception e) {
                 logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp

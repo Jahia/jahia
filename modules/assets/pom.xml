@@ -93,26 +93,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>module-docs</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <version>${site.plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
     <dependencies>
         <dependency>
@@ -130,19 +110,6 @@
     </dependencies>
     <build>
         <plugins>
-			<plugin>
-		    	<groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-site-plugin</artifactId>
-		        <version>${site.plugin.version}</version>
-                <executions>
-					<execution>
-                    	<phase>generate-resources</phase>
-                        <goals>
-                        	<goal>site</goal>
-						</goals>
-                    </execution>
-                </executions>
-		    </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

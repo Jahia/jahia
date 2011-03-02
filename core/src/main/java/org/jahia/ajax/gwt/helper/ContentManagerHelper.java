@@ -738,7 +738,7 @@ public class ContentManagerHelper {
             acl.setAce(aces);
 
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
         return acl;
     }
@@ -965,10 +965,10 @@ public class ContentManagerHelper {
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
 
                 if (isModule) {
-                    String skeletons = "WEB-INF/etc/repository/module.xml,modules/**/templatesSet-skeleton.xml,modules/**/templatesSet-skeleton-*.xml";
+                    String skeletons = "WEB-INF/etc/repository/module.xml,modules/**/META-INF/templatesSet-skeleton.xml,modules/**/META-INF/templatesSet-skeleton-*.xml";
                     JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
                 } else {
-                    String skeletons = "WEB-INF/etc/repository/templatesSet.xml,modules/**/templatesSet-skeleton.xml,modules/**/templatesSet-skeleton-*.xml";
+                    String skeletons = "WEB-INF/etc/repository/templatesSet.xml,modules/**/META-INF/templatesSet-skeleton.xml,modules/**/META-INF/templatesSet-skeleton-*.xml";
                     JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
                     templateSet.getNode("templates/base").setProperty("j:view", shortName);
                 }
@@ -977,9 +977,9 @@ public class ContentManagerHelper {
 
                 return navigation.getGWTJahiaNode(templateSet);
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e.getMessage(), e);
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e.getMessage(), e);
             }
         } else {
             try {
@@ -988,7 +988,7 @@ public class ContentManagerHelper {
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key, isModule);
                 return result.get(0);
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e.getMessage(), e);
             }
         }
         return null;
@@ -1023,9 +1023,9 @@ public class ContentManagerHelper {
 
             return navigation.getGWTJahiaNode(res);
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
 
         return null;

@@ -93,26 +93,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>module-docs</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <version>${site.plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
     <dependencies>
         <dependency>
@@ -127,47 +107,9 @@
             <version>${jahia.package.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!--
-        lib are not copied in WEB-IN/lib . The dependencies are in core.
-        <dependency>
-            <groupId>org.xwiki.platform</groupId>
-            <artifactId>xwiki-core-rendering-parser-wikimodel</artifactId>
-            <version>2.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.xwiki.platform</groupId>
-            <artifactId>xwiki-core-component-default</artifactId>
-            <version>2.0.4</version>
-        </dependency>-->
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${assembly.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>import</id>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/src.xml</descriptor>
-                            </descriptors>
-                            <attach>false</attach>
-                            <finalName>import</finalName>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <outputDirectory>src/main/webapp</outputDirectory>                            
-                        </configuration>
-
-                        <phase>generate-resources</phase>
-
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -197,23 +139,6 @@
                         </manifestEntries>
                     </archive>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jahia.server</groupId>
-                <artifactId>maven-jahia-plugin</artifactId>
-                <version>${jahia.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>native2ascii</goal>
-                        </goals>
-                        <configuration>
-                            <encoding>ISO-8859-1</encoding>
-                            <src>${basedir}/src/main/webapp/resources</src>
-                            <addToProjectResources>false</addToProjectResources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

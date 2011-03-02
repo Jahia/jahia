@@ -25,10 +25,6 @@
                 /modules/**/*.dsl = authcBasic, roles[templateManager]
                 /modules/**/*.jsp = authcBasic, roles[templateManager]
                 /modules/**/*.properties = authcBasic, roles[templateManager]
-                /modules/**/import.zip = authcBasic, roles[templateManager]
-                /modules/**/site-skeleton*.xml = authcBasic, roles[templateManager]
-                /modules/**/templatesSet-skeleton*.xml = authcBasic, roles[templateManager]
-                /modules/**/user-skeleton*.xml = authcBasic, roles[templateManager]
             </value>
         </property>
     </bean>

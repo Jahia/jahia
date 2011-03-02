@@ -1,1 +1,0 @@
-This hasn't been done yet. We will migrate the default bundled templates into this directory.

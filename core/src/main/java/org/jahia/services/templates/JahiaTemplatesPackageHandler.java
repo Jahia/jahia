@@ -67,8 +67,107 @@ final class JahiaTemplatesPackageHandler {
     private static final Logger logger = LoggerFactory
             .getLogger(JahiaTemplatesPackageHandler.class);
 
-    private JahiaTemplatesPackageHandler() {
-        super();
+    /**
+     * Returns the Generated JahiaTemplatesPackage Object
+     *
+     * @return (JahiaTemplatesPackage) the package object
+     */
+    public static JahiaTemplatesPackage build(File packageSource) {
+        return postProcess(read(packageSource), packageSource);
+    }
+
+    private static JahiaTemplatesPackage postProcess(
+            JahiaTemplatesPackage templatePackage, File file) {
+        
+        long timer = System.currentTimeMillis();
+        if (templatePackage == null) {
+            templatePackage = new JahiaTemplatesPackage();
+        }
+
+        templatePackage.setFilePath(file.getPath());
+
+        if (StringUtils.isEmpty(templatePackage.getName())) {
+            templatePackage.setName(FilenameUtils.getBaseName(file.getPath()));
+        }
+        if (StringUtils.isEmpty(templatePackage.getRootFolder())) {
+            templatePackage.setRootFolder((FilenameUtils.getBaseName(file.getPath())).toLowerCase());
+        }
+        if (templatePackage.getDefinitionsFiles().isEmpty()) {
+            // check if there is a definitions file
+            if (new File(file, "definitions.cnd").exists()) {
+                templatePackage.setDefinitionsFile("definitions.cnd");
+                warnMetaInf("definitions.cnd", templatePackage.getRootFolder());
+            }
+            if (new File(file, "META-INF/definitions.cnd").exists()) {
+                templatePackage.setDefinitionsFile("META-INF/definitions.cnd");
+            }
+            // check if there is a definitions grouping file
+            if (new File(file, "definitions.grp").exists()) {
+                templatePackage.setDefinitionsFile("definitions.grp");
+                warnMetaInf("definitions.grp", templatePackage.getRootFolder());
+            }
+            // check if there is a definitions grouping file
+            if (new File(file, "META-INF/definitions.grp").exists()) {
+                templatePackage.setDefinitionsFile("META-INF/definitions.grp");
+            }
+        }
+        if (templatePackage.getRulesDescriptorFiles().isEmpty()) {
+            // check if there is a rules file
+            if (new File(file, "rules.dsl").exists()) {
+                templatePackage.setRulesDescriptorFile("rules.dsl");
+                warnMetaInf("rules.dsl", templatePackage.getRootFolder());
+            }
+            if (new File(file, "META-INF/rules.dsl").exists()) {
+                templatePackage.setRulesDescriptorFile("META-INF/rules.dsl");
+            }
+        }
+        if (templatePackage.getRulesFiles().isEmpty()) {
+            // check if there is a rules file
+            if (new File(file, "rules.drl").exists()) {
+                templatePackage.setRulesFile("rules.drl");
+                warnMetaInf("rules.drl", templatePackage.getRootFolder());
+            }
+            if (new File(file, "META-INF/rules.drl").exists()) {
+                templatePackage.setRulesFile("META-INF/rules.drl");
+            }
+        }
+        if (templatePackage.getResourceBundleName() == null) {
+            // check if there is a resource bundle file in the resources folder
+            String rbName = templatePackage.getName().replace(' ', '_');
+            if (new File(file, "resources/" + rbName + ".properties").exists()) {
+                templatePackage.setResourceBundleName("resources." + rbName);
+            } else {
+                rbName = templatePackage.getName().replace(" ", "");
+                if (new File(file, "resources/" + rbName + ".properties")
+                        .exists()) {
+                    templatePackage
+                            .setResourceBundleName("resources." + rbName);
+                }
+            }
+        }
+
+        if (templatePackage.getInitialImports().isEmpty()) {
+            File[] files = file.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
+                    "import.xml", "import.zip", "import-*.xml", "import-*.zip"}, IOCase.INSENSITIVE));
+            Arrays.sort(files);
+            for (File importFile : files) {
+                templatePackage.addInitialImport(importFile.getName());
+                warnMetaInf("importFile.getName()", templatePackage.getRootFolder());
+            }
+            File metaInf = new File(file, "META-INF");
+            if (metaInf.exists()) {
+                files = metaInf.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
+                        "import.xml", "import.zip", "import-*.xml", "import-*.zip"}, IOCase.INSENSITIVE));
+                Arrays.sort(files);
+                for (File importFile : files) {
+                    templatePackage.addInitialImport("META-INF/" + importFile.getName());
+                }
+            }
+        }
+
+        logger.debug("Execution took {} ms", (System.currentTimeMillis() - timer));
+        
+        return templatePackage;
     }
 
     /**
@@ -139,76 +238,14 @@ final class JahiaTemplatesPackageHandler {
         return templatePackage;
     }
 
-    private static JahiaTemplatesPackage postProcess(
-            JahiaTemplatesPackage templatePackage, File file) {
-        if (templatePackage == null) {
-            templatePackage = new JahiaTemplatesPackage();
-        }
-
-        templatePackage.setFilePath(file.getPath());
-
-        if (StringUtils.isEmpty(templatePackage.getName())) {
-            templatePackage.setName(FilenameUtils.getBaseName(file.getPath()));
-        }
-        if (StringUtils.isEmpty(templatePackage.getRootFolder())) {
-            templatePackage.setRootFolder((FilenameUtils.getBaseName(file.getPath())).toLowerCase());
-        }
-        if (templatePackage.getDefinitionsFiles().isEmpty()) {
-            // check if there is a definitions file
-            if (new File(file, "definitions.cnd").exists()) {
-                templatePackage.setDefinitionsFile("definitions.cnd");
-            }
-            // check if there is a definitions grouping file
-            if (new File(file, "definitions.grp").exists()) {
-                templatePackage.setDefinitionsFile("definitions.grp");
-            }
-        }
-        if (templatePackage.getRulesDescriptorFiles().isEmpty()) {
-            // check if there is a rules file
-            if (new File(file, "rules.dsl").exists()) {
-                templatePackage.setRulesDescriptorFile("rules.dsl");
-            }
-        }
-        if (templatePackage.getRulesFiles().isEmpty()) {
-            // check if there is a rules file
-            if (new File(file, "rules.drl").exists()) {
-                templatePackage.setRulesFile("rules.drl");
-            }
-        }
-        if (templatePackage.getResourceBundleName() == null) {
-            // check if there is a resource bundle file in the resources folder
-            String rbName = templatePackage.getName().replace(' ', '_');
-            if (new File(file, "resources/" + rbName + ".properties").exists()) {
-                templatePackage.setResourceBundleName("resources." + rbName);
-            } else {
-                rbName = templatePackage.getName().replace(" ", "");
-                if (new File(file, "resources/" + rbName + ".properties")
-                        .exists()) {
-                    templatePackage
-                            .setResourceBundleName("resources." + rbName);
-                }
-            }
-        }
-
-        if (templatePackage.getInitialImports().isEmpty()) {
-            File[] files = file.listFiles((FilenameFilter) new WildcardFileFilter(new String[]{
-                    "import.xml", "import.zip", "import-*.xml", "import-*.zip"}, IOCase.INSENSITIVE));
-            Arrays.sort(files);
-            for (File importFile : files) {
-                templatePackage.addInitialImport(importFile.getName());
-            }
-        }
-
-        return templatePackage;
+    private static void warnMetaInf(String resourtce, String module) {
+        logger.warn("{} file found in the root folder of the module '{}'."
+                + " Consider moving it under META-INF/"
+                + " folder to prevent security vulnerabilities.", resourtce, module);
     }
 
-    /**
-     * Returns the Generated JahiaTemplatesPackage Object
-     *
-     * @return (JahiaTemplatesPackage) the package object
-     */
-    public static JahiaTemplatesPackage build(File packageSource) {
-        return postProcess(read(packageSource), packageSource);
+    private JahiaTemplatesPackageHandler() {
+        super();
     }
 
 }

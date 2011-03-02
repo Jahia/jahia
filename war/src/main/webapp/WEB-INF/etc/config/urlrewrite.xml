@@ -20,6 +20,11 @@
         <from>^/gwt/org\.(.*)/images/(.*)$</from>
         <to last="true">/gwt/resources/images/$2</to>
     </rule>
+    <rule>
+        <note>GWT images</note>
+        <from>^/gwt/resources/css/images/(.*)$</from>
+        <to last="true">/gwt/resources/images/$1</to>
+    </rule>
     <!-- end of GWT resources-->
 
 </urlrewrite>

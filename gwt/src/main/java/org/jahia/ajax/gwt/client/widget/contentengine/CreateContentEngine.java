@@ -189,7 +189,8 @@ public class CreateContentEngine extends AbstractContentEngine {
             public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
-                defaultLanguageBean = result.getCurrentLocale();
+                currentLanguageBean = result.getCurrentLocale();
+                defaultLanguageCode = result.getDefaultLanguageCode();
                 acl = result.getAcl();
                 final List<GWTJahiaLanguage> languages = result.getLanguages();
                 setAvailableLanguages(languages);
@@ -202,6 +203,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                         fillCurrentTab();
                     }
                 });
+
+                nodeName = result.getDefaultName();
 
                 fillCurrentTab();
                 
@@ -262,8 +265,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 }
                 if (item instanceof ContentTabItem) {
                     if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                        String nodeNameValue = ((ContentTabItem) item).getName().getValue();
-                        nodeName = Messages.get("label.nodeAutoName", "Automatically Created (you can type your name here if you want)").equals(nodeNameValue) ? targetName : nodeNameValue;
+                        nodeName = ((ContentTabItem) item).getName().getValue();
                     }
                 }
             } else if (item instanceof RolesTabItem) {

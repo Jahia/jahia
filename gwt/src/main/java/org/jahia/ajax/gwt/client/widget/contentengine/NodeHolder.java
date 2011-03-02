@@ -62,6 +62,10 @@ public interface NodeHolder {
 
     List<GWTJahiaNode> getNodes();
 
+    String getNodeName();
+
+    String getDefaultLanguageCode();
+
     GWTJahiaNodeACL getAcl();
 
     Map<String, Set<String>> getReferencesWarnings();

@@ -38,8 +38,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.HTML;
@@ -103,7 +101,7 @@ public class LayoutTabItem extends PropertiesTabItem {
                     String template = (templateField != null && templateField.getValue() != null) ? templateField.getValue().getValue() : null;
                     if (engine.getNode() != null) {
                         JahiaContentManagementService
-                                .App.getInstance().getRenderedContent(engine.getNode().getPath(), null, language,
+                                .App.getInstance().getRenderedContent(engine.getNode().getPath(), null, LayoutTabItem.this.language,
                                 template, "preview", contextParams, false, null, new BaseAsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
                                 HTML html = new HTML(result.getResult());

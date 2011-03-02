@@ -54,6 +54,8 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
     private Map<String, GWTJahiaFieldInitializer> initializers;
     private GWTJahiaLanguage currentLocale;
     private GWTJahiaNodeACL acl;
+    private String defaultName;
+    private String defaultLanguageCode;
 
     public GWTJahiaCreateEngineInitBean() {
     }
@@ -96,5 +98,21 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
 
     public void setAcl(GWTJahiaNodeACL acl) {
         this.acl = acl;
+    }
+
+    public String getDefaultName() {
+        return defaultName;
+    }
+
+    public void setDefaultName(String defaultName) {
+        this.defaultName = defaultName;
+    }
+
+    public String getDefaultLanguageCode() {
+        return defaultLanguageCode;
+    }
+
+    public void setDefaultLanguageCode(String defaultLanguageCode) {
+        this.defaultLanguageCode = defaultLanguageCode;
     }
 }

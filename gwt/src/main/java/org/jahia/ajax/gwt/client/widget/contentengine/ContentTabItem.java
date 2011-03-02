@@ -33,14 +33,15 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -54,67 +55,169 @@ import java.util.Arrays;
  * Time: 8:10:21 PM
  */
 public class ContentTabItem extends PropertiesTabItem {
-    private transient boolean isNodeNameFieldDisplayed = false;
-    private transient TextField<String> name;
+    private int maxLength = 32;
 
-    public TextField<String> getName() {
-        return name;
+    private transient boolean isNodeNameFieldDisplayed = false;
+    private transient Field name;
+    private transient CheckBox autoUpdateName;
+    private transient TextField<String> nameText;
+    private transient FieldSet nameFieldSet;
+
+    public Field<String> getName() {
+        return nameText;
     }
 
-    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+    @Override
+    public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         setMultiLang(true);
+        nameText = null;
+        autoUpdateName = null;
+        nameFieldSet = null;
         if (dataType == null) {
-        dataType = Arrays.asList(GWTJahiaItemDefinition.CONTENT);
+            dataType = Arrays.asList(GWTJahiaItemDefinition.CONTENT);
         }
         return super.create(engineTab, engine);
     }
 
     @Override
-    public void attachPropertiesEditor(NodeHolder engine, AsyncTabItem tab) {
+    public void init(NodeHolder engine, AsyncTabItem tab, String language) {
+        super.init(engine, tab, language);
+
+        if (engine.getMixin() != null) {
+            propertiesEditor.insert(nameFieldSet, 0);
+
+            if (engine.getDefaultLanguageCode().equals(this.language)) {
+                boolean autoUpdate = true;
+
+                if (autoUpdateName != null) {
+                    Boolean realValue = autoUpdateName.getData("realValue");
+                    if (realValue == null) {
+                        if (engine.isExistingNode()) {
+                            final Field titleField = propertiesEditor.getFieldsMap().get("jcr:title");
+                            if (titleField != null && titleField.getValue() != null) {
+                                String generated = generateNodeName((String) titleField.getValue());
+                                autoUpdate = engine.getNodeName().equals(generated);
+                            } else {
+                                autoUpdate = false;
+                            }
+                        }
+                    } else {
+                        autoUpdate = realValue;
+                    }
+                    autoUpdateName.setValue(autoUpdate);
+                    autoUpdateName.setEnabled(true);
+                } else {
+                    autoUpdate = false;
+                }
+
+                nameText.setEnabled(!autoUpdate);
+
+            } else {
+                if (autoUpdateName != null) {
+                    autoUpdateName.setEnabled(false);
+                    autoUpdateName.setValue(false);
+                }
+                nameText.setEnabled(false);
+            }
+
+            tab.layout();
+        }
+    }
+
+    @Override
+    public void attachPropertiesEditor(final NodeHolder engine, AsyncTabItem tab) {
         // handle jcr:title property
-        if (!propertiesEditor.getFieldsMap().containsKey("jcr:title") && !engine.isMultipleSelection()) {
-                tab.setLayout(new RowLayout());
+        if (!engine.isMultipleSelection()) {
+            tab.setLayout(new RowLayout());
             final FormLayout fl = new FormLayout();
             fl.setLabelWidth(0);
-            FieldSet fSet = new FieldSet();
-            createNamePanel(engine, tab);
-            FormData fd = new FormData("98%");
-            fd.setMargins(new Margins(0));
-            fSet.setHeading(name.getName());
-            fSet.setLayout(fl);
-            fSet.add(name,fd);
-            isNodeNameFieldDisplayed = true;
-            propertiesEditor.insert(fSet,0);
+
+            final Field titleField = propertiesEditor.getFieldsMap().get("jcr:title");
+
+            if (nameText == null) {
+                nameFieldSet = new FieldSet();
+                nameFieldSet.setHeading(Messages.get("label.systemName", "System name"));
+                nameFieldSet.setLayout(fl);
+
+                nameText = new TextField<String>();
+                nameText.setWidth("250");
+                nameText.setMaxLength(maxLength);
+                nameText.setStyleAttribute("padding-left", "0");
+                nameText.setValue(engine.getNodeName());
+//                nameText.addListener(Events.KeyUp, new Listener<FieldEvent>() {
+//                    public void handleEvent(FieldEvent fe) {
+//                        nameText.setValue(generateNodeName(nameText.getValue()));
+//                    }
+//                });
+
+                tab.setData("NodeName", engine.getNodeName());
+
+
+                final HBoxLayout hBoxLayout = new HBoxLayout();
+                hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
+                final LayoutContainer panel = new LayoutContainer(hBoxLayout);
+
+                panel.add(this.nameText, new HBoxLayoutData());
+
+                if (titleField != null) {
+                    autoUpdateName = new CheckBox();
+                    autoUpdateName.setHideLabel(true);
+                    panel.add(new Label("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title")+":"), new HBoxLayoutData());
+                    panel.add(autoUpdateName, new HBoxLayoutData());
+                }
+
+                name = new AdapterField(panel);
+                name.setFieldLabel("Name");
+
+                isNodeNameFieldDisplayed = true;
+
+                FormData fd = new FormData("98%");
+                fd.setMargins(new Margins(0));
+                nameFieldSet.add(name, fd);
+            }
+
+            if (titleField != null && engine.getDefaultLanguageCode().equals(this.language)) {
+                autoUpdateName.addListener(Events.Change, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent event) {
+                        nameText.setEnabled(!autoUpdateName.getValue());
+
+                        if (autoUpdateName.isEnabled()) {
+                            autoUpdateName.setData("realValue", autoUpdateName.getValue());
+                        }
+
+                        if (autoUpdateName.getValue()) {
+                            if (titleField.getValue() != null) {
+                                nameText.setValue(generateNodeName((String) titleField.getValue()));
+                            } else {
+                                nameText.setValue(engine.getNodeName());
+                            }
+                        }
+                    }
+                });
+
+                titleField.addListener(Events.KeyUp, new Listener<FieldEvent>() {
+                    public void handleEvent(FieldEvent fe) {
+                        if (autoUpdateName.getValue()) {
+                            if (titleField.getValue() != null) {
+                                nameText.setValue(generateNodeName((String) titleField.getValue()));
+                            } else {
+                                nameText.setValue(engine.getNodeName());
+                            }
+                            nameText.setValue(generateNodeName((String) titleField.getValue()));
+                        }
+                    }
+                });
+            }
+
+
         } else {
-        	isNodeNameFieldDisplayed = false;
+            isNodeNameFieldDisplayed = false;
         }
 
         // attach properties node
-            super.attachPropertiesEditor(engine, tab);
-        }
-
-
-    /**
-     * Get Form panel that contains the name of the nodes
-     *
-     * @return  @param engine
-     * @param tab
-     */
-    private void createNamePanel(NodeHolder engine, AsyncTabItem tab) {
-
-        name = new TextField<String>();
-        name.setWidth("98%");
-        name.setStyleAttribute("padding-left", "0");
-        name.setFieldLabel("Name");
-        name.setName(Messages.get("label.systemName","System name"));
-        if (engine.isExistingNode()) {
-            name.setValue(engine.getNode().getName());
-            tab.setData("NodeName", engine.getNode().getName());
-            name.setReadOnly(true);
-        } else {
-            name.setValue(Messages.get("label.nodeAutoName", "Automatically Created (you can type your name here if you want)"));
-        }
+        super.attachPropertiesEditor(engine, tab);
     }
+
 
     /**
      * Return true if nodeNameField is displayed
@@ -123,6 +226,40 @@ public class ContentTabItem extends PropertiesTabItem {
      */
     public boolean isNodeNameFieldDisplayed() {
         return isNodeNameFieldDisplayed;
+    }
+
+
+    public String generateNodeName(String text) {
+        text = text.replaceAll("[àáâãäå]", "a");
+        text = text.replaceAll("æ", "ae");
+        text = text.replaceAll("ç", "c");
+        text = text.replaceAll("[èéêë]", "e");
+        text = text.replaceAll("[ìíîï]", "i");
+        text = text.replaceAll("ñ", "n");
+        text = text.replaceAll("[òóôõö]", "o");
+        text = text.replaceAll("œ", "oe");
+        text = text.replaceAll("[ùúûü]", "u");
+        text = text.replaceAll("[ýÿ]", "y");
+        String nodeName = text;
+
+        final char[] chars = nodeName.toCharArray();
+        final char[] newChars = new char[chars.length];
+        int j = 0;
+
+        for (char aChar : chars) {
+            if (Character.isLetterOrDigit(aChar) || aChar == 32 || aChar == '-') {
+                newChars[j++] = aChar;
+            }
+        }
+        nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
+        if (nodeName.length() > maxLength) {
+            nodeName = nodeName.substring(0, maxLength);
+            if (nodeName.endsWith("-") && nodeName.length() > 2) {
+                nodeName = nodeName.substring(0, nodeName.length() - 1);
+            }
+        }
+
+        return nodeName;
     }
 
 }

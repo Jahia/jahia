@@ -37,7 +37,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -47,16 +46,12 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.search.jcr.JahiaJCRSearchProvider;
-import org.jahia.services.sites.JahiaSite;
 
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -269,7 +264,7 @@ public class SearchHelper {
                 parent = session.getNode(path);
             }
 
-            final String saveSearchPath = parent.getPath() + "/" + contentManager.findAvailableName(parent, name, session);
+            final String saveSearchPath = parent.getPath() + "/" + contentManager.findAvailableName(parent, name);
             logger.debug("Save search path: " + saveSearchPath);
             Query q = createQuery(search, session);
 

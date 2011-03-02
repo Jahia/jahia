@@ -71,7 +71,6 @@ public class EditContentEngine extends AbstractContentEngine {
     private String contentPath;
 
     private Button ok;
-    private String nodeName;
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
 
@@ -171,7 +170,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
                 properties = result.getProperties();
-                defaultLanguageBean = result.getCurrentLocale();
+                currentLanguageBean = result.getCurrentLocale();
 
                 // set selectedNode as processed
                 if (getSelectedLanguage() != null) {
@@ -194,7 +193,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
                 properties = result.getProperties();
-                defaultLanguageBean = result.getCurrentLocale();
+                currentLanguageBean = result.getCurrentLocale();
+                defaultLanguageCode = result.getDefaultLanguageCode();
                 acl = result.getAcl();
                 referencesWarnings = result.getReferencesWarnings();
                 if(!PermissionsUtils.isPermitted("jcr:modifyProperties", node)) {
@@ -271,7 +271,7 @@ public class EditContentEngine extends AbstractContentEngine {
             node = result.getNode();
             nodeTypes = result.getNodeTypes();
             properties = result.getProperties();
-            defaultLanguageBean = result.getCurrentLocale();
+            currentLanguageBean = result.getCurrentLocale();
             fillCurrentTab();
         }
     }
@@ -322,6 +322,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (item instanceof ContentTabItem) {
                     if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                         nodeName = ((ContentTabItem) item).getName().getValue();
+                        node.setName(nodeName);
                     }
                 }
 

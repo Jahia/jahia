@@ -207,7 +207,7 @@ public class PropertiesHelper {
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode;
             try {
-                objectNode = currentUserSession.getNode(aNode.getPath());
+                objectNode = currentUserSession.getNodeByUUID(aNode.getUUID());
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed :\n").append(e.toString()).toString());

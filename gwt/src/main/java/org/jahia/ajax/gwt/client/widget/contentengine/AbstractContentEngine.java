@@ -45,7 +45,6 @@ import com.extjs.gxt.ui.client.widget.form.DualListField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-import com.google.gwt.user.client.Window;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -92,8 +91,10 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected TabPanel tabs;
     protected boolean existingNode = true;
     protected GWTJahiaNode node;
+    protected String nodeName;
     protected GWTJahiaNode targetNode;
-    protected GWTJahiaLanguage defaultLanguageBean;
+    protected GWTJahiaLanguage currentLanguageBean;
+    protected String defaultLanguageCode;
     protected ComboBox<GWTJahiaLanguage> languageSwitcher;
     protected ButtonBar buttonBar;
     protected String heading;
@@ -189,7 +190,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
             if (languages != null && !languages.isEmpty()) {
                 languageSwitcher.getStore().add(languages);
                 List<GWTJahiaLanguage> selected = new ArrayList<GWTJahiaLanguage>();
-                selected.add(defaultLanguageBean);
+                selected.add(currentLanguageBean);
                 languageSwitcher.setSelection(selected);
                 if (languages.size() > 1) {
                     languageSwitcher.setVisible(true);
@@ -370,6 +371,14 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     public GWTJahiaNode getNode() {
         return node;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public String getDefaultLanguageCode() {
+        return defaultLanguageCode;
     }
 
     public GWTJahiaNodeACL getAcl() {

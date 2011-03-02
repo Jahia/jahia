@@ -82,6 +82,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
     private GWTJahiaLanguage language;
     private GWTJahiaNodeACL acl;
+    private String defaultLanguageCode;
     protected Map<String,Set<String>> referencesWarnings;
 
     private List<GWTJahiaNode> selectedNodes = null;
@@ -199,6 +200,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         types = result.getNodeTypes();
                         properties = result.getProperties();
                         language = result.getCurrentLocale();
+                        defaultLanguageCode = result.getDefaultLanguageCode();
 
                         mixin = result.getMixin();
                         initializersValues = result.getInitializersValues();
@@ -269,6 +271,14 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
     public List<GWTJahiaNode> getNodes() {
         return selectedNodes;
+    }
+
+    public String getNodeName() {
+        return getNode().getName();
+    }
+
+    public String getDefaultLanguageCode() {
+        return defaultLanguageCode;
     }
 
     public GWTJahiaNodeACL getAcl() {

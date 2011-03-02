@@ -179,10 +179,10 @@ public class ContentManagerHelper {
         String nodeName = name;
 
         if (nodeName == null) {
-            nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":") + 1),
-                    currentUserSession);
+            nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":") + 1)
+            );
         } else {
-            nodeName = findAvailableName(parentNode, nodeName, currentUserSession);
+            nodeName = findAvailableName(parentNode, nodeName);
         }
         checkName(nodeName);
         if (checkExistence(parentPath + "/" + nodeName, currentUserSession)) {
@@ -234,7 +234,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public String findAvailableName(JCRNodeWrapper dest, String name, JCRSessionWrapper currentUserSession)
+    public String findAvailableName(JCRNodeWrapper dest, String name)
             throws GWTJahiaServiceException {
         return JCRContentUtils.findAvailableNodeName(dest, name);
     }
@@ -339,7 +339,7 @@ public class ContentManagerHelper {
             if (!srcNode.getParent().isCheckedOut()) {
                 srcNode.getParent().checkout();
             }
-            String newname = findAvailableName(targetNode, srcNode.getName(), currentUserSession);
+            String newname = findAvailableName(targetNode, srcNode.getName());
             session.move(sourcePath, targetNode.getPath() + "/" + newname);
             if (targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
                 targetNode.orderBefore(newname, null);
@@ -368,7 +368,7 @@ public class ContentManagerHelper {
             if (!srcNode.getParent().isCheckedOut()) {
                 srcNode.getParent().checkout();
             }
-            String newname = findAvailableName(targetParent, srcNode.getName(), currentUserSession);
+            String newname = findAvailableName(targetParent, srcNode.getName());
             session.move(sourcePath, targetParent.getPath() + "/" + newname);
             if (targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                 targetParent.orderBefore(newname, targetNode.getName());
@@ -433,7 +433,7 @@ public class ContentManagerHelper {
                 JCRNodeWrapper node = currentUserSession.getNode(aNode);
                 String name = newName != null ? newName : node.getName();
                 try {
-                    name = findAvailableName(targetParent, name, currentUserSession);
+                    name = findAvailableName(targetParent, name);
                     if (targetParent.hasPermission("jcr:addChildNodes") && !targetParent.isLocked()) {
                         final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
 
@@ -918,7 +918,7 @@ public class ContentManagerHelper {
                     versioning.addNewVersionFile(node, tmpName);
                     break;
                 case 1:
-                    newName = findAvailableName(parent, newName, currentUserSession);
+                    newName = findAvailableName(parent, newName);
                 case 0:
                     if (parent.hasNode(newName)) {
                         throw new GWTJahiaServiceException("file exists");

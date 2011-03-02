@@ -55,6 +55,7 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     private Map<String, GWTJahiaFieldInitializer> initializersValues;
     private GWTJahiaNodeACL acl;
     private Map<String, Set<String>> referencesWarnings;
+    private String defaultLanguageCode;
 
     public GWTJahiaEditEngineInitBean() {
     }
@@ -94,4 +95,13 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     public void setReferencesWarnings(Map<String, Set<String>> referencesWarnings) {
         this.referencesWarnings = referencesWarnings;
     }
+
+    public String getDefaultLanguageCode() {
+        return defaultLanguageCode;
+    }
+
+    public void setDefaultLanguageCode(String defaultLanguageCode) {
+        this.defaultLanguageCode = defaultLanguageCode;
+    }
+
 }

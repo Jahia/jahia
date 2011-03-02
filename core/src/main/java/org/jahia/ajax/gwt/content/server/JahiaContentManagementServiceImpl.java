@@ -601,6 +601,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                          List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException {
         closeEditEngine(node.getPath());
 
+        final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
+
+        try {
+            JCRNodeWrapper nodeWrapper = jcrSessionWrapper.getNodeByUUID(node.getUUID());
+            if (!nodeWrapper.getName().equals(node.getName())) {
+//                String newPath = StringUtils.substringBeforeLast(node.getPath(), "/") + "/" + node.getName();
+                nodeWrapper.rename(node.getName());
+                jcrSessionWrapper.save();
+//                jcrSessionWrapper.move(node.getPath(), newPath);
+//                jcrSessionWrapper.save();
+                node.setPath(nodeWrapper.getPath());
+            }
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e);
+        }
+
 //        setLock(Arrays.asList(node.getPath()), false);
         Iterator<String> langCode = langCodeProperties.keySet().iterator();
 
@@ -615,7 +631,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         // save children orders
-        final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
         contentManager.updateChildren(node, orderedChildrenNode, jcrSessionWrapper);
 
 
@@ -1302,6 +1317,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             GWTJahiaCreateEngineInitBean result = new GWTJahiaCreateEngineInitBean();
             result.setLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
+            result.setDefaultLanguageCode(parent.getResolveSite().getDefaultLanguage());
             result.setCurrentLocale(languages.getCurrentLang(getLocale()));
             final List<ExtendedNodeType> availableMixins = contentDefinition.getAvailableMixin(typename);
 
@@ -1317,6 +1333,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     NodeTypeRegistry.getInstance().getNodeType(typename), null, parent, getUILocale()));
 
             result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getUILocale()));
+
+            result.setDefaultName(contentManager.findAvailableName(parent, StringUtils.substringAfter(typename,":")));
             return result;
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
@@ -1362,6 +1380,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setNode(node);
             result.setAvailabledLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
             result.setCurrentLocale(languages.getCurrentLang(getLocale()));
+            result.setDefaultLanguageCode(nodeWrapper.getResolveSite().getDefaultLanguage());
 
 
             final List<ExtendedNodeType> availableMixins =

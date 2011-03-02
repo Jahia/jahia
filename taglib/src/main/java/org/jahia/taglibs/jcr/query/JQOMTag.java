@@ -38,9 +38,9 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
 
 import org.slf4j.Logger;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.taglibs.query.QueryDefinitionTag;
 
 /**
@@ -80,12 +80,14 @@ public class JQOMTag extends QueryDefinitionTag {
             logger.debug("Find node by qom [ " + queryModel.getStatement() + " ]");
         }
         // execute query
-        System.out.println("Execute "+queryModel.getStatement());
         long x = System.currentTimeMillis();
         queryResult = queryModel.execute();
-        System.out.println(System.currentTimeMillis()-x + " ms");
         if (logger.isDebugEnabled()) {
-            logger.debug("Query[" + queryModel.getStatement() + "] --> found [" + queryResult + "] values.");
+            logger.debug(
+                    "Query {} --> found {} values in {} ms.",
+                    new Object[] { queryModel.getStatement(),
+                            JCRContentUtils.size(queryResult.getNodes()),
+                            System.currentTimeMillis() - x });
         }
 
         return queryResult;

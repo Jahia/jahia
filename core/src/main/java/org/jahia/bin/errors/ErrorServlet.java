@@ -43,13 +43,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.jahia.bin.filters.ResponseCacheControlFilter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.WebUtils;
 
 /**
  * Error pages dispatcher servlet.
@@ -202,7 +202,7 @@ public class ErrorServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 	        throws ServletException, IOException {
 
-		ResponseCacheControlFilter.setNoCacheHeaders(response);
+		WebUtils.setNoCacheHeaders(response);
 
 		// check if the Basic Authentication is required
 		Integer errorCode = (Integer) request.getAttribute("javax.servlet.error.status_code");

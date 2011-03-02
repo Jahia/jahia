@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -85,17 +86,17 @@ public class ResponseCacheControlFilter implements Filter, InitializingBean {
                  logger.debug("Resource requested: " + uri);
             }
             if (noCacheResources.matcher(uri).matches()) {
-                setNoCacheHeaders(response);
+                WebUtils.setNoCacheHeaders(response);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Disabling cache for '" + uri + "'");
                 }
             } else if (neverExpires > 0 && foreverCachedResources.matcher(uri).matches()) {
-                setCacheHeaders(neverExpires, response);
+            	WebUtils.setCacheHeaders(neverExpires, response);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Long-term caching enabled for '" + uri + "'");
                 }
             } else if (expires > 0 && cachedResources.matcher(uri).matches()) {
-                setCacheHeaders(expires, response);
+            	WebUtils.setCacheHeaders(expires, response);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Caching enabled for '" + uri + "'");
                 }
@@ -111,18 +112,6 @@ public class ResponseCacheControlFilter implements Filter, InitializingBean {
 
     public void init(FilterConfig config) throws ServletException {
         // do nothing
-    }
-
-    private void setCacheHeaders(long expires, HttpServletResponse response) {
-        response.setHeader("Cache-Control", "public, max-age=" + expires);
-        response.setDateHeader("Expires", System.currentTimeMillis() + expires * 1000L);
-    }
-
-    public static void setNoCacheHeaders(HttpServletResponse response) {
-		response.setHeader("Cache-Control",
-		        "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");
-		response.setHeader("Pragma", "no-cache");
-		response.setDateHeader("Expires", 295075800000L);
     }
 
     public void setCachedResources(String cachedResources) {

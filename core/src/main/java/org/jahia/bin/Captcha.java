@@ -32,9 +32,9 @@
 
 package org.jahia.bin;
 
-import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
-import org.slf4j.Logger;
+
+import org.jahia.utils.WebUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -48,15 +48,17 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Controller for generating a captcha image.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 10 mars 2010
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 10 mars 2010
  */
 public class Captcha extends HttpServlet implements Controller {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Captcha.class);
-    private DefaultKaptcha captchaProducer;
+    
+	private static final long serialVersionUID = -5265673214049135501L;
+	
+	private DefaultKaptcha captchaProducer;
 
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet
@@ -70,17 +72,10 @@ public class Captcha extends HttpServlet implements Controller {
      * @throws Exception in case of errors
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // Set to expire far in the past.
-        response.setDateHeader("Expires", 0);
-        // Set standard HTTP/1.1 no-cache headers.
-        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        // Set IE extended HTTP/1.1 no-cache headers (use addHeader).
-        response.addHeader("Cache-Control", "post-check=0, pre-check=0");
-        // Set standard HTTP/1.0 no-cache header.
-        response.setHeader("Pragma", "no-cache");
-
         // return a jpeg
         response.setContentType("image/jpeg");
+
+    	WebUtils.setNoCacheHeaders(response);
 
         // create the text for the image
         String capText = captchaProducer.createText();

@@ -41,6 +41,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.utils.WebUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -105,9 +106,7 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
         String nodePath = strings[0];
         String exportFormat = strings[1];
         //make sure this file is not cached by the client (or a proxy middleman)
-        resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
-        resp.setHeader("Pragma", "no-cache");
-        resp.setHeader("Cache-Control", "no-cache");
+        WebUtils.setNoCacheHeaders(resp);
 
         Map<String, Object> params = getParams(request);
 

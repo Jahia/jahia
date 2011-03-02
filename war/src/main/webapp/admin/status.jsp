@@ -1,4 +1,5 @@
 <%@include file="/admin/include/header.inc"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page import = "org.jahia.bin.*"%>
 <%@page import="org.jahia.bin.errors.ErrorFileDumper" %>
 <%@page import = "java.util.*" %>
@@ -266,7 +267,8 @@
         	%>
         	<tr class="${status.index % 2 == 0 ? 'evenLine' : 'oddLine'}">
         		<td width="100%">
-        			<strong>${ehcacheName}</strong>: <strong><fmt:message key="org.jahia.admin.status.ManageStatus.cache.${ehcacheName}.description.label"/></strong>
+                    <fmt:message key="org.jahia.admin.status.ManageStatus.cache.${ehcacheName}.description.label" var="msg"/>
+        			<strong>${ehcacheName}</strong>: ${fn:escapeXml(fn:contains(msg, '???') ? '' : msg)}<strong></strong>
         			<br/>
         			${ehcacheStats.objectCount}&nbsp;<fmt:message key="org.jahia.admin.${ehcacheStats.objectCount != 1 ? 'entries' : 'entrie'}.label"/>
         			<br/>

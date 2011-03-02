@@ -1038,8 +1038,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                              String locale) throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
                 locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale(), false);
-        return this.navigation.getNodeURL(servlet, path, versionDate, versionLabel, session.getWorkspace().getName(),
-                session.getLocale());
+        return getResponse().encodeURL(this.navigation.getNodeURL(servlet, path, versionDate, versionLabel, session.getWorkspace().getName(),
+                session.getLocale()));
     }
 
     public void importContent(String parentPath, String fileKey, Boolean asynchronously)

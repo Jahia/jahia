@@ -566,7 +566,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 resp.setHeader("Location", renderedURL);
             }
             if (responseCode == HttpServletResponse.SC_FOUND) {
-                resp.sendRedirect(renderedURL);
+                resp.sendRedirect(resp.encodeRedirectURL(renderedURL));
             } else {
                 resp.setStatus(responseCode);
             }

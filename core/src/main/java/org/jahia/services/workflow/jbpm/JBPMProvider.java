@@ -38,6 +38,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
+import org.jahia.utils.FileUtils;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
 import org.jbpm.api.history.HistoryActivityInstance;
@@ -57,9 +58,7 @@ import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
-import org.springframework.util.ResourceUtils;
 
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -150,14 +149,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             logger.info("Found " + processes.length + " workflow processes to be deployed.");
             List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
             for (Resource process : processes) {
-                long lastModified = 0;
-                URL processResourceUrl = process.getURL();
-                if (ResourceUtils.isJarURL(processResourceUrl)) {
-                    lastModified =
-                            ResourceUtils.getFile(ResourceUtils.extractJarFileURL(processResourceUrl)).lastModified();
-                } else {
-                    lastModified = process.getFile().lastModified();
-                }
+                long lastModified = FileUtils.getLastModified(process);
 
                 boolean needUpdate = true;
                 boolean found = false;
@@ -394,7 +386,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             workflow.setDuedate(job.getDueDate());
         }
         workflow.setStartTime(historyService.createHistoryProcessInstanceQuery().processInstanceId(instance.getId()).orderAsc(HistoryProcessInstanceQuery.PROPERTY_STARTTIME).uniqueResult().getStartTime());
-
+        
         Object user = executionService.getVariable(instance.getId(), "user");
         if (user != null) {
             workflow.setStartUser(user.toString());

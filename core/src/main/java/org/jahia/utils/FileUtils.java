@@ -39,6 +39,8 @@
 
 package org.jahia.utils;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,6 +53,8 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
 import org.artofsolving.jodconverter.document.DocumentFamily;
 import org.artofsolving.jodconverter.document.DocumentFormat;
@@ -180,4 +184,20 @@ public final class FileUtils {
         });
         return list;
     }
+    
+	/**
+	 * Returns the last modified date of the specified resource.
+	 * 
+	 * @param resource
+	 *            resource to check the last modified date on
+	 * @return the last modified date of the specified resource
+	 * @throws IOException
+	 *             in case of an I/O error
+	 */
+	public static long getLastModified(Resource resource) throws IOException {
+		URL resourceUrl = resource.getURL();
+		return ResourceUtils.isJarURL(resourceUrl) ? ResourceUtils.getFile(
+		        ResourceUtils.extractJarFileURL(resourceUrl)).lastModified() : resource.getFile()
+		        .lastModified();
+	}
 }

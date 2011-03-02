@@ -328,10 +328,12 @@ public abstract class AbstractFilter implements RenderFilter {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractFilter.class);
 
     private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
+    
+    private boolean disabled;
+    
+    private int priority = 99;
 
     protected RenderService service;
-
-    private int priority = 99;
 
     /**
      * Initializes an instance of this class.
@@ -384,6 +386,10 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     public boolean areConditionsMatched(RenderContext renderContext, Resource resource) {
+        if (disabled) {
+            return false;
+        }
+        
         boolean matches = true;
         for (ExecutionCondition condition : conditions) {
             if (!condition.matches(renderContext, resource)) {
@@ -393,27 +399,6 @@ public abstract class AbstractFilter implements RenderFilter {
         }
         return matches;
     }
-
-//    public final String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
-//            throws RenderFilterException {
-//        try {
-//            return areConditionsMatched(renderContext, resource) ? execute(out, renderContext, resource,
-//                                                                           chain) : chain.doFilter(renderContext,
-//                                                                                                   resource);
-//        } catch (RenderFilterException e) {
-//            throw e;
-//        } catch (Exception e) {
-//            // wrap it
-//            throw new RenderFilterException(e);
-//        }
-//    }
-//
-//    public abstract String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-//            throws Exception;
-//
-//    public abstract String prepare(RenderContext renderContext, Resource resource, RenderChain chain)
-//            throws Exception;
-
 
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
@@ -767,9 +752,13 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     public void handleError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
-        logger.debug("Handling exception "+e.getMessage()+ " in "+resource.getNode().getPath());
+        logger.debug("Handling exception {} in {}", e.getMessage(), resource.getNode().getPath());
     }
 
     public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

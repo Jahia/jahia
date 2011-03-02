@@ -55,17 +55,6 @@ public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilte
 
     public boolean areConditionsMatched(RenderContext renderContext, Resource resource);
 
-    /**
-     * Execute filtering on output. Return the final filtered output.
-     *
-     * @param renderContext Current RenderContext
-     * @param resource Resource being displayed
-     * @param chain RenderChain to use for chaining to next filter
-     * @return Filtered output
-     * @throws RenderFilterException in case of rendering errors
-     */
-//    String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws RenderFilterException;
-
     String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception;
 

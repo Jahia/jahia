@@ -32,68 +32,79 @@
 
 package org.jahia.services.seo.urlrewrite;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Exposes the site key for the current server name as a request attribute if
- * the corresponding server name is mapped to a site.
+ * Exposes the site key for the current server name as a request attribute if the corresponding server name is mapped to a site.
  * 
  * @author Sergiy Shyrkov
  */
 public class ServerNameToSiteMapper {
 
-	private static final String ATTR_NAME = "jahiaServerNameSiteKey";
-	private static final Logger logger = LoggerFactory.getLogger(ServerNameToSiteMapper.class);
-	private static final String MAPPING_ATTR_NAME = ServerNameToSiteMapper.class.getName()
-	        + ".mapping";
+    public static final String ATTR_NAME_SITE_KEY = "jahiaSiteKeyForCurrentServerName";
+    public static final String ATTR_NAME_SITE_KEY_MATCHES = "jahiaSiteKeyMatchesCurrentServerName";
+    private static final Logger logger = LoggerFactory.getLogger(ServerNameToSiteMapper.class);
 
-	private String lookupSiteKeyByServerName(String host) {
-		JahiaSite site = null;
-		if (SpringContextSingleton.getInstance().isInitialized()) {
-			try {
-				site = ServicesRegistry.getInstance().getJahiaSitesService()
-				        .getSiteByServerName(host);
-			} catch (JahiaException e) {
-				logger.error("Error resolving site by server name '" + host + "'", e);
-			}
-		}
-		return site != null ? site.getSiteKey() : null;
-	}
+    public static String getSiteKeyByServerName(HttpServletRequest request) {
 
-	public void map(HttpServletRequest request, HttpServletResponse response) {
-		String host = request.getServerName();
-		if (StringUtils.isEmpty(host)) {
-			return;
-		}
-		@SuppressWarnings("unchecked")
-		Map<String, String> mapping = (Map<String, String>) request.getAttribute(MAPPING_ATTR_NAME);
-		if (mapping == null || !mapping.containsKey(host)) {
-			if (mapping == null) {
-				mapping = new HashMap<String, String>();
-				request.setAttribute(MAPPING_ATTR_NAME, mapping);
-			}
-			mapping.put(host, lookupSiteKeyByServerName(host));
-		}
-		String targetSiteKey = mapping.get(host);
-		if (targetSiteKey != null) {
-			request.setAttribute(ATTR_NAME, targetSiteKey);
-			logger.debug("Mapping server name {} to site key {}", host, targetSiteKey);
-		} else if (logger.isDebugEnabled()) {
-			logger.debug("No site mapping found for server name {}", host);
-		}
+        String targetSiteKey = (String) request.getAttribute(ATTR_NAME_SITE_KEY);
+        if (targetSiteKey != null) {
+            return targetSiteKey;
+        }
 
-	}
+        String host = request.getServerName();
+        if (StringUtils.isEmpty(host) || URLGenerator.isLocalhost(host)) {
+            targetSiteKey = StringUtils.EMPTY;
+        } else {
+            targetSiteKey = StringUtils.defaultString(lookupSiteKeyByServerName(host));
+            if (logger.isDebugEnabled()) {
+                if (targetSiteKey != null) {
+                    logger.debug("Mapping server name {} to site key {}", host, targetSiteKey);
+                } else {
+                    logger.debug("No site mapping found for server name {}", host);
+                }
+            }
+        }
+        request.setAttribute(ATTR_NAME_SITE_KEY, targetSiteKey);
 
+        return targetSiteKey;
+    }
+
+    private static String lookupSiteKeyByServerName(String host) {
+        JahiaSite site = null;
+        if (SpringContextSingleton.getInstance().isInitialized()) {
+            try {
+                site = ServicesRegistry.getInstance().getJahiaSitesService()
+                        .getSiteByServerName(host);
+            } catch (JahiaException e) {
+                logger.error("Error resolving site by server name '" + host + "'", e);
+            }
+        }
+        return site != null ? site.getSiteKey() : null;
+    }
+
+    public void canResolveSiteByServerName(HttpServletRequest request, String ctx, String language,
+            String siteKey) {
+        String currentSiteKey = getSiteKeyByServerName(request);
+        boolean matches = currentSiteKey.equals(siteKey);
+        request.setAttribute(ATTR_NAME_SITE_KEY_MATCHES, Boolean.valueOf(matches));
+        if (logger.isDebugEnabled()) {
+            logger.debug(
+                    "canResolveSiteByServerName({}, {}, {}) | currentSiteKey={} targetSiteKey={} matches {}",
+                    new Object[] { ctx, language, siteKey, currentSiteKey, siteKey, matches });
+        }
+    }
+
+    public void map(HttpServletRequest request) {
+        getSiteKeyByServerName(request);
+    }
 }

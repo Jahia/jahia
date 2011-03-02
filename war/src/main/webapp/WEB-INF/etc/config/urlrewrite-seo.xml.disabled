@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
+<urlrewrite use-context="true">
+
+	<!-- Inbound rules -->
+    <rule>
+        <note>Map server name to site key</note>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/cms/[a-z]{2}(_[A-Z]{2})?/users/.*</condition>
+        <condition type="request-uri">^(/[\p{Alnum}\-_]*)?/cms/([a-z]{2}(_[A-Z]{2})?)/(.*)</condition>
+        <run class="org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper" method="map(HttpServletRequest)"/>
+    </rule>
+    <rule>
+        <note>Add the key of the site if it was resolved by server name</note>
+        <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/([a-z]{2}(_[A-Z]{2})?)/(.*)$</from>
+        <to>$1/cms/$2$3/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$4</to>
+    </rule>
+    <rule>
+        <name>Add the /cms/render/live part</name>
+        <note>Prepend /cms/render/live to all page requests, which do not have it yet</note>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/([a-z]{2}(_[A-Z]{2})?)/(.*)$</from>
+        <to last="true">$1/cms/render/live/$2$3/$4</to>
+    </rule>
+      
+    <!-- Outbound rules -->
+    <outbound-rule>
+        <name>Target site by server name</name>
+        <note>Checks if the target site key in the processed URL is mapped to the current server name. If yes, it sets the request variable jahiaSiteKeyMatchesCurrentServerName to true.</note>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([a-zA-Z\\-_]+)/.*$</from>
+        <run class="org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper" method="canResolveSiteByServerName(HttpServletRequest, String, String, String)"/>
+    </outbound-rule>
+    <outbound-rule>
+        <name>Remove the site key</name>
+        <note>Removes the site key from the URL if the current server name is mapped to this site.</note>
+        <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="equal">^true$</condition>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([a-zA-Z\\-_]+)/(.*)$</from>
+        <to>$1/cms/render/live/$2/$4</to>
+    </outbound-rule>
+    <outbound-rule>
+        <name>Remove the /cms/render/live part</name>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/(.*)$</from>
+        <to>$1/cms/$2</to>
+    </outbound-rule>
+</urlrewrite>

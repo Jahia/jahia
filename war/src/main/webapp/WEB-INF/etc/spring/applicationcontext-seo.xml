@@ -11,8 +11,16 @@
     </bean>
 
     <bean id="UrlRewriteService" class="org.jahia.services.seo.urlrewrite.UrlRewriteService">
-        <property name="configurationResource" value="WEB-INF/urlrewrite.xml" />
-        <property name="confReloadCheckInterval" value="5" />
+        <property name="confReloadCheckIntervalSeconds" value="300" />
+        <property name="configurationResources">
+            <list>
+                <value>WEB-INF/etc/config/urlrewrite.xml</value><!-- these are core rules that sould not be removed -->
+                
+                <value>WEB-INF/etc/config/urlrewrite-*.xml</value>
+                <value>modules/**/META-INF/urlrewrite.xml</value>
+                <value>modules/**/META-INF/urlrewrite-*.xml</value>
+            </list>
+        </property>
     </bean>
                         
     <bean class="org.jahia.services.render.filter.URLFilter">
@@ -30,7 +38,7 @@
         </property>
     </bean>
 
-    <bean id="UrlRewriteFilter" class="org.jahia.services.seo.urlrewrite.UrlRewriteFilterBean">
+    <bean id="UrlRewriteFilter" class="org.jahia.services.seo.urlrewrite.UrlRewriteFilter">
         <property name="enabled" value="true"/>
         <property name="outboundRulesEnabled" value="true"/>
         <property name="urlRewriteService" ref="UrlRewriteService"/>

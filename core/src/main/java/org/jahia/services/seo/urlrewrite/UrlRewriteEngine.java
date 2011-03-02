@@ -36,16 +36,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.tuckey.web.filters.urlrewrite.Conf;
 import org.tuckey.web.filters.urlrewrite.RewrittenOutboundUrl;
+import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 
 /**
@@ -55,54 +55,69 @@ import org.tuckey.web.filters.urlrewrite.UrlRewriter;
  */
 class UrlRewriteEngine extends UrlRewriter {
 
-	private static final Logger logger = LoggerFactory.getLogger(UrlRewriteEngine.class);
+    private static final Logger logger = LoggerFactory.getLogger(UrlRewriteEngine.class);
 
-	private static Conf getConf(Resource confLocation) {
-		Conf cfg = null;
-		if (confLocation == null) {
-			logger.warn("No configuration resource location specified for"
-			        + " the URL rewrite engine. Using empty one.");
-			return new Conf();
-		}
-		InputStream is = null;
-		try {
-			is = confLocation.getInputStream();
-			cfg = new Conf(is, confLocation.getFilename());
-		} catch (IOException e) {
-			throw new IllegalArgumentException(e);
-		} finally {
-			IOUtils.closeQuietly(is);
-		}
+    private static Configuration getConfiguration(ServletContext context, Resource[] confLocations) {
+        Configuration cfg = null;
+        if (confLocations == null || confLocations.length == 0) {
+            logger.warn("No configuration resource location specified for"
+                    + " the URL rewrite engine. Using empty one.");
+            return new Configuration();
+        }
+        try {
+            cfg = new Configuration(context, confLocations);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
 
-		return cfg;
-	}
+        return cfg;
+    }
 
-	/**
-	 * Initializes an instance of this class.
-	 * 
-	 * @param configs
-	 *            the URL rewriter configuration resource location
-	 */
-	public UrlRewriteEngine(Resource confLocation) {
-		super(getConf(confLocation));
-		if (confLocation != null) {
-			logger.info("Loaded URL rewrite rules from {}", confLocation.getDescription());
-		}
-	}
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param conf
+     *            the URL rewriter configuration
+     */
+    UrlRewriteEngine(InputStream is, String fileName) {
+        super(new Configuration(is, fileName));
+        logger.info("Loaded URL rewrite rules from {}", fileName);
+    }
 
-	public String rewriteOutbound(String url, HttpServletRequest request,
-	        HttpServletResponse response) throws IOException, ServletException,
-	        InvocationTargetException {
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param context
+     *            current servlet context
+     * @param confLocation
+     *            the URL rewriter configuration resource location
+     */
+    public UrlRewriteEngine(ServletContext context, Resource[] confLocations) {
+        super(getConfiguration(context, confLocations));
+        if (confLocations != null) {
+            logger.info("Loaded URL rewrite rules from {}",
+                    confLocations != null ? java.util.Arrays.asList(confLocations) : null);
+        }
+    }
 
-		RewrittenOutboundUrl rou = processEncodeURL(response, request, false, url);
-		if (rou == null) {
-			return response.encodeURL(url);
-		}
-		if (rou.isEncode()) {
-			rou.setTarget(response.encodeURL(rou.getTarget()));
-		}
-		return processEncodeURL(response, request, true, rou.getTarget()).getTarget();
+    public RewrittenUrl rewriteInbound(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException, InvocationTargetException {
+        return processRequest(request, response);
+    }
 
-	}
+    public String rewriteOutbound(String url, HttpServletRequest request,
+            HttpServletResponse response) throws IOException, ServletException,
+            InvocationTargetException {
+
+        RewrittenOutboundUrl rou = processEncodeURL(response, request, false, url);
+        if (rou == null) {
+            return response.encodeURL(url);
+        }
+        if (rou.isEncode()) {
+            rou.setTarget(response.encodeURL(rou.getTarget()));
+        }
+        return processEncodeURL(response, request, true, rou.getTarget()).getTarget();
+
+    }
 
 }

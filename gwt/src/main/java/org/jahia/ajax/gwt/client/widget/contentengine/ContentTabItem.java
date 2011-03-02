@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * User: toto
@@ -62,6 +63,7 @@ public class ContentTabItem extends PropertiesTabItem {
     private transient CheckBox autoUpdateName;
     private transient TextField<String> nameText;
     private transient FieldSet nameFieldSet;
+    private transient Label autoUpdateLabel;
 
     public Field<String> getName() {
         return nameText;
@@ -84,7 +86,12 @@ public class ContentTabItem extends PropertiesTabItem {
         super.init(engine, tab, language);
 
         if (engine.getMixin() != null) {
-            propertiesEditor.insert(nameFieldSet, 0);
+            final Field titleField = propertiesEditor.getFieldsMap().get("jcr:title");
+            if (titleField != null) {
+                ((FieldSet)titleField.getParent()).insert(name, 0);
+            } else {
+                propertiesEditor.insert(nameFieldSet, 0);
+            }
 
             if (engine.getDefaultLanguageCode().equals(this.language)) {
                 boolean autoUpdate = true;
@@ -93,7 +100,6 @@ public class ContentTabItem extends PropertiesTabItem {
                     Boolean realValue = autoUpdateName.getData("realValue");
                     if (realValue == null) {
                         if (engine.isExistingNode()) {
-                            final Field titleField = propertiesEditor.getFieldsMap().get("jcr:title");
                             if (titleField != null && titleField.getValue() != null) {
                                 String generated = generateNodeName((String) titleField.getValue());
                                 autoUpdate = engine.getNodeName().equals(generated);
@@ -105,7 +111,8 @@ public class ContentTabItem extends PropertiesTabItem {
                         autoUpdate = realValue;
                     }
                     autoUpdateName.setValue(autoUpdate);
-                    autoUpdateName.setEnabled(true);
+                    autoUpdateName.setVisible(true);
+                    autoUpdateLabel.setText("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
                 } else {
                     autoUpdate = false;
                 }
@@ -114,8 +121,8 @@ public class ContentTabItem extends PropertiesTabItem {
 
             } else {
                 if (autoUpdateName != null) {
-                    autoUpdateName.setEnabled(false);
-                    autoUpdateName.setValue(false);
+                    autoUpdateName.setVisible(false);
+                    autoUpdateLabel.setText("&nbsp;" + Messages.get("label.switchToUpdateName", "Switch to default language to update name"));
                 }
                 nameText.setEnabled(false);
             }
@@ -144,11 +151,14 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameText.setMaxLength(maxLength);
                 nameText.setStyleAttribute("padding-left", "0");
                 nameText.setValue(engine.getNodeName());
-//                nameText.addListener(Events.KeyUp, new Listener<FieldEvent>() {
-//                    public void handleEvent(FieldEvent fe) {
-//                        nameText.setValue(generateNodeName(nameText.getValue()));
-//                    }
-//                });
+                nameText.setFireChangeEventOnSetValue(true);
+                nameText.addListener(Events.Change, new Listener<FieldEvent>() {
+                    public void handleEvent(FieldEvent fe) {
+                        nameText.setFireChangeEventOnSetValue(false);
+                        nameText.setValue(generateNodeName(nameText.getValue()));
+                        nameText.setFireChangeEventOnSetValue(true);
+                    }
+                });
 
                 tab.setData("NodeName", engine.getNodeName());
 
@@ -162,12 +172,13 @@ public class ContentTabItem extends PropertiesTabItem {
                 if (titleField != null) {
                     autoUpdateName = new CheckBox();
                     autoUpdateName.setHideLabel(true);
-                    panel.add(new Label("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title")+":"), new HBoxLayoutData());
+                    autoUpdateLabel = new Label("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
+                    panel.add(autoUpdateLabel, new HBoxLayoutData());
                     panel.add(autoUpdateName, new HBoxLayoutData());
                 }
 
                 name = new AdapterField(panel);
-                name.setFieldLabel("Name");
+                name.setFieldLabel(Messages.get("label.systemName", "System name"));
 
                 isNodeNameFieldDisplayed = true;
 
@@ -187,7 +198,7 @@ public class ContentTabItem extends PropertiesTabItem {
 
                         if (autoUpdateName.getValue()) {
                             if (titleField.getValue() != null) {
-                                nameText.setValue(generateNodeName((String) titleField.getValue()));
+                                nameText.setValue((String) titleField.getValue());
                             } else {
                                 nameText.setValue(engine.getNodeName());
                             }
@@ -199,11 +210,10 @@ public class ContentTabItem extends PropertiesTabItem {
                     public void handleEvent(FieldEvent fe) {
                         if (autoUpdateName.getValue()) {
                             if (titleField.getValue() != null) {
-                                nameText.setValue(generateNodeName((String) titleField.getValue()));
+                                nameText.setValue((String) titleField.getValue());
                             } else {
                                 nameText.setValue(engine.getNodeName());
                             }
-                            nameText.setValue(generateNodeName((String) titleField.getValue()));
                         }
                     }
                 });
@@ -240,6 +250,16 @@ public class ContentTabItem extends PropertiesTabItem {
         text = text.replaceAll("œ", "oe");
         text = text.replaceAll("[ùúûü]", "u");
         text = text.replaceAll("[ýÿ]", "y");
+        text = text.replaceAll("[ÀÁÂÃÄÅ]", "A");
+        text = text.replaceAll("Æ", "AE");
+        text = text.replaceAll("Ç", "C");
+        text = text.replaceAll("[ÈÉÊË]", "E");
+        text = text.replaceAll("[ÌÍÎÏ]", "I");
+        text = text.replaceAll("Ñ", "N");
+        text = text.replaceAll("[ÒÓÔÕÖ]", "O");
+        text = text.replaceAll("Œ", "OE");
+        text = text.replaceAll("[ÙÚÛÜ]", "U");
+        text = text.replaceAll("[ÝŸ]", "Y");
         String nodeName = text;
 
         final char[] chars = nodeName.toCharArray();

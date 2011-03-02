@@ -606,11 +606,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             JCRNodeWrapper nodeWrapper = jcrSessionWrapper.getNodeByUUID(node.getUUID());
             if (!nodeWrapper.getName().equals(node.getName())) {
-//                String newPath = StringUtils.substringBeforeLast(node.getPath(), "/") + "/" + node.getName();
-                nodeWrapper.rename(node.getName());
+                String name = contentManager.findAvailableName(nodeWrapper.getParent(), node.getName());
+                nodeWrapper.rename(name);
                 jcrSessionWrapper.save();
-//                jcrSessionWrapper.move(node.getPath(), newPath);
-//                jcrSessionWrapper.save();
+                node.setName(name);
                 node.setPath(nodeWrapper.getPath());
             }
         } catch (RepositoryException e) {

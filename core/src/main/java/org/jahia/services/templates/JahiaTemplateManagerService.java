@@ -39,7 +39,6 @@ import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.exceptions.JahiaTemplateServiceException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
@@ -71,7 +70,7 @@ import java.util.*;
  *
  * @author Sergiy Shyrkov
  */
-public class JahiaTemplateManagerService extends JahiaService implements ApplicationListener {
+public class JahiaTemplateManagerService extends JahiaService implements ApplicationListener<ApplicationEvent> {
 
     /**
      * This event is fired when a template module is re-deployed (in runtime, not on the server startup).
@@ -106,21 +105,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         this.siteService = siteService;
     }
     
-    public JahiaTemplatesPackage associateTemplatePackageWithSite(
-            String templatePackageName, JahiaSite site) throws JahiaException {
-        JahiaTemplatesPackage templatePackage = getTemplatePackage(templatePackageName);
-        if (templatePackage == null) {
-            throw new JahiaTemplateServiceException(
-                    "Template package with the name '" + templatePackageName
-                            + "' cannot be found in the registry");
-        }
-
-        // store package name in the site's properties
-        site.setTemplatePackageName(templatePackage.getName());
-
-        return templatePackage;
-    }
-
     /**
      * Returns a list of all available template packages.
      *

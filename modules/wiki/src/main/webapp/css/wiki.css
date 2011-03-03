@@ -60,7 +60,9 @@ display:block
 	padding:0 13px 0 0;
 	background:transparent url(img/wikidef-new.png) no-repeat scroll right center;
 }
-
+#bodywrapper a.wikidef-new:link, #bodywrapper a.wikidef-new:visited {
+    color:red;
+}
 /******************************************************************************
 * listwiki Arrow
 ******************************************************************************/

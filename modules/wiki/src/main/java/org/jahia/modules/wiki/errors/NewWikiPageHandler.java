@@ -105,8 +105,8 @@ public class NewWikiPageHandler implements ErrorHandler {
                         String link = request.getContextPath() + request.getServletPath() + "/" + StringUtils.substringBefore(
                                 request.getPathInfo().substring(1),
                                 "/") + "/" + urlResolver.getWorkspace() + "/" + urlResolver.getLocale() + pageNode.getPath();
-
-                        link += ".html?displayTab=create-new-page&newPageName=" + URLEncoder.encode(newName, "UTF-8");
+                        String wikiTitle = request.getParameter("wikiTitle") != null ? request.getParameter("wikiTitle") : URLEncoder.encode(newName, "UTF-8");
+                        link += ".html?displayTab=create-new-page&newPageName=" + URLEncoder.encode(newName, "UTF-8")+ "&wikiTitle=" + URLEncoder.encode(wikiTitle,"UTF-8");
                         response.sendRedirect(link);
                         return true;
                     }

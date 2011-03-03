@@ -33,7 +33,7 @@
         <input type="hidden" name="nodeType" value="jnt:wikiPage">
         <c:choose>
             <c:when test="${not empty param.newPageName}">
-                <input type="hidden" name="jcr:title" value="${param['newPageName']}">
+                <input type="hidden" name="jcr:title" value="${param['wikiTitle']}">
             </c:when>
             <c:otherwise>
                 <label for="title-${currentNode.identifier}"><fmt:message key="label.title"/>: </label>

@@ -32,13 +32,17 @@
 
 package org.jahia.modules.wiki;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.render.RenderContext;
+import org.slf4j.Logger;
 import org.xwiki.component.annotation.InstantiationStrategy;
 import org.xwiki.component.annotation.Requirement;
 import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
@@ -121,6 +125,8 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
     private ComponentManager componentManager;
 
     private RenderContext renderContext;
+    private String linkref = "";
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(CustomXHTMLLinkRenderer.class);
 
     /**
      * {@inheritDoc}
@@ -188,6 +194,10 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
      * @see org.xwiki.rendering.renderer.xhtml.XHTMLLinkRenderer#beginLink(Link, boolean, Map)
      */
     public void beginLink(Link link, boolean isFreeStandingURI, Map<String, String> parameters) {
+        if (!this.hasLabel &&  link.getType() != LinkType.DOCUMENT) {
+           linkref = link.getReference();
+        }
+        link.setReference(JCRContentUtils.generateNodeName(link.getReference(), 32));
         if (this.wikiModel == null || link.isExternalLink()) {
             beginExternalLink(link, isFreeStandingURI, parameters);
         } else {
@@ -229,12 +239,19 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
 
                 // modified in order to be compatible with jahia
                 String s = link.getReference().startsWith("/")?"":".html";
-                aAttributes.put(HREF, link.getReference() + s);
                 if(pageExist(link)){
                     aAttributes.put(CLASS, "wikidef");
                 }else{
-                   aAttributes.put(CLASS, "wikidef-new"); 
+                    if (!linkref.equals("")) {
+                        try {
+                            s += "?wikiTitle=" + URLEncoder.encode(linkref,"UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                   aAttributes.put(CLASS, "wikidef-new");
                 }
+                aAttributes.put(HREF, link.getReference() + s);
             }
         }
 
@@ -308,7 +325,7 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
             if (link.getType() == LinkType.DOCUMENT) {
                 getXHTMLWikiPrinter().printXML(this.linkLabelGenerator.generate(link));
             } else {
-                getXHTMLWikiPrinter().printXML(link.getReference());
+                getXHTMLWikiPrinter().printXML(linkref);
 
             }
             getXHTMLWikiPrinter().printXMLEndElement(SPAN);

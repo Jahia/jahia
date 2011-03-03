@@ -37,7 +37,7 @@
                 <root jcr:primaryType="jnt:member" j:member="b32d306a-6c74-11de-b3ef-001e4fead50b"/>
             </j:members>
         </administrators>
-        <privileged jcr:primaryType="jnt:group" j:hidden="false">
+        <privileged jcr:primaryType="jnt:group" j:hidden="true">
             <j:members jcr:primaryType="jnt:members">
                 <root jcr:primaryType="jnt:member" j:member="b32d306a-6c74-11de-b3ef-001e4fead50b"/>
             </j:members>
@@ -201,20 +201,25 @@
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
 
         <staging-viewer jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
-                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editSelector/sitemapSelector" />
+                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editSelector/sitemapSelector" j:hidden="true"/>
 
         <editor jcr:primaryType="jnt:role"
                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager  /permissions/wysiwyg-editor-toolbar/full"
+                j:privilegedAccess="true"
                 />
 
         <contributor     jcr:primaryType="jnt:role"
-                         j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/contributeMode"/>
+                         j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/contributeMode"
+                         j:privilegedAccess="true"                />
 
         <publisher jcr:primaryType="jnt:role"
-                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/modes/contribute /permissions/toolbar/workflow /permissions/workflow-tasks/final-review" />
+                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/modes/contribute /permissions/toolbar/workflow /permissions/workflow-tasks/final-review"
+                   j:privilegedAccess="true"
+                />
 
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
                             j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers /permissions/wysiwyg-editor-toolbar"
+                            j:privilegedAccess="true"
                             />
 
         <owner jcr:primaryType="jnt:role"

@@ -64,6 +64,23 @@ rule "publish groups"
         Publish the node
 end
 
+rule "ACL added"
+    when
+        A property j:roles has been set on a node
+        The node has a parent
+         - the parent has the type jnt:acl
+    then
+        Update the privileged users
+end
+
+rule "ACL removed"
+    when
+        A node is deleted
+        The node has a parent
+         - the parent has the type jnt:acl
+    then
+        Update the privileged users
+end
 
 // This is an example that shows how to propagate a property to all sub folders and sub files
 // First rule copy the value from the parent when a file is uploaded / modified

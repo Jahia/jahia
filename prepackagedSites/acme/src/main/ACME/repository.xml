@@ -584,7 +584,7 @@
             <root j:member="/users/root" jcr:primaryType="jnt:member" />
           </j:members>
         </site-administrators>
-        <site-privileged j:hidden="false" j:published="true" jcr:created="2011-02-01T16:39:51.583+01:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy="root" j:external="false" j:lastPublished="2010-12-15T17:50:03.832+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00">
+        <site-privileged j:hidden="true" j:published="true" jcr:created="2011-02-01T16:39:51.583+01:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy="root" j:external="false" j:lastPublished="2010-12-15T17:50:03.832+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00">
           <j:members jcr:primaryType="jnt:members">
             <author j:member="/users/author" jcr:primaryType="jnt:member" />
             <publisher j:member="/users/publisher" jcr:primaryType="jnt:member" />

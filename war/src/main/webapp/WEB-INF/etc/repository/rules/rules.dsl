@@ -94,3 +94,4 @@
 [consequence][]Grant role {role} on the {node} to the group {group}=service.grantRoleToGroup({node}, "{group}", "{role}", drools);
 [consequence][]Revoke role {role} from everybody on the {node}=service.revokeRoleFromEverybody({node}, "{role}", drools);
 [consequence][]Refresh permissions=service.refreshPermissions();
+[consequence][]Update the privileged users=service.updatePrivileges(node);

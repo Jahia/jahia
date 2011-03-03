@@ -241,7 +241,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         NodeIterator ni = roles.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper role = (JCRNodeWrapper) ni.nextNode();
-            if (role.hasProperty("j:nodeTypes")) {
+            if (role.hasProperty("j:hidden") && role.getProperty("j:hidden").getBoolean()) {
+                // skip
+            } else if (role.hasProperty("j:nodeTypes")) {
                 Value[] values = role.getProperty("j:nodeTypes").getValues();
                 for (Value value : values) {
                     if (isNodeType(value.getString())) {

@@ -36,6 +36,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.drools.FactException;
@@ -64,8 +67,12 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
 import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.servlet.ServletException;
 import java.io.*;
+import java.security.Principal;
 import java.text.ParseException;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -696,5 +703,56 @@ public class Service extends JahiaService {
                 return null;
             }
         });
+    }
+
+    public void updatePrivileges(NodeFact node) throws RepositoryException {
+        final JCRSiteNode site = node.getParent().getNode().getResolveSite();
+        final String principal = StringUtils.substringAfter(StringUtils.substringAfterLast(node.getPath(), "/"), "_").replaceFirst("_", ":");
+
+        boolean needPrivileged = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                QueryManager q = session.getWorkspace().getQueryManager();
+                String sql = "select * from [jnt:ace] as ace where ace.[j:aceType]='GRANT' and ace.[j:principal] = '"+principal+"' and isdescendantnode(ace, ['"+site.getPath()+"'])";
+                QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
+                NodeIterator ni = qr.getNodes();
+                Set<String> roles = new HashSet<String>();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                    Value[] vals = next.getProperty("j:roles").getValues();
+                    for (Value val : vals) {
+                        roles.add(val.getString());
+                    }
+                }
+
+                boolean needPrivileged = false;
+                for (String role : roles) {
+                    JCRNodeWrapper roleNode = session.getNode("/roles/"+role);
+                    if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
+                        needPrivileged = true;
+                        break;
+                    }
+                }
+
+                return needPrivileged;
+            }
+        });
+
+        JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        final JahiaGroup priv = groupService.lookupGroup(site.getID(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+        Principal p;
+        if (principal.startsWith("u:")) {
+            p = userManagerService.lookupUser(principal.substring(2));
+        } else {
+            p = groupService.lookupGroup(site.getID(), principal.substring(2));
+        }
+        if (p != null) {
+            if (needPrivileged && !priv.isMember(p)) {
+                logger.info(principal + " need privileged access");
+                priv.addMember(p);
+            } else if (!needPrivileged && priv.isMember(p)) {
+                logger.info(principal + " do not need privileged access");
+                priv.removeMember(p);
+            }
+        }
     }
 }

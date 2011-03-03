@@ -135,16 +135,18 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                     GWTJahiaGroup data;
                     while (iterator.hasNext()) {
                         group = (JahiaGroup) iterator.next();
-                        data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey());
-                        if (group.getSiteID() > 0) {
-                            JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
-                            if (jahiaSite != null) {
-                                data.setSiteName(jahiaSite.getTitle());
+                        if (!group.isHidden()) {
+                            data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey());
+                            if (group.getSiteID() > 0) {
+                                JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
+                                if (jahiaSite != null) {
+                                    data.setSiteName(jahiaSite.getTitle());
+                                }
                             }
+                            data.setSiteId(siteId);
+                            data.setProvider(group.getProviderName());
+                            result.add(data);
                         }
-                        data.setSiteId(siteId);
-                        data.setProvider(group.getProviderName());
-                        result.add(data);
                     }
                 }
             }

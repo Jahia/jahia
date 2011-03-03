@@ -11,7 +11,7 @@
         <site-administrators jcr:primaryType="jnt:group" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
         </site-administrators>
-        <site-privileged jcr:primaryType="jnt:group" j:hidden="false">
+        <site-privileged jcr:primaryType="jnt:group" j:hidden="true">
             <j:members jcr:primaryType="jnt:members"/>
         </site-privileged>
     </groups>

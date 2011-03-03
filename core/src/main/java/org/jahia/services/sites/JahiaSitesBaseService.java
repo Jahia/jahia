@@ -516,7 +516,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
                     JahiaGroup privGroup = jgms.lookupGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME);
                     if (privGroup == null) {
-                        privGroup = jgms.createGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, false);
+                        privGroup = jgms.createGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, true);
                     }
 
                     JahiaGroup adminGroup = jgms.lookupGroup(site.getID(),
@@ -534,7 +534,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
                         if (sitePrivGroup == null) {
                             sitePrivGroup = jgms.createGroup(site.getID(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null,
-                                    false);
+                                    true);
                         }
                         // atach site privileged group to server privileged
                         privGroup.addMember(sitePrivGroup);

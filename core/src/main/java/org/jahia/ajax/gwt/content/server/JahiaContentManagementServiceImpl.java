@@ -686,18 +686,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         res = contentManager.createNode(parentPath, name, nodeType, mixin, props, jcrSessionWrapper);
 
         GWTJahiaNode node = res;
-        // save shared properties
-        if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
-            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-            nodes.add(node);
-            Iterator<String> langCode = langCodeProperties.keySet().iterator();
-            // save properties per lang
-            while (langCode.hasNext()) {
-                String currentLangCode = langCode.next();
-                List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
-                saveProperties(nodes, properties, currentLangCode);
-            }
-        }
 
         if (acl != null) {
             contentManager.setACL(res.getPath(), acl, jcrSessionWrapper);
@@ -710,6 +698,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
         }
 
+        // save shared properties
+        if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
+            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+            nodes.add(node);
+            Iterator<String> langCode = langCodeProperties.keySet().iterator();
+            // save properties per lang
+            while (langCode.hasNext()) {
+                String currentLangCode = langCode.next();
+                List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
+                saveProperties(nodes, properties, currentLangCode);
+            }
+        }
+        try {
+            jcrSessionWrapper.save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
+        }
 
         return node;
     }

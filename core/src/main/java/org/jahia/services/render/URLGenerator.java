@@ -141,10 +141,10 @@ public class URLGenerator {
                             studio += StringUtils.substringAfter(resource.getNode().getProperty("j:templateNode").getNode().getPath(), context.getSite().getPath());
                             studio += ".html";
                         } catch (RepositoryException e) {
-                            studio += "/home.html";
+                            studio += ".html";
                         }
                     } else {
-                        studio += "/home.html";
+                        studio += ".html";
                     }
                 }
             } catch (RepositoryException e) {

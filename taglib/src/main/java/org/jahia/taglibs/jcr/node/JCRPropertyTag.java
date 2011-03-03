@@ -89,21 +89,45 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                 if (curNode == null) {
                     return returnValue;
                 }
-                Property property = curNode.getProperty(name);
-                if (property != null) {
-                    if (var != null) {
-                        returnValue = EVAL_BODY_INCLUDE;
-                        if (property.getDefinition().isMultiple()) {
-                            pageContext.setAttribute(var, property.getValues(), scope);
+                if (curNode.hasProperty(name)) {
+                    Property property = curNode.getProperty(name);
+                    if (property != null) {
+                        if (var != null) {
+                            returnValue = EVAL_BODY_INCLUDE;
+                            if (property.getDefinition().isMultiple()) {
+                                pageContext.setAttribute(var, property.getValues(), scope);
+                            } else {
+                                pageContext.setAttribute(var, property.getValue(), scope);
+                            }
                         } else {
-                            pageContext.setAttribute(var, property.getValue(), scope);
+                            if (!property.getDefinition().isMultiple()) {
+                                pageContext.getOut().print(property.getValue().getString());
+                            }
                         }
+                        return returnValue;
+                    }
+                } else {
+                    if (!inherited) {
+                        logger.debug("Property : " + name + " not defined in node " + node.getPath());
+                        return returnValue;
                     } else {
-                        if (!property.getDefinition().isMultiple()) {
-                            pageContext.getOut().print(property.getValue().getString());
+                        try {
+                            curNode = curNode.getParent();
+                        } catch (ItemNotFoundException e2) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Property : " + name + " not found in parent nodes " + node.getPath());
+                            }
+                            return returnValue;
+                        } catch (AccessDeniedException e1) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Property : " + name + " parent access denied " + node.getPath());
+                            }
+                            return returnValue;
+                        } catch (RepositoryException e1) {
+                            logger.error(e1.getMessage(), e1);
+                            return returnValue;
                         }
                     }
-                    return returnValue;
                 }
             } catch (ConstraintViolationException e) {
                 if (logger.isDebugEnabled()) {
@@ -116,27 +140,10 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                 }
                 return returnValue;
             } catch (PathNotFoundException e) {
-                if (!inherited) {
-                    logger.debug("Property : " + name + " not defined in node " + node.getPath());
-                    return returnValue;
-                } else {
-                    try {
-                        curNode = curNode.getParent();
-                    } catch (ItemNotFoundException e2) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Property : " + name + " not found in parent nodes " + node.getPath());
-                        }
-                        return returnValue;
-                    } catch (AccessDeniedException e1) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Property : " + name + " parent access denied " + node.getPath());
-                        }
-                        return returnValue;
-                    } catch (RepositoryException e1) {
-                        logger.error(e1.getMessage(), e1);
-                        return returnValue;
-                    }
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Property : " + name + " not found in node " + node.getPath());
                 }
+                return returnValue;
             } catch (RepositoryException e) {
                 throw new JspException(e);
             } catch (IOException e) {

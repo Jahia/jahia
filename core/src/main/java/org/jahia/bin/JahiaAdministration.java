@@ -78,7 +78,6 @@ import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -101,7 +100,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URLDecoder;
 import java.util.*;
 
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -137,9 +135,6 @@ public class JahiaAdministration extends HttpServlet {
     public static final String JSP_PATH = "/admin/";
     private static final int SUPERADMIN_SITE_ID = 0;
 
-    private static ServicesRegistry sReg;
-    private static JahiaUserManagerService uMgr;
-    private static JahiaGroupManagerService gMgr;
     static private String servletPath = null;
 
     private String servletURI = null;
@@ -585,7 +580,6 @@ public class JahiaAdministration extends HttpServlet {
 
         // set request attributes...
         request.setAttribute("jahiaLoginUsername", jahiaLoginUsername);
-        request.setAttribute("redirectTo", request.getRequestURI() + "?" + request.getQueryString());
         if (!response.isCommitted()) {
             boolean isNutchCrawler = false;
             for (Enumeration<?> agentEnum = request.getHeaders("user-agent"); agentEnum.hasMoreElements();) {
@@ -629,7 +623,6 @@ public class JahiaAdministration extends HttpServlet {
         String jahiaLoginPassword = null;
 
         JahiaUser theUser = null;
-        JahiaGroup theGroup;
         boolean superAdmin = false;
         int entrySiteID = 0;
 
@@ -646,31 +639,22 @@ public class JahiaAdministration extends HttpServlet {
             jahiaLoginPassword = rootPass;
         }
 
-        String redirectTo = request.getParameter("redirectTo");
-        if (redirectTo != null && request.getCharacterEncoding() != null) {
-            redirectTo = URLDecoder.decode(redirectTo, request.getCharacterEncoding());
-        }
-
-        // get references to user manager and group manager...
-        sReg = ServicesRegistry.getInstance();
-        if (sReg != null) {
-            uMgr = sReg.getJahiaUserManagerService();
-            gMgr = sReg.getJahiaGroupManagerService();
-        }
-
         // check form validity...
-        if (uMgr != null) {
+        if (StringUtils.isEmpty(jahiaLoginUsername) || StringUtils.isEmpty(jahiaLoginPassword)) {
+            request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", JahiaResourceBundle.getJahiaInternalResource("message.invalidUsernamePassword",
+                    request.getLocale()));
+        } else {
 
-            theUser = uMgr.lookupUser(jahiaLoginUsername);
+            theUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(jahiaLoginUsername);
 
             if (theUser == null) {
                 String s = JahiaResourceBundle.getJahiaInternalResource("message.invalidUsernamePassword",
                         request.getLocale());
-                logger.warn(s);
+                logger.warn("Unable to find user with the name \"{}\"."
+                        + " Login failed. Remote IP is {}.", jahiaLoginUsername,
+                        request.getRemoteAddr());
                 request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", s);
             }
-
-            theGroup = gMgr.getAdministratorGroup(SUPERADMIN_SITE_ID);
 
             if (theUser != null) {
                 if (theUser.verifyPassword(jahiaLoginPassword)) {
@@ -679,7 +663,7 @@ public class JahiaAdministration extends HttpServlet {
                         String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.accountLocked", request.getLocale());
                         request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     } else {
-                        if (theGroup.isMember(theUser)) {
+                        if (ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(SUPERADMIN_SITE_ID).isMember(theUser)) {
                             loginError = false;
                             superAdmin = true;
                             logger.debug("Login granted: " + jahiaLoginUsername + " entered correct password.");
@@ -704,7 +688,7 @@ public class JahiaAdministration extends HttpServlet {
                                 dspMsg += JahiaResourceBundle.getJahiaInternalResource("label.isntadministrator2",
                                         request.getLocale());
                                 request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                                logger.error("Login Error: User " + jahiaLoginUsername + " is not a system administrator.");
+                                logger.error("Login Error: user {} is not a system administrator.", jahiaLoginUsername);
                             }
                         }
                     }
@@ -712,7 +696,7 @@ public class JahiaAdministration extends HttpServlet {
                     String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.invalidUsernamePassword",
                             request.getLocale());
                     request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                    logger.error("Login Error: User " + jahiaLoginUsername + " entered bad password.");
+                    logger.warn("Login Error: user {} entered bad password.", jahiaLoginUsername);
                 }
             }
         }
@@ -732,13 +716,7 @@ public class JahiaAdministration extends HttpServlet {
             Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
             session.setAttribute(ProcessingContext.SESSION_UI_LOCALE, sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(theUser, sessionLocale) : UserPreferencesHelper.getPreferredLocale(theUser));
             
-            if (redirectTo == null) {
-                displayMenu(request, response, session);
-            } else {
-                logger.debug("Should redirect to : " + redirectTo + " but not yet implemented.");
-                /** @todo not implemented fully for the moment, let's just display menu */
-                displayMenu(request, response, session);
-            }
+            displayMenu(request, response, session);
         } else {                                                                    // access failed...
             session.setAttribute(CLASS_NAME + "isSuperAdmin", Boolean.FALSE);
             session.setAttribute(CLASS_NAME + "accessGranted", Boolean.FALSE);
@@ -772,10 +750,7 @@ public class JahiaAdministration extends HttpServlet {
         } else {
             // try to get site from cache
             try {
-                if (sReg == null) {
-                    sReg = ServicesRegistry.getInstance();
-                }
-                theSite = sReg.getJahiaSitesService().getSiteByKey(theSite.getSiteKey());
+                theSite = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(theSite.getSiteKey());
             } catch (Exception e) {
                 logger.debug(e.getMessage(), e);
                 theSite = null;
@@ -932,13 +907,6 @@ public class JahiaAdministration extends HttpServlet {
         boolean isSuperAdmin = false;
 
         try {
-            // get references to user manager and group manager...
-            sReg = ServicesRegistry.getInstance();
-            if (sReg != null) {
-                uMgr = sReg.getJahiaUserManagerService();
-                gMgr = sReg.getJahiaGroupManagerService();
-            }
-
             JahiaUser theUser = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
             if (theUser == null) {
                 return false;
@@ -947,14 +915,14 @@ public class JahiaAdministration extends HttpServlet {
 
             if (theSite != null && !StringUtils.isEmpty(theSite.getSiteKey())) {
 
-                JahiaGroup theGroup = gMgr.getAdministratorGroup(theSite.getID());
+                JahiaGroup theGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(theSite.getID());
                 if (theGroup == null) {
                     return false; // group might have been deleted
                 }
                 if (theGroup.isMember(theUser) ||
                         (hasServerPermission("administrationAccess"))) {
                     // check if the user is a super admin or not...
-                    JahiaGroup superAdminGroup = gMgr.getAdministratorGroup(SUPERADMIN_SITE_ID);
+                    JahiaGroup superAdminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(SUPERADMIN_SITE_ID);
                     if (superAdminGroup.isMember(theUser)) {
                         isSuperAdmin = true;
                     }

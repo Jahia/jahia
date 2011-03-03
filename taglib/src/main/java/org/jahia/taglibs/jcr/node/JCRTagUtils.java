@@ -34,7 +34,6 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.Text;
 import org.jahia.services.content.nodetypes.*;
 import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
@@ -339,13 +338,6 @@ public class JCRTagUtils {
         }
     }
 
-    /**
-     * @see org.apache.jackrabbit.util.Text#escapeIllegalJcrChars(String)
-     */    
-    public static String escapeIllegalJcrChars(String inputString) {
-        return Text.escapeIllegalJcrChars(inputString);
-    }
-    
     /**
      * Returns the full user name, including first and last name. If those are
      * not available, returns the username.

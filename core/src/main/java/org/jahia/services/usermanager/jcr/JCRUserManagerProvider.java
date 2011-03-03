@@ -68,7 +68,7 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 7 juil. 2009
  */
-public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener {
+public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener<ApplicationEvent> {
 	private static final String ROOT_PWD_RESET_FILE = "/WEB-INF/etc/config/root.pwd";
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
@@ -121,12 +121,12 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode( "/users");
 
                     jcrSessionWrapper.checkout(parentNodeWrapper);
-                    JCRNodeWrapper userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
+                    JCRNodeWrapper userNode = parentNodeWrapper.addNode(JCRContentUtils.escapeJCRLocalName(name), Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
 						String skeletons = parentNodeWrapper.getProperty("j:usersFolderSkeleton")
 						        .getString();
                     	try {
-                    		JCRContentUtils.importSkeletons(skeletons, parentNodeWrapper.getPath() + "/" + name, jcrSessionWrapper);
+                    		JCRContentUtils.importSkeletons(skeletons, "/users/" + JCRContentUtils.escapeJCRLocalName(name), jcrSessionWrapper);
                     	} catch (Exception importEx) {
                     		logger.error("Unable to import data using user skeletons " + skeletons, importEx);
                             throw new RepositoryException("Could not create user due to some import issues", importEx);
@@ -308,7 +308,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * @return Return a reference on a new created jahiaUser object.
      */
     public JCRUser lookupUser(final String name) {
-        if("".equals(name.trim())) {
+        if(StringUtils.isBlank(name)) {
             logger.error("Should not be looking for empty name user");
             return null;
         }
@@ -319,7 +319,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node userNode = session.getNode("/users/" + name.trim());
+                    Node userNode = session.getNode("/users/" + JCRContentUtils.escapeJCRLocalName(name));
                     if (!userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(userNode.getIdentifier(), jcrTemplate);
                         cache.put(name, user);

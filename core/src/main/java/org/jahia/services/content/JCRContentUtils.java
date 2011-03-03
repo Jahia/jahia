@@ -39,7 +39,6 @@ import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -48,6 +47,7 @@ import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -82,32 +82,7 @@ public final class JCRContentUtils {
     
     private static JCRContentUtils instance;
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRContentUtils.class);
-
-    public static String cleanUpFilename(String name) {
-        name = name.replaceAll("([\\*:/\\\\<>|?\"])"," ");
-        name = name.trim();
-        return name;
-    }
-
-    public static String cleanUpNodeName(String nodeTypeName) {
-        return nodeTypeName != null ? StringUtils.replaceChars(nodeTypeName,
-                ':', '_') : nodeTypeName;
-    }
-    
-    public static String encodeInternalName(String name) {
-        name = name.replace("[", "\\5B");
-        name = name.replace("]", "\\5C");
-        name = name.replace("'", "\\27");
-        return name;
-    }
-
-    public static String decodeInternalName(String name) {
-        name = name.replace("\\5B","[");
-        name = name.replace("\\5C","]");
-        name = name.replace("\\27","'");
-        return name;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
 
     /**
      * Encode a local name according to limitations in specification, section 3.2.2
@@ -117,18 +92,8 @@ public final class JCRContentUtils {
      * @param originalLocalName
      * @return
      */
-    public static String encodeJCRLocalName(final String originalLocalName) {
-        String encodedName = originalLocalName;
-        if ((encodedName.equals(".")) || (encodedName.equals(".."))) {
-            return encodedName.replace("\\.", "\\2E");
-        }
-        encodedName = encodedName.replace("[", "\\5B");
-        encodedName = encodedName.replace("]", "\\5C");
-        encodedName = encodedName.replace("/", "\\2F");
-        encodedName = encodedName.replace(":", "\\3A");
-        encodedName = encodedName.replace("*", "\\2A");
-        encodedName = encodedName.replace("|", "\\7C");
-        return encodedName;
+    public static String escapeJCRLocalName(final String originalLocalName) {
+        return Text.escapeIllegalJcrChars(originalLocalName);
     }
 
     /**
@@ -138,16 +103,8 @@ public final class JCRContentUtils {
      * @param encodedLocalName
      * @return
      */
-    public static String decodeJCRLocalName(final String encodedLocalName) {
-        String originalLocalName = encodedLocalName;
-        originalLocalName = originalLocalName.replace("\\7C", "|");
-        originalLocalName = originalLocalName.replace("\\2A", "*");
-        originalLocalName = originalLocalName.replace("\\3A", ":");
-        originalLocalName = originalLocalName.replace("\\2F", "/");
-        originalLocalName = originalLocalName.replace("\\5C", "]");
-        originalLocalName = originalLocalName.replace("\\5B", "[");
-        originalLocalName = originalLocalName.replace("\\2E", ".");
-        return originalLocalName;
+    public static String unescapeJCRLocalName(final String encodedLocalName) {
+        return Text.unescapeIllegalJcrChars(encodedLocalName);
     }
 
     /**

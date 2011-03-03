@@ -8,15 +8,10 @@
         <property name="securityManager" ref="securityManager"/>
         <property name="filterChainDefinitions">
             <value>
-                /monitor/* = authcBasic, roles[toolManager]
-                /viewCache/* = authcBasic, roles[toolManager]
-                /tools/* = authcBasic, roles[toolManager]
-                
-                /precompileServlet = authcBasic, roles[templateManager]
-                
                 /cms/**/*.raw = authcBasic, roles[templateManager]
-                
+                /cms/serverStats = authcBasic, roles[toolManager]
                 /cms/serverStats/* = authcBasic, roles[toolManager]
+                /tools/* = authcBasic, roles[toolManager]
                 
                 /modules/**/META-INF/** = authcBasic, roles[templateManager]
                 /modules/**/WEB-INF/** = authcBasic, roles[templateManager]

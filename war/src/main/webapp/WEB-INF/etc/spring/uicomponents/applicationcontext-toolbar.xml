@@ -878,7 +878,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="targetName"/>
-                    <property name="value" value="portalComponents"/>
+                    <property name="value" value="portal-components"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="allowedNodeType"/>

@@ -9,7 +9,7 @@
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder">
-                <portalComponents jcr:primaryType="jnt:contentFolder">
+                <portal-components jcr:primaryType="jnt:contentFolder">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
                                       jcr:title="Portal components"/>
                     <websites-list-in-edit-mode jcr:primaryType="jnt:listSites" type="edit">
@@ -30,25 +30,25 @@
                     <gotoAdmin jcr:primaryType="jnt:gotoAdmin"/>
                     <gotoUnitedContentManager jcr:primaryType="jnt:gotoManager" type="united content"/>
                     <gotoRolesManager jcr:primaryType="jnt:gotoManager" type="roles"/>
-                </portalComponents>
-                <profilePageItems jcr:primaryType="jnt:contentFolder">
+                </portal-components>
+                <profile-page-items jcr:primaryType="jnt:contentFolder">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
                     <portal divClass="user-portal" jcr:primaryType="jnt:componentLink" targetTemplate="user-portal">
                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Portal"/>
                     </portal>
-                </profilePageItems>
-                <defaultPortal jcr:primaryType="jnt:portal" componentsFolder="/templateSets/portal/contents/portalComponents" columns="3">
+                </profile-page-items>
+                <defaultPortal jcr:primaryType="jnt:portal" componentsFolder="/templateSets/portal/contents/portal-components" columns="3">
                     <column1 j:lastPublished="2011-02-11T15:43:51.367+01:00" j:lastPublishedBy=" system root" jcr:created="2011-02-11T15:45:11.906+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:54:36.206+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentList">
-                        <my-pages j:node="/templateSets/portal/contents/portalComponents/my-pages" jcr:created="2011-02-11T15:53:02.241+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:53:02.274+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
+                        <my-pages j:node="/templateSets/portal/contents/portal-components/my-pages" jcr:created="2011-02-11T15:53:02.241+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:53:02.274+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
                     </column1>
                     <column2 j:lastPublished="2011-02-11T15:43:51.367+01:00" j:lastPublishedBy=" system root" jcr:created="2011-02-11T15:45:11.976+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:54:16.111+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentList">
-                        <websites-list-in-edit-mode j:node="/templateSets/portal/contents/portalComponents/websites-list-in-edit-mode" jcr:created="2011-02-11T15:53:39.512+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:53:51.796+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
-                        <websites-list-in-contribute-mode j:node="/templateSets/portal/contents/portalComponents/websites-list-in-contribute-mode" jcr:created="2011-02-11T15:53:44.823+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:53:53.665+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
+                        <websites-list-in-edit-mode j:node="/templateSets/portal/contents/portal-components/websites-list-in-edit-mode" jcr:created="2011-02-11T15:53:39.512+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:53:51.796+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
+                        <websites-list-in-contribute-mode j:node="/templateSets/portal/contents/portal-components/websites-list-in-contribute-mode" jcr:created="2011-02-11T15:53:44.823+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:53:53.665+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
                     </column2>
                     <column3 j:lastPublished="2011-02-11T15:43:51.367+01:00" j:lastPublishedBy=" system root" jcr:created="2011-02-11T15:45:12.044+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:54:36.206+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentList">
-                        <gotoUnitedContentManager j:node="/templateSets/portal/contents/portalComponents/gotoUnitedContentManager" jcr:created="2011-02-11T15:53:59.559+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:54:13.575+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
-                        <gotoAdmin j:node="/templateSets/portal/contents/portalComponents/gotoAdmin" jcr:created="2011-02-11T15:54:21.179+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:54:33.294+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
-                        <gotoRolesManager j:node="/templateSets/portal/contents/portalComponents/gotoRolesManager" jcr:created="2011-02-11T15:53:07.946+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:54:36.206+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
+                        <gotoUnitedContentManager j:node="/templateSets/portal/contents/portal-components/gotoUnitedContentManager" jcr:created="2011-02-11T15:53:59.559+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:54:13.575+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
+                        <gotoAdmin j:node="/templateSets/portal/contents/portal-components/gotoAdmin" jcr:created="2011-02-11T15:54:21.179+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:54:33.294+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
+                        <gotoRolesManager j:node="/templateSets/portal/contents/portal-components/gotoRolesManager" jcr:created="2011-02-11T15:53:07.946+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:54:36.206+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentReference" />
                     </column3>
                     <column4 j:lastPublished="2011-02-11T15:43:51.367+01:00" j:lastPublishedBy=" system root" jcr:created="2011-02-11T15:45:12.114+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:45:15.473+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentList" />
                     <column5 j:lastPublished="2011-02-11T15:43:51.367+01:00" j:lastPublishedBy=" system root" jcr:created="2011-02-11T15:45:12.182+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:45:15.473+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentList" />

@@ -5,10 +5,10 @@
               xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap"
               jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5" j:siteType="templatesSet">
     <contents jcr:primaryType="jnt:contentFolder">
-        <portalComponents jcr:primaryType="jnt:contentFolder">
+        <portal-components jcr:primaryType="jnt:contentFolder">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
                               jcr:title="Portal components"/>
-        </portalComponents>
+        </portal-components>
     </contents>
 
 </templatesSet>

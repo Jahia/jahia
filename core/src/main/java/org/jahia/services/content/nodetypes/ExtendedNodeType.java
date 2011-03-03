@@ -32,6 +32,7 @@
 
 package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.jackrabbit.core.value.InternalValue;
@@ -833,7 +834,7 @@ public class ExtendedNodeType implements NodeType {
             String key = getName().replace(':', '_');
             String tpl = getTemplatePackage() != null ? getTemplatePackage().getName() : null;
             label = new JahiaResourceBundle(getResourceBundleId(), locale, tpl, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), tpl)).getString(key, key);
+                    .getInstance(Thread.currentThread().getContextClassLoader(), tpl)).getString(key, StringUtils.substringAfter(getName(),":"));
             labels.put(locale, label);
         }
         return label;

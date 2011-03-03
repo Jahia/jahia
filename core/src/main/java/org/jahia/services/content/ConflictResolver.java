@@ -446,6 +446,15 @@ public class ConflictResolver {
             result = 31 * result + newName.hashCode();
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "ChildRenamedDiff{" +
+                    "uuid='" + uuid + '\'' +
+                    ", oldName='" + oldName + '\'' +
+                    ", newName='" + newName + '\'' +
+                    '}';
+        }
     }
 
     class ChildAddedDiff implements Diff {
@@ -615,6 +624,17 @@ public class ConflictResolver {
             result = 31 * result + (orderBeforeUuid != null ? orderBeforeUuid.hashCode() : 0);
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "ChildNodeReorderedDiff{" +
+                    "name='" + name + '\'' +
+                    ", orderBeforeName='" + orderBeforeName + '\'' +
+                    ", uuid='" + uuid + '\'' +
+                    ", orderBeforeUuid='" + orderBeforeUuid + '\'' +
+                    ", ordering=" + ordering +
+                    '}';
+        }
     }
 
     class PropertyAddedDiff implements Diff {
@@ -671,7 +691,9 @@ public class ConflictResolver {
         @Override
         public String toString() {
             return "PropertyAddedDiff{" +
-                    "propertyName='" + propertyPath + '\'' +
+                    "propertyDefinition=" + propertyDefinition +
+                    ", propertyPath='" + propertyPath + '\'' +
+                    ", newValue=" + newValue +
                     '}';
         }
     }
@@ -735,7 +757,9 @@ public class ConflictResolver {
         @Override
         public String toString() {
             return "PropertyRemovedDiff{" +
-                    "propertyName='" + propertyPath + '\'' +
+                    "propertyDefinition=" + propertyDefinition +
+                    ", propertyPath='" + propertyPath + '\'' +
+                    ", oldValue=" + oldValue +
                     '}';
         }
     }
@@ -854,7 +878,11 @@ public class ConflictResolver {
         @Override
         public String toString() {
             return "PropertyChangedDiff{" +
-                    "propertyName='" + propertyPath + '\'' +
+                    "propertyDefinition=" + propertyDefinition +
+                    ", propertyPath='" + propertyPath + '\'' +
+                    ", oldValue=" + oldValue +
+                    ", newValue=" + newValue +
+                    ", newTargetValue=" + newTargetValue +
                     '}';
         }
     }

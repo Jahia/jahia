@@ -115,6 +115,7 @@ public class ContentTabItem extends PropertiesTabItem {
                     autoUpdateLabel.setText("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
                 } else {
                     autoUpdate = false;
+                    autoUpdateLabel.setText("");
                 }
 
                 nameText.setEnabled(!autoUpdate);
@@ -122,8 +123,8 @@ public class ContentTabItem extends PropertiesTabItem {
             } else {
                 if (autoUpdateName != null) {
                     autoUpdateName.setVisible(false);
-                    autoUpdateLabel.setText("&nbsp;" + Messages.get("label.switchToUpdateName", "Switch to default language to update name"));
                 }
+                autoUpdateLabel.setText("&nbsp;" + Messages.get("label.switchToUpdateName", "Switch to default language to update name"));
                 nameText.setEnabled(false);
             }
 
@@ -169,11 +170,12 @@ public class ContentTabItem extends PropertiesTabItem {
 
                 panel.add(this.nameText, new HBoxLayoutData());
 
+                autoUpdateLabel = new Label("");
+                panel.add(autoUpdateLabel, new HBoxLayoutData());
+
                 if (titleField != null) {
                     autoUpdateName = new CheckBox();
                     autoUpdateName.setHideLabel(true);
-                    autoUpdateLabel = new Label("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
-                    panel.add(autoUpdateLabel, new HBoxLayoutData());
                     panel.add(autoUpdateName, new HBoxLayoutData());
                 }
 

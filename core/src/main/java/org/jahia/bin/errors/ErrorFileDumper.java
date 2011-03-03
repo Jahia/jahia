@@ -154,13 +154,15 @@ public class ErrorFileDumper {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 System.out.println("Shutting down error file dumper executor service...");
-                executorService.shutdown();
-                try {
-                    if (!executorService.awaitTermination(100L, TimeUnit.MILLISECONDS)) {
-                        List<Runnable> droppedTasks = executorService.shutdownNow();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (executorService != null) {
+                    executorService.shutdown();
+                    try {
+                        if (!executorService.awaitTermination(100L, TimeUnit.MILLISECONDS)) {
+                            List<Runnable> droppedTasks = executorService.shutdownNow();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                }
                 }
             }
         });

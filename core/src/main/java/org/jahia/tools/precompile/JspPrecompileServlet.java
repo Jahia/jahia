@@ -82,7 +82,7 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
         String compileType = aRequest.getParameter(COMPILE_TYPE_PARAM);
         if (jspName != null) {
             // precompile single JSP
-            RequestDispatcher rd = aRequest.getRequestDispatcher(jspName);
+            RequestDispatcher rd = aRequest.getRequestDispatcher("/" + jspName);
             rd.forward(aRequest, aResponse);
         } else if ("all".equals(compileType)) {
             // precompile all JSPs and generate report
@@ -200,7 +200,7 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
         List<String> buggyJsps = new ArrayList<String>();
         int i = 1;
         for (String jspPath : foundJsps) {
-            RequestDispatcher rd = aRequest.getRequestDispatcher(jspPath);
+            RequestDispatcher rd = aRequest.getRequestDispatcher("/" + jspPath);
             try {
                 System.out.print("Compiling (" + i + ") " + jspPath + "...");
                 rd.include(aRequest, aResponse);

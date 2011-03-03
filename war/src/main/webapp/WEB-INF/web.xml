@@ -688,7 +688,7 @@
 
     <servlet-mapping>
         <servlet-name>JspPrecompileServlet</servlet-name>
-        <url-pattern>/precompileServlet</url-pattern>
+        <url-pattern>/tools/precompileServlet</url-pattern>
     </servlet-mapping>
 
 

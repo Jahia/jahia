@@ -56,10 +56,6 @@
     </c:if>
     <link rel="stylesheet" href="<c:url value='/css/jahia65.css'/>" type="text/css" />
 
-    <%-- 
-    <script type="text/javascript" src="<c:url value='/javascript/jahia.js'/>"></script>
-     --%>
-
     <c:if test="${not empty sessionScope['org.jahia.usermanager.jahiauser'] && sessionScope['org.jahia.usermanager.jahiauser'].username != 'guest'}">
     <script type="text/javascript">
         function showWorkInProgress() {

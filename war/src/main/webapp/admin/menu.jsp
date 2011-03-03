@@ -41,10 +41,6 @@
     final int currentSiteID = jData.getProcessingContext().getSiteID();
 
 %>
-<script type="text/javascript" src="<%=URL%>../javascript/moo/prototype.lite.js"></script>
-<script type="text/javascript" src="<%=URL%>../javascript/moo/moo.fx.js"></script>
-<script type="text/javascript" src="<%=URL%>../javascript/moo/moo.fx.pack.js"></script>
-
 
 <div id="topTitle">
     <h1>Jahia</h1>

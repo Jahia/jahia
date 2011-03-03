@@ -51,50 +51,48 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.errors.ErrorServlet;
 
 /**
- * Allows temporary disabling request serving and switching to a maintenance
- * mode.
+ * Allows temporary disabling request serving and switching to a maintenance mode.
  * 
  * @author Sergiy Shyrkov
- * 
  */
 public class MaintenanceFilter implements Filter {
 
-	private Set<Pattern> allowedResources = new HashSet<Pattern>();
+    private Set<Pattern> allowedResources = new HashSet<Pattern>();
 
-	public void destroy() {
-		// do nothing
-	}
+    public void destroy() {
+        // do nothing
+    }
 
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-	        throws IOException, ServletException {
-		boolean block = Jahia.isMaintenance();
-		if (block) {
-			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			String uri = StringUtils.substringAfter(httpRequest.getRequestURI(),
-			        httpRequest.getContextPath());
-			for (Pattern resourcePattern : allowedResources) {
-				if (resourcePattern.matcher(uri).matches()) {
-					block = false;
-					break;
-				}
-			}
-		}
-		if (block) {
-			((HttpServletResponse) response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-			        ErrorServlet.MAINTENANCE_MODE);
-		} else {
-			chain.doFilter(request, response);
-		}
-	}
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        boolean block = Jahia.isMaintenance();
+        if (block) {
+            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            String uri = StringUtils.substringAfter(httpRequest.getRequestURI(),
+                    httpRequest.getContextPath());
+            for (Pattern resourcePattern : allowedResources) {
+                if (resourcePattern.matcher(uri).matches()) {
+                    block = false;
+                    break;
+                }
+            }
+        }
+        if (block) {
+            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    ErrorServlet.MAINTENANCE_MODE);
+        } else {
+            chain.doFilter(request, response);
+        }
+    }
 
-	public void init(FilterConfig filterConfig) throws ServletException {
-		// do nothing
-	}
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // do nothing
+    }
 
-	public void setAllowedResources(Set<String> allowedResources) {
-		for (String regex : allowedResources) {
-			this.allowedResources.add(Pattern.compile(regex));
-		}
-	}
+    public void setAllowedResources(Set<String> allowedResources) {
+        for (String regex : allowedResources) {
+            this.allowedResources.add(Pattern.compile(regex));
+        }
+    }
 
 }

@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.data;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,6 +45,8 @@ import java.io.Serializable;
  * 
  */
 public class GWTJahiaSite extends BaseModelData implements Serializable {
+    private List<String> installedModules;
+
     public int getSiteId () {
         return (Integer) get("siteId");
     }
@@ -66,5 +69,29 @@ public class GWTJahiaSite extends BaseModelData implements Serializable {
 
     public void setSiteKey (String siteKey) {
         set("siteKey",siteKey);
+    }
+
+    public String getTemplateFolder () {
+        return get("templateFolder");
+    }
+
+    public void setTemplateFolder (String siteKey) {
+        set("templateFolder",siteKey);
+    }
+
+    public String getTemplatePackageName () {
+        return get("templatePackageName");
+    }
+
+    public void setTemplatePackageName (String siteKey) {
+        set("templatePackageName",siteKey);
+    }
+
+    public List<String> getInstalledModules() {
+        return installedModules;
+    }
+
+    public void setInstalledModules(List<String> installedModules) {
+        this.installedModules = installedModules;
     }
 }

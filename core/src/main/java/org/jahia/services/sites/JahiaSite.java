@@ -86,6 +86,7 @@ public class JahiaSite implements Serializable {
     private String mServerName = "";
 
     private String templatePackageName;
+    private List<String> installedModules;
 
     /**
      * desc *
@@ -357,6 +358,14 @@ public class JahiaSite implements Serializable {
      */
     public void setTemplatePackageName(String packageName) {
         this.templatePackageName = packageName;
+    }
+
+    public List<String> getInstalledModules() {
+        return installedModules;
+    }
+
+    public void setInstalledModules(List<String> installedModules) {
+        this.installedModules = installedModules;
     }
 
     public boolean equals(Object obj) {

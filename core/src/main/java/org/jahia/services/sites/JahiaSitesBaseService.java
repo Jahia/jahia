@@ -190,12 +190,20 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
         JahiaSite site = new JahiaSite(siteId, node.getProperty("j:title").getString(), node.getProperty("j:serverName").getString(),
                 node.getName(), node.getProperty("j:description").getString(), props, node.getPath());
-        Value[] s = node.getProperty("j:installedModules").getValues();
+        Value s = node.getProperty("j:templatesSet").getValue();
         final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackageByFileName(s[0].getString());
+                .getTemplatePackageByFileName(s.getString());
         if (aPackage != null) {
             site.setTemplatePackageName(aPackage.getName());
         }
+
+        List<String> installedModules = new ArrayList<String>();
+        Value[] modules = node.getProperty("j:installedModules").getValues();
+        for (Value module : modules) {
+            installedModules.add(module.getString());
+        }
+        site.setInstalledModules(installedModules);
+
         site.setMixLanguagesActive(node.getProperty("j:mixLanguage").getBoolean());
         site.setDefaultLanguage(node.getProperty("j:defaultLanguage").getString());
         Value[] languages = node.getProperty("j:languages").getValues();
@@ -413,6 +421,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             if (getSiteByKey(site.getSiteKey()) == null) {
                 final String siteKey1 = site.getSiteKey();
                 final String templatePackage = site.getTemplatePackageName();
+                site.setInstalledModules(new ArrayList<String>(Collections.singleton(templatePackage)));
+
                 final Set<String> languages = site.getLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
 
@@ -468,6 +478,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 siteNode.setProperty("j:mandatoryLanguages", mandatoryLanguages.toArray(new String[mandatoryLanguages
                                         .size()]));
                                 siteNode.setProperty("j:templatesSet", templatePackage);
+                                siteNode.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(templatePackage)} );
                             }
                         }
 

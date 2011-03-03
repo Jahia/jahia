@@ -486,7 +486,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         destinationNode.checkout();
                         installedModules.addValue(originalNode.getName());
                         session.save();
-
+                        try {
+                            List<String> modules = siteService.getSiteByKey(destinationNode.getName()).getInstalledModules();
+                            if (!modules.contains(originalNode.getName())) {
+                                modules.add(originalNode.getName());
+                            }
+                        } catch (JahiaException e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
                         return null;
                     }
                 });

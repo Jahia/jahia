@@ -1868,8 +1868,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 gwtJahiaSite.setSiteId(jahiaSite.getID());
                 gwtJahiaSite.setSiteName(jahiaSite.getTitle());
                 gwtJahiaSite.setSiteKey(jahiaSite.getSiteKey());
-                gwtJahiaSite.set("templateFolder",jahiaSite.getTemplateFolder());
-                gwtJahiaSite.set("templatePackageName",jahiaSite.getTemplatePackageName());
+                gwtJahiaSite.setTemplateFolder(jahiaSite.getTemplateFolder());
+                gwtJahiaSite.setTemplatePackageName(jahiaSite.getTemplatePackageName());
+                gwtJahiaSite.setInstalledModules(jahiaSite.getInstalledModules());
                 returnedSites.add(gwtJahiaSite);
             }
         } catch (JahiaException e) {

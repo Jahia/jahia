@@ -438,6 +438,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         p.setProperty("templatePackageName", s.getTemplateFolder());
         p.setProperty("mixLanguage", Boolean.toString(s.isMixLanguagesActive()));
         p.setProperty("defaultLanguage", s.getDefaultLanguage());
+        int i=1;
+        for (String s1 : s.getInstalledModules()) {
+            p.setProperty("installedModules."+(i++), s1);
+        }
 
 
         // get all jahiaGAprofiles
@@ -804,6 +808,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } else if (firstKey.startsWith("defaultSite") && "true".equals(
                     value) && sitesService.getDefaultSite() == null) {
                 sitesService.setDefaultSite(site);
+            } else if (firstKey.equals("installedModules")) {
+                if (!site.getInstalledModules().contains(value)) {
+                    try {
+                        ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates("/templateSets/"+value, "/sites/"+site.getSiteKey(), JCRSessionFactory.getInstance().getCurrentUser().getUsername());
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot deploy module "+value,e);
+                    }
+                }
             }
         }
         @SuppressWarnings("unchecked")

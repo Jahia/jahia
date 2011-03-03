@@ -65,6 +65,7 @@ import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
 import java.util.*;
 
@@ -395,6 +396,8 @@ public class MainModule extends Module {
         }
         if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
             JahiaGWTParameters.setSite(node, editLinker);
+            SiteSwitcherActionItem.refreshAllSitesList(editLinker);
+            editLinker.getSidePanel().refresh(EditLinker.REFRESH_ALL);
         } else {
             JahiaGWTParameters.setSiteType(node.getSiteType());
             DeployTemplatesActionItem.refreshAllMenus(editLinker);

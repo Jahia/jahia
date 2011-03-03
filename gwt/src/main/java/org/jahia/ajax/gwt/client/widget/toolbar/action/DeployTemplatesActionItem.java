@@ -100,25 +100,31 @@ public class DeployTemplatesActionItem extends BaseActionItem {
         if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
             for (GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
                 MenuItem item = new MenuItem(site.getSiteKey());
-                deploy(item, linker, "/sites/" + site.getSiteKey());
+                addDeployListener(item, linker, "/sites/" + site.getSiteKey());
+                item.setData("site",site);
                 menu.add(item);
             }
         } else if ("module".equals(JahiaGWTParameters.getSiteType())) {
             for (GWTJahiaSite site : sites) {
-                MenuItem item = new MenuItem(site.getSiteKey());
-                deploy(item, linker, "/sites/" + site.getSiteKey());
+                String label = site.getSiteKey();
+                if (site.getInstalledModules().contains(JahiaGWTParameters.getSiteKey())) {
+                    label += " *";
+                }
+                MenuItem item = new MenuItem(label);
+                addDeployListener(item, linker, "/sites/" + site.getSiteKey());
+                item.setData("site",site);
                 menu.add(item);
             }
         } else {
             MenuItem item = new MenuItem(Messages.get("label.nosites", "No target sites"));
             item.setEnabled(false);
-            menu.add(item);            
+            menu.add(item);
         }
         setSubMenu(menu);
         setEnabled(true);
     }
 
-    private void deploy(MenuItem item, final Linker linker, final String destinationPath) {
+    private void addDeployListener(final MenuItem item, final Linker linker, final String destinationPath) {
         item.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
@@ -136,6 +142,11 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                             }
 
                             public void onSuccess(Object result) {
+                                GWTJahiaSite site = item.getData("site");
+                                if (!site.getInstalledModules().contains(parts[2])) {
+                                    site.getInstalledModules().add(parts[2]);
+                                    item.setText(item.getText()+" *");
+                                }
                                 Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.get("org.jahia.admin.site.ManageTemplates.templatesDeployed", "Your templates deployment is successful"));
                             }
                         });

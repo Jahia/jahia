@@ -157,4 +157,20 @@
         </constructor-arg>
     </bean>
 
+    <bean id="gwtCssStyles" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>/gwt/resources/css/gwt.css</value>
+            </list>
+            <!-- comment out edit-all and uncomment the following CSS if you are in dev mode
+            <list>
+                <value>/gwt/resources/css/jahia-ext-all.css</value>
+                <value>/gwt/resources/css/xtheme-jahia.css</value>
+                <value>/gwt/resources/css/edit.css</value>
+                <value>/gwt/resources/css/jahia-gwt-engines.css</value>
+                <value>/gwt/resources/css/diff.css</value>
+            </list>
+            -->
+        </property>
+    </bean>
 </beans>

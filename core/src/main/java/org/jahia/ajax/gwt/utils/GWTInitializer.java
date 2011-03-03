@@ -41,6 +41,7 @@ import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.RenderContext;
@@ -52,6 +53,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
+
 import java.util.*;
 
 /**
@@ -60,6 +62,7 @@ import java.util.*;
  */
 public class GWTInitializer {
     private final static Logger logger = org.slf4j.LoggerFactory.getLogger(GWTInitializer.class);
+    private static List<String> gwtCssStyles;
 
     public static String getInitString(PageContext pageContext) {
         return getInitString(pageContext, false);
@@ -93,13 +96,8 @@ public class GWTInitializer {
             locale = Locale.ENGLISH;
         }
 
-        String context = request.getContextPath();
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/edit.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/diff.css\" rel=\"stylesheet\"/>\n");
+        addCss(buf, request);
 
         // creat parameters map
         Map<String, String> params = new HashMap<String, String>();
@@ -175,15 +173,30 @@ public class GWTInitializer {
         }
 
         // add jahia parameter dictionary
-        buf.append("<script type='text/javascript'>\n");
+        buf.append("<script type=\"text/javascript\">\n");
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
 
         return buf.toString();
     }
 
+    private static void addCss(StringBuilder buf, HttpServletRequest request) {
+        String context = request.getContextPath();
+        for (String css : gwtCssStyles()) {
+            buf.append("<link type=\"text/css\" href=\"").append(context).append(css).append("\" rel=\"stylesheet\"/>\n");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<String> gwtCssStyles() {
+        if (gwtCssStyles == null) {
+            gwtCssStyles = (List<String>) SpringContextSingleton.getBean("gwtCssStyles");
+        }
+        return gwtCssStyles;
+    }
+
     /**
-     * Add lnaguage switcher link into page
+     * Add language switcher link into page
      *
      * @param renderContext
      * @param params
@@ -212,23 +225,20 @@ public class GWTInitializer {
      * @param params
      * @return
      */
-    public static String getJahiaGWTConfig(Map params) {
+    public static String getJahiaGWTConfig(Map<String, String> params) {
         StringBuilder s = new StringBuilder();
         s.append("var " + JahiaGWTParameters.JAHIA_GWT_PARAMETERS + "={");
         if (params != null) {
-            Iterator keys = params.keySet().iterator();
             boolean b = false;
-            while (keys.hasNext()) {
-                String name = keys.next().toString();
-                Object value = params.get(name);
-                if (value != null) {
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                if (param.getValue() != null) {
                     if (b) {
                         s.append(",");
                     } else {
                         b = true;
                     }
-                    s.append("\n");
-                    s.append(name).append(":\"").append(value.toString()).append("\"");
+                    //s.append("\n");
+                    s.append(param.getKey()).append(":\"").append(String.valueOf(param.getValue())).append("\"");
                 }
             }
         }
@@ -247,4 +257,5 @@ public class GWTInitializer {
     private static String buildServiceBaseEntrypointUrl(HttpServletRequest request) {
         return new StringBuilder(request.getContextPath()).append("/gwt/").toString();
     }
+    
 }

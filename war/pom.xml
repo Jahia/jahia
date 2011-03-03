@@ -1570,6 +1570,7 @@
                                     <arg value="de,en,es,fr,it,pt"/>
                                     <arg value="${project.build.directory}/${project.build.finalName}/gwt/resources/i18n"/>
                                     <arg value="messages"/>
+                                    <arg value="true"/><!-- minified -->
                                     <classpath>
                                         <path refid="maven.runtime.classpath"/>
                                     </classpath>
@@ -1603,6 +1604,24 @@
                                 <echo message="...done"/>
                             </tasks>
                         </configuration>
+                    </execution>
+                    <execution>
+                        <id>merge-css</id>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <tasks>
+                                <concat destfile="${project.build.directory}/${project.build.finalName}/gwt/resources/css/gwt.css" fixlastline="yes">
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-ext-all.css" />
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/xtheme-jahia.css" />
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/edit.css" />
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-gwt-engines.css" />
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/diff.css" />
+                                </concat>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

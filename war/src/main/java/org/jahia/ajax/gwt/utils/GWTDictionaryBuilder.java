@@ -36,7 +36,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -65,7 +64,7 @@ public class GWTDictionaryBuilder {
      * @param targetFolder the target folder
      * @throws IOException in case of an error
      */
-    private static void convert(String bundleName, Locale locale, File targetFolder, String targetFileName)
+    private static void convert(String bundleName, Locale locale, File targetFolder, String targetFileName, boolean minified)
             throws IOException {
         InputStream is = GWTDictionaryBuilder.class.getClassLoader().getResourceAsStream(bundleName.replace('.', '/') + ".properties");
         ResourceBundle defBundle = new PropertyResourceBundle(is);
@@ -90,7 +89,10 @@ public class GWTDictionaryBuilder {
             keys.add(keyEnum.nextElement());
         }
         Collections.sort(keys);
-        out.println("var " + Messages.DICTIONARY_NAME + " = {");
+        out.print("var " + Messages.DICTIONARY_NAME + "={");
+        if (!minified) {
+            out.println();
+        }
         for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
             String key = iterator.next();
             String value = null;
@@ -108,10 +110,15 @@ public class GWTDictionaryBuilder {
                 if (iterator.hasNext()) {
                     out.append(",");
                 }
-                out.println();
+                if (!minified) {
+                    out.println();
+                }
             }
         }
-        out.println("};");
+        out.print("};");
+        if (!minified) {
+            out.println();
+        }
 
         out.flush();
         out.close();
@@ -134,78 +141,79 @@ public class GWTDictionaryBuilder {
         String targetFileName = args[3];
         System.out.println("Converting resource bundle " + bundleName + " into JavaScript files...");
         System.out.println("...no locale (default file)");
-        convert(bundleName, null, targetDir, targetFileName);
+        boolean minified = args.length > 4 && Boolean.valueOf(args[4]);
+        convert(bundleName, null, targetDir, targetFileName, minified);
         for (String lc : locales) {
             Locale currentLocale = new Locale(lc.trim());
             System.out.println("...locale " + currentLocale.getDisplayName(Locale.ENGLISH));
-            convert(bundleName, currentLocale, targetDir, targetFileName);
+            convert(bundleName, currentLocale, targetDir, targetFileName, minified);
         }
         System.out.println("...conversion done.");
     }
 
     private static String escape(String value) {
-        StringWriter out = new StringWriter(value.length() * 2);
+        StringBuilder out = new StringBuilder(value.length() * 2);
         int sz = value.length();
         for (int i = 0; i < sz; i++) {
             char ch = value.charAt(i);
 
             // handle unicode
             if (ch > 0xfff) {
-                out.write("\\u" + hex(ch));
+                out.append("\\u" + hex(ch));
             } else if (ch > 0xff) {
-                out.write("\\u0" + hex(ch));
+                out.append("\\u0" + hex(ch));
             } else if (ch > 0x7f) {
-                out.write("\\u00" + hex(ch));
+                out.append("\\u00" + hex(ch));
             } else if (ch < 32) {
                 switch (ch) {
                 case '\b':
-                    out.write('\\');
-                    out.write('b');
+                    out.append('\\');
+                    out.append('b');
                     break;
                 case '\n':
-                    out.write('\\');
-                    out.write('n');
+                    out.append('\\');
+                    out.append('n');
                     break;
                 case '\t':
-                    out.write('\\');
-                    out.write('t');
+                    out.append('\\');
+                    out.append('t');
                     break;
                 case '\f':
-                    out.write('\\');
-                    out.write('f');
+                    out.append('\\');
+                    out.append('f');
                     break;
                 case '\r':
-                    out.write('\\');
-                    out.write('r');
+                    out.append('\\');
+                    out.append('r');
                     break;
                 default:
                     if (ch > 0xf) {
-                        out.write("\\u00" + hex(ch));
+                        out.append("\\u00" + hex(ch));
                     } else {
-                        out.write("\\u000" + hex(ch));
+                        out.append("\\u000" + hex(ch));
                     }
                     break;
                 }
             } else {
                 switch (ch) {
                 case '\'':
-                    out.write('\\');
-                    out.write('\'');
+                    out.append('\\');
+                    out.append('\'');
                     break;
                 case '"':
-                    out.write('\\');
-                    out.write('"');
+                    out.append('\\');
+                    out.append('"');
                     break;
                 case '\\':
-                    out.write('\\');
-                    out.write('\\');
+                    out.append('\\');
+                    out.append('\\');
                     break;
                 case '/':
-                    out.write('\\');
-                    out.write('/');
+                    out.append('\\');
+                    out.append('/');
                     break;
                 default:
-                    out.write(ch);
+                    out.append(ch);
                     break;
                 }
             }

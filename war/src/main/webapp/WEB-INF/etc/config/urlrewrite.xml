@@ -21,9 +21,14 @@
         <to last="true">/gwt/resources/images/$2</to>
     </rule>
     <rule>
-        <note>GWT images</note>
+        <note>GWT CSS images</note>
         <from>^/gwt/resources/css/images/(.*)$</from>
         <to last="true">/gwt/resources/images/$1</to>
+    </rule>
+    <rule>
+        <note>GWT clear.gif image</note>
+        <from>^/gwt/org\.(.*)/clear.gif(.*)?$</from>
+        <to last="true">/gwt/resources/clear.gif$2</to>
     </rule>
     <!-- end of GWT resources-->
 

@@ -402,7 +402,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
                 try {
                     final Node localizedNode = getI18N(locale);
                     return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name), getSession(),
-                                                      getProvider(), getApplicablePropertyDefinition(name), name);
+                                                      getProvider(), epd, name);
                 } catch (ItemNotFoundException e) {
                     return super.getProperty(name);
                 }
@@ -669,18 +669,17 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
 
     public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)
             throws ConstraintViolationException, RepositoryException {
-        try {
-            return super.getApplicablePropertyDefinition(propertyName);
-        } catch (ConstraintViolationException e) {
-
-            
-            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(Constants.NT_FROZENNODE);
-            final Map<String, ExtendedPropertyDefinition> definitionMap = type.getPropertyDefinitionsAsMap();
-            if (definitionMap.containsKey(propertyName)) {
-                return definitionMap.get(propertyName);
-            }
-            throw new ConstraintViolationException("Cannot find definition for " + propertyName + " on node " + getName() + " (" + getPrimaryNodeTypeName() + ")");
+        ExtendedPropertyDefinition result = super.getApplicablePropertyDefinition(propertyName);
+        if (result != null) {
+            return result;
         }
+
+        ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(Constants.NT_FROZENNODE);
+        final Map<String, ExtendedPropertyDefinition> definitionMap = type.getPropertyDefinitionsAsMap();
+        if (definitionMap.containsKey(propertyName)) {
+            return definitionMap.get(propertyName);
+        }
+        return null;
     }
 
     public ExtendedNodeDefinition getApplicableChildNodeDefinition(String childName, String nodeType)

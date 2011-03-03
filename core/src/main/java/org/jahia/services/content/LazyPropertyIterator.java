@@ -129,12 +129,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
                     final String name = property.getName();
-                    try {
-                        final ExtendedPropertyDefinition def = node.getApplicablePropertyDefinition(name);
-                        if (def.isInternationalized()) {
-                            return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
-                        }
-                    } catch (ConstraintViolationException e) {
+                    final ExtendedPropertyDefinition def = node.getApplicablePropertyDefinition(name);
+                    if (def != null && def.isInternationalized()) {
+                        return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
                     }
                 } while (true);
             }
@@ -177,13 +174,10 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
                     final String name = property.getName();
-                    try {
-                        final ExtendedPropertyDefinition def = node.getApplicablePropertyDefinition(name);
-                        if (def.isInternationalized()) {
-                            tempNext = new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
-                            return true;
-                        }
-                    } catch (ConstraintViolationException e) {
+                    final ExtendedPropertyDefinition def = node.getApplicablePropertyDefinition(name);
+                    if (def!=null && def.isInternationalized()) {
+                        tempNext = new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
+                        return true;
                     }
                 } while (true);
             }
@@ -220,6 +214,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
 
     public Object get(Object o) {
         try {
+            if (!node.hasProperty((String) o) ) {
+                return null;
+            }
             Property p = node.getProperty( (String) o);
 
             if (p.isMultiple()) {

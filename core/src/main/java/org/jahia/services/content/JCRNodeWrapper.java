@@ -682,10 +682,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @param propertyName the name of the property to find the corresponding definition
      * @return the <code>ExtendedPropertyDefinition</code> for the given property
-     * @throws ConstraintViolationException
      * @throws RepositoryException
      */
-    ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws ConstraintViolationException, RepositoryException;
+    ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws RepositoryException;
 
     List<ExtendedPropertyDefinition> getReferenceProperties() throws RepositoryException;
 

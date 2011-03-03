@@ -180,11 +180,8 @@ public abstract class Action {
             if (!Render.reservedParameters.contains(key)) {
                 List<String> values = entry.getValue();
                 ExtendedPropertyDefinition propertyDefinition = null;
-                try {
-                    propertyDefinition = newNode.getApplicablePropertyDefinition(key);
-                } catch (ConstraintViolationException cve) {
-                    // can happen if we don't have a property named as the key we are looking for.
-                    propertyDefinition = null;
+                propertyDefinition = newNode.getApplicablePropertyDefinition(key);
+                if (propertyDefinition == null) {
                     continue;
                 }
                 if (propertyDefinition.isMultiple()) {

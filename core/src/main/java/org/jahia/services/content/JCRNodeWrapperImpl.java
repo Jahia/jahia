@@ -98,6 +98,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private static final String REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:referencePropertyNames";
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
 
+    private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
+    private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
+
     protected JCRNodeWrapperImpl(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
         this.objectNode = objectNode;
@@ -971,7 +974,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void addMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         checkLock();
-
+        applicablePropertyDefinition.clear();
         objectNode.addMixin(s);
     }
 
@@ -980,7 +983,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void removeMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         checkLock();
-
+        applicablePropertyDefinition.clear();
         objectNode.removeMixin(s);
     }
 
@@ -1265,8 +1268,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper getProperty(String name) throws javax.jcr.PathNotFoundException, javax.jcr.RepositoryException {
-        try {
-            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        if (epd != null) {
             if ((epd.getRequiredType() == PropertyType.WEAKREFERENCE) ||
                     (epd.getRequiredType() == PropertyType.REFERENCE)) {
                 if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
@@ -1274,8 +1277,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
             }
             return internalGetProperty(name, epd);
-        } catch (ConstraintViolationException e) {
-            throw new PathNotFoundException(e.getMessage(), e);
+        } else {
+            throw new PathNotFoundException(name);
         }
     }
 
@@ -1289,7 +1292,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 try {
                     final Node localizedNode = getI18N(locale);
                     return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
-                            session, provider, getApplicablePropertyDefinition(name),
+                            session, provider, epd,
                             name);
                 } catch (ItemNotFoundException e) {
                     return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
@@ -1380,10 +1383,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         checkLock();
+        hasPropertyCache.remove(name);
 
         name = ensurePrefixedName(name);
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        if (epd == null) {
+            throw new ConstraintViolationException("Couldn't find definition for property " + name);
+        }
 
         if (value != null && PropertyType.UNDEFINED != epd.getRequiredType() && value.getType() != epd.getRequiredType()) {
             // if the type doesn't match the required type, we attempt a conversion.
@@ -1399,7 +1406,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value), session, provider, getApplicablePropertyDefinition(name), name);
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value), session, provider, epd, name);
             }
         }
 
@@ -1415,10 +1422,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         checkLock();
+        hasPropertyCache.remove(name);
 
         final Locale locale = getSession().getLocale();
         name = ensurePrefixedName(name);
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        if (epd == null) {
+            throw new ConstraintViolationException("Couldn't find definition for property " + name);
+        }
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
 
         if (value instanceof ExternalReferenceValue) {
@@ -1429,7 +1440,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value, type), session, provider, getApplicablePropertyDefinition(name), name);
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value, type), session, provider, epd, name);
             }
         }
 
@@ -1445,9 +1456,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         checkLock();
+        hasPropertyCache.remove(name);
         final Locale locale = getSession().getLocale();
         name = ensurePrefixedName(name);
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        if (epd == null) {
+            throw new ConstraintViolationException("Couldn't find definition for property " + name);
+        }
+
         if (values != null) {
             for (int i = 0; i < values.length; i++) {
                 if (values[i] != null && PropertyType.UNDEFINED != epd.getRequiredType() && values[i].getType() != epd.getRequiredType()) {
@@ -1461,7 +1477,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, values), session, provider, getApplicablePropertyDefinition(name), name);
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, values), session, provider, epd, name);
             }
         }
 
@@ -1473,14 +1489,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRPropertyWrapper setProperty(String name, Value[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
+        hasPropertyCache.remove(name);
         name = ensurePrefixedName(name);
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        if (epd == null) {
+            throw new ConstraintViolationException("Couldn't find definition for property " + name);
+        }
 
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
 
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, values, type), session, provider, getApplicablePropertyDefinition(name), name);
+                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, values, type), session, provider, epd, name);
             }
         }
 
@@ -1583,21 +1603,21 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public JCRPropertyWrapper setProperty(String name, Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public JCRPropertyWrapper setProperty(String name, Node value) throws ValueFormatException, VersionException, LockException, RepositoryException {
         Value v = null;
         if (value != null) {
             if (value instanceof JCRNodeWrapper) {
                 value = ((JCRNodeWrapper) value).getRealNode();
             }
             ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+            if (epd != null) {
+                if (value.getClass().getName().equals(getRealNode().getClass().getName())) {
+                    v = getSession().getValueFactory().createValue(value, epd.getRequiredType() == PropertyType.WEAKREFERENCE);
+                } else {
+                    return setExternalReferenceProperty(name, value, epd);
 
-            if (value.getClass().getName().equals(getRealNode().getClass().getName())) {
-                v = getSession().getValueFactory().createValue(value, epd.getRequiredType() == PropertyType.WEAKREFERENCE);
-            } else {
-                return setExternalReferenceProperty(name, value, epd);
-
+                }
             }
-
         }
         return setProperty(name, v);
     }
@@ -1745,7 +1765,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean hasProperty(String propertyName) throws RepositoryException {
-        return internalHasProperty(propertyName);
+        if (hasPropertyCache.containsKey(propertyName)) {
+            return hasPropertyCache.get(propertyName);
+        }
+        boolean result = internalHasProperty(propertyName);
+        hasPropertyCache.put(propertyName, result);
+        return result;
     }
 
     private boolean internalHasProperty(String propertyName) throws RepositoryException {
@@ -2631,9 +2656,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)
-            throws ConstraintViolationException, RepositoryException {
+            throws RepositoryException {
+        ExtendedPropertyDefinition result = null;
+        if (applicablePropertyDefinition.containsKey(propertyName)) {
+            result = applicablePropertyDefinition.get(propertyName);
+            return result;
+        }
+
         if (isNodeType(Constants.JAHIANT_TRANSLATION) && !propertyName.equals("jcr:language")) {
-            return getParent().getApplicablePropertyDefinition(propertyName);
+            result = getParent().getApplicablePropertyDefinition(propertyName);
+            applicablePropertyDefinition.put(propertyName, result);
+            return result;
         }
 
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
@@ -2641,18 +2674,23 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         while (iterator.hasNext()) {
             ExtendedNodeType type = iterator.next();
             final Map<String, ExtendedPropertyDefinition> definitionMap = type.getPropertyDefinitionsAsMap();
+            applicablePropertyDefinition.putAll(definitionMap);
             if (definitionMap.containsKey(propertyName)) {
-                return definitionMap.get(propertyName);
+                result = definitionMap.get(propertyName);
+                return result;
             }
             types.add(type);
         }
         for (ExtendedNodeType type : types) {
             for (ExtendedPropertyDefinition epd : type.getUnstructuredPropertyDefinitions().values()) {
                 // check type .. ?
-                return epd;
+                result = epd;
+                applicablePropertyDefinition.put(propertyName, result);
+                return result;
             }
         }
-        throw new ConstraintViolationException("Cannot find definition for " + propertyName + " on node " + getName() + " (" + getPrimaryNodeTypeName() + ")");
+        applicablePropertyDefinition.put(propertyName, result);
+        return result;
     }
 
     public List<ExtendedPropertyDefinition> getReferenceProperties() throws RepositoryException {
@@ -3109,8 +3147,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             if (foundPropertyName != null) {
                 ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(foundPropertyName);
-                Property nodeProperty = new ExternalReferencePropertyImpl(foundPropertyName, node, session, getIdentifier(), this);
-                matchingProperties.add(new JCRPropertyWrapperImpl(this, nodeProperty, session, provider, epd));
+                if (epd != null)  {
+                    Property nodeProperty = new ExternalReferencePropertyImpl(foundPropertyName, node, session, getIdentifier(), this);
+                    matchingProperties.add(new JCRPropertyWrapperImpl(this, nodeProperty, session, provider, epd));
+                }
             } else {
                 throw new PathNotFoundException("Couldn't find matching external property reference for name " + foundPropertyName);
             }

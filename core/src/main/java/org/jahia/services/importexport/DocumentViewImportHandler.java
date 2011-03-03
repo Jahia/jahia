@@ -363,18 +363,17 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     child.addMixin(Constants.JAHIAMIX_CATEGORIZED);
                 }
                 ExtendedPropertyDefinition propDef;
-                try {
 //                    if (lang != null && attrName.endsWith("_" + lang)) {
 //                        propDef = nodes.peek().getApplicablePropertyDefinition(StringUtils.substringBeforeLast(attrName, "_" + lang));
 //                    } else if (!"jcr:language".equals(attrName) && child.isNodeType("jnt:translation")) {
 //                        propDef = nodes.peek().getApplicablePropertyDefinition(attrName);
 //                    } else {
                     propDef = child.getApplicablePropertyDefinition(attrName);
+                    if (propDef == null) {
+                        logger.error("Couldn't find definition for property " + attrName);
+                        continue;
+                    }
 //                    }
-                } catch (ConstraintViolationException e) {
-                    logger.error(e.getMessage());
-                    continue;
-                }
 
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {

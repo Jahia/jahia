@@ -208,11 +208,10 @@ public class FilesAclImportHandler extends DefaultHandler {
         }
 
         ExtendedPropertyDefinition propertyDefinition = null;
-        try {
-            propertyDefinition = parent.getApplicablePropertyDefinition(propertyName);
-        } catch (ConstraintViolationException e) {
-            // System.out.println("Ignore/not found here : " + propertyName);
+        propertyDefinition = parent.getApplicablePropertyDefinition(propertyName);
+        if (propertyDefinition == null) {
             return false;
+
         }
         if (propertyDefinition.isProtected()) {
             // System.out.println("protected : " + propertyName);

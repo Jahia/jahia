@@ -266,6 +266,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 String[] values = entry.getValue();
                 final ExtendedPropertyDefinition propertyDefinition =
                         ((JCRNodeWrapper) node).getApplicablePropertyDefinition(key);
+                if (propertyDefinition == null) {
+                    continue;
+                }
                 if (propertyDefinition.isMultiple()) {
                     node.setProperty(key, values);
                 } else if (propertyDefinition.getRequiredType() == PropertyType.DATE) {

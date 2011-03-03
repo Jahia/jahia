@@ -320,7 +320,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getFileContent();
     }
 
-    public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws ConstraintViolationException, RepositoryException {
+    public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws RepositoryException {
         return node.getApplicablePropertyDefinition(propertyName);
     }
 

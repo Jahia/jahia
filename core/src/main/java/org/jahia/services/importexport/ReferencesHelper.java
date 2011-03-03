@@ -41,6 +41,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -177,6 +178,9 @@ public class ReferencesHelper {
             ref.setProperty("j:reference", value);
         } else {
             final ExtendedPropertyDefinition propertyDefinition = n.getApplicablePropertyDefinition(pName);
+            if (propertyDefinition == null) {
+                throw new ConstraintViolationException("Couldn't find definition for property "+pName );
+            }
             if (propertyDefinition.isMultiple()) {
                 Value[] newValues;
                 if (n.hasProperty(pName)) {

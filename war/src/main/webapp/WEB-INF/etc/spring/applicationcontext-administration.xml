@@ -75,16 +75,6 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-    <bean id="serverPermissionsAdministrationModule" class="org.jahia.admin.roles.ManageServerRoles" parent="abstractAdministrationModule">
-        <property name="urlKey" value="serverPermissions" />
-        <property name="permissionName" value="adminServerPermissions" />
-        <property name="name" value="serverPermissions" />
-        <property name="icon" value="policeman_usa" />
-        <property name="label" value="label.serverroles" />
-        <property name="urlAction" value="serverPermissions" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
-
     <bean id="passwordPoliciesAdministrationModule" class="org.jahia.admin.pwdpolicy.ManagePasswordPolicies" parent="abstractAdministrationModule">
         <property name="urlKey" value="passwordPolicies" />
         <property name="permissionName" value="adminPasswordPolicy" />

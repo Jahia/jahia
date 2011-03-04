@@ -33,6 +33,7 @@
 package org.jahia.services.content.interceptor;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.FilesServlet;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -343,6 +344,9 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
         if (pathPart.startsWith(dmsContext)) {
             // Remove DOC context part
             workspace = StringUtils.substringAfter(pathPart, dmsContext).substring(0,StringUtils.substringAfter(pathPart, dmsContext).indexOf("/"));
+            if (workspace.equals(ContextPlaceholdersReplacer.WORKSPACE_PLACEHOLDER)) {
+                workspace = Constants.EDIT_WORKSPACE;
+            }
             pathPart = StringUtils.substringAfter(StringUtils.substringAfter(pathPart, dmsContext), "/");
             isCmsContext = false;
         } else if (pathPart.startsWith(cmsContext)) {

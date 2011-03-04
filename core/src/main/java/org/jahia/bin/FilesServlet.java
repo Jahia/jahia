@@ -35,6 +35,8 @@ package org.jahia.bin;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.api.Constants;
+import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
@@ -56,6 +58,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
 
@@ -102,9 +105,9 @@ public class FilesServlet extends HttpServlet {
         String workspace = StringUtils.substringBefore(p,"/");
         p = Text.unescape("/"+StringUtils.substringAfter(p,"/").replaceAll("___",":"));
 
-        if (URLDecoder.decode(workspace, "UTF-8").equals("{workspace}")) {
+        if (URLDecoder.decode(workspace, "UTF-8").equals(ContextPlaceholdersReplacer.WORKSPACE_PLACEHOLDER)) {
             // Hack for CK Editor links
-            workspace = "default";
+            workspace = Constants.EDIT_WORKSPACE;
         }
 
         JCRNodeWrapper n;

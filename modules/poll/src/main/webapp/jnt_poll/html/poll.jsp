@@ -4,11 +4,18 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<template:addResources type="javascript" resources="jquery.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
+<template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="css" resources="poll.css"/>
 
-<script type="text/javascript">
+<template:addResources>
 
+<script type="text/javascript">
+    jQuery.ajaxSettings.traditional = true;
+    $.ajaxSetup({
+        accepts: {
+            script: "application/json"
+        }
+    })
     function setCookie(c_name,value,expiredays)
     {
         var exdate=new Date();
@@ -156,7 +163,7 @@
     }
 
 </script>
-
+</template:addResources>
 <div class=poll>
 
     <h3>
@@ -167,6 +174,7 @@
         <c:if test="${not renderContext.editMode}">
         <div id="formContainer_${currentNode.name}">
             <form id="form_${currentNode.name}" name="form_${currentNode.name}" method="post" >
+                <input type="hidden" name="returnContentType" value="json"/>
                 </c:if>
                 <c:if test="${renderContext.editMode}">
                 <div class="addanswers">

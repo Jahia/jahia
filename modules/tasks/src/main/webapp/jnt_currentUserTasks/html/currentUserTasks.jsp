@@ -42,18 +42,6 @@
 <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
     <jcr:node var="user" path="/users/${renderContext.user.username}"/>
 </c:if>
-<c:if test="${currentResource.workspace eq 'live'}">
-    <div id="tasks${user.identifier}"></div>
-    <c:forEach items="${param}" var="p" varStatus="status">
-        <c:if test="${status.first}"><c:set var="sep" value="?"/></c:if>
-        <c:if test="${not status.first}"><c:set var="sep" value="&"/></c:if>
-        <c:set var="ps" value="${ps}${sep}${p.key}=${p.value}"/>
-    </c:forEach>
-    <script type="text/javascript">
-        $('#tasks${user.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax${ps}');
-    </script>
-</c:if>
-<c:if test="${currentResource.workspace ne 'live'}">
 
 <form name="myform" method="post">
     <input type="hidden" name="nodeType" value="jnt:task">
@@ -202,14 +190,14 @@
                 <td headers="Title">
                     <c:set var="taskTitle"
                            value="${not empty task.displayName ? task.displayName : task.name} - ${task.variables['jcr:title'][0].value}"/>
-                    <c:if test="${jcr:isNodeType(node,'jnt:page')}">
-                        <c:set var="path" value="${node.path}"/>
+                    <c:set var="path" value="${jcr:findDisplayableNode(node, renderContext).path}"/>
+                    <c:if test="${not empty path}">
+                        <a target="_blank"
+                           href="${url.context}/cms/render/${task.variables.workspace}/${task.variables.locale}${path}.html">${fn:escapeXml(taskTitle)}</a>
                     </c:if>
-                    <c:if test="${!jcr:isNodeType(node,'jnt:page')}">
-                        <c:set var="path" value="${jcr:getParentOfType(node,'jnt:page').path}"/>
+                    <c:if test="${empty path}">
+                        ${fn:escapeXml(taskTitle)}
                     </c:if>
-                    <a target="_blank"
-                       href="${url.context}/cms/render/${task.variables.workspace}/${task.variables.locale}${path}.html">${fn:escapeXml(taskTitle)}</a>
                 </td>
                 <td colspan="3">
                     <div class="listEditToolbar">
@@ -352,4 +340,3 @@
 </div>
 </div>
 </div>
-</c:if>

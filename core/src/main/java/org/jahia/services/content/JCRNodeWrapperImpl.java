@@ -3119,6 +3119,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
 
             return (site = (JCRSiteNode) (getSession().getNode(JCRContentUtils.getSystemSitePath())));
+        } catch (PathNotFoundException e) {
         } catch (ItemNotFoundException e) {
         }
         return null;

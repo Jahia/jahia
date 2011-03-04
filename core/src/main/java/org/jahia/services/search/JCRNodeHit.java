@@ -38,22 +38,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
+import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.Template;
 
 /**
  * Search result item, represented by the JCR node. Used as a view object in JSP
@@ -201,26 +198,8 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     private String resolveURL() {
-        Template template = null;
-        JCRNodeWrapper currentNode = resource;
-        try {
-            while (template == null && currentNode != null) {
-                try {
-                    template = RenderService.getInstance().resolveTemplate(
-                            new Resource(currentNode, "html", null, Resource.CONFIGURATION_PAGE), context);
-                } catch (Exception e) {
-                    // template cannot be resolved, so try on the parent
-                }
-                if (template == null) {
-                    currentNode = currentNode.getParent();
-                }
-            }
-        } catch (Exception e) {
-            currentNode = resource;
-        }
-        if (currentNode == null) {
-            currentNode = resource;
-        }
+        JCRNodeWrapper currentNode = JCRContentUtils.findDisplayableNode(resource, context);
         return context.getURLGenerator().buildURL(currentNode, null, "html");
     }
+
 }

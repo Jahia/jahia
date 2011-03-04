@@ -41,6 +41,7 @@
                 <base j:view="apps" jcr:primaryType="jnt:template">
                     <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                         <user-connections j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                          j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default"
                                           jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
                                 <row column="2col115" jcr:primaryType="jnt:row"/>
@@ -54,6 +55,7 @@
                             </row-col1>
                         </user-connections>
                         <user-messages j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                       j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default"
                                        jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
                                 <currentUserMessages jcr:primaryType="jnt:currentUserMessages"/>

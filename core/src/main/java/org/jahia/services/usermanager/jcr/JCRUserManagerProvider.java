@@ -69,7 +69,7 @@ import java.util.*;
  *        Created : 7 juil. 2009
  */
 public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener<ApplicationEvent> {
-	private static final String ROOT_PWD_RESET_FILE = "/WEB-INF/etc/config/root.pwd";
+    private static final String ROOT_PWD_RESET_FILE = "/WEB-INF/etc/config/root.pwd";
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
     private static JCRUserManagerProvider mUserManagerService;
@@ -110,27 +110,27 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * This is the method that creates a new user in the system, with all the
      * specified attributes.
      *
-     * @param name the name for the newly created user
-     * @param password User password
+     * @param name       the name for the newly created user
+     * @param password   User password
      * @param properties user properties
      */
     public JCRUser createUser(final String name, final String password, final Properties properties) {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
-                    JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode( "/users");
+                    JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode("/users");
 
                     jcrSessionWrapper.checkout(parentNodeWrapper);
                     JCRNodeWrapper userNode = parentNodeWrapper.addNode(JCRContentUtils.escapeJCRLocalName(name), Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
-						String skeletons = parentNodeWrapper.getProperty("j:usersFolderSkeleton")
-						        .getString();
-                    	try {
-                    		JCRContentUtils.importSkeletons(skeletons, "/users/" + JCRContentUtils.escapeJCRLocalName(name), jcrSessionWrapper);
-                    	} catch (Exception importEx) {
-                    		logger.error("Unable to import data using user skeletons " + skeletons, importEx);
+                        String skeletons = parentNodeWrapper.getProperty("j:usersFolderSkeleton")
+                                .getString();
+                        try {
+                            JCRContentUtils.importSkeletons(skeletons, "/users/" + JCRContentUtils.escapeJCRLocalName(name), jcrSessionWrapper);
+                        } catch (Exception importEx) {
+                            logger.error("Unable to import data using user skeletons " + skeletons, importEx);
                             throw new RepositoryException("Could not create user due to some import issues", importEx);
-                    	}
+                        }
                         userNode.grantRoles("u:" + name, Collections.singleton("owner"));
                     } else {
                         userNode.grantRoles("u:" + name, Collections.singleton("owner"));
@@ -154,8 +154,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     }
                     jcrSessionWrapper.save();
                     // Use rules instead to publish the user
-                   /* publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                            true);*/
+                    /* publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                    true);*/
                     return new JCRUser(userNode.getIdentifier(), jcrTemplate);
                 }
             });
@@ -182,7 +182,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Node node = jcrUser.getNode(session);
                         session.checkout(node.getParent());
-                        session.checkout(node);                        
+                        session.checkout(node);
                         node.remove();
                         session.save();
                         return true;
@@ -295,7 +295,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      */
     public JCRUser lookupUserByKey(String userKey) {
         if (!userKey.startsWith("{")) {
-            logger.warn("Expected userKey with provider prefix {jcr}, defaulting to looking up by name instead for parameter=["+userKey+"]... ");
+            logger.warn("Expected userKey with provider prefix {jcr}, defaulting to looking up by name instead for parameter=[" + userKey + "]... ");
             return lookupUser(userKey);
         }
         return lookupUser(StringUtils.substringAfter(userKey, "}"));
@@ -308,7 +308,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * @return Return a reference on a new created jahiaUser object.
      */
     public JCRUser lookupUser(final String name) {
-        if(StringUtils.isBlank(name)) {
+        if (StringUtils.isBlank(name)) {
             logger.error("Should not be looking for empty name user");
             return null;
         }
@@ -338,13 +338,13 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
 
     public JCRUser lookupExternalUser(final String name) {
         try {
-        	JCRUser user = cache.get(name); 
+            JCRUser user = cache.get(name);
             if (user != null) {
                 return user;
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node userNode = session.getNode( "/users/" + name.trim());
+                    Node userNode = session.getNode("/users/" + name.trim());
                     if (userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(userNode.getIdentifier(), jcrTemplate, true);
                         cache.put(name, user);
@@ -387,35 +387,36 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                     "*"))) {
                                 Iterator<Map.Entry<Object, Object>> objectIterator = searchCriterias.entrySet().iterator();
                                 if (objectIterator.hasNext()) {
-                                    query.append(" AND ");
-                                }
-                                while (objectIterator.hasNext()) {
-                                    Map.Entry<Object, Object> entry = objectIterator.next();
-                                    String propertyKey = (String) entry.getKey();
-                                    if ("username".equals(propertyKey)) {
-                                        propertyKey = "j:nodename";
-                                    }
-                                    String propertyValue = (String) entry.getValue();
-                                    if ("*".equals(propertyValue)) {
-                                        propertyValue = "%";
-                                    } else {
-                                        if (propertyValue.contains("*")) {
-                                            propertyValue = propertyValue.replaceAll("\\*", "%");
+                                    query.append(" AND (");
+                                    while (objectIterator.hasNext()) {
+                                        Map.Entry<Object, Object> entry = objectIterator.next();
+                                        String propertyKey = (String) entry.getKey();
+                                        if ("username".equals(propertyKey)) {
+                                            propertyKey = "j:nodename";
+                                        }
+                                        String propertyValue = (String) entry.getValue();
+                                        if ("*".equals(propertyValue)) {
+                                            propertyValue = "%";
                                         } else {
-                                            propertyValue = propertyValue + "%";
+                                            if (propertyValue.contains("*")) {
+                                                propertyValue = propertyValue.replaceAll("\\*", "%");
+                                            } else {
+                                                propertyValue = propertyValue + "%";
+                                            }
+                                        }
+                                        if ("*".equals(propertyKey)) {
+                                            query.append("(CONTAINS(u.*,'" + propertyValue.replaceAll("%", "")
+                                                    + "') OR LOWER(u.[j:nodename]) LIKE '")
+                                                    .append(propertyValue.toLowerCase()).append("') ");
+                                        } else {
+                                            query.append("LOWER(u.[" + propertyKey + "])").append(
+                                                    " LIKE '").append(propertyValue.toLowerCase()).append("'");
+                                        }
+                                        if (objectIterator.hasNext()) {
+                                            query.append(" OR ");
                                         }
                                     }
-                                    if ("*".equals(propertyKey)) {
-                                        query.append("(CONTAINS(u.*,'" + propertyValue.replaceAll("%", "")
-                                                + "') OR LOWER(u.[j:nodename]) LIKE '")
-                                                .append(propertyValue.toLowerCase()).append("') ");
-                                    } else {
-                                        query.append("LOWER(u.[" + propertyKey + "])").append(
-                                                " LIKE '").append(propertyValue.toLowerCase()).append("'");
-                                    }
-                                    if (objectIterator.hasNext()) {
-                                        query.append(" OR ");
-                                    }
+                                    query.append(")");
                                 }
                             }
                         }
@@ -424,7 +425,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                             logger.debug(query.toString());
                         }
                         Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(),
-                                                                                       Query.JCR_SQL2);
+                                Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         NodeIterator ni = qr.getNodes();
                         while (ni.hasNext()) {
@@ -497,50 +498,50 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         }
     }
 
-	private void checkRootUserPwd() {
-		try {
-			if (servletContext.getResource(ROOT_PWD_RESET_FILE) != null) {
-				InputStream is = servletContext.getResourceAsStream(ROOT_PWD_RESET_FILE);
-				try {
-					String newPwd = IOUtils.toString(is);
-					logger.info("Resetting root user password");
-					lookupRootUser().setPassword(newPwd);
-					logger.info("New root user password set.");
-				} finally {
-					IOUtils.closeQuietly(is);
-					try {
-						new File(servletContext.getRealPath(ROOT_PWD_RESET_FILE)).delete();
-					} catch (Exception e) {
-						logger.warn("Unable to delete " + ROOT_PWD_RESET_FILE
-						        + " file after resetting root password", e);
-					}
-				}
-			}
-		} catch (Exception e) {
-			logger.warn(e.getMessage(), e);
-		}
-	}
-
-	public void stop() throws JahiaException {
-        // do nothing
-    }
-
-	public void setServletContext(ServletContext servletContext) {
-		this.servletContext = servletContext;
-    }
-
-	public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof ContextInitializedEvent) {
-        	checkRootUserPwd();
+    private void checkRootUserPwd() {
+        try {
+            if (servletContext.getResource(ROOT_PWD_RESET_FILE) != null) {
+                InputStream is = servletContext.getResourceAsStream(ROOT_PWD_RESET_FILE);
+                try {
+                    String newPwd = IOUtils.toString(is);
+                    logger.info("Resetting root user password");
+                    lookupRootUser().setPassword(newPwd);
+                    logger.info("New root user password set.");
+                } finally {
+                    IOUtils.closeQuietly(is);
+                    try {
+                        new File(servletContext.getRealPath(ROOT_PWD_RESET_FILE)).delete();
+                    } catch (Exception e) {
+                        logger.warn("Unable to delete " + ROOT_PWD_RESET_FILE
+                                + " file after resetting root password", e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.warn(e.getMessage(), e);
         }
     }
 
-	/**
-	 * Returns the system root user (not cached).
-	 * 
-	 * @return the system root user (not cached)
-	 */
-	public JCRUser lookupRootUser() {
-		return new JCRUser(JCRUser.ROOT_USER_UUID, jcrTemplate);
-	}
+    public void stop() throws JahiaException {
+        // do nothing
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof ContextInitializedEvent) {
+            checkRootUserPwd();
+        }
+    }
+
+    /**
+     * Returns the system root user (not cached).
+     *
+     * @return the system root user (not cached)
+     */
+    public JCRUser lookupRootUser() {
+        return new JCRUser(JCRUser.ROOT_USER_UUID, jcrTemplate);
+    }
 }

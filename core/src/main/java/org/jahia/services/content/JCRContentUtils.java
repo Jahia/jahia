@@ -44,6 +44,9 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRPortletNode;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Template;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
@@ -359,6 +362,30 @@ public final class JCRContentUtils {
             }
         }
         return name;
+    }
+
+    public static JCRNodeWrapper findDisplayableNode(JCRNodeWrapper node, RenderContext context) {
+        Template template = null;
+        JCRNodeWrapper currentNode = node;
+        try {
+            while (template == null && currentNode != null) {
+                try {
+                    template = RenderService.getInstance().resolveTemplate(
+                            new org.jahia.services.render.Resource(currentNode, "html", null, org.jahia.services.render.Resource.CONFIGURATION_PAGE), context);
+                } catch (Exception e) {
+                    // template cannot be resolved, so try on the parent
+                }
+                if (template == null) {
+                    currentNode = currentNode.getParent();
+                }
+            }
+        } catch (Exception e) {
+            currentNode = node;
+        }
+        if (currentNode == null) {
+            currentNode = node;
+        }
+        return currentNode;
     }
 
     /**

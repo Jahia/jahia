@@ -565,6 +565,18 @@
     </function>
     <function>
         <description>
+        	Returns the first parent of the current node that can be displayed in full page.
+        	If no matching node is found, null is returned.
+		</description>
+        <name>findDisplayableNode</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>org.jahia.services.content.JCRNodeWrapper findDisplayableNode(org.jahia.services.content.JCRNodeWrapper,org.jahia.services.render.RenderContext)</function-signature>
+        <example>
+            ${jcr:findDisplayableNode(currentNode,renderContext)}
+        </example>
+    </function>
+    <function>
+        <description>
         	Returns the parents of the current node that have the specified node type.
         	If no matching node is found, an empty list is returned.
 		</description>

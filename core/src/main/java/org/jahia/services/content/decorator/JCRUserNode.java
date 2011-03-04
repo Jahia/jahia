@@ -136,6 +136,29 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
     }
 
+    @Override
+    public JCRPropertyWrapper setProperty(String s, String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        if (JCRUser.J_EXTERNAL.equals(s) || Constants.CHECKIN_DATE.equals(s)) {
+            return super.setProperty(s, value);
+        }
+        if (user == null) {
+            user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
+        }
+        if (user == null) {
+            return super.setProperty(s, value);
+        }
+        if (user instanceof JCRUser) {
+            return super.setProperty(s,value);
+        } else {
+            String property = user.getProperty(s);
+            if (property != null) {
+                throw new AccessDeniedException("Cannot update external property");
+            } else {
+                return super.setProperty(s,value);
+            }
+        }
+    }
+
     public class UserPropertyIterator implements PropertyIterator {
         private Properties properties;
         private Set<String> stringPropertyNames;

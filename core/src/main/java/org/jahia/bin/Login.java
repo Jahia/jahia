@@ -34,6 +34,7 @@ package org.jahia.bin;
 
 import java.util.Iterator;
 
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -95,6 +96,10 @@ public class Login extends HttpServlet implements Controller {
 
         String result = (String) request.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
         if (LoginEngineAuthValveImpl.OK.equals(result)) {
+
+            // Create one session at login to initialize external user
+            JCRSessionFactory.getInstance().getCurrentUserSession();
+
             if (redirectActive) {
                 response.sendRedirect(response.encodeRedirectURL(redirect));
             } else {

@@ -75,6 +75,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public static final String SITE_CACHE_BYNAME = "JahiaSiteByNameCache";
     public static final String SITE_CACHE_BYKEY = "JahiaSiteByKeyCache";
     public static final String SYSTEM_SITE_KEY = "systemsite";
+    public static final String SITES_JCR_PATH = "/sites";
     /**
      * The cache in memory
      */
@@ -153,7 +154,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
     private List<JahiaSite> getSitesList(JCRSessionWrapper session) throws RepositoryException {
         final List<JahiaSite> list = new ArrayList<JahiaSite>();
-        NodeIterator ni = session.getNode("/sites").getNodes();
+        NodeIterator ni = session.getNode(SITES_JCR_PATH).getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
             if (nodeWrapper.isNodeType("jnt:virtualsite")) {
@@ -456,7 +457,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 //                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
 
                                 JCRNodeWrapper defaultSite = session.getNode("/templateSets/" + templatePackage);
-                                defaultSite.copy(session.getNode("/sites"), siteKey1, false);
+                                defaultSite.copy(session.getNode(SITES_JCR_PATH), siteKey1, false);
 
                                 if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
                                     String skeletons = sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString();
@@ -627,7 +628,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         try {
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRNodeWrapper sites = session.getNode("/sites");
+                    JCRNodeWrapper sites = session.getNode(SITES_JCR_PATH);
                     if (!sites.isCheckedOut()) {
                         session.checkout(sites);
                     }
@@ -676,7 +677,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     }
 
     private void updateSite(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper sites = session.getNode("/sites");
+        JCRNodeWrapper sites = session.getNode(SITES_JCR_PATH);
         if (!sites.isCheckedOut()) {
             session.checkout(sites);
         }
@@ -752,7 +753,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     }
 
     private JahiaSite getDefaultSite(JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper node = session.getNode("/sites");
+        JCRNodeWrapper node = session.getNode(SITES_JCR_PATH);
         if (node.hasProperty("j:defaultSite")) {
             return getSite((JCRNodeWrapper) node.getProperty("j:defaultSite").getNode());
         } else {
@@ -775,7 +776,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     }
 
     private void setDefaultSite(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper node = session.getNode("/sites");
+        JCRNodeWrapper node = session.getNode(SITES_JCR_PATH);
         if (!node.isCheckedOut()) {
             session.checkout(node);
         }
@@ -802,7 +803,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 languages.add(selectedLocale.toString());
                 final List<String> uuids = new ArrayList<String>();
                 try {
-                    JCRNodeWrapper node = (JCRNodeWrapper) sessionFactory.getCurrentUserSession().getNode("/sites").getNodes().nextNode();
+                    JCRNodeWrapper node = (JCRNodeWrapper) sessionFactory.getCurrentUserSession().getNode(SITES_JCR_PATH).getNodes().nextNode();
                     node.checkout();
 //                     node.changeRoles("g:users","re---");
                     uuids.add(node.getIdentifier());

@@ -162,6 +162,8 @@ public class SettingsBean implements ServletContextAware {
 
     private ServletContext servletContext;
 
+    private Resource licenseFile;
+
     /**
      * Default constructor.
      *
@@ -186,11 +188,11 @@ public class SettingsBean implements ServletContextAware {
 
     public SettingsBean(PathResolver pathResolver,
     					Properties props,
-    					Resource licenseFile) throws IOException {
+    					Resource[] licenseFiles) throws IOException {
         this.pathResolver = pathResolver;
         this.properties = new Properties();
         properties.putAll(props);
-        this.licenseFilename = licenseFile.getFile().toString();
+        this.licenseFile = licenseFiles.length > 0 ? licenseFiles[0] : null;
         instance = this;
     }
 
@@ -508,13 +510,8 @@ public class SettingsBean implements ServletContextAware {
     } // end getPropertiesFile
 
 
-    //-------------------------------------------------------------------------
     public String getLicenseFileName () {
         return licenseFilename;
-    }
-
-    public void setLicenseFilename(String licenseFilename) {
-        this.licenseFilename = licenseFilename;
     }
 
     /**
@@ -848,5 +845,9 @@ public class SettingsBean implements ServletContextAware {
      */
     public String getTemplatesContext() {
         return "/modules/";
+    }
+
+    public Resource getLicenseFile() {
+        return licenseFile;
     }
 }

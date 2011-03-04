@@ -23,10 +23,10 @@
 
 <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
 <fmt:formatDate value="${created.time}" type="date" pattern="MMM" var="userCreatedMonth"/>
-<c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+<c:if test="${jcr:isNodeType(currentNode, 'jnt:blogPost')}">
     <c:set var="blogHome" value="${url.base}${currentResource.node.parent.path}.html"/>
 </c:if>
-<c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+<c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogPost')}">
     <c:set var="blogHome" value="${url.current}"/>
 </c:if>
 <c:if test="${jcr:hasPermission(currentNode,'jcr:removeNode')}">

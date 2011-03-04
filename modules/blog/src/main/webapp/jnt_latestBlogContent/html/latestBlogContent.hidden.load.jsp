@@ -16,7 +16,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="blog.css"/>
 <query:definition var="result"
-             statement="select * from [jnt:blogContent] as blogContent  where isdescendantnode(blogContent, ['${renderContext.mainResource.node.path}']) order by blogContent.[jcr:lastModified] desc" limit="20"/>
+             statement="select * from [jnt:blogPost] as blogPost  where isdescendantnode(blogPost, ['${renderContext.mainResource.node.path}']) order by blogPost.[jcr:lastModified] desc" limit="20"/>
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${result}" />
 <template:addCacheDependency flushOnPathMatchingRegexp="${renderContext.mainResource.node.path}/[^/]*/[^/]*"/>

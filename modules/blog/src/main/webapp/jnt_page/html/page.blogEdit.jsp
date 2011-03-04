@@ -15,7 +15,7 @@
 <div class="grid_10  alpha omega">
 <form method="post" action="${currentNode.name}/" name="blogPost">
     <input type="hidden" name="autoCheckin" value="true"/>
-    <input type="hidden" name="nodeType" value="jnt:blogContent"/>
+    <input type="hidden" name="nodeType" value="jnt:blogPost"/>
     <input type="hidden" name="normalizeNodeName" value="true"/>
     <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
     <fmt:formatDate value="${created.time}" type="date" pattern="mm" var="userCreatedMonth"/>

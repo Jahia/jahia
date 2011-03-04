@@ -40,7 +40,7 @@
                         </pagecontent>
                         <row-col1 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                             <displayMetadata categories="false" creationdate="false" creator="false" description="true" j:bindedComponent="/templateSets/blog/templates/base/blog" j:view="raw" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:displayMetadata" keywords="false" lastcontributor="false" lastmodification="false" />
-                            <blog-content firstDirection="desc" firstField="jcr:created" j:allowedTypes="jnt:blogContent" j:requiredMode="live" j:subNodesView="short" jcr:mixinTypes="jmix:orderedList jmix:requiredPermissions" jcr:primaryType="jnt:area" secondDirection="asc" thirdDirection="asc" />
+                            <blog-posts firstDirection="desc" firstField="jcr:created" j:allowedTypes="jnt:blogPost" j:requiredMode="live" j:subNodesView="short" jcr:mixinTypes="jmix:orderedList jmix:requiredPermissions" jcr:primaryType="jnt:area" secondDirection="asc" thirdDirection="asc" />
                             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Blog List" />
                         </row-col1>
                         <row-col2 jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList">
@@ -52,8 +52,8 @@
                             <contentList j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                                 <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay" />
                             </contentList>
-                            <calendar endDateProperty="jcr:created" j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content" jcr:primaryType="jnt:calendar" startDateProperty="jcr:created" />
-                            <facets j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-content" j:expiration="900" j:perUser="false" j:view="javascripttagcloud" jcr:mixinTypes="jmix:cache jmix:renderable" jcr:primaryType="jnt:facets">
+                            <calendar endDateProperty="jcr:created" j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-posts" jcr:primaryType="jnt:calendar" startDateProperty="jcr:created" />
+                            <facets j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-posts" j:expiration="900" j:perUser="false" j:view="javascripttagcloud" jcr:mixinTypes="jmix:cache jmix:renderable" jcr:primaryType="jnt:facets">
                                 <fieldFacet facet="tags" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" limit="100" mincount="1" missing="false" offset="0" sort="true">
                                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" label="Tags" />
                                 </fieldFacet>
@@ -67,7 +67,7 @@
                             <illustration j:allowedTypes="jnt:imageReference" j:level="1" jcr:primaryType="jnt:levelAbsoluteArea" />
                         </illustration>
                     </blog>
-                    <blog-edit j:applyOn="jnt:blogContent" j:priority="10" j:requiredPermissions="/permissions/actions/blog/editBlogEntry" jcr:primaryType="jnt:contentTemplate">
+                    <blog-edit j:applyOn="jnt:blogPost" j:priority="10" j:requiredPermissions="/permissions/actions/blog/editBlogEntry" jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row" />
                         </pagecontent>
@@ -83,7 +83,7 @@
                             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Resources" />
                         </row-col2>
                     </blog-edit>
-                    <blog-content j:applyOn="jnt:blogContent" j:defaultTemplate="true" j:priority="10" jcr:primaryType="jnt:contentTemplate">
+                    <blog-post j:applyOn="jnt:blogPost" j:defaultTemplate="true" j:priority="10" jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row" />
                         </pagecontent>
@@ -91,8 +91,8 @@
                             <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
                             <document-history j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Comments" />
-                                <commentsList j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay" jcr:primaryType="jnt:commentsList" />
-                                <addComment j:bindedComponent="/templateSets/blog/templates/base/blog-content/row-col1/mainResourceDisplay" j:requireLoggedUser="false" j:requiredMode="live" j:requiredPermissions="/permissions/actions/comments/addComment" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:addComment" />
+                                <commentsList j:bindedComponent="/templateSets/blog/templates/base/blog-post/row-col1/mainResourceDisplay" jcr:primaryType="jnt:commentsList" />
+                                <addComment j:bindedComponent="/templateSets/blog/templates/base/blog-post/row-col1/mainResourceDisplay" j:requireLoggedUser="false" j:requiredMode="live" j:requiredPermissions="/permissions/actions/comments/addComment" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:addComment" />
                             </document-history>
                             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Blog content" />
                         </row-col1>
@@ -102,7 +102,7 @@
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Back to parent page" />
                             </back-to-parent-page>
                         </row-col2>
-                    </blog-content>
+                    </blog-post>
                     <blog-new j:hiddenTemplate="true" jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="1col16" jcr:primaryType="jnt:row" />

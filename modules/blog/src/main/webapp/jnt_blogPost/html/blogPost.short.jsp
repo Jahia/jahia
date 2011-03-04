@@ -21,10 +21,10 @@
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <template:addResources type="css" resources="blog.css"/>
-<c:if test="${jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+<c:if test="${jcr:isNodeType(currentNode, 'jnt:blogPost')}">
     <c:set var="blogHome" value="${url.base}${currentResource.node.parent.path}.html"/>
 </c:if>
-<c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
+<c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogPost')}">
     <c:set var="blogHome" value="${url.current}"/>
 </c:if>
 <div class="post">

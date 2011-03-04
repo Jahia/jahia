@@ -27,14 +27,14 @@ public class AddBlogEntryAction extends Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
-        if (!node.hasNode("blog-content")) {
+        if (!node.hasNode("blog-posts")) {
             node.checkout();
-            node = node.addNode("blog-content", "jnt:contentList");
+            node = node.addNode("blog-posts", "jnt:blogPosts");
         } else {
-            node = node.getNode("blog-content");
+            node = node.getNode("blog-posts");
         }
 
-        JCRNodeWrapper newNode = createNode(req, parameters, node, "jnt:blogContent","");
+        JCRNodeWrapper newNode = createNode(req, parameters, node, "jnt:blogPost","");
         jcrSessionWrapper.save();
         return new ActionResult(HttpServletResponse.SC_OK, newNode.getPath(), Render.serializeNodeToJSON(newNode));
     }

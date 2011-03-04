@@ -2,7 +2,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="jahiaAdministrationLogin" value="true" />
 <%@include file="/admin/include/header-simple.inc" %>
-<%@page import="java.net.URLEncoder" %>
 <%
 pageContext.setAttribute("formAction", JahiaAdministration.getServletPath());
 pageContext.setAttribute("displayMsg", request.getAttribute(JahiaAdministration.CLASS_NAME+"jahiaDisplayMessage"));

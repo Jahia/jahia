@@ -13,7 +13,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:linker property="j:bindedComponent"/>
 <template:addResources type="css" resources="forum.css"/>
 <uiComponents:ckeditor selector="jahia-ckeditor"/>
 

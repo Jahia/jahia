@@ -24,4 +24,3 @@
         </a>
     </h3>
 
-<template:linker property="j:bindedComponent" />

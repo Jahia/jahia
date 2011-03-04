@@ -30,7 +30,7 @@
  - secondField (string, choicelist[sortableFieldnames]) indexed=no
  - thirdField (string, choicelist[sortableFieldnames]) indexed=no
 
-[jnt:pager] > jnt:content, jmix:layoutComponentContent, jmix:bindedComponent
+[jnt:pager] > jnt:content, jmix:siteComponent, jmix:bindedComponent
  - pageSize (long) = 10 autocreated
  - displayPager (boolean) = true autocreated
 

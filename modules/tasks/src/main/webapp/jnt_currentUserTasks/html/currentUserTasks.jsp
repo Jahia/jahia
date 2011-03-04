@@ -31,11 +31,6 @@
 <template:addResources type="css" resources="timepicker.css"/>
 <c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
-<c:if test="${renderContext.editMode}">
-    <fmt:message key="${fn:replace(currentNode.primaryNodeTypeName,':','_')}"/>
-    <template:linker property="j:bindedComponent"/>
-</c:if>
-
 <%--<c:if test="${not jcr:isNodeType(user, 'jnt:user')}">--%>
 <%--<jcr:node var="user" path="/users/${user.properties['jcr:createdBy'].string}"/>--%>
 <%--</c:if>--%>

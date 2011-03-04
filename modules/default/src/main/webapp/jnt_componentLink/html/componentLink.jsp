@@ -8,9 +8,6 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${renderContext.editMode}">
-    <template:linker property="j:bindedComponent"/>
-</c:if>
 
 <div class="${currentNode.properties['divClass'].string}"><!--start preferences-->
     <a title="${fn:escapeXml(currentNode.displayableName)}" class="${currentNode.properties['aClass']}" href="${url.base}${bindedComponent.path}.${currentNode.properties['targetTemplate'].string}.html">${fn:escapeXml(currentNode.displayableName)}</a>

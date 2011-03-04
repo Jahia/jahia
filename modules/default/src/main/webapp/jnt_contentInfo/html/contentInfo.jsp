@@ -34,4 +34,3 @@
         </dl>
 </div>
 
-<template:linker property="j:bindedComponent" />

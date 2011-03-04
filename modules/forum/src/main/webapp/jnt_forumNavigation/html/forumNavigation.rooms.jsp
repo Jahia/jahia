@@ -7,7 +7,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 
-<template:linker property="j:bindedComponent"/>
 <template:addResources type="css" resources="forum.css"/>
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty linked}">

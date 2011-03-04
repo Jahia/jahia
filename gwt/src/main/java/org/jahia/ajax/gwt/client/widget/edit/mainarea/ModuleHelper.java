@@ -115,6 +115,8 @@ public class ModuleHelper {
                     module = new SimpleModule(id, path, divElement, m, false);
                 } else if (type.equals("existingNodeWithHeader")) {
                     module = new SimpleModule(id, path, divElement, m, true);
+                } else if (type.equals("bindedComponent")) {
+                    module = new BindedModule(id, path, divElement, m);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, divElement, m);
                 } else if (type.equals("linker")) {

@@ -60,4 +60,4 @@
 </script>
 </template:addResources>
 <div class="calendar" id="calendar${currentNode.identifier}"></div>
-<template:linker property="j:bindedComponent" />
+

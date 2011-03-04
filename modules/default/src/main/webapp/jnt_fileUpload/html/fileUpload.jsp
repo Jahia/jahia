@@ -62,4 +62,3 @@
         });
     });
 </script>
-<template:linker property="j:bindedComponent" />

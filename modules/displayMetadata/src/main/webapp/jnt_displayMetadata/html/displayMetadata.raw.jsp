@@ -58,4 +58,3 @@
         </c:otherwise>
     </c:choose>
 </c:if>
-<template:linker property="j:bindedComponent"/>

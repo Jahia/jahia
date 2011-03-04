@@ -56,7 +56,7 @@
     </ui:loginArea>
 </c:if>
 <c:if test="${renderContext.loggedIn &&  !(currentAliasUser.username eq 'guest')}">
-    <jcr:node var="user" uuid="${renderContext.user.identifier}"/>
+    <jcr:node var="user" path="/users/${renderContext.user.username}"/>
     <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
     <c:set var="publicPropertiesAsString" value=""/>
 

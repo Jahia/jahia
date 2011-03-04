@@ -469,10 +469,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected String getModuleType(RenderContext renderContext) throws RepositoryException {
         String type = "existingNode";
 
-        if (renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE) && !node.isNodeType("jmix:layoutComponentContent")) {
-            type = "existingNodeWithHeader";
-        } else if (node.isNodeType("jmix:listContent")) {
+        if (node.isNodeType("jmix:listContent")) {
             type = "list";
+        } else if (node.isNodeType("jmix:bindedComponent")) {
+            type = "bindedComponent";
+        } else if (renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE) && !node.isNodeType("jmix:layoutComponentContent")) {
+            type = "existingNodeWithHeader";
         }
         return type;
     }

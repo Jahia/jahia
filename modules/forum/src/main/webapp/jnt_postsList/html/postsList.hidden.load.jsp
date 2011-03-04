@@ -21,7 +21,6 @@
 <jcr:nodeProperty node="${currentNode}" name="limit" var="limit"/>
 <jcr:nodeProperty node="${currentNode}" name="reverseOrder" var="reverseOrder"/>
 
-<template:linker property="j:bindedComponent"/>
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <c:if test="${not empty linked}">

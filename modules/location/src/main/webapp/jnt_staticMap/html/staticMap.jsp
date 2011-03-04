@@ -53,4 +53,3 @@
         </p>
     </div>
 </c:if>
-<template:linker property="j:bindedComponent" />

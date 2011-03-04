@@ -18,7 +18,6 @@
 <template:addResources type="css" resources="forum.css"/>
 <template:addResources type="javascript" resources="jquery.js,jquery.cuteTime.js,jquery.jeditable.mini.js"/>
 
-<template:linker property="j:bindedComponent"/>
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <c:if test="${not empty linked}">

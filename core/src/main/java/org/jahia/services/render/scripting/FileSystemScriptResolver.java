@@ -72,6 +72,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private List<String> scriptExtensionsOrdering;
 
     private static Map<String, Boolean> resourcesCache = new HashMap<String, Boolean>();
+    private static Map<ExtendedNodeType, SortedSet<View>> viewSetCache = new HashMap<ExtendedNodeType, SortedSet<View>>();
 
     public List<String> getScriptExtensionsOrdering() {
         return scriptExtensionsOrdering;
@@ -194,7 +195,13 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     public boolean hasView(ExtendedNodeType nt, String key) {
-        SortedSet<View> t = getViewsSet(nt);
+        SortedSet<View> t = null;
+        if (viewSetCache.containsKey(nt)) {
+            t = viewSetCache.get(nt);
+        } else {
+            t = getViewsSet(nt);
+            viewSetCache.put(nt, t);
+        }
         for (View view : t) {
             if (view.getKey().equals(key)) {
                 return true;
@@ -293,6 +300,7 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
 	public void onApplicationEvent(ApplicationEvent event) {
 	    if (event instanceof TemplatePackageRedeployedEvent) {
 	        resourcesCache.clear();
+            viewSetCache.clear();
 	        FileSystemView.clearPropertiesCache();
 	    }
     }

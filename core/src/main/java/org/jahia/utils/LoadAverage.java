@@ -8,16 +8,17 @@ package org.jahia.utils;
  */
 public abstract class LoadAverage implements Runnable {
 
-    private double oneMinuteLoad = 0.0;
-    private double fiveMinuteLoad = 0.0;
-    private double fifteenMinuteLoad = 0.0;
+    protected double oneMinuteLoad = 0.0;
+    protected double fiveMinuteLoad = 0.0;
+    protected double fifteenMinuteLoad = 0.0;
 
     private double calcFreqDouble = 5.0;
     private long calcFreqMillis = 5000;
 
     public abstract double getCount();
+    public abstract void tickCallback();
 
-    private Thread loadCalcThread;
+    protected Thread loadCalcThread;
     private boolean running = false;
 
     public LoadAverage(String threadName) {
@@ -35,12 +36,13 @@ public abstract class LoadAverage implements Runnable {
 
     public void run() {
         while (running) {
-        double timeInMinutes = 1;
-        oneMinuteLoad = oneMinuteLoad * Math.exp(-calcFreqDouble/(60.0*timeInMinutes)) + getCount() * (1- Math.exp(-calcFreqDouble/(60.0*timeInMinutes)));
-        timeInMinutes = 5;
-        fiveMinuteLoad = fiveMinuteLoad * Math.exp(-calcFreqDouble/(60.0*timeInMinutes)) + getCount() * (1- Math.exp(-calcFreqDouble/(60.0*timeInMinutes)));
-        timeInMinutes = 15;
-        fifteenMinuteLoad = fifteenMinuteLoad * Math.exp(-calcFreqDouble/(60.0*timeInMinutes)) + getCount() * (1- Math.exp(-calcFreqDouble/(60.0*timeInMinutes)));
+            double timeInMinutes = 1;
+            oneMinuteLoad = oneMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));
+            timeInMinutes = 5;
+            fiveMinuteLoad = fiveMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));
+            timeInMinutes = 15;
+            fifteenMinuteLoad = fifteenMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));
+            tickCallback();
             try {
                 Thread.sleep(calcFreqMillis);
             } catch (InterruptedException e) {

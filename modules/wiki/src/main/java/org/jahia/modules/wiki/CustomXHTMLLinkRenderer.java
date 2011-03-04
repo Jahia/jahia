@@ -194,10 +194,11 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
      * @see org.xwiki.rendering.renderer.xhtml.XHTMLLinkRenderer#beginLink(Link, boolean, Map)
      */
     public void beginLink(Link link, boolean isFreeStandingURI, Map<String, String> parameters) {
-        if (!this.hasLabel &&  link.getType() != LinkType.DOCUMENT) {
-           linkref = link.getReference();
+        linkref = link.getReference();
+        // For files or reference, we don't create new node
+        if (!link.getReference().startsWith("/")) {
+            link.setReference(JCRContentUtils.generateNodeName(link.getReference(), 32));
         }
-        link.setReference(JCRContentUtils.generateNodeName(link.getReference(), 32));
         if (this.wikiModel == null || link.isExternalLink()) {
             beginExternalLink(link, isFreeStandingURI, parameters);
         } else {

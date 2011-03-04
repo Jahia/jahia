@@ -74,6 +74,7 @@
                 <contents jcr:primaryType="jnt:contentFolder"/>
             </templates>
             <files jcr:primaryType="jnt:folder"/>
+            <categories jcr:primaryType="jnt:category"/>
             <contents jcr:primaryType="jnt:contentFolder"/>
             <home jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly"
                   j:templateNode="/templateSets/templates-system/templates/base/home" priority="0.5">

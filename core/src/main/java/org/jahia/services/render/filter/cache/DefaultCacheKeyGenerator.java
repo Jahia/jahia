@@ -220,15 +220,16 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             aclGroups = allAclsGroups.get(fakePath);
         }
         StringBuilder b = new StringBuilder();
-        for (JahiaGroup g : aclGroups) {
-            if (g != null && g.isMember(principal)) {
-                if (b.length() > 0) {
-                    b.append("|");
+        if (aclGroups != null) {
+            for (JahiaGroup g : aclGroups) {
+                if (g != null && g.isMember(principal)) {
+                    if (b.length() > 0) {
+                        b.append("|");
+                    }
+                    b.append(g.getGroupname());
                 }
-                b.append(g.getGroupname());
             }
         }
-
         if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
                 JahiaUserManagerService.GUEST_USERNAME)) {
             b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);

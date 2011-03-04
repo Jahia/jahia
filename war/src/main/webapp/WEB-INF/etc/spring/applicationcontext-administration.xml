@@ -145,20 +145,6 @@
         <property name="urlParams" value="" />
     </bean>
     
-    <bean id="templatesAdministrationModule" class="org.jahia.admin.templates.ManageTemplates" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
-        <property name="urlKey" value="templates" />
-        <property name="permissionName" value="adminTemplates" />
-        <property name="name" value="templates" />
-        <property name="icon" value="briefcase_document" />
-        <property name="label" value="label.manageTemplates" />
-        <property name="tooltip" value="" />
-        <property name="urlType" value="module" />        
-        <property name="urlAction" value="templates" />
-        <property name="urlParams" value="&amp;sub=display" />
-        <property name="contentManager" ref="ContentManagerHelper"/>
-    </bean>
-
     <bean id="administrationModulesRegistry" class="org.jahia.admin.AdministrationModulesRegistry"/>
 
 </beans>

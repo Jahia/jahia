@@ -45,6 +45,7 @@ import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.conversion.PathResolver;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -118,6 +119,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
     private boolean isAliased = false;
+    private Set<String> userMembership;
+    private JahiaUser jahiaUser;
 
     public static void setDeniedPaths(Collection<String> denied) {
         JahiaAccessManager.deniedPathes.set(denied);
@@ -185,6 +188,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
+
+        if (!jahiaPrincipal.isSystem()) {
+            jahiaUser = userService.lookupUser(jahiaPrincipal.getName());
+            if (jahiaUser != null) {
+                userMembership = new HashSet<String>(groupService.getUserMembership(jahiaUser));
+            }
+        } else {
+            userMembership = new HashSet<String>();
+        }
 
         initialized = true;
     }
@@ -363,24 +375,34 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 return true;
             }
 
+            Item i = null;
+            Boolean itemExists = null;
+
             // Always deny write access on system folders
-            boolean itemExists = getSecuritySession().itemExists(jcrPath);
-            if (itemExists) {
-                Item i = getSecuritySession().getItem(jcrPath);
-                if (i.isNode() && permissions.contains(Privilege.JCR_WRITE + "_" + workspaceName)) {
-                    String ntName = ((Node) i).getPrimaryNodeType().getName();
-                    if (ntName.equals(Constants.JAHIANT_SYSTEMNODE) || ntName.equals("rep:root")) {
-                        cache.put(absPathStr + " : " + permissions, false);
-                        return false;
+            if (permissions.contains(Privilege.JCR_WRITE + "_" + workspaceName)) {
+                itemExists = getSecuritySession().itemExists(jcrPath);
+                if (itemExists.booleanValue()) {
+                    i = getSecuritySession().getItem(jcrPath);
+                    if (i.isNode()) {
+                        String ntName = ((Node) i).getPrimaryNodeType().getName();
+                        if (ntName.equals(Constants.JAHIANT_SYSTEMNODE) || ntName.equals("rep:root")) {
+                            cache.put(absPathStr + " : " + permissions, false);
+                            return false;
+                        }
                     }
                 }
             }
 
-            boolean newItem = !itemExists; // Jackrabbit checks the ADD_NODE permission on non-existing nodes
-            if (newItem && !permissions.equals(Collections.singleton(Privilege.JCR_ADD_CHILD_NODES + "_" + workspaceName))) {
-                // If node is new (local to the session), always grant permission
-                cache.put(absPathStr + " : " + permissions, true);
-                return true;
+            if (!permissions.equals(Collections.singleton(Privilege.JCR_ADD_CHILD_NODES + "_" + workspaceName))) {
+                if (itemExists == null) {
+                    itemExists = getSecuritySession().itemExists(jcrPath);
+                }
+                boolean newItem = !itemExists.booleanValue(); // Jackrabbit checks the ADD_NODE permission on non-existing nodes
+                if (newItem) {
+                    // If node is new (local to the session), always grant permission
+                    cache.put(absPathStr + " : " + permissions, true);
+                    return true;
+                }
             }
 
             // Administrators are always granted
@@ -392,12 +414,17 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             int depth = 1;
-            while (!itemExists) {
+            if (itemExists == null) {
+                itemExists = getSecuritySession().itemExists(jcrPath);
+            }
+            while (!itemExists.booleanValue()) {
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
                 itemExists = getSecuritySession().itemExists(jcrPath);
             }
 
-            Item i = getSecuritySession().getItem(jcrPath);
+            if (i == null) {
+                i = getSecuritySession().getItem(jcrPath);
+            }
 
             if (i instanceof Version) {
                 i = ((Version) i).getContainingHistory();
@@ -433,15 +460,21 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             // Todo : optimize site resolution
 //            int siteId = 0;
             String site = null;
-            Node s = n;
-            try {
-                while (!s.isNodeType("jnt:virtualsite")) {
-                    s = s.getParent();
+            if (jcrPath.startsWith(JahiaSitesBaseService.SITES_JCR_PATH)) {
+                if (jcrPath.length() > JahiaSitesBaseService.SITES_JCR_PATH.length()+1) {
+                    site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesBaseService.SITES_JCR_PATH.length()+1), "/");
                 }
-                site = s.getName();
-//                siteId = (int) s.getProperty("j:siteId").getLong();
-            } catch (ItemNotFoundException e) {
-            } catch (PathNotFoundException e) {
+            } else {
+                Node s = n;
+                try {
+                    while (!s.isNodeType("jnt:virtualsite")) {
+                        s = s.getParent();
+                    }
+                    site = s.getName();
+    //                siteId = (int) s.getProperty("j:siteId").getLong();
+                } catch (ItemNotFoundException e) {
+                } catch (PathNotFoundException e) {
+                }
             }
 
 //            if (jahiaPrincipal != null) {
@@ -615,7 +648,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
         } else if (principal.charAt(0) == 'g') {
             if (principalName.equals("guest") || (!jahiaPrincipal.isGuest() &&
-                    (isUserMemberOf(jahiaPrincipal.getName(), principalName, site) || isUserMemberOf(jahiaPrincipal.getName(), principalName, null)))) {
+                    (isUserMemberOf(principalName, site) || isUserMemberOf(principalName, null)))) {
                 return true;
             }
         }
@@ -699,29 +732,44 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
 
-    private boolean isUserMemberOf(String username, String groupname, String site) {
+    private boolean isUserMemberOf(String groupname, String site) {
         JahiaSite s = null;
         if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) {
             return true;
         }
-        if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname) && site == null && !JahiaUserManagerService.GUEST_USERNAME.equals(username)) {
+        if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname) && site == null && !JahiaUserManagerService.GUEST_USERNAME.equals(jahiaPrincipal.getName())) {
             return true;
         }
         int siteId = 0;
-        try {
-            s = sitesService.getSiteByKey(site);
-            if (s != null) {
-                siteId = s.getID();
+        if (site != null) {
+            try {
+                s = sitesService.getSiteByKey(site);
+                if (s != null) {
+                    siteId = s.getID();
+                }
+            } catch (JahiaException e) {
+                logger.error("Error while retrieving site key" + site, e);
             }
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
         }
-        JahiaUser user = userService.lookupUser(username);
+        /*
         JahiaGroup group = groupService.lookupGroup(siteId, groupname);
         if (group == null) {
             group = groupService.lookupGroup(0, groupname);
         }
-        return (user != null) && (group != null) && group.isMember(user);
+        return (jahiaUser != null) && (group != null) && group.isMember(jahiaUser);
+        */
+        if (jahiaUser == null) {
+            return false;
+        }
+        String groupKey = groupname + ":" + siteId;
+        String systemGroupKey = groupname + ":0";
+        if (userMembership.contains(groupKey)) {
+            return true;
+        } else if (userMembership.contains(systemGroupKey)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {

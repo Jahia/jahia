@@ -21,90 +21,68 @@
 
 <c:if test="${empty bindedComponent}">
     <fmt:message key="notBinded"/>
-    
 </c:if>
-<c:if test="${not empty bindedComponent}">
-    <p>
-        <h4>Metadatas</h4>
-    </p>
-    <c:if test="${props.creationdate.boolean}">
-        <p>
-            <label><fmt:message key="label.creationDate"/></label>
-            <span>
-                <fmt:formatDate value="${bindedComponent.properties['jcr:created'].time}"
-                                pattern="dd, MMMM yyyy HH:mm"/>
-            </span>
-        </p>
-    </c:if>
-    <c:if test="${props.creator.boolean}">
-        <p>
-            <label><fmt:message key="label.creator"/></label>
-            <span>
-                    ${bindedComponent.properties['jcr:createdBy'].string}
-            </span>
-        </p>
-    </c:if>
-    <c:if test="${props.lastmodification.boolean}">
-        <p>
-            <label><fmt:message key="label.lastModif"/></label>
-            <span>
-                <fmt:formatDate value="${bindedComponent.properties['jcr:lastModified'].time}"
-                                pattern="dd, MMMM yyyy HH:mm"/>
-            </span>
-        </p>
-    </c:if>
-    <c:if test="${props.lastcontributor.boolean}">
-        <p>
-            <label><fmt:message key="label.lastContributor"/></label>
-            <span>
-                    ${bindedComponent.properties['jcr:lastModifiedBy'].string}
-            </span>
-        </p>
-    </c:if>
-    <c:if test="${props.description.boolean}">
-        <p>
-            <label><fmt:message key="label.Description"/></label>
-            <span>
-                <c:if test="${not empty bindedComponent.properties['jcr:description']}">
-                    ${bindedComponent.properties['jcr:description'].string}
-                </c:if>
-            </span>
-        </p>
-    </c:if>
-    <c:if test="${props.keywords.boolean}">
-        <p>
-            <label><fmt:message key="label.Keywords"/></label>
-            <span>
-                <c:if test="${not empty bindedComponent.properties['j:keywords']}">
-                    <c:forEach items="${bindedComponent.properties['j:keywords']}" var="keyword">
-                        ${keyword.string}
-                    </c:forEach>
-                </c:if>
-            </span>
-        </p>
-    </c:if>
 
-    <c:if test="${props.categories.boolean}">
-        <p>
-            <label><fmt:message key="label.categories"/>:</label>
-            <span>
-                <c:forEach items="${assignedCategories}" var="category" varStatus="status">
-                    <c:if test="${not empty category.node}">
-                        <c:set target="${filteredCategories}" property="${category.node.properties['jcr:title'].string}"
-                               value="${category.node.properties['jcr:title'].string}"/>
-                    </c:if>
-                </c:forEach>
-                <c:choose>
-                    <c:when test="${not empty filteredCategories}">
-                        <c:forEach items="${filteredCategories}" var="category" varStatus="status">
-                            ${fn:escapeXml(category.value)}${!status.last ? separator : ''}
+<c:if test="${not empty bindedComponent}">
+    <div class="contentinfos">
+        <h3>Metadatas</h3>
+    <dl>
+        <c:if test="${props.creationdate.boolean}">
+                <dt><fmt:message key="label.creationDate"/></dt>
+                <dd><fmt:formatDate value="${bindedComponent.properties['jcr:created'].time}"
+                                    pattern="dd, MMMM yyyy HH:mm"/></dd>
+        </c:if>
+        <c:if test="${props.creator.boolean}">
+            <dl>
+                <dt><fmt:message key="label.creator"/></dt>
+                <dd>${bindedComponent.properties['jcr:createdBy'].string}</dd>
+        </c:if>
+        <c:if test="${props.lastmodification.boolean}">
+                <dt><fmt:message key="label.lastModif"/></dt>
+                <dd><fmt:formatDate value="${bindedComponent.properties['jcr:lastModified'].time}"
+                                    pattern="dd, MMMM yyyy HH:mm"/></dd>
+        </c:if>
+        <c:if test="${props.lastcontributor.boolean}">
+                <dt><fmt:message key="label.lastContributor"/></dt>
+                <dd>${bindedComponent.properties['jcr:lastModifiedBy'].string}</dd>
+        </c:if>
+        <c:if test="${props.description.boolean}">
+                <dt><fmt:message key="label.Description"/></dt>
+                <c:if test="${not empty bindedComponent.properties['jcr:description']}">
+                        <dd>${bindedComponent.properties['jcr:description'].string}  </dd>
+                </c:if>
+        </c:if>
+        <c:if test="${props.keywords.boolean}">
+                <dt><fmt:message key="label.Keywords"/></dt>
+                <c:if test="${not empty bindedComponent.properties['j:keywords']}">
+                    <dd>
+                    <c:forEach items="${bindedComponent.properties['j:keywords']}" var="keyword">
+                            ${keyword.string}
                         </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <fmt:message key="label.categories.noCategory"/>
-                    </c:otherwise>
-                </c:choose>
-            </span>
-        </p>
-    </c:if>
+                    </dd>
+                </c:if>
+        </c:if>
+        <c:if test="${props.categories.boolean}">
+                <dt><fmt:message key="label.categories"/>:</dt>
+                    <c:forEach items="${assignedCategories}" var="category" varStatus="status">
+                        <dd>
+                        <c:if test="${not empty category.node}">
+                            <c:set target="${filteredCategories}" property="${category.node.properties['jcr:title'].string}"
+                                   value="${category.node.properties['jcr:title'].string}"/>
+                        </c:if>
+                    </c:forEach>
+                        </dd>
+                    <c:choose>
+                        <c:when test="${not empty filteredCategories}">
+                            <c:forEach items="${filteredCategories}" var="category" varStatus="status">
+                                ${fn:escapeXml(category.value)}${!status.last ? separator : ''}
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <fmt:message key="label.categories.noCategory"/>
+                        </c:otherwise>
+                    </c:choose>
+        </c:if>
+    </dl>
+    </div>
 </c:if>

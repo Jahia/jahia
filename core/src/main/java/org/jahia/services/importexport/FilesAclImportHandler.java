@@ -183,12 +183,15 @@ public class FilesAclImportHandler extends DefaultHandler {
         davPropertiesMapping.put("dav:getcontenttype", "jcr:content/jcr:mimeType");
         davPropertiesMapping.put("dav:getcontentlanguage", "mix:language|jcr:content/jcr:language");
         davPropertiesMapping.put("dav:owner", "#skip");
-        davPropertiesMapping.put("dav:displayname", "#skip");
+        davPropertiesMapping.put("dav:displayname", "mix:title|jcr:title");
         return davPropertiesMapping;
     }
     
     private boolean setPropertyField(ExtendedNodeType baseType, String localName,
             JCRNodeWrapper node, String propertyName, String value) throws RepositoryException {
+        if ("#skip".equals(propertyName)) {
+            return false;
+        }
         JCRNodeWrapper parent = node;
         String mixinType = null;
         if (propertyName.contains("|")) {

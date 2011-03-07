@@ -402,8 +402,8 @@
  - j:virtualsitesFolderSkeleton (string) nofulltext
  + * (jnt:virtualsite)
 
-[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:htmlSettings
- - j:title (string) protected nofulltext
+[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:htmlSettings, mix:title
+ - jcr:title (string) protected nofulltext
  - j:serverName (string) protected nofulltext
  - j:description (string) protected
  - j:siteId (long) protected

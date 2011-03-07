@@ -73,7 +73,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
 
     public String getTitle() {
         try {
-            return getProperty("j:title").getString();
+            return getProperty("jcr:title").getString();
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
             return null;

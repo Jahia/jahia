@@ -13,7 +13,7 @@
 <c:if test="${currentNode.parent.name eq 'sites'}">
     <h1>Site: ${currentNode.name}</h1>
 
-    <p>Title: <jcr:nodeProperty node="${currentNode}" name="j:title"/></p>
+    <p>Title: <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></p>
 
     <p>Server name: <jcr:nodeProperty node="${currentNode}" name="j:serverName"/></p>
 

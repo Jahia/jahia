@@ -31,10 +31,10 @@
     <jcr:node var="home" path="${node.path}/home"/>
     <c:if test="${jcr:hasPermission(home,'jcr:addChildNodes')}">
     <li><c:if test="${currentNode.properties.type.string eq 'edit'}">
-        ${node.properties['j:title'].string} <a href="${url.baseEdit}${node.path}/home.html"> <img src="${url.context}/icons/editMode.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.editMode"/></a>
+        ${node.properties['jcr:title'].string} <a href="${url.baseEdit}${node.path}/home.html"> <img src="${url.context}/icons/editMode.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.editMode"/></a>
     </c:if>
     <c:if test="${currentNode.properties.type.string != 'edit'}">
-        ${node.properties['j:title'].string} <a href="${url.baseContribute}${node.path}/home.html"><img src="${url.context}/icons/contribute.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.contribute"/></a>
+        ${node.properties['jcr:title'].string} <a href="${url.baseContribute}${node.path}/home.html"><img src="${url.context}/icons/contribute.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.contribute"/></a>
     </c:if>
     </li>
     </c:if>

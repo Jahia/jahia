@@ -39,7 +39,7 @@
             <c:forEach items="${result.nodes}" var="node">
                 <jcr:node var="home" path="${node.path}/home"/>
                 <c:if test="${jcr:hasPermission(home,'jcr:addChildNodes')}">
-                    <li> ${node.properties['j:title'].string} <a
+                    <li> ${node.properties['jcr:title'].string} <a
                             href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}"
                             target="_blank">
                         <c:if test="${!empty currentNode.properties['jcr:title']}">

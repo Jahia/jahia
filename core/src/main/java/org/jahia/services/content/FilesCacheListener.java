@@ -32,6 +32,7 @@
 
 package org.jahia.services.content;
 
+import org.jahia.bin.FilesServlet;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
@@ -57,7 +58,7 @@ public class FilesCacheListener extends DefaultEventListener {
 
     public FilesCacheListener() {
         try {
-            cache = CacheFactory.getInstance().getCache("WebdavCache", true);
+            cache = CacheFactory.getInstance().getCache(FilesServlet.WEBDAV_CACHE_NAME, true);
         } catch (JahiaInitializationException e) {
             e.printStackTrace();
         }

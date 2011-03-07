@@ -8,7 +8,7 @@
          caches. For DB caches, this is now managed by the Hibernate implementation, and is configured in the
          applicationcontext-hibernate.xml file.
     -->
-    <bean id="noCacheProvide" class="org.jahia.services.cache.dummy.DummyCacheProvider"/>
+    <bean id="noCacheProvider" class="org.jahia.services.cache.dummy.DummyCacheProvider"/>
     
     <bean id="ehCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider">
     	<property name="configurationResource">
@@ -33,7 +33,7 @@ when we flush this entry we will flush the whole cache
 			<map>
 				<entry key="default" value-ref="ehCacheProvider" />
 				<entry key="ehcache" value-ref="ehCacheProvider"/>
-                <entry key="nocache" value-ref="noCacheProvide"/>
+                <entry key="nocache" value-ref="noCacheProvider"/>
 			</map>
 		</property>
     </bean>

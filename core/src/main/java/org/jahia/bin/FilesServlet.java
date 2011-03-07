@@ -77,9 +77,11 @@ public class FilesServlet extends HttpServlet {
 
     private int cacheThreshold = 64 * 1024;
 
+    public static final String WEBDAV_CACHE_NAME = "WebdavCache";
+
     static {
         try {
-            cache = CacheFactory.getInstance().getCache("WebdavCache", true);
+            cache = CacheFactory.getInstance().getCache(WEBDAV_CACHE_NAME, true);
         } catch (JahiaInitializationException e) {
             e.printStackTrace();
         }

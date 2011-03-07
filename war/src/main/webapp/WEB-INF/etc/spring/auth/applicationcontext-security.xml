@@ -13,6 +13,7 @@
                 /cms/serverStats/* = authcBasic, roles[toolManager]
                 /tools/* = authcBasic, roles[toolManager]
                 
+                /admin/** = authcBasic, roles[templateManager]
                 /cms/**/*.raw = authcBasic, roles[templateManager]
                 /modules/**/META-INF/** = authcBasic, roles[templateManager]
                 /modules/**/WEB-INF/** = authcBasic, roles[templateManager]

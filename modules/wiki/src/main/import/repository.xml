@@ -91,7 +91,7 @@
                             <backToParentPage jcr:primaryType="jnt:backToParentPage">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Back to Wiki home page" />
                             </backToParentPage>
-                            <contentInfo j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:contentInfo" />
+                            <contentInfo categories="false" creationdate="true" creator="true" description="false" j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:displayMetadata" keywords="false" lastcontributor="true" lastmodification="true" />
                             <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki search" />
                                 <search jcr:primaryType="jnt:simpleSearchForm" result="/templateSets/wiki/search-result">
@@ -100,7 +100,7 @@
                             </wiki-search>
                         </row-col2>
                         <information jcr:primaryType="jnt:contentList">
-                            <contentInfo j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:contentInfo" />
+                            <contentInfo categories="false" creationdate="true" creator="true" description="false" j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:displayMetadata" keywords="false" lastcontributor="true" lastmodification="true" />
                         </information>
                     </wiki-content>
                     <wiki-searchResults j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate" />

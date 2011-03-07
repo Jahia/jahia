@@ -174,7 +174,14 @@
 
 [jmix:gadget] mixin
 
-[jnt:contentInfo] > jmix:siteComponent, jmix:bindedComponent
+[jnt:displayMetadata] > jnt:content, jmix:siteComponent, jmix:bindedComponent
+ - creationdate (boolean)
+ - creator (boolean)
+ - lastmodification (boolean)
+ - lastcontributor (boolean)
+ - description (boolean)
+ - keywords (boolean)
+ - categories (boolean)
 
 [jnt:componentLink] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent
  - targetTemplate (string)

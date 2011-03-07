@@ -125,7 +125,6 @@
         <module>content-browser</module>
         <module>contributeToolbar</module>
         <module>default</module>
-        <module>displayMetadata</module>
         <module>docConverter</module>
         <module>event</module>
         <module>facets</module>

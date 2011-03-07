@@ -32,7 +32,6 @@
 
 package org.jahia.services.content;
 
-import com.ibm.icu.text.UnicodeSet;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;

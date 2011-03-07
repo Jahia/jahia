@@ -50,8 +50,8 @@
 		<property name="applyOnConfigurations" value="page" />
 		<property name="applyOnTemplateTypes" value="html,edit" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
-        <property name="ajaxTemplate" value="/resources/script/ajaxResources.groovy"/>
-        <property name="template" value="/resources/script/resources.groovy"/>
+        <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
+        <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>
 	</bean>
 	<bean class="org.jahia.services.render.filter.MetricsLoggingFilter">
 		<property name="priority" value="3" />

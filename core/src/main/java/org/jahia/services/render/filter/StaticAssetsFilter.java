@@ -33,7 +33,7 @@
 package org.jahia.services.render.filter;
 
 import net.htmlparser.jericho.*;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
@@ -41,14 +41,19 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.SimpleScriptContext;
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -60,16 +65,49 @@ import java.util.List;
  *
  * @author Sergiy Shyrkov
  */
-public class StaticAssetsFilter extends AbstractFilter {
+public class StaticAssetsFilter extends AbstractFilter implements ApplicationListener<ApplicationEvent> {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(StaticAssetsFilter.class);
+    class AssetsScriptContext extends SimpleScriptContext {
+        private Writer writer = null;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Writer getWriter() {
+            if (writer == null) {
+                writer = new StringWriter();
+            }
+            return writer;
+        }
+    }
+    
+    private static Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
+    
+    private static String getTemplateContent(String path) throws IOException {
+        String content = null;
+        InputStream is = null;
+        try {
+            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
+            if (is != null) {
+                content = IOUtils.toString(is);
+            } else {
+                logger.warn("Unable to lookup template at {}", path);
+            }
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
+        return content;
+    }
+    private String ajaxResolvedTemplate;
+
+    private String ajaxTemplate;
+    private String resolvedTemplate;
 
     private ScriptEngineUtils scriptEngineUtils;
-    private String ajaxTemplate;
-    private String template;
 
-    private String ajaxResolvedTemplate;
-    private String resolvedTemplate;
+    private String template;
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
@@ -78,24 +116,21 @@ public class StaticAssetsFilter extends AbstractFilter {
         Source source = new Source(previousOut);
         OutputDocument outputDocument = new OutputDocument(source);
         if (renderContext.isAjaxRequest()) {
-            Element element = source.getFirstElement();
-            final EndTag tag = element != null ? element.getEndTag() : null;
-            String extension = StringUtils.substringAfterLast(ajaxTemplate, ".");
-            ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
-            ScriptContext scriptContext = new AssetsScriptContext();
-            final Bindings bindings = scriptEngine.createBindings();
-            bindings.put("renderContext", renderContext);
-            bindings.put("resource", resource);
-            bindings.put("url", new URLGenerator(renderContext, resource));
-            scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
-            if (ajaxResolvedTemplate == null) {
-                ajaxResolvedTemplate = FileUtils.readFileToString(new File(
-                        JahiaContextLoaderListener.getServletContext().getRealPath(ajaxTemplate)));
-            }
-            if (ajaxResolvedTemplate != null) {
+            String templateContent = getAjaxResolvedTemplate(); 
+            if (templateContent != null) {
+                Element element = source.getFirstElement();
+                final EndTag tag = element != null ? element.getEndTag() : null;
+                String extension = StringUtils.substringAfterLast(ajaxTemplate, ".");
+                ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
+                ScriptContext scriptContext = new AssetsScriptContext();
+                final Bindings bindings = scriptEngine.createBindings();
+                bindings.put("renderContext", renderContext);
+                bindings.put("resource", resource);
+                bindings.put("url", new URLGenerator(renderContext, resource));
+                scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
                 // The following binding is necessary for Javascript, which doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                scriptEngine.eval(ajaxResolvedTemplate, scriptContext);
+                scriptEngine.eval(templateContent, scriptContext);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 final String staticsAsset = writer.toString();
 
@@ -139,23 +174,20 @@ public class StaticAssetsFilter extends AbstractFilter {
             }
             List<Element> headElementList = source.getAllElements(HTMLElementName.HEAD);
             for (Element element : headElementList) {
-                final EndTag headEndTag = element.getEndTag();
-                String extension = StringUtils.substringAfterLast(template, ".");
-                ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
-                ScriptContext scriptContext = new AssetsScriptContext();
-                final Bindings bindings = scriptEngine.createBindings();
-                bindings.put("renderContext", renderContext);
-                bindings.put("resource", resource);
-                bindings.put("url", new URLGenerator(renderContext, resource));
-                scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
-                if (resolvedTemplate == null) {
-                    resolvedTemplate = FileUtils.readFileToString(new File(
-                            JahiaContextLoaderListener.getServletContext().getRealPath(template)));
-                }
-                if (resolvedTemplate != null) {
+                String templateContent = getResolvedTemplate(); 
+                if (templateContent != null) {
+                    final EndTag headEndTag = element.getEndTag();
+                    String extension = StringUtils.substringAfterLast(template, ".");
+                    ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
+                    ScriptContext scriptContext = new AssetsScriptContext();
+                    final Bindings bindings = scriptEngine.createBindings();
+                    bindings.put("renderContext", renderContext);
+                    bindings.put("resource", resource);
+                    bindings.put("url", new URLGenerator(renderContext, resource));
+                    scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
                     // The following binding is necessary for Javascript, which doesn't offer a console by default.
                     bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                    scriptEngine.eval(resolvedTemplate, scriptContext);
+                    scriptEngine.eval(templateContent, scriptContext);
                     StringWriter writer = (StringWriter) scriptContext.getWriter();
                     final String staticsAsset = writer.toString();
 
@@ -171,30 +203,36 @@ public class StaticAssetsFilter extends AbstractFilter {
         return out.trim();
     }
 
-    public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
-        this.scriptEngineUtils = scriptEngineUtils;
+    private String getAjaxResolvedTemplate() throws IOException {
+        if (ajaxResolvedTemplate == null) {
+            ajaxResolvedTemplate = getTemplateContent(ajaxTemplate);
+        }
+        return ajaxResolvedTemplate;
+    }
+
+    private String getResolvedTemplate() throws IOException {
+        if (resolvedTemplate == null) {
+            resolvedTemplate = getTemplateContent(template);
+        }
+        return resolvedTemplate;
     }
 
     public void setAjaxTemplate(String ajaxTemplate) {
         this.ajaxTemplate = ajaxTemplate;
     }
 
+    public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
+        this.scriptEngineUtils = scriptEngineUtils;
+    }
+
     public void setTemplate(String template) {
         this.template = template;
     }
 
-    class AssetsScriptContext extends SimpleScriptContext {
-        private Writer writer = null;
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Writer getWriter() {
-            if (writer == null) {
-                writer = new StringWriter();
-            }
-            return writer;
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof TemplatePackageRedeployedEvent) {
+            ajaxResolvedTemplate = null;
+            resolvedTemplate = null;
         }
     }
 }

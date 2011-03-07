@@ -1,9 +1,6 @@
-
 /**
- * Created by IntelliJ IDEA.
- * @author : rincevent
- * @since : JAHIA 6.1
- * Created : 28/01/11
+ * @author rincevent
+ * @since JAHIA 6.5
  */
 renderContext.staticAssets.css.eachWithIndex { resource, i ->
     println "<link id=\"staticAssetCSS${i}\" rel=\"stylesheet\" href=\"${resource}\" media=\"screen\" type=\"text/css\"/>";

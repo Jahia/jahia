@@ -8,21 +8,10 @@
         <property name="securityManager" ref="securityManager"/>
         <property name="filterChainDefinitions">
             <value>
-                /LICENSE = authcBasic, roles[toolManager]
+                /cms/**/*.raw = authcBasic, roles[toolManager]
                 /cms/serverStats = authcBasic, roles[toolManager]
                 /cms/serverStats/* = authcBasic, roles[toolManager]
                 /tools/* = authcBasic, roles[toolManager]
-                
-                /admin/** = authcBasic, roles[templateManager]
-                /cms/**/*.raw = authcBasic, roles[templateManager]
-                /modules/**/META-INF/** = authcBasic, roles[templateManager]
-                /modules/**/WEB-INF/** = authcBasic, roles[templateManager]
-                /modules/**/mails/** = authcBasic, roles[templateManager]
-                /modules/**/*.cnd = authcBasic, roles[templateManager]
-                /modules/**/*.drl = authcBasic, roles[templateManager]
-                /modules/**/*.dsl = authcBasic, roles[templateManager]
-                /modules/**/*.jsp = authcBasic, roles[templateManager]
-                /modules/**/*.properties = authcBasic, roles[templateManager]
             </value>
         </property>
     </bean>
@@ -30,7 +19,7 @@
     <bean name="textConfigurationRealm" class="org.jahia.services.security.shiro.SpringTextConfigurationRealm">
         <property name="userDefinitions">
             <value>
-                ${jahiaToolManagerUsername}=${jahiaToolManagerPassword},toolManager,templateManager
+                ${jahiaToolManagerUsername}=${jahiaToolManagerPassword},toolManager
             </value>
         </property>
         <property name="credentialsMatcher">

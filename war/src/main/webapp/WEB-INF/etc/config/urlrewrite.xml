@@ -4,6 +4,17 @@
 
 <urlrewrite>
 
+    <!-- Block direct access -->
+    <rule>
+        <name>Block direct access</name>
+        <note>Restricts direct access to the resources</note>
+        <from>^/(LICENSE|admin/.*|modules/.*/META-INF/.*|modules/.*/WEB-INF/.*|modules/.*/mails/.*|modules/.*\.cnd|modules/.*\.drl|modules/.*\.dsl|modules/.*\.jsp|modules/.*\.properties)$</from>
+        <set type="status">404</set>
+        <set type="request" name="UrlRewriteFilter.sendError">404</set>
+        <to>null</to>        
+    </rule>
+    <!-- end of block direct access -->
+    
     <!-- GWT resources-->
     <rule>
         <note>GWT CKEditor resources</note>

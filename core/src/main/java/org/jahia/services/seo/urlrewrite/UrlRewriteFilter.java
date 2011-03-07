@@ -109,6 +109,9 @@ public class UrlRewriteFilter implements Filter {
         // if no rewrite has taken place continue as normal
         if (!urlRewriter.processRequest(hsRequest, hsResponse, chain)) {
             chain.doFilter(hsRequest, hsResponse);
+        } else if (hsRequest.getAttribute("UrlRewriteFilter.sendError") != null) {
+            // workaround: call sendError with the specified error code 
+            hsResponse.sendError(Integer.valueOf((String) hsRequest.getAttribute("UrlRewriteFilter.sendError")));
         }
     }
 

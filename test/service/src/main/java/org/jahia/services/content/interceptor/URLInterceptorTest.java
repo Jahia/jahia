@@ -84,7 +84,7 @@ public class URLInterceptorTest {
     @Before
     public void setUp() throws RepositoryException {
 
-        JCRNodeWrapper shared = session.getNode("/shared");
+        JCRNodeWrapper shared = session.getNode("/sites/"+site.getSiteKey()+"/contents");
         if (shared.hasNode("testContent")) {
             shared.getNode("testContent").remove();
         }
@@ -115,16 +115,16 @@ public class URLInterceptorTest {
 
     @Test
     public void testBadReferenceEncoding() throws Exception {
-        JCRNodeWrapper n = localizedSession.getNode("/shared/testContent");
+        JCRNodeWrapper n = localizedSession.getNode("/sites/"+site.getSiteKey()+"/contents/testContent");
         try {
-            String value = "<img src=\"" + Jahia.getContextPath() + "/files/shared/noNode\">";
+            String value = "<img src=\"" + Jahia.getContextPath() + "/files/sites/"+site.getSiteKey()+"/contents/noNode\">";
             n.setProperty("body", value);
             fail("Did not throw exception " +value);
         } catch (ConstraintViolationException e) {
         }
 
         try {
-            String value = "<a href=\"" + Jahia.getContextPath() + "/cms/render/live/{lang}/shared/noNode.html\">test</a>";
+            String value = "<a href=\"" + Jahia.getContextPath() + "/cms/render/live/{lang}/sites/"+site.getSiteKey()+"/contents/noNode.html\">test</a>";
             n.setProperty("body", value);
             fail("Did not throw exception " +value);
         } catch (ConstraintViolationException e) {
@@ -133,21 +133,21 @@ public class URLInterceptorTest {
 
     @Test
     public void testEncodeAndDecode() throws Exception {
-        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/render/default/en/shared/refContent.html\">test</a>");
-        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/edit/default/en/shared/refContent.html\">test</a>");
-        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/render/live/fr/shared/refContent.html\">test</a>");
-        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/render/live/{lang}/shared/refContent.html\">test</a>");
-        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/en/shared/refContent.html\">test</a>");
-        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>");
-        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>" +
-                "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>");
-        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>" +
-                "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/testContent.html\">test</a>");
-        validateEncodeAndDecode("<img src=\"" + Jahia.getContextPath() + "/files/default/shared/refContent\">");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/render/default/en/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/edit/default/en/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/render/live/fr/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/render/live/{lang}/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/en/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>" +
+                "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>" +
+                "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/testContent.html\">test</a>");
+        validateEncodeAndDecode("<img src=\"" + Jahia.getContextPath() + "/files/default/sites/"+site.getSiteKey()+"/contents/refContent\">");
     }
 
     private void validateEncodeAndDecode(String value) throws RepositoryException {
-        JCRNodeWrapper n = localizedSession.getNode("/shared/testContent");
+        JCRNodeWrapper n = localizedSession.getNode("/sites/"+site.getSiteKey()+"/contents/testContent");
         n.setProperty("body", value);
         assertEquals("Not the same value after get",value, n.getProperty("body").getString());
     }

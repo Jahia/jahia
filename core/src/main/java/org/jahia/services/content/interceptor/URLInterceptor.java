@@ -137,7 +137,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
      */
 
 
-    public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public Value beforeSetValue(final JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
 
         if (definition.isInternationalized()) {
@@ -168,7 +168,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
                 public String visit(String value, RenderContext context, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
-                            value = replaceRefsByPlaceholders(value, newRefs, refs);
+                            value = replaceRefsByPlaceholders(value, newRefs, refs, node.getSession().getWorkspace().getName());
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }
@@ -331,7 +331,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
         return res;
     }
 
-    String replaceRefsByPlaceholders(final String originalValue, final Map<String, Long> newRefs, final Map<String, Long> oldRefs) throws RepositoryException {
+    String replaceRefsByPlaceholders(final String originalValue, final Map<String, Long> newRefs, final Map<String, Long> oldRefs, String workspace) throws RepositoryException {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Before replaceRefsByPlaceholders : "+originalValue);
@@ -339,18 +339,12 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
 
         String pathPart = originalValue;
         final boolean isCmsContext;
-        String workspace = "";
         if (pathPart.startsWith(dmsContext)) {
             // Remove DOC context part
-            workspace = StringUtils.substringAfter(pathPart, dmsContext).substring(0,StringUtils.substringAfter(pathPart, dmsContext).indexOf("/"));
-            if (workspace.equals(ContextPlaceholdersReplacer.WORKSPACE_PLACEHOLDER)) {
-                workspace = Constants.EDIT_WORKSPACE;
-            }
             pathPart = StringUtils.substringAfter(StringUtils.substringAfter(pathPart, dmsContext), "/");
             isCmsContext = false;
         } else if (pathPart.startsWith(cmsContext)) {
             // Remove CMS context part
-            workspace = StringUtils.substringAfter(pathPart, cmsContext).substring(0,StringUtils.substringAfter(pathPart, cmsContext).indexOf("/"));
             Matcher m = cmsPattern.matcher(pathPart);
             if (!m.matches()) {
                 throw new ConstraintViolationException("Invalid link "+pathPart);

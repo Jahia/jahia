@@ -2,6 +2,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
@@ -35,7 +36,7 @@
             <c:if test="${createdBy.string ne 'guest'}">
             <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a></c:if>
             <c:if test="${createdBy.string eq 'guest'}">guest</c:if>:&nbsp;</span>
-        ${content.string}
+        ${fn:escapeXml(content.string)}
     </p>
 
     <div class='clear'></div>

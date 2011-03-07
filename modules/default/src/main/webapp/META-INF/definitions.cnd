@@ -90,8 +90,6 @@
 
 [jnt:tagging] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent
 
-[jnt:categorizing] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent
-
 [jnt:loginForm] > jnt:content, mix:title, jmix:siteComponent
  - j:displayRememberMeButton (boolean)
  - j:displayLoginButton (boolean)

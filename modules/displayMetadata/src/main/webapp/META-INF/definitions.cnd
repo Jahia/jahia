@@ -1,8 +1,0 @@
-[jnt:displayMetadata] > jnt:content, jmix:sandboxContent, jmix:bindedComponent
- - creationdate (boolean)
- - creator (boolean)
- - lastmodification (boolean)
- - lastcontributor (boolean)
- - description (boolean)
- - keywords (boolean)
- - categories (boolean)

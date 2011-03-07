@@ -36,11 +36,12 @@ import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
-import org.springframework.util.StringUtils;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -596,16 +597,20 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 try {
                                     if (name.startsWith("/content/sites")) {
                                         name = pathMapping.get("/")
-                                                + StringUtils.trimLeadingCharacter(name
+                                                + StringUtils.stripStart(name
                                                         .replaceFirst("/content/sites/[^/]+/files/", ""),
-                                                        '/');
+                                                        "/");
                                     } else if (name.startsWith("/content/users")) {
                                         name = name.replaceFirst(
                                                         "/content/users/([^/]+)/",
                                                         "/users/$1/files/");
+                                    } else if (name.startsWith("/users")) {
+                                        name = name.replaceFirst(
+                                                        "/users/([^/]+)/",
+                                                        "/users/$1/files/");                                        
                                     } else {
                                         name = pathMapping.get("/")
-                                                + StringUtils.trimLeadingCharacter(name, '/');
+                                                + StringUtils.stripStart(name, "/");
                                     }
                                     String filename = name.substring(name.lastIndexOf('/') + 1);
                                     String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename);
@@ -613,6 +618,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 } catch (Exception e) {
                                     logger.error("Cannot upload file " + zipentry.getName(), e);
                                 }
+                            } else {
+                                ensureDir(jcrStoreService.getSessionFactory().getCurrentUserSession(), name, site);
                             }
                         }
                     } else if (name.equals(SITE_PROPERTIES)) {
@@ -749,7 +756,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         try {
             JCRNodeWrapper parentDir = ensureDir(session, path.substring(0, path.lastIndexOf('/')), destSite);
             if (parentDir == null) {
-                logger.warn("Cannot create folder " + path.lastIndexOf('/'));
                 return;
             }
             if (!parentDir.hasNode(name)) {
@@ -786,6 +792,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
         String defaultLanguage = null;
+        String lowestRankLanguage = null;
+        int currentRank = 0;
         for (Object key : keys) {
             String property = (String) key;
             String value = p.getProperty(property);
@@ -799,6 +807,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     languages.add(lang);
                     if (Boolean.valueOf(p.getProperty("language." + lang + ".mandatory", "false"))) {
                         mandatoryLanguages.add(lang);
+                    }
+                    if (StringUtils.isEmpty(lowestRankLanguage)
+                            || p.containsKey("language." + lang + ".rank")) {
+                        int langRank = NumberUtils.toInt(p
+                                .getProperty("language." + lang + ".rank"));
+                        if (currentRank == 0 || langRank < currentRank) {
+                            currentRank = langRank;
+                            lowestRankLanguage = lang;
+                        }
                     }
                 }
             } else if (firstKey.equals("defaultLanguage")) {
@@ -831,7 +848,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 site.setMandatoryLanguages(mandatoryLanguages);
             }
             if (defaultLanguage == null) {
-                defaultLanguage = siteLangs.iterator().next();
+                defaultLanguage = StringUtils.isEmpty(lowestRankLanguage) ? siteLangs.iterator().next() : lowestRankLanguage;
             }
             site.setDefaultLanguage(defaultLanguage);
             try {

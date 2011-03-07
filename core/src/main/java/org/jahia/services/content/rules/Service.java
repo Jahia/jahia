@@ -718,9 +718,13 @@ public class Service extends JahiaService {
                 Set<String> roles = new HashSet<String>();
                 while (ni.hasNext()) {
                     JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                    Value[] vals = next.getProperty("j:roles").getValues();
-                    for (Value val : vals) {
-                        roles.add(val.getString());
+                    if (next.hasProperty("j:roles")) {
+                        Value[] vals = next.getProperty("j:roles").getValues();
+                        for (Value val : vals) {
+                            roles.add(val.getString());
+                        }
+                    } else {
+                        logger.warn("Missing roles property for acl on "+next.getPath());
                     }
                 }
 

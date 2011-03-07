@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jahia:categories xmlns:jahia="http://www.jahia.org/">
-    <jahia:category jahia:key="root" jahia:acl="u:guest:r--">
+    <jahia:category jahia:key="root" jahia:acl="u:guest:r--|g:guest:r--|g:users:r--">
         <jahia:category jahia:key="cat1" jahia:title_de="Kategorie 1" jahia:title_fr="Category 1" jahia:title_en="Category 1"></jahia:category>
         <jahia:category jahia:key="cat2" jahia:title_de="Kategorie 2" jahia:title_fr="Category 2" jahia:title_en="Category 2"></jahia:category>
         <jahia:category jahia:key="Management" jahia:title_fr="Management" jahia:title_en="Management"></jahia:category>

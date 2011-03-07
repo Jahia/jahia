@@ -534,6 +534,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
+        // Check if it is an 5.x or 6.1 import :
+        for (Map.Entry<String, Long> entry : sizes.entrySet()) {
+            if (entry.getKey().startsWith("export_")) {
+                legacyImport = true;
+                break;
+            }
+        }
 
         if (sizes.containsKey(REPOSITORY_XML)) {
             // Import repository content
@@ -555,6 +562,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     }
                     zis.closeEntry();
                 }
+            } catch (Exception e) {
+                logger.error("Cannot import", e);
             } finally {
                 zis.reallyClose();
             }
@@ -566,13 +575,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         NodeTypeRegistry reg = null;
         DefinitionsMapping mapping = null;
-        // Check if it is an 5.x or 6.1 import :
-        for (Map.Entry<String, Long> entry : sizes.entrySet()) {
-            if (entry.getKey().startsWith("export_")) {
-                legacyImport = true;
-                break;
-            }
-        }
 
         // Import additional files - site.properties, old cateogries.xml , sitepermissions.xml
         // and eventual plain file from 5.x imports

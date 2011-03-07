@@ -338,10 +338,10 @@ public class LegacyImportHandler extends DefaultHandler {
         Map<String, String> metadataMap = new HashMap<String, String>();
         metadataMap.put("jahia:createdBy", attributes.getValue("jahia:createdBy"));
         String date = attributes.getValue("jcr:created");
-        metadataMap.put("jcr:created", date.length() == 19 ? date + ".000Z" : date);        
+        metadataMap.put("jcr:created", (date != null && date.length() == 19) ? date + ".000Z" : date);
         metadataMap.put("jahia:lastModifiedBy", attributes.getValue("jahia:lastModifiedBy"));
         date = attributes.getValue("jcr:lastModified");
-        metadataMap.put("jcr:lastModified", date.length() == 19 ? date + ".000Z" : date);
+        metadataMap.put("jcr:lastModified", (date != null && date.length() == 19) ? date + ".000Z" : date);
         return metadataMap;
     }
     private boolean isSingleContainerBox(String listName) {
@@ -390,7 +390,12 @@ public class LegacyImportHandler extends DefaultHandler {
     private void createPage(String primaryType, String title, String template, String pageKey, String uuid, Map<String, String> creationMetadata)
             throws RepositoryException {
         JCRNodeWrapper subPage;
-        ExtendedNodeType t = registry.getNodeType(primaryType);
+        ExtendedNodeType t = null;
+        try {
+            t = registry.getNodeType(primaryType);
+        } catch (NoSuchNodeTypeException e) {
+            t = registry.getNodeType("jnt:page");
+        }
         if (uuidMapping.containsKey(uuid)) {
             subPage = session.getNodeByIdentifier(uuidMapping.get(uuid));
         } else {
@@ -1051,7 +1056,6 @@ public class LegacyImportHandler extends DefaultHandler {
                                 for (String map : pathMapping.keySet()) {
                                     if (value.startsWith(map)) {
                                         value = pathMapping.get(map) + value.substring(map.length());
-                                        break;
                                     }
                                 }
                             }

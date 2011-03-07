@@ -94,6 +94,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private JCRSessionWrapper session;
     private Map<String,String> placeHoldersMap = new HashMap<String,String>();
 
+    private List<String> noCreateTypes = Arrays.asList("jnt:importDropBox");
+    private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder");
+
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, String siteKey) throws IOException {
         this(session, rootPath, null, null, siteKey);
     }
@@ -149,7 +152,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         pathes.push(pathes.peek() + "/" + decodedQName);
 
         if (noRoot && pathes.size() <= 2) {
-             session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath());return;
+             session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath().equals("/") ? "" : nodes.peek().getPath());return;
         }
 
         try {
@@ -172,7 +175,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 pathMapping.put(path + "/", "/sites/"+ siteKey + "/");
                 path = "/sites/"+ siteKey;
             }
-            if ("jnt:importDropBox".equals(pt)) {
+            if (noCreateTypes.contains(pt)) {
                 ignorePath = path;
             }
             JCRNodeWrapper child = null;
@@ -283,8 +286,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 }
             } else {
                 if (child.hasPermission("jcr:modifyProperties") && child.isCheckedOut()) {
-                    addMixins(child, atts);
-                    setAttributes(child, atts);
+                    if (!noUpdateTypes.contains(child.getPrimaryNodeType().getName())) {
+                        addMixins(child, atts);
+                        setAttributes(child, atts);
+                    }
                 }
             }
             if (child == null) {
@@ -452,6 +457,19 @@ public class DocumentViewImportHandler extends DefaultHandler {
         if (w != null && currentFilePath != null && w.getPath().equals(currentFilePath)) {
             currentFilePath = null;
         }
+
+        if (w != null && w.isFile()) {
+            try {
+                if (!w.hasNode(Constants.JCR_CONTENT) || !w.getNode(Constants.JCR_CONTENT).hasProperty(Constants.JCR_DATA)) {
+                    logger.warn("Cannot find the file content for the node " + w.getPath()
+                            + ". Skipping importing it.");
+                    w.remove();
+                }
+            } catch (RepositoryException e) {
+                throw new SAXException(e);
+            }
+        }
+
     }
 
     public void endDocument() throws SAXException {
@@ -491,5 +509,13 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     public void setPlaceHoldersMap(Map<String, String> placeHoldersMap) {
         this.placeHoldersMap = placeHoldersMap;
+    }
+
+    public List<String> getNoUpdateTypes() {
+        return noUpdateTypes;
+    }
+
+    public void setNoUpdateTypes(List<String> noUpdateTypes) {
+        this.noUpdateTypes = noUpdateTypes;
     }
 }

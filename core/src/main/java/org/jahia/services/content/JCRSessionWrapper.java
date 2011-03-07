@@ -100,7 +100,7 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> prefixToNs = new HashMap<String, String>();
 
     private Map<String, String> uuidMapping = new HashMap<String, String>();
-    private Map<String, String> pathMapping = new HashMap<String, String>();
+    private Map<String, String> pathMapping = new LinkedHashMap<String, String>();
 
     private boolean isSystem;
     private Date versionDate;

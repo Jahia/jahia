@@ -58,6 +58,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -1824,9 +1825,19 @@ public class ManageSites extends AbstractAdministrationModule {
                     p.load(zis2);
                     zis2.closeEntry();
                     importInfos.putAll(p);
-                    importInfos.put("templates",
-                            importInfos.containsKey("templatePackageName") ? importInfos.get("templatePackageName") :
-                                    "");
+
+                    importInfos.put("templates", "");
+                    if (importInfos.containsKey("templatePackageName")) {
+                        JahiaTemplateManagerService templateManager =
+                                ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+                        JahiaTemplatesPackage pack = templateManager.getTemplatePackageByFileName((String) importInfos.get("templatePackageName"));
+                        if (pack == null) {
+                            pack = templateManager.getTemplatePackage((String) importInfos.get("templatePackageName"));
+                        }
+                        if (pack != null) {
+                            importInfos.put("templates", pack.getFileName());
+                        }
+                    }
                     importInfos.put("oldsitekey", importInfos.get("sitekey"));
                     isSite = true;
                 } else if (z.getName().startsWith("export_")) {

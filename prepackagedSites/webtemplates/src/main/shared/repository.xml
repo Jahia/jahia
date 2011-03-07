@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
-    <users>
-        <author j:nodename="author" jcr:created="2009-05-19T15:20:25.161+02:00" jcr:lastModified="2009-05-19T15:20:25.373+02:00" jcr:createdBy="author" jcr:primaryType="jnt:user" jcr:uuid="a91eb8de-dd97-4bba-8abf-b347d21ecd58" jcr:lastModifiedBy="author" j:fullpath="/users/author" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled">
-            <files j:nodename="files" jcr:created="2009-05-19T15:20:25.162+02:00" jcr:lastModified="2009-05-19T15:20:25.372+02:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="edc8059f-e989-4d97-9a86-644a70fa35eb" jcr:lastModifiedBy="author" j:fullpath="/users/author/files">
-                <private j:nodename="private" jcr:created="2009-05-19T15:20:25.162+02:00" jcr:lastModified="2009-05-19T15:20:25.371+02:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="05e61ca0-8c46-424d-ade6-5d75bd8f8f8f" jcr:lastModifiedBy="author" j:fullpath="/users/author/files/private" jcr:mixinTypes="jmix:accessControlled">
+    <shared j:filename="shared" jcr:created="2011-03-07T17:02:04.752+01:00" jcr:lastModified="2011-03-07T17:02:05.274+01:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="c7282303-20e0-4a34-9fce-61c25d59ad92" jcr:lastModifiedBy="root" j:fullpath="/content/shared">
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"></GRANT_jcr_read_g_users>
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"></GRANT_jcr_write_g_users>
+        </j:acl>
+        <files j:filename="files" jcr:created="2011-03-07T17:02:04.754+01:00" jcr:lastModified="2011-03-07T17:02:05.272+01:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="9c6f1e39-a931-45f1-bb5d-e567f8701d89" jcr:lastModifiedBy="root" j:fullpath="/content/shared/files"></files>
+        <mashups j:filename="mashups" jcr:created="2011-03-07T17:02:04.755+01:00" jcr:lastModified="2011-03-07T17:02:05.273+01:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="1e5515e3-01fc-4f39-9561-4bb0b1021677" jcr:lastModifiedBy="root" j:fullpath="/content/shared/mashups"></mashups>
+    </shared>
+    <users j:filename="users" jcr:created="2011-03-07T17:02:04.755+01:00" jcr:lastModified="2011-03-07T17:02:41.722+01:00" jcr:createdBy="root" j:usersFolderSkeleton="user.xml" jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:usersFolder" jcr:uuid="68485c62-35d6-4085-b388-97814e365709" jcr:lastModifiedBy="root" j:fullpath="/content/users">
+        <author j:filename="author" jcr:created="2011-03-07T17:02:39.783+01:00" jcr:lastModified="2011-03-07T17:02:39.957+01:00" jcr:createdBy="author" jcr:primaryType="jnt:userFolder" jcr:uuid="2fe0a5f8-4333-459a-b2ac-b3f6ec478dc5" jcr:lastModifiedBy="author" j:fullpath="/content/users/author">
+            <files j:filename="files" jcr:created="2011-03-07T17:02:39.783+01:00" jcr:lastModified="2011-03-07T17:02:42.675+01:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="c93d2b66-336d-4f26-a82f-8e3c539d6f5a" jcr:lastModifiedBy="root" j:fullpath="/content/users/author/files">
+                <private j:filename="private" jcr:created="2011-03-07T17:02:39.783+01:00" jcr:lastModified="2011-03-07T17:02:42.686+01:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="89e3d3c9-d2bf-45d5-9ab7-a4f2993a43a1" jcr:lastModifiedBy="root" j:fullpath="/content/users/author/files/private">
                     <j:acl jcr:primaryType="jnt:acl">
                         <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
                         <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
                     </j:acl>
-                    <imports j:nodename="imports" jcr:created="2009-05-19T15:20:25.163+02:00" jcr:lastModified="2009-05-19T15:20:25.370+02:00" jcr:createdBy="author" jcr:primaryType="jnt:importDropBox" jcr:uuid="0cda9a04-2582-41d7-a41d-8f2b6fed4e3b" jcr:lastModifiedBy="author" j:fullpath="/users/author/files/private/imports"></imports>
+                    <imports j:filename="imports" jcr:created="2011-03-07T17:02:39.784+01:00" jcr:lastModified="2011-03-07T17:02:39.952+01:00" jcr:createdBy="author" jcr:primaryType="jnt:importDropBox" jcr:uuid="98b0dd9c-ec2b-4112-b5f4-aa8db7002217" jcr:lastModifiedBy="author" j:fullpath="/content/users/author/files/private/imports"></imports>
+                    <RequestFromWebsite j:filename="RequestFromWebsite" jcr:created="2011-03-07T17:02:41.940+01:00" jcr:lastModified="2011-03-07T17:02:42.697+01:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="a5e1e76e-6fbd-45ff-a3cc-80ff50a3b535" jcr:lastModifiedBy="root" j:fullpath="/content/users/author/files/private/RequestFromWebsite"></RequestFromWebsite>
                 </private>
+                <steven.jpg j:filename="steven.jpg" jcr:created="2011-03-07T17:02:41.944+01:00" jcr:lastModified="2011-03-07T17:02:42.707+01:00" j:width="136" jcr:createdBy="root" j:height="150" jcr:primaryType="jnt:file" jcr:mixinTypes="jmix:image" jcr:uuid="4edd6726-f04e-41f1-bb66-7c6c6d582b30" jcr:lastModifiedBy="root" j:fullpath="/content/users/author/files/steven.jpg">
+                    <jcr:content jcr:lastModified="2011-03-07T17:02:41.951+01:00" jcr:mimeType="image/jpeg" jcr:primaryType="jnt:resource" jcr:uuid="85a67059-b67a-4f7f-a26a-5691b9b14067"></jcr:content>
+                    <thumbnail jcr:lastModified="2011-03-07T17:02:41.956+01:00" jcr:mimeType="image/jpeg" jcr:primaryType="jnt:extraResource" jcr:uuid="8dc6a6ad-912f-4281-9a5e-20fb86c42571"></thumbnail>
+                    <thumbnail2 jcr:lastModified="2011-03-07T17:02:41.960+01:00" jcr:mimeType="image/jpeg" jcr:primaryType="jnt:extraResource" jcr:uuid="d154ac93-72c6-45ec-96b0-f79282730a0c"></thumbnail2>
+                </steven.jpg>
             </files>
-            <portlets j:nodename="portlets" jcr:created="2009-05-19T15:20:25.163+02:00" jcr:lastModified="2009-05-19T15:20:25.373+02:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="ba11bccc-1c0b-432d-8d8b-3464b580290c" jcr:lastModifiedBy="author" j:fullpath="/users/author/portlets"></portlets>
+            <mashups j:filename="mashups" jcr:created="2011-03-07T17:02:39.785+01:00" jcr:lastModified="2011-03-07T17:02:39.955+01:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="8d83b64f-fc4a-4971-8f4b-dd2d2b5ae1e3" jcr:lastModifiedBy="author" j:fullpath="/content/users/author/mashups"></mashups>
+            <preferences j:filename="preferences" jcr:lastModified="2011-03-07T17:02:39.956+01:00" jcr:createdBy="author" jcr:primaryType="jnt:preferences" jcr:uuid="42fb8a36-cfb9-465f-aa7f-c757fd5b6be3" jcr:lastModifiedBy="author">
+                <j:acl jcr:primaryType="jnt:acl">
+                    <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
+                    <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
+                </j:acl>
+            </preferences>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_u_author j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:author" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_author>
                 <DENY_u_author j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:author" j:privileges="" j:aceType="DENY"></DENY_u_author>
@@ -19,54 +39,142 @@
                 <DENY_u_root j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:author" j:privileges="" j:aceType="DENY"></DENY_u_root>
             </j:acl>
         </author>
-        <publisher j:nodename="publisher" jcr:created="2009-05-19T15:20:25.430+02:00" jcr:lastModified="2009-05-19T15:20:25.578+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:user" jcr:uuid="a20e12d2-957b-4c5d-ac6d-3442d700f52d" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled">
-            <files j:nodename="files" jcr:created="2009-05-19T15:20:25.430+02:00" jcr:lastModified="2009-05-19T15:20:25.577+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="b08b62af-d816-4977-b4b7-b987f958e1cd" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher/files">
-                <private j:nodename="private" jcr:created="2009-05-19T15:20:25.431+02:00" jcr:lastModified="2009-05-19T15:20:25.576+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="06786e8d-821e-4b60-b66d-703578a78cd0" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher/files/private" jcr:mixinTypes="jmix:accessControlled">
+        <publisher j:filename="publisher" jcr:created="2011-03-07T17:02:40.574+01:00" jcr:lastModified="2011-03-07T17:02:40.813+01:00" jcr:createdBy="publisher" jcr:primaryType="jnt:userFolder" jcr:uuid="bb35fbb8-5c68-4bc9-b744-6c772b99d0ec" jcr:lastModifiedBy="publisher" j:fullpath="/content/users/publisher">
+            <files j:filename="files" jcr:created="2011-03-07T17:02:40.574+01:00" jcr:lastModified="2011-03-07T17:02:40.810+01:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="52687032-6f62-4daa-b630-3ae659639e85" jcr:lastModifiedBy="publisher" j:fullpath="/content/users/publisher/files">
+                <private j:filename="private" jcr:created="2011-03-07T17:02:40.574+01:00" jcr:lastModified="2011-03-07T17:02:40.807+01:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="4184520d-5dde-40d9-9f5c-04c3eea96ea5" jcr:lastModifiedBy="publisher" j:fullpath="/content/users/publisher/files/private">
                     <j:acl jcr:primaryType="jnt:acl">
                         <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
                         <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
                     </j:acl>
-                    <imports j:nodename="imports" jcr:created="2009-05-19T15:20:25.432+02:00" jcr:lastModified="2009-05-19T15:20:25.575+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:importDropBox" jcr:uuid="c1a44595-0961-4aa0-a438-8a958ecb570c" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher/files/private/imports"></imports>
+                    <imports j:filename="imports" jcr:created="2011-03-07T17:02:40.575+01:00" jcr:lastModified="2011-03-07T17:02:40.806+01:00" jcr:createdBy="publisher" jcr:primaryType="jnt:importDropBox" jcr:uuid="550f6de7-e2c9-47fd-bc1b-897c31b6de66" jcr:lastModifiedBy="publisher" j:fullpath="/content/users/publisher/files/private/imports"></imports>
                 </private>
             </files>
-            <portlets j:nodename="portlets" jcr:created="2009-05-19T15:20:25.432+02:00" jcr:lastModified="2009-05-19T15:20:25.577+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="292a14b4-e2ec-43fa-bfab-923ba4bca0ba" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher/portlets"></portlets>
+            <mashups j:filename="mashups" jcr:created="2011-03-07T17:02:40.575+01:00" jcr:lastModified="2011-03-07T17:02:40.809+01:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="a02b866d-9a0a-4c76-b8d6-0f60c5f4b111" jcr:lastModifiedBy="publisher" j:fullpath="/content/users/publisher/mashups"></mashups>
+            <preferences j:filename="preferences" jcr:lastModified="2011-03-07T17:02:40.811+01:00" jcr:createdBy="publisher" jcr:primaryType="jnt:preferences" jcr:uuid="1167d72d-028c-4f43-bce3-5b0ecf6bfd9d" jcr:lastModifiedBy="publisher">
+                <j:acl jcr:primaryType="jnt:acl">
+                    <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
+                    <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
+                </j:acl>
+            </preferences>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_u_publisher j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:publisher" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_publisher>
                 <DENY_u_publisher j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:publisher" j:privileges="" j:aceType="DENY"></DENY_u_publisher>
             </j:acl>
         </publisher>
-        <siteadmin j:nodename="siteadmin" jcr:created="2009-05-19T15:20:25.629+02:00" jcr:lastModified="2009-05-19T15:20:25.776+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:user" jcr:uuid="b29026fe-503b-4e4d-829b-341ddb6936fe" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled">
-            <files j:nodename="files" jcr:created="2009-05-19T15:20:25.629+02:00" jcr:lastModified="2009-05-19T15:20:25.775+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="c91076fd-7d21-4b1e-8df9-7b8083eafb2e" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin/files">
-                <private j:nodename="private" jcr:created="2009-05-19T15:20:25.630+02:00" jcr:lastModified="2009-05-19T15:20:25.774+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="38c19e36-11a0-4388-8036-48bdaf3f2267" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin/files/private" jcr:mixinTypes="jmix:accessControlled">
+        <siteadmin j:filename="siteadmin" jcr:created="2011-03-07T17:02:40.951+01:00" jcr:lastModified="2011-03-07T17:02:41.147+01:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:userFolder" jcr:uuid="c63f0463-c64e-43ee-9750-e89540d8e8ee" jcr:lastModifiedBy="siteadmin" j:fullpath="/content/users/siteadmin">
+            <files j:filename="files" jcr:created="2011-03-07T17:02:40.951+01:00" jcr:lastModified="2011-03-07T17:02:41.146+01:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="323dc160-5107-4ddc-9fd9-72d9da252c83" jcr:lastModifiedBy="siteadmin" j:fullpath="/content/users/siteadmin/files">
+                <private j:filename="private" jcr:created="2011-03-07T17:02:40.951+01:00" jcr:lastModified="2011-03-07T17:02:41.145+01:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="d9a5ed6d-ee26-46ad-823c-8b7ccebbd092" jcr:lastModifiedBy="siteadmin" j:fullpath="/content/users/siteadmin/files/private">
                     <j:acl jcr:primaryType="jnt:acl">
                         <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
                         <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
                     </j:acl>
-                    <imports j:nodename="imports" jcr:created="2009-05-19T15:20:25.631+02:00" jcr:lastModified="2009-05-19T15:20:25.773+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:importDropBox" jcr:uuid="7b2eef0c-f385-496e-8405-15d1f9d353f5" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin/files/private/imports"></imports>
+                    <imports j:filename="imports" jcr:created="2011-03-07T17:02:40.953+01:00" jcr:lastModified="2011-03-07T17:02:41.144+01:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:importDropBox" jcr:uuid="07df8f72-d0c3-43a8-b848-ff49d5dc1766" jcr:lastModifiedBy="siteadmin" j:fullpath="/content/users/siteadmin/files/private/imports"></imports>
                 </private>
             </files>
-            <portlets j:nodename="portlets" jcr:created="2009-05-19T15:20:25.631+02:00" jcr:lastModified="2009-05-19T15:20:25.774+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="ee7cf6d6-f8ef-4248-800a-b0cf26eafeef" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin/portlets"></portlets>
+            <mashups j:filename="mashups" jcr:created="2011-03-07T17:02:40.953+01:00" jcr:lastModified="2011-03-07T17:02:41.145+01:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="d6e86708-9330-4e7d-87c1-d597e8124bb9" jcr:lastModifiedBy="siteadmin" j:fullpath="/content/users/siteadmin/mashups"></mashups>
+            <preferences j:filename="preferences" jcr:lastModified="2011-03-07T17:02:41.147+01:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:preferences" jcr:uuid="6f328c9d-28e7-4a75-ab19-dd93e06d2b96" jcr:lastModifiedBy="siteadmin">
+                <j:acl jcr:primaryType="jnt:acl">
+                    <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
+                    <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
+                </j:acl>
+            </preferences>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_u_siteadmin j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:siteadmin" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_siteadmin>
                 <DENY_u_siteadmin j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:siteadmin" j:privileges="" j:aceType="DENY"></DENY_u_siteadmin>
             </j:acl>
         </siteadmin>
-        <visitor j:nodename="visitor" jcr:created="2009-05-19T15:20:25.814+02:00" jcr:lastModified="2009-05-19T15:20:25.974+02:00" jcr:createdBy="visitor" jcr:primaryType="jnt:user" jcr:uuid="41e8524e-57e6-4ef7-b94a-f03e0cfccad3" jcr:lastModifiedBy="visitor" j:fullpath="/users/visitor" jcr:mixinTypes="jmix:accessControlled">
-            <files j:nodename="files" jcr:created="2009-05-19T15:20:25.814+02:00" jcr:lastModified="2009-05-19T15:20:25.973+02:00" jcr:createdBy="visitor" jcr:primaryType="jnt:folder" jcr:uuid="25f075f0-d454-4fbd-ad76-9e47b4219c0d" jcr:lastModifiedBy="visitor" j:fullpath="/users/visitor/files">
-                <private j:nodename="private" jcr:created="2009-05-19T15:20:25.814+02:00" jcr:lastModified="2009-05-19T15:20:25.971+02:00" jcr:createdBy="visitor" jcr:primaryType="jnt:folder" jcr:uuid="5ff08fc0-87c7-4084-bd3a-06081b77b210" jcr:lastModifiedBy="visitor" j:fullpath="/users/visitor/files/private" jcr:mixinTypes="jmix:accessControlled">
+        <visitor j:filename="visitor" jcr:created="2011-03-07T17:02:41.209+01:00" jcr:lastModified="2011-03-07T17:02:41.450+01:00" jcr:createdBy="visitor" jcr:primaryType="jnt:userFolder" jcr:uuid="97cb9528-aa20-41aa-b167-6dbbc78286cd" jcr:lastModifiedBy="visitor" j:fullpath="/content/users/visitor">
+            <files j:filename="files" jcr:created="2011-03-07T17:02:41.209+01:00" jcr:lastModified="2011-03-07T17:02:41.448+01:00" jcr:createdBy="visitor" jcr:primaryType="jnt:folder" jcr:uuid="a54236a8-062f-4cd1-b559-ccb389f6038c" jcr:lastModifiedBy="visitor" j:fullpath="/content/users/visitor/files">
+                <private j:filename="private" jcr:created="2011-03-07T17:02:41.209+01:00" jcr:lastModified="2011-03-07T17:02:41.447+01:00" jcr:createdBy="visitor" jcr:primaryType="jnt:folder" jcr:uuid="ff8630e8-829d-4455-93f9-01174bf61f82" jcr:lastModifiedBy="visitor" j:fullpath="/content/users/visitor/files/private">
                     <j:acl jcr:primaryType="jnt:acl">
                         <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
                         <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
                     </j:acl>
-                    <imports j:nodename="imports" jcr:created="2009-05-19T15:20:25.815+02:00" jcr:lastModified="2009-05-19T15:20:25.970+02:00" jcr:createdBy="visitor" jcr:primaryType="jnt:importDropBox" jcr:uuid="d5026084-783a-4f76-a00e-cab36f71b9e5" jcr:lastModifiedBy="visitor" j:fullpath="/users/visitor/files/private/imports"></imports>
+                    <imports j:filename="imports" jcr:created="2011-03-07T17:02:41.211+01:00" jcr:lastModified="2011-03-07T17:02:41.447+01:00" jcr:createdBy="visitor" jcr:primaryType="jnt:importDropBox" jcr:uuid="08e4fd64-548b-4c86-b63a-d213bac368d8" jcr:lastModifiedBy="visitor" j:fullpath="/content/users/visitor/files/private/imports"></imports>
                 </private>
             </files>
-            <portlets j:nodename="portlets" jcr:created="2009-05-19T15:20:25.815+02:00" jcr:lastModified="2009-05-19T15:20:25.972+02:00" jcr:createdBy="visitor" jcr:primaryType="jnt:folder" jcr:uuid="55e5480e-8ec5-44c8-8d10-9c52d2d3fcd8" jcr:lastModifiedBy="visitor" j:fullpath="/users/visitor/portlets"></portlets>
+            <mashups j:filename="mashups" jcr:created="2011-03-07T17:02:41.211+01:00" jcr:lastModified="2011-03-07T17:02:41.449+01:00" jcr:createdBy="visitor" jcr:primaryType="jnt:folder" jcr:uuid="b235162b-7952-4092-afc4-8b6b279f473f" jcr:lastModifiedBy="visitor" j:fullpath="/content/users/visitor/mashups"></mashups>
+            <preferences j:filename="preferences" jcr:lastModified="2011-03-07T17:02:41.449+01:00" jcr:createdBy="visitor" jcr:primaryType="jnt:preferences" jcr:uuid="50428387-6e91-4f35-a7a1-213568ceaf4c" jcr:lastModifiedBy="visitor">
+                <j:acl jcr:primaryType="jnt:acl">
+                    <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
+                    <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
+                </j:acl>
+            </preferences>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_u_visitor j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:visitor" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_visitor>
                 <DENY_u_visitor j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:visitor" j:privileges="" j:aceType="DENY"></DENY_u_visitor>
             </j:acl>
         </visitor>
+        <root j:filename="root" jcr:created="2011-03-07T17:02:41.551+01:00" jcr:lastModified="2011-03-07T17:02:41.734+01:00" jcr:createdBy="root" jcr:primaryType="jnt:userFolder" jcr:uuid="fc7d6c45-1676-4e4e-b8bc-7d34aaf3638c" jcr:lastModifiedBy="root" j:fullpath="/content/users/root">
+            <files j:filename="files" jcr:created="2011-03-07T17:02:41.551+01:00" jcr:lastModified="2011-03-07T17:02:42.677+01:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="250a2720-214c-4ad0-8cb9-de3991abe5fd" jcr:lastModifiedBy="root" j:fullpath="/content/users/root/files">
+                <private j:filename="private" jcr:created="2011-03-07T17:02:41.551+01:00" jcr:lastModified="2011-03-07T17:02:41.732+01:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="0cb53fc9-1ad0-4b51-a9a5-5cf3e6f05804" jcr:lastModifiedBy="root" j:fullpath="/content/users/root/files/private">
+                    <j:acl jcr:primaryType="jnt:acl">
+                        <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
+                        <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
+                    </j:acl>
+                    <imports j:filename="imports" jcr:created="2011-03-07T17:02:41.553+01:00" jcr:lastModified="2011-03-07T17:02:51.635+01:00" jcr:createdBy="root" jcr:primaryType="jnt:importDropBox" jcr:uuid="91b70ee2-9ccd-4caa-9892-66664eecb630" jcr:lastModifiedBy="root" j:fullpath="/content/users/root/files/private/imports"></imports>
+                </private>
+                <steven.jpg j:filename="steven.jpg" jcr:created="2011-03-07T17:02:41.854+01:00" jcr:lastModified="2011-03-07T17:02:42.707+01:00" j:width="136" jcr:createdBy="root" j:height="150" jcr:primaryType="jnt:file" jcr:mixinTypes="jmix:image" jcr:uuid="0e6914e0-0265-42ea-9907-62148eb352d0" jcr:lastModifiedBy="root" j:fullpath="/content/users/root/files/steven.jpg">
+                    <jcr:content jcr:lastModified="2011-03-07T17:02:41.863+01:00" jcr:mimeType="image/jpeg" jcr:primaryType="jnt:resource" jcr:uuid="24ffc05e-8830-4e96-9c0f-491260473446"></jcr:content>
+                    <thumbnail jcr:lastModified="2011-03-07T17:02:41.867+01:00" jcr:mimeType="image/jpeg" jcr:primaryType="jnt:extraResource" jcr:uuid="967878b6-808b-4a04-a620-82abacd305ff"></thumbnail>
+                    <thumbnail2 jcr:lastModified="2011-03-07T17:02:41.871+01:00" jcr:mimeType="image/jpeg" jcr:primaryType="jnt:extraResource" jcr:uuid="b4efb840-a6f2-48e3-91c6-31ca47a79b21"></thumbnail2>
+                </steven.jpg>
+            </files>
+            <mashups j:filename="mashups" jcr:created="2011-03-07T17:02:41.553+01:00" jcr:lastModified="2011-03-07T17:02:41.734+01:00" jcr:createdBy="root" jcr:primaryType="jnt:folder" jcr:uuid="290b7512-3b76-4a6e-813b-c31b0b5b86a9" jcr:lastModifiedBy="root" j:fullpath="/content/users/root/mashups"></mashups>
+            <preferences j:filename="preferences" jcr:lastModified="2011-03-07T17:02:42.679+01:00" jcr:createdBy="root" jcr:primaryType="jnt:preferences" jcr:uuid="f368662d-5632-43d8-a921-bc38a54f25c1" jcr:lastModifiedBy="root">
+                <j:acl jcr:primaryType="jnt:acl">
+                    <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
+                    <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
+                </j:acl>
+                <layoutmanager j:filename="layoutmanager" jcr:lastModified="2011-03-07T17:02:42.701+01:00" jcr:createdBy="root" jcr:primaryType="jnt:preferenceProvider" jcr:uuid="6996001b-4b7c-4c43-a761-ee4163b8b613" jcr:lastModifiedBy="root">
+                    <preference j:filename="preference" jcr:lastModified="2011-03-07T17:02:42.697+01:00" jcr:createdBy="root" j:page="b999c353-9050-4d79-810e-eafc7098c11d" jcr:primaryType="jnt:layout" jcr:uuid="88194abf-7a2d-4319-aa00-d41d8a7a1b1b" jcr:lastModifiedBy="root">
+                        <j:item j:filename="j:item" j:rowIndex="0" jcr:lastModified="2011-03-07T17:02:42.694+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="cd563f2d-ddcb-4604-a992-0bec77270591" jcr:lastModifiedBy="root"></j:item>
+                        <j:item j:filename="j:item" j:rowIndex="0" jcr:lastModified="2011-03-07T17:02:42.694+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="f4e88af9-15d8-43c7-a1a4-0bedc6bc31fd" jcr:lastModifiedBy="root"></j:item>
+                    </preference>
+                    <preference j:filename="preference" j:liveEditable="true" jcr:lastModified="2011-03-07T17:02:42.699+01:00" jcr:createdBy="root" j:page="3806fa68-e3b4-4c38-86fc-460a6e487c6c" j:nbColumns="3" j:liveDraggable="true" jcr:primaryType="jnt:layout" jcr:uuid="6ce2cecc-573d-49a1-abe2-b392f474ec1b" jcr:lastModifiedBy="root">
+                        <j:item j:filename="j:item" j:rowIndex="0" jcr:lastModified="2011-03-07T17:02:42.693+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="56771d60-b931-4135-988f-611085138135" jcr:lastModifiedBy="root"></j:item>
+                        <j:item j:filename="j:item" j:rowIndex="0" jcr:lastModified="2011-03-07T17:02:42.695+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="1" jcr:primaryType="jnt:layoutItem" jcr:uuid="38c8f627-beff-43af-bf65-500ea7a1a79c" jcr:lastModifiedBy="root"></j:item>
+                        <j:item j:filename="j:item" j:rowIndex="0" jcr:lastModified="2011-03-07T17:02:42.696+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="2" jcr:primaryType="jnt:layoutItem" jcr:uuid="47011def-c3b8-426d-a6c2-015a650f5aa4" jcr:lastModifiedBy="root"></j:item>
+                        <j:item j:filename="j:item" j:rowIndex="1" jcr:lastModified="2011-03-07T17:02:42.696+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="7e0fa32d-27f6-4705-956d-1e09f5944d6c" jcr:lastModifiedBy="root"></j:item>
+                    </preference>
+                </layoutmanager>
+                <toolbar j:filename="toolbar" jcr:lastModified="2011-03-07T17:23:56.105+01:00" jcr:createdBy="root" jcr:primaryType="jnt:preferenceProvider" jcr:uuid="75e89599-0ddf-466f-bbca-1c47c04ff9cd" jcr:lastModifiedBy="root">
+                    <preference j:filename="preference" j:positionX="98" jcr:lastModified="2011-03-07T17:02:42.699+01:00" j:toolbarName="workflow" j:state="0" jcr:createdBy="root" jcr:uuid="537ba9e6-af4b-4b45-9b61-af9dc39643bc" jcr:lastModifiedBy="root" j:type="org.jahia.toolbar.workflow" j:positionY="164" j:toolbarIndex="1" j:display="true" jcr:primaryType="jnt:toolbarPreference"></preference>
+                    <preference j:filename="preference" j:positionX="0" jcr:lastModified="2011-03-07T17:23:56.108+01:00" j:toolbarName="switchingmode" j:state="0" jcr:createdBy="root" jcr:uuid="2a770901-390a-4c7a-929f-fdedddf830e0" jcr:lastModifiedBy="root" j:type="org.jahia.toolbar.switchingmode" j:positionY="0" j:toolbarIndex="0" j:display="true" jcr:primaryType="jnt:toolbarPreference"></preference>
+                </toolbar>
+                <simple j:filename="simple" jcr:lastModified="2011-03-07T17:02:42.701+01:00" jcr:createdBy="root" jcr:primaryType="jnt:preferenceProvider" jcr:uuid="27382008-f115-4ca0-89b8-1d8b980f3f74" jcr:lastModifiedBy="root">
+                    <preference j:filename="preference" jcr:lastModified="2011-03-07T17:02:42.698+01:00" jcr:createdBy="root" j:prefValue="/content/sites/ACME/mashups/Google Gadgets" jcr:primaryType="jnt:simplePreference" j:prefName="org.jahia.preferences.filemanager.savedopenpaths.websiteMashupRepository" jcr:uuid="9bf7a8c6-5cc9-4916-aa62-32625d64d08e" jcr:lastModifiedBy="root"></preference>
+                    <preference j:filename="preference" jcr:lastModified="2011-03-07T17:02:42.700+01:00" jcr:createdBy="root" j:prefValue="true" jcr:primaryType="jnt:simplePreference" j:prefName="inlineediting.activated" jcr:uuid="0447e78f-3ef1-456d-9fc5-4d4a6525a85d" jcr:lastModifiedBy="root"></preference>
+                </simple>
+            </preferences>
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_u_root j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:root" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_root>
+                <DENY_u_root j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:root" j:privileges="" j:aceType="DENY"></DENY_u_root>
+            </j:acl>
+        </root>
     </users>
+    <sites j:filename="sites" jcr:created="2011-03-07T17:02:04.756+01:00" jcr:lastModified="2011-03-07T17:02:43.278+01:00" jcr:createdBy="root" jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:virtualsitesFolder" jcr:uuid="37c9dfb1-d56a-4257-8c54-90b30f21a94a" jcr:lastModifiedBy="root" j:fullpath="/content/sites" j:virtualsitesFolderSkeleton="site.xml"></sites>
+    <imports j:filename="imports" jcr:created="2011-03-07T17:02:04.756+01:00" jcr:lastModified="2011-03-07T17:02:05.280+01:00" jcr:createdBy="root" jcr:primaryType="jnt:importDropBox" jcr:uuid="82d4cf6e-2d68-4b97-af7f-6e463c3317e3" jcr:lastModifiedBy="root" j:fullpath="/content/imports"></imports>
+    <layoutmanager j:filename="layoutmanager" jcr:created="2011-03-07T17:02:04.757+01:00" jcr:lastModified="2011-03-07T17:02:42.670+01:00" jcr:createdBy="root" jcr:primaryType="jnt:layoutManager" jcr:uuid="8ee21027-922c-4a73-95f8-d55937100989" jcr:lastModifiedBy="root" j:fullpath="/content/layoutmanager">
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"></GRANT_jcr_read_g_users>
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"></GRANT_jcr_write_g_users>
+        </j:acl>
+        <j:layout j:filename="j:layout" j:liveEditable="true" jcr:lastModified="2011-03-07T17:02:42.706+01:00" jcr:createdBy="root" j:page="79aafcbd-058f-422b-849d-9adfa75b0ae6" j:nbColumns="3" j:liveDraggable="true" jcr:primaryType="jnt:layout" jcr:uuid="c555ae3f-e033-42be-960d-44dff8803403" jcr:lastModifiedBy="root">
+            <j:item j:portlet="d1d8bb3d-4525-4b23-9b8f-537e4cab5d4c" j:filename="j:item" j:rowIndex="0" jcr:lastModified="2011-03-07T17:02:42.704+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="8c8d260a-f762-4f3a-b81d-6af32a1c9295" jcr:lastModifiedBy="root"></j:item>
+            <j:item j:portlet="ee20b930-1aa0-4d95-bf59-6e61945c59a1" j:filename="j:item" j:rowIndex="0" jcr:lastModified="2011-03-07T17:02:42.705+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="1" jcr:primaryType="jnt:layoutItem" jcr:uuid="6c6e02b7-3b6d-4baf-ad5a-fad92ab91aa9" jcr:lastModifiedBy="root"></j:item>
+            <j:item j:portlet="39e99e49-c188-4af1-ac6f-3919f520223f" j:filename="j:item" j:rowIndex="0" jcr:lastModified="2011-03-07T17:02:42.705+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="2" jcr:primaryType="jnt:layoutItem" jcr:uuid="41b3208f-5f6f-44ea-8068-5d375c534f52" jcr:lastModifiedBy="root"></j:item>
+            <j:item j:portlet="9950dabb-61d9-4d30-9ef2-ade15cad4255" j:filename="j:item" j:rowIndex="1" jcr:lastModified="2011-03-07T17:02:42.704+01:00" j:status="normalState" jcr:createdBy="root" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="f65b5d01-4cda-4673-8c42-03e35331265d" jcr:lastModifiedBy="root"></j:item>
+        </j:layout>
+    </layoutmanager>
+    <referencesKeeper j:filename="referencesKeeper" jcr:lastModified="2011-03-07T17:02:43.086+01:00" jcr:createdBy="root" jcr:primaryType="jnt:referencesKeeper" jcr:uuid="23f15dd9-24c6-4874-b9bb-004ea63e5848" jcr:lastModifiedBy="root">
+        <j:reference j:originalUuid="b999c353-9050-4d79-810e-eafc7098c11d" j:filename="j:reference" jcr:lastModified="2011-03-07T17:02:43.087+01:00" j:propertyName="j:page" jcr:createdBy="root" j:node="88194abf-7a2d-4319-aa00-d41d8a7a1b1b" jcr:primaryType="jnt:reference" jcr:uuid="d393e924-cc25-4650-afb5-7778549979d6" jcr:lastModifiedBy="root"></j:reference>
+    </referencesKeeper>
+    <mounts j:filename="mounts" jcr:created="2011-03-07T17:02:04.758+01:00" jcr:lastModified="2011-03-07T17:02:05.276+01:00" jcr:createdBy="root" jcr:primaryType="jnt:systemfolder" jcr:uuid="a5870d5c-4aef-4502-87ec-5584cbb5a807" jcr:lastModifiedBy="root" j:fullpath="/content/mounts">
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"></GRANT_jcr_read_g_users>
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"></GRANT_jcr_write_g_users>
+        </j:acl>
+    </mounts>
 </content>
 

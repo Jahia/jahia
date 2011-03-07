@@ -121,6 +121,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String ALIAS_USER = "alias";
     public static final String PARENT_TYPE = "parentType";
     public static final String RETURN_CONTENTTYPE = "returnContentType";
+    public static final String RESOURCE_ID = "resourceID";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -293,7 +294,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 logger.error(e.getMessage(), e);
             }
         } else {
-            performRedirect(null, null, req, resp, toParameterMapOfListOfString(req));
+            performRedirect(null, null, req, resp, toParameterMapOfListOfString(req), false);
         }
         String sessionID = "";
         HttpSession httpSession = req.getSession(false);
@@ -534,9 +535,18 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     }
 
-
+    /**
+     * This method allows you to define where you want to redircet the user after request.
+     * @param url
+     * @param path
+     * @param req
+     * @param resp
+     * @param parameters
+     * @param bypassCache If true we will append a parameter to the URL that should match the id of the resource to refresh
+     * @throws IOException
+     */
     public static void performRedirect(String url, String path, HttpServletRequest req, HttpServletResponse resp,
-                                       Map<String, List<String>> parameters) throws IOException {
+                                       Map<String, List<String>> parameters, boolean bypassCache) throws IOException {
         String renderedURL = null;
 
         List<String> stringList = parameters.get(NEW_NODE_OUTPUT_FORMAT);
@@ -563,6 +573,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
             renderedURL = decodedURL.substring(0, index) + url +
                     (!StringUtils.isEmpty(outputFormat) ? "." + outputFormat : "");
+        }
+        if (bypassCache) {
+            stringList = parameters.get(RESOURCE_ID);
+            String formuuid = !CollectionUtils.isEmpty(stringList) && !StringUtils.isBlank(stringList.get(
+                    0)) ? stringList.get(0) : UUID.randomUUID().toString();
+            renderedURL = renderedURL + "?ec=" + formuuid;
         }
         if (!StringUtils.isEmpty(renderedURL)) {
             if (StringUtils.isEmpty(stayOnPage)) {
@@ -628,7 +644,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
                     performRedirect(urlResolver.getRedirectUrl(), StringUtils.isEmpty(urlResolver.getVanityUrl()) ?
                             "/" + urlResolver.getLocale().toString() + urlResolver.getPath() :
-                            urlResolver.getVanityUrl(), req, resp, parameters);
+                            urlResolver.getVanityUrl(), req, resp, parameters, false);
                 } else {
                     Resource resource;
 
@@ -740,7 +756,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     }
                     req.getSession().setAttribute("formDatas", formDatas);
                     req.getSession().setAttribute("formError", "Your captcha is invalid");
-                    performRedirect("", urlResolver.getPath(), req, resp, parameters);
+                    performRedirect(urlResolver.getRedirectUrl(), urlResolver.getPath(), req, resp, parameters, true);
                     return;
                 }
                 Map<String,String> values = new HashMap<String, String>(m);
@@ -762,7 +778,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             }
                             req.getSession().setAttribute("formDatas", formDatas);
                             req.getSession().setAttribute("formError", "Your captcha is invalid");
-                            performRedirect("", urlResolver.getPath(), req, resp, parameters);
+                            performRedirect(renderContext.getMainResource().getNode().getPath(), urlResolver.getPath(), req, resp, parameters,
+                                    true);
                             return;
                         }
                         throw new AccessDeniedException();
@@ -793,7 +810,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         logger.error(e.getMessage(), e);
                     }
                 } else {
-                    performRedirect(result.getUrl(), urlResolver.getPath(), req, resp, parameters);
+                    performRedirect(result.getUrl(), urlResolver.getPath(), req, resp, parameters, false);
                 }
             } else {
                 resp.sendError(result.getResultCode());

@@ -78,13 +78,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
             "path", "template", "templateType", "acls", "context", "wrapped", "custom", "queryString",
-            "templateNodes"));
+            "templateNodes","resourceID"));
     private static final String CACHE_NAME = "HTMLNodeUsersACLs";
     private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
     public static final String PER_USER = "_perUser_";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
-    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}");
+    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}#{11}");
 
     private JahiaGroupManagerService groupManagerService;
     private Map<String, Set<JahiaGroup>> aclGroups = null;
@@ -130,7 +130,19 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 args.add(templateType);
             } else if ("queryString".equals(field)) {
                 final String queryString = renderContext.getRequest().getQueryString();
-                args.add(queryString != null ? queryString : "");
+                if (renderContext.getRequest().getParameter("ec") != null) {
+                    try {
+                        if (renderContext.getRequest().getParameter("ec").equals(resource.getNode().getIdentifier())) {
+                            args.add(queryString != null ? queryString : "");
+                        } else {
+                            args.add("");
+                        }
+                    } catch (RepositoryException e) {
+                        logger.debug(e.getMessage(),e);
+                    }
+                } else {
+                    args.add(queryString != null ? queryString : "");
+                }
             } else if ("acls".equals(field)) {
                 args.add(appendAcls(resource, renderContext));
             } else if ("wrapped".equals(field)) {
@@ -142,6 +154,12 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             } else if ("templateNodes".equals(field)) {
                 final Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
                 args.add(t != null ? t.serialize() : "");
+            } else if ("resourceID".equals(field)) {
+                try {
+                    args.add(resource.getNode().getIdentifier());
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
         return args.toArray(new String[KNOWN_FIELDS.size()]);

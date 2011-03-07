@@ -135,7 +135,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         Element element = null;
         final Cache cache = cacheProvider.getCache();
-        final boolean cacheable = !notCacheableFragment.contains(key);
+        boolean cacheable = !notCacheableFragment.contains(key);
+        if (renderContext.getRequest().getParameter("ec") != null && renderContext.getRequest().getParameter(
+                "ec").equals(resource.getNode().getIdentifier())) {
+            cacheable = false;
+        }
         String perUserKey = key.replaceAll(DefaultCacheKeyGenerator.PER_USER, renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() +
                 renderContext.getMainResource().getResolvedTemplate());
@@ -235,7 +239,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
             }
         }
-        final boolean cacheable = !notCacheableFragment.contains(key);
+        boolean cacheable = !notCacheableFragment.contains(key);
+        if (renderContext.getRequest().getParameter("ec") != null && renderContext.getRequest().getParameter(
+                "ec").equals(resource.getNode().getIdentifier())) {
+            cacheable = false;
+        }
         final Cache cache = cacheProvider.getCache();
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
@@ -466,6 +474,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         String nodePath = "/"+StringUtils.substringAfter(split[1],"/");
                         String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1],"/")), nodePath);
                         cacheKey = keyGenerator.replaceField(cacheKey, "acls", acls);
+                        if (renderContext.getRequest().getParameter("ec") != null && renderContext.getRequest().getParameter(
+                "ec").equals(keyAttrbs.get("resourceID"))) {
+                            cacheKey = keyGenerator.replaceField(cacheKey, "queryString",renderContext.getRequest().getQueryString());
+                        }
                     } catch (ParseException e) {
                         logger.error(e.getMessage(), e);
                     } catch (PathNotFoundException e) {

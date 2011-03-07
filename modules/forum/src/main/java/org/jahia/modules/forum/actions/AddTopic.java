@@ -81,7 +81,8 @@ public class AddTopic extends Action {
         }
 
         jcrSessionWrapper.save();
-
+        // Remove any existing REDIRECT_TO parameter to be sure to go to node.getPath
+        parameters.remove(Render.REDIRECT_TO);
         return new ActionResult(HttpServletResponse.SC_OK, node.getPath(), Render.serializeNodeToJSON(newNode));
     }
 }

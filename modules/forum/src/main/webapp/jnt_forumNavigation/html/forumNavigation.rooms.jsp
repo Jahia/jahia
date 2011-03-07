@@ -27,12 +27,14 @@
           <li class="forum-list-header">
             <dl class="icon">
               <dt>
+                <c:if test="${jcr:hasPermission(room, 'deleteRoom')}">
                 <ul class="forum-profile-icons">
                   <li class="delete-post-icon">
                   	<fmt:message key="confirm.delete.room" var="confirmMsg"/>
                   	<a title="<fmt:message key='delete.room'/>" href="#"
 						onclick="if (window.confirm('${functions:escapeJavaScript(confirmMsg)}')) {document.getElementById('jahia-forum-room-delete-${room.identifier}').submit();} return false;"><span><fmt:message key='delete.room'/></span></a></li>
                 </ul>
+                </c:if>
                 <a href="${url.base}${room.path}.html">${room.properties['jcr:title'].string}</a>
                 <c:if test="${jcr:hasPermission(room, 'deleteRoom')}">
                   <template:tokenizedForm>

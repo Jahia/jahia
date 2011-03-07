@@ -26,13 +26,14 @@
                 <input type="hidden" name="nodeType" value="jnt:post"/>
                 <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
                 <input type="hidden" name="newNodeOutputFormat" value="html"/>
+                <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
 
                 <div id="formGenericComment">
 
                     <fieldset>
                         <p class="field">
                             <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
-                            <input class="" value=""
+                            <input class="" value="${sessionScope.formDatas['jcr:title'][0]}"
                                    type="text" size="35" id="comment-title" name="jcr:title"
                                    tabindex="1"/>
                         </p>
@@ -42,7 +43,7 @@
                                     key="comment.body"/></label>
                             <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
                                       name="content"
-                                      tabindex="2"></textarea>
+                                      tabindex="2"><c:if test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if></textarea>
                         </p>
 
                         <c:if test="${not renderContext.loggedIn}">

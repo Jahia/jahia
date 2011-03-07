@@ -38,37 +38,6 @@ when we flush this entry we will flush the whole cache
 		</property>
     </bean>
 
-	<bean id="ResponseCacheControlFilter" class="org.jahia.bin.filters.ResponseCacheControlFilter">
-		<!-- turns this filter on/off -->
-		<property name="enabled" value="true"/>
-		<!-- Expires should be the number of seconds from now when a given static resource should expire -->
-		<property name="expires" value="2678400"/>
-		<!--
-			Never-Expires should be the number of seconds from now when a given static resource should expire.
-            This option is used for resources that are never changed (e.g. GWT or those that contain a version number in the file name).
-		-->
-		<property name="neverExpires" value="31536000"/>
-		<!--
-            Regular expression pattern for resources, which should be cached by the browser by setting 'Expires'
-            header to the configured value (see 'expires' property above).
-		-->
-		<property name="cachedResources" value=".*"/>
-		<!--
-            Regular expression pattern for resources, which should be cached forever (see 'neverExpires' property above).
-            This condition takes precedence over the 'cachedResources' parameter.
-		-->
-		<property name="foreverCachedResources">
-			<value>.*/gwt/.*\.cache\..*</value>
-		</property>
-		<!--
-            Regular expression pattern of resources, for which no-cache headers will be set.
-            This condition takes precedence over the 'foreverCachedResources' and 'cachedResources' properties.
-		-->
-		<property name="noCacheResources">
-			<value>(.*/Jahia(/.*)?|.*/cms/.*|.*/files/.*|.*\.jsp(\?.*)?|.*/gwt/.*\.nocache\..*|.*/tools/.*)</value>
-		</property>
-	</bean>
-
 	<bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <!-- Time to wait before going to render generation if someone is already asking for the same key put 0 for waiting forever-->

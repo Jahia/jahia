@@ -29,7 +29,9 @@ public class EndInit extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         long initializationTime = System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime() ;
+        logger.info("------------------------------------------------------------------------------------------------");
         logger.info("Jahia is now ready. Initialization completed in " + (initializationTime/1000) + " seconds");
+        logger.info("------------------------------------------------------------------------------------------------");
         initialized = true;
     }
 

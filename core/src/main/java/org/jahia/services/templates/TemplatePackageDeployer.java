@@ -238,8 +238,8 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
 
     private ServletContext servletContext;
 
-	private ApplicationEventPublisher applicationEventPublisher;
-    
+    private ApplicationEventPublisher applicationEventPublisher;
+
     private boolean isValidPackage(JahiaTemplatesPackage pkg) {
         if (StringUtils.isEmpty(pkg.getName())) {
             logger.warn("Template package name '" + pkg.getName() + "' is not valid. Setting it to 'templates'.");
@@ -515,7 +515,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
         this.servletContext = servletContext;
     }
 
-	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-		this.applicationEventPublisher = applicationEventPublisher;
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 }

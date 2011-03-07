@@ -77,15 +77,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * 
      * @author Sergiy Shyrkov
      */
-	public static class TemplatePackageRedeployedEvent extends ApplicationEvent {
-		private static final long serialVersionUID = 789720524077775537L;
+    public static class TemplatePackageRedeployedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 789720524077775537L;
 
-		public TemplatePackageRedeployedEvent(Object source) {
-			super(source);
-		}
-	}
+        public TemplatePackageRedeployedEvent(Object source) {
+            super(source);
+        }
+    }
 
-	private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
+    private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
             if (o1.isDefault()) return 99;
             if (o2.isDefault()) return -99;
@@ -93,7 +93,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     };
 
-	private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
     private TemplatePackageDeployer templatePackageDeployer;
 
@@ -350,7 +350,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } else if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache
             JahiaTemplatesRBLoader.clearCache();
-	    }
+        }
     }
 
     public void createModule(String moduleName, boolean isModule) {

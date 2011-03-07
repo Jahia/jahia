@@ -34,14 +34,13 @@ package org.jahia.services.render.scripting;
 
 import org.jahia.utils.StringResponseWrapper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.render.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.*;
 import java.util.Enumeration;
 
@@ -55,11 +54,23 @@ import java.util.Enumeration;
  */
 public class RequestDispatcherScript implements Script {
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(RequestDispatcherScript.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestDispatcherScript.class);
 
-    private RequestDispatcher rd;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+    private static void dumpRequestAttributes(HttpServletRequest request) {
+        // Let's enumerate request attribute to see what we are exposing.
+        @SuppressWarnings("rawtypes")
+        Enumeration attributeNamesEnum = request.getAttributeNames();
+        while (attributeNamesEnum.hasMoreElements()) {
+            String currentAttributeName = (String) attributeNamesEnum.nextElement();
+            String currentAttributeValue = request.getAttribute(currentAttributeName).toString();
+            if (currentAttributeValue.length() < 80) {
+                logger.debug("Request attribute " + currentAttributeName + "=" + currentAttributeValue);
+            } else {
+                logger.debug("Request attribute " + currentAttributeName + "=" + currentAttributeValue.substring(0,
+                        80) + " (first 80 chars)");
+            }
+        }
+    }
 
     private View view;
 
@@ -88,27 +99,17 @@ public class RequestDispatcherScript implements Script {
             }
         }
 
-        this.request = context.getRequest();
-        this.response = context.getResponse();
-        rd = request.getRequestDispatcher(view.getPath());
+        HttpServletRequest request = context.getRequest();
+        HttpServletResponse response = context.getResponse();
+        RequestDispatcher rd = request.getRequestDispatcher(view.getPath());
 
         Object oldModule = request.getAttribute("currentModule");
         request.setAttribute("currentModule", view.getModule());
 
         if (logger.isDebugEnabled()) {
-            // Let's enumerate request attribute to see what we are exposing.
-            Enumeration attributeNamesEnum = request.getAttributeNames();
-            while (attributeNamesEnum.hasMoreElements()) {
-                String currentAttributeName = (String) attributeNamesEnum.nextElement();
-                String currentAttributeValue = request.getAttribute(currentAttributeName).toString();
-                if (currentAttributeValue.length() < 80) {
-                    logger.debug("Request attribute " + currentAttributeName + "=" + currentAttributeValue);
-                } else {
-                    logger.debug("Request attribute " + currentAttributeName + "=" + currentAttributeValue.substring(0,
-                            80) + " (first 80 chars)");
-                }
-            }
+            dumpRequestAttributes(request);
         }
+        
         StringResponseWrapper wrapper = new StringResponseWrapper(response);
         try {
             rd.include(request, wrapper);

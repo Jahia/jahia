@@ -65,7 +65,7 @@ import java.util.*;
  *
  * @author Thomas Draier
  */
-public class FileSystemScriptResolver implements ScriptResolver, ApplicationListener {
+public class FileSystemScriptResolver implements ScriptResolver, ApplicationListener<ApplicationEvent> {
 
     private static final String JSP_EXTENSION = "jsp";
     private static final String PHP_EXTENSION = "php";
@@ -297,11 +297,11 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
         }
     }
 
-	public void onApplicationEvent(ApplicationEvent event) {
-	    if (event instanceof TemplatePackageRedeployedEvent) {
-	        resourcesCache.clear();
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof TemplatePackageRedeployedEvent) {
+            resourcesCache.clear();
             viewSetCache.clear();
-	        FileSystemView.clearPropertiesCache();
-	    }
+            FileSystemView.clearPropertiesCache();
+        }
     }
 }

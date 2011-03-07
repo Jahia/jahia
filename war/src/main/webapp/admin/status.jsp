@@ -137,7 +137,7 @@
                      <fmt:message key="org.jahia.admin.serverStatus.label"/>
                 </div>
                 <div style="float:right;display:inline;padding:5px 10px 0 0">
-                    <a href="<c:url value='/tools/systemInfo.jsp?file=true'/>"><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/>Download full status</a>
+                    <a href="<c:url value='/tools/systemInfo.jsp?file=true'/>" target="_blank"><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/>Download full status</a>
                 </div>
             </div>
 <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"status","&sub=process")%>' method="post">

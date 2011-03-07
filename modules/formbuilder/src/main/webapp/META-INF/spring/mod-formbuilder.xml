@@ -26,6 +26,6 @@
         <property name="name" value="mail"/>
         <property name="mailService" ref="MailService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
-        <property name="mailTemplatePath" value="/action/mail/body.vm"/>
+        <property name="mailTemplatePath" value="/mails/templates/action/body.vm"/>
     </bean>
 </beans>

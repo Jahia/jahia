@@ -16,6 +16,7 @@
                 /cms/**/*.raw = authcBasic, roles[templateManager]
                 /modules/**/META-INF/** = authcBasic, roles[templateManager]
                 /modules/**/WEB-INF/** = authcBasic, roles[templateManager]
+                /modules/**/mails/** = authcBasic, roles[templateManager]
                 /modules/**/*.cnd = authcBasic, roles[templateManager]
                 /modules/**/*.drl = authcBasic, roles[templateManager]
                 /modules/**/*.dsl = authcBasic, roles[templateManager]

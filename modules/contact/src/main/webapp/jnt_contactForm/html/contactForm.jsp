@@ -144,7 +144,7 @@
 <c:if test="${jcr:hasPermission(currentNode,'viewContacts')}">
     <template:addResources type="javascript" resources="jquery.js"/>
     <fieldset>
-        <legend>Results</legend>
+        <legend><fmt:message key="label.results"/></legend>
 
         <div id="results-${currentNode.identifier}" >
         </div>

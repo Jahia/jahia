@@ -71,9 +71,13 @@ public class RulesNotificationService {
 
     private ScriptEngineUtils scriptEngineUtils;
 
-    public static synchronized RulesNotificationService getInstance() {
+    public static RulesNotificationService getInstance() {
         if (instance == null) {
-            instance = new RulesNotificationService();
+            synchronized (RulesNotificationService.class) {
+                if (instance == null) {
+                    instance = new RulesNotificationService();
+                }
+            }
         }
         return instance;
     }
@@ -86,6 +90,9 @@ public class RulesNotificationService {
 
     public void notifyNewUser(AddedNodeFact node, final String template, KnowledgeHelper drools)
             throws RepositoryException, ScriptException, IOException {
+        if (!notificationService.isEnabled()) {
+            return;
+        }
         JCRNodeWrapper userNode = node.getNode();
         if (userNode.hasProperty("j:email") && !userNode.getProperty("j:external").getBoolean()) {
             String toMail = userNode.getProperty("j:email").getString();
@@ -108,6 +115,9 @@ public class RulesNotificationService {
     public void notifyCurrentUser(User user, final String template, final String fromMail, final String ccList,
                                   final String bccList, KnowledgeHelper drools)
             throws RepositoryException, ScriptException, IOException {
+        if (!notificationService.isEnabled()) {
+            return;
+        }
         JahiaUser userNode = user.getJahiaUser();
         if (userNode.getProperty("j:email") != null) {
             String toMail = userNode.getProperty("j:email");
@@ -119,6 +129,9 @@ public class RulesNotificationService {
 
     public void notifyCurrentUser(User user, final String template, final String fromMail, KnowledgeHelper drools)
             throws RepositoryException, ScriptException, IOException {
+        if (!notificationService.isEnabled()) {
+            return;
+        }
         JahiaUser userNode = user.getJahiaUser();
         if (userNode.getProperty("j:email") != null) {
             String toMail = userNode.getProperty("j:email");
@@ -141,6 +154,9 @@ public class RulesNotificationService {
 
     public void notifyUser(String user, final String template, final String fromMail, KnowledgeHelper drools)
             throws RepositoryException, ScriptException, IOException {
+        if (!notificationService.isEnabled()) {
+            return;
+        }
         JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
         if (userNode.getProperty("j:email") != null) {
             String toMail = userNode.getProperty("j:email");
@@ -151,6 +167,9 @@ public class RulesNotificationService {
     public void notifyUser(String user, final String template, final String fromMail, final String ccList,
                            final String bccList, KnowledgeHelper drools)
             throws RepositoryException, ScriptException, IOException {
+        if (!notificationService.isEnabled()) {
+            return;
+        }
         JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
         if (userNode.getProperty("j:email") != null) {
             String toMail = userNode.getProperty("j:email");
@@ -160,6 +179,9 @@ public class RulesNotificationService {
 
     private void sendMail(String template, Object user, String toMail, String fromMail, String ccList, String bcclist,
                           Locale locale) throws RepositoryException, ScriptException {
+        if (!notificationService.isEnabled()) {
+            return;
+        }
         if (StringUtils.isEmpty(fromMail)) {
             logger.warn("A mail couldn't be sent because from: has no recipient");
             return;

@@ -65,6 +65,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
     private static final String PROVIDER_NAME = "jcr";
+    private Properties properties = null;
 
     public JCRGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
         this(nodeWrapper, jcrTemplate, siteID, false);
@@ -93,22 +94,26 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      *         property is present.
      */
     public Properties getProperties() {
-        try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Properties>() {
-                 public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                     Properties properties = new Properties();
-                     PropertyIterator iterator = getNode(session).getProperties();
-                     for (; iterator.hasNext();) {
-                         Property property = iterator.nextProperty();
-                         if (!property.isMultiple()) {
-                             properties.put(property.getName(), property.getString());
+        if (properties == null) {
+            try {
+                properties = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Properties>() {
+                     public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                         Properties properties = new Properties();
+                         PropertyIterator iterator = getNode(session).getProperties();
+                         for (; iterator.hasNext();) {
+                             Property property = iterator.nextProperty();
+                             if (!property.isMultiple()) {
+                                 properties.put(property.getName(), property.getString());
+                             }
                          }
+                         return properties;
                      }
-                     return properties;
-                 }
-            });
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving group properties", e);
+                });
+            } catch (RepositoryException e) {
+                logger.error("Error while retrieving group properties", e);
+            }
+        } else {
+            return properties;
         }
         return null;
     }
@@ -121,6 +126,9 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      *         property does not exist.
      */
     public String getProperty(final String key) {
+        if (properties != null) {
+            return (String) properties.get(key);
+        }
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<String>() {
                  public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -148,6 +156,9 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     Node node = getNode(session);
                     Property property = node.getProperty(key);
                     if (property != null) {
+                        if (properties != null) {
+                            properties.remove(key);
+                        }
                         session.checkout(node);
                         property.remove();
                         session.save();
@@ -181,6 +192,9 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     session.checkout(node);
                     node.setProperty(key, value);
                     session.save();
+                    if (properties != null) {
+                        properties.put(key, value);
+                    }
                     return Boolean.TRUE;
                 }
             });
@@ -293,9 +307,16 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         while (iterator.hasNext()) {
             Node member = (Node) iterator.next();
             if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
-                JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
-                if (jahiaUser != null) {
-                    principalMap.add(jahiaUser);
+                Property memberProperty = member.getProperty("j:member");
+                Node memberNode = memberProperty.getNode();
+                if (memberNode.isNodeType(Constants.JAHIANT_USER)) {
+                    JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
+                    if (jahiaUser != null) {
+                        principalMap.add(jahiaUser);
+                    } else {
+                        logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
+                                + "'");
+                    }
                 } else {
                     String s = member.getName().replace("___", ":");
                     JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
@@ -387,7 +408,6 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         output.append("  - ID : ").append(getIdentifier()).append("\n");
 
         try {
-            Properties properties = getProperties();
             output.append("  - properties :");
             if (properties != null && !properties.isEmpty()) {
                 output.append("\n");
@@ -415,7 +435,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             }
         } catch (Exception e) {
             // Group might be already deleted
-            logger.debug(e.getMessage(), e);
+            logger.debug("Error while generating toString output for group " + mGroupname, e);
         }
 
         return output.toString();

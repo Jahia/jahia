@@ -84,14 +84,14 @@ public class ConditionalFilterTest extends TestCase {
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
         this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
 
-        JCRNodeWrapper shared = session.getNode("/shared");
+        JCRNodeWrapper shared = session.getNode("/sites/"+site.getSiteKey()+"/contents");
         if (shared.hasNode("testContent")) {
             shared.getNode("testContent").remove();
         }
-        node = shared.addNode("testContent", "nt:unstructured");
-        node.addNode("testType", "jnt:tag");
-        node.addNode("testType2", "jnt:address");
-        node.addNode("testMixin", "jnt:content").addMixin("jmix:tagged");
+        node = shared.addNode("testContent", "jnt:contentFolder");
+        node.addNode("testType", "jnt:contentList");
+        node.addNode("testType2", "jnt:mainContent");
+        node.addNode("testMixin", "jnt:bigText").addMixin("jmix:tagged");
 
         session.save();
     }
@@ -99,7 +99,6 @@ public class ConditionalFilterTest extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         TestHelper.deleteSite("test");
-        node.remove();
         session.save();
     }
 
@@ -205,14 +204,14 @@ public class ConditionalFilterTest extends TestCase {
         Resource resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
 
-        // test on a node that has jnt:tag type
+        // test on a node that has jnt:contentList type
         BaseAttributesFilter baseAttributesFilter = new BaseAttributesFilter();
         baseAttributesFilter.setRenderService(RenderService.getInstance());
         baseAttributesFilter.setPriority(0);
 
         TestFilter conditionalFilter = new TestFilter();
         conditionalFilter.setRenderService(RenderService.getInstance());
-        conditionalFilter.setApplyOnNodeTypes("jnt:tag");
+        conditionalFilter.setApplyOnNodeTypes("jnt:contentList");
         conditionalFilter.setPriority(10);
 
         RenderChain chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
@@ -221,12 +220,12 @@ public class ConditionalFilterTest extends TestCase {
 
         assertTrue("TestFilter is not applied for node, having jnt:tag type", result.contains("TestFilter"));
 
-        // test on a node that does not have jnt:tag type
+        // test on a node that does not have jnt:contentList type
         resource = new Resource(node.getNode("testType2"), "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is applied for node that does not have jnt:tag type", !result
+        assertTrue("TestFilter is applied for node that does not have jnt:contentList type", !result
                 .contains("TestFilter"));
 
         // test multiple node types condition
@@ -234,11 +233,11 @@ public class ConditionalFilterTest extends TestCase {
         context.setMainResource(resource);
         conditionalFilter = new TestFilter();
         conditionalFilter.setRenderService(RenderService.getInstance());
-        conditionalFilter.setApplyOnNodeTypes("jnt:page, jnt:address");
+        conditionalFilter.setApplyOnNodeTypes("jnt:page, jnt:mainContent");
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is not applied for node, having jnt:address type", result.contains("TestFilter"));
+        assertTrue("TestFilter is not applied for node, having jnt:mainContent type", result.contains("TestFilter"));
 
         // test mixin type jmix:tagged
         resource = new Resource(node.getNode("testMixin"), "html", null, Resource.CONFIGURATION_PAGE);
@@ -289,7 +288,7 @@ public class ConditionalFilterTest extends TestCase {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
-        Resource resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
+        Resource resource = new Resource(node.getNode("testType"), "html", "mine", Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
 
         // test on a resource with 'mine' template
@@ -310,7 +309,7 @@ public class ConditionalFilterTest extends TestCase {
                 .contains("TestFilter"));
 
         // test on a resource with 'others' template
-        resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
+        resource = new Resource(node.getNode("testType"), "html", "others", Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
@@ -318,7 +317,7 @@ public class ConditionalFilterTest extends TestCase {
                 .contains("TestFilter"));
 
         // test multiple templates condition
-        resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
+        resource = new Resource(node.getNode("testType"), "html", "mine", Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         conditionalFilter = new TestFilter();
         conditionalFilter.setRenderService(RenderService.getInstance());

@@ -46,7 +46,6 @@ import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.ItemNotFoundException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -250,7 +249,7 @@ public class CacheFilter extends AbstractFilter {
                 .append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getExpirationTime())));
         stringBuilder.append("</span>");
         stringBuilder.append("<form action=\"").append(renderContext.getURLGenerator().getContext())
-                .append("/flushKey.jsp\" method=\"post\"");
+                .append("/tools/ehcache/flushKey.jsp\" method=\"post\"");
         stringBuilder.append("<input type=\"hidden\" name=\"keyToFlush\" value=\"").append(key).append("\"");
         stringBuilder.append("<button type=\"submit\"title=\"Flush it\">Flush It</button>");
         stringBuilder.append("</form>");*/

@@ -174,8 +174,8 @@ public class FilesServlet extends HttpServlet {
             code = HttpServletResponse.SC_NOT_FOUND;
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
         } finally {
-            if (logger.isInfoEnabled()) {
-                logger.info(
+            if (logger.isDebugEnabled()) {
+                logger.debug(
                         "Served [{}] with status code [{}] in [{}ms]",
                         new Object[] {
                                 req.getRequestURI()

@@ -35,8 +35,7 @@ package org.jahia.services.importexport;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.Name;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
+import org.apache.jackrabbit.util.ISO8601;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -56,7 +55,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import java.text.DateFormat;
@@ -163,7 +161,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 // System.out.println("create page" + attributes.getValue("jahia:title"));
                 createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), attributes.getValue("jahia:title"),
                         attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"),
-                        uuid);
+                        uuid, getMetadataForNodeCreation(attributes));
                 setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                 return;
             }
@@ -178,7 +176,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
                                 .get(StringUtils.substringBeforeLast(localName, "List"));
 
-                        createContentList(nodeDef, uuid);
+                        createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
                         setMetadata(attributes);
                         setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG,"acl"));
                     } else {
@@ -203,7 +201,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
                                 .get(StringUtils.substringBeforeLast(localName, "List"));
 
-                        createContentList(nodeDef, uuid);
+                        createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
                         setMetadata(attributes);
                         setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                     } else {
@@ -251,7 +249,7 @@ public class LegacyImportHandler extends DefaultHandler {
                                 ExtendedNodeDefinition nodeDef = getCurrentContentType()
                                         .getChildNodeDefinitionsAsMap().get(mappedName);
 
-                                createContentList(nodeDef, uuid);
+                                createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
                                 setMetadata(attributes);
                                 setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG,"acl"));
                             } else {
@@ -280,7 +278,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         pt = qName;
                     }
 
-                    createContent(pt, uuid, attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"));
+                    createContent(pt, uuid, attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"), getMetadataForNodeCreation(attributes));
                     setMetadata(attributes);
                     setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                     break;
@@ -318,13 +316,13 @@ public class LegacyImportHandler extends DefaultHandler {
                             acl = attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl");
                         }
                         createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), title,
-                                attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
+                                attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid, getMetadataForNodeCreation(attributes));
                         setAcl(acl);
                         // todo : add a link here ??
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
-                        createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"), "jnt:nodeLink");
+                        createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"), "jnt:nodeLink", getMetadataForNodeCreation(attributes));
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
-                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), "jnt:externalLink");
+                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), "jnt:externalLink", getMetadataForNodeCreation(attributes));
                     }
 
                     break;
@@ -336,6 +334,16 @@ public class LegacyImportHandler extends DefaultHandler {
 
     }
 
+    private Map<String, String> getMetadataForNodeCreation(Attributes attributes) {
+        Map<String, String> metadataMap = new HashMap<String, String>();
+        metadataMap.put("jahia:createdBy", attributes.getValue("jahia:createdBy"));
+        String date = attributes.getValue("jcr:created");
+        metadataMap.put("jcr:created", date.length() == 19 ? date + ".000Z" : date);        
+        metadataMap.put("jahia:lastModifiedBy", attributes.getValue("jahia:lastModifiedBy"));
+        date = attributes.getValue("jcr:lastModified");
+        metadataMap.put("jcr:lastModified", date.length() == 19 ? date + ".000Z" : date);
+        return metadataMap;
+    }
     private boolean isSingleContainerBox(String listName) {
         boolean isSingleContainer = false;
         for (String requiredPrimaryType : getCurrentContentType().getChildNodeDefinitionsAsMap()
@@ -379,7 +387,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
 
-    private void createPage(String primaryType, String title, String template, String pageKey, String uuid)
+    private void createPage(String primaryType, String title, String template, String pageKey, String uuid, Map<String, String> creationMetadata)
             throws RepositoryException {
         JCRNodeWrapper subPage;
         ExtendedNodeType t = registry.getNodeType(primaryType);
@@ -417,7 +425,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 logger.warn("Template '" + template + "' not found. Plain jnt:page will be created");
             }
 
-            subPage = addOrCheckoutPageNode(templateNode, parent, pageKey);
+            subPage = addOrCheckoutPageNode(templateNode, parent, pageKey, creationMetadata);
             uuidMapping.put(uuid, subPage.getIdentifier());
 
             performActions(mapping.getActions(pageType, "jahia:template", template), subPage);
@@ -434,13 +442,13 @@ public class LegacyImportHandler extends DefaultHandler {
     }
 
     private void createExternalLink(JCRNodeWrapper page, String title, String uuid, final String url,
-                                    final String nodeType)
+                                    final String nodeType, Map<String, String> creationMetadata)
             throws RepositoryException {
         JCRNodeWrapper sub;
         if (uuidMapping.containsKey(uuid)) {
             sub = session.getNodeByIdentifier(uuidMapping.get(uuid));
         } else {
-            sub = addOrCheckoutNode(page, "link_" + (ctnId++), nodeType, null);
+            sub = addOrCheckoutNode(page, "link_" + (ctnId++), nodeType, null, creationMetadata);
             sub.setProperty("j:url", url);
             uuidMapping.put(uuid, sub.getIdentifier());
         }
@@ -452,7 +460,7 @@ public class LegacyImportHandler extends DefaultHandler {
     }
 
     private void createInternalLink(JCRNodeWrapper page, String title, String uuid, final String reference,
-                                    final String nodeType)
+                                    final String nodeType, Map<String, String> creationMetadata)
             throws RepositoryException {
         JCRNodeWrapper sub;
         if (uuidMapping.containsKey(uuid)) {
@@ -460,7 +468,7 @@ public class LegacyImportHandler extends DefaultHandler {
         } else {
             // System.out.println("link Field-node : " + localName);
 
-            sub = addOrCheckoutNode(page, "link_" + (ctnId++), nodeType, null);
+            sub = addOrCheckoutNode(page, "link_" + (ctnId++), nodeType, null, creationMetadata);
             if (!references.containsKey(reference)) {
                 references.put(reference, new ArrayList<String>());
             }
@@ -477,7 +485,7 @@ public class LegacyImportHandler extends DefaultHandler {
     }
 
 
-    private JCRNodeWrapper addOrCheckoutPageNode(JCRNodeWrapper template, JCRNodeWrapper parent, String nodeName)
+    private JCRNodeWrapper addOrCheckoutPageNode(JCRNodeWrapper template, JCRNodeWrapper parent, String nodeName, Map<String, String> creationMetadata)
             throws RepositoryException {
         JCRNodeWrapper node = null;
         try {
@@ -494,7 +502,16 @@ public class LegacyImportHandler extends DefaultHandler {
 //                node = parent.getNode(nodeName);
 //                node.setProperty("j:sourceTemplate", template);
 //            } else {
-            node = parent.addNode(nodeName, Constants.JAHIANT_PAGE);
+            node = parent.addNode(
+                    nodeName,
+                    Constants.JAHIANT_PAGE,
+                    null,
+                    !StringUtils.isEmpty(creationMetadata.get("jcr:created")) ? ISO8601
+                            .parse(creationMetadata.get("jcr:created")) : null,
+                    creationMetadata.get("jahia:createdBy"),
+                    !StringUtils.isEmpty(creationMetadata.get("jcr:lastModified")) ? ISO8601
+                            .parse(creationMetadata.get("jcr:lastModified")) : null,
+                    creationMetadata.get("jahia:lastModifiedBy"));
             if (template != null) {
                 node.setProperty("j:templateNode", template);
                 Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:area] as a where isdescendantnode(a,['" + template.getPath() + "'])", Query.JCR_SQL2);
@@ -517,7 +534,7 @@ public class LegacyImportHandler extends DefaultHandler {
     }
 
     private JCRNodeWrapper addOrCheckoutNode(JCRNodeWrapper parent, String nodeName, String nodeType,
-                                             List<String> followingNodeNames) throws RepositoryException {
+                                             List<String> followingNodeNames, Map<String, String> creationMetadata) throws RepositoryException {
         JCRNodeWrapper node = null;
         try {
             node = parent.getNode(nodeName);
@@ -531,7 +548,16 @@ public class LegacyImportHandler extends DefaultHandler {
             if (StringUtils.isEmpty(nodeType)) {
                 nodeType = Constants.JAHIANT_CONTENTLIST;
             }
-            node = parent.addNode(nodeName, nodeType);
+            node = parent.addNode(
+                    nodeName,
+                    nodeType,
+                    null,
+                    !StringUtils.isEmpty(creationMetadata.get("jcr:created")) ? ISO8601
+                            .parse(creationMetadata.get("jcr:created")) : null,
+                    creationMetadata.get("jahia:createdBy"),
+                    !StringUtils.isEmpty(creationMetadata.get("jcr:lastModified")) ? ISO8601
+                            .parse(creationMetadata.get("jcr:lastModified")) : null,
+                    creationMetadata.get("jahia:lastModifiedBy"));
             if (!CollectionUtils.isEmpty(followingNodeNames)) {
                 boolean takeNextName = false;
                 for (NodeIterator it = parent.getNodes(); it.hasNext();) {
@@ -554,7 +580,7 @@ public class LegacyImportHandler extends DefaultHandler {
         return node;
     }
 
-    private void createContentList(ExtendedNodeDefinition listDefinition, String uuid) throws RepositoryException {
+    private void createContentList(ExtendedNodeDefinition listDefinition, String uuid, Map<String, String> creationMetadata) throws RepositoryException {
         String nodeName = mapping.getMappedNode(getCurrentContentType(), listDefinition.getName());
 
         String nodeType = Constants.JAHIANT_CONTENTLIST;
@@ -595,7 +621,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 mappedNewNodeNames = mapping.getMappedNodesForType(getCurrentContentType(), false)
                         .subList(indexOfName, mappedOldNodeNames.size());
             }
-            JCRNodeWrapper node = addOrCheckoutNode(parent, nodeName, nodeType, mappedNewNodeNames);
+            JCRNodeWrapper node = addOrCheckoutNode(parent, nodeName, nodeType, mappedNewNodeNames, creationMetadata);
 
             performActions(mapping.getActions(getCurrentContentType(), listDefinition.getName()), node);
             uuidMapping.put(uuid, node.getIdentifier());
@@ -619,7 +645,7 @@ public class LegacyImportHandler extends DefaultHandler {
         currentCtx.peek().pushSkip();
     }
 
-    private void createContent(String primaryType, String uuid, String pickerRelationshipUuid)
+    private void createContent(String primaryType, String uuid, String pickerRelationshipUuid, Map<String, String> creationMetadata)
             throws RepositoryException {
         ExtendedNodeType t = registry.getNodeType(primaryType);
         String nodeType = mapping.getMappedType(t);
@@ -656,7 +682,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     return;
                 }
                 JCRNodeWrapper node = addOrCheckoutNode(getCurrentContentNode(),
-                        StringUtils.substringAfter(nodeType, ":") + "_" + (ctnId++), nodeType, null);
+                        StringUtils.substringAfter(nodeType, ":") + "_" + (ctnId++), nodeType, null, creationMetadata);
                 uuidMapping.put(uuid, node.getIdentifier());
                 performActions(mapping.getActions(t), node);
                 currentCtx.peek().pushContainer(node, t);
@@ -680,7 +706,7 @@ public class LegacyImportHandler extends DefaultHandler {
             } else if (action instanceof AddNode) {
                 AddNode addNodeAction = (AddNode) action;
                 JCRNodeWrapper addedNode =
-                        addOrCheckoutNode(node, addNodeAction.getName(), addNodeAction.getNodeType(), null);
+                        addOrCheckoutNode(node, addNodeAction.getName(), addNodeAction.getNodeType(), null, Collections.<String, String>emptyMap());
                 setProperties(addedNode, addNodeAction.getProperties());
             } else if (action instanceof SetProperties) {
                 SetProperties setPropertiesAction = (SetProperties) action;
@@ -781,7 +807,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
         if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
             createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), title,
-                    attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
+                    attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid, getMetadataForNodeCreation(attributes));
             setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
 
             // todo : add a link here ??
@@ -789,7 +815,7 @@ public class LegacyImportHandler extends DefaultHandler {
             // System.out.println("link Field-node : " + localName);
             String reference = attributes.getValue("jahia:reference");
             if (!isProperty && !node.hasNode(propertyName)) {
-                JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null);
+                JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null, getMetadataForNodeCreation(attributes));
 
                 Node translation = sub.getOrCreateI18N(locale);
                 if (title != null && title.length() > 0) {
@@ -814,7 +840,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
             String value = attributes.getValue("jahia:value");
             if (!node.hasNode(propertyName)) {
-                JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:externalLink", null);
+                JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:externalLink", null, getMetadataForNodeCreation(attributes));
 
                 Node translation = sub.getOrCreateI18N(locale);
                 if (title != null && title.length() > 0) {

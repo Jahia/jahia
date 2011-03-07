@@ -83,6 +83,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         mappingOfProperties.put("lastname", "j:lastName");
         mappingOfProperties.put("firstname", "j:firstName");
         mappingOfProperties.put("organization", "j:organization");
+        mappingOfProperties.put("email", "j:email");
     }
 
     /**

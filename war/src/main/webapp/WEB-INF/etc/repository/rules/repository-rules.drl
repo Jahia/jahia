@@ -165,7 +165,7 @@ rule "notify user (create)"
 		- its name is not guest
 		- its name is not root
     then
-        Notify new user with mail template "/notifications/templates/mail/newUser.vm"
+        Notify new user with mail template "/WEB-INF/notifications/templates/mail/newUser.vm"
 end
 
 rule "User password is set"

@@ -8,11 +8,12 @@
         <property name="securityManager" ref="securityManager"/>
         <property name="filterChainDefinitions">
             <value>
-                /cms/**/*.raw = authcBasic, roles[templateManager]
+                /LICENSE = authcBasic, roles[toolManager]
                 /cms/serverStats = authcBasic, roles[toolManager]
                 /cms/serverStats/* = authcBasic, roles[toolManager]
                 /tools/* = authcBasic, roles[toolManager]
                 
+                /cms/**/*.raw = authcBasic, roles[templateManager]
                 /modules/**/META-INF/** = authcBasic, roles[templateManager]
                 /modules/**/WEB-INF/** = authcBasic, roles[templateManager]
                 /modules/**/*.cnd = authcBasic, roles[templateManager]

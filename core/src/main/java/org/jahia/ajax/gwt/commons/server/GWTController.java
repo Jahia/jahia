@@ -38,6 +38,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.SerializationPolicy;
+
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -45,6 +48,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -60,7 +64,9 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GWTController extends RemoteServiceServlet implements Controller,
         ServletContextAware, ApplicationContextAware {
 
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(GWTController.class);
+    private static final long serialVersionUID = -74193665963116797L;
+
+    private final static Logger logger = LoggerFactory.getLogger(GWTController.class);
 
     private String remoteServiceName;
 
@@ -69,6 +75,10 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     private ServletContext servletContext;
     
     private ApplicationContext applicationContext;
+    
+    private boolean allowPostMethodOnly = true;
+
+    private boolean requireAuthenticatedUser = true;
 
     public void setSessionExpiryTime(int sessionExpiryTime) {
         this.sessionExpiryTime = sessionExpiryTime;
@@ -79,15 +89,17 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         return servletContext;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet
-     * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
     public ModelAndView handleRequest(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         long startTime = System.currentTimeMillis();
+        if (allowPostMethodOnly && !"POST".equals(request.getMethod())) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+        if (requireAuthenticatedUser && JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
         final HttpSession session = request.getSession(false);
         if (session != null) {
             if (sessionExpiryTime != null && session.getMaxInactiveInterval() != sessionExpiryTime * 60) {
@@ -96,9 +108,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         }
         doPost(request, response);
         if (logger.isDebugEnabled()) {
-            logger.debug("Handled request to GWT service '" + remoteServiceName
-                    + "' in " + (System.currentTimeMillis() - startTime)
-                    + " ms");
+            logger.debug("Handled request to GWT service '{}' in {} ms", remoteServiceName, System.currentTimeMillis() - startTime);
         }
         return null;
     }
@@ -192,5 +202,13 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     public void log(String msg) {
         logger.info(msg);
+    }
+
+    public void setAllowPostMethodOnly(boolean allowPostMethodOnly) {
+        this.allowPostMethodOnly = allowPostMethodOnly;
+    }
+
+    public void setRequireAuthenticatedUser(boolean requireAuthenticatedUser) {
+        this.requireAuthenticatedUser = requireAuthenticatedUser;
     }
 }

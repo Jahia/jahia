@@ -18,6 +18,8 @@
     
     <bean name="abstractServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController"  abstract="true">
         <property name="sessionExpiryTime" value="30" />
+        <property name="allowPostMethodOnly" value="true"/>
+        <property name="requireAuthenticatedUser" value="true"/>
     </bean>
 
     <bean name="contentDefinitionServiceController" parent="abstractServiceController">

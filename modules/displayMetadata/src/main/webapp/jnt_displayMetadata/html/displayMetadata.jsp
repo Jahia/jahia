@@ -63,7 +63,7 @@
                 </c:if>
         </c:if>
         <c:if test="${props.categories.boolean}">
-                <dt><fmt:message key="label.categories"/>:</dt>
+                <dt><fmt:message key="label.categories"/></dt>
                     <c:forEach items="${assignedCategories}" var="category" varStatus="status">
                         <dd>
                         <c:if test="${not empty category.node}">

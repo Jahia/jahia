@@ -56,6 +56,8 @@ public class DefinitionsMapping {
                 "jahia:defaultCategory", "jmix:categorized|j:defaultCategory"));
         metadataProperties.put("jahia:keywords", new PropertyMapping("jahia:keywords",
                 "jmix:keywords|j:keywords"));
+        metadataProperties.put("jahia:description", new PropertyMapping("jahia:description",
+                "jmix:description|jcr:description"));        
         metadataProperties.put("jahia:createdBy", new PropertyMapping("jahia:createdBy",
                 "mix:created|jcr:createdBy"));
         metadataProperties.put("jahia:lastModifiedBy", new PropertyMapping("jahia:lastModifiedBy",

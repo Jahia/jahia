@@ -128,3 +128,32 @@ font-weight:bold
 #bodywrapper .box2teaser .box2teaser-text .title{
     display:none;        
 }
+
+/******************************************************************************
+* Teaser with title in overlay
+******************************************************************************/
+#bodywrapper .visuel {
+    height: 150px;
+	width: 150px;
+    margin: 0 0 10px;
+    position: relative;
+}
+
+#bodywrapper div.visuel a.visuel {
+    background: none repeat scroll 0 0 transparent;
+    margin: 0;
+    padding: 0;
+    width: 224px;
+}
+
+#bodywrapper .visuel a, #bodywrapper .visuel a:link, #bodywrapper .visuel a:visited  {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.65);
+    bottom: 0;
+	width: 150px;
+    color: #FFFFFF;
+    display: block;
+    font-size: 13px;
+    left: 0;
+    position: absolute;
+    text-decoration: none;
+}

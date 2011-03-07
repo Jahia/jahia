@@ -44,6 +44,7 @@ import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -57,9 +58,9 @@ import org.springframework.core.io.Resource;
  * 
  * @author Sergiy Shyrkov
  */
-public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener {
+public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener<ApplicationEvent> {
 
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(SpringContextSingleton.class);
+    private transient static Logger logger = LoggerFactory.getLogger(SpringContextSingleton.class);
 
     private static SpringContextSingleton ourInstance;
     private Map<String, Resource[]> resourcesCache;
@@ -139,7 +140,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         if (event instanceof ContextInitializedEvent) {
             this.moduleContext = ((TemplatePackageApplicationContextLoader) event.getSource()).getContext();
         } else if (event instanceof TemplatePackageRedeployedEvent) {
-        	resourcesCache.clear();
+            resourcesCache.clear();
         }
     }
 
@@ -147,37 +148,31 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         this.context = applicationContext;
         initialized = true;
     }
-    
-	/**
-	 * Searches for Spring resource locations given the specified
-	 * (pattern-based) location. Multiple locations can be provided separated by
-	 * comma (or any delimiter, defined in
-	 * {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS}
-	 * ).
-	 * 
-	 * @param locationPatterns
-	 *            (pattern-based) location to search for resources. Multiple
-	 *            locations can be provided separated by comma (or any
-	 *            delimiter, defined in
-	 *            {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS}
-	 *            )
-	 * @return an array of {@link Resource} objects found
-	 * @throws IOException
-	 *             in case of a lookup error
-	 */
-	public Resource[] getResources(String locationPatterns) throws IOException {
-		Resource[] allResources = resourcesCache.get(locationPatterns);
-		if (allResources == null) {
-			allResources = new Resource[0];
-			for (String location : org.springframework.util.StringUtils.tokenizeToStringArray(
-			        locationPatterns, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS)) {
-				allResources = (Resource[]) ArrayUtils.addAll(allResources,
-				        context.getResources(location.trim()));
-			}
-			resourcesCache.put(locationPatterns, allResources);
-		}
 
-		return allResources;
-	}
+    /**
+     * Searches for Spring resource locations given the specified (pattern-based) location. Multiple locations can be provided separated by
+     * comma (or any delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} ).
+     * 
+     * @param locationPatterns
+     *            (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any delimiter,
+     *            defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
+     * @return an array of {@link Resource} objects found
+     * @throws IOException
+     *             in case of a lookup error
+     */
+    public Resource[] getResources(String locationPatterns) throws IOException {
+        Resource[] allResources = resourcesCache.get(locationPatterns);
+        if (allResources == null) {
+            allResources = new Resource[0];
+            for (String location : org.springframework.util.StringUtils.tokenizeToStringArray(
+                    locationPatterns, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS)) {
+                allResources = (Resource[]) ArrayUtils.addAll(allResources,
+                        context.getResources(location.trim()));
+            }
+            resourcesCache.put(locationPatterns, allResources);
+        }
+
+        return allResources;
+    }
 
 }

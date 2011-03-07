@@ -37,8 +37,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import java.util.Properties;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * @author toto
  * Date: Nov 16, 2009
  * Time: 11:05:46 AM
  * 
@@ -58,14 +57,15 @@ public interface View {
      * Return printable information about the script : type, localization, file, .. in order to help
      * template developer to find the original source of the script
      *
-     * @return
+     * @return printable information about the script : type, localization, file, .. in order to help
+     * template developer to find the original source of the script
      */
     String getInfo();
 
     /**
      * Return properties of the template
      *
-     * @return
+     * @return properties of the template
      */
     Properties getProperties();
 }

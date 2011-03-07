@@ -852,83 +852,80 @@ public final class JCRContentUtils {
         return "/sites/" + JahiaSitesBaseService.SYSTEM_SITE_KEY;        
     }
 
-	/**
-	 * Performs import of JCR data using provided skeleton locations. This
-	 * method is used when a new virtual site or a new user is created.
-	 * 
-	 * @param skeletonLocations
-	 *            the (pattern-based) location to search for resources. Multiple
-	 *            locations can be provided separated by comma (or any
-	 *            delimiter, defined in
-	 *            {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS}
-	 *            )
-	 * @param targetPath
-	 *            target JCR path to perform import into
-	 * @param session
-	 *            the current JCR session
-	 * @throws IOException
-	 *             in case of skeleton lookup error
-	 * @throws InvalidSerializedDataException
-	 *             import related exception
-	 * @throws RepositoryException
-	 *             general JCR exception
-	 */
-	public static void importSkeletons(String skeletonLocations, String targetPath,
-	        JCRSessionWrapper session) throws IOException, InvalidSerializedDataException,
-	        RepositoryException {
-		for (Resource resource : SpringContextSingleton.getInstance().getResources(skeletonLocations)) {
-			logger.info("Importing data using skeleton {}", resource);
-			InputStream is = null;
-			try {
-				is = resource.getInputStream();
-				session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
-			} finally {
-				IOUtils.closeQuietly(is);
-			}
-		}
-	}
+    /**
+     * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
+     * 
+     * @param skeletonLocations
+     *            the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
+     *            delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
+     * @param targetPath
+     *            target JCR path to perform import into
+     * @param session
+     *            the current JCR session
+     * @throws IOException
+     *             in case of skeleton lookup error
+     * @throws InvalidSerializedDataException
+     *             import related exception
+     * @throws RepositoryException
+     *             general JCR exception
+     */
+    public static void importSkeletons(String skeletonLocations, String targetPath,
+            JCRSessionWrapper session) throws IOException, InvalidSerializedDataException,
+            RepositoryException {
+        for (Resource resource : SpringContextSingleton.getInstance().getResources(
+                skeletonLocations)) {
+            logger.info("Importing data using skeleton {}", resource);
+            InputStream is = null;
+            try {
+                is = resource.getInputStream();
+                session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
+        }
+    }
 
-	/**
-	 * Creates the JCR property value, depending on the type of the
-	 * corresponding value.
-	 * 
-	 * @param objectValue
-	 *            the object value to be converted
-	 * @param factory
-	 *            the {@link ValueFactory} instance
-	 * @return the JCR property value
-	 */
-	public static Value createValue(Object objectValue, ValueFactory factory) {
-		if (objectValue instanceof String) {
-			return factory.createValue((String) objectValue);
+    /**
+     * Creates the JCR property value, depending on the type of the corresponding value.
+     * 
+     * @param objectValue
+     *            the object value to be converted
+     * @param factory
+     *            the {@link ValueFactory} instance
+     * @return the JCR property value
+     */
+    public static Value createValue(Object objectValue, ValueFactory factory) {
+        if (objectValue instanceof String) {
+            return factory.createValue((String) objectValue);
         } else if (objectValue instanceof Boolean) {
             return factory.createValue((Boolean) objectValue);
-		} else if (objectValue instanceof Long) {
-			return factory.createValue((Long) objectValue);
-		} else if (objectValue instanceof Integer) {
-			return factory.createValue(((Integer) objectValue).longValue());
-		} else if (objectValue instanceof Calendar) {
-			return factory.createValue((Calendar) objectValue);
-		} else if (objectValue instanceof Date) {
-			Calendar c = new GregorianCalendar();
-			c.setTime((Date) objectValue);
-			return factory.createValue(c);
-		} else if (objectValue instanceof byte[] || objectValue instanceof File) {
-			InputStream is = null;
-			try {
-				is = objectValue instanceof File ? new FileInputStream((File) objectValue)
-				        : new ByteArrayInputStream((byte[]) objectValue);
-				return factory.createValue(factory.createBinary(is));
-			} catch (Exception e) {
-				throw new IllegalArgumentException(e);
-			} finally {
-				IOUtils.closeQuietly(is);
-			}
-		} else {
-			logger.warn("Do not know, how to handle value of type {}", objectValue.getClass().getName());
-		}
-		return null;
-	}
+        } else if (objectValue instanceof Long) {
+            return factory.createValue((Long) objectValue);
+        } else if (objectValue instanceof Integer) {
+            return factory.createValue(((Integer) objectValue).longValue());
+        } else if (objectValue instanceof Calendar) {
+            return factory.createValue((Calendar) objectValue);
+        } else if (objectValue instanceof Date) {
+            Calendar c = new GregorianCalendar();
+            c.setTime((Date) objectValue);
+            return factory.createValue(c);
+        } else if (objectValue instanceof byte[] || objectValue instanceof File) {
+            InputStream is = null;
+            try {
+                is = objectValue instanceof File ? new FileInputStream((File) objectValue)
+                        : new ByteArrayInputStream((byte[]) objectValue);
+                return factory.createValue(factory.createBinary(is));
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
+        } else {
+            logger.warn("Do not know, how to handle value of type {}", objectValue.getClass()
+                    .getName());
+        }
+        return null;
+    }
 
     /**
      * Returns an object value that corresponds to the provided JCR property value depending on its type.

@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.security.acl.Group;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 import javax.jcr.PathNotFoundException;
@@ -49,6 +51,7 @@ import org.apache.jackrabbit.test.NotExecutableException;
 import org.apache.jackrabbit.test.RepositoryStub;
 import org.apache.jackrabbit.test.RepositoryStubException;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -151,6 +154,7 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
         JahiaUser readOnlyUser = JCRUserManagerProvider.getInstance().lookupUser(readonly.getUserID());
         if (readOnlyUser == null) {
             readOnlyUser = JCRUserManagerProvider.getInstance().createUser(readonly.getUserID(), new String(readonly.getPassword()), new Properties());
+            ((JCRSessionWrapper)session).getRootNode().grantRoles("u:"+readonly.getUserID(), Collections.singleton("staging-viewer"));
             JahiaGroup usersGroup = JCRGroupManagerProvider.getInstance().lookupGroup(JahiaGroupManagerService.USERS_GROUPNAME);
             usersGroup.addMember(readOnlyUser);
         }

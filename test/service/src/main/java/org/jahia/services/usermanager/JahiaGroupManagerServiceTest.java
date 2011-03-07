@@ -4,8 +4,10 @@ import org.jahia.registries.ServicesRegistry;
 import org.junit.*;
 import org.slf4j.Logger;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -52,6 +54,23 @@ public class JahiaGroupManagerServiceTest {
     }
 
     @Test
+    public void testGroupDelete() {
+        JahiaGroup group1 = groupManager.createGroup(0, "test-group1", new Properties(), false);
+        group1.addMember(user1);
+        JahiaGroup group2 = groupManager.createGroup(0, "test-group2", new Properties(), false);
+        group2.addMember(user2);
+        group2.addMember(group1);
+
+        groupManager.deleteGroup(group2);
+        groupManager.deleteGroup(group1);
+
+        group1 = groupManager.lookupGroup("test-group1:0");
+        assertNull("Group 1 should have been deleted but is still available !", group1);
+        group2 = groupManager.lookupGroup("test-group2:0");
+        assertNull("Group 1 should have been deleted but is still available !", group2);
+    }
+
+    @Test
     public void testGroupMembership() {
 
         JahiaGroup group1 = groupManager.createGroup(0, "test-group1", new Properties(), false);
@@ -72,5 +91,23 @@ public class JahiaGroupManagerServiceTest {
         groupManager.deleteGroup(group2);
         groupManager.deleteGroup(group1);
 
+    }
+
+    @Test
+    public void testSameNameUserAndGroup() {
+
+        JahiaGroup group1 = groupManager.createGroup(0, "test-group1", new Properties(), false);
+        group1.addMember(user1);
+        JahiaGroup user1Group = groupManager.createGroup(0, "test-user1", new Properties(), false);
+        group1.addMember(user1Group);
+
+        group1 = groupManager.lookupGroup("test-group1:0");
+        Set<Principal> members = group1.getMembersMap();
+
+        assertTrue("Test group 1 should contain user called 'test-user1'", members.contains(user1));
+        assertTrue("Test group 1 should contain group called 'test-user1'", members.contains(user1Group));
+
+        groupManager.deleteGroup(user1Group);
+        groupManager.deleteGroup(group1);
     }
 }

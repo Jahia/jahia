@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
@@ -135,6 +136,10 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
     public List<GWTJahiaNode> getSelectedNodes() {
         return pickedContent.getSelectedContent();
+    }
+
+    public void setSaveButton(Button saveButton) {
+        pickedContent.setSaveButton(saveButton);
     }
 
 

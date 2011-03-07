@@ -147,6 +147,11 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
                         bar.add(ok);
 
+                        contentPicker.setSaveButton(ok);
+                        if (getValue() == null || getValue().size() ==0) {
+                            ok.setEnabled(false);
+                        }
+
                         final Button cancel =
                                 new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
                                     public void componentSelected(ButtonEvent event) {

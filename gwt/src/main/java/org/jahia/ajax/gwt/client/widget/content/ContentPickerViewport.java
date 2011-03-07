@@ -62,16 +62,55 @@ public class ContentPickerViewport extends Viewport {
     public static final int BUTTON_HEIGHT = 24;
 
 
-    public ContentPickerViewport(final String jahiaContextPath, final String jahiaServletPath, String filesServletPath,
+    public ContentPickerViewport(final String jahiaContextPath, final String jahiaServletPath, final String filesServletPath,
                                  final String selectionLabel, final Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,
                                  final List<String> filters, final List<String> mimeTypes, final GWTManagerConfiguration config,
-                                 final boolean multiple, String callback) {
+                                 final boolean multiple, final String callback) {
         setLayout(new FitLayout());
         final ContentPicker picker =
                 new ContentPicker(selectorOptions, selectedNodes, null, filters, mimeTypes, config, multiple);
 
         // buttom component
-        final Component bar = initButtonBar(jahiaContextPath,jahiaServletPath, filesServletPath, callback);
+        LayoutContainer buttonsPanel = new LayoutContainer();
+        buttonsPanel.setBorders(false);
+
+        ButtonBar buttonBar = new ButtonBar();
+        buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
+
+        Button ok = new Button(Messages.get("label.save"));
+        ok.setHeight(BUTTON_HEIGHT);
+        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
+        ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                List<String> selectedNode = getSelectedNodePathes(jahiaContextPath, jahiaServletPath, filesServletPath);
+                if (selectedNode != null && !selectedNode.isEmpty()) {
+                    callback(callback, selectedNode.get(0));
+                    WindowUtil.close();
+                }
+            }
+        });
+
+        buttonBar.add(ok);
+
+        if (selectedNodes == null || selectedNodes.size() ==0) {
+            ok.setEnabled(false);
+        }
+        picker.setSaveButton(ok);
+
+        Button cancel = new Button(Messages.get("label.cancel"));
+        cancel.setHeight(BUTTON_HEIGHT);
+        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
+        cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                WindowUtil.close();
+            }
+        });
+        buttonBar.add(cancel);
+        buttonsPanel.add(buttonBar);
+
+        final Component bar = buttonsPanel;
         picker.setBottomComponent(bar);
 
         add(picker);
@@ -96,51 +135,6 @@ public class ContentPickerViewport extends Viewport {
     public List<String> getSelectedNodePathes(final String jahiaContextPath, final String jahiaServletPath,
                                               final String filesServletPath) {
         return pickedContent.getSelectedContentPath(jahiaContextPath,jahiaServletPath, filesServletPath);
-    }
-
-    /**
-     * Init buttonBar
-     *
-     * @return
-     */
-    private Component initButtonBar(final String jahiaContextPath, final String jahiaServletPath,
-                                    final String filesServletPath, final String callback) {
-        LayoutContainer buttonsPanel = new LayoutContainer();
-        buttonsPanel.setBorders(false);
-
-        ButtonBar buttonBar = new ButtonBar();
-        buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
-
-        Button ok = new Button(Messages.get("label.save"));
-        ok.setHeight(BUTTON_HEIGHT);
-        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
-        ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                List<String> selectedNode = getSelectedNodePathes(jahiaContextPath,jahiaServletPath, filesServletPath);
-                if (selectedNode != null && !selectedNode.isEmpty()) {
-                    callback(callback, selectedNode.get(0));
-                    WindowUtil.close();
-                }
-            }
-        });
-
-        buttonBar.add(ok);
-
-
-        Button cancel = new Button(Messages.get("label.cancel"));
-        cancel.setHeight(BUTTON_HEIGHT);
-        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
-        cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                WindowUtil.close();
-            }
-        });
-        buttonBar.add(cancel);
-        buttonsPanel.add(buttonBar);
-
-        return buttonsPanel;
     }
 
     private native void callback(String callback, String url)/*-{

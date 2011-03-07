@@ -68,6 +68,7 @@ public class PickedContentView extends BottomRightComponent {
     private boolean multiple;
     private List<GWTJahiaNode> selectedNodes;
     private String emtypSelectionMessage = "No selection";
+    private Button saveButton;
 
     public PickedContentView(List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config) {
         this.config = config;
@@ -259,6 +260,13 @@ public class PickedContentView extends BottomRightComponent {
                 store.removeAll();
                 store.add(selection.get(0));
             }
+            if (saveButton != null) {
+                saveButton.setEnabled(true);
+            }
+        } else {
+            if (saveButton != null) {
+                saveButton.setEnabled(false);
+            }
         }
     }
 
@@ -312,6 +320,9 @@ public class PickedContentView extends BottomRightComponent {
         }
     }
 
+    public void setSaveButton(Button saveButton) {
+        this.saveButton = saveButton;
+    }
 
     public native String getThumbsListTemplate() /*-{
           return ['<tpl for=".">',

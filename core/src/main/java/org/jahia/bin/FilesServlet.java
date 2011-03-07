@@ -38,16 +38,16 @@ import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.JahiaUser;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -55,27 +55,31 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * Serves resources from the JCR repository.
  *
  * @author Thomas Draier
- *         Date: Oct 13, 2008
- *         Time: 2:08:59 PM
+ * Date: Oct 13, 2008
+ * Time: 2:08:59 PM
  */
 public class FilesServlet extends HttpServlet {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesServlet.class);
+    private static final String[] BAD_DATA = new String[] {null, null, null, null};
 
     public static Cache<String, byte[]> cache;
+    
+    private static Logger logger = LoggerFactory.getLogger(FilesServlet.class);
+    
+    private static final long serialVersionUID = -414690364676304370L; 
 
-    private int cacheThreshold = 64 * 1024;
+    private static final Pattern UNDERSCORES = Pattern.compile("___");
 
     public static final String WEBDAV_CACHE_NAME = "WebdavCache";
 
@@ -87,6 +91,126 @@ public class FilesServlet extends HttpServlet {
         }
     }
 
+    private int cacheThreshold = 64 * 1024;
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        long timer = System.currentTimeMillis();
+        int code = HttpServletResponse.SC_OK;
+        try {
+            String[] data = parseData(req);
+            String workspace = data[0];
+            String path = data[1];
+            String v = data[2];
+            String l = data[3];
+
+            if (workspace != null && StringUtils.isNotEmpty(path)) {
+                JCRNodeWrapper n = getNode(data);
+                if (n != null && n.isFile()) {
+                    // check presence of the 'If-Modified-Since' header
+                    long modifiedSince = req.getDateHeader("If-Modified-Since");
+                    Date lastModified = n.getLastModifiedAsDate();
+                    if (lastModified != null && modifiedSince > -1
+                            && lastModified.getTime() / 1000 * 1000 <= modifiedSince) {
+                        code = HttpServletResponse.SC_NOT_MODIFIED;
+                        res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                        return;
+                    }
+        
+                    JCRFileContent fileContent = n.getFileContent();
+                    res.setContentType(fileContent.getContentType());
+                    int contentLength = (int) fileContent.getContentLength();
+                    res.setContentLength(contentLength);
+                    
+                    ServletOutputStream os = res.getOutputStream();
+                    if (lastModified != null) {
+                        // set 'Last-Modified' response header
+                        res.setDateHeader("Last-Modified", lastModified.getTime());
+                    }
+                    if (contentLength < cacheThreshold) {
+                        String cacheKey = workspace + ":" + path + ":" + (v==null ? "0" : v) + ":" + (l==null ? "" : l);
+                        byte[] b = (byte[]) cache.get(cacheKey);
+                        if (b == null || b.length != contentLength) {
+                            InputStream is = fileContent.downloadFile();
+                            if(is!=null) {
+                                try {
+                                    b = new byte[contentLength];
+                                    int i = is.read(b);
+                                    if(i>0) {
+                                        cache.put(cacheKey,b);
+                                    }
+                                } finally {
+                                    IOUtils.closeQuietly(is);
+                                }
+                            } else {
+                                code = HttpServletResponse.SC_NOT_FOUND;
+                                res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                                return;
+                            }
+                        }
+                        try {
+                            os.write(b);
+                        } finally {
+                            IOUtils.closeQuietly(os);
+                        }
+                    } else {
+                        InputStream is = fileContent.downloadFile();
+                        if(is== null) {
+                            code = HttpServletResponse.SC_NOT_FOUND;
+                            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                            return;
+                        }
+                        try {
+                            IOUtils.copy(is, os);
+                        } finally {
+                            IOUtils.closeQuietly(is);
+                            IOUtils.closeQuietly(os);
+                        }
+                    }
+        
+                    return;
+                }
+            }
+    
+            code = HttpServletResponse.SC_NOT_FOUND;
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        } finally {
+            if (logger.isInfoEnabled()) {
+                logger.info(
+                        "Served [{}] with status code [{}] in [{}ms]",
+                        new Object[] {
+                                req.getRequestURI()
+                                        + (req.getQueryString() != null ? "?"
+                                                + req.getQueryString() : ""), code,
+                                (System.currentTimeMillis() - timer) });
+            }
+        }
+    }
+
+    protected JCRNodeWrapper getNode(String[] data) {
+        JCRNodeWrapper n = null;
+        JCRSessionWrapper session = null;
+        try {
+            session = JCRSessionFactory.getInstance().getCurrentUserSession(data[0]);
+            if (data[2] != null) {
+                session.setVersionDate(new Date(Long.valueOf(data[2])));
+            }
+            if (data[3] != null) {
+                session.setVersionLabel(data[3]);
+            }
+
+            n = session.getNode(Text.escapePath(data[1]));
+        } catch (RuntimeException e) {
+            // throw by the session.setVersionLabel()
+            logger.debug(e.getMessage(), e);
+        } catch (PathNotFoundException e) {
+            logger.debug(e.getMessage(), e);
+        } catch (RepositoryException e) {
+            logger.error("Error accesing path: " + data[1] + " for user "
+                    + (session != null ? session.getUserID() : null), e);
+        }
+        return n;
+    }
+
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         String value = config.getInitParameter("cache-threshold");
@@ -96,118 +220,34 @@ public class FilesServlet extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String p = req.getRequestURI();
-        if (!req.getContextPath().equals("/") && p.startsWith(req.getContextPath())) {
-            p = p.substring(req.getContextPath().length());
-        }
-        if (p.startsWith(req.getServletPath())) {
-            p = p.substring(req.getServletPath().length()+1);
-        }
-        String workspace = StringUtils.substringBefore(p,"/");
-        p = Text.unescape("/"+StringUtils.substringAfter(p,"/").replaceAll("___",":"));
-
-        if (URLDecoder.decode(workspace, "UTF-8").equals(ContextPlaceholdersReplacer.WORKSPACE_PLACEHOLDER)) {
-            // Hack for CK Editor links
-            workspace = Constants.EDIT_WORKSPACE;
-        }
-
-        JCRNodeWrapper n;
-        String v = req.getParameter("v");
-        String l = req.getParameter("l");
-        try {
-            final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
-            if (v != null) {
-                session.setVersionDate(new Date(Long.valueOf(v)));
-            }
-            if (l != null) {
-                session.setVersionLabel(l);
-            }
-
-            n = session.getNode(p);
-        } catch (RepositoryException e) {
-            logger.error("Error accesing path : "+p+" for user "+(JahiaUser) req.getSession().getAttribute(ProcessingContext.SESSION_USER),e);
-            res.sendError(HttpServletResponse.SC_NOT_FOUND,e.getLocalizedMessage());
-            return;
-        }
-
-        boolean valid = n.isFile();;
-//        String v = req.getParameter("v");
-//        if (v != null) {
-//            try {
-//                n = n.getFrozenVersionAsRegular(new Date(Long.valueOf(v)));
-//                if (n != null) {
-//                    valid = true;
-//                }
-//            } catch (RepositoryException e) {
-//                //
-//            }
-//        } else {
-//            valid = n.isFile();
-//        }
-
-        if (valid) {
-            // check presence of the 'If-Modified-Since' header
-            long modifiedSince = req.getDateHeader("If-Modified-Since");
-            Date lastModified = n.getLastModifiedAsDate();
-            if (lastModified != null && modifiedSince > -1
-                    && lastModified.getTime() / 1000 * 1000 <= modifiedSince) {
-                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                return;
-            }
-
-            JCRFileContent fileContent = n.getFileContent();
-            res.setContentType(fileContent.getContentType());
-            int contentLength = (int) fileContent.getContentLength();
-            res.setContentLength(contentLength);
-
-            ServletOutputStream os = res.getOutputStream();
-            if (lastModified != null) {
-                // set 'Last-Modified' response header
-                res.setDateHeader("Last-Modified", lastModified.getTime());
-            }
-            InputStream is = null;
-
-            if (contentLength < cacheThreshold) {
-                String cacheKey = workspace + ":" + p + ":" + (v==null ? "0" : v) + ":" + (l==null ? "" : l);
-                byte[] b = (byte[]) cache.get(cacheKey);
-                if (b == null || b.length != contentLength) {
-                    is = fileContent.downloadFile();
-                    if(is!=null) {
-                        try {
-                            b = new byte[contentLength];
-                            int i = is.read(b);
-                            if(i>0) {
-                                cache.put(cacheKey,b);
-                            }
-                        } finally {
-                            IOUtils.closeQuietly(is);
-                        }
-                    } else {
-                        res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                        return;
+    protected String[] parseData(HttpServletRequest req) throws UnsupportedEncodingException {
+        String workspace = null;
+        String path = null;
+        String p = req.getPathInfo();
+        if (p != null && p.length() > 2) {
+            int pathStart = p.indexOf("/", 1);
+            workspace = pathStart > 1 ? p.substring(1, pathStart) : null;
+            if (workspace != null) {
+                path = p.substring(pathStart);
+                if (ContextPlaceholdersReplacer.WORKSPACE_PLACEHOLDER.equals(URLDecoder.decode(
+                        workspace, "UTF-8"))) {
+                    // Hack for CK Editor links
+                    workspace = Constants.EDIT_WORKSPACE;
+                }
+                if (Constants.LIVE_WORKSPACE.equals(workspace)
+                        || Constants.EDIT_WORKSPACE.equals(workspace)) {
+                    if (path != null && path.contains("___")) {
+                        path = UNDERSCORES.matcher(path).replaceAll(":");
                     }
-                }
-                is = new ByteArrayInputStream(b);
-            } else {
-                is = fileContent.downloadFile();
-                if(is== null) {
-                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                    return;
+                } else {
+                    // unknown workspace
+                    workspace = null;
                 }
             }
-
-            try {
-                IOUtils.copy(is, os);
-            } finally {
-                IOUtils.closeQuietly(is);
-                IOUtils.closeQuietly(os);
-            }
-
-            return;
         }
 
-        res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return workspace != null && path != null ? new String[] { workspace, path,
+                req.getParameter("v"), req.getParameter("l") } : BAD_DATA;
     }
 
 }

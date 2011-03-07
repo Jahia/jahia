@@ -32,7 +32,6 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.derby.impl.store.access.UTF;
 import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;

@@ -34,7 +34,6 @@ package org.jahia.taglibs.template.include;
 
 import org.jahia.services.render.Resource;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 

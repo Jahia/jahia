@@ -33,7 +33,6 @@
 package org.jahia.services.content.interceptor;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.FilesServlet;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;

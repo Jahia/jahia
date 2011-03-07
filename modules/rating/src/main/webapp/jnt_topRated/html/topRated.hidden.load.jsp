@@ -8,7 +8,7 @@
 
 <query:definition var="listQuery"
          statement="select * from [jmix:rating] as rating inner join [${currentNode.properties['j:typeOfContent'].string}] as rated on issamenode(rating,rated)
-             where rating.[j:nbOfVotes] > ${currentNode.properties['j:minNbOfVotes'].long}
-             order by rating.[j:sumOfVotes] asc"/>
+             where org.jahia.recommended.[j:nbOfVotes] > ${currentNode.properties['j:minNbOfVotes'].long}
+             orderecommendedating.[j:sumOfVotes] asc"/>
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />

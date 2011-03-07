@@ -4,35 +4,4 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <!-- To enable this bean you need to define those tables in your database (MySQL only actually) -->
-    <!--
-CREATE TABLE IF NOT EXISTS `taste_path` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `path` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `taste_preferences` (
-  `user_id` bigint(20) NOT NULL,
-  `item_id` bigint(20) NOT NULL,
-  `preference` float NOT NULL,
-  PRIMARY KEY (`user_id`,`item_id`),
-  KEY `user_id` (`user_id`),
-  KEY `item_id` (`item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `taste_users` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
--->
-    <!--<bean id="recommender" class="org.jahia.modules.rating.mahout.Recommender">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="from" value="seda:logMsgs"/>
-        &lt;!&ndash; Define when we need to refresh recommendations (here every 25 submissions of rating data) &ndash;&gt;
-        <property name="refreshRecommendationsEvery" value="25"/>
-    </bean>-->
 </beans>

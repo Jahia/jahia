@@ -13,5 +13,3 @@
  - j:dateOfLastVote (string,choicelist[resourceBundle]) = 'one week' < 'one day','one week','one month','three month','six months'   
 
 [jnt:rateable] > jnt:content, jmix:bindedComponent, jmix:socialComponent
-
-[jnt:recommended] > jnt:content, jmix:bindedComponent, jmix:socialComponent

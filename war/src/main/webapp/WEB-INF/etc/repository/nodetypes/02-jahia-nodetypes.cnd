@@ -497,7 +497,10 @@
  - j:url (string)
 
 [jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:basicContent, jmix:editorialContent
- - j:node (weakreference) < jmix:droppableContent, jnt:contentFolder
+ - j:node (weakreference) < jmix:droppableContent
+
+[jnt:folderReference] > jnt:content, jmix:nodeReference, jmix:basicContent, jmix:editorialContent
+ - j:node (weakreference) < jnt:contentFolder
 
 [jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:navMenuItem
  - j:node (weakreference) < jmix:droppableContent, jnt:page, jnt:contentFolder, jnt:folder

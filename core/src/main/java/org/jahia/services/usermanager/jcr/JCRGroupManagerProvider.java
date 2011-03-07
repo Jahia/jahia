@@ -419,23 +419,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         List<String> groups = new ArrayList<String>();
                         try {
-                            PropertyIterator weakReferences = session.getNodeByUUID(principalId).getWeakReferences();
-                            while (weakReferences.hasNext()) {
-                                Property property = weakReferences.nextProperty();
-                                if (property.getPath().contains("j:members")) {
-                                    Node group = property.getParent().getParent().getParent();
-                                    if (group.isNodeType("jnt:group")) {
-                                        int siteID;
-                                        try {
-                                            siteID = sitesService.getSiteByKey(group.getParent().getParent().getName())
-                                                    .getID();
-                                        } catch (NullPointerException e) {
-                                            siteID = 0;
-                                        }
-                                        groups.add(group.getName() + ":" + siteID);
-                                    }
-                                }
-                            }
+                            recurseOnGroups(session, groups, principalId);
                             if (principal instanceof JahiaUser) {
                                 if (!principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
                                     groups.add(JahiaGroupManagerService.USERS_GROUPNAME);
@@ -450,6 +434,28 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         }
                         return groups;
                     }
+
+                    private void recurseOnGroups(JCRSessionWrapper session, List<String> groups, String principalId) throws RepositoryException, JahiaException {
+                        PropertyIterator weakReferences = session.getNodeByUUID(principalId).getWeakReferences();
+                        while (weakReferences.hasNext()) {
+                            Property property = weakReferences.nextProperty();
+                            if (property.getPath().contains("j:members")) {
+                                Node group = property.getParent().getParent().getParent();
+                                if (group.isNodeType("jnt:group")) {
+                                    int siteID;
+                                    try {
+                                        siteID = sitesService.getSiteByKey(group.getParent().getParent().getName())
+                                                .getID();
+                                    } catch (NullPointerException e) {
+                                        siteID = 0;
+                                    }
+                                    groups.add(group.getName() + ":" + siteID);
+                                    recurseOnGroups(session, groups, group.getIdentifier());
+                                }
+                            }
+                        }
+                    }
+
                 }
 
                 );
@@ -461,6 +467,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         }
         return new ArrayList<String>();
     }
+
 
     /**
      * Return an instance of the users group.

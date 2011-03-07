@@ -58,7 +58,7 @@ public class JahiaGroupManagerServiceTest {
         group1.addMember(user1);
         JahiaGroup group2 = groupManager.createGroup(0, "test-group2", new Properties(), false);
         group2.addMember(user2);
-        group1.addMember(group1);
+        group2.addMember(group1);
 
         assertTrue("User 1 should be a transitive member of group2, as group1 is a member of group 2", user1.isMemberOfGroup(0, "test-group2"));
         List<String> user1GroupMembership = groupManager.getUserMembership(user1);

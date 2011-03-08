@@ -118,7 +118,7 @@ public class PagesTabItem extends SidePanelTabItem {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
                 if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
-                    !node.getNodeTypes().contains("jnt:virtualsite") &&
+                    !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
                         !node.getInheritedNodeTypes().contains("jmix:link")) {
                     editLinker.onMainSelection(node.getPath(), null, null);
                 }

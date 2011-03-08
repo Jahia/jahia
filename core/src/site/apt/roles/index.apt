@@ -20,3 +20,6 @@ Jahia Authorization system
     
     Overview of the Java API and JSP tags that allow {{{./using.html} permission usage}}.
     
+  * Privileged users
+
+    Overview of the {{{./privileged.html} privileged users}}.

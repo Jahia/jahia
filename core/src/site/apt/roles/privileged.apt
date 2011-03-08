@@ -1,0 +1,29 @@
+Privileged users
+
+* Site privileged users
+
+  Any user who needs to access edit or contribute mode need to have an access on the default workspace of the
+  repository. This is required in order to be able able to read the templates, files, and other resources of the site
+  from the default workspace.
+
+  For every site, a group <<<site-privileged>>> is created - this group has read access on the root node of the site, through
+  the <<<staging-viewer>>> role. If a section or a folder need to be set as private - even for privileged users - the "break
+  all inheritance" flag should be used.
+
+* Shared privileged group
+
+  The shared <<<privileged>>> group has read access on all shared resources, like the system site, categories, templates, ..
+  Every <<<site-privileged>>> group is member of this group - so any user having privileged access on a site can also get
+  shared resources.
+
+* Privileged roles
+
+  Roles need to declare if they grant privileged access with the <<<j:privilegedAccess>>> property. Any user having one of
+  these privileged role in a site will be automatically added to the <<<site-privileged>>> group.
+
+* Example
+
+  In the following example, the user is author of section 1. The user is then member of the site-privileged group of the
+  site siteA, and have read access on siteA. He also have read access on shared resources.
+
+[../images/roles/privileged.png]

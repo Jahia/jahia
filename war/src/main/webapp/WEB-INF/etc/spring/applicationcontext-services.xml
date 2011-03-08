@@ -72,8 +72,6 @@
             </map>
         </property>
 	</bean>
-    <bean id="JahiaFetcherService" class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate"
-                  factory-method="getInstance"/>
 	<bean id="JahiaFileWatcherService"
 		class="org.jahia.services.deamons.filewatcher.JahiaFileWatcherBaseService"
 		parent="jahiaServiceTemplate" factory-method="getInstance">

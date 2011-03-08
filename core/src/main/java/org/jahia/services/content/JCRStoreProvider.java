@@ -40,7 +40,6 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
@@ -52,6 +51,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -83,8 +84,7 @@ import java.util.*;
  */
 public class JCRStoreProvider {
 
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(JCRStoreProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
 
     private String key;
     private String mountPoint;
@@ -163,19 +163,11 @@ public class JCRStoreProvider {
     }
 
     public void setWebdavPath(String webdavPath) {
-        // TODO find better way to handle ROOT context and doubnle slash problem
         this.webdavPath = webdavPath;
-        if (webdavPath != null) {
-            if ("/".equals(webdavPath)) {
-                this.webdavPath = "";
-            } else if (webdavPath.startsWith("//")) {
-                this.webdavPath = webdavPath.substring(1);
-            }
-        }
     }
 
     public String getHttpPath() {
-        if ("/".equals(Jahia.getContextPath())) {
+        if (Jahia.getContextPath().length() == 0) {
             return "/files";
         }
         return Jahia.getContextPath() + "/files";
@@ -398,15 +390,12 @@ public class JCRStoreProvider {
     protected void initContent() throws RepositoryException, IOException {
         if ("/".equals(mountPoint)) {
             JCRSessionWrapper session = service.getSessionFactory().getSystemSession();
-            FileInputStream stream = null;
             try {
                 JCRNodeWrapper rootNode = session.getRootNode();
                 if (!rootNode.hasNode("sites")) {
                     rootNode.addMixin("mix:referenceable");
-
-                    stream = new FileInputStream(
-                            org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml");
-                    session.importXML("/", stream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, true);
+                    
+                    JCRContentUtils.importSkeletons("WEB-INF/etc/repository/root.xml,WEB-INF/etc/repository/root-*.xml", "/", session, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
 
                     JahiaPrivilegeRegistry.init(session);
 
@@ -424,7 +413,6 @@ public class JCRStoreProvider {
                 }
                 session.save();
             } finally {
-                IOUtils.closeQuietly(stream);
                 session.logout();
             }
         }

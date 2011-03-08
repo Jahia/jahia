@@ -387,33 +387,6 @@
         </attribute>
     </tag>
     <tag>
-        <description>Exposes a Preference JCR node as a JCRNodeWrapper object</description>
-        <name>preference</name>
-        <tag-class>org.jahia.taglibs.jcr.node.JCRPreferenceTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>the name of the exposed bean</description>
-            <name>var</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>the name of the preference</description>
-            <name>name</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>the default Value of the preference (if specified and preference does not exist it will create the preference)</description>
-            <name>defaultValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
-    <tag>
         <description>Allow access to initilaizers of a property of a node</description>
         <name>propertyInitializers</name>
         <tag-class>org.jahia.taglibs.jcr.node.JCRPropertyInitializerTag</tag-class>

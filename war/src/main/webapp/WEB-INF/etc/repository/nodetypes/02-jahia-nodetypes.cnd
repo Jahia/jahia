@@ -225,6 +225,12 @@
 [jnt:preferenceProvider] > nt:base, jmix:nodenameInfo
 + * (nt:base) multiple
 
+[jnt:portletPreference] > nt:base, jmix:nodenameInfo
+- j:portletName (string) nofulltext
+- j:prefName (string) nofulltext
+- j:readOnly (boolean)
+- j:values (string) multiple
+
 //---------------------------------------------------------
 // Users and groups
 //---------------------------------------------------------

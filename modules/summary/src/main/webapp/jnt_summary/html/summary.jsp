@@ -34,12 +34,12 @@
                     </c:if>
                 </c:when>
                 <c:when test="${empty endDate && not empty endDate}">
-                     <c:if test="${subchild.properties['jcr:created'].time > startDate.time}">
+                    <c:if test="${subchild.properties['jcr:created'].time > startDate.time}">
                         <template:module node="${subchild}" template="hidden.summaryEl"/>
                     </c:if>
                 </c:when>
                 <c:when test="${not empty endDate && not empty endDate}">
-                     <c:if test="${subchild.properties['jcr:created'].time > startDate.time && subchild.properties['jcr:created'].time < endDate.time}">
+                    <c:if test="${subchild.properties['jcr:created'].time > startDate.time && subchild.properties['jcr:created'].time < endDate.time}">
                         <template:module node="${subchild}" template="hidden.summaryEl"/>
                     </c:if>
                 </c:when>
@@ -49,5 +49,5 @@
             </c:choose>
         </c:forEach>
     </ol>
+    <c:if test="${renderContext.editMode}"><p><fmt:message key="label.warningList"/></p></c:if>
 </div>
-

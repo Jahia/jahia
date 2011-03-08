@@ -15,53 +15,78 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="commentable.css"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.validate.js"/>
+<template:addResources type="inlinejavascript">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#newCommentForm").validate({
+                rules: {
+                    'jcr:title': "required",
+                    <c:if test="${not renderContext.loggedIn}">
+                    pseudo: "required",
+                    captcha: "required"
+                    </c:if>
+                }
+            });
+        });
+    </script>
+</template:addResources>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-    <c:if test="${not empty bindedComponent}">
-        <a name="addComments"></a>
+<c:if test="${not empty bindedComponent}">
+    <a name="addComments"></a>
 
-        <template:tokenizedForm>
-            <form action="${url.base}${bindedComponent.path}.addComment.do" method="post">
+    <template:tokenizedForm>
+        <form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
 
-                <input type="hidden" name="nodeType" value="jnt:post"/>
-                <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-                <input type="hidden" name="newNodeOutputFormat" value="html"/>
-                <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
+            <input type="hidden" name="nodeType" value="jnt:post"/>
+            <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <input type="hidden" name="newNodeOutputFormat" value="html"/>
+            <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
 
-                <div id="formGenericComment">
+            <div id="formGenericComment">
 
-                    <fieldset>
+                <fieldset>
+                    <c:if test="${not renderContext.loggedIn}">
                         <p class="field">
-                            <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
-                            <input class="" value="${sessionScope.formDatas['jcr:title'][0]}"
-                                   type="text" size="35" id="comment-title" name="jcr:title"
+                            <label for="comment_pseudo"><fmt:message key="comment.pseudo"/></label>
+                            <input value="${sessionScope.formDatas['pseudo'][0]}"
+                                   type="text" size="35" name="pseudo" id="comment_pseudo"
                                    tabindex="1"/>
                         </p>
+                    </c:if>
+                    <p class="field">
+                        <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
+                        <input class="" value="${sessionScope.formDatas['jcr:title'][0]}"
+                               type="text" size="35" id="comment-title" name="jcr:title"
+                               tabindex="1"/>
+                    </p>
 
-                        <p class="field">
-                            <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message
-                                    key="comment.body"/></label>
-                            <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
-                                      name="content"
-                                      tabindex="2"><c:if test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if></textarea>
-                        </p>
+                    <p class="field">
+                        <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message
+                                key="comment.body"/></label>
+                        <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
+                                  name="content"
+                                  tabindex="2"><c:if
+                                test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if></textarea>
+                    </p>
 
-                        <c:if test="${not renderContext.loggedIn}">
+                    <c:if test="${not renderContext.loggedIn}">
                         <p class="field">
-                            <label class="left" for="captcha"><template:captcha /></label>
+                            <label class="left" for="captcha"><template:captcha/></label>
                             <input type="text" id="captcha" name="captcha"/>
                         </p>
-                        </c:if>
+                    </c:if>
 
-                        <p>
-                            <input type="reset" value="<fmt:message key='label.reset'/>" class="button"
-                                   tabindex="3"  ${disabled}/>
+                    <p>
+                        <input type="reset" value="<fmt:message key='label.reset'/>" class="button"
+                               tabindex="3"  ${disabled}/>
 
-                            <input type="submit" value="<fmt:message key='label.submit'/>" class="button"
-                                   tabindex="4"  ${disabled}/>
-                        </p>
-                    </fieldset>
-                </div>
-            </form>
-        </template:tokenizedForm>
-    </c:if>
+                        <input type="submit" value="<fmt:message key='label.submit'/>" class="button"
+                               tabindex="4"  ${disabled}/>
+                    </p>
+                </fieldset>
+            </div>
+        </form>
+    </template:tokenizedForm>
+</c:if>

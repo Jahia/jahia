@@ -34,11 +34,11 @@ package org.jahia.bin.filters.jcr;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.AuthValveContext;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 
@@ -68,8 +68,9 @@ public class JcrSessionFilter implements Filter {
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
+        boolean initialized = SpringContextSingleton.getInstance().isInitialized();
         try {
-            if (Jahia.isInitiated()) {
+            if (initialized) {
                 try {
                     sessionFactory.setCurrentUser(null);
                     authPipeline.invoke(new AuthValveContext((HttpServletRequest) servletRequest,
@@ -88,7 +89,7 @@ public class JcrSessionFilter implements Filter {
 
             filterChain.doFilter (servletRequest, servletResponse );
         } finally {
-            if (Jahia.isInitiated()) {
+            if (initialized) {
                 sessionFactory.setCurrentUser(null);
                 sessionFactory.setCurrentLocale(null);
                 sessionFactory.setCurrentAliasedUser(null);

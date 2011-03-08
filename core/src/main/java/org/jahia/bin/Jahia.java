@@ -65,7 +65,6 @@ import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
@@ -124,8 +123,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     static private ServletConfig staticServletConfig;
 
-    static private boolean mInitiated = false;
-    
     static protected String jahiaBasicFileName;
     static protected String jahiaPropertiesPath;
     static protected String jahiaTemplatesScriptsPath;
@@ -272,7 +269,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	                initializationService.initAfterAllServicesAreStarted();
 	            }
             }
-            mInitiated = true;
         } catch (Exception je) {
             logger.error("Error during initialization of Jahia", je);
             // init error, stop Jahia!
@@ -592,16 +588,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     public static SettingsBean getSettings () {
         return jSettings;
     }
-
-    /**
-     * Return true if this class has been fully initiated
-     *
-     * @return boolean true if this class has been fully initiated
-     */
-    public static boolean isInitiated () {
-        return mInitiated;
-    }
-
 
     public static boolean isMaintenance() {
         return maintenance;

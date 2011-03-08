@@ -44,7 +44,6 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
-import org.jahia.services.fetchers.JahiaFetcherService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.preferences.JahiaPreferencesService;
@@ -98,9 +97,6 @@ public class ServicesRegistry {
             "JahiaGroupManagerService";
     private static final String JAHIA_SITE_USER_MANAGER_SERVICE =
             "JahiaSiteUserManagerService";
-
-    // Jahia Fetcher Service
-    private static final String JAHIA_FETCHER_SERVICE = "JahiaFetcherService";
 
     // Jahia FileWatcher Service
     private static final String JAHIA_FILE_WATCHER_SERVICE = "JahiaFileWatcherService";
@@ -159,12 +155,10 @@ public class ServicesRegistry {
     	// do nothing
     }
 
-    @SuppressWarnings("unchecked")
     public Collection<? extends JahiaService> getServiceInstances() {
         return SpringContextSingleton.getInstance().getContext().getBeansOfType(JahiaService.class).values();
     }
 
-    @SuppressWarnings("unchecked")
     public Set<String> getServiceNames() {
         return SpringContextSingleton.getInstance().getContext().getBeansOfType(JahiaService.class).keySet();
     }
@@ -210,13 +204,6 @@ public class ServicesRegistry {
      */
     public JahiaGroupManagerService getJahiaGroupManagerService() {
         return (JahiaGroupManagerService) getService(JAHIA_GROUP_MANAGER_SERVICE);
-    }
-
-    /**
-     * EV 11.01.2001
-     */
-    public JahiaFetcherService getJahiaFetcherService() {
-        return (JahiaFetcherService) getService(JAHIA_FETCHER_SERVICE);
     }
 
     /**

@@ -84,12 +84,12 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -97,9 +97,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
 
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -126,9 +123,8 @@ public class JahiaAdministration extends HttpServlet {
 
     private static final long serialVersionUID = 332486402871252316L;
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaAdministration.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaAdministration.class);
     
-    private static ServletConfig config;
     private static ServletContext context;
 
     public static final String CLASS_NAME = "org.jahia.bin.JahiaAdministration";
@@ -155,7 +151,6 @@ public class JahiaAdministration extends HttpServlet {
             throws ServletException {
         super.init(aConfig);
         // get servlet config and context...
-        JahiaAdministration.config = aConfig;
         JahiaAdministration.context = aConfig.getServletContext();
 
         JahiaAdministration.contentServletPath = Jahia.getDefaultServletPath(aConfig.getServletContext());
@@ -210,14 +205,8 @@ public class JahiaAdministration extends HttpServlet {
             this.servletURI = getServletURI(request, response);
         }
 
-
+        try {
         // determine installation status...
-        if (!Jahia.isInitiated()) { // jahia is not launched...
-            request.setAttribute("jahiaLaunch", "administration"); // call jahia to init and re-launch admin...
-            logger.debug("Redirecting to " + contentServletPath +
-                    " in order to init Jahia first ...");
-            doRedirect(request, response, session, contentServletPath);
-        } else { // jahia is running...
         	jSettings = SettingsBean.getInstance();
             if (jSettings != null) {
                 // set Jahia running mode to Admin
@@ -238,9 +227,10 @@ public class JahiaAdministration extends HttpServlet {
                 request.setAttribute("jahiaLaunch", "installation"); // call jahia to init and launch install...
                 doRedirect(request, response, session, contentServletPath);
             }
+        } finally {
+            Jahia.setThreadParamBean(null);
+            logger.debug("--[ {} Request End ] --", request.getMethod());
         }
-        Jahia.setThreadParamBean(null);
-        logger.debug("--[ " + request.getMethod() + " Request End ] --");
     } // end service
 
     public static String getServletPath() {
@@ -367,7 +357,7 @@ public class JahiaAdministration extends HttpServlet {
                             if (hasSitePermission(currentModule.getPermissionName(), site.getSiteKey())) {
                                 session.setAttribute(CLASS_NAME + "configJahia", Boolean.FALSE);
                                 if ("search".equals(operation)) {
-                                    // Use response response wrapper to ensure correct handling of Application fields output to the response
+                                    // Use response wrapper to ensure correct handling of Application fields output to the response
                                     // @todo is this still necessary with Pluto wrapper in effect ?
                                     currentModule.service(new ServletIncludeRequestWrapper(request), new ServletIncludeResponseWrapper(response, true, SettingsBean.getInstance().getCharacterEncoding()));
                                 } else {
@@ -419,7 +409,7 @@ public class JahiaAdministration extends HttpServlet {
      * @param response    Servlet response.
      * @param destination Context relative path where you want to go.
      */
-    public synchronized static void doRedirect(HttpServletRequest request,
+    public static void doRedirect(HttpServletRequest request,
                                                HttpServletResponse response,
                                                HttpSession session,
                                                String destination)
@@ -440,86 +430,12 @@ public class JahiaAdministration extends HttpServlet {
             request.setAttribute("title", "no title");
         }
 
-        // init locale
-        Locale defaultLocale = (Locale) session
-                .getAttribute(ProcessingContext.SESSION_LOCALE);
-//        if (defaultLocale == null) {
-//            defaultLocale = request.getLocale() != null ? request.getLocale() : Locale.ENGLISH;
-//        }
-        session.setAttribute(ProcessingContext.SESSION_LOCALE, defaultLocale);
-
-        String contentTypeStr = "text/html;charset=";
-        String charEncoding = org.jahia.settings.SettingsBean.getInstance() != null ? org.jahia.settings.SettingsBean.getInstance()
-                .getCharacterEncoding() : "UTF-8";
-        contentTypeStr = contentTypeStr + charEncoding;
-
-        request.setAttribute("content-type", contentTypeStr);
-
-        // response no-cache headers...
-        response.setHeader("Pragma", "no-cache");
-        //response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expires", 0);
-        
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        if (jData != null) {
-            final ParamBean jParams = (ParamBean) jData.getProcessingContext();
-            
-            if (isValidLoginSession(session)) {
-            	initMenu(request,(JahiaUser) session.getAttribute("org.jahia.usermanager.jahiauser"));
-            }
-
-            try {
-                String htmlContent = ServicesRegistry.getInstance().
-                        getJahiaFetcherService().fetchServlet(jParams, destination);
-
-                if (jParams.getRedirectLocation() != null) {
-                    logger.debug(
-                            "sendRedirect call detected during output generation, no other output...");
-                    if (!response.isCommitted()) {
-                        response.sendRedirect(
-                                response.encodeRedirectURL(jParams.getRedirectLocation()));
-                    }
-                } else {
-                    /** @todo we should really find a more elegant way to handle this
-                     *  case, especially when handling a file manager download that
-                     *  has already accessed the RealResponse object.
-                     */
-                    if (!response.isCommitted()) {
-                        logger.debug("Printing content output to real writer");
-                        response.setContentType(contentTypeStr);
-                        ServletOutputStream outputStream = response.getOutputStream();
-                        OutputStreamWriter streamWriter;
-                        streamWriter = new OutputStreamWriter(outputStream, charEncoding);
-                        streamWriter.write(htmlContent, 0, htmlContent.length());
-                        streamWriter.flush();
-//                        response.getWriter().append(htmlContent);
-                    } else {
-                        logger.debug(
-                                "Output has already been committed, aborting display...");
-                    }
-                }
-            } catch (JahiaException je) {
-                StringWriter strWriter = new StringWriter();
-                PrintWriter ptrWriter = new PrintWriter(strWriter);
-                logger.debug("Error while redirecting", je);
-
-                ptrWriter.println("Exception in doRedirect");
-                je.printStackTrace(ptrWriter);
-
-                Throwable t = je.getRootCause();
-                if (t != null) {
-                    ptrWriter.println("Root cause Exception");
-                    t.printStackTrace(ptrWriter);
-                }
-
-                logger.warn(strWriter.toString());
-            }
-        } else {
-            config.getServletContext().getRequestDispatcher(destination).forward(
-                    request, response);
+        if (isValidLoginSession(session)) {
+            initMenu(request, (JahiaUser) session.getAttribute("org.jahia.usermanager.jahiauser"));
         }
-    } // end doRedirect
 
+        request.getRequestDispatcher(destination).forward(request, response);
+    }
 
     public static void initMenu(HttpServletRequest request, JahiaUser user) {
         JahiaData jData = (JahiaData) request

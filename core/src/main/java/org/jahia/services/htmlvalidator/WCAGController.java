@@ -59,55 +59,51 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 public class WCAGController extends JahiaMultiActionController {
 
-	private static final XStream JSON_SERIALIZER = new XStream(new JsonHierarchicalStreamDriver() {
-		public HierarchicalStreamWriter createWriter(Writer writer) {
-			return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-		}
-	});
+    private static final XStream JSON_SERIALIZER = new XStream(new JsonHierarchicalStreamDriver() {
+        public HierarchicalStreamWriter createWriter(Writer writer) {
+            return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+        }
+    });
 
-	private static Logger logger = LoggerFactory.getLogger(WCAGController.class);
+    private static Logger logger = LoggerFactory.getLogger(WCAGController.class);
 
-	@Override
-	protected String getRequiredPermission() {
-		return null;
-	}
+    private String toJSON(ValidatorResults validateResults) {
+        return JSON_SERIALIZER.toXML(validateResults);
+    }
 
-	private String toJSON(ValidatorResults validateResults) {
-		return JSON_SERIALIZER.toXML(validateResults);
-	}
+    public void validate(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // TODO add a role?
+            // checkUserAuthorized();
+            checkUserLoggedIn();
 
-	public void validate(HttpServletRequest request, HttpServletResponse response)
-	        throws ServletException, IOException {
-		try {
-			// TODO add a role?
-			// checkUserAuthorized();
+            String text = getParameter(request, "text");
 
-			String text = getParameter(request, "text");
+            Locale locale = (Locale) request.getSession(true).getAttribute(
+                    ProcessingContext.SESSION_UI_LOCALE);
+            locale = locale != null ? locale : request.getLocale();
 
-			Locale locale = (Locale) request.getSession(true).getAttribute(
-			        ProcessingContext.SESSION_UI_LOCALE);
-			locale = locale != null ? locale : request.getLocale();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Request received for validating text using locale '{}'. Text: {}",
+                        locale, text);
+            }
 
-			if (logger.isDebugEnabled()) {
-				logger.debug("Request received for validating text using locale '{}'. Text: {}",
-				        locale, text);
-			}
+            ValidatorResults validateResults = new WAIValidator(locale).validate(text);
 
-			ValidatorResults validateResults = new WAIValidator(locale).validate(text);
+            response.setContentType("application/json; charset=UTF-8");
+            String serialized = toJSON(validateResults);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Validation results: {}", serialized);
+            }
+            response.getWriter().append(serialized);
 
-			response.setContentType("application/json; charset=UTF-8");
-			String serialized = toJSON(validateResults);
-			if (logger.isDebugEnabled()) {
-				logger.debug("Validation results: {}", serialized);
-			}
-			response.getWriter().append(serialized);
-
-			response.setStatus(HttpServletResponse.SC_OK);
-		} catch (JahiaUnauthorizedException ue) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ue.getMessage());
-		} catch (Exception e) {
-			DefaultErrorHandler.getInstance().handle(e, request, response);
-		}
-	}
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (JahiaUnauthorizedException ue) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ue.getMessage());
+        } catch (Exception e) {
+            DefaultErrorHandler.getInstance().handle(e, request, response);
+        }
+    }
 
 }

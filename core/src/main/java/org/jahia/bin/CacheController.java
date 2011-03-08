@@ -52,43 +52,36 @@ import java.io.IOException;
  */
 public class CacheController extends JahiaMultiActionController {
 
-	private static Logger logger = LoggerFactory.getLogger(CacheController.class);
+    private static Logger logger = LoggerFactory.getLogger(CacheController.class);
 
-	private static final String REQUIRED_PERMISSION = "adminCache";
+    private CacheService cacheService;
 
-	private CacheService cacheService;
+    public void flushByName(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            checkUserAuthorized();
 
-	public void flushByName(HttpServletRequest request, HttpServletResponse response)
-	        throws ServletException, IOException {
-		try {
-			checkUserAuthorized();
+            String name = getParameter(request, "name");
 
-			String name = getParameter(request, "name");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Request received for flushing cache '{}'", name);
+            }
+            Cache<?, ?> cache = cacheService.getCache(name);
+            if (cache != null) {
+                cache.flush(Boolean.valueOf(getParameter(request, "propagate", "true")));
+                logger.info("Content of the cache '{}' successfully flushed.", name);
+            } else {
+                throw new JahiaBadRequestException("Unable to find cache for name '" + name + "'");
+            }
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (JahiaUnauthorizedException ue) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ue.getMessage());
+        } catch (Exception e) {
+            DefaultErrorHandler.getInstance().handle(e, request, response);
+        }
+    }
 
-			if (logger.isDebugEnabled()) {
-				logger.debug("Request received for flushing cache '{}'", name);
-			}
-			Cache<?, ?> cache = cacheService.getCache(name);
-			if (cache != null) {
-				cache.flush(Boolean.valueOf(getParameter(request, "propagate", "true")));
-				logger.info("Content of the cache '{}' successfully flushed.", name);
-			} else {
-				throw new JahiaBadRequestException("Unable to find cache for name '" + name + "'");
-			}
-			response.setStatus(HttpServletResponse.SC_OK);
-		} catch (JahiaUnauthorizedException ue) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ue.getMessage());
-		} catch (Exception e) {
-			DefaultErrorHandler.getInstance().handle(e, request, response);
-		}
-	}
-
-	@Override
-	protected String getRequiredPermission() {
-		return REQUIRED_PERMISSION;
-	}
-
-	public void setCacheService(CacheService cacheService) {
-		this.cacheService = cacheService;
-	}
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 }

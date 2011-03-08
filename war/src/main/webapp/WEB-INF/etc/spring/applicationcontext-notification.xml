@@ -107,6 +107,7 @@
                 <entry key="/notification/**">
                     <bean class="org.jahia.bin.Notifications">
                         <property name="mailService" ref="MailService"/>
+                        <property name="requiredPermission" value="adminEmailSettings"/>
                     </bean>
                 </entry>
             </map>

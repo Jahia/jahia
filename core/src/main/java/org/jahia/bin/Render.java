@@ -739,9 +739,18 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private void doAction(HttpServletRequest req, HttpServletResponse resp, URLResolver urlResolver,
                           RenderContext renderContext, Resource resource, Action action,
                           Map<String, List<String>> parameters) throws Exception {
-        if (action.getRequiredPermission() != null && !resource.getNode().hasPermission(action.getRequiredPermission())) {
+        if (action.getRequiredWorkspace() != null
+                && !action.getRequiredWorkspace().equals(resource.getWorkspace())) {
+            throw new PathNotFoundException("Action is not supported for this workspace");
+        }
+        if (action.isRequireAuthenticatedUser() && !renderContext.isLoggedIn()
+                || action.getRequiredWorkspace() != null
+                && !action.getRequiredWorkspace().equals(resource.getWorkspace())
+                || action.getRequiredPermission() != null
+                && !resource.getNode().hasPermission(action.getRequiredPermission())) {
             throw new AccessDeniedException();
         }
+
         String token = req.getParameter("form-token");
         if (token != null) {
             @SuppressWarnings("unchecked")
@@ -762,7 +771,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 Map<String,String> values = new HashMap<String, String>(m);
 
                 // Validate form token
-                if (!URLDecoder.decode(req.getRequestURI()).equals(values.remove("form-action"))) {
+                if (!URLDecoder.decode(req.getRequestURI(), SettingsBean.getInstance().getCharacterEncoding()).equals(values.remove("form-action"))) {
                     throw new AccessDeniedException();
                 }
                 if (!req.getMethod().equalsIgnoreCase(values.remove("form-method"))) {

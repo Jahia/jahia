@@ -78,7 +78,8 @@
     <bean class="org.jahia.modules.defaultmodule.actions.PublishAction">
         <property name="name" value="publish"/>
         <property name="publicationService" ref="jcrPublicationService"/>
-        <property name="requiredPermission" value="publish" />
+        <property name="requiredPermission" value="publish"/>
+        <property name="requiredWorkspace" value="default"/>
     </bean>
 
     <bean class="org.jahia.modules.defaultmodule.actions.AddMemberToGroupAction">

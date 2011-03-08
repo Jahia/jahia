@@ -39,22 +39,21 @@ import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+import org.springframework.web.servlet.mvc.Controller;
 
 /**
  * Base class for Jahia specific action controllers.
  * 
  * @author Sergiy Shyrkov
  */
-public abstract class JahiaMultiActionController extends MultiActionController {
+public abstract class JahiaController implements Controller {
 
-    private static final Logger logger = LoggerFactory.getLogger(JahiaMultiActionController.class);
-    
+    private static final Logger logger = LoggerFactory.getLogger(JahiaController.class);
+
     /**
      * Simple utility method to retrieve a parameter from a request and throws an {@link JahiaBadRequestException} (results in a 400 error)
      * in case the parameter is not found.
@@ -97,7 +96,7 @@ public abstract class JahiaMultiActionController extends MultiActionController {
     private String requiredPermission;
 
     protected void checkUserAuthorized() throws JahiaForbiddenAccessException {
-        JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
+        JahiaUser user = getCurrentUser();
         try {
             if (JahiaUserManagerService.isGuest(user)) {
                 throw new JahiaUnauthorizedException(
@@ -116,11 +115,18 @@ public abstract class JahiaMultiActionController extends MultiActionController {
     }
 
     protected void checkUserLoggedIn() throws JahiaForbiddenAccessException {
-        JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
-        if (JahiaUserManagerService.isGuest(user)) {
+        if (isUserGuest()) {
             throw new JahiaUnauthorizedException(
                     "You need to authenticate yourself to use this service");
         }
+    }
+
+    /**
+     * Return current user.
+     * @return current user
+     */
+    protected JahiaUser getCurrentUser() {
+        return JCRSessionFactory.getInstance().getCurrentUser();
     }
 
     /**
@@ -133,6 +139,15 @@ public abstract class JahiaMultiActionController extends MultiActionController {
     }
 
     /**
+     * Returns <code>true</code> if the current user is a non-authenticated user.
+     * 
+     * @return <code>true</code> if the current user is a non-authenticated user
+     */
+    protected boolean isUserGuest() {
+        return JahiaUserManagerService.isGuest(getCurrentUser());
+    }
+
+    /**
      * Sets the permission, required to handle this action. <code>null</code> if no particular permission is required.
      * 
      * @param requiredPermission
@@ -141,5 +156,4 @@ public abstract class JahiaMultiActionController extends MultiActionController {
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
     }
-
 }

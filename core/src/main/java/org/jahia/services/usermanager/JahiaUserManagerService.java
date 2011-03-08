@@ -32,6 +32,7 @@
 
 package org.jahia.services.usermanager;
 
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 import org.jahia.utils.EncryptionUtils;
@@ -58,7 +59,7 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * Each usermanager should create this special user, who is assigned
      * automatically for each anonymous session internally in Jahia.
      */
-    public static final String GUEST_USERNAME = "guest";
+    public static final String GUEST_USERNAME = Constants.GUEST_USERNAME;
 
 // -------------------------- STATIC METHODS --------------------------
 

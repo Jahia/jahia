@@ -34,7 +34,6 @@ package org.jahia.modules.defaultmodule.actions;
 
 import org.jahia.bin.Action;
 import org.jahia.services.content.*;
-import org.slf4j.Logger;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Render;
 import org.jahia.services.render.RenderContext;
@@ -47,14 +46,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 3 juin 2010
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 3 juin 2010
  */
 public class AddComment extends Action {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddComment.class);
 
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {

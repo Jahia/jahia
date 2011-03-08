@@ -51,18 +51,15 @@ import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Base action
+ * Base handler for content actions.
  * 
  * @author Sergiy Shyrkov
  */
 public abstract class Action {
 
-    public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                           JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
     /**
      * Returns a single value for the specified parameter. If the parameter is
      * not present or its value is empty, returns <code>null</code>.
@@ -72,10 +69,9 @@ public abstract class Action {
      * @return a single value for the specified parameter. If the parameter is
      *         not present or its value is empty, returns <code>null</code>
      */
-    public static String getParameter(Map<String, List<String>> parameters, String paramName) {
+    protected static String getParameter(Map<String, List<String>> parameters, String paramName) {
         return getParameter(parameters, paramName, null);
     }
-
     /**
      * Returns a single value for the specified parameter. If the parameter is
      * not present or its value is empty, returns the provided default value.
@@ -88,41 +84,18 @@ public abstract class Action {
      *         not present or its value is empty, returns the provided default
      *         value
      */
-    public static String getParameter(Map<String, List<String>> parameters, String paramName, String defaultValue) {
+    protected static String getParameter(Map<String, List<String>> parameters, String paramName, String defaultValue) {
         List<String> vals = parameters.get(paramName);
         return CollectionUtils.isNotEmpty(vals) && StringUtils.isNotEmpty(vals.get(0)) ? vals.get(0) : defaultValue;
     }
 
     private String name;
 
-    private String requiredPermission = null;
+    private boolean requireAuthenticatedUser = true;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jahia.bin.Action#getName()
-     */
-    public String getName() {
-        return name != null ? name : StringUtils.uncapitalize(StringUtils.substringBeforeLast(getClass().getSimpleName(), "Action"));
-    }
+    private String requiredPermission;
 
-    /**
-     * Sets the action name.
-     * 
-     * @param name the action name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getRequiredPermission() {
-        return requiredPermission;
-    }
-
-    public void setRequiredPermission(String requiredPermission) {
-        this.requiredPermission = requiredPermission;
-    }
-
+    private String requiredWorkspace;
 
     protected JCRNodeWrapper createNode(HttpServletRequest req, Map<String, List<String>> parameters,
                                         JCRNodeWrapper node, String nodeType, String nodeName)
@@ -155,19 +128,6 @@ public abstract class Action {
             newNode = node.addNode(nodeName, nodeType);
         }
 
-//        String template = parameters.containsKey("j:sourceTemplate") ? parameters.get("j:sourceTemplate").get(0) : null;
-//        if (Constants.JAHIANT_PAGE.equals(nodeType) && template != null) {
-//            // we will use the provided template
-//            JCRNodeWrapper templateNode = null;
-//            try {
-//                templateNode = session.getNodeByIdentifier(template);
-//                templateNode.copy(newNode.getParent(), nodeName, true);
-//            } catch (RepositoryException e) {
-//                logger.warn("Unable to use template node '" + template + ". Skip using template for new page.", e);
-//            }
-//
-//        }
-
         if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
             for (Object o : ((ArrayList) parameters.get(Constants.JCR_MIXINTYPES))) {
                 String mixin = (String) o;
@@ -198,6 +158,85 @@ public abstract class Action {
         }
 
         return newNode;
+    }
+
+    public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
+                                           JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jahia.bin.Action#getName()
+     */
+    public String getName() {
+        return name != null ? name : StringUtils.uncapitalize(StringUtils.substringBeforeLast(getClass().getSimpleName(), "Action"));
+    }
+
+    /**
+     * Returns a permission, required to execute this action or <code>null</code> if no particular permission is required.
+     * 
+     * @return a permission, required to execute this action or <code>null</code> if no particular permission is required
+     */
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    /**
+     * Returns JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace.
+     * 
+     * @return JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace.
+     */
+    public String getRequiredWorkspace() {
+        return requiredWorkspace;
+    }
+
+
+    /**
+     * Returns <code>true</code> if the action can be executed only by an authenticated user.
+     * 
+     * @return <code>true</code> if the action can be executed only by an authenticated user
+     */
+    public boolean isRequireAuthenticatedUser() {
+        return requireAuthenticatedUser;
+    }
+    
+    /**
+     * Sets the action name.
+     * 
+     * @param name the action name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    /**
+     * Defines if the action can be executed only by an authenticated user.
+     * 
+     * @param requireAuthenticatedUser
+     *            <code>true</code> if the action can be executed only by an authenticated user
+     */
+    public void setRequireAuthenticatedUser(boolean requireAuthenticatedUser) {
+        this.requireAuthenticatedUser = requireAuthenticatedUser;
+    }
+    
+    /**
+     * Defines a permission, required to execute this action or <code>null</code> if no particular permission is required.
+     * 
+     * @param requiredPermission
+     *            a permission, required to execute this action or <code>null</code> if no particular permission is required
+     */
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
+    }
+    
+    /**
+     * Sets the JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace.
+     * 
+     * @param requiredWorkspace
+     *            the JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace
+     */
+    public void setRequiredWorkspace(String requiredWorkspace) {
+        this.requiredWorkspace = requiredWorkspace;
     }
 
 }

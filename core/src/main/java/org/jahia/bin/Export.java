@@ -32,9 +32,10 @@
 
 package org.jahia.bin;
 
-import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
+import org.jahia.bin.errors.DefaultErrorHandler;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -42,16 +43,17 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.WebUtils;
+import org.jdom.JDOMException;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import org.xml.sax.SAXException;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,21 +62,20 @@ import java.util.Map;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 /**
- * Created by IntelliJ IDEA.
+ * Content export handler.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 2 avr. 2010
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 2 avr. 2010
  */
-public class Export extends HttpServlet implements Controller, ServletContextAware {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Export.class);
+public class Export extends JahiaController implements ServletContextAware {
+
+    public static final String CLEANUP = "cleanup";
 
     private String defaultWorkspace = LIVE_WORKSPACE;
 
-    private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
-
-    private ServletContext servletContext;
-    public static final String CLEANUP = "cleanup";
+    private String cleanupXsl;
+    private String templatesCleanupXsl;
 
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet
@@ -88,18 +89,27 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
      * @throws Exception in case of errors
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    
-        String method = request.getMethod();
-        if (method.equals("POST")) {
-            doPost(request, response);
-        } else if (method.equals("GET")) {
-            doGet(request, response);
-        }
+        try {
+            checkUserAuthorized();
+            
+            String method = request.getMethod();
+            if (method.equals("POST")) {
+                doPost(request, response);
+            } else if (method.equals("GET")) {
+                doGet(request, response);
+            }
 
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (JahiaUnauthorizedException ue) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ue.getMessage());
+        } catch (Exception e) {
+            DefaultErrorHandler.getInstance().handle(e, request, response);
+        }
+        
         return null;
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws javax.servlet.ServletException, java.io.IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException, JahiaException, RepositoryException, SAXException, JDOMException {
         String path = StringUtils.substringAfter(request.getPathInfo().substring(1), "/");
         String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
         String[] strings = ("/" + StringUtils.substringAfter(path, "/")).split("\\.");
@@ -111,7 +121,6 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
         Map<String, Object> params = getParams(request);
 
         OutputStream outputStream = resp.getOutputStream();
-        try {
             ImportExportService ie = ServicesRegistry.getInstance().getImportExportService();
 
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
@@ -123,38 +132,32 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
             if ("xml".equals(exportFormat)) {
                 resp.setContentType("text/xml");
                 if ("template".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH,servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "templatesCleanup.xsl"));
+                    params.put(ImportExportService.XSL_PATH,templatesCleanupXsl);
                 } else if ("simple".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH,servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
+                    params.put(ImportExportService.XSL_PATH,cleanupXsl);
                 }
                 ie.exportNode(node, exportRoot, outputStream, params);
             } else if ("zip".equals(exportFormat)) {
                 resp.setContentType("application/zip");
                 if ("template".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "templatesCleanup.xsl"));
+                    params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);
                 } else if ("simple".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
+                    params.put(ImportExportService.XSL_PATH, cleanupXsl);
                 }
                 ie.exportZip(node, exportRoot, outputStream, params);
                 outputStream.close();
             }
-        } catch (Exception e) {
-            logger.error("Exception during export", e);
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse resp) throws javax.servlet.ServletException, java.io.IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException, JahiaException, RepositoryException, SAXException, JDOMException {
         Map<String, Object> params = getParams(request);
 
         OutputStream outputStream = resp.getOutputStream();
-        try {
             ImportExportService ie = ServicesRegistry.getInstance().getImportExportService();
 
             if ("all".equals(request.getParameter("exportformat"))) {
-                if (!JCRSessionFactory.getInstance().getCurrentUser().isRoot()) {
-                    resp.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
-                    return;
+                if (!getCurrentUser().isRoot()) {
+                    throw new JahiaUnauthorizedException("Only root user can perform export of all content");
                 }
 
                 resp.setContentType("application/zip");
@@ -163,14 +166,13 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
                 params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
                 params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
                 params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
-                params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
+                params.put(ImportExportService.XSL_PATH, cleanupXsl);
 
                 ie.exportAll(outputStream, params);
                 outputStream.close();
             } else if ("site".equals(request.getParameter("exportformat"))) {
-                if (!JCRSessionFactory.getInstance().getCurrentUser().isRoot()) {
-                    resp.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
-                    return;
+                if (!getCurrentUser().isRoot()) {
+                    throw new JahiaUnauthorizedException("Only root user can perform export of a site");
                 }
 
                 List<JahiaSite> sites = new ArrayList<JahiaSite>();
@@ -192,16 +194,12 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
                     params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
                     params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
                     params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
-                    params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
+                    params.put(ImportExportService.XSL_PATH, cleanupXsl);
 
                     ie.exportSites(outputStream, params, sites);
                     outputStream.close();
                 }
             }
-        } catch (Exception e) {
-            logger.error("Exception during export", e);
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
     }
 
     private Map<String, Object> getParams(HttpServletRequest request) {
@@ -221,16 +219,9 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
         return "/cms/export";
     }
 
-    /**
-     * Called by the servlet container to indicate to a servlet that the
-     * servlet is being taken out of service.  See {@link javax.servlet.Servlet#destroy}.
-     */
-    @Override
-    public void destroy() {
-        super.destroy();
-    }
-
     public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
+        cleanupXsl = servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl");
+        templatesCleanupXsl = servletContext.getRealPath("/WEB-INF/etc/repository/export/"
+                + "templatesCleanup.xsl");
     }
 }

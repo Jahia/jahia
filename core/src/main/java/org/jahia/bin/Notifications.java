@@ -52,77 +52,69 @@ import java.util.Locale;
  */
 public class Notifications extends JahiaMultiActionController {
 
-	private static Logger logger = LoggerFactory.getLogger(Notifications.class);
+    private static Logger logger = LoggerFactory.getLogger(Notifications.class);
 
-	private static final String REQUIRED_PERMISSION = "adminEmailSettings";
+    private MailServiceImpl mailService;
 
-	private MailServiceImpl mailService;
-
-	private void sendEmail(String host, String from, String to, String subject, String text) {
-		mailService.sendMessage(
-		        (!host.startsWith("smtp://") && !host.startsWith("smtps://") ? "smtp://" : "")
-		                + host, from, to, null, null, subject, text, null);
-	}
-
-	public void setMailService(MailServiceImpl mailService) {
-		this.mailService = mailService;
-	}
-
-	public void testEmail(HttpServletRequest request, HttpServletResponse response)
-	        throws ServletException, IOException {
-		try {
-			checkUserAuthorized();
-
-			String host = getParameter(request, "host");
-			String from = getParameter(request, "from");
-			String to = getParameter(request, "to");
-
-			Locale locale = (Locale) request.getSession(true).getAttribute(
-			        ProcessingContext.SESSION_UI_LOCALE);
-			locale = locale != null ? locale : request.getLocale();
-
-			if (logger.isDebugEnabled()) {
-				logger.debug("Request received for sending test e-mail from '{}' "
-				        + "to '{}' using configuration '{}'", new String[] { from, to, host });
-			}
-
-			if (!MailService.isValidEmailAddress(to, true)) {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				response.getWriter().append(
-				        JahiaResourceBundle.getJahiaInternalResource(
-				                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label",
-				                locale, "Please provide a valid administrator e-mail address"));
-				return;
-			}
-			if (!MailService.isValidEmailAddress(from, false)) {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				response.getWriter().append(
-				        JahiaResourceBundle.getJahiaInternalResource(
-				                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
-				                locale, "Please provide a valid sender e-mail address"));
-				return;
-			}
-
-			String subject = JahiaResourceBundle.getJahiaInternalResource(
-			        "org.jahia.admin.server.ManageServer.testSettings.mailSubject", locale,
-			        "[Jahia] Test message");
-			String text = JahiaResourceBundle.getJahiaInternalResource(
-			        "org.jahia.admin.server.ManageServer.testSettings.mailText", locale,
-			        "Test message");
-
-			sendEmail(host, from, to, subject, text);
-
-			response.setStatus(HttpServletResponse.SC_OK);
-		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().append(e.getCause().getMessage());
-			logger.warn("Error sending test e-mail message. Cause: " + e.getMessage(), e);
-		}
-	}
-
-	@Override
-    protected String getRequiredPermission() {
-	    return REQUIRED_PERMISSION;
+    private void sendEmail(String host, String from, String to, String subject, String text) {
+        mailService.sendMessage(
+                (!host.startsWith("smtp://") && !host.startsWith("smtps://") ? "smtp://" : "")
+                        + host, from, to, null, null, subject, text, null);
     }
 
+    public void setMailService(MailServiceImpl mailService) {
+        this.mailService = mailService;
+    }
+
+    public void testEmail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            checkUserAuthorized();
+
+            String host = getParameter(request, "host");
+            String from = getParameter(request, "from");
+            String to = getParameter(request, "to");
+
+            Locale locale = (Locale) request.getSession(true).getAttribute(
+                    ProcessingContext.SESSION_UI_LOCALE);
+            locale = locale != null ? locale : request.getLocale();
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Request received for sending test e-mail from '{}' "
+                        + "to '{}' using configuration '{}'", new String[] { from, to, host });
+            }
+
+            if (!MailService.isValidEmailAddress(to, true)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().append(
+                        JahiaResourceBundle.getJahiaInternalResource(
+                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label",
+                                locale, "Please provide a valid administrator e-mail address"));
+                return;
+            }
+            if (!MailService.isValidEmailAddress(from, false)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().append(
+                        JahiaResourceBundle.getJahiaInternalResource(
+                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
+                                locale, "Please provide a valid sender e-mail address"));
+                return;
+            }
+
+            String subject = JahiaResourceBundle.getJahiaInternalResource(
+                    "org.jahia.admin.server.ManageServer.testSettings.mailSubject", locale,
+                    "[Jahia] Test message");
+            String text = JahiaResourceBundle.getJahiaInternalResource(
+                    "org.jahia.admin.server.ManageServer.testSettings.mailText", locale,
+                    "Test message");
+
+            sendEmail(host, from, to, subject, text);
+
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().append(e.getCause().getMessage());
+            logger.warn("Error sending test e-mail message. Cause: " + e.getMessage(), e);
+        }
+    }
 }

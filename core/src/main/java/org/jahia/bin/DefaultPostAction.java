@@ -34,13 +34,12 @@ package org.jahia.bin;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
 import org.jahia.services.content.*;
-import org.slf4j.Logger;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
 import org.json.JSONObject;
 
@@ -54,13 +53,11 @@ import java.util.*;
 /**
  * Performs the default action when data is posted to the render servlet, i.e. creates or modifies a node.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 11 mars 2010
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 11 mars 2010
  */
 public class DefaultPostAction extends Action {
-
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultPostAction.class);
 
     public static final String ACTION_NAME = "default";
 
@@ -132,7 +129,7 @@ public class DefaultPostAction extends Action {
             session.save();
 
             final String nodeId = newNode.getIdentifier();
-            if (parameters.containsKey(Render.AUTO_ASSIGN_ROLE) && !session.getUser().getUsername().equals(Constants.GUEST_USERNAME)) {
+            if (parameters.containsKey(Render.AUTO_ASSIGN_ROLE) && JahiaUserManagerService.isNotGuest(session.getUser())) {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(session.getUser().getUsername(),session.getWorkspace().getName(),new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper rootSession) throws RepositoryException {
                         JCRNodeWrapper createdNode = rootSession.getNodeByUUID(nodeId);

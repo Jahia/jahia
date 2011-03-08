@@ -21,6 +21,7 @@
         <property name="defaultPostAction" >
             <bean class="org.jahia.bin.DefaultPostAction">
                 <property name="loggingService" ref="loggingService"/>
+                <property name="requireAuthenticatedUser" value="false"/>
             </bean>
         </property>
         <property name="settingsBean" ref="settingsBean" />

@@ -48,11 +48,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * @author toto
  * Date: Mar 18, 2010
  * Time: 12:16:14 PM
- * To change this template use File | Settings | File Templates.
  */
 public class StartWorkflowAction extends Action {
     private WorkflowService workflowService;

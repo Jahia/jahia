@@ -8,20 +8,17 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
-import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: loom
+ * Render action for publishing content from default to live workspace.
+ * @author loom
  * Date: 10.02.11
  * Time: 09:12
- * To change this template use File | Settings | File Templates.
  */
 public class PublishAction extends Action {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PublishAction.class);
 
     private JCRPublicationService publicationService;
 

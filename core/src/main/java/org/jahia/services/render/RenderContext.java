@@ -51,6 +51,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
 /**
@@ -172,11 +173,7 @@ public class RenderContext {
     }
 
     public boolean isLoggedIn() {
-        final String theUserName = getUser().getUsername();
-        if (!Constants.GUEST_USERNAME.equals(theUserName)) {
-            return true;
-        }
-        return false;
+        return JahiaUserManagerService.isNotGuest(getUser());
     }
 
     public Map<String, Map<String, Integer>> getTemplatesCacheExpiration() {
@@ -261,7 +258,7 @@ public class RenderContext {
     public Locale getUILocale() {
         if (uiLocale == null) {
             Locale locale = null;
-            if(!getUser().getUsername().equals(Constants.GUEST_USERNAME)) {
+            if(JahiaUserManagerService.isNotGuest(getUser())) {
                 locale = UserPreferencesHelper.getPreferredLocale(getUser());
             }
             if (locale == null) {

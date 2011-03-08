@@ -50,7 +50,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.history.ContentHistoryService;
 import org.jahia.services.history.HistoryEntry;
-import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
@@ -68,18 +67,20 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Created by IntelliJ IDEA.
- *
  * @author rfelden
  * @version 20 juin 2008 - 12:49:42
  */
 public class ContentManagerHelper {
+
+    private static final String MODULE_SKELETONS = "WEB-INF/etc/repository/module.xml,WEB-INF/etc/repository/module-*.xml,modules/**/META-INF/module-skeleton.xml,modules/**/META-INF/module-skeleton-*.xml";
+    
+    private static final String TEMPLATE_SET_SKELETONS = "WEB-INF/etc/repository/templatesSet.xml,WEB-INF/etc/repository/templatesSet-*.xml,modules/**/META-INF/templatesSet-skeleton.xml,modules/**/META-INF/templatesSet-skeleton-*.xml";
+
 // ------------------------------ FIELDS ------------------------------
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentManagerHelper.class);
 
     private JahiaSitesService sitesService;
-    private ImportExportBaseService importExport;
     private ContentHistoryService contentHistoryService;
 
     private NavigationHelper navigation;
@@ -87,10 +88,6 @@ public class ContentManagerHelper {
     private VersioningHelper versioning;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
-
-    public void setImportExport(ImportExportBaseService importExport) {
-        this.importExport = importExport;
-    }
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
@@ -134,27 +131,6 @@ public class ContentManagerHelper {
             } catch (Exception e) {
                 logger.error("Exception", e);
                 throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
-            }
-        }
-        if (childNode == null) {
-            throw new GWTJahiaServiceException("Node creation failed");
-        }
-        return childNode;
-    }
-
-    private JCRNodeWrapper unsecureAddNode(JCRNodeWrapper parentNode, String name, String nodeType,
-                                           List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
-        JCRNodeWrapper childNode = null;
-        if (!parentNode.isFile()) {
-            try {
-                if (!parentNode.isCheckedOut()) {
-                    parentNode.checkout();
-                }
-                childNode = parentNode.addNode(name, nodeType);
-                properties.setProperties(childNode, props);
-            } catch (Exception e) {
-                logger.error("Exception", e);
-                throw new GWTJahiaServiceException("Node creation failed");
             }
         }
         if (childNode == null) {
@@ -965,11 +941,9 @@ public class ContentManagerHelper {
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
 
                 if (isModule) {
-                    String skeletons = "WEB-INF/etc/repository/module.xml,modules/**/META-INF/templatesSet-skeleton.xml,modules/**/META-INF/templatesSet-skeleton-*.xml";
-                    JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
+                    JCRContentUtils.importSkeletons(MODULE_SKELETONS, "/templateSets/" + shortName, session);
                 } else {
-                    String skeletons = "WEB-INF/etc/repository/templatesSet.xml,modules/**/META-INF/templatesSet-skeleton.xml,modules/**/META-INF/templatesSet-skeleton-*.xml";
-                    JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
+                    JCRContentUtils.importSkeletons(TEMPLATE_SET_SKELETONS, "/templateSets/" + shortName, session);
                     templateSet.getNode("templates/base").setProperty("j:view", shortName);
                 }
                 session.save();

@@ -34,18 +34,17 @@ package org.jahia.ajax.gwt.commons.server;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.core.SessionExpirationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.springframework.web.context.ServletContextAware;
@@ -66,15 +65,13 @@ import java.util.Locale;
 public abstract class JahiaRemoteService implements RemoteService, ServletContextAware, RequestResponseAware {
 
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaRemoteService.class);
-    private static final String ORG_JAHIA_DATA_JAHIA_DATA = "org.jahia.data.JahiaData";
-    private static final String ORG_JAHIA_PARAMS_PARAM_BEAN = "org.jahia.params.ParamBean";
 
     private HttpServletRequest request;
     private HttpServletResponse response;
     private ServletContext servletContext;
 
     /**
-     * Retrive current session
+     * Retrieve current session
      *
      * @return
      * @throws GWTJahiaServiceException
@@ -95,7 +92,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     }
 
     /**
-     * REtrive current session by workspace
+     * Retrieve current session by workspace
      *
      * @return
      * @throws GWTJahiaServiceException
@@ -178,7 +175,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         Locale sessionLocale = (Locale) getSession().getAttribute(ParamBean.SESSION_UI_LOCALE);
         Locale locale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser(), sessionLocale) : UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser());
         if (locale == null) {
-            if(!getRemoteJahiaUser().getUsername().equals(Constants.GUEST_USERNAME)) {
+            if(JahiaUserManagerService.isNotGuest(getRemoteJahiaUser())) {
                 locale = UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser());
             }
             if (locale == null) {

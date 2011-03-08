@@ -17,7 +17,8 @@
 <template:addResources type="javascript" resources="jquery.bgiframe.min.js"/>
 <template:addResources type="javascript" resources="thickbox-compressed.js"/>
 
-<script>
+<template:addResources>
+<script type="text/javascript">
     $(document).ready(function() {
 
         $("#${currentNode.name}").autocomplete("${url.initializers}", {
@@ -42,6 +43,7 @@
         });
     });
 </script>
+</template:addResources>
 <p class="field">
     <label for="${currentNode.name}">${currentNode.properties.label.string}</label>
     <input type="text" id="${currentNode.name}" name="${currentNode.name}" value="<c:if test="${not empty sessionScope.formError}">${sessionScope.formDatas[currentNode.name][0]}</c:if>"/>

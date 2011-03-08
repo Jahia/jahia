@@ -10,12 +10,14 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<script>
+<template:addResources>
+<script type="text/javascript">
     $(document).ready(function() {
          var form = $("#${currentNode.parent.parent.parent.name}");
         form.attr("enctype", "multipart/form-data");
     })
 </script>
+</template:addResources>
 <p class="field">
 <label class="left">${currentNode.properties.label.string}</label>
 <input type="file" id="${currentNode.name}" name="${currentNode.name}"/>

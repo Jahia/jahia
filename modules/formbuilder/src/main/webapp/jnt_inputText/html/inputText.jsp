@@ -11,11 +11,13 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:if test="${not empty props.mask}">
-    <script>
+    <template:addResources>
+    <script type="text/javascript">
         $(document).ready(function() {
             $("#${currentNode.name}").mask("${currentNode.properties.mask.string}");
         });
     </script>
+    </template:addResources>
 </c:if>
 <p class="field">
 <label class="left">${currentNode.properties.label.string}</label>

@@ -17,7 +17,8 @@
 <jcr:node var="actionNode" path="${currentNode.path}/action"/>
 <jcr:node var="fieldsetsNode" path="${currentNode.path}/fieldsets"/>
 <c:if test="${not renderContext.editMode}">
-    <script>
+    <template:addResources>
+    <script type="text/javascript">
         $(document).ready(function() {
             $("#${currentNode.name}").validate({
                 rules: {
@@ -37,6 +38,7 @@
             });
         });
     </script>
+    </template:addResources>
 </c:if>
 
 <c:set var="action" value="${url.base}${currentNode.path}/responses/*"/>

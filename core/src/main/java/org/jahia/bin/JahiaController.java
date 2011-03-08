@@ -32,17 +32,14 @@
 
 package org.jahia.bin;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
-import org.jahia.exceptions.JahiaUnauthorizedException;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.Controller;
 
 /**
@@ -51,8 +48,6 @@ import org.springframework.web.servlet.mvc.Controller;
  * @author Sergiy Shyrkov
  */
 public abstract class JahiaController implements Controller {
-
-    private static final Logger logger = LoggerFactory.getLogger(JahiaController.class);
 
     /**
      * Simple utility method to retrieve a parameter from a request and throws an {@link JahiaBadRequestException} (results in a 400 error)
@@ -68,12 +63,7 @@ public abstract class JahiaController implements Controller {
      */
     protected final static String getParameter(final HttpServletRequest request, final String name)
             throws JahiaBadRequestException {
-        final String value = request.getParameter(name);
-        if (value == null) {
-            throw new JahiaBadRequestException("Missing required '" + name
-                    + "' parameter in request.");
-        }
-        return value;
+        return JahiaControllerUtils.getParameter(request, name);
     }
 
     /**
@@ -89,40 +79,26 @@ public abstract class JahiaController implements Controller {
      */
     protected final static String getParameter(final HttpServletRequest request, final String name,
             String defaultValue) {
-        final String value = request.getParameter(name);
-        return value != null ? value : defaultValue;
+        return JahiaControllerUtils.getParameter(request, name, defaultValue);
     }
 
     private String requiredPermission;
 
     protected void checkUserAuthorized() throws JahiaForbiddenAccessException {
-        JahiaUser user = getCurrentUser();
-        try {
-            if (JahiaUserManagerService.isGuest(user)) {
-                throw new JahiaUnauthorizedException(
-                        "You need to authenticate yourself to use this service");
-            } else if (getRequiredPermission() == null
-                    || !JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode()
-                            .hasPermission(getRequiredPermission())) {
-                throw new JahiaForbiddenAccessException(
-                        "You have not enough permissions to use this service");
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get permission", e);
-            throw new JahiaForbiddenAccessException(
-                    "You have not enough permissions to use this service");
-        }
+        JahiaControllerUtils.checkUserAuthorized(getCurrentUser(), getRequiredPermission());
+    }
+
+    protected void checkUserAuthorized(JCRNodeWrapper node) throws JahiaForbiddenAccessException {
+        JahiaControllerUtils.checkUserAuthorized(node, getCurrentUser(), getRequiredPermission());
     }
 
     protected void checkUserLoggedIn() throws JahiaForbiddenAccessException {
-        if (isUserGuest()) {
-            throw new JahiaUnauthorizedException(
-                    "You need to authenticate yourself to use this service");
-        }
+        JahiaControllerUtils.checkUserLoggedIn(getCurrentUser());
     }
 
     /**
-     * Return current user.
+     * Returns the current user.
+     * 
      * @return current user
      */
     protected JahiaUser getCurrentUser() {

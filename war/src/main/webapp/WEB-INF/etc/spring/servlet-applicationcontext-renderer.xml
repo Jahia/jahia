@@ -79,7 +79,10 @@
                     </bean>
                 </entry>
                 <entry key="/export/**">
-                    <bean name="org.jahia.bin.Export" class="org.jahia.bin.Export"/>
+                    <bean name="org.jahia.bin.Export" class="org.jahia.bin.Export">
+                        <property name="importExportService" ref="ImportExportService"/>
+                        <property name="requiredPermission" value="jcr:write_default|jcr:write_live"/>
+                    </bean>
                 </entry>
                 <entry key="/wcag/**">
 					<bean class="org.jahia.services.htmlvalidator.WCAGController"/>

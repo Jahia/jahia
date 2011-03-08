@@ -35,6 +35,7 @@ package org.jahia.bin.errors;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -44,7 +45,6 @@ import org.jahia.settings.SettingsBean;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
@@ -59,7 +59,7 @@ import static javax.servlet.http.HttpServletResponse.*;
  */
 public class ErrorLoggingFilter implements Filter {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorLoggingFilter.class);
+    private static Logger logger = LoggerFactory.getLogger(ErrorLoggingFilter.class);
 
     private static Throwable lastMailedException = null;
     private static int lastMailedExceptionOccurences = 0;
@@ -217,15 +217,15 @@ public class ErrorLoggingFilter implements Filter {
 
         logDebugInfo(request, response);
 
-		if (HttpServletResponse.SC_SERVICE_UNAVAILABLE == (Integer) request
-		        .getAttribute("javax.servlet.error.status_code")
-		        && (StringUtils.equals(ErrorServlet.MAINTENANCE_MODE,
-		                (String) request.getAttribute("javax.servlet.error.message")) || StringUtils
-		                .equals(ErrorServlet.LICENSE_TERMS_VIOLATION_MODE,
-		                        (String) request.getAttribute("javax.servlet.error.message")))) {
-			return;
-		}
-        
+        if (HttpServletResponse.SC_SERVICE_UNAVAILABLE == (Integer) request
+                .getAttribute("javax.servlet.error.status_code")
+                && (StringUtils.equals(ErrorServlet.MAINTENANCE_MODE,
+                        (String) request.getAttribute("javax.servlet.error.message")) || StringUtils
+                        .equals(ErrorServlet.LICENSE_TERMS_VIOLATION_MODE,
+                                (String) request.getAttribute("javax.servlet.error.message")))) {
+            return;
+        }
+
         logException(request, response);
 
         if (SettingsBean.getInstance().isDumpErrorsToFiles()) {
@@ -309,9 +309,6 @@ public class ErrorLoggingFilter implements Filter {
             if (ex != null && logger.isDebugEnabled()) {
                 logger.debug(message, ex);
             } else {
-                if (ex != null && SC_BAD_REQUEST == code) {
-                    logger.warn(message, ex);
-                }
                 if (SC_UNAUTHORIZED == code) {
                     logger.info(message);
                 } else {

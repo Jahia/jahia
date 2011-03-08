@@ -7,6 +7,7 @@
  - j:usageThreshold (long) = 1 indexed=no
  - limit (long) = 50 indexed=no
  - resultPage (weakreference) indexed=no < jnt:page
+ - relative (boolean) = false
 
 [jnt:tagging] > jnt:content, mix:title, jmix:tagsContent, jmix:bindedComponent
 

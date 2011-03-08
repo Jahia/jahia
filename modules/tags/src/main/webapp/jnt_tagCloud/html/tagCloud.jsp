@@ -31,7 +31,7 @@
 
     <query:definition var="listQuery" scope="request">
         <query:selector nodeTypeName="nt:base"/>
-        <query:descendantNode path="${renderContext.site.path}"/>
+        <query:descendantNode path="${currentNode.properties['relative'].boolean?renderContext.mainResource.node.path:renderContext.site.path}"/>
         <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tags&facet.mincount=${usageThreshold}&facet.limit=${numberOfTagsLimit}&facet.sort=true)" propertyName="j:tags"/>
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>

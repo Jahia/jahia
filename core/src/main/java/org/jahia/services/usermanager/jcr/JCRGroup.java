@@ -308,23 +308,30 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             Node member = (Node) iterator.next();
             if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
                 Property memberProperty = member.getProperty("j:member");
-                Node memberNode = memberProperty.getNode();
-                if (memberNode.isNodeType(Constants.JAHIANT_USER)) {
-                    JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
-                    if (jahiaUser != null) {
-                        principalMap.add(jahiaUser);
+                Node memberNode = null;
+                try {
+                    memberNode = memberProperty.getNode();
+                } catch (ItemNotFoundException infe) {
+                    logger.warn("Couldn't find group member " + memberProperty.getString(), " ignoring...");
+                }
+                if (memberNode != null) {
+                    if (memberNode.isNodeType(Constants.JAHIANT_USER)) {
+                        JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
+                        if (jahiaUser != null) {
+                            principalMap.add(jahiaUser);
+                        } else {
+                            logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
+                                    + "'");
+                        }
                     } else {
-                        logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
-                                + "'");
-                    }
-                } else {
-                    String s = member.getName().replace("___", ":");
-                    JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
-                    if (g != null) {
-                        principalMap.add(g);
-                    } else {
-                        logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
-                                + "'");
+                        String s = member.getName().replace("___", ":");
+                        JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
+                        if (g != null) {
+                            principalMap.add(g);
+                        } else {
+                            logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
+                                    + "'");
+                        }
                     }
                 }
             }

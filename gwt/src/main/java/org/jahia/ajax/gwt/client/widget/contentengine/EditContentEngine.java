@@ -238,7 +238,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
-                Info.display("",throwable.getLocalizedMessage());
+                Info.display(Messages.get("label.error", "Error"),throwable.getLocalizedMessage());
                 EditContentEngine.this.container.closeEngine();
             }
 
@@ -358,7 +358,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     }
 
                     public void onSuccess(Object o) {
-                        Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
+                        Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                         EditContentEngine.this.container.closeEngine();
                         linker.refresh(Linker.REFRESH_MAIN);
                     }

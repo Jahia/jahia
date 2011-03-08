@@ -46,6 +46,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -199,7 +200,7 @@ public class EditModeDNDListener extends DNDListener {
                                 }
 
                                 public void onSuccess(GWTJahiaNode o) {
-                                    Info.display("", "Node created");
+                                    Info.display(Messages.get("label.information", "Information"), Messages.get("message.success", "Node created"));
                                     editLinker.refresh(Linker.REFRESH_MAIN);
                                 }
                             });

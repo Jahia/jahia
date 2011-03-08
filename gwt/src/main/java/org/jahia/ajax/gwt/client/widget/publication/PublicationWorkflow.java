@@ -8,7 +8,6 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
@@ -26,7 +25,6 @@ import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Sep 10, 2010
  * Time: 3:32:00 PM
@@ -68,7 +66,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                     nodeProperties = dialog.getPropertiesEditor().getProperties();
                 }
                 dialog.getContainer().closeEngine();
-                Info.display("Starting publication workflow", "Starting publication workflow");
+                Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get("message.workflow.starting", "Starting publication workflow"));
                 final String status = Messages.get("label.workflow.task", "Executing workflow task");
                 WorkInProgressActionItem.setStatus(status);
 
@@ -84,7 +82,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                             }
 
                             public void onSuccess(Object result) {
-                                Info.display("Publication workflow started", "Publication workflow started");
+                                Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get("message.workflow.started", "Publication workflow started"));
                                 WorkInProgressActionItem.removeStatus(status);
                                 dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                             }

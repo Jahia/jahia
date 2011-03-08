@@ -34,7 +34,6 @@ package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.errors.DefaultErrorHandler;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -43,17 +42,13 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.WebUtils;
-import org.jdom.JDOMException;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
-import org.xml.sax.SAXException;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +61,7 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
  *
  * @author rincevent
  * @since JAHIA 6.5
- * Created : 2 avr. 2010
+ *        Created : 2 avr. 2010
  */
 public class Export extends JahiaController implements ServletContextAware {
 
@@ -91,76 +86,39 @@ public class Export extends JahiaController implements ServletContextAware {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             checkUserAuthorized();
-            
-            String method = request.getMethod();
-            if (method.equals("POST")) {
-                doPost(request, response);
-            } else if (method.equals("GET")) {
-                doGet(request, response);
+
+            String path = StringUtils.substringAfter(request.getPathInfo().substring(1), "/");
+            String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
+            String[] strings = ("/" + StringUtils.substringAfter(path, "/")).split("\\.");
+            String nodePath = strings[0];
+
+            String exportFormat = request.getParameter("exportformat");
+
+            if (StringUtils.isEmpty(exportFormat)) {
+                exportFormat = strings[1];
             }
 
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (JahiaUnauthorizedException ue) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ue.getMessage());
-        } catch (Exception e) {
-            DefaultErrorHandler.getInstance().handle(e, request, response);
-        }
-        
-        return null;
-    }
+            //make sure this file is not cached by the client (or a proxy middleman)
+            WebUtils.setNoCacheHeaders(response);
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException, JahiaException, RepositoryException, SAXException, JDOMException {
-        String path = StringUtils.substringAfter(request.getPathInfo().substring(1), "/");
-        String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
-        String[] strings = ("/" + StringUtils.substringAfter(path, "/")).split("\\.");
-        String nodePath = strings[0];
-        String exportFormat = strings[1];
-        //make sure this file is not cached by the client (or a proxy middleman)
-        WebUtils.setNoCacheHeaders(resp);
+            Map<String, Object> params = getParams(request);
 
-        Map<String, Object> params = getParams(request);
-
-        OutputStream outputStream = resp.getOutputStream();
+            OutputStream outputStream = response.getOutputStream();
             ImportExportService ie = ServicesRegistry.getInstance().getImportExportService();
 
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
-            JCRNodeWrapper node = session.getNode(nodePath);
             JCRNodeWrapper exportRoot = null;
+
             if (request.getParameter("root") != null) {
                 exportRoot = session.getNode(request.getParameter("root"));
             }
-            if ("xml".equals(exportFormat)) {
-                resp.setContentType("text/xml");
-                if ("template".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH,templatesCleanupXsl);
-                } else if ("simple".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH,cleanupXsl);
-                }
-                ie.exportNode(node, exportRoot, outputStream, params);
-            } else if ("zip".equals(exportFormat)) {
-                resp.setContentType("application/zip");
-                if ("template".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);
-                } else if ("simple".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, cleanupXsl);
-                }
-                ie.exportZip(node, exportRoot, outputStream, params);
-                outputStream.close();
-            }
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException, JahiaException, RepositoryException, SAXException, JDOMException {
-        Map<String, Object> params = getParams(request);
-
-        OutputStream outputStream = resp.getOutputStream();
-            ImportExportService ie = ServicesRegistry.getInstance().getImportExportService();
 
             if ("all".equals(request.getParameter("exportformat"))) {
                 if (!getCurrentUser().isRoot()) {
                     throw new JahiaUnauthorizedException("Only root user can perform export of all content");
                 }
 
-                resp.setContentType("application/zip");
+                response.setContentType("application/zip");
                 params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
                 params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
                 params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
@@ -185,10 +143,10 @@ public class Export extends JahiaController implements ServletContextAware {
                 }
 
                 if (sites.isEmpty()) {
-                    JahiaAdministration.doRedirect(request, resp, request.getSession(),
-                                                   JahiaAdministration.JSP_PATH + "no_sites_selected.jsp");
+                    JahiaAdministration.doRedirect(request, response, request.getSession(),
+                            JahiaAdministration.JSP_PATH + "no_sites_selected.jsp");
                 } else {
-                    resp.setContentType("application/zip");
+                    response.setContentType("application/zip");
                     params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
                     params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
                     params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
@@ -199,7 +157,35 @@ public class Export extends JahiaController implements ServletContextAware {
                     ie.exportSites(outputStream, params, sites);
                     outputStream.close();
                 }
+            } else if ("xml".equals(exportFormat)) {
+                JCRNodeWrapper node = session.getNode(nodePath);
+                response.setContentType("text/xml");
+                if ("template".equals(request.getParameter(CLEANUP))) {
+                    params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);
+                } else if ("simple".equals(request.getParameter(CLEANUP))) {
+                    params.put(ImportExportService.XSL_PATH, cleanupXsl);
+                }
+                ie.exportNode(node, exportRoot, outputStream, params);
+            } else if ("zip".equals(exportFormat)) {
+                JCRNodeWrapper node = session.getNode(nodePath);
+                response.setContentType("application/zip");
+                if ("template".equals(request.getParameter(CLEANUP))) {
+                    params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);
+                } else if ("simple".equals(request.getParameter(CLEANUP))) {
+                    params.put(ImportExportService.XSL_PATH, cleanupXsl);
+                }
+                ie.exportZip(node, exportRoot, outputStream, params);
+                outputStream.close();
             }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (JahiaUnauthorizedException ue) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ue.getMessage());
+        } catch (Exception e) {
+            DefaultErrorHandler.getInstance().handle(e, request, response);
+        }
+
+        return null;
     }
 
     private Map<String, Object> getParams(HttpServletRequest request) {

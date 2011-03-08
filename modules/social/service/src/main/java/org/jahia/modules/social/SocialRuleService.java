@@ -37,7 +37,10 @@ import java.util.List;
 import javax.jcr.RepositoryException;
 
 import org.drools.spi.KnowledgeHelper;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.rules.AddedNodeFact;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRUser;
 
 /**
  * Social service class for manipulating social activities from the
@@ -52,11 +55,25 @@ public class SocialRuleService {
     /* Rules Consequence implementations */
 
     public void addActivity(final String activityType, final String user, final String messageKey, final AddedNodeFact nodeFact, final List<String> nodeTypeList, KnowledgeHelper drools) throws RepositoryException {
-        socialService.addActivity(activityType, user, null, messageKey, nodeFact.getNode(), nodeTypeList, nodeFact.getNode().getSession());
+        if (user == null || "".equals(user.trim()) || user.equals(" system ")) {
+            return;
+        }
+        final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+
+        socialService.addActivity(activityType, jahiaUser.getUserKey(), null, messageKey, nodeFact.getNode(), nodeTypeList, nodeFact.getNode().getSession());
     }
 
     public void sendMessage(final String fromUser, final String toUser, final String subject, final String message, AddedNodeFact nodeFact, KnowledgeHelper drools) throws RepositoryException {
-        socialService.sendMessage(fromUser, toUser, subject, message, nodeFact.getNode().getSession());
+        if (fromUser == null || "".equals(fromUser.trim()) || fromUser.equals(" system ")) {
+            return;
+        }
+        final JahiaUser jahiaFromUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(fromUser);
+        if (toUser == null || "".equals(toUser.trim()) || toUser.equals(" system ")) {
+            return;
+        }
+        final JahiaUser jahiaToUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(toUser);
+
+        socialService.sendMessage(jahiaFromUser.getUserKey(), jahiaToUser.getUserKey(), subject, message, nodeFact.getNode().getSession());
     }
 
     /**

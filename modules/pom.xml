@@ -157,6 +157,7 @@
         <module>skins</module>
         <module>staticHTML</module>
         <module>tabularList</module>
+        <module>tags</module>
         <module>tasks</module>
         <module>teasers</module>
         <module>templates-apps</module>

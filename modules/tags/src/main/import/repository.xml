@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
+              xmlns:jcr="http://www.jcp.org/jcr/1.0"
+              xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
+              xmlns:mix="http://www.jcp.org/jcr/mix/1.0" >
+    <templateSets jcr:primaryType="jnt:templateSets">
+        <tags j:installedModules="tags" j:siteType="templatesSet" jcr:primaryType="jnt:virtualsite">
+            <home jcr:mixinTypes="jmix:sitemap"
+                  j:displayInMenu="primary"
+                  jcr:primaryType="jnt:page" changefreq="monthly"
+                  j:templateNode="/templatesSet/tags/templates/base/home" priority="0.5">
+            </home>
+
+            <portlets jcr:primaryType="jnt:portletFolder"/>
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
+            <templates jcr:primaryType="jnt:templatesFolder">
+                <files jcr:primaryType="jnt:folder">
+                    <themes jcr:primaryType="jnt:folder">
+                        <default jcr:primaryType="jnt:folder">
+
+                        </default>
+                    </themes>
+                </files>
+                <contents jcr:primaryType="jnt:contentFolder"/>
+
+                <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="default" jcr:primaryType="jnt:template" j:theme="/templatesSet/tags/templates/files/themes/default">
+                    <home jcr:primaryType="jnt:pageTemplate"/>
+
+                    <simple jcr:primaryType="jnt:pageTemplate"/>
+                </base>
+
+            </templates>
+        </tags>
+    </templateSets>
+</content>
+        

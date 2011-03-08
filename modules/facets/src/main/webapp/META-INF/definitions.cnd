@@ -35,8 +35,3 @@ orderable
 - end (string) mandatory indexed=no
 - include (string, choicelist[resourceBundle]) = all multiple indexed=no < lower,upper,all
 - valueLabel (string) i18n indexed=no
-
-[jnt:tagCloud] > jnt:content, mix:title, jmix:siteComponent
- - j:usageThreshold (long) = 1 indexed=no
- - limit (long) = 50 indexed=no
- - resultPage (weakreference) indexed=no < jnt:page

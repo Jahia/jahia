@@ -90,7 +90,7 @@
 		                    <Specification-Version>${project.version}</Specification-Version>
 		                    <Specification-Vendor></Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <depends>Default Jahia Templates</depends>
+                            <depends>Default Jahia Templates,Jahia Tags</depends>
                             <root-folder>${project.artifactId}</root-folder>
                         </manifestEntries>
                     </archive>

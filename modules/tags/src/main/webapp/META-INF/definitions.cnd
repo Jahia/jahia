@@ -1,0 +1,12 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jnt:tagCloud] > jnt:content, mix:title, jmix:siteComponent
+ - j:usageThreshold (long) = 1 indexed=no
+ - limit (long) = 50 indexed=no
+ - resultPage (weakreference) indexed=no < jnt:page
+
+[jnt:pageTagging] > jnt:content, mix:title, jmix:socialComponent
+
+[jnt:tagging] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent
+

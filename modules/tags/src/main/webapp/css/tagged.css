@@ -2,14 +2,14 @@
 *  Tagged
 ******************************************************************************/
 #bodywrapper span.taggeditem {
-	background:transparent url(img/page-tag.gif) no-repeat scroll 0 70%;
-	display:inline;
-	margin-right:8px;
-	padding:5px 0 5px 18px;
+    background:transparent url(img/page-tag.gif) no-repeat scroll 0 70%;
+    display:inline;
+    margin-right:8px;
+    padding:5px 0 5px 18px;
 }
 #bodywrapper .tagged  {
-	margin:0.5em 0;
+    margin:0.5em 0;
 }
 #bodywrapper .tagged form {
-	margin:0.5em 0;
+    margin:0.5em 0;
 }

@@ -879,13 +879,6 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
-            <artifactId>displayMetadata</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.modules</groupId>
             <artifactId>docConverter</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
@@ -1125,6 +1118,13 @@
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>tabularList</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>tags</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>

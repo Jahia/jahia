@@ -87,7 +87,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
      */
     public void logContentEvent(String user, String ipAddress, String sessionID, String nodeIdentifier, String path, String nodeType,
                                 String logTemplate, String... args) {
-        if (ignoreUsers.contains(user)) {
+        if (!metricsLogger.isTraceEnabled() || ignoreUsers.contains(user)) {
             return;
         }
         String template = logTemplatesMap.get(logTemplate);

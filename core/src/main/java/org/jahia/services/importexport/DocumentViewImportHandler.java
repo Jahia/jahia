@@ -61,7 +61,6 @@ import java.util.*;
  * User: toto
  * Date: 11 févr. 2008
  * Time: 16:38:38
- * 
  */
 public class DocumentViewImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewImportHandler.class);
@@ -92,7 +91,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private int uuidBehavior = ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW;
 
     private JCRSessionWrapper session;
-    private Map<String,String> placeHoldersMap = new HashMap<String,String>();
+    private Map<String, String> placeHoldersMap = new HashMap<String, String>();
 
     private List<String> noSubNodesImport = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
     private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder");
@@ -113,7 +112,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 node = (JCRNodeWrapper) session.getNode(rootPath);
             }
             if (node.isNodeType("jnt:user")) {
-                placeHoldersMap.put("$user","u:" + node.getPath().substring(node.getPath().lastIndexOf("/") + 1));
+                placeHoldersMap.put("$user", "u:" + node.getPath().substring(node.getPath().lastIndexOf("/") + 1));
             }
         } catch (RepositoryException e) {
             e.printStackTrace();
@@ -139,8 +138,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
         } catch (RepositoryException re) {
             throw new SAXException(re);
         }
-    }    
-    
+    }
+
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
         if (error > 0) {
             error++;
@@ -152,7 +151,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
         pathes.push(pathes.peek() + "/" + decodedQName);
 
         if (noRoot && pathes.size() <= 2) {
-             session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath().equals("/") ? "" : nodes.peek().getPath());return;
+            session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath().equals("/") ? "" : nodes.peek().getPath());
+            return;
         }
 
         try {
@@ -172,8 +172,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
             String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
             if (Constants.JAHIANT_VIRTUALSITE.equals(pt) && siteKey != null) {
                 decodedQName = siteKey;
-                pathMapping.put(path + "/", "/sites/"+ siteKey + "/");
-                path = "/sites/"+ siteKey;
+                pathMapping.put(path + "/", "/sites/" + siteKey + "/");
+                path = "/sites/" + siteKey;
             }
             if (noSubNodesImport.contains(pt)) {
                 ignorePath = path;
@@ -225,63 +225,63 @@ public class DocumentViewImportHandler extends DefaultHandler {
 //                        }
 //                        child = nodes.peek().clone(session.getNode(share), decodedQName);
 //                    } else {
-                        if (!StringUtils.isEmpty(uuid)) {
-                            switch (uuidBehavior) {
-                                case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
-                                    try {
-                                        JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                                        if (node.isNodeType("mix:shareable")) {
-                                            // ..
-                                        } else {
-                                            throw new ItemExistsException(uuid);
-                                        }
-                                    } catch (ItemNotFoundException e) {
+                    if (!StringUtils.isEmpty(uuid)) {
+                        switch (uuidBehavior) {
+                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
+                                try {
+                                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                                    if (node.isNodeType("mix:shareable")) {
+                                        // ..
+                                    } else {
+                                        throw new ItemExistsException(uuid);
                                     }
-                                case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
-                                    try {
-                                        JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                                        // make sure conflicting node is not importTargetNode or an ancestor thereof
-                                        if (nodes.peek().getPath().startsWith(node.getPath())) {
-                                            String msg = "cannot remove ancestor node";
-                                            logger.debug(msg);
-                                            throw new ConstraintViolationException(msg);
-                                        }
-                                        // remove conflicting
-                                        node.remove();
-                                    } catch (ItemNotFoundException e) {
+                                } catch (ItemNotFoundException e) {
+                                }
+                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
+                                try {
+                                    JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                                    // make sure conflicting node is not importTargetNode or an ancestor thereof
+                                    if (nodes.peek().getPath().startsWith(node.getPath())) {
+                                        String msg = "cannot remove ancestor node";
+                                        logger.debug(msg);
+                                        throw new ConstraintViolationException(msg);
                                     }
-                                    break;
-                                case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
-                                    throw new UnsupportedOperationException();
+                                    // remove conflicting
+                                    node.remove();
+                                } catch (ItemNotFoundException e) {
+                                }
+                                break;
+                            case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
+                                throw new UnsupportedOperationException();
 
-                                case ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW:
-                                    uuid = null;
-                            }
+                            case ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW:
+                                uuid = null;
                         }
-                        child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
+                    }
+                    child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
 
-                        addMixins(child, atts);
+                    addMixins(child, atts);
 
-                        boolean contentFound = findContent();
+                    boolean contentFound = findContent();
 
-                        if (contentFound) {
-                            if (child.isFile()) {
-                                String mime = atts.getValue(Constants.JCR_MIMETYPE);
-                                child.getFileContent().uploadFile(zis, mime);
-                                zis.close();
-                            } else {
-                                child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(zis));
-                                child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
-                                child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
-                                zis.close();
-                            }
+                    if (contentFound) {
+                        if (child.isFile()) {
+                            String mime = atts.getValue(Constants.JCR_MIMETYPE);
+                            child.getFileContent().uploadFile(zis, mime);
+                            zis.close();
+                        } else {
+                            child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(zis));
+                            child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
+                            child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
+                            zis.close();
                         }
+                    }
 
-                        setAttributes(child, atts);
+                    setAttributes(child, atts);
 
-                        if (child.isFile() && currentFilePath == null) {
-                            currentFilePath = child.getPath();
-                        }
+                    if (child.isFile() && currentFilePath == null) {
+                        currentFilePath = child.getPath();
+                    }
 //                    }
                 }
             } else {
@@ -298,12 +298,12 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 nodes.push(child);
             }
         } catch (NoSuchNodeTypeException e) {
-			if (logger.isDebugEnabled()) {
-				logger.warn("Cannot import " + pathes.pop(), e);
-			} else {
-				logger.warn("Cannot import \"{}\" due to missing node type definition \"{}\"",
-				        pathes.pop(), e.getMessage());
-			}
+            if (logger.isDebugEnabled()) {
+                logger.warn("Cannot import " + pathes.pop(), e);
+            } else {
+                logger.warn("Cannot import \"{}\" due to missing node type definition \"{}\"",
+                        pathes.pop(), e.getMessage());
+            }
             error++;
         } catch (RepositoryException re) {
             logger.error("Cannot import " + pathes.pop(), re);
@@ -321,7 +321,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 try {
                     child.addMixin(st.nextToken());
                 } catch (NoSuchNodeTypeException e) {
-                    logger.warn("Cannot add node type "+e.getMessage());
+                    logger.warn("Cannot add node type " + e.getMessage());
                 }
             }
         }
@@ -343,7 +343,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
             String attrValue = atts.getValue(i);
             for (String placeHolder : placeHoldersMap.keySet()) {
                 if (attrValue.contains(placeHolder)) {
-                    attrValue = attrValue.replace(placeHolder,placeHoldersMap.get(placeHolder));
+                    attrValue = attrValue.replace(placeHolder, placeHoldersMap.get(placeHolder));
                 }
             }
 
@@ -359,6 +359,12 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else if (attrName.equals("j:password") && child.hasProperty("j:password")) {
             } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
             } else {
+
+                if (attrName.equals("j:privileges") && child.isNodeType("jnt:ace")) {
+                    attrName = "j:roles";
+                    attrValue = mapAclAttributes(child, attrValue);
+                }
+
                 if ((attrName.equals(Constants.JCR_TITLE) || attrName
                         .equals("jcr:description"))
                         && !child.isNodeType(Constants.MIX_TITLE)) {
@@ -373,11 +379,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
 //                    } else if (!"jcr:language".equals(attrName) && child.isNodeType("jnt:translation")) {
 //                        propDef = nodes.peek().getApplicablePropertyDefinition(attrName);
 //                    } else {
-                    propDef = child.getApplicablePropertyDefinition(attrName);
-                    if (propDef == null) {
-                        logger.error("Couldn't find definition for property " + attrName);
-                        continue;
-                    }
+                propDef = child.getApplicablePropertyDefinition(attrName);
+                if (propDef == null) {
+                    logger.error("Couldn't find definition for property " + attrName);
+                    continue;
+                }
 //                    }
 
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
@@ -442,6 +448,21 @@ public class DocumentViewImportHandler extends DefaultHandler {
             return true;
         }
         return false;
+    }
+
+    private String mapAclAttributes(JCRNodeWrapper node, String aclValue) {
+        Set<String> roles = new HashSet<String>();
+        if (aclValue.contains("jcr:read")) {
+            roles.addAll(LegacyImportHandler.READ_ROLES);
+        }
+        if (aclValue.contains("jcr:write")) {
+            roles.addAll(LegacyImportHandler.WRITE_ROLES);
+        }
+        String s = "";
+        for (String role : roles) {
+            s += role + " ";
+        }
+        return s.trim();
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {

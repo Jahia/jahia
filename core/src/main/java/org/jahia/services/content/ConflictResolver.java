@@ -310,21 +310,21 @@ public class ConflictResolver {
 
         }
 
+        for (Diff diff : new ArrayList<Diff>(diffs)) {
+            if (diff instanceof PropertyAddedDiff && ((PropertyAddedDiff)diff).propertyPath.endsWith(Constants.JCR_MIXINTYPES)) {
+                diffs.remove(diff);
+                diffs.add(0,diff);
+            } else if (diff instanceof PropertyRemovedDiff && ((PropertyRemovedDiff)diff).propertyPath.endsWith(Constants.JCR_MIXINTYPES)) {
+                diffs.remove(diff);
+                diffs.add(diff);
+            }
+        }
+
         NodeIterator ni = frozenNode.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper frozenSub = (JCRNodeWrapper) ni.next();
             if (node.hasNode(frozenSub.getName()) && frozenSub.isNodeType(Constants.NT_FROZENNODE)) {
                 diffs.addAll(compare(frozenSub, node.getNode(frozenSub.getName()), addPath(basePath, frozenSub.getName())));
-            }
-        }
-
-        for (Diff diff : new ArrayList<Diff>(diffs)) {
-            if (diff instanceof PropertyAddedDiff && ((PropertyAddedDiff)diff).propertyPath.equals(Constants.JCR_MIXINTYPES)) {
-                diffs.remove(diff);
-                diffs.add(0,diff);
-            } else if (diff instanceof PropertyRemovedDiff && ((PropertyRemovedDiff)diff).propertyPath.equals(Constants.JCR_MIXINTYPES)) {
-                diffs.remove(diff);
-                diffs.add(diff);
             }
         }
 

@@ -607,6 +607,8 @@ public class Service extends JahiaService {
                     Constants.LIVE_WORKSPACE,
                     languages,
                     false, new ArrayList<String>());
+        } catch (Exception e) {
+            logger.error("Cannot publish node : "+nodeWrapper.getPath(), e);
         } finally {
             if (resetUser) {
                 JCRSessionFactory.getInstance().setCurrentUser(null);
@@ -707,12 +709,18 @@ public class Service extends JahiaService {
 
     public void updatePrivileges(NodeFact node) throws RepositoryException {
         final JCRSiteNode site = node.getParent().getNode().getResolveSite();
-        final String principal = StringUtils.substringAfter(StringUtils.substringAfterLast(node.getPath(), "/"), "_").replaceFirst("_", ":");
-
+        String principal = StringUtils.substringAfter(StringUtils.substringAfterLast(node.getPath(), "/"), "_").replaceFirst("_", ":");
+        if (principal.startsWith("jcr:read") || principal.startsWith("jcr:write")) {
+            principal = StringUtils.substringAfter(principal,"_").replaceFirst("_", ":");
+        }
+        final String fPrincipal = principal;
+        if (site == null) {
+            return;
+        }
         boolean needPrivileged = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 QueryManager q = session.getWorkspace().getQueryManager();
-                String sql = "select * from [jnt:ace] as ace where ace.[j:aceType]='GRANT' and ace.[j:principal] = '"+principal+"' and isdescendantnode(ace, ['"+site.getPath()+"'])";
+                String sql = "select * from [jnt:ace] as ace where ace.[j:aceType]='GRANT' and ace.[j:principal] = '"+fPrincipal+"' and isdescendantnode(ace, ['"+site.getPath()+"'])";
                 QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
                 NodeIterator ni = qr.getNodes();
                 Set<String> roles = new HashSet<String>();

@@ -99,9 +99,9 @@ public class LegacyImportHandler extends DefaultHandler {
     private static final String PAGE = "page";
     private static final String LINK = "link";
 
-    private Set<String> readRoles = new HashSet<String>(Arrays.asList("visitor"));
-    private Set<String> writeRoles = new HashSet<String>(Arrays.asList("viewer", "editor", "contributor"));
-    private Set<String> adminRoles = new HashSet<String>(Arrays.asList("publisher", "owner"));
+    public static Set<String> READ_ROLES = new HashSet<String>(Arrays.asList("visitor"));
+    public static Set<String> WRITE_ROLES = new HashSet<String>(Arrays.asList("viewer", "editor", "contributor"));
+    public static Set<String> ADMIN_ROLES = new HashSet<String>(Arrays.asList("publisher", "owner"));
 
     private String currentNode;
     private int level = 0;
@@ -760,20 +760,20 @@ public class LegacyImportHandler extends DefaultHandler {
                         Set<String> grantedRoles = new HashSet<String>();
                         Set<String> removedRoles = new HashSet<String>();
                         if (perm.charAt(0) == 'r') {
-                            grantedRoles.addAll(readRoles);
+                            grantedRoles.addAll(READ_ROLES);
                         } else {
-                            removedRoles.addAll(readRoles);
+                            removedRoles.addAll(READ_ROLES);
                         }
                         if (perm.charAt(1) == 'w') {
-                            grantedRoles.addAll(writeRoles);
+                            grantedRoles.addAll(WRITE_ROLES);
                         } else {
-                            removedRoles.addAll(writeRoles);
+                            removedRoles.addAll(WRITE_ROLES);
                         }
 
                         if (perm.charAt(2) == 'a') {
-                            grantedRoles.addAll(adminRoles);
+                            grantedRoles.addAll(ADMIN_ROLES);
                         } else {
-                            removedRoles.addAll(adminRoles);
+                            removedRoles.addAll(ADMIN_ROLES);
                         }
 
                         String principal = ace.substring(0, colonIndex);

@@ -53,7 +53,7 @@ public class TokenizedFormTag extends BodyTagSupport {
 
             OutputDocument outputDocument = new OutputDocument(source);
 
-            TreeMap<String,String> hiddenInputs = new TreeMap<String,String>();
+            TreeMap<String,List<String>> hiddenInputs = new TreeMap<String,List<String>>();
             List<StartTag> formTags = source.getAllStartTags("form");
 
             StartTag formTag = formTags.get(0);
@@ -62,27 +62,34 @@ public class TokenizedFormTag extends BodyTagSupport {
             if (!action.startsWith("/") && !action.contains("://")) {
                 action = StringUtils.substringBeforeLast(((HttpServletRequest)pageContext.getRequest()).getRequestURI(), "/")+ "/" +action;
             }
-            hiddenInputs.put("form-action",action);
-            hiddenInputs.put("form-method", StringUtils.capitalize(formTag.getAttributeValue("method")));
+            hiddenInputs.put("form-action",Arrays.asList(action));
+            hiddenInputs.put("form-method", Arrays.asList(StringUtils.capitalize(formTag.getAttributeValue("method"))));
 
             List<StartTag> inputTags = source.getAllStartTags("input");
             for (StartTag inputTag : inputTags) {
                 if ("hidden".equals(inputTag.getAttributeValue("type"))) {
-                    hiddenInputs.put(inputTag.getAttributeValue("name"), inputTag.getAttributeValue("value"));
+                    String name = inputTag.getAttributeValue("name");
+                    List<String> strings = hiddenInputs.get(name);
+                    String value = inputTag.getAttributeValue("value");
+                    if(strings==null) {
+                        strings = new LinkedList<String>();
+                    }
+                    strings.add(value);
+                    hiddenInputs.put(name, strings);
                 }
             }
 
             if (hasCaptcha) {
                 // Put random number here, will be replaced by the captcha servlet with the expected value
-                hiddenInputs.put("captcha",java.util.UUID.randomUUID().toString());
+                hiddenInputs.put("captcha",Arrays.asList(java.util.UUID.randomUUID().toString()));
             }
 
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(" + id + ")##\"/>");
 
 
-            Map<String,Map<String,String>> forms = (Map<String, Map<String, String>>) pageContext.getAttribute("form-parameter", PageContext.REQUEST_SCOPE);
+            Map<String,Map<String,List<String>>> forms = (Map<String, Map<String, List<String>>>) pageContext.getAttribute("form-parameter", PageContext.REQUEST_SCOPE);
             if (forms == null) {
-                forms = new HashMap<String, Map<String,String>>();
+                forms = new HashMap<String, Map<String, List<String>>>();
                 pageContext.setAttribute("form-parameter", forms, PageContext.REQUEST_SCOPE);
             }
             forms.put(id, hiddenInputs);

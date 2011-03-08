@@ -133,8 +133,9 @@
 
 
 [jnt:post] > jnt:content, mix:title
- - jcr:title (STRING)
+ - jcr:title (string)
  - content (string,richtext)
+ - pseudo (string)
 
 [jnt:topic] > jnt:content
  - topicSubject (string)

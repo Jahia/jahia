@@ -46,12 +46,36 @@
 </script>
 <div id="forum-body">
     <div class="posts" id="${currentNode.UUID}">
-        <h3>${linked.properties["topicSubject"].string}</h3>
-        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}"
+                   end="${moduleMap.end}">
+            <template:addCacheDependency node="${subchild}"/>
             <c:if test="${jcr:isNodeType(subchild, 'jnt:post')}">
-            <div class="forum-box forum-box-style${(status.index mod 2)+1}">
-                <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
-            </div>
+                <c:if test="${status.first}">
+                    <c:set value="${jcr:getParentOfType(subchild, 'jmix:moderated')}" var="moderated"/>
+                </c:if>
+                <c:choose>
+                    <c:when test="${not empty moderated}">
+                        <c:choose>
+                            <c:when test="${jcr:isNodeType(subchild, 'jmix:moderated')}">
+                                <c:if test="${jcr:hasPermission(subchild, 'moderatePost') or subchild.properties.moderated.boolean}">
+                                    <div class="forum-box forum-box-style${(status.index mod 2)+1}">
+                                        <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
+                                    </div>
+                                </c:if>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="forum-box forum-box-style${(status.index mod 2)+1}">
+                                        <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
+                                    </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="forum-box forum-box-style${(status.index mod 2)+1}">
+                            <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </c:if>
         </c:forEach>
     </div>

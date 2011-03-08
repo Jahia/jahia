@@ -111,6 +111,7 @@
                 <deletePost jcr:primaryType="jnt:permission"/>
                 <editPost jcr:primaryType="jnt:permission"/>
                 <reportPost jcr:primaryType="jnt:permission"/>
+                <moderatePost jcr:primaryType="jnt:permission"/>
             </forum>
         </actions>
     </permissions>
@@ -120,6 +121,6 @@
                  j:permissions="/permissions/actions/forum/createTopic /permissions/actions/forum/createPost"/>
 
         <author jcr:primaryType="jnt:role"
-                j:permissions="/permissions/actions/forum/createRoom /permissions/actions/forum/createSection"/>
+                j:permissions="/permissions/actions/forum/createRoom /permissions/actions/forum/createSection /permissions/actions/forum/moderatePost"/>
     </roles>
 </content>

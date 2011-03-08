@@ -14,10 +14,25 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="forum.css"/>
+<template:addResources type="javascript" resources="jquery.js,jquery.validate.js"/>
+<template:addResources type="inlinejavascript">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#newTopicForm").validate({
+                rules: {
+                    'jcr:title': "required",
+                    <c:if test="${not renderContext.loggedIn}">
+                    pseudo: "required",
+                    captcha: "required"
+                    </c:if>
+                }
+            });
+        });
+    </script>
+</template:addResources>
 <uiComponents:ckeditor selector="jahia-ckeditor"/>
 
 <c:set var="linked" value="${uiComponents:getBindedComponentPath(currentNode, renderContext, 'j:bindedComponent')}"/>
-<template:addResources type="css" resources="forum.css"/>
 <script type="text/javascript">
     function jahiaForumQuote(targetId, quotedText) {
         var targetArea = document.getElementById(targetId);
@@ -32,42 +47,71 @@
 <c:if test="${!empty param.reply}">
     <jcr:node uuid="${param.reply}" var="reply"/>
 </c:if>
+<jcr:node var="linkedNode" path="${linked}"/>
+<c:if test="${not empty linkedNode}">
+    <c:set value="${jcr:getParentOfType(linkedNode, 'jmix:moderated')}" var="moderated"/>
+</c:if>
 <template:tokenizedForm>
-    <form action="${url.base}${linked}.addTopic.do" method="post" name="newTopicForm">
+    <form action="${url.base}${linked}.addTopic.do" method="post" name="newTopicForm" id="newTopicForm">
         <input type="hidden" name="nodeType" value="jnt:post"/>
         <input type="hidden" name="redirectTo"
                value="${url.base}${renderContext.mainResource.node.path}.${renderContext.mainResource.template}"/>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
+        <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
+        <c:if test="${not empty moderated}">
+            <input type="hidden" name="jcr:mixinTypes" value="jmix:moderated"/>
+        </c:if>
         <div class="post-reply">
             <!--start post-reply-->
             <div class="forum-Form">
                 <!--start forum-Form-->
                 <h4 class="forum-h4-first">${fn:escapeXml(currentNode.displayableName)}:</h4>
+                <c:if test="${not empty moderated}">
+                    <p>
+                        <span><fmt:message key="moderated.post"/></span>
+                    </p>
+                </c:if>
                 <fieldset>
                     <p class="field">
+                        <c:if test="${not renderContext.loggedIn}">
+                            <label for="newTopic_pseudo"><fmt:message key="comment.pseudo"/></label>
+                            <c:if test="${not empty sessionScope.formDatas['pseudo']}"><input
+                                    value="${sessionScope.formDatas['pseudo'][0]}"
+                                    type="text" size="35" name="pseudo" id="newTopic_pseudo"
+                                    tabindex="1"/></c:if>
+                            <c:if test="${empty sessionScope.formDatas['pseudo']}">
+                                <input value=""
+                                       type="text" size="35" name="pseudo" id="newTopic_pseudo"
+                                       tabindex="1"/></c:if>
+                        </c:if>
                         <fmt:message key="reply.prefix" var="replyPrefix"/><c:set var="replyPrefix"
                                                                                   value="${replyPrefix} "/>
                         <c:set var="replyTitle" value="${reply.properties['jcr:title'].string}"/>
-                        <c:if test="${not empty sessionScope.formDatas['jcr:title']}"><input value="${sessionScope.formDatas['jcr:title'][0]}"
-                               type="text" size="35" id="forum_site" name="jcr:title"
-                               tabindex="1"/></c:if>
+                        <c:if test="${not empty sessionScope.formDatas['jcr:title']}"><input
+                                value="${sessionScope.formDatas['jcr:title'][0]}"
+                                type="text" size="35" id="newTopic_title" name="jcr:title"
+                                tabindex="1"/></c:if>
                         <c:if test="${empty sessionScope.formDatas['jcr:title']}">
-                        <input value="${not empty replyTitle ? replyPrefix : ''}${not empty replyTitle ? fn:escapeXml(replyTitle) : ''}"
-                               type="text" size="35" id="forum_site" name="jcr:title"
-                               tabindex="1"/></c:if></p>
+                            <input value="${not empty replyTitle ? replyPrefix : ''}${not empty replyTitle ? fn:escapeXml(replyTitle) : ''}"
+                                   type="text" size="35" id="newTopic_title" name="jcr:title"
+                                   tabindex="1"/></c:if></p>
 
                     <p class="field">
                         <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content"
-                                  tabindex="2" class="jahia-ckeditor"><c:if test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if><c:if test="${not empty reply.properties['content'].string}"><blockquote>${reply.properties['content'].string}</blockquote></c:if></textarea>
+                                  tabindex="2" class="jahia-ckeditor"><c:if
+                                test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if><c:if
+                                test="${not empty reply.properties['content'].string}">
+                            <blockquote>${reply.properties['content'].string}</blockquote>
+                        </c:if></textarea>
                     </p>
                     <c:if test="${not renderContext.loggedIn}">
                         <p class="field">
-                            <label class="left" for="captcha"><template:captcha/></label>
+                            <label class="left" for="newTopic_captcha"><template:captcha/></label>
                             <c:if test="${not empty sessionScope.formError}">
                                 <label class="error">${sessionScope.formError}</label>
                             </c:if>
-                            <input type="text" id="captcha" name="captcha"/>
+                            <input type="text" id="newTopic_captcha" name="captcha"/>
                         </p>
                     </c:if>
                     <p class="forum_button">

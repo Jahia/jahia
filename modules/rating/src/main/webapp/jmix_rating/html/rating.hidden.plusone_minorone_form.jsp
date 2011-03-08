@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<c:if test="${renderContext.user.name != 'guest'}">
+<c:if test="${renderContext.loggedIn}">
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-post-vote-${currentNode.identifier}">
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>

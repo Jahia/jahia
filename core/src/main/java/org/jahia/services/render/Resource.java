@@ -67,7 +67,7 @@ public class Resource {
     private List<Option> options;
     private ExtendedNodeType resourceNodeType;
     private Map<String, Object> moduleParams = new HashMap<String, Object>();
-    private HashMap<String,Map<String,String>> formInputs;
+    private HashMap<String,Map<String,List<String>>> formInputs;
     private Set<String> regexpDependencies;
 
     /**
@@ -285,14 +285,14 @@ public class Resource {
         return result;
     }
 
-    public void addFormInputs(String id, Map<String, String> hiddenInputs) {
+    public void addFormInputs(String id, Map<String, List<String>> hiddenInputs) {
         if(formInputs==null) {
-            formInputs = new HashMap<String,Map<String,String>>();
+            formInputs = new HashMap<String, Map<String, List<String>>>();
         }
         formInputs.put(id,hiddenInputs);
     }
 
-    public HashMap<String, Map<String, String>> getFormInputs() {
+    public HashMap<String, Map<String, List<String>>> getFormInputs() {
         return formInputs;
     }
 

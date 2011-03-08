@@ -31,7 +31,17 @@
         <c:set var="negativeVote" value="${((-sumVotes.long)+(nbVotes.long + sumVotes.long)/2)}"/>
     </c:if>
 </c:if>
-<a title="Vote +1" href="#"
-   onclick="document.getElementById('jahia-forum-post-vote-${currentNode.identifier}').submit();"><span>+1 (<fmt:formatNumber value="${positiveVote}" pattern="##"/> Good)</span></a>
-<a title="Vote -1" href="#"
-   onclick="var voteForm=document.getElementById('jahia-forum-post-vote-${currentNode.identifier}'); voteForm.elements['j:lastVote'].value='-1'; voteForm.submit();"><span>-1 (<fmt:formatNumber value="${negativeVote}" pattern="##"/>  Bad)</span></a>
+<c:choose>
+    <c:when test="${renderContext.loggedIn}">
+        <a title="Vote +1" href="#"
+           onclick="document.getElementById('jahia-forum-post-vote-${currentNode.identifier}').submit();"><span>+1 (<fmt:formatNumber
+                value="${positiveVote}" pattern="##"/> Good)</span></a>
+        <a title="Vote -1" href="#"
+           onclick="var voteForm=document.getElementById('jahia-forum-post-vote-${currentNode.identifier}'); voteForm.elements['j:lastVote'].value='-1'; voteForm.submit();"><span>-1 (<fmt:formatNumber
+                value="${negativeVote}" pattern="##"/>  Bad)</span></a>
+    </c:when>
+    <c:otherwise>
+        <a title="Vote +1"><span>+1 (<fmt:formatNumber value="${positiveVote}" pattern="##"/> Good)</span></a>
+        <a title="Vote -1"><span>-1 (<fmt:formatNumber value="${negativeVote}" pattern="##"/>  Bad)</span></a>
+    </c:otherwise>
+</c:choose>

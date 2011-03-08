@@ -122,6 +122,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String PARENT_TYPE = "parentType";
     public static final String RETURN_CONTENTTYPE = "returnContentType";
     public static final String RESOURCE_ID = "resourceID";
+    public static final String REMOVE_MIXIN = "removeMixin";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -254,6 +255,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         session.checkout(node);
         @SuppressWarnings("unchecked")
         Map<String, String[]> parameters = req.getParameterMap();
+        if (parameters.containsKey(REMOVE_MIXIN)) {
+            String[] mixinTypes = (String[]) parameters.get(REMOVE_MIXIN);
+            for (String mixinType : mixinTypes) {
+                node.removeMixin(mixinType);
+            }
+        }
         if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
             String[] mixinTypes = (String[]) parameters.get(Constants.JCR_MIXINTYPES);
             for (String mixinType : mixinTypes) {
@@ -754,9 +761,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         String token = req.getParameter("form-token");
         if (token != null) {
             @SuppressWarnings("unchecked")
-            Map<String,Map<String,String>> toks = (Map<String,Map<String,String>>) req.getSession().getAttribute("form-tokens");
+            Map<String,Map<String,List<String>>> toks = (Map<String,Map<String,List<String>>>) req.getSession().getAttribute("form-tokens");
             if (toks != null && toks.containsKey(token)) {
-                Map<String, String> m = toks.get(token);
+                Map<String, List<String>> m = toks.get(token);
                 if(m==null) {
                     Map<String, String[]> formDatas = new HashMap<String, String[]>();
                     Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
@@ -768,17 +775,19 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     performRedirect(urlResolver.getRedirectUrl(), urlResolver.getPath(), req, resp, parameters, true);
                     return;
                 }
-                Map<String,String> values = new HashMap<String, String>(m);
+                Map<String,List<String>> values = new HashMap<String, List<String>>(m);
 
                 // Validate form token
-                if (!URLDecoder.decode(req.getRequestURI(), SettingsBean.getInstance().getCharacterEncoding()).equals(values.remove("form-action"))) {
+                if (!URLDecoder.decode(req.getRequestURI(), SettingsBean.getInstance().getCharacterEncoding()).equals(values.remove("form-action").get(0))) {
                     throw new AccessDeniedException();
                 }
-                if (!req.getMethod().equalsIgnoreCase(values.remove("form-method"))) {
+                if (!req.getMethod().equalsIgnoreCase(values.remove("form-method").get(0))) {
                     throw new AccessDeniedException();
                 }
-                for (Map.Entry<String, String> entry : values.entrySet()) {
-                    if (!entry.getValue().equals(req.getParameter(entry.getKey()))) {
+                for (Map.Entry<String, List<String>> entry : values.entrySet()) {
+                    List<String> stringList = entry.getValue();
+                    String[] parameterValues = req.getParameterValues(entry.getKey());
+                    if (!CollectionUtils.isEqualCollection(stringList,Arrays.asList(parameterValues))) {
                         if (entry.getKey().equals("captcha")) {
                             Map<String, String[]> formDatas = new HashMap<String, String[]>();
                             Set<Map.Entry<String, List<String>>> set = parameters.entrySet();

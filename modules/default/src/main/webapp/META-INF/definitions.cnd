@@ -126,10 +126,6 @@
 
 [jnt:backToParentPage] > jnt:content, jmix:siteComponent, mix:title
 
-[jnt:relatedTagging] > jnt:content, jmix:list, mix:title, jmix:queryContent
- - j:type (string, choicelist[nodetypes=nt:base,resourceBundle])
- - j:nbOfResult (long) = 5  autocreated
-
 [jnt:addContent] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent
  - j:type (string, choicelist[nodetypes=nt:base,resourceBundle]) multiple 
 
@@ -166,7 +162,7 @@
  - type (string, choicelist) = content < content,document,"united content",roles
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent
- - type (string, choicelist) = edit < contribute,edit
+ - type (string, choicelist) = edit < contribute,edit,live
 
 [jmix:gadget] mixin
 

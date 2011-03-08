@@ -62,14 +62,13 @@
                                 <tags jcr:primaryType="jnt:contentList">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Tags"
                                                       jcr:primaryType="jnt:translation"/>
-                                    <tag jcr:primaryType="jnt:tagging"
+                                    <tag jcr:primaryType="jnt:displayTags"
                                          j:bindedComponent="/templateSets/content-browser/templates/base/editContent/pagecontent/mainResourceDisplay-table">
                                         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Tag"
                                                           jcr:primaryType="jnt:translation"/>
                                     </tag>
                                     <addTag jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:tagging"
-                                            j:bindedComponent="/templateSets/content-browser/templates/base/editContent/pagecontent/mainResourceDisplay-table"
-                                            j:view="addtag">
+                                            j:bindedComponent="/templateSets/content-browser/templates/base/editContent/pagecontent/mainResourceDisplay-table">
                                         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Tag"
                                                           jcr:primaryType="jnt:translation"/>
                                     </addTag>

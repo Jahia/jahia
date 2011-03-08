@@ -746,18 +746,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private void doAction(HttpServletRequest req, HttpServletResponse resp, URLResolver urlResolver,
                           RenderContext renderContext, Resource resource, Action action,
                           Map<String, List<String>> parameters) throws Exception {
-        if (action.getRequiredWorkspace() != null
-                && !action.getRequiredWorkspace().equals(resource.getWorkspace())) {
-            throw new PathNotFoundException("Action is not supported for this workspace");
-        }
-        if (action.isRequireAuthenticatedUser() && !renderContext.isLoggedIn()
-                || action.getRequiredWorkspace() != null
-                && !action.getRequiredWorkspace().equals(resource.getWorkspace())
-                || action.getRequiredPermission() != null
-                && !resource.getNode().hasPermission(action.getRequiredPermission())) {
-            throw new AccessDeniedException();
-        }
-
         String token = req.getParameter("form-token");
         if (token != null) {
             @SuppressWarnings("unchecked")
@@ -811,6 +799,19 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         return originalAction.doExecute(req, renderContext, resource, systemSession, parameters, urlResolver);
                     }
                 };
+            }
+        }
+        
+        if (!(action instanceof SystemAction)) {
+            if (action.getRequiredWorkspace() != null
+                    && !action.getRequiredWorkspace().equals(resource.getWorkspace())) {
+                throw new PathNotFoundException("Action is not supported for this workspace");
+            }
+            if (action.isRequireAuthenticatedUser() && !renderContext.isLoggedIn()) {
+                throw new AccessDeniedException("Action '" + action.getName() + "' requires an authenticated user");
+            }
+            if (!action.isPermitted(resource.getNode())) {
+                throw new AccessDeniedException("Action '" + action.getName() + "' requires '" + action.getRequiredPermission() + "' permission.");
             }
         }
 

@@ -39,12 +39,14 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.usermanager.JahiaUser;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -163,6 +165,15 @@ public abstract class Action {
     public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                            JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception;
 
+    /**
+     * Returns the current user.
+     * 
+     * @return current user
+     */
+    protected JahiaUser getCurrentUser() {
+        return JCRSessionFactory.getInstance().getCurrentUser();
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -181,6 +192,7 @@ public abstract class Action {
         return requiredPermission;
     }
 
+
     /**
      * Returns JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace.
      * 
@@ -189,7 +201,15 @@ public abstract class Action {
     public String getRequiredWorkspace() {
         return requiredWorkspace;
     }
+    
+    public boolean isPermitted(JCRNodeWrapper node) throws RepositoryException {
+        if (StringUtils.isEmpty(getRequiredPermission())) {
+            return true;
+        }
 
+        return JahiaControllerUtils.hasRequiredPermission(node, getCurrentUser(),
+                getRequiredPermission());
+    }
 
     /**
      * Returns <code>true</code> if the action can be executed only by an authenticated user.
@@ -228,7 +248,7 @@ public abstract class Action {
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
     }
-    
+
     /**
      * Sets the JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace.
      * 

@@ -148,8 +148,7 @@
     people = base/simple
     press = base/simple
     job = base/simple
-    layout = base/my-portal
-     
+
 [web_templates:home] = jnt:page
  + logo = logo
  + banner = listA

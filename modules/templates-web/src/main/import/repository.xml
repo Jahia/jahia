@@ -51,14 +51,6 @@
                             <listB jcr:primaryType="jnt:area" />
                         </row-col2>
                     </home>
-                    <my-portal jcr:primaryType="jnt:pageTemplate">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <my-portal jcr:primaryType="jnt:contentList">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Portal" jcr:primaryType="jnt:translation" />
-                                <currentUserDisplay j:userView="portal" jcr:primaryType="jnt:currentUserDisplay" />
-                            </my-portal>
-                        </pagecontent>
-                    </my-portal>
                     <events jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row1 column="2col115" jcr:primaryType="jnt:row" />

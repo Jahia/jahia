@@ -162,7 +162,7 @@
             <list>
                 <value>/gwt/resources/css/gwt.css</value>
             </list>
-            <!-- comment out edit-all and uncomment the following CSS if you are in dev mode
+            <!-- comment out gwt.css and uncomment the following CSS if you are in dev mode and are working on modifying those CSSs
             <list>
                 <value>/gwt/resources/css/jahia-ext-all.css</value>
                 <value>/gwt/resources/css/xtheme-jahia.css</value>

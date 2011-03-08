@@ -70,6 +70,12 @@ public class ReferencesHelper {
                 JCRNodeWrapper n = session.getNodeByUUID(refuuid);
                 updateProperty(session, n, pName,uuidMapping.get(uuid));
                 refNode.remove();
+            } else if (uuid.startsWith("/") && session.itemExists(uuid)) {
+                String pName = refNode.getProperty("j:propertyName").getString();
+                String refuuid = refNode.getProperty("j:node").getString();
+                JCRNodeWrapper n = session.getNodeByUUID(refuuid);
+                updateProperty(session, n, pName,session.getNode(uuid).getIdentifier());
+                refNode.remove();
             }
         }
         boolean resolved;

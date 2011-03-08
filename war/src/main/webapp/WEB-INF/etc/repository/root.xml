@@ -204,7 +204,7 @@
                  j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editSelector/sitemapSelector" j:hidden="true"/>
 
         <editor jcr:primaryType="jnt:role"
-                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager  /permissions/wysiwyg-editor-toolbar/full"
+                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/wysiwyg-editor-toolbar/full"
                 j:privilegedAccess="true"
                 />
 
@@ -213,7 +213,7 @@
                          j:privilegedAccess="true"                />
 
         <publisher jcr:primaryType="jnt:role"
-                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/modes/contribute /permissions/toolbar/workflow /permissions/workflow-tasks/final-review"
+                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/contributeMode/contributeModeAccess /permissions/workflow-tasks/final-review"
                    j:privilegedAccess="true"
                 />
 

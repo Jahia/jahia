@@ -94,7 +94,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private JCRSessionWrapper session;
     private Map<String,String> placeHoldersMap = new HashMap<String,String>();
 
-    private List<String> noCreateTypes = Arrays.asList("jnt:importDropBox");
+    private List<String> noSubNodesImport = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
     private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder");
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, String siteKey) throws IOException {
@@ -175,7 +175,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 pathMapping.put(path + "/", "/sites/"+ siteKey + "/");
                 path = "/sites/"+ siteKey;
             }
-            if (noCreateTypes.contains(pt)) {
+            if (noSubNodesImport.contains(pt)) {
                 ignorePath = path;
             }
             JCRNodeWrapper child = null;
@@ -384,16 +384,18 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     if (attrValue.length() > 0) {
                         String[] values = attrValue.split(" ");
                         for (String value : values) {
-                            for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
-                                if (value.startsWith(entry.getKey())) {
-                                    value = entry.getValue() + StringUtils.substringAfter(value, entry.getKey());
-                                    break;
+                            if (!StringUtils.isEmpty(value)) {
+                                for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
+                                    if (value.startsWith(entry.getKey())) {
+                                        value = entry.getValue() + StringUtils.substringAfter(value, entry.getKey());
+                                        break;
+                                    }
                                 }
+                                if (!references.containsKey(value)) {
+                                    references.put(value, new ArrayList<String>());
+                                }
+                                references.get(value).add(child.getIdentifier() + "/" + attrName);
                             }
-                            if (!references.containsKey(value)) {
-                                references.put(value, new ArrayList<String>());
-                            }
-                            references.get(value).add(child.getIdentifier() + "/" + attrName);                            
                         }
                     }
                 } else {

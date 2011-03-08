@@ -32,12 +32,11 @@
 
 package org.jahia.services.shindig;
 
-import org.slf4j.Logger;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.SecurityToken;
-import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,9 +51,6 @@ import javax.servlet.http.HttpSession;
  */
 public class JahiaAuthentificationHandler implements AuthenticationHandler {
 
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaAuthentificationHandler.class);
-
-
     public static final String AUTHENTICATION_HANDLER_NAME = "Jahia";
 
     public String getName() {
@@ -63,7 +59,7 @@ public class JahiaAuthentificationHandler implements AuthenticationHandler {
 
     public SecurityToken getSecurityTokenFromRequest(HttpServletRequest request) throws InvalidAuthenticationException {
         JahiaUser jahiaUser = null;
-        if (Jahia.isInitiated()) {
+        if (SpringContextSingleton.getInstance().isInitialized()) {
             HttpSession session = request.getSession(false);
             if (session !=null) {
                 jahiaUser = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);

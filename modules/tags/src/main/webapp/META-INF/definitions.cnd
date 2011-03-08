@@ -13,6 +13,6 @@
 [jnt:displayTags] > jnt:content, mix:title, jmix:tagsContent, jmix:bindedComponent
 
 [jnt:relatedTagging] > jnt:content, jmix:list, mix:title, jmix:tagsContent
- - j:type (string, choicelist[nodetypes=nt:base,resourceBundle])
+ - j:type (string, choicelist[nodetypes=jmix:editorialContent,resourceBundle])
  - j:nbOfResult (long) = 5  autocreated
 

@@ -354,6 +354,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else if (attrName.equals(Constants.SITEID)) {
             } else if (attrName.equals(Constants.JCR_UUID)) {
                 uuidMapping.put(attrValue, child.getIdentifier());
+            } else if (attrName.equals(Constants.LASTPUBLISHED)) {
+            } else if (attrName.equals(Constants.LASTPUBLISHEDBY)) {
+            } else if (attrName.equals(Constants.PUBLISHED)) {
             } else if (attrName.equals(Constants.JCR_CREATED)) {
             } else if (attrName.equals(Constants.JCR_CREATEDBY)) {
             } else if (attrName.equals("j:password") && child.hasProperty("j:password")) {

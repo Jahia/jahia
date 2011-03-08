@@ -220,10 +220,7 @@ public class MainModule extends Module {
                             }
 
                             @Override public void onApplicationFailure(Throwable caught) {
-                                MainModule.this.path = previousPath;
-                                MainModule.this.template = previousTemplate;
-                                editLinker.getMainModule().unmask();
-                                editLinker.getSidePanel().refresh(Linker.REFRESH_ALL);
+                                editLinker.onMainSelection(previousPath, previousTemplate, null);
                                 Window.alert("Cannot get page");
                             }
                         });

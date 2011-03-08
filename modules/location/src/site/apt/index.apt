@@ -10,7 +10,7 @@ Jahia Location
     * {{{./components.html} UI Components}} - overview of the location related
       components, geotagging and map rendering
     
-    * {{{./usage.html} Usage}} - how to include a map into templates
+    * {{{./using.html} Usage}} - how to include a map into templates
 
     []
 

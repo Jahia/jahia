@@ -32,19 +32,17 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
@@ -59,38 +57,57 @@ public class ContentExport extends Window {
         super() ;
 
         setHeading(Messages.get("label.export"));
-        setSize(500, 150);
+        setSize(500, 80);
         setResizable(false);
-        ButtonBar buttons = new ButtonBar() ;
+
+        setButtonAlign(Style.HorizontalAlignment.CENTER);
 
         setModal(true);
+        final String result = JahiaGWTParameters.getContextPath() + "/cms/export/" + JahiaGWTParameters.getWorkspace() + n.getPath();
 
-        JahiaContentManagementService.App.getInstance().getExportUrl(n.getPath(), new BaseAsyncCallback<String>() {
+        setLayout(new FitLayout());
+        HorizontalPanel p = new HorizontalPanel();
+        p.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+        p.add(new Text(Messages.get("label.exportChoose", "Choose export format")));
+        add(p);
 
-            public void onSuccess(String result) {
-                HTML link = new HTML("<br /><a href=\"" + result + ".xml?cleanup=simple"+ "\" target=\"_new\">" + n.getName() + ".xml</a>");
-                add(link);
-                link = new HTML("<br /><a href=\"" + result + ".zip?cleanup=simple"+ "\"  target=\"_new\">" + n.getName() + ".zip</a>");
-                add(link);
-                layout();
+        Button b;
+
+        b = new Button(Messages.get("label.exportXML", "XML content"));
+        b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                com.google.gwt.user.client.Window.open(result + ".xml?cleanup=simple", "","");
             }
-
-            public void onApplicationFailure(Throwable caught) {
-                com.google.gwt.user.client.Window.alert(Messages.get("fm_fail") + "\n" + caught.getLocalizedMessage());
-                Log.error(Messages.get("fm_fail"), caught);
-            }
-
         });
+        addButton(b);
 
-        Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+        b = new Button(Messages.get("label.exportZip", "ZIP"));
+        b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                com.google.gwt.user.client.Window.Location.assign(result + ".zip?cleanup=simple");
+            }
+        });
+        addButton(b);
+
+        if (n.getNodeTypes().contains("jnt:virtualsite")) {
+            b = new Button(Messages.get("label.exportSite", "Full virtual site"));
+            b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    com.google.gwt.user.client.Window.Location.assign(result + ".zip?exportformat=site&sitebox="+n.getName());
+                }
+            });
+            addButton(b);
+        }
+
+        b = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-
-        buttons.add(cancel) ;
-        setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setBottomComponent(buttons);
+        addButton(b);
     }
 
 }

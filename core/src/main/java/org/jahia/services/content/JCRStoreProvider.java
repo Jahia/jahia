@@ -410,8 +410,8 @@ public class JCRStoreProvider {
                             node.grantRoles("u:" + node.getName(), Collections.singleton("owner"));
                         }
                     }
+                    session.save();
                 }
-                session.save();
             } finally {
                 session.logout();
             }

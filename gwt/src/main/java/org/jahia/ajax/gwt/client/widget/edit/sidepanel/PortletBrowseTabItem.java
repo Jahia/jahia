@@ -160,7 +160,8 @@ class PortletBrowseTabItem extends BrowseTabItem {
             nodes.add((GWTJahiaNode) listView.getSelectionModel().getSelectedItem());
             e.setData(nodes);
             List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>(1);
-            list.add((GWTJahiaNode) listView.getSelectionModel().getSelectedItem());
+            GWTJahiaNode selectedItem = (GWTJahiaNode) listView.getSelectionModel().getSelectedItem();
+            list.add(selectedItem.getReferencedNode()!=null?selectedItem.getReferencedNode():selectedItem);
             e.getStatus().setData("size", list.size());
             e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, list);
             e.setOperation(DND.Operation.COPY);

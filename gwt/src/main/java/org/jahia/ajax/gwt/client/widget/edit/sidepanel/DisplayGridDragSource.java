@@ -65,7 +65,11 @@ public class DisplayGridDragSource extends EditModeGridDragSource {
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>(1);
         List<ModelData> l = grid.getSelectionModel().getSelectedItems();
         for (ModelData modelData : l) {
-            list.add((GWTJahiaNode) modelData);
+            GWTJahiaNode node = (GWTJahiaNode) modelData;
+            if(node.getReferencedNode()!=null) {
+                node = node.getReferencedNode();
+            }
+            list.add(node);
         }
         e.getStatus().setData("size", list.size());
         e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, list);

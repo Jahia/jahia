@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -49,7 +50,15 @@ public class CopyActionItem extends BaseActionItem{
     public void onComponentSelection() {
         final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
-            CopyPasteEngine.getInstance().setCopiedPaths(selectedItems);
+            final List<GWTJahiaNode> copyOfSelectedItems = new LinkedList<GWTJahiaNode>();
+            for (GWTJahiaNode selectedItem : selectedItems) {
+                if(selectedItem.getReferencedNode()!=null) {
+                    copyOfSelectedItems.add(selectedItem.getReferencedNode());
+                } else {
+                    copyOfSelectedItems.add(selectedItem);
+                }
+            }
+            CopyPasteEngine.getInstance().setCopiedPaths(copyOfSelectedItems);
             linker.select(null);
         }
     }

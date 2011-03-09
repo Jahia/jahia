@@ -245,7 +245,7 @@ public class PagesTabItem extends SidePanelTabItem {
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             final GWTJahiaNode node = PagesTabItem.this.pageTree.getSelectionModel().getSelectedItem();
             if (node.getInheritedNodeTypes().contains("jmix:navMenuItem") && PermissionsUtils.isPermitted("jcr:removeNode", node) && !node.isLocked()) {
-                l.add(node);
+                l.add(node.getReferencedNode()!=null?node.getReferencedNode():node);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
             } else {

@@ -80,7 +80,7 @@ public class ComponentLinkerChoiceListInitializer implements ChoiceListInitializ
                                                                      new LinkedHashSet<String>());
                     } else if (bindedNode.hasNodes()) {
                         propertyDefs = SortableFieldnamesChoiceListInitializerImpl.getCommonChildNodeDefinitions(
-                                bindedNode, true, true, new LinkedHashSet<String>());
+                                bindedNode, true, true, new LinkedHashSet<String>()).getPropertyDefinitions();
                     } else {
                         return Collections.emptyList();
                     }

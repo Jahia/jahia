@@ -106,9 +106,15 @@ public class JCRSortTag extends AbstractJCRTag {
                 String prop = props[i];
                 String dir = props[i+1];
                 int d = "desc".equals(dir) ? -1 : 1;
+                String referenceProp = null;
                 try {
                     prop = prop.trim();
                     if (prop.length()>0) {
+                        if(prop.contains(";")) {
+                            String[] split = prop.split(";");
+                            prop = split[0];
+                            referenceProp = split[1];
+                        }
                         if (!o1.hasProperty(prop)) {
                             return -d;
                         } else if (!o2.hasProperty(prop)) {
@@ -116,6 +122,10 @@ public class JCRSortTag extends AbstractJCRTag {
                         } else {
                             Property p1 = o1.getProperty(prop);
                             Property p2 = o2.getProperty(prop);
+                            if(referenceProp!=null) {
+                                p1 = p1.getNode().getProperty(referenceProp);
+                                p2 = p2.getNode().getProperty(referenceProp);
+                            }
                             int r;
                             switch (p1.getType()) {
                                 case PropertyType.DATE:

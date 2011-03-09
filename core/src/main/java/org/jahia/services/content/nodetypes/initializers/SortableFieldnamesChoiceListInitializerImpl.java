@@ -34,6 +34,7 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.LazyMap;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -52,7 +53,7 @@ import java.util.*;
 /**
  * Initializer to fill combobox with field names, which can be chosen to sort a
  * list.
- * 
+ *
  * @author Benjamin Papez
  * @author Sergiy Shyrkov
  */
@@ -75,12 +76,14 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
         ExtendedNodeType realNodeType = (ExtendedNodeType) context.get("contextType");
 
         ExtendedPropertyDefinition[] propertyDefs;
+        CommonDefinitions commonChildNodeDefinitions = null;
         try {
             if (node == null && realNodeType == null) {
                 return Collections.emptyList();
             } else if (node != null && node.getNodes().hasNext()) {
-                // TODO get the child nodes, their types and declared properties
-                propertyDefs = getCommonChildNodeDefinitions(node,showHidden,showProtected,excludedNodeTypes);
+                commonChildNodeDefinitions = getCommonChildNodeDefinitions(node, showHidden,
+                        showProtected, excludedNodeTypes);
+                propertyDefs = commonChildNodeDefinitions.getPropertyDefinitions();
             } else {
                 propertyDefs = realNodeType.getPropertyDefinitions();
             }
@@ -94,14 +97,25 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
             vs.add(new ChoiceListValue(propertyDef.getLabel(locale), null, new ValueImpl(
                     propertyDef.getName(), PropertyType.STRING, false)));
         }
+        if(commonChildNodeDefinitions!=null && commonChildNodeDefinitions.getReferencedDefs()!=null && commonChildNodeDefinitions.getReferencedDefs().size()>0) {
+            Map<String, Map<ExtendedPropertyDefinition, Map<String, ExtendedPropertyDefinition>>> referencedDefs = commonChildNodeDefinitions.getReferencedDefs();
+            for (Map.Entry<String, Map<ExtendedPropertyDefinition, Map<String, ExtendedPropertyDefinition>>> entry : referencedDefs.entrySet()) {
+                for (Map.Entry<ExtendedPropertyDefinition, Map<String, ExtendedPropertyDefinition>> s : entry.getValue().entrySet()) {
+                    for (ExtendedPropertyDefinition propertyDefinition : s.getValue().values()) {
+                        vs.add(new ChoiceListValue(s.getKey().getLabel(locale)+"->"+propertyDefinition.getLabel(locale),null,new ValueImpl(
+                                s.getKey().getName()+";"+propertyDefinition.getName(),PropertyType.STRING,false)));
+                    }
+                }
+            }
+        }
         Collections.sort(vs);
-
         return vs;
     }
 
     @SuppressWarnings("unchecked")
-    public static ExtendedPropertyDefinition[] getCommonChildNodeDefinitions(JCRNodeWrapper node,boolean showHidden,boolean showProtected,Set<String> excludedNodeTypes) throws RepositoryException {
+    public static CommonDefinitions getCommonChildNodeDefinitions(JCRNodeWrapper node,boolean showHidden,boolean showProtected,Set<String> excludedNodeTypes) throws RepositoryException {
         Map<String, Map<String, ExtendedPropertyDefinition>> defs = null;
+        Map<String, Map<ExtendedPropertyDefinition, Map<String, ExtendedPropertyDefinition>>> referencedDefs = null;
         if (node.hasNodes()) {
             NodeIterator children = node.getNodes();
             while (children.hasNext()) {
@@ -115,12 +129,41 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
                                                     return new HashMap<String, ExtendedPropertyDefinition>();
                                                 }
                                             });
+                    referencedDefs = LazyMap.decorate(
+                            new HashMap<String, Map<String, Map<String, ExtendedPropertyDefinition>>>(), new Factory() {
+                                public Object create() {
+                                    return LazyMap.decorate(
+                                            new HashMap<ExtendedPropertyDefinition, Map<String, ExtendedPropertyDefinition>>(),
+                                            new Factory() {
+                                                public Object create() {
+                                                    return new HashMap<String, ExtendedPropertyDefinition>();
+                                                }
+                                            });
+                                }
+                            });
                     for (ExtendedPropertyDefinition propertyDef : child.getPrimaryNodeType().getPropertyDefinitions()) {
                         // filter out hidden and protected if needed
                         if ((showHidden || !propertyDef.isHidden()) && (showProtected || !propertyDef.isProtected())) {
-                            ExtendedNodeType nodeType = propertyDef.getDeclaringNodeType();
-                            if (excludedNodeTypes.isEmpty() || !excludedNodeTypes.contains(nodeType.getName())) {
-                                defs.get(nodeType.getName()).put(propertyDef.getName(), propertyDef);
+                            if (propertyDef.getRequiredType() == PropertyType.WEAKREFERENCE || propertyDef.getRequiredType() == PropertyType.REFERENCE) {
+                                ExtendedNodeType nodeType = propertyDef.getDeclaringNodeType();
+                                if (excludedNodeTypes.isEmpty() || !excludedNodeTypes.contains(nodeType.getName())) {
+                                    String[] constraints = propertyDef.getValueConstraints();
+                                    for (String constraint : constraints) {
+                                        ExtendedNodeType extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(
+                                                constraint);
+                                        ExtendedPropertyDefinition[] declaredPropertyDefinitions = extendedNodeType.getPropertyDefinitions();
+                                        for (ExtendedPropertyDefinition declaredPropertyDefinition : declaredPropertyDefinitions) {
+                                            if ((showHidden || !declaredPropertyDefinition.isHidden()) && (showProtected || !declaredPropertyDefinition.isProtected())) {
+                                                referencedDefs.get(nodeType.getName()).get(propertyDef).put(declaredPropertyDefinition.getName(),declaredPropertyDefinition);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                ExtendedNodeType nodeType = propertyDef.getDeclaringNodeType();
+                                if (excludedNodeTypes.isEmpty() || !excludedNodeTypes.contains(nodeType.getName())) {
+                                    defs.get(nodeType.getName()).put(propertyDef.getName(), propertyDef);
+                                }
                             }
                         }
                     }
@@ -131,6 +174,7 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
                         if (!child.isNodeType(commonType)) {
                             // the node has no such type --> remove the type from common
                             iterator.remove();
+                            referencedDefs.remove(commonType);
                         }
                     }
                 }
@@ -146,9 +190,9 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
                     propertyDefinitions.addAll(props.values());
                 }
             }
-            return propertyDefinitions.toArray(new ExtendedPropertyDefinition[propertyDefinitions.size()]);
+            return new CommonDefinitions((ExtendedPropertyDefinition[]) propertyDefinitions.toArray(new ExtendedPropertyDefinition[propertyDefinitions.size()]),referencedDefs);
         } else {
-            return new ExtendedPropertyDefinition[0];
+            return new CommonDefinitions(new ExtendedPropertyDefinition[0],null);
         }
     }
 
@@ -167,5 +211,25 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
 
     public void setShowProtected(boolean showProtected) {
         this.showProtected = showProtected;
+    }
+
+    public static class CommonDefinitions {
+
+        ExtendedPropertyDefinition[] propertyDefinitions = null;
+        Map<String, Map<ExtendedPropertyDefinition, Map<String, ExtendedPropertyDefinition>>> referencedDefs = null;
+
+        public CommonDefinitions(ExtendedPropertyDefinition[] propertyDefinitions,
+                                 Map<String, Map<ExtendedPropertyDefinition, Map<String, ExtendedPropertyDefinition>>> referencedDefs) {
+            this.propertyDefinitions = propertyDefinitions;
+            this.referencedDefs = referencedDefs;
+        }
+
+        public ExtendedPropertyDefinition[] getPropertyDefinitions() {
+            return propertyDefinitions;
+        }
+
+        public Map<String, Map<ExtendedPropertyDefinition, Map<String, ExtendedPropertyDefinition>>> getReferencedDefs() {
+            return referencedDefs;
+        }
     }
 }

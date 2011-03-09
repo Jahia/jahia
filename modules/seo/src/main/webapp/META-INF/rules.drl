@@ -16,6 +16,13 @@ global SeoService seoService
 global JCRContentUtils jcrUtils
 ###############################################################################
 
+rule "Check uniqueness"
+    when
+        A new node is created
+            - the node has the type jnt:vanityUrl
+    then
+        Check URL mapping uniqueness for node
+end
 
 rule "Add auto-generated URL mapping for news item"
     when
@@ -27,3 +34,4 @@ rule "Add auto-generated URL mapping for news item"
         Remove URL mappings for node parent and language node.getProperty("jcr:language").getStringValue()
         Add URL mapping "/news/" + jcrUtils.generateNodeName(propertyValueAsString, 70) for node parent and language node.getProperty("jcr:language").getStringValue()
 end
+

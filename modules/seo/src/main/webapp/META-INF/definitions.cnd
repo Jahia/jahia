@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:vanityUrl] > nt:base, mix:language, mix:created, mix:lastModified, jmix:lastPublished, mix:versionable, jmix:versionInfo
+[jnt:vanityUrl] > nt:base, mix:language, mix:created, mix:lastModified, jmix:lastPublished, mix:versionable, jmix:versionInfo, jmix:observable
  - j:url (string) mandatory nofulltext
  - j:default (boolean) mandatory nofulltext
  - j:active (boolean) nofulltext

@@ -43,6 +43,8 @@ import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
 
+import java.util.List;
+
 /**
  * SEO service class for manipulating content URL mappings from the
  * right-hand-side (consequences) of rules.
@@ -99,6 +101,44 @@ public class SeoService {
             logger.debug("Removing URL mappings for locale '" + locale + "' from node " + node.getPath());
         }
         urlService.removeVanityUrlMappings(node.getNode(), locale);
+    }
+
+    public void checkVanityUrl(final AddedNodeFact newSeo, KnowledgeHelper drools) {
+        JCRNodeWrapper node = newSeo.getNode();
+        try {
+            String url = node.getProperty("j:url").getString();
+            List<VanityUrl> result;
+
+            int i = 1;
+
+            String baseurl = url;
+            int dot = baseurl.lastIndexOf('.');
+            String ext = "";
+            if (dot > 0) {
+                ext = baseurl.substring(dot);
+                baseurl = baseurl.substring(0, dot);
+            }
+            int und = baseurl.lastIndexOf('-');
+            if (und > -1 && baseurl.substring(und + 1).matches("[0-9]+")) {
+                baseurl = baseurl.substring(0, und);
+            }
+
+            boolean changed = false;
+            do {
+                result = urlService.findExistingVanityUrls(url , node.getResolveSite().getSiteKey(), node.getSession().getWorkspace().getName());
+                if (result.size() > (changed ? 0 : 1))  {
+                    url = baseurl + "-" + (i++) + ext;
+                    changed = true;
+                } else {
+                    break;
+                }
+            } while (true);
+            if (changed) {
+                node.setProperty("j:url", url);
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

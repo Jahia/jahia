@@ -176,7 +176,7 @@
  - keywords (boolean)
  - categories (boolean)
 
-[jnt:componentLink] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent
+[jnt:componentLink] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
  - targetTemplate (string)
  - aClass (string)
  - divClass (string)

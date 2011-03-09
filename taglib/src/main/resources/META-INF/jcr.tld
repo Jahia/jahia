@@ -681,4 +681,10 @@
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.util.List getContributeTypes(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.content.JCRNodeWrapper, javax.jcr.Value[])</function-signature>
     </function>
+    <function>
+        <description>return true if nodeTypes is allowed under node</description>
+        <name>isAllowedChildNodeType</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>boolean isAllowedChildNodeType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+    </function>
 </taglib>

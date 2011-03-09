@@ -35,6 +35,7 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
@@ -48,6 +49,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -419,4 +421,12 @@ public class JCRTagUtils {
         return JCRContentUtils.findDisplayableNode(node, context);
     }
 
+    public static boolean isAllowedChildNodeType(JCRNodeWrapper node, String nodeType) throws RepositoryException {
+        try {
+             node.getApplicableChildNodeDefinition("*", nodeType);
+             return true;
+        } catch (ConstraintViolationException e) {
+            return false;
+        }
+    }
 }

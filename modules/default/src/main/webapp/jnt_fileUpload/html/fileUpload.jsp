@@ -23,6 +23,7 @@
 <c:if test="${!empty currentNode.properties.target}">
     <c:set var="targetNode" value="${currentNode.properties.target.node}"/>
 </c:if>
+<c:if test="${jcr:isAllowedChildNodeType(targetNode, 'jnt:file')}">
 <form class="file_upload" id="file_upload${currentNode.identifier}" action="${url.base}${targetNode.path}" method="POST" enctype="multipart/form-data"  accept="application/json">
     <div id="file_upload_container">
     	<input type="file" name="file" multiple>
@@ -62,3 +63,9 @@
         });
     });
 </script>
+</c:if>
+<c:if test="${!jcr:isAllowedChildNodeType(targetNode, 'jnt:file')}">
+    <c:if test="${renderContext.editMode}">
+        <fmt:message key="label.warningWrongTarget"/>
+    </c:if>
+</c:if>

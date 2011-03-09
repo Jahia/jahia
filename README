@@ -306,30 +306,6 @@ try the following:
 2. Close all browsers windows.
 3. Restart your browser and try again. If the problem persists, please contact us.
 
-
- How to change license number
-------------------------------------------------------------------------------
-Note : it is now preferred to build releases using the Maven Release Plugin,
-see instructions below, although some of the points here are still valid.
-
-1. Change the following variable in \core\src\main\java\org\jahia\bin\Jahia.java
-
-/** Jahia server release number */
-    private static double RELEASE_NUMBER = x.x;
-
-2. Change the following attributes in ALL pom.xml files
-
-<version>x.x-SNAPSHOT</version>
-
-3. In the /jahia-installer-package/pom.xml file also change the launch4j.jahia.version
-   property value
-
-4. In the pom.xml located at the root level also change the jahia.package.version
-
-<jahia.package.version>x.x-SNAPSHOT</jahia.package.version>
-
-5. Create the adequate license.xml files
-
  Performing a release with the Maven Release plugin
 ------------------------------------------------------------------------------
 It is now possible to use the Maven Release plugin to automate the build of
@@ -337,13 +313,41 @@ a release. This will change all the pom.xml versions, commit the change,
 compile the project, create a tag and then change all the pom.xml back to
 a SNAPSHOT version and commit again.
 
-It is recommended also to do all the following steps on a clean checkout of
+But before we do this, there are a few changes we must do to the Jahia
+project :
+
+1. Change the following variable in \core\src\main\java\org\jahia\bin\Jahia.java
+
+/** Jahia server release number */
+    private static double RELEASE_NUMBER = x.x;
+
+2. In the /jahia-installer-package/pom.xml file also change the launch4j.jahia.version
+   property value
+
+3. Create the adequate license.xml files
+
+4. Commit the changes and then use the Maven Release Plugin (see below) to
+perform the rest of the release
+
+5. It is recommended also to do all the following steps on a clean checkout of
 the codebase, as in your working directory you might have local changes or
 IDE project files that will conflict with proper preparation.
 
-You can perform all this with the following command line :
+6. You can perform all this with the following command line :
 
 mvn -Pqa-build release:prepare
+
+7. Now go back into \core\src\main\java\org\jahia\bin\Jahia.java and change the
+ release number to the next release number you want.
+
+8. Do the same in the /jahia-installer-package/pom.xml as in step 2
+
+9. Checkout the new tag that was created by the plugin in step 6 and run :
+
+mvn -Pqa-build clean install deploy
+
+   This step requires that you have correctly setup deployment to the Maven repository
+as described in this README in the section called "Deploying new JARs to maven.jahia.org"
 
 If for some reason you need to start again you can use the release:clean or
 if something was already committed, prepare a rollback with release:rollback

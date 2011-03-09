@@ -32,6 +32,7 @@
 
 package org.jahia.services.seo.urlrewrite;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +40,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLGenerator;
+import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,7 @@ public class ServerNameToSiteMapper {
 
     public static final String ATTR_NAME_SITE_KEY = "jahiaSiteKeyForCurrentServerName";
     public static final String ATTR_NAME_SITE_KEY_MATCHES = "jahiaSiteKeyMatchesCurrentServerName";
+    public static final String ATTR_NAME_SITE_KEY_FOR_LINK = "jahiaSiteKeyForLink";
     private static final Logger logger = LoggerFactory.getLogger(ServerNameToSiteMapper.class);
 
     public static String getSiteKeyByServerName(HttpServletRequest request) {
@@ -74,7 +77,6 @@ public class ServerNameToSiteMapper {
                 }
             }
         }
-        request.setAttribute(ATTR_NAME_SITE_KEY, targetSiteKey);
 
         return targetSiteKey;
     }
@@ -89,7 +91,20 @@ public class ServerNameToSiteMapper {
                 logger.error("Error resolving site by server name '" + host + "'", e);
             }
         }
-        return site != null ? site.getSiteKey() : null;
+        return site != null ? site.getSiteKey() : "";
+    }
+
+    private static String lookupSiteServerNameByKey(String key) {
+        JahiaSite site = null;
+        if (SpringContextSingleton.getInstance().isInitialized()) {
+            try {
+                site = ServicesRegistry.getInstance().getJahiaSitesService()
+                        .getSiteByKey(key);
+            } catch (JahiaException e) {
+                logger.error("Error resolving site by key '" + key + "'", e);
+            }
+        }
+        return site != null && !"localhost".equals(site.getServerName()) ? site.getServerName() : null;
     }
 
     public void canResolveSiteByServerName(HttpServletRequest request, String ctx, String language,
@@ -97,6 +112,16 @@ public class ServerNameToSiteMapper {
         String currentSiteKey = getSiteKeyByServerName(request);
         boolean matches = currentSiteKey.equals(siteKey);
         request.setAttribute(ATTR_NAME_SITE_KEY_MATCHES, Boolean.valueOf(matches));
+        if (!matches) {
+            String serverName = lookupSiteServerNameByKey(siteKey);
+            if (serverName != null) {
+                if (request.getServerPort() != 80) {
+                    serverName += ":"+request.getServerPort();
+                }
+                request.setAttribute(ATTR_NAME_SITE_KEY_FOR_LINK, serverName);
+            }
+        }
+
         if (logger.isDebugEnabled()) {
             logger.debug(
                     "canResolveSiteByServerName({}, {}, {}) | currentSiteKey={} targetSiteKey={} matches {}",
@@ -105,6 +130,7 @@ public class ServerNameToSiteMapper {
     }
 
     public void map(HttpServletRequest request) {
-        getSiteKeyByServerName(request);
+        String targetSiteKey = getSiteKeyByServerName(request);
+        request.setAttribute(ATTR_NAME_SITE_KEY, targetSiteKey);
     }
 }

@@ -76,7 +76,7 @@
                     <p class="field">
                         <c:if test="${not renderContext.loggedIn}">
                             <label for="newTopic_pseudo"><fmt:message key="comment.pseudo"/></label>
-                            <c:if test="${not empty sessionScope.formDatas['pseudo']}"><input
+                            <c:if test="${not empty sessionScope.formDatas['pseudo']}">tyty<input
                                     value="${sessionScope.formDatas['pseudo'][0]}"
                                     type="text" size="35" name="pseudo" id="newTopic_pseudo"
                                     tabindex="1"/></c:if>
@@ -85,19 +85,24 @@
                                        type="text" size="35" name="pseudo" id="newTopic_pseudo"
                                        tabindex="1"/></c:if>
                         </c:if>
+                        </p>
+                        <p class="field">
                         <fmt:message key="reply.prefix" var="replyPrefix"/><c:set var="replyPrefix"
                                                                                   value="${replyPrefix} "/>
                         <c:set var="replyTitle" value="${reply.properties['jcr:title'].string}"/>
-                        <c:if test="${not empty sessionScope.formDatas['jcr:title']}"><input
+                        <c:if test="${not empty sessionScope.formDatas['jcr:title']}">titi<input
                                 value="${sessionScope.formDatas['jcr:title'][0]}"
                                 type="text" size="35" id="newTopic_title" name="jcr:title"
                                 tabindex="1"/></c:if>
+                        </p>
+                        <p class="field">     
                         <c:if test="${empty sessionScope.formDatas['jcr:title']}">
-                            <input value="${not empty replyTitle ? replyPrefix : ''}${not empty replyTitle ? fn:escapeXml(replyTitle) : ''}"
+                            <label for="newTopic_title"><fmt:message key="label.title"/></label><input value="${not empty replyTitle ? replyPrefix : ''}${not empty replyTitle ? fn:escapeXml(replyTitle) : ''}"
                                    type="text" size="35" id="newTopic_title" name="jcr:title"
-                                   tabindex="1"/></c:if></p>
-
-                    <p class="field">
+                                   tabindex="1"/></c:if>
+						</p>
+                    <p class="field"><label for="jahia-forum-thread-${currentNode.UUID}"><fmt:message
+                key="label.description"/></label>
                         <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content"
                                   tabindex="2" class="jahia-ckeditor"><c:if
                                 test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if><c:if
@@ -107,7 +112,8 @@
                     </p>
                     <c:if test="${not renderContext.loggedIn}">
                         <p class="field">
-                            <label class="left" for="newTopic_captcha"><template:captcha/></label>
+                            <label for="newTopic_captcha">Captcha</label><br /> <template:captcha/>
+                           
                             <c:if test="${not empty sessionScope.formError}">
                                 <label class="error">${sessionScope.formError}</label>
                             </c:if>

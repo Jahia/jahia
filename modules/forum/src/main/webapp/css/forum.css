@@ -456,3 +456,22 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 #bodywrapper #forum-body .back2to a:active {
 	text-decoration:underline;
 }
+/******************************************************************************
+*  error
+******************************************************************************/
+#bodywrapper .forum-Form .error{
+	padding:4px 5px;
+	margin: 5px ;
+	background-color:#ffebe8;
+	border:1px solid #cc3300;
+	display:inline-block;
+}
+#bodywrapper .forum-Form input.error, #bodywrapper .forum-Form select.error{
+	padding:4px 2px;
+	margin:0;
+	background-color:#ffebe8;
+	border:1px solid #cc3300;
+}
+#bodywrapper .forum-Form select.error{
+	padding:4px 5px;
+}

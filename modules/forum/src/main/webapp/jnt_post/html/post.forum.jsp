@@ -72,9 +72,7 @@
         <fmt:message key='reply.quote'/>
         </span> </a></li>
         </c:if>
-        <li>
-            <template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/>
-        </li>
+
         <c:if test="${jcr:hasPermission(currentNode, 'deletePost')}">
             <li class="delete-post-icon"><a title="<fmt:message key='delete.post'/>" href="#delete"
                                             onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit(); return false;"><span>
@@ -93,6 +91,10 @@
                     key="edit.post"/></span></a></li>
         </c:if>
     </ul>
+
+
+<template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/>
+
     <h4 class="forum-h4-first">${title.string}</h4>
 
     <p class="forum-author">

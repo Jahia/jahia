@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions jcr:primaryType="jnt:permission"
+             xmlns:jcr="http://www.jcp.org/jcr/1.0"
+             xmlns:j="http://www.jahia.org/jahia/1.0"
+             xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+    <actions jcr:primaryType="jnt:permission">
+        <wiki jcr:primaryType="jnt:permission">
+            <editWikiContent jcr:primaryType="jnt:permission"/>
+            <viewWikiHistory jcr:primaryType="jnt:permission"/>
+        </wiki>
+    </actions>
+</permissions>

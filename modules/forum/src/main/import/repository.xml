@@ -97,30 +97,4 @@
       </templates>
     </forum>
     </templateSets>
-
-    <permissions jcr:primaryType="jnt:permission">
-        <actions jcr:primaryType="jnt:permission">
-            <forum jcr:primaryType="jnt:permission">
-                <createRoom jcr:primaryType="jnt:permission"/>
-                <deleteRoom jcr:primaryType="jnt:permission"/>
-                <createSection jcr:primaryType="jnt:permission"/>
-                <deleteSection jcr:primaryType="jnt:permission"/>
-                <createTopic jcr:primaryType="jnt:permission"/>
-                <deleteTopic jcr:primaryType="jnt:permission"/>
-                <createPost jcr:primaryType="jnt:permission"/>
-                <deletePost jcr:primaryType="jnt:permission"/>
-                <editPost jcr:primaryType="jnt:permission"/>
-                <reportPost jcr:primaryType="jnt:permission"/>
-                <moderatePost jcr:primaryType="jnt:permission"/>
-            </forum>
-        </actions>
-    </permissions>
-
-    <roles>
-        <visitor jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/actions/forum/createTopic /permissions/actions/forum/createPost"/>
-
-        <author jcr:primaryType="jnt:role"
-                j:permissions="/permissions/actions/forum/createRoom /permissions/actions/forum/createSection /permissions/actions/forum/moderatePost"/>
-    </roles>
 </content>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions jcr:primaryType="jnt:permission"
+             xmlns:jcr="http://www.jcp.org/jcr/1.0"
+             xmlns:j="http://www.jahia.org/jahia/1.0"
+             xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+    <actions jcr:primaryType="jnt:permission">
+        <default jcr:primaryType="jnt:permission">
+            <publish jcr:primaryType="jnt:permission"/>
+            <startWorkflow jcr:primaryType="jnt:permission"/>
+            <executeTask jcr:primaryType="jnt:permission"/>
+            <commentTask jcr:primaryType="jnt:permission"/>
+            <move jcr:primaryType="jnt:permission"/>
+            <addMemberToGroup jcr:primaryType="jnt:permission"/>
+        </default>
+        <comments jcr:primaryType="jnt:permission">
+            <addComment jcr:primaryType="jnt:permission"/>
+        </comments>
+    </actions>
+</permissions>
+

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roles jcr:primaryType="jnt:roles"
+       xmlns:jcr="http://www.jcp.org/jcr/1.0"
+       xmlns:j="http://www.jahia.org/jahia/1.0"
+       xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+    <editor jcr:primaryType="jnt:role"
+            j:permissions="/permissions/actions/default/move"/>
+    <publisher jcr:primaryType="jnt:role"
+               j:permissions="/permissions/actions/default/publish /permissions/actions/default/startWorkflow"/>
+    <visitor jcr:primaryType="jnt:role"
+             j:permissions="/permissions/actions/default/executeTask /permissions/actions/default/commentTask /permissions/actions/comments/addComment"/>
+</roles>

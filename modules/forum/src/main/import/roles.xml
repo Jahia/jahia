@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roles jcr:primaryType="jnt:roles"
+       xmlns:jcr="http://www.jcp.org/jcr/1.0"
+       xmlns:j="http://www.jahia.org/jahia/1.0"
+       xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+    <visitor jcr:primaryType="jnt:role"
+             j:permissions="/permissions/actions/forum/createTopic /permissions/actions/forum/createPost"/>
+    <author jcr:primaryType="jnt:role"
+            j:permissions="/permissions/actions/forum/createRoom /permissions/actions/forum/createSection /permissions/actions/forum/moderatePost"/>
+</roles>

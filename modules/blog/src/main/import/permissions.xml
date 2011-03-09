@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <permissions jcr:primaryType="jnt:permission"
+                   xmlns:jcr="http://www.jcp.org/jcr/1.0"
+           xmlns:j="http://www.jahia.org/jahia/1.0"
+           xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+        <actions jcr:primaryType="jnt:permission">
+            <blog jcr:primaryType="jnt:permission">
+                <createNewBlog jcr:primaryType="jnt:permission"/>
+                <addBlogEntry jcr:primaryType="jnt:permission"/>
+                <editBlogEntry jcr:primaryType="jnt:permission"/>
+                <testEditBlogEntry jcr:primaryType="jnt:permission"/>
+                <test21EditBlogEntry jcr:primaryType="jnt:permission"/>
+            </blog>
+        </actions>
+    </permissions>
+

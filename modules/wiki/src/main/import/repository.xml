@@ -131,17 +131,4 @@
             </search-result>
         </wiki>
     </templateSets>
-    <permissions jcr:primaryType="jnt:permission">
-        <actions jcr:primaryType="jnt:permission">
-            <wiki jcr:primaryType="jnt:permission">
-                <editWikiContent jcr:primaryType="jnt:permission"/>
-                <viewWikiHistory jcr:primaryType="jnt:permission"/>
-            </wiki>
-        </actions>
-    </permissions>
-
-    <roles>
-        <visitor jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/actions/wiki"/>
-    </roles>
 </content>

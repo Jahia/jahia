@@ -124,19 +124,5 @@
             </templates>
         </blog>
     </templateSets>
-    <permissions jcr:primaryType="jnt:permission">
-        <actions jcr:primaryType="jnt:permission">
-            <blog jcr:primaryType="jnt:permission">
-                <createNewBlog jcr:primaryType="jnt:permission"/>
-                <addBlogEntry jcr:primaryType="jnt:permission"/>
-                <editBlogEntry jcr:primaryType="jnt:permission"/>
-            </blog>
-        </actions>
-    </permissions>
-
-    <roles>
-        <visitor jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/actions/blog/createNewBlog"/>
-    </roles>
 </content>
 

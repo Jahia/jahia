@@ -788,6 +788,10 @@
 		                    <groupId>velocity</groupId>
 		                    <artifactId>velocity</artifactId>
 		                </exclusion>
+                        <exclusion>
+                            <groupId>com.google.collections</groupId>
+                            <artifactId>google-collections</artifactId>
+                        </exclusion>
 		            </exclusions>
                 </dependency>
             </dependencies>

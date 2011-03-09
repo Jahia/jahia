@@ -40,7 +40,6 @@ import org.drools.spi.KnowledgeHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.jcr.JCRUser;
 
 /**
  * Social service class for manipulating social activities from the

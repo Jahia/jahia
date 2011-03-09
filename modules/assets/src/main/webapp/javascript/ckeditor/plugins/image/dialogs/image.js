@@ -1133,7 +1133,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 										url : editor.config.filebrowserLinkBrowseUrl,
 										target : 'Link:txtUrl'
 									},
-									label : editor.lang.common.browseServer + ' (' + (editor.lang.common.browseServerPages || 'Pages') + ')'
+									label : editor.lang.common.browseServer + ' (' + (editor.lang.common.browseServerPages || 'Content') + ')'
 								},
 								{
 									type : 'button',

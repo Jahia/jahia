@@ -524,7 +524,7 @@ CKEDITOR.dialog.add( 'link', function( editor )
 											url : editor.config.filebrowserLinkBrowseUrl,
 											target : 'info:url'
 										},
-										label : editor.lang.common.browseServer + ' (' + (editor.lang.common.browseServerPages || 'Pages') + ')'
+										label : editor.lang.common.browseServer + ' (' + (editor.lang.common.browseServerPages || 'Content') + ')'
 									},
 									{
 										type : 'button',

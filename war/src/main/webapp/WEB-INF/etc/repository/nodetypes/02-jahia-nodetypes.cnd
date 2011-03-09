@@ -69,6 +69,9 @@
 
 [jmix:autoPublish] > jmix:observable mixin
 
+[jmix:size] mixin
+ - j:height (long)
+ - j:width (long)
 
 //---------------------------------------------------------
 // Multi language

@@ -5,5 +5,5 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:openSocialGadget] > jnt:content, mix:title, jmix:siteComponent, jmix:gadget
+[jnt:openSocialGadget] > jnt:content, mix:title, jmix:size, jmix:siteComponent, jmix:gadget
  - j:url (string) mandatory

@@ -33,19 +33,19 @@
 package org.jahia.services.shindig;
 
 import com.google.common.collect.ImmutableSet;
-import org.jsecurity.authc.*;
-import org.jsecurity.authz.AuthorizationInfo;
-import org.jsecurity.authz.AuthorizationException;
-import org.jsecurity.authz.SimpleAuthorizationInfo;
-import org.jsecurity.subject.PrincipalCollection;
-import org.jsecurity.realm.AuthorizingRealm;
+import org.apache.shiro.authc.*;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.realm.AuthorizingRealm;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 
 import java.util.Set;
 
 /**
- * JSecurity Realm for Shindig
+ * Shiro Realm for Shindig
  * TODO This code doesn't really work yet.
  *
  * @author loom
@@ -62,7 +62,7 @@ public class JahiaSecurityRealm extends AuthorizingRealm  {
       if (username == null) {
           throw new AccountException("Null usernames are not allowed by this realm.");
       }
-      // hack since jsecurity uses no-param constructor, so we have trouble using injection.
+      // hack since Shiro uses no-param constructor, so we have trouble using injection.
       JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
       String password = "notimplemented";
 

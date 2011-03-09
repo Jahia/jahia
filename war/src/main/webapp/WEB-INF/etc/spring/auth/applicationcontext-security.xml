@@ -12,6 +12,19 @@
                 /cms/serverStats = authcBasic, roles[toolManager]
                 /cms/serverStats/* = authcBasic, roles[toolManager]
                 /tools/* = authcBasic, roles[toolManager]
+
+                ## Apache Shindig config
+                #[main]
+                #shindigSampleRealm = org.apache.shindig.sample.shiro.SampleShiroRealm
+                #securityManager.realm = $shindigSampleRealm
+                #authc.loginUrl = /login.jsp
+                #[urls]
+                ## The /login.jsp is not restricted to authenticated users (otherwise no one could log in!), but
+                ## the 'authc' filter must still be specified for it so it can process that url's
+                ## login submissions. It is 'smart' enough to allow those requests through as specified by the
+                ## shiro.loginUrl above.
+                #/login.jsp = authc
+                #/oauth/authorize/** = authc
             </value>
         </property>
     </bean>

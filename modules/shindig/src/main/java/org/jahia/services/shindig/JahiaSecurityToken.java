@@ -36,7 +36,7 @@ import org.apache.shindig.auth.SecurityToken;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
- * Jahia Security Token for Shindig's authentification handler.
+ * Jahia Security Token for Shindig's authentication handler.
  *
  * @author loom
  *         Date: Jun 24, 2010
@@ -96,5 +96,13 @@ public class JahiaSecurityToken implements SecurityToken {
 
     public String getActiveUrl() {
         return null;
+    }
+
+    public Long getExpiresAt() {
+        return null;
+    }
+
+    public boolean isExpired() {
+        return false;
     }
 }

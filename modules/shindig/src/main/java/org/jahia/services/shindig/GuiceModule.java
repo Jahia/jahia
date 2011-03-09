@@ -32,7 +32,9 @@
 
 package org.jahia.services.shindig;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
@@ -46,6 +48,12 @@ import org.apache.shindig.social.core.config.SocialApiGuiceModule;
 import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
+import org.apache.shindig.social.opensocial.service.ActivityHandler;
+import org.apache.shindig.social.opensocial.service.AlbumHandler;
+import org.apache.shindig.social.opensocial.service.AppDataHandler;
+import org.apache.shindig.social.opensocial.service.MediaItemHandler;
+import org.apache.shindig.social.opensocial.service.MessageHandler;
+import org.apache.shindig.social.opensocial.service.PersonHandler;
 import org.apache.shindig.social.opensocial.spi.ActivityService;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.PersonService;
@@ -53,8 +61,6 @@ import org.apache.shindig.social.opensocial.spi.MessageService;
 
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Guice module to initialize Shindig SPI implementation
@@ -86,10 +92,10 @@ public class GuiceModule extends SocialApiGuiceModule {
         bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(
             JahiaAuthenticationHandlerProvider.class);
 
-        bind(new TypeLiteral<Set<Object>>(){}).annotatedWith(Names.named("org.apache.shindig.social.handlers"))
-            .toInstance(getHandlers());
-
-        bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes")).toInstance(60L);
+        Multibinder<Object> handlerBinder = Multibinder.newSetBinder(binder(), Object.class, Names.named("org.apache.shindig.handlers"));
+        for (Class handler : getHandlers()) {
+          handlerBinder.addBinding().toInstance(handler);
+        }
 
       // Bind Mock Person Spi
       this.bind(PersonService.class).toInstance(jahiaShindigService);
@@ -103,14 +109,6 @@ public class GuiceModule extends SocialApiGuiceModule {
       requestStaticInjection(JahiaSecurityRealm.class);
     }
 
-    @Override
-    protected Set<Object> getHandlers() {
-      ImmutableSet.Builder<Object> handlers = ImmutableSet.builder();
-      handlers.addAll(super.getHandlers());
-      // handlers.add(SampleContainerHandler.class);
-      return handlers.build();
-    }
-
     /**
      * @param jahiaShindigService the jahiaShindigService to set
      */
@@ -118,4 +116,9 @@ public class GuiceModule extends SocialApiGuiceModule {
         this.jahiaShindigService = jahiaShindigService;
     }
 
+    @Override
+    protected Set<Class<?>> getHandlers() {
+        return ImmutableSet.<Class<?>>of(ActivityHandler.class, AppDataHandler.class,
+                PersonHandler.class, MessageHandler.class);
+    }
 }

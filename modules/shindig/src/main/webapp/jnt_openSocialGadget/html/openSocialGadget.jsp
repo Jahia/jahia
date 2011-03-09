@@ -5,17 +5,14 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:set var="gadgetUrl" value="${currentNode.propertiesAsString['j:url']}"/>
+<c:set var="gadgetHeight" value="${currentNode.properties['j:height'].long}"/>
+<c:set var="gadgetWidth" value="${currentNode.properties['j:width'].long}"/>
 <c:if test="${not renderContext.editMode}">
     <c:if test="${empty requestScope['org.jahia.modules.shindig.containerResourcesIncluded']}">
         <c:set var="org.jahia.modules.shindig.containerResourcesIncluded" value="true" scope="request"/>
         <c:set var="org.jahia.modules.shindig.gadgetIndex" value="0" scope="request"/>
-        <c:set var="base" value="${pageContext.request.contextPath}/modules/shindig/gadgets/files/container"/>
-        <template:addResources type="css" resources="${base}/gadgets.css"/>
-        <template:addResources type="javascript" resources="${pageContext.request.contextPath}/modules/shindig/gadgets/js/rpc.js?c=1&debug=1"/>
-        <template:addResources type="javascript" resources="${base}/cookies.js"/>
-        <template:addResources type="javascript" resources="${base}/util.js"/>
-        <template:addResources type="javascript" resources="${base}/gadgets.js"/>
-        <template:addResources type="javascript" resources="${base}/cookiebaseduserprefstore.js"/>
+        <template:addResources type="css" resources="${url.currentModule}/container/gadgets.css"/>
+        <template:addResources type="javascript" resources="${url.context}/gadgets/js/core:rpc:pubsub:shindig-container.js?c=1&debug=1"/>
         <template:addResources type="javascript" resources="jquery.js"/>
 
         <template:addResources>
@@ -26,16 +23,16 @@
                     var ids = new Array();
                     var myGadgets = new Array();
                     for (var i = 0; i < jahiaGadgetUrls.length; i++) {
-                        var gd = gadgets.container.createGadget({specUrl: jahiaGadgetUrls[i]});
-                        gd.setServerBase('${pageContext.request.contextPath}/modules/shindig/gadgets/');
+                        var gd = shindig.container.createGadget(jahiaGadgetUrls[i]);
+                        gd.setServerBase('${url.context}/gadgets/');
                         myGadgets.push(gd);
-                        gadgets.container.addGadget(gd);
+                        shindig.container.addGadget(gd);
                         ids.push('gadget-chrome-' + i);
                     }
-                    gadgets.container.layoutManager.setGadgetChromeIds(ids);
+                    shindig.container.layoutManager.setGadgetChromeIds(ids);
 
                     for (var i = 0; i < myGadgets.length; i++) {
-                        gadgets.container.renderGadget(myGadgets[i]);
+                        shindig.container.renderGadget(myGadgets[i]);
                     }
                 });
             </script>
@@ -43,7 +40,7 @@
     </c:if>
     <template:addResources>
         <script type="text/javascript">
-            jahiaGadgetUrls.push("${gadgetUrl}");
+            jahiaGadgetUrls.push({specUrl:'${gadgetUrl}'<c:if test="${gadgetHeight > 0}">, height:${gadgetHeight}</c:if><c:if test="${gadgetWidth > 0}">, width:${gadgetWidth}</c:if>,title:'${functions:escapeJavaScript(currentNode.displayableName)}'});
         </script>
     </template:addResources>
 </c:if>

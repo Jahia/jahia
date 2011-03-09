@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
-
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
     Copyright (C) 2002-2011 Jahia Limited. All rights reserved.
 
@@ -31,7 +29,6 @@
     in accordance with the terms contained in a separate written agreement
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
-
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -49,7 +46,7 @@
     <packaging>war</packaging>
     <description>Jahia  module that provides Apache Shindig container runtime for running OpenSocial applications.</description>
     <properties>
-        <shindig.version>1.1-BETA5-incubating</shindig.version>
+        <shindig.version>2.0.2</shindig.version>
     </properties>
     <dependencies>
         <dependency>
@@ -73,20 +70,10 @@
             <artifactId>shindig-social-api</artifactId>
             <version>${shindig.version}</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.code.guice</groupId>
-                    <artifactId>guice</artifactId>
-                </exclusion>
-                <exclusion>
-                	<artifactId>ehcache</artifactId>
-                	<groupId>net.sf.ehcache</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.shindig</groupId>
-            <artifactId>shindig-features</artifactId>
+            <artifactId>shindig-common</artifactId>
             <version>${shindig.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -94,18 +81,6 @@
             <groupId>org.apache.shindig</groupId>
             <artifactId>shindig-gadgets</artifactId>
             <version>${shindig.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>1.0-rc2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>2.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- end of Shindig dependencies -->
@@ -170,12 +145,10 @@
                                 <include>WEB-INF/lib/caja-*.jar</include>
                                 <include>WEB-INF/lib/commons-betwixt-*.jar</include>
                                 <include>WEB-INF/lib/guice-*.jar</include>
+                                <include>WEB-INF/lib/http*.jar</include>
                                 <include>WEB-INF/lib/htmlparser-*.jar</include>
-                                <include>WEB-INF/lib/jsecurity-*.jar</include>
+                                <include>WEB-INF/lib/jasper-*.jar</include>
                                 <include>WEB-INF/lib/json-simple-*.jar</include>
-                                <!--
-                                <include>WEB-INF/lib/nekohtml-*.jar</include>
-                                -->
                                 <include>WEB-INF/lib/oauth-*.jar</include>
                                 <include>WEB-INF/lib/sanselan-*.jar</include>
                                 <include>WEB-INF/lib/shindig-*.jar</include>

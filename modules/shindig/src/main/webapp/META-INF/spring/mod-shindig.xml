@@ -24,12 +24,30 @@
                 -->
                 <bean class="org.apache.shindig.gadgets.oauth.OAuthModule"/>
                 <bean class="org.apache.shindig.common.cache.ehcache.EhCacheModule"/>
+                <!--
+                <bean class="org.apache.shindig.sample.shiro.ShiroGuiceModule"/>
+                <bean class="org.apache.shindig.sample.container.SampleContainerGuiceModule"/>
+                <bean class="org.apache.shindig.extras.ShindigExtrasGuiceModule"/>
+                <bean class="org.apache.shindig.extras.as.ActivityStreamsGuiceModule"/>
+                -->
             </list>
         </property>
+        <!-- 
+        <property name="systemProperties">
+            <props>
+                <prop key="shindig.host">localhost</prop>
+                <prop key="aKey">/shindig/gadgets/proxy?container=default&amp;url=</prop>
+                <prop key="shindig.port">8080</prop>
+            </props>
+        </property>
+        -->
     </bean>
     
     <bean name="xml-to-html" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.GadgetRenderingServlet"/>
+    </bean>
+    <bean name="accel" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
+        <property name="servletClass" value="org.apache.shindig.gadgets.servlet.HtmlAccelServlet"/>
     </bean>
     <bean name="proxy" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.ProxyServlet"/>
@@ -49,35 +67,19 @@
     <bean name="js" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.JsServlet"/>
     </bean>
-    <bean name="socialRestapiServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
+    <bean name="restapiServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.protocol.DataServiceServlet"/>
         <property name="initParameters">
             <props>
-                <prop key="handlers">org.apache.shindig.social.handlers</prop>
+                <prop key="handlers">org.apache.shindig.handlers</prop>
             </props>
         </property>
     </bean>
-    <bean name="socialJsonRpcServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
+    <bean name="jsonRpcServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.protocol.JsonRpcServlet"/>
         <property name="initParameters">
             <props>
-                <prop key="handlers">org.apache.shindig.social.handlers</prop>
-            </props>
-        </property>
-    </bean>
-    <bean name="gadgetsJsonRpcServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
-        <property name="servletClass" value="org.apache.shindig.protocol.JsonRpcServlet"/>
-        <property name="initParameters">
-            <props>
-                <prop key="handlers">org.apache.shindig.gadgets.handlers</prop>
-            </props>
-        </property>
-    </bean>
-    <bean name="gadgetsRestapiServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
-        <property name="servletClass" value="org.apache.shindig.protocol.DataServiceServlet"/>
-        <property name="initParameters">
-            <props>
-                <prop key="handlers">org.apache.shindig.gadgets.handlers</prop>
+                <prop key="handlers">org.apache.shindig.handlers</prop>
             </props>
         </property>
     </bean>
@@ -89,19 +91,30 @@
         <property name="alwaysUseFullPath" value="true"/>
         <property name="urlMap">
             <map>
-                <entry key="/modules/shindig/gadgets/js/**" value-ref="js"/>
+                <entry key="/gadgets/js/**" value-ref="js"/>
+                
                 <entry key="/gadgets/proxy/**" value-ref="proxy"/>
+                
                 <entry key="/gadgets/makeRequest" value-ref="makeRequest"/>
-                <entry key="/gadgets/api/rpc/**" value-ref="gadgetsJsonRpcServlet"/>
-                <entry key="/gadgets/api/rest/**" value-ref="gadgetsRestapiServlet"/>
+                
+                <entry key="/rpc/**" value-ref="jsonRpcServlet"/>
+                <entry key="/gadgets/api/rpc/**" value-ref="jsonRpcServlet"/>
+                <entry key="/social/rpc/**" value-ref="jsonRpcServlet"/>
+                
+                <entry key="/rest/**" value-ref="restapiServlet"/>
+                <entry key="/gadgets/api/rest/**" value-ref="restapiServlet"/>
+                <entry key="/social/rest/**" value-ref="restapiServlet"/>
+                
                 <entry key="/gadgets/concat" value-ref="concat"/>
+                
                 <entry key="/gadgets/oauthcallback" value-ref="oauthCallback"/>
-                <entry key="/modules/shindig/gadgets/ifr" value-ref="xml-to-html"/>
+                
+                <entry key="/gadgets/ifr" value-ref="xml-to-html"/>
+                
+                <entry key="/gadgets/accel" value-ref="accel"/>
+                
                 <entry key="/gadgets/metadata" value-ref="metadata"/>
                 
-                <entry key="/social/rest/**" value-ref="socialRestapiServlet"/>
-                <entry key="/social/rpc/**" value-ref="socialJsonRpcServlet"/>
-
                 <entry key="/oauth/**" value-ref="sampleOAuth"/>
             </map>
         </property>

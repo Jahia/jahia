@@ -92,39 +92,6 @@
     	</init-param>
     </filter>
     
-<!-- Shindig filters -->
-    <!--<filter>
-        <filter-name>JSecurityFilter</filter-name>
-        <filter-class>org.jsecurity.web.servlet.JSecurityFilter</filter-class>
-        <init-param>
-            <param-name>config</param-name>
-            <param-value>
-
-                # The JSecurityFilter configuration is very powerful and flexible, while still remaining succinct.
-                # Please read the comprehensive example, with full comments and explanations, in the JavaDoc:
-                #
-                # http://www.jsecurity.org/api/org/jsecurity/web/servlet/JSecurityFilter.html
-                [main]
-                shindigSampleRealm = org.apache.shindig.social.sample.oauth.SampleRealm
-                securityManager.realm = $shindigSampleRealm
-
-                [filters]
-                jsecurity.loginUrl = /login.jsp
-
-                [urls]
-                # The /login.jsp is not restricted to authenticated users (otherwise no one could log in!), but
-                # the 'authc' filter must still be specified for it so it can process that url's
-                # login submissions. It is 'smart' enough to allow those requests through as specified by the
-                # jsecurity.loginUrl above.
-                /login.jsp = authc
-
-                /oauth/authorize/** = authc
-                /remoting/** = authc, roles[b2bClient], perms[remote:invoke:"lan,wan"]
-
-            </param-value>
-        </init-param>
-    </filter>-->
-
     <filter>
         <filter-name>ShindigAuthFilter</filter-name>
         <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
@@ -137,7 +104,6 @@
             <param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
         </init-param>
     </filter>
-<!-- End of shindig filters -->    
 
     <filter>
         <filter-name>shiroFilter</filter-name>
@@ -218,39 +184,33 @@
     </filter-mapping>
     
 <!-- Shindig filter mappings -->
-   <!-- <filter-mapping>
-        <filter-name>JSecurityFilter</filter-name>
-        <url-pattern>/oauth/authorize</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>JSecurityFilter</filter-name>
-        <url-pattern>*.jsp</url-pattern>
-    </filter-mapping>
-   -->
     <filter-mapping>
       <filter-name>ShindigAuthFilter</filter-name>
       <url-pattern>/social/*</url-pattern>
     </filter-mapping>
-
     <filter-mapping>
       <filter-name>ShindigAuthFilter</filter-name>
       <url-pattern>/gadgets/ifr</url-pattern>
     </filter-mapping>
-
     <filter-mapping>
       <filter-name>ShindigAuthFilter</filter-name>
       <url-pattern>/gadgets/makeRequest</url-pattern>
     </filter-mapping>
-
     <filter-mapping>
       <filter-name>ShindigAuthFilter</filter-name>
       <url-pattern>/gadgets/api/rpc/*</url-pattern>
     </filter-mapping>
-
     <filter-mapping>
       <filter-name>ShindigAuthFilter</filter-name>
       <url-pattern>/gadgets/api/rest/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>ShindigAuthFilter</filter-name>
+      <url-pattern>/rpc/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>ShindigAuthFilter</filter-name>
+      <url-pattern>/rest/*</url-pattern>
     </filter-mapping>
 <!-- End of Shindig filter mappings -->   
 
@@ -648,65 +608,70 @@
 <!-- Shindig servlet mappings -->
     <servlet-mapping>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/modules/shindig/gadgets/js/*</url-pattern>
+        <url-pattern>/gadgets/js/*</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
         <url-pattern>/gadgets/proxy/*</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
         <url-pattern>/gadgets/makeRequest</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/rpc/*</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
         <url-pattern>/gadgets/api/rpc/*</url-pattern>
     </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/api/rest/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/concat</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/oauthcallback</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/modules/shindig/gadgets/ifr</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/metadata</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/social/rest/*</url-pattern>
-    </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
         <url-pattern>/social/rpc/*</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/gadgets/api/rest/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/social/rest/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/gadgets/concat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/gadgets/oauthcallback</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/gadgets/ifr</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/gadgets/accel</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/gadgets/metadata</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShindigDispatcherServlet</servlet-name>
+        <url-pattern>/oauth/*</url-pattern>
+    </servlet-mapping>
 <!-- End of Shindig servlet mappings -->
 
 <!-- Quercus PHP mapping -->
     <servlet-mapping>
-      <servlet-name>Quercus Servlet</servlet-name>
-      <url-pattern>*.php</url-pattern>
+        <servlet-name>Quercus Servlet</servlet-name>
+        <url-pattern>*.php</url-pattern>
     </servlet-mapping>
 
 <!--
@@ -715,11 +680,6 @@
         <url-pattern>/osgi/*</url-pattern>
     </servlet-mapping>
 -->
-
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/oauth/*</url-pattern>
-    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>initializationCompletedServlet</servlet-name>

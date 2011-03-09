@@ -35,6 +35,8 @@ package org.jahia.services.shindig;
 import static org.apache.shindig.common.servlet.GuiceServletContextListener.INJECTOR_ATTRIBUTE;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
@@ -57,8 +59,15 @@ public class GuiceInitializer implements ServletContextAware, InitializingBean, 
     private List<Module> modules;
 
     private ServletContext servletContext;
+    
+    private Map<String, String> systemProperties; 
 
     public void afterPropertiesSet() throws Exception {
+        if (systemProperties != null && !systemProperties.isEmpty()) {
+            for (Map.Entry<String, String> entry : systemProperties.entrySet()) {
+                System.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
         Injector injector = Guice.createInjector(Stage.PRODUCTION, modules);
         servletContext.setAttribute(INJECTOR_ATTRIBUTE, injector);
     }
@@ -78,6 +87,10 @@ public class GuiceInitializer implements ServletContextAware, InitializingBean, 
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    public void setSystemProperties(Map<String, String> systemProperties) {
+        this.systemProperties = systemProperties;
     }
 
 }

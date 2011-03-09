@@ -309,6 +309,9 @@ try the following:
 
  How to change license number
 ------------------------------------------------------------------------------
+Note : it is now preferred to build releases using the Maven Release Plugin,
+see instructions below, although some of the points here are still valid.
+
 1. Change the following variable in \core\src\main\java\org\jahia\bin\Jahia.java
 
 /** Jahia server release number */
@@ -326,3 +329,26 @@ try the following:
 <jahia.package.version>x.x-SNAPSHOT</jahia.package.version>
 
 5. Create the adequate license.xml files
+
+ Performing a release with the Maven Release plugin
+------------------------------------------------------------------------------
+It is now possible to use the Maven Release plugin to automate the build of
+a release. This will change all the pom.xml versions, commit the change,
+compile the project, create a tag and then change all the pom.xml back to
+a SNAPSHOT version and commit again.
+
+It is recommended also to do all the following steps on a clean checkout of
+the codebase, as in your working directory you might have local changes or
+IDE project files that will conflict with proper preparation.
+
+You can perform all this with the following command line :
+
+mvn -Pqa-build release:prepare
+
+If for some reason you need to start again you can use the release:clean or
+if something was already committed, prepare a rollback with release:rollback
+
+It's also a good idea if you're not familiar with the process to execute first
+a dry run (won't do any real changes). You can do this with the following line:
+
+mvn -Pqa-build -DdryRun=true release:prepare

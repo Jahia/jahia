@@ -74,6 +74,7 @@
         <compiler.plugin.version>2.3.2</compiler.plugin.version>
         <buildnumber.plugin.version>1.0-beta-4</buildnumber.plugin.version>
         <source.plugin.version>2.1.2</source.plugin.version>
+        <release.plugin.version>2.1</release.plugin.version>
         <project.info.reports.plugin.version>2.2</project.info.reports.plugin.version>
         <jxr.plugin.version>2.2</jxr.plugin.version>
         <antrun.plugin.version>1.6</antrun.plugin.version>
@@ -373,6 +374,9 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>${javadoc.plugin.version}</version>
                         <configuration>
+                            <detectOfflineLinks>false</detectOfflineLinks>
+                            <minmemory>128m</minmemory>
+                            <maxmemory>1g</maxmemory>
                             <failOnError>false</failOnError>
                         </configuration>
                         <executions>
@@ -383,6 +387,17 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>${release.plugin.version}</version>
+                        <configuration>
+                            <checkModificationExcludes>
+                                <checkModificationExclude>pom.xml</checkModificationExclude>
+                                <exclude>.iml</exclude>
+                            </checkModificationExcludes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

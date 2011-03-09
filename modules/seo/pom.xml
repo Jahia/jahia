@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>${jahia.package.version}</version>
+            <version>6.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

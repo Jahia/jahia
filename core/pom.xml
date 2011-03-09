@@ -86,12 +86,12 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
-            <version>${jahia.package.version}</version>
+            <version>6.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>${jahia.package.version}</version>
+            <version>6.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jahia.configuration</groupId>

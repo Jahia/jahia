@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>${jahia.package.version}</version>
+            <version>6.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -113,7 +113,7 @@
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>social-service</artifactId>
-            <version>${jahia.package.version}</version>
+            <version>6.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         

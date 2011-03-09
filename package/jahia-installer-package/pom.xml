@@ -15,7 +15,7 @@
 
     <properties>
         <product.name>Jahia xCM Community Edition</product.name>
-        <installer.filename>Jahia_xCM_CE_v${jahia.package.version}_r${buildNumber}</installer.filename>
+        <installer.filename>Jahia_xCM_CE_v6.5-SNAPSHOT_r${buildNumber}</installer.filename>
         <izpack.version>4.3.3.jahia-SNAPSHOT</izpack.version>
         <staging.dir>${project.build.directory}/izpack</staging.dir>
         <launch4j.jahia.version>6.5.0.0</launch4j.jahia.version>
@@ -102,7 +102,7 @@
                                         <artifactItem>
                                             <groupId>org.jahia.server</groupId>
                                             <artifactId>jahia-war</artifactId>
-                                            <version>${jahia.package.version}</version>
+                                            <version>6.5-SNAPSHOT</version>
                                             <classifier>${jahia.war.classifier}</classifier>
                                             <type>war</type>
                                             <overWrite>false</overWrite>
@@ -122,7 +122,7 @@
                                         <artifactItem>
                                             <groupId>org.jahia.server</groupId>
                                             <artifactId>shared-libraries</artifactId>
-                                            <version>${jahia.package.version}</version>
+                                            <version>6.5-SNAPSHOT</version>
                                             <classifier>all</classifier>
                                             <type>zip</type>
                                             <overWrite>false</overWrite>
@@ -287,7 +287,7 @@
                             </splash>
                             <versionInfo>
                                 <fileVersion>${launch4j.jahia.version}</fileVersion>
-                                <txtFileVersion>${jahia.package.version}</txtFileVersion>
+                                <txtFileVersion>6.5-SNAPSHOT</txtFileVersion>
                                 <fileDescription>${product.name} Windows Installer
                                 </fileDescription>
                                 <copyright>${jahia.manifest.vendor.name} (${jahia.manifest.vendor.url})</copyright>

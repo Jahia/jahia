@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-test-service</artifactId>
-            <version>${jahia.package.version}</version>
+            <version>6.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

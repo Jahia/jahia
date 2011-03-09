@@ -16,14 +16,14 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-war</artifactId>
-            <version>${jahia.package.version}</version>
+            <version>6.5-SNAPSHOT</version>
             <classifier>${jahia.war.classifier}</classifier>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>shared-libraries</artifactId>
-            <version>${jahia.package.version}</version>
+            <version>6.5-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
     </dependencies>

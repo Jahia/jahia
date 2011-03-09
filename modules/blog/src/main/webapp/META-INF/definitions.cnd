@@ -2,8 +2,7 @@
 
 [jmix:blogContent] > jmix:droppableContent
 
-[jnt:blogPosts] > jnt:content, jmix:list
- orderable
+[jnt:blogPosts] > jnt:contentList
 + * (jnt:blogPost) = jnt:blogPost
 
 [jnt:blogPost] > jnt:content, mix:title, jmix:tagged, jmix:comments

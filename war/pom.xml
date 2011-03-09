@@ -1611,11 +1611,11 @@
                         <configuration>
                             <tasks>
                                 <concat destfile="${project.build.directory}/${project.build.finalName}/gwt/resources/css/gwt.css" fixlastline="yes">
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-ext-all.css" />
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/xtheme-jahia.css" />
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/edit.css" />
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-gwt-engines.css" />
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/diff.css" />
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-ext-all.css" erroronmissingdir="false"/>
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/xtheme-jahia.css" erroronmissingdir="false"/>
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/edit.css" erroronmissingdir="false"/>
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-gwt-engines.css" erroronmissingdir="false"/>
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/diff.css" erroronmissingdir="false"/>
                                 </concat>
                             </tasks>
                         </configuration>

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
@@ -20,15 +19,6 @@
         </description>
         <param-name>contextConfigLocation</param-name>
         <param-value>WEB-INF/etc/spring/**/applicationcontext-*.xml,classpath*:org/jahia/config/**/applicationcontext-*.xml</param-value>
-    </context-param>
-
-    <context-param>
-        <description>
-            The default Jahia servlet path that will be used for generating URLs.
-            If you change it, please also add a corresponding servlet mapping for 'Jahia' servlet.
-        </description>
-        <param-name>defaultJahiaServletPath</param-name>
-        <param-value>/Jahia</param-value>
     </context-param>
 
     <context-param>
@@ -283,11 +273,6 @@
     <servlet>
         <servlet-name>Jahia</servlet-name>
         <servlet-class>org.jahia.bin.Jahia</servlet-class>
-        <!-- Make sure this is consistent with the servlet mappings below -->
-        <init-param>
-            <param-name>admin_servlet_path</param-name>
-            <param-value>/administration/</param-value>
-        </init-param>
         <!-- if you have trouble with the JDK detection code, you might want
              to remove the following parameter. Please note that this is here
              for a reason, and the versions below are the ones we recommend.
@@ -595,11 +580,11 @@
     <!-- Servlet mappings -->
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
-        <url-pattern>/welcome</url-pattern>
+        <url-pattern>/start</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
-        <url-pattern>/start</url-pattern>
+        <url-pattern>/welcome</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
@@ -610,6 +595,7 @@
         <servlet-name>JahiaAdministration</servlet-name>
         <url-pattern>/administration/*</url-pattern>
     </servlet-mapping>
+    
     <servlet-mapping>
         <servlet-name>ValidateTicket</servlet-name>
         <url-pattern>/validateTicket</url-pattern>
@@ -822,7 +808,7 @@
     </mime-mapping>
     <mime-mapping>
         <extension>cdf</extension>
-        <mime-type>application/x-netcdf</mime-type>
+        <mime-type>application/x-cdf</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>cer</extension>
@@ -901,6 +887,10 @@
         <mime-type>application/x-hdf</mime-type>
     </mime-mapping>
     <mime-mapping>
+        <extension>hqx</extension>
+        <mime-type>application/mac-binhex40</mime-type>
+    </mime-mapping>
+    <mime-mapping>
         <extension>htc</extension>
         <mime-type>text/x-component</mime-type>
     </mime-mapping>
@@ -966,7 +956,7 @@
     </mime-mapping>
     <mime-mapping>
         <extension>kar</extension>
-        <mime-type>audio/midi</mime-type>
+        <mime-type>audio/x-midi</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>latex</extension>
@@ -986,7 +976,7 @@
     </mime-mapping>
     <mime-mapping>
         <extension>mathml</extension>
-        <mime-type>application/mathml+xml</mime-type>
+        <mime-type>application/mathml+xml</mime-type> 
     </mime-mapping>
     <mime-mapping>
         <extension>me</extension>
@@ -994,15 +984,15 @@
     </mime-mapping>
     <mime-mapping>
         <extension>mid</extension>
-        <mime-type>audio/midi</mime-type>
+        <mime-type>audio/x-midi</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>midi</extension>
-        <mime-type>audio/midi</mime-type>
+        <mime-type>audio/x-midi</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>mif</extension>
-        <mime-type>application/vnd.mif</mime-type>
+        <mime-type>application/x-mif</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>mov</extension>
@@ -1018,11 +1008,11 @@
     </mime-mapping>
     <mime-mapping>
         <extension>mp2</extension>
-        <mime-type>audio/mpeg</mime-type>
+        <mime-type>audio/x-mpeg</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>mp3</extension>
-        <mime-type>audio/mpeg</mime-type>
+        <mime-type>audio/x-mpeg</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>mp4</extension>
@@ -1054,7 +1044,7 @@
     </mime-mapping>
     <mime-mapping>
         <extension>ms</extension>
-        <mime-type>application/x-troff-ms</mime-type>
+        <mime-type>application/x-wais-source</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>nc</extension>
@@ -1115,7 +1105,7 @@
     </mime-mapping>
     <mime-mapping>
         <!-- OpenDocument Drawing Template -->
-        <extension>otg</extension>
+        <extension>otg </extension>
         <mime-type>application/vnd.oasis.opendocument.graphics-template</mime-type>
     </mime-mapping>
     <mime-mapping>
@@ -1131,7 +1121,7 @@
     <mime-mapping>
         <!-- OpenDocument Spreadsheet Template -->
         <extension>ots</extension>
-        <mime-type>application/vnd.oasis.opendocument.spreadsheet-template</mime-type>
+        <mime-type>application/vnd.oasis.opendocument.spreadsheet-template </mime-type>
     </mime-mapping>
     <mime-mapping>
         <!-- OpenDocument Text Template -->
@@ -1244,7 +1234,7 @@
     </mime-mapping>
     <mime-mapping>
         <extension>rtf</extension>
-        <mime-type>text/rtf</mime-type>
+        <mime-type>application/rtf</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>rtx</extension>
@@ -1258,12 +1248,12 @@
         <extension>shar</extension>
         <mime-type>application/x-shar</mime-type>
     </mime-mapping>
-    <!--
-        <mime-mapping>
-            <extension>shtml</extension>
-            <mime-type>text/x-server-parsed-html</mime-type>
-        </mime-mapping>
-    -->
+<!--
+    <mime-mapping>
+        <extension>shtml</extension>
+        <mime-type>text/x-server-parsed-html</mime-type>
+    </mime-mapping>
+-->
     <mime-mapping>
         <extension>smf</extension>
         <mime-type>audio/x-midi</mime-type>
@@ -1365,43 +1355,6 @@
         <mime-type>application/voicexml+xml</mime-type>
     </mime-mapping>
     <mime-mapping>
-        <extension>wav</extension>
-        <mime-type>audio/x-wav</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- Wireless Bitmap -->
-        <extension>wbmp</extension>
-        <mime-type>image/vnd.wap.wbmp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- WML Source -->
-        <extension>wml</extension>
-        <mime-type>text/vnd.wap.wml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- Compiled WML -->
-        <extension>wmlc</extension>
-        <mime-type>application/vnd.wap.wmlc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- WML Script Source -->
-        <extension>wmls</extension>
-        <mime-type>text/vnd.wap.wmlscript</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- Compiled WML Script -->
-        <extension>wmlscriptc</extension>
-        <mime-type>application/vnd.wap.wmlscriptc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wmv</extension>
-        <mime-type>video/x-ms-wmv</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wrl</extension>
-        <mime-type>model/vrml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
         <extension>xbm</extension>
         <mime-type>image/x-xbitmap</mime-type>
     </mime-mapping>
@@ -1450,12 +1403,65 @@
         <mime-type>application/xslt+xml</mime-type>
     </mime-mapping>
     <mime-mapping>
+        <extension>xlsx</extension>
+        <mime-type>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mime-type>
+    </mime-mapping>
+    <mime-mapping>
         <extension>xul</extension>
         <mime-type>application/vnd.mozilla.xul+xml</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>xwd</extension>
         <mime-type>image/x-xwindowdump</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>vsd</extension>
+        <mime-type>application/x-visio</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>wav</extension>
+        <mime-type>audio/x-wav</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- Wireless Bitmap -->
+        <extension>wbmp</extension>
+        <mime-type>image/vnd.wap.wbmp</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- WML Source -->
+        <extension>wml</extension>
+        <mime-type>text/vnd.wap.wml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- Compiled WML -->
+        <extension>wmlc</extension>
+        <mime-type>application/vnd.wap.wmlc</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- WML Script Source -->
+        <extension>wmls</extension>
+        <mime-type>text/vnd.wap.wmlscript</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- Compiled WML Script -->
+        <extension>wmlscriptc</extension>
+        <mime-type>application/vnd.wap.wmlscriptc</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>wmv</extension>
+        <mime-type>video/x-ms-wmv</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>wrl</extension>
+        <mime-type>x-world/x-vrml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>wspolicy</extension>
+        <mime-type>application/wspolicy+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>Z</extension>
+        <mime-type>application/x-compress</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>z</extension>

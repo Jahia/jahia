@@ -657,9 +657,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (path == null) {
                 path = "/cms/render";
             }
-            if ("/".equals(Jahia.getContextPath())) {
-                return path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html";
-            }
             return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html";
         }
     }

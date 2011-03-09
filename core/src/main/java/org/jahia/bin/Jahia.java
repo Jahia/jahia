@@ -103,13 +103,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
         "supported_jdk_versions";
 
-    static private final String INIT_PARAM_ADMIN_SERVLET_PATH =
-        "admin_servlet_path";
-
-    static private final String CTX_PARAM_DEFAULT_SERVLET_PATH =
-        "defaultJahiaServletPath";
-
-    /** ... */
     static public final String COPYRIGHT =
             "&copy; Copyright 2002-2011  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
@@ -133,8 +126,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     static private String jahiaServletPath;
     static private String jahiaContextPath;
     static private int jahiaHttpPort = -1;
-
-    static private String jahiaInitAdminServletPath;
 
     static private ThreadLocal<ProcessingContext> paramBeanThreadLocal = new ThreadLocal<ProcessingContext>();
     static private ThreadLocal<HttpServlet> servletThreadLocal = new ThreadLocal<HttpServlet>();
@@ -209,15 +200,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	        if (jahiaContextPath == null) {
 	            initContextData(getServletContext());
 	        }
-	        // get some value from the web.xml file...
-	        jahiaInitAdminServletPath = aConfig.getInitParameter(
-	            INIT_PARAM_ADMIN_SERVLET_PATH);
-	
 	        verifyJavaVersion(aConfig.getInitParameter(INIT_PARAM_SUPPORTED_JDK_VERSIONS));
-	
-	        if (Jahia.jahiaInitAdminServletPath == null) {
-	            jahiaInitAdminServletPath = "/administration/";
-	        }
 	
 	        jahiaEtcFilesPath = context.getRealPath("/WEB-INF/etc");
 	        jahiaVarFilesPath = context.getRealPath("/WEB-INF/var");
@@ -256,18 +239,22 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 
             if (SpringContextSingleton.getInstance().isInitialized()) {
-	            Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(
-	                    JahiaAfterInitializationService.class);
-	            for (Object o : map.values()) {
-	                JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-	                initializationService.initAfterAllServicesAreStarted();
-	            }
-	            map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
-	                    JahiaAfterInitializationService.class);
-	            for (Object o : map.values()) {
-	                JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-	                initializationService.initAfterAllServicesAreStarted();
-	            }
+                Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(
+                        JahiaAfterInitializationService.class);
+                for (Object o : map.values()) {
+                    JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+                    initializationService.initAfterAllServicesAreStarted();
+                }
+                if (SpringContextSingleton.getInstance().getModuleContext() != null) {
+                    map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
+                            JahiaAfterInitializationService.class);
+                    for (Object o : map.values()) {
+                        JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+                        initializationService.initAfterAllServicesAreStarted();
+                    }
+                } else {
+                    logger.error("Modules Spring application context failed to start. Unable to initialize services");
+                }
             }
         } catch (Exception je) {
             logger.error("Error during initialization of Jahia", je);
@@ -381,8 +368,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 if (jahiaSitesService.getNbSites() > 0) {
                     jahiaSitesService.setDefaultSite(jahiaSitesService.getSites().next());
                 } else {
-                    jahiaLaunch(request, response,
-                                Jahia.jahiaInitAdminServletPath+"?do=sites&sub=list");
+                    getServletContext().getRequestDispatcher("/administration?do=sites&sub=list").forward(request, response);
                     return;
                 }
             }
@@ -557,30 +543,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     //-------------------------------------------------------------------------
     /**
-         * Forward the flow to an another servlet. The name of the destination servlet
-     * is defined on the <code>destination</code> parameter.
-     *
-     * @param   request       Servlet request.
-     * @param   response      Servlet response.
-     * @param   destination   Destination for requestDispatcher.forward().
-     */
-    private void jahiaLaunch (final HttpServletRequest request,
-                              final HttpServletResponse response,
-                              final String destination) {
-        try {
-            getServletContext().getRequestDispatcher(destination).forward(
-                request, response);
-
-        } catch (IOException ie) {
-            logger.error("IOException on method jahiaLaunch.", ie);
-        } catch (ServletException se) {
-            logger.error("ServletException on method jahiaLaunch.", se != null
-                    && se.getRootCause() != null ? se.getRootCause() : se);
-        }
-    } // end jahiaLaunch
-
-    //-------------------------------------------------------------------------
-    /**
      * Return the private settings
      *
      * @return JahiaPrivateSettings
@@ -707,17 +669,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         return staticServletConfig;
     }
 
-    static String getDefaultServletPath(ServletContext ctx) {
-        String path = ctx.getInitParameter(CTX_PARAM_DEFAULT_SERVLET_PATH);
-        if (null == path) {
-            // should we alternatively default it to '/Jahia'?
-            throw new RuntimeException("Missing required context-param '"
-                    + CTX_PARAM_DEFAULT_SERVLET_PATH + "'"
-                    + " in the web.xml. Initialization failed.");
-        }
-        return path;
-    }
-    
     public static void initContextData(ServletContext servletContext) {
 
         String ctxPath = ""; // assume ROOT context by default
@@ -741,7 +692,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
         }
         Jahia.jahiaContextPath = ctxPath.equals("/") ? "" : ctxPath;
-        Jahia.jahiaServletPath = getDefaultServletPath(servletContext);
     }
 
 	public static String getEdition() {

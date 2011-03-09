@@ -134,8 +134,6 @@ public class JahiaAdministration extends HttpServlet {
     static private String servletPath = null;
 
     private String servletURI = null;
-    private static SettingsBean jSettings;
-    private static String contentServletPath = null;
 
     static private final String GET_REQUEST = "GET";
     static private final String POST_REQUEST = "POST";
@@ -152,8 +150,6 @@ public class JahiaAdministration extends HttpServlet {
         super.init(aConfig);
         // get servlet config and context...
         JahiaAdministration.context = aConfig.getServletContext();
-
-        JahiaAdministration.contentServletPath = Jahia.getDefaultServletPath(aConfig.getServletContext());
     } // end init
 
     @Override
@@ -206,27 +202,14 @@ public class JahiaAdministration extends HttpServlet {
         }
 
         try {
-        // determine installation status...
-        	jSettings = SettingsBean.getInstance();
-            if (jSettings != null) {
-                // set Jahia running mode to Admin
-                session.setAttribute(ProcessingContext.SESSION_JAHIA_RUNNING_MODE,
-                                     Jahia.ADMIN_MODE);
-                logger.debug("Running mode : " + Jahia.ADMIN_MODE);
+            // determine installation status...
+            // set Jahia running mode to Admin
+            session.setAttribute(ProcessingContext.SESSION_JAHIA_RUNNING_MODE, Jahia.ADMIN_MODE);
+            logger.debug("Running mode : " + Jahia.ADMIN_MODE);
 
-                    try {
-                        userRequestDispatcher(request, response, session); // ok continue admin...
-                    } catch (JahiaException je) {
-                        DefaultErrorHandler.getInstance().handle(je, request, response);
-                    } catch (Exception t) {
-                        DefaultErrorHandler.getInstance().handle(t, request, response);
-                    } finally {
-                        Jahia.setThreadParamBean(null);
-                    }
-            } else {
-                request.setAttribute("jahiaLaunch", "installation"); // call jahia to init and launch install...
-                doRedirect(request, response, session, contentServletPath);
-            }
+            userRequestDispatcher(request, response, session); // ok continue admin...
+        } catch (Exception t) {
+            DefaultErrorHandler.getInstance().handle(t, request, response);
         } finally {
             Jahia.setThreadParamBean(null);
             logger.debug("--[ {} Request End ] --", request.getMethod());

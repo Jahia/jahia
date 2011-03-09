@@ -99,7 +99,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                     logger.error("Error initializing Jahia modules Spring application context. Cause: " + e.getMessage(), e);
                 }
                 if (Jahia.getEdition().equalsIgnoreCase("EE")) {
-                	requireLicense();
+                    requireLicense();
                 }
                 // register listeners after the portal is started
                 ApplicationsManagerServiceImpl.getInstance().registerListeners();
@@ -113,29 +113,35 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
     }
 
-	private void requireLicense() {
-		try {
-			if (!ContextLoader.getCurrentWebApplicationContext().getBean("licenseChecker")
-			        .getClass().getName().equals("org.jahia.security.license.LicenseChecker")
-			        || !ContextLoader.getCurrentWebApplicationContext().getBean("LicenseFilter")
-			                .getClass().getName()
-			                .equals("org.jahia.security.license.LicenseFilter")) {
-				throw new FatalBeanException("Required classes for license manager were not found");
-			}
-		} catch (NoSuchBeanDefinitionException e) {
-			throw new FatalBeanException("Required classes for license manager were not found", e);
-		}
-	}
+    private void requireLicense() {
+        try {
+            if (!ContextLoader.getCurrentWebApplicationContext().getBean("licenseChecker")
+                    .getClass().getName().equals("org.jahia.security.license.LicenseChecker")
+                    || !ContextLoader.getCurrentWebApplicationContext().getBean("LicenseFilter")
+                            .getClass().getName()
+                            .equals("org.jahia.security.license.LicenseFilter")) {
+                throw new FatalBeanException("Required classes for license manager were not found");
+            }
+        } catch (NoSuchBeanDefinitionException e) {
+            throw new FatalBeanException("Required classes for license manager were not found", e);
+        }
+    }
 
-	public void contextDestroyed(ServletContextEvent event) {
+    public void contextDestroyed(ServletContextEvent event) {
         try {
             if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
                 try {
-                    if (ContextLoader.getCurrentWebApplicationContext() != null && ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader") != null) {
-                        ((TemplatePackageApplicationContextLoader)ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader")).stop();
+                    if (ContextLoader.getCurrentWebApplicationContext() != null
+                            && ContextLoader.getCurrentWebApplicationContext().getBean(
+                                    "TemplatePackageApplicationContextLoader") != null) {
+                        ((TemplatePackageApplicationContextLoader) ContextLoader
+                                .getCurrentWebApplicationContext().getBean(
+                                        "TemplatePackageApplicationContextLoader")).stop();
                     }
                 } catch (Exception e) {
-                    logger.error("Error shutting down Jahia modules Spring application context. Cause: " + e.getMessage(), e);
+                    logger.error(
+                            "Error shutting down Jahia modules Spring application context. Cause: "
+                                    + e.getMessage(), e);
                 }
                 super.contextDestroyed(event);
             }

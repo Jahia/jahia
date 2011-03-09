@@ -65,11 +65,7 @@ public class JCRPortletNode extends JCRNodeDecorator {
             final String[] strings = getProperty("j:application").getString().split("!");
             context = strings[0];
             if (context.startsWith("$context")) {
-                String prefix = Jahia.getContextPath();
-                if (prefix.equals("/")) {
-                    prefix = "";
-                }
-                context = prefix + context.substring("$context".length());
+                context = Jahia.getContextPath() + context.substring("$context".length());
             }
             // Set the applicationReference now
             try {

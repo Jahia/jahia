@@ -346,7 +346,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             return;
         }
         Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-        if (checkForUploadedFiles(req, resp, urlResolver.getWorkspace(), urlResolver.getLocale(), parameters)) {
+        if (checkForUploadedFiles(req, resp, urlResolver.getWorkspace(), urlResolver.getLocale(), parameters, urlResolver)) {
             if (parameters.isEmpty()) {
                 return;
             }
@@ -373,6 +373,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
             action = templateService.getActions().get(resource.getResolvedTemplate());
         } else {
+            String path = urlResolver.getPath();
+            resource = urlResolver.getResource((path.endsWith("*")?StringUtils.substringBeforeLast(path,"/"):path)+".html");
+            renderContext.setMainResource(resource);
+            try {
+                JCRSiteNode site = resource.getNode().getResolveSite();
+                renderContext.setSite(site);
+            } catch (RepositoryException e) {
+            }
             action = defaultPostAction;
         }
         if (action == null) {
@@ -396,7 +404,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     private boolean checkForUploadedFiles(HttpServletRequest req, HttpServletResponse resp, String workspace,
-                                          Locale locale, Map<String, List<String>> parameters)
+                                          Locale locale, Map<String, List<String>> parameters,
+                                          URLResolver urlResolver)
             throws RepositoryException, IOException {
 
         if (isMultipartRequest(req)) {
@@ -429,9 +438,21 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             if (isTargetDirectoryDefined) {
                                 target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
                             } else {
-	                            JCRNodeWrapper userDirectory = ((JCRUser) jcrSessionFactory.getCurrentUser())
-	                                    .getNode(session); //todo ldap users
-	                            target = userDirectory.getPath() + "/files";
+                                String path = urlResolver.getPath();
+                                path = (path.endsWith("*")?StringUtils.substringBeforeLast(path,"/"):path);
+                                JCRNodeWrapper sessionNode = session.getNode(path);
+                                String s = sessionNode.getResolveSite().getPath() + "/files/contributed/";
+                                String name =
+                                        sessionNode.getPrimaryNodeTypeName().replaceAll(
+                                                ":", "_") + "_" + sessionNode.getName();
+                                target = s + name;
+                                try {
+                                    session.getNode(target);
+                                } catch (RepositoryException e) {
+                                    JCRNodeWrapper node = session.getNode(s);
+                                    node.addNode(name,"jnt:folder");
+                                    session.save();
+                                }
                             }
                             final JCRNodeWrapper targetDirectory = session.getNode(target);
                             
@@ -815,7 +836,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
+                urlResolver.getLocale());
         ActionResult result = action.doExecute(req, renderContext, resource, session, parameters, urlResolver);
         if (result != null) {
             if (result.getResultCode() < 300) {

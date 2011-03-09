@@ -1,11 +1,18 @@
 <site jcr:primaryType="jnt:virtualsite"
-           xmlns:jcr="http://www.jcp.org/jcr/1.0"
-           xmlns:j="http://www.jahia.org/jahia/1.0"
-           xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+      xmlns:jcr="http://www.jcp.org/jcr/1.0"
+      xmlns:j="http://www.jahia.org/jahia/1.0"
+      xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <files jcr:primaryType="jnt:folder" />
+    <files jcr:primaryType="jnt:folder">
+        <contributed jcr:primaryType="jnt:folder">
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_g_site-privileged j:protected="false" j:principal="g:privileged" j:roles="contributor"
+                                    j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
+            </j:acl>
+        </contributed>
+    </files>
 
-    <portlets jcr:primaryType="jnt:portletFolder" />
+    <portlets jcr:primaryType="jnt:portletFolder"/>
 
     <groups jcr:primaryType="jnt:groupsFolder">
         <site-administrators jcr:primaryType="jnt:group" j:hidden="false">
@@ -16,11 +23,10 @@
         </site-privileged>
     </groups>
 
-    <contents jcr:primaryType="jnt:contentFolder" />
+    <contents jcr:primaryType="jnt:contentFolder"/>
 
     <templates jcr:primaryType="jnt:templatesFolder"/>
 
-    <tags jcr:primaryType="jnt:tagList" >
-    </tags>
+    <tags jcr:primaryType="jnt:tagList"/>
 
 </site>

@@ -393,10 +393,7 @@
                         <artifactId>maven-release-plugin</artifactId>
                         <version>${release.plugin.version}</version>
                         <configuration>
-                            <checkModificationExcludes>
-                                <checkModificationExclude>pom.xml</checkModificationExclude>
-                                <exclude>.iml</exclude>
-                            </checkModificationExcludes>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
                         </configuration>
                     </plugin>
                 </plugins>

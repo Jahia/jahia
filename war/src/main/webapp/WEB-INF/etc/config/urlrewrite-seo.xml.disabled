@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
         "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
-<urlrewrite use-context="true">
+<urlrewrite>
 
 	<!-- Inbound rules -->
     <rule>
@@ -13,14 +13,14 @@
     <rule>
         <note>Add the key of the site if it was resolved by server name</note>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/([a-z]{2}(_[A-Z]{2})?)/(.*)$</from>
-        <to>$1/cms/$2$3/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$4</to>
+        <from>^/cms/([a-z]{2}(_[A-Z]{2})?)/(.*)$</from>
+        <to>/cms/$1$2/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$3</to>
     </rule>
     <rule>
         <name>Add the /cms/render/live part</name>
         <note>Prepend /cms/render/live to all page requests, which do not have it yet</note>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/([a-z]{2}(_[A-Z]{2})?)/(.*)$</from>
-        <to last="true">$1/cms/render/live/$2$3/$4</to>
+        <from>^/cms/([a-z]{2}(_[A-Z]{2})?)/(.*)$</from>
+        <to last="true">/cms/render/live/$1$2/$3</to>
     </rule>
       
     <!-- Outbound rules -->

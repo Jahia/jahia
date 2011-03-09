@@ -199,7 +199,7 @@ public class RulesNotificationService {
         bindings.put("currentUser", user);
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
         if (scriptInputStream != null) {
-            String resourceBundleName = StringUtils.substringBeforeLast(StringUtils.substringAfter(template,
+            String resourceBundleName = StringUtils.substringBeforeLast(StringUtils.substringAfter(template.replaceAll("/WEB-INF",""),
                                                                                                    "/").replaceAll("/",
                                                                                                                    "."),
                                                                         ".");

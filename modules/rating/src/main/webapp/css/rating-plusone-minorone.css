@@ -1,0 +1,7 @@
+#bodywrapper .voteText{
+	display:none;
+}
+#bodywrapper .voteblock{float:right; clear:both;}
+#bodywrapper .voteblock a, #bodywrapper .voteblock div.positiveVote, #bodywrapper .voteblock div.negativeVote{ padding:5px 10px; display:block;float:left; margin:2px;}
+#bodywrapper .voteblock a.positiveVote,#bodywrappper .voteblock a.positiveVote:hover, #bodywrapper .voteblock div.positiveVote {background: url(img/positive.png) no-repeat right 50%; padding-right:20px; text-decoration:none; font-weight:bold}
+#bodywrapper .voteblock a.negativeVote ,#bodywrappper .voteblock a.negativeVote:hover, #bodywrapper .voteblock div.negativeVote {background: url(img/negative.png) no-repeat right 50%; padding-right:20px; text-decoration:none; font-weight:bold}

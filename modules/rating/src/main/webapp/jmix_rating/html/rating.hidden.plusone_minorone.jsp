@@ -13,6 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
+<template:addResources type="css" resources="rating-plusone-minorone.css"/>
 <jcr:nodeProperty node="${currentNode}" name="j:nbOfVotes" var="nbVotes"/>
 <jcr:nodeProperty node="${currentNode}" name="j:sumOfVotes" var="sumVotes"/>
 <c:set var="positiveVote" value="0"/>
@@ -32,16 +33,25 @@
     </c:if>
 </c:if>
 <c:choose>
+
     <c:when test="${renderContext.loggedIn}">
-        <a title="Vote +1" href="#"
-           onclick="document.getElementById('jahia-forum-post-vote-${currentNode.identifier}').submit();"><span>+1 (<fmt:formatNumber
-                value="${positiveVote}" pattern="##"/> Good)</span></a>
-        <a title="Vote -1" href="#"
-           onclick="var voteForm=document.getElementById('jahia-forum-post-vote-${currentNode.identifier}'); voteForm.elements['j:lastVote'].value='-1'; voteForm.submit();"><span>-1 (<fmt:formatNumber
-                value="${negativeVote}" pattern="##"/>  Bad)</span></a>
+    <div class="voteblock">
+ 
+        <a class="positiveVote" title="Vote +1" href="#"
+           onclick="document.getElementById('jahia-forum-post-vote-${currentNode.identifier}').submit();"><span><fmt:formatNumber
+                value="${positiveVote}" pattern="##"/><span class="voteText"> (<fmt:formatNumber
+                value="${positiveVote}" pattern="##"/> Good)</span></span></a>
+        <a class="negativeVote" title="Vote -1" href="#"
+           onclick="var voteForm=document.getElementById('jahia-forum-post-vote-${currentNode.identifier}'); voteForm.elements['j:lastVote'].value='-1'; voteForm.submit();"><span><fmt:formatNumber
+                value="${negativeVote}" pattern="##"/><span class="voteText"> (<fmt:formatNumber
+                value="${negativeVote}" pattern="##"/>  Bad)</span></span></a>
+    </div>
     </c:when>
     <c:otherwise>
-        <a title="Vote +1"><span>+1 (<fmt:formatNumber value="${positiveVote}" pattern="##"/> Good)</span></a>
-        <a title="Vote -1"><span>-1 (<fmt:formatNumber value="${negativeVote}" pattern="##"/>  Bad)</span></a>
+     <div class="voteblock">
+        <div class="positiveVote" title="Thank you to log in to vote"><span><fmt:formatNumber value="${positiveVote}" pattern="##"/><span class="voteText"> (<fmt:formatNumber value="${positiveVote}" pattern="##"/> Good)</span></span></div>
+        <div class="negativeVote" title="Thank you to log in to vote"><span><fmt:formatNumber value="${negativeVote}" pattern="##"/><span class="voteText"> (<fmt:formatNumber value="${negativeVote}" pattern="##"/>  Bad)</span></span></div>
+     </div>
     </c:otherwise>
+
 </c:choose>

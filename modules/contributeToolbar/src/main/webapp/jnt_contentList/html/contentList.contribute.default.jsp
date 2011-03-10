@@ -7,6 +7,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="utils" uri="http://www.jahia.org/tags/utilityLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -36,8 +37,9 @@
 <template:addResources type="css" resources="timepicker.css,datepicker.css,jquery.treeview.css,jquery.fancybox.css,contentlist.css,formcontribute.css"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
-<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
+<utils:setBundle basename="JahiaContributeToolbar" useUILocale="true"/>
 <div id="${currentNode.UUID}">
     <template:include templateType="html" template="hidden.header"/>
     <c:set var="animatedTasks" value=""/>

@@ -34,13 +34,14 @@
 <template:addResources type="css" resources="timepicker.css"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
-<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
+<utility:setBundle basename="JahiaContributeToolbar" useUILocale="true"/>
 <c:if test="${!renderContext.ajaxRequest}">
 <template:addResources>
     <script>

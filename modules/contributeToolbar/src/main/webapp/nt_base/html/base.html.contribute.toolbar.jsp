@@ -4,6 +4,7 @@
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="utils" uri="http://www.jahia.org/tags/utilityLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -143,6 +144,7 @@
 
     </script>
 </template:addResources>
+<utils:setBundle basename="JahiaContributeToolbar" useUILocale="true"/>
 <div id="contributeToolbar" >
 
     <div id="edit">

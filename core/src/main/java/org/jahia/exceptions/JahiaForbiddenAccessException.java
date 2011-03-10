@@ -36,6 +36,8 @@
 
 package org.jahia.exceptions;
 
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * This exception is raised when the user tries to access a resource to which
@@ -46,6 +48,8 @@ package org.jahia.exceptions;
  */
 public class JahiaForbiddenAccessException extends JahiaException
 {
+
+    private static final long serialVersionUID = -1353013248036003416L;
 
     //-------------------------------------------------------------------------
     /** Default constructor
@@ -61,4 +65,8 @@ public class JahiaForbiddenAccessException extends JahiaException
                 : "403 Access forbidden", SECURITY_ERROR, ERROR_SEVERITY);
     }
 
+    @Override
+    public int getResponseErrorCode() {
+        return HttpServletResponse.SC_FORBIDDEN;
+    }
 }

@@ -50,6 +50,8 @@ package org.jahia.exceptions;
 public class JahiaInitializationException extends JahiaException
 {
 
+    private static final long serialVersionUID = -4398189529572536662L;
+
     /**
      * DefaultConstructor
      */

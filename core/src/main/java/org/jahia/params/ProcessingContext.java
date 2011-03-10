@@ -117,7 +117,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaInterface;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -306,7 +305,6 @@ public class ProcessingContext {
     public ProcessingContext(final long aStartTime, final String extraParams)
             throws JahiaException {
 
-        try {
             Jahia.setThreadParamBean(this);
 
             // default vars
@@ -321,13 +319,6 @@ public class ProcessingContext {
             buildCustomParameterMapFromPathInfo(getPathInfo(), extraParams, "");
 
             setEngineNameIfAvailable();
-
-            // retrieve site info
-            if (!findSiteFromWhatWeHave() && REGISTRY.getJahiaSitesService().getNbSites() > 0) {
-                throw new JahiaSiteNotFoundException(
-                        "400 Bad Request : No site specified or site not found",
-                        JahiaException.CRITICAL_SEVERITY);
-            }
 
             if (getSite() != null) {
                 setSiteInfoFromSiteFound();
@@ -344,23 +335,6 @@ public class ProcessingContext {
                     SESSION_LAST_ENGINE_NAME));
             this.setEngineHasChanged((getLastEngineName() == null || !getLastEngineName()
                             .equals(getEngine())));
-
-            // /////////////////////////////////////////////////////////////////////////////////////
-            // FIXME -Fulco-
-            //
-            // hmmmmm, this catch has no reason to be here! This exception should be catched
-            // where the numeric convertion takes place, and not here!!!
-            //
-            // /////////////////////////////////////////////////////////////////////////////////////
-
-        } catch (NumberFormatException nfe) {
-            final String errorMsg = "Error in translating number : "
-                    + nfe.getMessage() + " -> BAILING OUT";
-            logger.debug(errorMsg, nfe);
-            throw new JahiaException("Error in request parameters", errorMsg,
-                    JahiaException.PAGE_ERROR, JahiaException.ERROR_SEVERITY,
-                    nfe);
-        }
 
     }
 

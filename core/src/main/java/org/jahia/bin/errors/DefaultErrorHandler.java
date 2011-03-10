@@ -42,28 +42,24 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.AccessDeniedException;
+import javax.jcr.PathNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaNotFoundException;
 import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 
 /**
  * Handler class for captured exceptions.
@@ -71,37 +67,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
  * @author Sergiy Shyrkov
  */
 public class DefaultErrorHandler implements ErrorHandler {
-
-    private static final Pattern ERROR_CODE_PATTERN = Pattern
-            .compile("\\d\\d\\d");
-
-    /**
-     * Tries to parse the integer response error code from the exception
-     * message. In case of failure, returns <code>0</code>.
-     * 
-     * @param t
-     *            the catched exception
-     * @return the integer response error code parsed from the exception
-     *         message. In case of failure, returns <code>0</code>
-     */
-    private static int getErrorCode(Throwable t) {
-
-        int code = SC_INTERNAL_SERVER_ERROR;
-        if (t != null && StringUtils.isNotEmpty(t.getMessage())) {
-            String errorString = null;
-            Matcher m = ERROR_CODE_PATTERN.matcher(t.getMessage());
-            if (m.find()) {
-                errorString = m.group();
-                try {
-                    code = Integer.parseInt(errorString);
-                } catch (NumberFormatException e) {
-                    // ignore it
-                }
-            }
-        }
-
-        return code >= 400 && code < 600 ? code : SC_INTERNAL_SERVER_ERROR;
-    }
 
     /**
      * Returns an instance of the error handler, configured in the
@@ -153,13 +118,7 @@ public class DefaultErrorHandler implements ErrorHandler {
                 code = SC_FORBIDDEN;
             }
         } else if (e instanceof JahiaException) {
-            if (e instanceof JahiaSessionExpirationException) {
-                code = SC_BAD_REQUEST;
-            } else if (e instanceof JahiaForbiddenAccessException) {
-                code = SC_FORBIDDEN;
-            } else {
-                code = getErrorCode(e);
-            }
+            code = ((JahiaException) e).getResponseErrorCode();
         } else if (e instanceof JahiaRuntimeException) {
             if (e instanceof JahiaBadRequestException) {
                 code = SC_BAD_REQUEST;
@@ -183,16 +142,13 @@ public class DefaultErrorHandler implements ErrorHandler {
         if (code != 0) {
             request.setAttribute("org.jahia.exception", e);
 
-            StringWriter traceWriter = new StringWriter();
-            e.printStackTrace(new PrintWriter(traceWriter));
-            traceWriter.flush();
-            request.setAttribute("org.jahia.exception.trace", traceWriter
-                    .getBuffer().toString());
-
-            // for backward compatibility
-            request.setAttribute("org.jahia.exception.Message", e.getMessage());
-            request.setAttribute("org.jahia.exception.StackTrace", traceWriter
-                    .getBuffer().toString());
+            if (SettingsBean.getInstance().isDevelopmentMode()) {
+                StringWriter traceWriter = new StringWriter();
+                e.printStackTrace(new PrintWriter(traceWriter));
+                traceWriter.flush();
+                request.setAttribute("org.jahia.exception.trace", traceWriter
+                        .getBuffer().toString());
+            }
 
             if (!response.isCommitted()) {
                 // set proper error code (and use the trick, because Tomcat will not use custom error page for 503 error)

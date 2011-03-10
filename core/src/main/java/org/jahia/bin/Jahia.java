@@ -61,11 +61,8 @@ import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.exceptions.JahiaPageNotFoundException;
-import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Version;
@@ -415,7 +412,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     public static ParamBean createParamBean(final HttpServletRequest request,
                                             final HttpServletResponse response,
                                             final HttpSession session)
-    throws IOException, JahiaSiteNotFoundException, JahiaException {
+    throws IOException, JahiaException {
 
         // all is okay, let's continue...
         boolean exitAdminMode;
@@ -423,7 +420,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
              SESSION_JAHIA_RUNNING_MODE);
 
         ParamBean jParams = null;
-        try {
             final ProcessingContextFactory pcf = (ProcessingContextFactory) SpringContextSingleton.
                     getInstance().getContext().getBean(ProcessingContextFactory.class.getName());
 
@@ -446,39 +442,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                     logger.debug("Switch to Jahia.CORE_MODE");
                 }
             }
-        } catch (JahiaPageNotFoundException ex) {
-            // PAGE NOT FOUND EXCEPTION
-            logger.debug(ex.getJahiaErrorMsg(), ex);
-//            logger.error(ex.getJahiaErrorMsg());
-            String requestURI = request.getRequestURI();
-            JahiaSite site = (JahiaSite) request.getSession().getAttribute("org.jahia.services.sites.jahiasite");
-            if (site != null && requestURI.indexOf("/op/edit") > 0) {
-                    String redirectURL = requestURI;
-                    int pidPos = requestURI.indexOf("/pid/");
-                    if (pidPos != -1) {
-                        // found PID in URL, let's replace it's value.
-                        int nextSlashPos = requestURI.indexOf("/", pidPos + "/pid/".length());
-                        if (nextSlashPos == -1) {
-                            redirectURL = requestURI.substring(0, pidPos) + "/pid/"+site.getHomePageID();
-                        } else {
-                            redirectURL = requestURI.substring(0, pidPos) + "/pid/"+site.getHomePageID() + requestURI.substring(nextSlashPos);
-                        }
-                        response.sendRedirect(redirectURL);                        
-                    } else {
-                        pidPos = requestURI.substring(0,requestURI.length()-2).lastIndexOf("/");
-                        // We are using url key
-                        int nextSlashPos = requestURI.indexOf("/", pidPos + "/pid/".length());
-                        if (nextSlashPos == -1) {
-                            redirectURL = requestURI.substring(0, pidPos) + "/pid/"+site.getHomePageID();
-                        } else {
-                            redirectURL = requestURI.substring(0, pidPos) + "/pid/"+site.getHomePageID() + requestURI.substring(nextSlashPos);
-                        }
-                        response.sendRedirect(redirectURL);
-                    }
-            } else {
-                throw ex;
-            }
-        }
         return jParams;
     }
 

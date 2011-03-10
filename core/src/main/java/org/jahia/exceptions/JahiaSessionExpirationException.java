@@ -36,6 +36,8 @@
 
 package org.jahia.exceptions;
 
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * This exception is raised when a session is requested which is null, this
@@ -46,6 +48,8 @@ package org.jahia.exceptions;
  */
 public class JahiaSessionExpirationException extends JahiaException
 {
+    private static final long serialVersionUID = -1677368985399980293L;
+
     //-------------------------------------------------------------------------
     /** Default constructor
      */
@@ -54,5 +58,9 @@ public class JahiaSessionExpirationException extends JahiaException
         super ("401 - session expired", "401 - Session Expiration",
                SESSION_ERROR, ERROR_SEVERITY);
     }
+    
+    @Override
+    public int getResponseErrorCode() {
+        return HttpServletResponse.SC_UNAUTHORIZED;
+    }
 }
-

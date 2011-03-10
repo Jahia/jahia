@@ -35,10 +35,14 @@ package org.jahia.exceptions;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class JahiaException extends Exception
 {
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(JahiaException.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaException.class);
 
     private static final long   serialVersionUID = -1837958722110615030L;
 
@@ -119,6 +123,7 @@ public class JahiaException extends Exception
     protected int     mErrorCode;
     protected int     mErrorSeverity;
 
+    private int responseErrorCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
     //-------------------------------------------------------------------------
     /**
@@ -262,6 +267,10 @@ public class JahiaException extends Exception
         if (getRootCause() != null) {
             getRootCause().printStackTrace();
         }
+    }
+
+    public int getResponseErrorCode() {
+        return responseErrorCode;
     }
 
 } // end JahiaException

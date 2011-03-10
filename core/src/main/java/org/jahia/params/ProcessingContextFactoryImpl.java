@@ -37,22 +37,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaPageNotFoundException;
-import org.jahia.exceptions.JahiaSiteNotFoundException;
 
 /**
- * Created by IntelliJ IDEA.
  * User: loom
  * Date: Mar 5, 2005
  * Time: 3:46:19 PM
- * 
  */
 public class ProcessingContextFactoryImpl implements ProcessingContextFactory {
 
     public ParamBean getContext(final HttpServletRequest request,
                                 final HttpServletResponse response,
                                 final ServletContext servletContext)
-            throws JahiaException, JahiaSiteNotFoundException, JahiaPageNotFoundException {
+            throws JahiaException {
         final long startTime = System.currentTimeMillis();
         // get the main http method...
         final String requestMethod = request.getMethod();

@@ -33,19 +33,15 @@
  package org.jahia.params;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaPageNotFoundException;
-import org.jahia.exceptions.JahiaSiteNotFoundException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by IntelliJ IDEA.
  * User: loom
  * Date: Mar 5, 2005
  * Time: 2:13:58 PM
- * 
  */
 public interface ProcessingContextFactory {
 
@@ -59,6 +55,6 @@ public interface ProcessingContextFactory {
     public ParamBean getContext(HttpServletRequest request,
                                 HttpServletResponse response,
                                 ServletContext servletContext)
-            throws JahiaException, JahiaSiteNotFoundException, JahiaPageNotFoundException;
+            throws JahiaException;
 
 }

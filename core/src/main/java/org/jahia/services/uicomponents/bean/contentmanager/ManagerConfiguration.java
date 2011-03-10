@@ -32,7 +32,6 @@
 
 package org.jahia.services.uicomponents.bean.contentmanager;
 
-import org.jahia.services.uicomponents.bean.editmode.Engine;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 
@@ -41,14 +40,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Content manager configuratino settings.
  * User: ktlili
  * Date: Apr 12, 2010
  * Time: 2:54:37 PM
- * 
  */
 public class ManagerConfiguration implements Serializable {
 
+    private static final long serialVersionUID = -8372296247741073414L;
+    
     private List<Column> treeColumns;
     private List<Column> tableColumns;
     private List<Repository> repositories;
@@ -81,7 +81,7 @@ public class ManagerConfiguration implements Serializable {
     private boolean searchInFile = true;
     private boolean searchInContent = true;    
 
-
+    private String requiredPermission;
 
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
@@ -264,6 +264,14 @@ public class ManagerConfiguration implements Serializable {
 
     public void setSearchInContent(boolean searchInContent) {
         this.searchInContent = searchInContent;
+    }
+
+    public String getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
     }
 
 }

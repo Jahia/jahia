@@ -113,7 +113,6 @@
             <adminEmailSettings jcr:primaryType="jnt:permission"/>
             <adminRootUser jcr:primaryType="jnt:permission"/>
             <adminCache jcr:primaryType="jnt:permission"/>
-            <adminServerPermissions jcr:primaryType="jnt:permission"/>
             <adminPasswordPolicy jcr:primaryType="jnt:permission"/>
             <adminIssueTracking jcr:primaryType="jnt:permission"/>
             <adminDocumentation jcr:primaryType="jnt:permission"/>
@@ -124,7 +123,6 @@
             <adminHtmlSettings jcr:primaryType="jnt:permission"/>
             <adminAnalytics jcr:primaryType="jnt:permission"/>
             <adminUrlmapping jcr:primaryType="jnt:permission"/>
-            <adminTemplates jcr:primaryType="jnt:permission"/>
         </admin>
 
         <studioMode jcr:primaryType="jnt:permission">
@@ -172,7 +170,9 @@
         <managers jcr:primaryType="jnt:permission">
             <categoryManager jcr:primaryType="jnt:permission"/>
             <contentManager jcr:primaryType="jnt:permission"/>
+            <editorialContentManager jcr:primaryType="jnt:permission"/>
             <fileManager jcr:primaryType="jnt:permission"/>
+            <portletDefinitionManager jcr:primaryType="jnt:permission"/>
             <portletManager jcr:primaryType="jnt:permission"/>
             <siteManager jcr:primaryType="jnt:permission"/>
             <tagManager jcr:primaryType="jnt:permission"/>

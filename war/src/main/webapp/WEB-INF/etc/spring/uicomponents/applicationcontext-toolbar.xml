@@ -734,19 +734,6 @@
     </bean>    
 
 
-    <bean id="Toolbar.Item.NewRole" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                <property name="nodeTypes" value="jnt:role"/>
-                <property name="parentTypes" value="jnt:roles"/>
-                <property name="useEngine" value="false"/>
-                <property name="useMainNode" value="true"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="label.new"/>
-        <property name="icon" value="newRole"/>
-    </bean>
-
     <bean id="Toolbar.Item.NewContentFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">

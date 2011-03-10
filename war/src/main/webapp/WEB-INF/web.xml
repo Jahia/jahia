@@ -129,6 +129,12 @@
         </init-param>
     </filter>
 
+    <filter>
+        <description>Protects access to the content manager and content picker by enforcing permission checks and validating parameters.</description>
+        <filter-name>ContentManagerAccessCheckFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -181,6 +187,15 @@
         <filter-name>ErrorEventFilter</filter-name>
         <url-pattern>/*</url-pattern>
         <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>ContentManagerAccessCheckFilter</filter-name>
+        <url-pattern>/engines/contentpicker.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ContentManagerAccessCheckFilter</filter-name>
+        <url-pattern>/engines/manager.jsp</url-pattern>
     </filter-mapping>
     
 <!-- Shindig filter mappings -->

@@ -44,6 +44,7 @@ import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
@@ -67,7 +68,7 @@ import java.util.*;
  * @author Khue ng
  */
 public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAfterInitializationService {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaSitesBaseService.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaSitesBaseService.class);
 
     protected static JahiaSitesBaseService instance = null;
 
@@ -109,7 +110,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
      *
      * @throws JahiaException
      */
-    protected JahiaSitesBaseService() throws JahiaException {
+    protected JahiaSitesBaseService() {
+        super();
     }
 
 
@@ -117,12 +119,14 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
      * Retrieves the unique instance of this singleton class.
      *
      * @return the unique instance of this class
-     * @throws JahiaException
      */
-    public static synchronized JahiaSitesBaseService getInstance()
-            throws JahiaException {
+    public static JahiaSitesBaseService getInstance() {
         if (instance == null) {
-            instance = new JahiaSitesBaseService();
+            synchronized (JahiaSitesBaseService.class) {
+                if (instance == null) {
+                    instance = new JahiaSitesBaseService();
+                }
+            }
         }
         return instance;
     }
@@ -271,7 +275,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     }
 
 
-    private synchronized void addToCache(JahiaSite site) {
+    private void addToCache(JahiaSite site) {
         siteCacheByID.put(site.getID(), site);
         if (site.getServerName() != null) {
             siteCacheByName.put(site.getServerName(), site);
@@ -349,7 +353,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         try {
             site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return getSite(JahiaSitesBaseService.this.getSiteByServerName(serverName, session));
+                    return getSite(getSiteByServerName(serverName, session));
                 }
             });
         } catch (RepositoryException e) {
@@ -376,9 +380,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     }
 
 
-    // --------------------------------------------------------------------------
-    // FH 10 May 2001 Cache storing improvments for performance issues.
-
     /**
      * return a site looking at it's name
      *
@@ -390,17 +391,12 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     }
 
 
-    // --------------------------------------------------------------------------
-
     /**
      * Add a new site only if there is no other site with same server name
      *
      * @return boolean false if there is another site using same server name
      */
 
-//    public synchronized boolean addSite (JahiaSite site)
-//            throws JahiaException {
-//
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
@@ -897,4 +893,29 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
     }
 
+    /**
+     * Returns the the {@link JahiaSite} bean for the specified UUID or <code>null</code> if the corresponding site cannot be found.
+     *
+     * @param jcrSiteIdentifier the UUID of the site noe
+     *
+     * @return JahiaSite the {@link JahiaSite} bean or <code>null</code> if the corresponding site cannot be found
+     */
+    public JahiaSite getSiteByIdenifier(final String jcrSiteIdentifier) throws JahiaException {
+        // TODO add cache by UUID
+        
+        JahiaSite site = null;
+        try {
+            site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
+                public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return getSite(session.getNodeByIdentifier(jcrSiteIdentifier));
+                }
+            });
+        } catch (ItemNotFoundException e) {
+            logger.warn("Cannot get site for UUID {}", jcrSiteIdentifier);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get site for UUID " + jcrSiteIdentifier, e);
+        }
+        
+        return site;
+    }
 }

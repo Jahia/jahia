@@ -673,7 +673,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getWebdavUrl() {
         try {
-            return provider.getWebdavPath() + "/" + session.getWorkspace().getName() + objectNode.getPath();
+            return Jahia.getContextPath() + provider.getWebdavPath() + "/" + session.getWorkspace().getName() + objectNode.getPath();
         } catch (RepositoryException e) {
             logger.error("Cannot get file path", e);
         }

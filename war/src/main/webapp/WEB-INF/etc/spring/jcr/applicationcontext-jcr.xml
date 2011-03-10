@@ -19,7 +19,7 @@
         <property name="key" value="default"/>
         <property name="repository" ref="jackrabbit"/>
         <property name="mountPoint" value="/"/>
-        <property name="webdavPath" value="${jahia.contextPath}/repository"/>
+        <property name="webdavPath" value="/repository"/>
         <property name="rmibind" value="jackrabbit"/>
         <property name="providesDynamicMountPoints" value="true"/>
     </bean>

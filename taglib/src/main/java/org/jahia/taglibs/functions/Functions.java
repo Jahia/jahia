@@ -221,20 +221,22 @@ public class Functions {
     public static java.lang.String displayLocaleNameWith(Locale localeToDisplay, Locale localeUsedForRendering) {
         return localeToDisplay.getDisplayName(localeUsedForRendering);
     }
-    
-	/**
-	 * Looks up the user by the specified user key (with provider prefix) or username.
-	 * 
-	 * @param user
-	 *            the key or the name of the user to perform lookup for
-	 * @return the user for the specified user key or name or <code>null</code> if the
-	 *         corresponding user cannot be found
-	 * @throws IllegalArgumentException in case the specified user key is <code>null</code>         
-	 */
-	public static JahiaUser lookupUser(String user) throws IllegalArgumentException {
-		if (user == null) {
-			throw new IllegalArgumentException("Specified user key is null");
-		}
-		return user.startsWith("{") ? ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(user) : ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-	}
+
+    /**
+     * Looks up the user by the specified user key (with provider prefix) or username.
+     * 
+     * @param user
+     *            the key or the name of the user to perform lookup for
+     * @return the user for the specified user key or name or <code>null</code> if the corresponding user cannot be found
+     * @throws IllegalArgumentException
+     *             in case the specified user key is <code>null</code>
+     */
+    public static JahiaUser lookupUser(String user) throws IllegalArgumentException {
+        if (user == null) {
+            throw new IllegalArgumentException("Specified user key is null");
+        }
+        return user.startsWith("{") ? ServicesRegistry.getInstance().getJahiaUserManagerService()
+                .lookupUserByKey(user) : ServicesRegistry.getInstance()
+                .getJahiaUserManagerService().lookupUser(user);
+    }
 }

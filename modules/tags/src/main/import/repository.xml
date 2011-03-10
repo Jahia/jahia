@@ -4,7 +4,7 @@
               xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
               xmlns:mix="http://www.jcp.org/jcr/mix/1.0" >
     <templateSets jcr:primaryType="jnt:templateSets">
-        <tags j:installedModules="tags" j:siteType="templatesSet" jcr:primaryType="jnt:virtualsite">
+        <tags j:installedModules="tags" j:siteType="module" jcr:primaryType="jnt:virtualsite">
             <home jcr:mixinTypes="jmix:sitemap"
                   j:displayInMenu="primary"
                   jcr:primaryType="jnt:page" changefreq="monthly"

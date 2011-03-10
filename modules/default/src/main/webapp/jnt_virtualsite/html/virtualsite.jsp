@@ -10,6 +10,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <c:if test="${currentNode.parent.name eq 'sites'}">
     <h1>Site: ${currentNode.name}</h1>
 
@@ -33,6 +34,20 @@
     <c:if test="${currentNode.properties['j:siteType'].string eq 'templatesSet'}">
         <h1>Templates Set : ${currentNode.name}</h1>
     </c:if>
+    <jcr:node path="${currentNode.path}/templates/files/template.jpg" var="thumbnail"/>
+
+    <p>
+        <c:if test="${not empty thumbnail.url}">
+
+            <img id ="themePreview" src="${thumbnail.url}"
+                 width="270" height="141" alt="">
+
+        </c:if>
+        <c:if test="${empty thumbnail.url}">
+            <img src="<c:url value='/engines/images/pictureNotAvailable.jpg' context='${renderContext.request.contextPath}'/>" width="200" height="200" alt="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>" title="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>"/>
+
+        </c:if>
+    </p>
 
     <p>Title: <jcr:nodeProperty node="${currentNode}" name="j:title"/></p>
 
@@ -41,13 +56,13 @@
     <jcr:jqom statement="select * from [jnt:template] as template where ISDESCENDANTNODE(template,'${currentNode.path}')" var="templates"/>
 
     <c:if test="${templates.nodes.size > 0}">
-    <p>Template:</p>
+        <p>Template:</p>
         <ul>
-        <c:forEach items="${templates.nodes}" var="template">
-            <li>
-                <a href="${url.base}${template.path}">${template.name}</a>
-            </li>
-        </c:forEach>
+            <c:forEach items="${templates.nodes}" var="template">
+                <li>
+                    <a href="${url.base}${template.path}">${template.name}</a>
+                </li>
+            </c:forEach>
         </ul>
     </c:if>
 
@@ -55,15 +70,15 @@
     <c:if test="${pages.nodes.size > 0}">
         <p>Prepackaged pages:</p>
         <ul>
-        <c:forEach items="${pages.nodes}" var="page">
-            <li>
-                <a href="${url.base}${page.path}">${page.name}</a>
-            </li>
-        </c:forEach>
+            <c:forEach items="${pages.nodes}" var="page">
+                <li>
+                    <a href="${url.base}${page.path}">${page.name}</a>
+                </li>
+            </c:forEach>
         </ul>
     </c:if>
-    
-    
+
+
     <%
         JCRNodeWrapper currentNode = (JCRNodeWrapper) pageContext.findAttribute("currentNode");
         JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(currentNode.getName());

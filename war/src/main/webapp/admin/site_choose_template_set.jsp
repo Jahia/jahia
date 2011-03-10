@@ -6,6 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%
     Locale selectedLocale = (Locale) request.getAttribute("selectedLocale");
     Locale currentLocale = Jahia.getThreadParamBean().getUILocale();
@@ -96,11 +97,12 @@
                                                     </td>
                                                 </c:if>
                                             </tr>
+                                            <jcr:node path="${selectedPackage.path}/templates/files/template.jpg" var="thumbnail"/>
                                             <script type="text/javascript">
                                                 function swapImage(imgId,imgToSwitch){
                                                     var image = document.getElementById(imgId);
                                                     var dropd = document.getElementById(imgToSwitch);
-                                                    var themePreview = '${selectedPackage.thumbnailUrls['thumbnail']}';
+                                                    var themePreview = '${thumbnail.url}';
                                                     var themePreviewBegin = themePreview.substr(0,themePreview.lastIndexOf("."));
                                                     var themePreviewEnd = themePreview.substr(themePreview.lastIndexOf("."),themePreview.length);
                                                     if (image != null) {
@@ -114,14 +116,14 @@
                                                 swapImage('themePreview','selectTmplSet');
                                             </script>
                                             <tr>
-                                                <c:if test="${not empty selectedPackage && not empty selectedPackage.thumbnailUrls['thumbnail']}">
+                                                <c:if test="${not empty selectedPackage && not empty thumbnail.url}">
                                                     <td>&nbsp;</td>
                                                     <td>
-                                                        <img id ="themePreview" src="<%=URL%>../modules/<c:out value="${selectedPackage.rootFolder}"/>/<c:out value="${selectedPackage.thumbnailUrls['thumbnail']}"/>"
+                                                        <img id ="themePreview" src="${thumbnail.url}"
                                                              width="270" height="141" alt="">
                                                     </td>
                                                 </c:if>
-                                                <c:if test="${empty selectedPackage || empty selectedPackage.thumbnailUrls['thumbnail']}">
+                                                <c:if test="${empty selectedPackage || empty thumbnail.url}">
                                                     <td>&nbsp;</td>
                                                     <td>
                                                         <img src="<%=URL%>/images/pictureNotAvailable.jpg" width="200" height="200" alt="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>" title="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>"/>

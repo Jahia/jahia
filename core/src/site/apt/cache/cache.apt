@@ -1,8 +1,9 @@
 Core Module - Caches
 
- Caches in Jahia 6.5 are coded as rendering filters. The default filter is the AggregateCacheFilter. This filter
+ Caches in Jahia 6.5 are coded as a rendering filter. The default filter is the AggregateCacheFilter. This filter
 caches each module separately and then aggregates all modules on rendering time to deliver the full page to the client.
-As an example imagine a "last news module" that display the latest 5 news of a site. The aggregate on rendering will ask
+
+ As an example imagine a "last news module" that display the latest 5 news of a site. The aggregate on rendering will ask
 for the module last news for the rendering of each discrete news, those news will be cached separately
 and the last news module will only contains its own html and references to the displayed news. When subsequent rendering
 is asked the last news modules searchs for the expected news in the cache. If they are found it aggregates the
@@ -46,4 +47,93 @@ content in the output, otherwise it ask for rendering only the missing part.
 cache.expiration = 0
 -------------------------------
 
-Expiration delays are expressed in seconds.
+ Expiration delays are expressed in seconds.
+
+* Automatic/Manual management of dependency for an element
+
+ Dependencies of an html element defined for which nodes updates this element should be flushed. The system try to handle
+ most of the dependencies by itself. Automatically the system detect implicit dependencies like parent/childs.
+ If an existing child is updated only is html fragment will be flushed from the cache. If we create or delete a new child
+ the system will flushed the parent html fragment also. So automatically the sytem handle all standard parent/child relations.
+
+ Now if you have some binded components in your page, the system handle it automatically by making those elements
+ dependent of the main resource for the key computing. So if in your templates you have defined a tempalte for a news object
+ that add a rateable module binded to this news then the cache will reflect that by caching the rendering of you rateable module
+ per main resource and adding a dependency to this same main resource. This way we avoid to display the same rateable module
+  for all news, but we have one per news.
+
+ You can hardcode some of those dependencies using the template properties file.
+
+ You can also define directly in your script file (jsps,etc.) the dependency you want to add to your fragment. As an example,
+ we can look at the comments that you can bind to any object in CJ. This comments components works in two parts.
+
+ First part is the display of the form to add a comment, second part is the display of the comments list. This form on
+ first submission will create a subfolder under the main resource called comments. So on the creation of the first comment
+ the display list will be correctly flushed as the system as automatically created a dependency between the fragment and the main resource.
+ By adding a child under the main resource (comments node) we will flushed all html fragments having a dependency to the main resource.
+
+ But for subsequent submission of new comments, we do not update anymore the ain resource but only the subnode comments,
+ so in our script we have to tell the system to flush this html fragment when the main resource subnode comments is updated
+
+---------------------------------------
+<jcr:node var="comments" path="${bindedComponent.path}/comments"/>
+<c:if test="${not empty comments}">
+    <template:addCacheDependency node="${comments}"/>
+    <template:module node="${comments}" />
+</c:if>
+---------------------------------------
+
+  Here what you have to keep in mind is that if your script load another node than the current node or the binded on then you
+  will have to add a dependency manually.
+
+  You can also define dependencies based on some regular expression, this is really useful for html fragment using search queries
+   to display content.
+
+-----------------------------------------
+<query:definition var="result"
+  statement="select * from [jnt:blogPost] as blogPost  where isdescendantnode(blogPost, ['${renderContext.mainResource.node.path}']) order by blogPost.[jcr:lastModified] desc" limit="20"/>
+<c:set target="${moduleMap}" property="editable" value="false" />
+<c:set target="${moduleMap}" property="listQuery" value="${result}" />
+<template:addCacheDependency flushOnPathMatchingRegexp="${renderContext.mainResource.node.path}/[^/]*/[^/]*"/>
+-----------------------------------------
+
+  This fragment will be flushed for any change on any nodes down to two sub level of the main resource.
+
+* Cache Key Generation
+
+ First request :
+
+ initialize users acls :
+
+  * query all user acls (jnt:ace nodes whith property principal containing something like 'u:*')
+
+  * for each found acls get the associated content path
+
+  * get the roles for this user on this content node
+
+  * build an acl key merging both the username and the role list
+
+  * append the path/aclkey into the map associated with this user
+
+ We obtain something like (username,[[/sites/mysite/home/blogs,username_r_owner[viewer|visitor],[path,aclkey]]) for a user having created its blog named /sites/mysite/home/blogs/usernameblog
+
+ Initialize groups acls :
+
+  * query all groups acls (jnt:ace nodes whith property principal containing something like 'g:*')
+
+  * for each found acls get the associated content path
+
+  * append the group to the set of groups found for this path
+
+ We obtain something like (/,[[users][groups)]) for the root of the repository
+
+ When checking the acl key for a user we first search in the map of paths associated for this user.
+ We loop on the path until the root level to see if we find something matching the current resource if yes then return it.
+
+ Otherwise we do the same on the groups map, we search first for the set of groups for the associated path moving up the path until root is found if needed.
+
+ When groups set is found we check the membership of those groups for this user, if member we concatenate the groupname with previously found ones.
+
+ Then we get the roles list for this user on the related path and we concatenate that with the groups list.
+
+ We store this acl key in the user cache for this path so we do not need to do that asecond time.

@@ -136,25 +136,28 @@
 }
 
 #bodywrapper button.button-placeholder {
-    padding: 0px !important;
-    border:none !important;
 	font-family:tahoma,arial,verdana,sans-serif;
 	font-size:9px;
 	font-weight:bold;
 	text-align:center;
 	text-transform:none;
-	background:#4CA20B  url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder.png) repeat-x scroll left bottom;
+	background:#fff  url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder.png) repeat-x scroll left top;
 	border:none;
-	color:#fff;
+	color:#333;
+	border:1px solid #666666 !important;
+	padding:1px !important;
 	margin-top:1px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: 0px 1px 2px #cccccc;
+	-moz-box-shadow: 0px 1px 2px #cccccc;
+	box-shadow: 0px 1px 2px #cccccc;
 }
 #bodywrapper button.button-placeholder:hover {
 	background:none;
-	background-color:#295d01;
-	border:1px solid #72b42d;
+	background-color:#333;
+	border:1px solid #000 !important;
 	color:#fff;
 }
 .selection-top-list {

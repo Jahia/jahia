@@ -64,6 +64,7 @@ public class ContentTabItem extends PropertiesTabItem {
     private transient TextField<String> nameText;
     private transient FieldSet nameFieldSet;
     private transient Label autoUpdateLabel;
+    private boolean nameEditable = true;
 
     public Field<String> getName() {
         return nameText;
@@ -75,6 +76,7 @@ public class ContentTabItem extends PropertiesTabItem {
         nameText = null;
         autoUpdateName = null;
         nameFieldSet = null;
+        nameEditable = true;
         if (dataType == null) {
             dataType = Arrays.asList(GWTJahiaItemDefinition.CONTENT);
         }
@@ -88,46 +90,52 @@ public class ContentTabItem extends PropertiesTabItem {
         if (engine.getMixin() != null) {
             final Field titleField = propertiesEditor.getFieldsMap().get("jcr:title");
             if (titleField != null) {
-                ((FieldSet)titleField.getParent()).insert(name, 0);
+                ((FieldSet) titleField.getParent()).insert(name, 0);
             } else {
                 propertiesEditor.insert(nameFieldSet, 0);
             }
+            if (nameEditable) {
+                if (engine.getDefaultLanguageCode().equals(this.language)) {
+                    boolean autoUpdate = true;
 
-            if (engine.getDefaultLanguageCode().equals(this.language)) {
-                boolean autoUpdate = true;
-
-                if (autoUpdateName != null) {
-                    Boolean realValue = autoUpdateName.getData("realValue");
-                    if (realValue == null) {
-                        if (engine.isExistingNode()) {
-                            if (titleField != null && titleField.getValue() != null) {
-                                String generated = generateNodeName((String) titleField.getValue());
-                                autoUpdate = engine.getNodeName().equals(generated);
-                            } else {
-                                autoUpdate = false;
+                    if (autoUpdateName != null) {
+                        Boolean realValue = autoUpdateName.getData("realValue");
+                        if (realValue == null) {
+                            if (engine.isExistingNode()) {
+                                if (titleField != null && titleField.getValue() != null) {
+                                    String generated = generateNodeName((String) titleField.getValue());
+                                    autoUpdate = engine.getNodeName().equals(generated);
+                                } else {
+                                    autoUpdate = false;
+                                }
                             }
+                        } else {
+                            autoUpdate = realValue;
                         }
+                        autoUpdateName.setValue(autoUpdate);
+                        autoUpdateName.setVisible(true);
+                        autoUpdateLabel.setText("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
                     } else {
-                        autoUpdate = realValue;
+                        autoUpdate = false;
+                        autoUpdateLabel.setText("");
                     }
-                    autoUpdateName.setValue(autoUpdate);
-                    autoUpdateName.setVisible(true);
-                    autoUpdateLabel.setText("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
+
+                    nameText.setEnabled(!autoUpdate);
+
                 } else {
-                    autoUpdate = false;
-                    autoUpdateLabel.setText("");
+                    if (autoUpdateName != null) {
+                        autoUpdateName.setVisible(false);
+                    }
+                    autoUpdateLabel.setText("&nbsp;" + Messages.get("label.switchToUpdateName", "Switch to default language to update name"));
+                    nameText.setEnabled(false);
                 }
-
-                nameText.setEnabled(!autoUpdate);
-
             } else {
                 if (autoUpdateName != null) {
                     autoUpdateName.setVisible(false);
                 }
-                autoUpdateLabel.setText("&nbsp;" + Messages.get("label.switchToUpdateName", "Switch to default language to update name"));
+                autoUpdateLabel.setText("");
                 nameText.setEnabled(false);
             }
-
             tab.layout();
         }
     }
@@ -238,6 +246,10 @@ public class ContentTabItem extends PropertiesTabItem {
      */
     public boolean isNodeNameFieldDisplayed() {
         return isNodeNameFieldDisplayed;
+    }
+
+    public void setNameEditable(boolean nameEditable) {
+        this.nameEditable = nameEditable;
     }
 
 

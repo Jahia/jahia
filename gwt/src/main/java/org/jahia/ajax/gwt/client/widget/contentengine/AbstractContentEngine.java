@@ -66,6 +66,8 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 
 import java.util.*;
@@ -223,6 +225,16 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 
                     if (engineTabItem instanceof PropertiesTabItem) {
                         isNewPropertiesEditor = (((PropertiesTabItem) engineTabItem).getPropertiesEditorByLang(getSelectedLanguage()) == null);
+                    }
+
+                    if (node != null && linker instanceof EditLinker && ((EditLinker) linker).getSelectedModule() instanceof AreaModule &&
+                            node.equals(((EditLinker) linker).getSelectedModule().getNode())) {
+                        // Editing an area, no rename allowed here
+                        for (TabItem tabItem : tabs.getItems()) {
+                            if (engineTabItem instanceof ContentTabItem) {
+                                ((ContentTabItem) engineTabItem).setNameEditable(false);
+                            }
+                        }
                     }
 
                     engineTabItem.init(this, (AsyncTabItem) currentTab, getSelectedLanguage());

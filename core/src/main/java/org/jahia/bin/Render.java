@@ -450,6 +450,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                     session.getNode(target);
                                 } catch (RepositoryException e) {
                                     JCRNodeWrapper node = session.getNode(s);
+                                    session.checkout(node);
                                     node.addNode(name,"jnt:folder");
                                     session.save();
                                 }

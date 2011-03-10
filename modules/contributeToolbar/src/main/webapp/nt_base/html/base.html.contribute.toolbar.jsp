@@ -165,13 +165,23 @@
                 key="label.goto.myTasks"/></a>
         <c:choose>
             <c:when test="${jcr:isNodeType(currentNode, 'jnt:folder') || jcr:isNodeType(currentNode, 'nt:file')}">
-                <a href="${url.context}/engines/manager.jsp?conf=filemanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+                <c:url var="mgrUrl" value="/engines/manager.jsp">
+                    <c:param name="conf" value="filemanager"/>
+                    <c:param name="site" value="${renderContext.site.identifier}"/>
+                    <c:param name="selectedPaths" value="${currentNode.path}"/>
+                </c:url>
+                <a href="${mgrUrl}" target="_blank"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                         key="label.filemanager"/></a>
             </c:when>
             <c:otherwise>
                 <c:set var="contentPath" value="${currentNode.resolveSite.path}/contents"/>
                 <c:if test="${fn:startsWith(currentNode.path,contentPath)}">
-                    <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+                <c:url var="mgrUrl" value="/engines/manager.jsp">
+                    <c:param name="conf" value="editorialcontentmanager"/>
+                    <c:param name="site" value="${renderContext.site.identifier}"/>
+                    <c:param name="selectedPaths" value="${currentNode.path}"/>
+                </c:url>
+                    <a href="${mgrUrl}" target="_blank"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                             key="label.contentmanager"/></a>
                 </c:if>
             </c:otherwise>

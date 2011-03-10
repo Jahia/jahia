@@ -9,13 +9,12 @@
 	background:#f2f2f2 url(img/forum-box.png) repeat-x top right;
 	border:1px solid #cccccc;
 	margin-left:0;
-	padding:5px;
 	font-weight:normal;
 	clear:both;
 	-webkit-border-radius:10px;
 	-moz-border-radius:10px;
 	border-radius:10px;
-    padding: 5px 10px;
+    padding: 10px;
 	overflow:hidden;
 	-webkit-box-shadow: 0px 0px 5px #cccccc;
 	-moz-box-shadow: 0px 0px 5px #cccccc;
@@ -291,14 +290,12 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 * forum-postprofile
 ******************************************************************************/
 #bodywrapper #forum-body .forum-postprofile {
-	border-left:1px solid #FFFFFF;
-
 	display:inline;
-	float:right;
+	float:left;
 	margin:5px 0 10px;
-	min-height:80px;
-	width:22%;
-	padding:5px
+	width:20%;
+	padding:5px;
+	text-align:center;
 }
 #bodywrapper #forum-body .forum-postprofile p {
 	margin:0;
@@ -312,9 +309,29 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 
 #bodywrapper #forum-body .forum-postbody {
 	clear:both;
-	float:left;
+	float:right;
 	padding:0;
 	width:76%;
+	border:1px solid #ccc;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	padding:5px;
+	margin-bottom:5px;
+	background-color:#FFF;
+	position:relative;
+}
+#bodywrapper #forum-body .forum-postbody .arrow-left {
+    background: url(img/arrow-left.png) no-repeat scroll left top transparent;
+    font-size: 2px;
+    height: 12px;
+    left: -22px;
+    position: absolute;
+    top: 10px;
+    width: 22px;
+}
+#bodywrapper #forum-body .forum-postbody .forum-author {
+	padding-top:0;
 }
 /******************************************************************************
 * forum-actions

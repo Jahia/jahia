@@ -62,6 +62,7 @@
 
 <template:option node="${currentNode}" template="hidden.plusone_minorone_form" nodetype="jmix:rating"/>
 <div class="forum-postbody">
+	<div class="arrow-left"></div>
     <ul class="forum-profile-icons">
         <%--<c:if test="${jcr:hasPermission(currentNode, 'reportPost')}">--%>
         <%--<li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="#"><span><fmt:message key='report.post'/></span></a></li>--%>

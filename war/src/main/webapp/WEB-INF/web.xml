@@ -58,7 +58,11 @@
     <filter>
     	<filter-name>UrlRewriteFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
 
     <filter>
         <description>Error logging and e-mail alert filter</description>

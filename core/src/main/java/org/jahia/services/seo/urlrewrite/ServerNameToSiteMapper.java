@@ -32,18 +32,16 @@
 
 package org.jahia.services.seo.urlrewrite;
 
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLGenerator;
-import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Exposes the site key for the current server name as a request attribute if the corresponding server name is mapped to a site.
@@ -53,7 +51,11 @@ import org.slf4j.LoggerFactory;
 public class ServerNameToSiteMapper {
 
     public static final String ATTR_NAME_SITE_KEY = "jahiaSiteKeyForCurrentServerName";
+    public static final String ATTR_NAME_VANITY_LANG = "vanityUrlTargetLang";
+    public static final String ATTR_NAME_VANITY_PATH = "vanityUrlTargetPath";
+    public static final String ATTR_NAME_DEFAULT_LANG = "siteDefaultLanguage";
     public static final String ATTR_NAME_SITE_KEY_MATCHES = "jahiaSiteKeyMatchesCurrentServerName";
+    public static final String ATTR_NAME_DEFAULT_LANG_MATCHES = "jahiaSiteKeyMatchesDefaultLanguage";
     public static final String ATTR_NAME_SITE_KEY_FOR_LINK = "jahiaSiteKeyForLink";
     private static final Logger logger = LoggerFactory.getLogger(ServerNameToSiteMapper.class);
 
@@ -112,6 +114,14 @@ public class ServerNameToSiteMapper {
         String currentSiteKey = getSiteKeyByServerName(request);
         boolean matches = currentSiteKey.equals(siteKey);
         request.setAttribute(ATTR_NAME_SITE_KEY_MATCHES, Boolean.valueOf(matches));
+
+        try {
+            JahiaSite siteByKey = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey);
+            request.setAttribute(ATTR_NAME_DEFAULT_LANG_MATCHES, Boolean.valueOf(siteByKey.getDefaultLanguage().equals(language)));
+        } catch (JahiaException e) {
+            logger.error("Error resolving site by key '" + siteKey + "'", e);
+        }
+
         if (!matches) {
             String serverName = lookupSiteServerNameByKey(siteKey);
             if (serverName != null) {
@@ -127,10 +137,5 @@ public class ServerNameToSiteMapper {
                     "canResolveSiteByServerName({}, {}, {}) | currentSiteKey={} targetSiteKey={} matches {}",
                     new Object[] { ctx, language, siteKey, currentSiteKey, siteKey, matches });
         }
-    }
-
-    public void map(HttpServletRequest request) {
-        String targetSiteKey = getSiteKeyByServerName(request);
-        request.setAttribute(ATTR_NAME_SITE_KEY, targetSiteKey);
     }
 }

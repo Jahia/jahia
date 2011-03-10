@@ -42,6 +42,7 @@
         <property name="enabled" value="true"/>
         <property name="outboundRulesEnabled" value="true"/>
         <property name="urlRewriteService" ref="UrlRewriteService"/>
+        <property name="vanityUrlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
     </bean>
     
 </beans>

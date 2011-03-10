@@ -40,12 +40,9 @@ package org.jahia.services.sites;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.sites.JahiaSite;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 import java.util.Locale;
 import java.io.File;
 import java.io.IOException;
@@ -141,7 +138,6 @@ public abstract class JahiaSitesService extends JahiaService {
             throws JahiaException;
 
 
-    //-------------------------------------------------------------------------
     /**
      * Return the amount of sites in the system.
      *
@@ -150,11 +146,8 @@ public abstract class JahiaSitesService extends JahiaService {
     public abstract int getNbSites ()
             throws JahiaException;
 
-    //--------------------------------------------------------------------------
-
     public abstract JahiaSite getDefaultSite();
 
     public abstract void setDefaultSite(JahiaSite site);
 
 }
-

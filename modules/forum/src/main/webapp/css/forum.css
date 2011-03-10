@@ -1,4 +1,24 @@
-
+/******************************************************************************
+* Profile image
+******************************************************************************/
+#bodywrapper #forum-body .forum-postprofile div.image {
+	text-align:center;
+	display:block;
+	margin-bottom:0.5em;
+}
+#bodywrapper #forum-body .forum-postprofile div.itemImageLeft {
+    float: none;
+	text-align:center;
+    background-color: #F4F4F4;
+    border: 1px solid #CCCCCC;
+    margin-bottom: 10px;
+    padding: 1px;
+	width:80px;
+	margin:0 auto;
+}
+#bodywrapper #forum-body .forum-postprofile .itemImage img {
+    display: inline;
+}
 /******************************************************************************
 * box
 ******************************************************************************/

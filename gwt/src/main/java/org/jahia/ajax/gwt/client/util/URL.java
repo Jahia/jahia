@@ -191,16 +191,16 @@ public class URL {
             value = value.replace("$nodepathnoescape", selectedNode.getPath());
         }
         if (selectedNode != null && value.contains("$nodepath")) {
-            value = value.replace("$nodepath", com.google.gwt.http.client.URL.encodeComponent(selectedNode.getPath()));
+            value = value.replace("$nodepath", com.google.gwt.http.client.URL.encodeQueryString(selectedNode.getPath()));
         }
         if (value.contains("$workspace")) {
             value = value.replace("$workspace", JahiaGWTParameters.getWorkspace());
         }
         if (value.contains("$location-path")) {
-            value = value.replace("$location-path", com.google.gwt.http.client.URL.encodeComponent(Window.Location.getPath()));
+            value = value.replace("$location-path", com.google.gwt.http.client.URL.encodeQueryString(Window.Location.getPath()));
         }
         if (value.contains("$location-hash")) {
-            value = value.replace("$location-hash", com.google.gwt.http.client.URL.encodeComponent(Window.Location.getHash()));
+            value = value.replace("$location-hash", com.google.gwt.http.client.URL.encodeQueryString(Window.Location.getHash()));
         }
         return value;
     }

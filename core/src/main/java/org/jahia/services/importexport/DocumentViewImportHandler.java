@@ -258,6 +258,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                                 uuid = null;
                         }
                     }
+                    nodes.peek().checkout();
                     child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);
 
                     addMixins(child, atts);

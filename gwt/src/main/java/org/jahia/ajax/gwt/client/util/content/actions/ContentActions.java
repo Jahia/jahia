@@ -260,12 +260,12 @@ public class ContentActions {
      * @param nodeTypes
      */
     public static void showContentWizard(final Linker linker, final String nodeTypes) {
-        showContentWizard(linker, nodeTypes, linker.getSelectionContext().getSingleSelection());
+        showContentWizard(linker, nodeTypes, linker.getSelectionContext().getSingleSelection(),false);
     }
 
-    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent) {
+    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, final boolean displayStudioElement) {
         if (parent != null && !parent.isFile()) {
-            JahiaContentDefinitionService.App.getInstance().getSubNodetypes(nodeTypes, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+            JahiaContentDefinitionService.App.getInstance().getSubNodetypes(nodeTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                         public void onApplicationFailure(Throwable caught) {
                             MessageBox.alert("Alert",
                                     "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),

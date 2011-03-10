@@ -190,7 +190,7 @@ public class AreaModule extends SimpleModule {
                             createNode(new BaseAsyncCallback<GWTJahiaNode>() {
                                 public void onSuccess(GWTJahiaNode result) {
                                     if (node != null && PermissionsUtils.isPermitted("jcr:addChildNodes", node) && !node.isLocked()) {
-                                        ContentActions.showContentWizard(mainModule.getEditLinker(), s, node);
+                                        ContentActions.showContentWizard(mainModule.getEditLinker(), s, node,mainModule.getConfig().getName().equals("studiomode"));
                                     }
                                 }
                             });

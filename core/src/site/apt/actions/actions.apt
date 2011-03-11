@@ -1,0 +1,198 @@
+Jahia Actions Framework
+
+ Jahia provides several mechanisms to render your contents, it also provides some to allow end-users or other systems
+to interact with your content through action on said content.
+
+ Actions are activated on an HTTP POST request, to comply with the REST methodology. Provided actions allows a lot of interactions already,
+like adding a comment on any node, starting workflows, sending form submission by mail, register new user, etc.
+
+ Actions are simple class extending the <<<<org.jahia.bin.Action>>> abstract class, the super class is responaibl of handling
+permissions and other restrictions. You have to override the method doExecute, to provide your own Action.
+
+----------------------------
+public abstract ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
+                                       JCRSessionWrapper session, Map<String, List<String>> parameters,
+                                       URLResolver urlResolver)
+                                       throws Exception;
+----------------------------
+
+ You can do anything you want in an action, but keep in mind that the shortest time your action take to execute the better end-user
+experience.
+
+ So as said previously Actions are called through HTPP POST methods, but as a result of an action you can let the user stay on
+its current web page, another web page or send back results as a JSON serialized object. This allows to easily interact with
+framework like JQuery
+
+Example based on the AddComment Action
+
+--------------------------------------
+package org.jahia.modules.defaultmodule.actions;
+|
+|
+public class AddComment extends Action {
+
+    @Override
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
+                                  JCRSessionWrapper session, Map<String, List<String>> parameters,
+                                  URLResolver urlResolver)
+                                  throws Exception {
+        JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
+        JCRNodeWrapper node = resource.getNode();
+        if(!node.isNodeType("jmix:comments")) {
+            node.checkout();
+            node.addMixin("jmix:comments");
+            jcrSessionWrapper.save();
+        }
+        String path = node.getPath() + "/comments";
+        JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper.getNode(path), "jnt:post","");
+        jcrSessionWrapper.save();
+        return new ActionResult(HttpServletResponse.SC_OK, newNode.getPath(), Render.serializeNodeToJSON(newNode));
+    }
+}
+--------------------------------------
+
+ This action is defined in the default module.
+
+Calling an Action from your form
+
+ To call an action this as simple as on node calling node.actionName.do, example for the AddComment Action:
+
+-----------------------------------
+<template:addResources type="javascript" resources="jquery.js,jquery.validate.js"/>
+<template:addResources type="inlinejavascript">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#newCommentForm").validate({
+                rules: {
+                    'jcr:title': "required",
+                    <c:if test="${not renderContext.loggedIn}">
+                    pseudo: "required",
+                    captcha: "required"
+                    </c:if>
+                }
+            });
+        });
+    </script>
+</template:addResources>
+
+<template:tokenizedForm>
+    <form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
+
+        <input type="hidden" name="nodeType" value="jnt:post"/>
+        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
+
+        <div id="formGenericComment">
+
+            <fieldset>
+                <c:if test="${not renderContext.loggedIn}">
+                    <p class="field">
+                        <label for="comment_pseudo"><fmt:message key="comment.pseudo"/></label>
+                        <input value="${sessionScope.formDatas['pseudo'][0]}"
+                               type="text" size="35" name="pseudo" id="comment_pseudo"
+                               tabindex="1"/>
+                    </p>
+                </c:if>
+                    <p class="field">
+                        <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
+                        <input class="" value="${sessionScope.formDatas['jcr:title'][0]}"
+                               type="text" size="35" id="comment-title" name="jcr:title"
+                               tabindex="1"/>
+                    </p>
+
+                    <p class="field">
+                        <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message
+                                key="comment.body"/></label>
+                        <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
+                                  name="content"
+                                  tabindex="2"><c:if
+                                test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if></textarea>
+                    </p>
+
+                <c:if test="${not renderContext.loggedIn}">
+                    <p class="field">
+                        <label class="left" for="captcha"><template:captcha/></label>
+                            <input type="text" id="captcha" name="captcha"/>
+                    </p>
+                </c:if>
+
+                <p>
+                    <input type="reset" value="<fmt:message key='label.reset'/>" class="button"
+                           tabindex="3"  ${disabled}/>
+
+                    <input type="submit" value="<fmt:message key='label.submit'/>" class="button"
+                           tabindex="4"  ${disabled}/>
+                </p>
+            </fieldset>
+        </div>
+    </form>
+</template:tokenizedForm>
+-----------------------------------
+
+ Look at the {{{./validation.html} form validation}} page to see how to manage errors and captcha.
+
+ Here we see that for calling the Action we use simply the Action name in the url of the form action.
+
+-------------------------------------
+<form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
+-------------------------------------
+
+Form parameters and file uploading
+
+ In an Action you will received your form parameters inside the parameters map. Your form submission, will pass through several
+ components before reaching your Action, those components are responsible for managing the security (captcha validation,
+ permissions check) and the uploading of files. If your action needs to manage files, the file will be uploaded in temporary folder,
+ so you will only have to choose where to save it in the JCR or elsewhere.
+
+ Example of getting an uploaded fiel in your action and handling it in there :
+
+--------------------------------
+final FileUpload fu = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
+DiskFileItem inputFile = fu.getFileItems().get("fileField");
+--------------------------------
+
+ This example is from the DocumentConverterAction class.
+
+Chaining Actions in one request
+
+ Jahia provides a ChainAction class that allows to chain actions called.
+
+Interacting with other Jahia systems
+
+ Your action can also interact or be called by other Jahia systems like rules or GWT UI, for this your action must
+ also implements the <<<<BackgroundAction>>>> interface:
+
+----------------------
+public class SendAsNewsletterAction extends Action implements BackgroundAction {
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    public void executeBackgroundAction(JCRNodeWrapper node) {
+        // do local post on node.getPath/sendAsNewsletter.do
+    	try {
+            Map<String,String> headers = new HashMap<String,String>();
+            headers.put("jahiatoken",TokenAuthValveImpl.addToken(node.getSession().getUser()));
+			String out = httpClientService.executePost("http://localhost:8080"+
+			        Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
+			                + node.getResolveSite().getDefaultLanguage() + node.getPath()
+			                + ".sendAsNewsletter.do", null, headers);
+			logger.info(out);
+        } catch (Exception e) {
+        	logger.error(e.getMessage(), e);
+        }
+    }
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+}
+----------------------
+
+ Example of usage in rules:
+
+-------------------------
+rule "Schedule as a newsletter"
+    when
+		A property j:scheduled has been set on a node
+			- the node has the type jnt:newsletterIssue
+    then
+        Log "Scheduling newsletter " + node.getPath() + " at " + propertyValueAsString
+        Execute the action "sendAsNewsletter" at j:scheduled on the node
+end
+--------------------------

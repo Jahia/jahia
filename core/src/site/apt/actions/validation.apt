@@ -1,0 +1,203 @@
+Jahia Actions Framework - Validation
+
+ Form validation works in two phases, first you will have to do some javascript validation on client side.
+ Then Jahia will validate the captcha for you if present, and then your Action could do any validation needed.
+
+ Here the code of a typical form, from the add comment example
+
+-------------------------------
+<template:addResources type="javascript" resources="jquery.js,jquery.validate.js"/>
+<template:addResources type="inlinejavascript">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#newCommentForm").validate({
+                rules: {
+                    'jcr:title': "required",
+                    <c:if test="${not renderContext.loggedIn}">
+                    pseudo: "required",
+                    captcha: "required"
+                    </c:if>
+                }
+            });
+        });
+    </script>
+</template:addResources>
+
+<template:tokenizedForm>
+    <form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
+        <input type="hidden" name="nodeType" value="jnt:post"/>
+        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
+        <div id="formGenericComment">
+            <fieldset>
+                <c:if test="${not renderContext.loggedIn}">
+                    <p class="field">
+                        <label for="comment_pseudo"><fmt:message key="comment.pseudo"/></label>
+                        <input value="${sessionScope.formDatas['pseudo'][0]}"
+                               type="text" size="35" name="pseudo" id="comment_pseudo"
+                               tabindex="1"/>
+                    </p>
+                </c:if>
+                    <p class="field">
+                        <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
+                        <input class="" value="${sessionScope.formDatas['jcr:title'][0]}"
+                               type="text" size="35" id="comment-title" name="jcr:title"
+                               tabindex="1"/>
+                    </p>
+                    <p class="field">
+                        <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message
+                                key="comment.body"/></label>
+                        <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
+                                  name="content"
+                                  tabindex="2"><c:if
+                                test="${not empty sessionScope.formDatas['content']}">${fn:escapeXml(sessionScope.formDatas['content'][0])}</c:if></textarea>
+                    </p>
+                <c:if test="${not renderContext.loggedIn}">
+                    <p class="field">
+                        <label class="left" for="captcha"><template:captcha/></label>
+                            <input type="text" id="captcha" name="captcha"/>
+                    </p>
+                </c:if>
+                <p>
+                    <input type="reset" value="<fmt:message key='label.reset'/>" class="button"
+                           tabindex="3"  ${disabled}/>
+
+                    <input type="submit" value="<fmt:message key='label.submit'/>" class="button"
+                           tabindex="4"  ${disabled}/>
+                </p>
+            </fieldset>
+        </div>
+    </form>
+</template:tokenizedForm>
+-------------------------------
+
+ First of all you design your form classically
+
+--------------------------------
+    <form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
+        <div id="formGenericComment">
+            <fieldset>
+                <c:if test="${not renderContext.loggedIn}">
+                    <p class="field">
+                        <label for="comment_pseudo"><fmt:message key="comment.pseudo"/></label>
+                        <input value=""
+                               type="text" size="35" name="pseudo" id="comment_pseudo"
+                               tabindex="1"/>
+                    </p>
+                </c:if>
+                    <p class="field">
+                        <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
+                        <input class="" value=""
+                               type="text" size="35" id="comment-title" name="jcr:title"
+                               tabindex="1"/>
+                    </p>
+                    <p class="field">
+                        <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message
+                                key="comment.body"/></label>
+                        <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
+                                  name="content"
+                                  tabindex="2"></textarea>
+                    </p>
+                <p>
+                    <input type="reset" value="<fmt:message key='label.reset'/>" class="button"
+                           tabindex="3"/>
+
+                    <input type="submit" value="<fmt:message key='label.submit'/>" class="button"
+                           tabindex="4"/>
+                </p>
+            </fieldset>
+        </div>
+    </form>
+--------------------------------
+
+ Then you add specific hidden fields for jahia :
+
+---------------------------------
+<input type="hidden" name="nodeType" value="jnt:post"/>
+<input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+<input type="hidden" name="newNodeOutputFormat" value="html"/>
+<input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
+---------------------------------
+
+ Here the AddComment action expects some specific control parameters :
+
+  * <<<<nodeType>>>> defines the type of node this form will create on submission
+
+  * <<<<redirectTo>>>> defines to which node we want to redirect (you can also specify the template here), here
+we redirect to the current page
+
+  * <<<<newNodeOutputFormat>>>> specify in which format the results will be displayed here <<<<html>>>> (can be ommited as it is the default value)
+
+  * <<<<resourceID>>>> specify the identifier of the currently displayed node to allow the cache system to correctly redisplay the form in case of errors.
+
+Allowing content creation in live workspace by authenticated or non authenticated users
+
+ If your form will be used in live mode to allow your users to create content, then you must use the token system of
+ Jahia for your forms and enforce the usage of captcha for at least your non authenticated users.
+
+ First you will need to tokenize your form for taht simply wrap t=your form inside the <<<<template:tokenizedForm>>>> tag
+
+------------------------------
+<template:tokenizedForm>
+    <form>
+    ~~~~~~form code~~~~~~
+    </form>
+</template:tokenizedForm>
+------------------------------
+
+ If you look at your html source code in your browser, you will see that the tokenizedForm tag as added an hidden input
+field in your form containing a uuid that identifies this instance of the form. The uuid is generated by a macro so that
+the uuid is regenerated each time the form is displayed even if delivered from the cache system.
+
+ You also need to add a captcha for at least the non authenticated users to avoid spamming of fake form submission.
+
+ To add a captcha, you need to have an input field named <<<<captcha>>>> and display the captcha itself using the <<<<template:captcha>>>> tag.
+
+-----------------------------
+<c:if test="${not renderContext.loggedIn}">
+    <p class="field">
+        <label class="left" for="captcha"><template:captcha/></label>
+        <input type="text" id="captcha" name="captcha"/>
+    </p>
+</c:if>
+-----------------------------
+
+Validation of datas before and after submission
+
+ To validate your form on the client side we advise you to use the {{{http://bassistance.de/jquery-plugins/jquery-plugin-validation/}JQuery Validate plugin}}.
+ Here an example of configuring it for the previous form:
+
+------------------------------
+<template:addResources type="javascript" resources="jquery.js,jquery.validate.js"/>
+<template:addResources type="inlinejavascript">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#newCommentForm").validate({
+                rules: {
+                    'jcr:title': "required",
+                    <c:if test="${not renderContext.loggedIn}">
+                    pseudo: "required",
+                    captcha: "required"
+                    </c:if>
+                }
+            });
+        });
+    </script>
+</template:addResources>
+------------------------------
+
+ To be noticed that this plugin refer to the field by their <<<<name>>>> attribute and not their <<<<id>>>> attribute.
+
+ On token or captcha error Jahia will send you back the submitted datas so you can refill the form with previously submitted datas,
+so taht your users do not retype everything.
+
+ All submitted datas are store under map in the session of the user. Here an example on a simple filed to display the previously submitted data if needed.
+
+--------------------------------
+<input class="" value="${sessionScope.formDatas['jcr:title'][0]}"
+       type="text" size="35" id="comment-title" name="jcr:title"
+       tabindex="1"/>
+--------------------------------
+
+ We see here the formDatas map under the session of the user <<<<${sessionScope.formDatas['jcr:title'][0]}>>>>

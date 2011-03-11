@@ -20,6 +20,9 @@
             <item name="Publication" href="publication/publication.html"/>
             <item name="History" href="history/history.html"/>
 	        <item name="Roles" href="roles/index.html"/>
+            <item name="Actions" href="actions/actions.html">
+                <item name="Validation" href="actions/validation.html"/>
+            </item>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

@@ -56,7 +56,6 @@ import org.jahia.services.render.*;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.joda.time.DateTime;

@@ -59,6 +59,10 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>cedarsoft-thirdparty</id>
+            <url>http://maven.cedarsoft.com/content/repositories/thirdparty/</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -396,6 +400,12 @@
             <groupId>imagej</groupId>
             <artifactId>ij</artifactId>
             <version>1.35</version>
+        </dependency>
+        <dependency>
+            <groupId>im4java</groupId>
+            <artifactId>im4java</artifactId>
+            <version>1.1.0</version>
+            <classifier>1.5</classifier>
         </dependency>
         <dependency>
             <groupId>jaxen</groupId>

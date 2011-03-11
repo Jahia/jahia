@@ -32,25 +32,17 @@
 
 package org.jahia.services.content.rules;
 
-import ij.ImagePlus;
-import ij.io.Opener;
-import ij.process.ImageProcessor;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.drools.ObjectFilter;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.tools.imageprocess.ImageProcess;
+import org.jahia.services.image.Image;
+import org.jahia.services.image.JahiaImageService;
 
-import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -62,6 +54,12 @@ import java.util.Iterator;
  * Time: 5:25:31 PM
  */
 public class ImageService {
+    private JahiaImageService imageService;
+
+    public void setImageService(JahiaImageService imageService) {
+        this.imageService = imageService;
+    }
+
     private static ImageService instance;
 
     public static synchronized ImageService getInstance() {
@@ -72,67 +70,25 @@ public class ImageService {
     }
 
 
-    private ImageWrapper getImageWrapper(final AddedNodeFact imageNode, KnowledgeHelper drools) throws Exception {
+    private Image getImageWrapper(final AddedNodeFact imageNode, KnowledgeHelper drools) throws Exception {
         Iterator<?> it = drools.getWorkingMemory().iterateObjects(new ObjectFilter() {
             public boolean accept(Object o) {
-                if (o instanceof ImageWrapper) {
-                    return (((ImageWrapper) o).getParentNode() == imageNode);
+                if (o instanceof Image) {
+                    try {
+                        return (((Image) o).getPath().equals(imageNode.getPath()));
+                    } catch (RepositoryException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return false;
             }
         });
         if (it.hasNext()) {
-            return (ImageWrapper) it.next();
+            return (Image) it.next();
         }
-        ImageWrapper iw;
-        File tmp = null;
-        FileOutputStream os = null;
-        try {
-            tmp = File.createTempFile("image", null);
-            Node node = imageNode.getNode();
-            Node contentNode = node.getNode(Constants.JCR_CONTENT);
-            os = new FileOutputStream(tmp);
-            InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
-            try {
-                IOUtils.copy(is, os);
-            } finally {
-                IOUtils.closeQuietly(os);
-                IOUtils.closeQuietly(is);
-            }
-            Opener op = new Opener();
-            ImagePlus ip = op.openImage(tmp.getPath());
-            iw =  new ImageWrapper(imageNode, ip, op.getFileType(tmp.getPath()));
-            drools.insertLogical(iw);
-        } finally {
-            IOUtils.closeQuietly(os);
-            FileUtils.deleteQuietly(tmp);
-        }
+        Image iw = imageService.getImage(imageNode.getNode());
+        drools.insertLogical(iw);
         return iw;
-    }
-
-    /**
-     * Creates a JPEG thumbnail from inputFile and saves it to disk in
-     * outputFile. scaleWidth is the width to scale the image to
-     */
-    private boolean createThumb(ImageWrapper iw, File outputFile, int size, boolean square) throws IOException {
-        ImagePlus ip = iw.getImagePlus();
-        // Load the input image.
-        if (ip == null) {
-            return false;
-        }
-        ip = new ImagePlus(ip.getTitle(), ip.getImageStack());
-        ImageProcessor processor = ip.getProcessor();
-        if(square) {
-            processor = processor.resize(size, size);
-        } else if (ip.getWidth() > ip.getHeight()) {
-            processor = processor.resize(size, ip.getHeight()*size/ip.getWidth());
-        } else {
-            processor = processor.resize(ip.getWidth()*size/ip.getHeight(), size);
-        }
-        ip.setProcessor(null,processor);
-        int type = iw.getImageType();
-
-        return ImageProcess.save(type, ip,outputFile);
     }
 
     public void addThumbnail(AddedNodeFact imageNode, String name, int size, KnowledgeHelper drools) throws Exception {
@@ -173,41 +129,47 @@ public class ImageService {
         final JCRPropertyWrapper property = propertyWrapper.getProperty();
         final JCRSessionWrapper session = property.getSession();
         JCRNodeWrapper node = session.getNodeByIdentifier(property.getString());
-        addThumbnail(new AddedNodeFact(node),name, size,drools);
+        addThumbnail(new AddedNodeFact(node),name, size, true, drools);
     }
 
-    private File getThumbFile(AddedNodeFact imageNode, int size,boolean square,KnowledgeHelper drools) throws Exception {
+    protected File getThumbFile(AddedNodeFact imageNode, int size,boolean square,KnowledgeHelper drools) throws Exception {
         String savePath = org.jahia.settings.SettingsBean.getInstance().getTmpContentDiskPath();
         File Ftemp = new File(savePath);
         if (!Ftemp.exists()) Ftemp.mkdirs();
         final File f = File.createTempFile("thumb","jpg", Ftemp);
 
-        ImageWrapper iw = getImageWrapper(imageNode, drools);
+        Image iw = getImageWrapper(imageNode, drools);
 
-        createThumb(iw, f, size,square);
+        imageService.createThumb(iw, f, size, square);
         f.deleteOnExit();
         return f;
     }
 
     public void setHeight(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
         if (!imageNode.getNode().hasProperty(propertyName)) {
-            ImageWrapper iw = getImageWrapper(imageNode, drools);
-            ImagePlus ip = iw.getImagePlus();
-            if (ip == null) {
+            Image iw = getImageWrapper(imageNode, drools);
+            if (iw == null) {
                 return;
             }
-            drools.insert(new ChangedPropertyFact(imageNode, propertyName, ip.getHeight(), drools));
+            int height = imageService.getHeight(iw);
+            if (height == -1 ) {
+                return;
+            }
+            drools.insert(new ChangedPropertyFact(imageNode, propertyName, height, drools));
         }
     }
 
     public void setWidth(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
         if (!imageNode.getNode().hasProperty(propertyName)) {
-            ImageWrapper iw = getImageWrapper(imageNode, drools);
-            ImagePlus ip = iw.getImagePlus();
-            if (ip == null) {
+            Image iw = getImageWrapper(imageNode, drools);
+            if (iw == null) {
                 return;
             }
-            drools.insert(new ChangedPropertyFact(imageNode, propertyName, ip.getWidth(), drools));
+            int width = imageService.getWidth(iw);
+            if (width == -1 ) {
+                return;
+            }
+            drools.insert(new ChangedPropertyFact(imageNode, propertyName, width, drools));
         }
     }
 

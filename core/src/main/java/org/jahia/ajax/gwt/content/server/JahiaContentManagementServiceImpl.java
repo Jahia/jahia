@@ -133,6 +133,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private PropertiesHelper properties;
     private LanguageHelper languages;
     private TemplateHelper template;
+    private ImageHelper image;
     private ZipHelper zip;
     private ACLHelper acl;
     private DiffHelper diff;
@@ -199,6 +200,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setTemplate(TemplateHelper template) {
         this.template = template;
+    }
+
+    public void setImage(ImageHelper image) {
+        this.image = image;
     }
 
     public void setVersioning(VersioningHelper versioning) {
@@ -860,131 +865,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace)
             throws GWTJahiaServiceException {
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            JCRNodeWrapper node = session.getNode(path);
-            if (contentManager
-                    .checkExistence(node.getPath().replace(node.getName(), target), retrieveCurrentSession()) &&
-                    !forceReplace) {
-                throw new ExistingFileException("The file " + target + " already exists.");
-            }
-
-            File tmp = JCRContentUtils.downloadFileContent(node, File.createTempFile("image", null));
-            try {
-                Opener op = new Opener();
-                ImagePlus ip = op.openImage(tmp.getPath());
-                ImageProcessor processor = ip.getProcessor();
-
-                processor.setRoi(left, top, width, height);
-                processor = processor.crop();
-                ip.setProcessor(null, processor);
-
-                File f = File.createTempFile("image", null);
-                ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-                FileInputStream fis = new FileInputStream(f);
-                try {
-                    if (node.getParent().isVersioned()) {
-                        session.getWorkspace().getVersionManager().checkout(node.getParent().getPath());
-                    }
-                    ((JCRNodeWrapper) node.getParent()).uploadFile(target, fis, node.getFileContent().getContentType());
-                    session.save();
-                } finally {
-                    IOUtils.closeQuietly(fis);
-                    f.delete();
-                }
-            } finally {
-                tmp.delete();
-            }
-        } catch (ExistingFileException e) {
-            throw e;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
+        JCRSessionWrapper session = retrieveCurrentSession();
+        image.crop(path, target, top, left, width, height, forceReplace, session);
     }
 
     public void resizeImage(String path, String target, int width, int height, boolean forceReplace)
             throws GWTJahiaServiceException {
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            JCRNodeWrapper node = session.getNode(path);
-            if (contentManager
-                    .checkExistence(node.getPath().replace(node.getName(), target), retrieveCurrentSession()) &&
-                    !forceReplace) {
-                throw new ExistingFileException("The file " + target + " already exists.");
-            }
-
-            File tmp = JCRContentUtils.downloadFileContent(node, File.createTempFile("image", null));
-            try {
-                Opener op = new Opener();
-                ImagePlus ip = op.openImage(tmp.getPath());
-                ImageProcessor processor = ip.getProcessor();
-                processor = processor.resize(width, height);
-                ip.setProcessor(null, processor);
-
-                File f = File.createTempFile("image", null);
-                ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-                FileInputStream fis = new FileInputStream(f);
-                try {
-                    ((JCRNodeWrapper) node.getParent()).uploadFile(target, fis, node.getFileContent().getContentType());
-                    session.save();
-                } finally {
-                    IOUtils.closeQuietly(fis);
-                    f.delete();
-                }
-            } finally {
-                tmp.delete();
-            }
-        } catch (ExistingFileException e) {
-            throw e;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
+        JCRSessionWrapper session = retrieveCurrentSession();
+        image.resizeImage(path, target, width, height, forceReplace, session);
     }
 
     public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace)
             throws GWTJahiaServiceException {
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            JCRNodeWrapper node = session.getNode(path);
-            if (contentManager
-                    .checkExistence(node.getPath().replace(node.getName(), target), retrieveCurrentSession()) &&
-                    !forceReplace) {
-                throw new ExistingFileException("The file " + target + " already exists.");
-            }
-
-            File tmp = JCRContentUtils.downloadFileContent(node, File.createTempFile("image", null));
-            try {
-                Opener op = new Opener();
-                ImagePlus ip = op.openImage(tmp.getPath());
-                ImageProcessor processor = ip.getProcessor();
-                if (clockwise) {
-                    processor = processor.rotateRight();
-                } else {
-                    processor = processor.rotateLeft();
-                }
-                ip.setProcessor(null, processor);
-
-                File f = File.createTempFile("image", null);
-                ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-                FileInputStream fis = new FileInputStream(f);
-                try {
-                    ((JCRNodeWrapper) node.getParent()).uploadFile(target, fis, node.getFileContent().getContentType());
-                    session.save();
-                } finally {
-                    IOUtils.closeQuietly(fis);
-                    f.delete();
-                }
-            } finally {
-                tmp.delete();
-            }
-        } catch (ExistingFileException e) {
-            throw e;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
+        JCRSessionWrapper session = retrieveCurrentSession();
+        image.rotateImage(path, target, clockwise, forceReplace, session);
     }
 
     public void activateVersioning(List<String> path) throws GWTJahiaServiceException {

@@ -103,5 +103,9 @@
         <property name="scheduler" ref="SchedulerService"/>
     </bean>
 
+    <bean name="ImageHelper" class="org.jahia.ajax.gwt.helper.ImageHelper">
+        <property name="imageService" ref="ImageService"/>
+        <property name="contentManager" ref="ContentManagerHelper"/>
+    </bean>
 
 </beans>

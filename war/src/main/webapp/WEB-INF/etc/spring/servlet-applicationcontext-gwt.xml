@@ -54,6 +54,7 @@
         <property name="cacheHelper" ref="CacheHelper"/>
         <property name="schedulerHelper" ref="SchedulerHelper"/>
         <property name="uiConfigHelper" ref="UiConfigHelper"/>
+        <property name="image" ref="ImageHelper"/>
         <!--
         <property name="googleDocsExportFormats" ref="GoogleDocsExportFormats"/>
         <property name="googleDocsServiceFactory" ref="GoogleDocsServiceFactory"/>

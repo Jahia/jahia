@@ -280,7 +280,9 @@
     </bean>
 
     <bean id="org.jahia.services.content.rules.ImageService" class="org.jahia.services.content.rules.ImageService"
-          factory-method="getInstance"/>
+          factory-method="getInstance">
+        <property name="imageService" ref="ImageService"/>
+    </bean>
 
     <bean id="org.jahia.services.content.rules.Service" class="org.jahia.services.content.rules.Service"
           factory-method="getInstance">

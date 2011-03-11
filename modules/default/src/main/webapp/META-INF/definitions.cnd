@@ -167,7 +167,7 @@
 
 [jmix:gadget] mixin
 
-[jnt:displayMetadata] > jnt:content, jmix:siteComponent, jmix:bindedComponent
+[jnt:displayMetadata] > jnt:content, jmix:siteComponent, jmix:bindedComponent, jmix:renderableUser, jmix:mockupStyle
  - creationdate (boolean)
  - creator (boolean)
  - lastmodification (boolean)

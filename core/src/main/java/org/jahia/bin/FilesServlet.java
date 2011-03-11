@@ -44,6 +44,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRFileContent;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 
@@ -234,8 +235,7 @@ public class FilesServlet extends HttpServlet {
                     // Hack for CK Editor links
                     workspace = Constants.EDIT_WORKSPACE;
                 }
-                if (Constants.LIVE_WORKSPACE.equals(workspace)
-                        || Constants.EDIT_WORKSPACE.equals(workspace)) {
+                if (JCRContentUtils.isValidWorkspace(workspace)) {
                     if (path != null && path.contains("___")) {
                         path = UNDERSCORES.matcher(path).replaceAll(":");
                     }

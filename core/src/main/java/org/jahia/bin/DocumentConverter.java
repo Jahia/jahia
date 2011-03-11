@@ -49,6 +49,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -95,8 +96,7 @@ public class DocumentConverter extends JahiaController {
             }
         }
         // check required parameters
-        if (StringUtils.isEmpty(workspace) || !Constants.EDIT_WORKSPACE.equals(workspace)
-                && !Constants.LIVE_WORKSPACE.equals(workspace) || StringUtils.isEmpty(nodePath)
+        if (!JCRContentUtils.isValidWorkspace(workspace) || StringUtils.isEmpty(nodePath)
                 || StringUtils.isEmpty(targetFileExtension)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected data not found in the request."
                     + " Please check the documentation of the Jahia Document Converter Service for more details.");

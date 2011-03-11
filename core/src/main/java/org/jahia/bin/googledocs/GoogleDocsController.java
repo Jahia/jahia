@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.JahiaController;
 import org.jahia.exceptions.JahiaUnauthorizedException;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -89,9 +90,7 @@ public abstract class GoogleDocsController extends JahiaController {
             nodePath = StringUtils.substringAfter(pathInfo, workspace);
         }
         // check required parameters
-        if (StringUtils.isEmpty(workspace) || StringUtils.isEmpty(nodePath)
-                || !Constants.EDIT_WORKSPACE.equals(workspace)
-                && !Constants.LIVE_WORKSPACE.equals(workspace)) {
+        if (!JCRContentUtils.isValidWorkspace(workspace) || StringUtils.isEmpty(nodePath)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,
                     "Expected data not found in the request: /<workspace>/<file-node-path>");
             return null;

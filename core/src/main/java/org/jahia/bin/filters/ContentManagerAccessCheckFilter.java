@@ -54,6 +54,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaControllerUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
@@ -98,10 +99,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
     }
 
     protected boolean checkWorkspace(HttpServletRequest request) {
-        String workspace = StringUtils.defaultIfEmpty(request.getParameter("worksace"),
-                Constants.EDIT_WORKSPACE);
-        return Constants.EDIT_WORKSPACE.equals(workspace)
-                || Constants.LIVE_WORKSPACE.equals(workspace);
+        return JCRContentUtils.isValidWorkspace(request.getParameter("workspace"), true);
     }
 
     public void destroy() {

@@ -32,7 +32,6 @@
 
 package org.jahia.services.render;
 
-import static org.jahia.api.Constants.EDIT_WORKSPACE;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 import java.util.Date;
@@ -52,6 +51,7 @@ import org.jahia.exceptions.JahiaNotFoundException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -612,7 +612,7 @@ public class URLResolver {
         if (StringUtils.isEmpty(workspace)) {
             workspace = DEFAULT_WORKSPACE;
         } else {
-            if (!LIVE_WORKSPACE.equals(workspace) && !EDIT_WORKSPACE.equals(workspace)) {
+            if (!JCRContentUtils.isValidWorkspace(workspace)) {
                 throw new JahiaNotFoundException("Unknown workspace '" + workspace + "'");
             }
         }

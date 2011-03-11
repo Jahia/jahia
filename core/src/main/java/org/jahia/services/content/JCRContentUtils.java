@@ -32,6 +32,9 @@
 
 package org.jahia.services.content;
 
+import static org.jahia.api.Constants.EDIT_WORKSPACE;
+import static org.jahia.api.Constants.LIVE_WORKSPACE;
+
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.io.IOUtils;
@@ -544,6 +547,32 @@ public final class JCRContentUtils {
      */
     public Map<String, String> getFileExtensionIcons() {
         return fileExtensionIcons;
+    }
+
+    /**
+     * Validates if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>).
+     * 
+     * @param workspace
+     *            the workspace name to check
+     * @return <code>true</code> if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>);
+     *         otherwise returns <code>false</code>
+     */
+    public static final boolean isValidWorkspace(String workspace) {
+        return isValidWorkspace(workspace, false);
+    }
+
+    /**
+     * Validates if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>).
+     * 
+     * @param workspace
+     *            the workspace name to check
+     * @param allowBlank set to true if the workspace name is allowed to be null or empty
+     * @return <code>true</code> if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>);
+     *         otherwise returns <code>false</code>
+     */
+    public static final boolean isValidWorkspace(String workspace, boolean allowBlank) {
+        return StringUtils.isEmpty(workspace) ? allowBlank : EDIT_WORKSPACE.equals(workspace)
+                || LIVE_WORKSPACE.equals(workspace);
     }
 
     public static Node getPathFolder(Node root, String name, String options) throws RepositoryException {

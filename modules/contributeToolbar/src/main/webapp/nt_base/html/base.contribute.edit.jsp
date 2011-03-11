@@ -113,7 +113,7 @@
                                 <span><fmt:message key="label.or"/></span>
 
                                 <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                     jcr:url="${url.base}${currentNode.path}">
+                                     jcr:url="${url.base}${renderContext.mainResource.node.path}">
                                     <span><fmt:message key="add.file"/></span>
                                 </div>
                             </c:when>

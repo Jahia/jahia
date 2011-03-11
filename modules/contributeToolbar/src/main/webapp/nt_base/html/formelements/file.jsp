@@ -64,7 +64,7 @@
 <template:addResources>
 <script>
     $(document).ready(function() {
-        $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('${url.base}${currentNode.path}', {
+        $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('${url.base}${renderContext.mainResource.node.path}', {
             type : 'ajaxupload',
             onblur : 'ignore',
             submit : 'OK',

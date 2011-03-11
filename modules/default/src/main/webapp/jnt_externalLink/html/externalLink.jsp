@@ -8,4 +8,7 @@
 <jcr:nodeProperty node="${currentNode}" name="j:target" var="target"/>
 <c:if test="${not empty description.string}"><c:set var="linkTitle"> title="${fn:escapeXml(description.string)}"</c:set></c:if>
 <c:if test="${not empty target.string}"><c:set var="target"> target="${target.string}"</c:set></c:if>
-<a href="${url.string}" ${target} ${linkTitle}>${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}</a>
+<c:choose>
+    <c:when test="${fn:startsWith('http', url.string)}"><a href="${url.string}" ${target} ${linkTitle}>${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}</a></c:when>
+    <c:otherwise><a href="http://${url.string}" ${target} ${linkTitle}>${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}</a></c:otherwise>
+</c:choose>

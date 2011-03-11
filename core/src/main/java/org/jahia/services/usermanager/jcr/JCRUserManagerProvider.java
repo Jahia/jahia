@@ -181,6 +181,16 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             try {
                 JCRCallback<Boolean> deleteCallcback = new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        String query = "SELECT * FROM [jnt:ace] as ace where ace.[j:principal]='u:"+jcrUser.getName()+"'";
+                        Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+                        QueryResult qr = q.execute();
+                        NodeIterator nodeIterator = qr.getNodes();
+                        while (nodeIterator.hasNext()) {
+                            Node next = nodeIterator.nextNode();
+                            session.checkout(next.getParent());
+                            session.checkout(next);
+                            next.remove();
+                        }
                         Node node = jcrUser.getNode(session);
                         session.checkout(node.getParent());
                         session.checkout(node);

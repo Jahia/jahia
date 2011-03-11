@@ -44,7 +44,7 @@
 
         </c:if>
         <c:if test="${empty thumbnail.url}">
-            <img src="<c:url value='/engines/images/pictureNotAvailable.jpg' context='${renderContext.request.contextPath}'/>" width="200" height="200" alt="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>" title="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>"/>
+            <img src="<c:url value='/engines/images/pictureNotAvailable.jpg'/>" width="200" height="200" alt="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>" title="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>"/>
 
         </c:if>
     </p>

@@ -826,13 +826,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         
         if (!(action instanceof SystemAction)) {
             if (action.getRequiredWorkspace() != null
-                    && !action.getRequiredWorkspace().equals(resource.getWorkspace())) {
+                    && !action.getRequiredWorkspace().equals(urlResolver.getWorkspace())) {
                 throw new PathNotFoundException("Action is not supported for this workspace");
             }
             if (action.isRequireAuthenticatedUser() && !renderContext.isLoggedIn()) {
                 throw new AccessDeniedException("Action '" + action.getName() + "' requires an authenticated user");
             }
-            if (!action.isPermitted(resource.getNode())) {
+            if (!action.isPermitted(urlResolver.getNode())) {
                 throw new AccessDeniedException("Action '" + action.getName() + "' requires '" + action.getRequiredPermission() + "' permission.");
             }
         }

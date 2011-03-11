@@ -583,7 +583,7 @@ public class NavigationHelper {
         final List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
 
         try {
-            PropertyIterator references = node.getReferences();
+            PropertyIterator references = node.getWeakReferences();
             Set<String> alreadyIncludedIdentifiers = new HashSet<String>();
             while (references.hasNext()) {
                 JCRPropertyWrapper reference = (JCRPropertyWrapper) references.next();

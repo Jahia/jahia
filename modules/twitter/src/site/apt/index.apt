@@ -1,2 +1,8 @@
-Jahia Crazy Jane
+Jahia 6.5
 
+This module defines currently two components
+- TwitterSearch: displays, within a page, a simple search box that dynamically outputs the resulting twitter feed.
+The search object is not stored in the JCR, this is just a parameter passed on the fly to get a result.
+
+- TwitterFeed: Defines a search/query tag, which is stored in the JCR. The component thus permanently
+displays the resulting live Twitter Feed.

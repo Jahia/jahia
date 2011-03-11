@@ -1,1 +1,22 @@
-Jahia Crazy Jane
+Jahia 6.5
+
+This module, once inserted into a page, is presented as a form for users to self register into Jahia. Upon
+insertion of the component in a page
+- It is possible to notify the relevant administrator(s) that a new user has registered (by email)
+- The landing page (where the user is redirected after the form is submitted) need to be set.
+
+By default, the following fields are displayed and marked as "mandatory" (this, of course, can be customized into the definition)
+- First Name
+- Last Name
+- Username
+- Password
+- Email
+
+The form can be extended at will, with any additional user property.
+<input type="text" name="property_name" id="property_name" value="" tabindex="xx"/>
+
+Registering a user triggers an automatic email to the administrator of the platform, and a welcome email to new
+registered user.
+
+On the server, the Jahia folder Userregistration folder / mail / templates / contains the template used for these
+automatic notifications: this template accepts HTML and can be customized easily.

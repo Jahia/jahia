@@ -1,4 +1,4 @@
-Jahia Crazy Jane - Core Module - Country Initializer Example
+Jahia 6.5 - Core Module - Country Initializer Example
 
   A full example for creating a complex initializer that will allow user to choose a country from a dropdown list and
   display a flag if available in front of the country name.

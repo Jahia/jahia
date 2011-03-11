@@ -1,16 +1,16 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:contact] > jnt:content
+ - gender (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'female','male'
+ - title (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'master', 'doctor', 'professor'
  - firstname (string) i18n
  - lastname (string) i18n
- - title (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'master', 'doctor', 'professor'
  - age (string) i18n
  - birthdate (string) i18n
- - gender (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'female','male'
  - profession (string) i18n
  - maritalStatus (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'single', 'married', 'divorced', 'widowed'
  - hobbies (string) i18n
- - contact (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'contacttype1', 'contacttype2', 'contacttype3', 'contacttype4'
+ - subject (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'subject1', 'subject2', 'subject3', 'subject4'
  - address (string) i18n
  - city (string) i18n
  - state (string) i18n

@@ -1,1 +1,7 @@
-Jahia Crazy Jane
+Jahia 6.5 - Person
+
+This module is dedicated to manage biographical information, such as those typically found on the
+"management team" section of a corporate web site, but also within knowledge bases.
+This module isn’t redundant with the Jahia User management one, designed to control authenticated Jahia
+users’ information. Therefore and to avoid data duplication, the "Person" module should only be used for
+non-authenticated/registered users and as a pure content container.

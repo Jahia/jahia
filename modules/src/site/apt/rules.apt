@@ -1,4 +1,4 @@
-Crazy Jane - Jahia Modules - Rules
+Jahia 6.5 - Jahia Modules - Rules
 
   Each module in JAHIA can define its own rules, extend the rule domain specific language and add its own set of global objects.
 

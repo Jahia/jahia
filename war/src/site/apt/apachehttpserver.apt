@@ -1,4 +1,4 @@
-Jahia Crazy Jane - Web Module - Use an Apache HTTP Server as a frontal
+Jahia 6.5 - Web Module - Use an Apache HTTP Server as a frontal
 
   For URL rewriting we suggest that you use an Apache HTTP Server with the http proxy modules activated (proxy, proxy_http)
   and rewrite module (rewrite).

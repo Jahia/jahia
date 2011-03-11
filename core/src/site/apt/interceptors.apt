@@ -1,4 +1,4 @@
-Jahia Crazy Jane - Core Module - Property interceptors
+Jahia 6.5 - Core Module - Property interceptors
 
   Property interceptor catches all accesses to JCR properties. They may execute an action when a property is stored in
   the JCR and when it is read from the JCR. It is also possible to make the property set fails if some checks fail.

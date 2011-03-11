@@ -1,1 +1,7 @@
-Jahia Crazy Jane
+Jahia 6.5
+
+This module is designed to manage events (title, description, start date, end date, location, type of event).
+Event types are defined in the definition and may be modified or replaced to use another “initializer” more
+consistent with the needs of your project (external list, call for a list stored in the JCR .. .)
+Adding registration functions to a given event can be achieved very easily by setting up a simple form, shown
+in live mode, whose mission is to create sub-nodes to the event in question for each record, for example.

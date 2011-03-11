@@ -11,7 +11,7 @@ content in the output, otherwise it ask for rendering only the missing part.
 
 [../images/cache_flow.jpg]
 
-* What cache framework is Crazy Jane using ?
+* What cache framework is Jahia 6.5 using ?
 
  We are using {{{http://www.ehcache.org}EHCache}}. You can configure it in the file WEB-INF/classes/ehcache-jahia.xml or
  WEB-INF/classes/ehcache-jahia_cluster.xml.
@@ -23,7 +23,7 @@ content in the output, otherwise it ask for rendering only the missing part.
 
 * Invalidation or expiration ?
 
- Crazy Jane is using both modes for its caches, by default a fragment will have its expiration set to 4 hours. If during this
+ Jahia 6.5 is using both modes for its caches, by default a fragment will have its expiration set to 4 hours. If during this
  time the element is updated or deleted or child node is added/removed the element will be invalidated from the cache on the fly.
 
 * Overriding the default expiration ?

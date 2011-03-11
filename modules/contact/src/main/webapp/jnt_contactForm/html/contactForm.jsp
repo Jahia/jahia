@@ -21,6 +21,26 @@
         <c:set var="propDefs" value="${contactType.declaredPropertyDefinitionsAsMap}"/>
         <fieldset>
             <legend><fmt:message key="jnt_contact"/></legend>
+            <c:if test="${props.gender.boolean}">
+                <p>
+                    <label class="left" for="gender">${fn:escapeXml(jcr:label(props.gender.definition,currentResource.locale))}</label>
+                    <select name="gender" id="gender" ${disabled}>
+                    	<c:forEach items="${propDefs.gender.valueConstraints}" var="valueOption">
+                    		<option value="${valueOption}"><fmt:message key="jnt_contact.gender.${valueOption}"/></option>
+                    	</c:forEach>
+                    </select>
+                </p>
+            </c:if>
+            <c:if test="${props.title.boolean}">
+                <p>
+                    <label class="left" for="title">${fn:escapeXml(jcr:label(props.title.definition,currentResource.locale))}</label>
+                    <select name="title" id="title" ${disabled}>
+                    	<c:forEach items="${propDefs.title.valueConstraints}" var="valueOption">
+                    		<option value="${valueOption}"><fmt:message key="jnt_contact.title.${valueOption}"/></option>
+                    	</c:forEach>
+                    </select>
+                </p>
+            </c:if>
             <c:if test="${props.firstname.boolean}">
                 <p>
                     <label class="left" for="firstname">${fn:escapeXml(jcr:label(props.firstname.definition,currentResource.locale))}</label><input id="firstname" type="text"
@@ -34,16 +54,7 @@
                                                                                name="lastname" ${disabled} />
                 </p>
             </c:if>
-            <c:if test="${props.title.boolean}">
-                <p>
-                    <label class="left" for="title">${fn:escapeXml(jcr:label(props.title.definition,currentResource.locale))}</label>
-                    <select name="title" id="title" ${disabled}>
-                    	<c:forEach items="${propDefs.title.valueConstraints}" var="valueOption">
-                    		<option value="${valueOption}"><fmt:message key="jnt_contact.title.${valueOption}"/></option>
-                    	</c:forEach>
-                    </select>
-                </p>
-            </c:if>
+
             <c:if test="${props.age.boolean}">
                 <p>
                     <label class="left" for="age">${fn:escapeXml(jcr:label(props.age.definition,currentResource.locale))}</label><input type="text" id="age" name="age" ${disabled} />
@@ -55,16 +66,7 @@
                                                                                 name="birthdate" ${disabled}/>
                 </p>
             </c:if>
-            <c:if test="${props.gender.boolean}">
-                <p>
-                    <label class="left" for="gender">${fn:escapeXml(jcr:label(props.gender.definition,currentResource.locale))}</label>
-                    <select name="gender" id="gender" ${disabled}>
-                    	<c:forEach items="${propDefs.gender.valueConstraints}" var="valueOption">
-                    		<option value="${valueOption}"><fmt:message key="jnt_contact.gender.${valueOption}"/></option>
-                    	</c:forEach>
-                    </select>
-                </p>
-            </c:if>
+
             <c:if test="${props.profession.boolean}">
                 <p>
                     <label class="left" for="profession">${fn:escapeXml(jcr:label(props.profession.definition,currentResource.locale))}</label><input type="text" id="profession"
@@ -86,12 +88,12 @@
                     <label class="left" for="hobbies">${fn:escapeXml(jcr:label(props.hobbies.definition,currentResource.locale))}</label><input type="text" id="hobbies" name="hobbies" ${disabled}/>
                 </p>
             </c:if>
-            <c:if test="${props.contact.boolean}">
+            <c:if test="${props.subject.boolean}">
                 <p>
-                    <label class="left" for="contact">${fn:escapeXml(jcr:label(props.contact.definition,currentResource.locale))}</label>
-                    <select name="contact" id="contact" ${disabled}>
-                    	<c:forEach items="${propDefs.contact.valueConstraints}" var="valueOption">
-                    		<option value="${valueOption}"><fmt:message key="jnt_contact.contact.${valueOption}"/></option>
+                    <label class="left" for="subject">${fn:escapeXml(jcr:label(props.subject.definition,currentResource.locale))}</label>
+                    <select name="subject" id="subject" ${disabled}>
+                    	<c:forEach items="${propDefs.subject.valueConstraints}" var="valueOption">
+                    		<option value="${valueOption}"><fmt:message key="jnt_contact.subject.${valueOption}"/></option>
                     	</c:forEach>
                     </select>
                 </p>

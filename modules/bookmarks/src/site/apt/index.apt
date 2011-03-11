@@ -1,1 +1,11 @@
-Jahia Crazy Jane
+Jahia 6.5
+
+This module allows editors to insert a preset contact form directly in a page. The editor can choose fields on the fly
+and before he wishes to display, among 15 available. Functionally, this module is very simple since it only lists
+fields and stores a boolean (true / false) that is used to display or not the specific field, but it is a good example
+of an alternative to the Jahia Form Builder module, that is more powerful, but requires more time and control. If
+your project involves a few forms which structure is known and does not require the creation of new forms on a
+regular basis, this approach is faster.
+
+The forms’ output is stored in the repository (live workspace) and available in CSV format.
+The generation of the CSV is a very easy to understand example on how developers can manage various output formats.

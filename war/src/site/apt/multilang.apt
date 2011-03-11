@@ -1,4 +1,4 @@
-Jahia Crazy Jane - Web Module - Multi Language
+Jahia 6.5 - Web Module - Multi Language
 
  When creating a site you will be asked to associate it with at least one language, this will define the language
  you can access on your site. After the creation of the site you can go to your site administration panel in the
@@ -9,7 +9,7 @@ Jahia Crazy Jane - Web Module - Multi Language
 
  Yes, just click on the mix language button to activate it.
 
- If a node has not been translated in the currently selected language, Crazy Jane will fallback to default language to
+ If a node has not been translated in the currently selected language, Jahia will fallback to default language to
  display it.
 
  A node is considered translated as soon as one of its internationalizable properties exist in the selected language.
@@ -18,7 +18,7 @@ Jahia Crazy Jane - Web Module - Multi Language
 
 * What happen if I delete a language in my site ?
 
- Deleting a language in Crazy Jane is a non destructive action, this will only remove the language from the available
+ Deleting a language in Jahia 6.5 is a non destructive action, this will only remove the language from the available
  languages in your site, this will note erase any content from your repository (as your content could be reused
  anywhere in this language).
 

@@ -1,1 +1,5 @@
-Jahia Crazy Jane
+Jahia 6.5
+
+This module lets you build lists of frequently asked questions by adding a simple question / answer component to Jahia.
+To build a simple FAQ, this component is sufficient in itself. If you want to build a relatively long FAQ, or
+organize it into sections, you can put your comments in a list (with anchored view) and use a "summary" component.

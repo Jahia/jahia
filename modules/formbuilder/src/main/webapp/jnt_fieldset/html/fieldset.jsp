@@ -15,7 +15,7 @@
 <fieldset>
     <legend>${currentNode.properties.legend.string}</legend>
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElement')}" var="formElement">
-        <template:module node="${formElement}" template="default" editable="true"/>
+        <template:module node="${formElement}" editable="true"/>
     </c:forEach>
     <c:if test="${renderContext.editMode}">
         <div class="addelements">

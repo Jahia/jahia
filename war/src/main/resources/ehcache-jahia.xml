@@ -157,7 +157,7 @@
             timeToIdleSeconds="3600"
             timeToLiveSeconds="14400"
             overflowToDisk="true"
-            maxElementsOnDisk="10000"
+            maxElementsOnDisk="100000"
             diskPersistent="false"
             diskExpiryThreadIntervalSeconds="600"
             memoryStoreEvictionPolicy="LRU"

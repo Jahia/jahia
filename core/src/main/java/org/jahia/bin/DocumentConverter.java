@@ -38,7 +38,6 @@ import java.io.InputStream;
 import javax.jcr.PathNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -48,6 +47,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -55,7 +55,6 @@ import org.jahia.services.transform.DocumentConverterService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 /**
  * Performs conversion of the submitted document into specified format.
@@ -63,11 +62,11 @@ import org.springframework.web.servlet.mvc.Controller;
  * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
  */
-public class DocumentConverter extends HttpServlet implements Controller {
+public class DocumentConverter extends JahiaController {
 
-	private static final long serialVersionUID = -3949472591925972005L;
+    private static final long serialVersionUID = -3949472591925972005L;
 
-	private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentConverter.class);
+    private static Logger logger = LoggerFactory.getLogger(DocumentConverter.class);
 
     private DocumentConverterService converterService;
 

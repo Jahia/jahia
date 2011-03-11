@@ -34,6 +34,7 @@ package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -52,10 +53,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -66,14 +65,14 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 8 mars 2010
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 8 mars 2010
  */
-public class Initializers extends HttpServlet implements Controller {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Initializers.class);
+public class Initializers extends JahiaController {
+    
+    private transient static Logger logger = LoggerFactory.getLogger(Initializers.class);
+    
     private String defaultLocale = "en";
 
     private String defaultWorkspace = LIVE_WORKSPACE;

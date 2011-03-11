@@ -38,13 +38,14 @@ import java.io.UnsupportedEncodingException;
 
 import javax.jcr.PathNotFoundException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
+import org.jahia.bin.JahiaController;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -52,7 +53,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.googledocs.GoogleDocsService;
 import org.jahia.services.googledocs.GoogleDocsServiceFactory;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.util.AuthenticationException;
@@ -63,8 +63,9 @@ import com.google.gdata.util.ServiceException;
  * 
  * @author Sergiy Shyrkov
  */
-public abstract class GoogleDocsController extends HttpServlet implements Controller {
+public abstract class GoogleDocsController extends JahiaController {
 
+    private static final long serialVersionUID = 2548972609875824769L;
     private GoogleDocsServiceFactory docsServiceFactory;
 
     protected abstract void doAction(DocumentListEntry document, GoogleDocsService docsService, JCRNodeWrapper node,
@@ -88,7 +89,9 @@ public abstract class GoogleDocsController extends HttpServlet implements Contro
             nodePath = StringUtils.substringAfter(pathInfo, workspace);
         }
         // check required parameters
-        if (StringUtils.isEmpty(workspace) || StringUtils.isEmpty(nodePath)) {
+        if (StringUtils.isEmpty(workspace) || StringUtils.isEmpty(nodePath)
+                || !Constants.EDIT_WORKSPACE.equals(workspace)
+                && !Constants.LIVE_WORKSPACE.equals(workspace)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,
                     "Expected data not found in the request: /<workspace>/<file-node-path>");
             return null;

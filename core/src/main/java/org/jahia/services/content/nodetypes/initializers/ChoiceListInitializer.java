@@ -33,7 +33,6 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import java.util.List;
 import java.util.Locale;

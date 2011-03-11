@@ -36,6 +36,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.bin.errors.DefaultErrorHandler;
+import org.jahia.exceptions.JahiaBadRequestException;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -48,17 +50,22 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
@@ -71,11 +78,129 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
  */
 public class Initializers extends JahiaController {
     
-    private transient static Logger logger = LoggerFactory.getLogger(Initializers.class);
+    private static final String CONTROLLER_MAPPING = "/initializers";
     
+    private transient static Logger logger = LoggerFactory.getLogger(Initializers.class);
+
+    public static String getInitializersServletPath() {
+        // TODO move this into configuration
+        return "/cms" + CONTROLLER_MAPPING;
+    }
+
     private String defaultLocale = "en";
 
     private String defaultWorkspace = LIVE_WORKSPACE;
+
+    private void handle(HttpServletRequest request, HttpServletResponse response) throws RepositoryException, IllegalStateException, JSONException, IOException {
+        String name = getParameter(request, "name");
+
+        String[] params = parseParameters(request);
+        String workspace = params[0];
+        Locale locale = LanguageCodeConverters.languageCodeToLocale(params[1]);
+
+        if (StringUtils.isEmpty(request.getParameter("path"))
+                && StringUtils.isEmpty(request.getParameter("nodeuuid"))
+                && StringUtils.isEmpty(request.getParameter("type"))) {
+            throw new JahiaBadRequestException("One of therequired parameters is missing");
+        }
+
+        ExtendedNodeType type = null;
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(
+                workspace, locale);
+        JCRNodeWrapper node = null;
+        try {
+            if (request.getParameter("path") != null) {
+                node = session.getNode(request.getParameter("path"));
+                type = node.getPrimaryNodeType();
+            } else if (request.getParameter("nodeuuid") != null) {
+                node = session.getNodeByUUID(request.getParameter("nodeuuid"));
+                type = node.getPrimaryNodeType();
+            } else {
+                node = null;
+                type = NodeTypeRegistry.getInstance().getNodeType(request.getParameter("type"));
+            }
+        } catch (PathNotFoundException e) {
+            throw new JahiaBadRequestException(e);
+        } catch (ItemNotFoundException e) {
+            throw new JahiaBadRequestException(e);
+        } catch (NoSuchNodeTypeException e) {
+            throw new JahiaBadRequestException(e);
+        }
+
+        if (type == null) {
+            throw new JahiaBadRequestException("Cannot determine node type");
+        }
+
+        ExtendedPropertyDefinition definition = type.getPropertyDefinition(name);
+        if (definition == null) {
+            throw new JahiaBadRequestException("Unable to find property defintion with the name '"
+                    + name + "'");
+        }
+
+        JSONArray results = new JSONArray();
+
+        Map<String, String> map = new LinkedHashMap<String, String>();
+        String initializersString = request.getParameter("initializers");
+        if (initializersString != null) {
+            String[] strings = initializersString.split(",");
+            for (String string : strings) {
+                map.put(string, "");
+            }
+        } else {
+            map = definition.getSelectorOptions();
+        }
+
+        if (map.size() > 0) {
+            final Map<String, ChoiceListInitializer> initializers = ChoiceListInitializerService
+                    .getInstance().getInitializers();
+            List<ChoiceListValue> listValues = null;
+            final HashMap<String, Object> context = new HashMap<String, Object>();
+            context.put("contextNode", node);
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                if (initializers.containsKey(entry.getKey())) {
+                    listValues = initializers.get(entry.getKey()).getChoiceListValues(definition,
+                            entry.getValue(), listValues, locale, context);
+                }
+            }
+            if (listValues != null) {
+                String s = request.getParameter("q");
+                for (ChoiceListValue listValue : listValues) {
+                    String displayName = listValue.getDisplayName();
+                    if (s == null || displayName.toLowerCase().startsWith(s.toLowerCase())) {
+                        JSONObject value = new JSONObject();
+                        if (request.getParameter("gxt") != null) {
+                            value.put("value", listValue.getValue().getString());
+                            value.put("name", displayName);
+                        } else {
+                            value.append("value", listValue.getValue().getString());
+                            value.append("name", displayName);
+                        }
+                        results.put(value);
+                    }
+                }
+            }
+        }
+
+        response.setContentType("application/json; charset="
+                + SettingsBean.getInstance().getCharacterEncoding());
+        if (request.getParameter("gxt") != null) {
+            JSONObject object = new JSONObject();
+            object.put("choicelist", results);
+            if (logger.isDebugEnabled()) {
+                StringWriter out = new StringWriter();
+                object.write(out).flush();
+                logger.debug(out.toString());
+            }
+            object.write(response.getWriter()).flush();
+        } else {
+            if (logger.isDebugEnabled()) {
+                StringWriter out = new StringWriter();
+                results.write(out).flush();
+                logger.debug(out.toString());
+            }
+            results.write(response.getWriter()).flush();
+        }
+    }
 
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet
@@ -117,98 +242,34 @@ public class Initializers extends JahiaController {
         return null;
     }
 
-    private void handle(HttpServletRequest request, HttpServletResponse response) {
-        ExtendedNodeType type = null;
-        String path = StringUtils.substringAfter(request.getPathInfo().substring(1), "/");
-        String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
-        Locale locale = LanguageCodeConverters.languageCodeToLocale(
-                StringUtils.defaultIfEmpty(StringUtils.substringBefore(StringUtils.substringAfter(path, "/"), "/"),
-                        defaultLocale));
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-            String nodePath = request.getParameter("path");
-            JCRNodeWrapper node;
-            if (nodePath != null) {
-                node = session.getNode(nodePath);
-                type = node.getPrimaryNodeType();
-            } else if (request.getParameter("nodeuuid") != null) {
-                node = session.getNodeByUUID(request.getParameter("nodeuuid"));
-                type = node.getPrimaryNodeType();
-            } else {
-                node = null;
-                type = NodeTypeRegistry.getInstance().getNodeType(request.getParameter("type"));
-            }
-
-            String initializersString = request.getParameter("initializers");
-            String name = request.getParameter("name");
-            if (type != null) {
-                final List<ExtendedItemDefinition> extendedItemDefinitionList = type.getItems();
-                for (ExtendedItemDefinition definition : extendedItemDefinitionList) {
-                    if (definition.getName().equals(name)) {
-                        Map<String, String> map = new LinkedHashMap<String, String>();
-                        if (initializersString != null) {
-                            String[] strings = initializersString.split(",");
-                            for (String string : strings) {
-                                map.put(string, "");
-                            }
-                        } else {
-                            map = definition.getSelectorOptions();
-                        }
-
-                        if (map.size() > 0) {
-                            final Map<String, ChoiceListInitializer> initializers =
-                                    ChoiceListInitializerService.getInstance().getInitializers();
-                            List<ChoiceListValue> listValues = null;
-                            final HashMap<String, Object> context = new HashMap<String, Object>();
-                            context.put("contextNode", node);
-                            for (Map.Entry<String, String> entry : map.entrySet()) {
-                                if (initializers.containsKey(entry.getKey())) {
-                                    listValues = initializers.get(entry.getKey())
-                                            .getChoiceListValues((ExtendedPropertyDefinition) definition, entry.getValue(), listValues, locale, context);
-                                }
-                            }
-                            if (listValues != null) {
-                                JSONArray results = new JSONArray();
-                                String s = request.getParameter("q");
-                                for (ChoiceListValue listValue : listValues) {
-                                    String displayName = listValue.getDisplayName();
-                                    if (s == null || displayName.toLowerCase().startsWith(s)) {
-                                        JSONObject value = new JSONObject();
-                                        if (request.getParameter("gxt") != null) {
-                                            value.put("value", listValue.getValue().getString());
-                                            value.put("name", displayName);
-                                        } else {
-                                            value.append("value", listValue.getValue().getString());
-                                            value.append("name", displayName);
-                                        }
-                                        results.put(value);
-                                    }
-                                }
-                                if (request.getParameter("gxt") != null) {
-                                    JSONObject object = new JSONObject();
-                                    object.put("choicelist", results);
-                                    object.write(response.getWriter());
-                                } else {
-                                    results.write(new PrintWriter(System.out));
-                                    results.write(response.getWriter());
-                                }
-                            }
-                        }
-                    }
+    private String[] parseParameters(HttpServletRequest request) {
+        String workspace = null;
+        String lang = null;
+        String path = request.getPathInfo();
+        if (path != null && path.startsWith(CONTROLLER_MAPPING + "/")) {
+            path = path.substring(CONTROLLER_MAPPING.length() + 1);
+            if (path.contains("/")) {
+                workspace = StringUtils.substringBefore(path, "/");
+                lang = StringUtils.substringAfter(path, "/");
+                if (lang.contains("/")) {
+                    lang = StringUtils.substringBefore(lang, "/");
                 }
-
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (JSONException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         }
+        if (!JCRContentUtils.isValidWorkspace(workspace, true)) {
+            // unknown workspace
+            throw new JahiaBadRequestException("Unknown workspace '" + workspace + "'");
+        }
+
+        return new String[] { StringUtils.defaultIfEmpty(workspace, defaultWorkspace),
+                StringUtils.defaultIfEmpty(lang, defaultLocale) };
     }
 
-    public static String getInitializersServletPath() {
-        // TODO move this into configuration
-        return "/cms/initializers";
+    public void setDefaultLocale(String defaultLocale) {
+        this.defaultLocale = defaultLocale;
+    }
+
+    public void setDefaultWorkspace(String defaultWorkspace) {
+        this.defaultWorkspace = defaultWorkspace;
     }
 }

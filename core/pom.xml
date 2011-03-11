@@ -814,19 +814,6 @@
             <version>4.0.1</version>
         </dependency>
 
-        <!-- Quercus dependencies -->
-		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>resin-quercus</artifactId>
-			<version>4.0.13</version>
-		</dependency>
-		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>resin-kernel</artifactId>
-			<version>4.0.13</version>
-		</dependency>
-        
-
         <!-- Velocity engine for BSF -->
         <dependency>
             <groupId>org.apache.velocity</groupId>

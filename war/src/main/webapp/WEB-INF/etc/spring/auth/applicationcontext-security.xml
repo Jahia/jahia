@@ -11,6 +11,8 @@
                 /cms/**/*.raw = authcBasic, roles[toolManager]
                 /cms/serverStats = authcBasic, roles[toolManager]
                 /cms/serverStats/* = authcBasic, roles[toolManager]
+                /cms/text-extract = authcBasic, roles[toolManager]
+                /cms/text-extract/* = authcBasic, roles[toolManager]
                 /tools/* = authcBasic, roles[toolManager]
 
                 ## Apache Shindig config

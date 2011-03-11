@@ -54,11 +54,15 @@
     <c:set var="valueParamName" value="${attributes.name}.from"/>
     <fmt:message key="searchForm.date.from"/>:&nbsp;
     <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], from)}"/>
-    <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}"/>
+    <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}">
+        {dateFormat: 'dd.mm.yy', showButtonPanel: true, showOn:'focus'}
+    </uiComponents:dateSelector>
     <c:set var="valueParamName" value="${attributes.name}.to"/>
     <fmt:message key="searchForm.date.to"/>:&nbsp;
     <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], to)}"/>
-    <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}"/>
+    <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}">
+        {dateFormat: 'dd.mm.yy', showButtonPanel: true, showOn:'focus'}
+    </uiComponents:dateSelector>
 </div>
 </c:if>
 <c:if test="${!display}"><input type="hidden" name="${valueParamName}" value="${fn:escapeXml(value)}"/></c:if>

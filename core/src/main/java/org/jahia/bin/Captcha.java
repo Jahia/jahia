@@ -34,13 +34,13 @@ package org.jahia.bin;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 
+import org.jahia.bin.errors.DefaultErrorHandler;
+import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.utils.WebUtils;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,7 +56,7 @@ import java.util.Map;
  * @since JAHIA 6.5
  * Created : 10 mars 2010
  */
-public class Captcha extends HttpServlet implements Controller {
+public class Captcha extends JahiaController {
     
 	private static final long serialVersionUID = -5265673214049135501L;
 	
@@ -74,31 +74,42 @@ public class Captcha extends HttpServlet implements Controller {
      * @throws Exception in case of errors
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // return a jpeg
-        response.setContentType("image/jpeg");
-
-    	WebUtils.setNoCacheHeaders(response);
-
-        // create the text for the image
-        String capText = captchaProducer.createText();
-
-        // store the text in the session
-        Map<String,Map<String,List<String>>> toks = (Map<String,Map<String,List<String>>>) request.getSession().getAttribute("form-tokens");
-        Map<String,List<String>> hiddenValues = toks.get(request.getParameter("token"));
-        hiddenValues.put("captcha", Arrays.asList(capText));
-
-        // create the image with the text
-        BufferedImage bi = captchaProducer.createImage(capText);
-
-        ServletOutputStream out = response.getOutputStream();
-
-        // write the data out
-        ImageIO.write(bi, "jpg", out);
         try {
-            out.flush();
-        } finally {
-            out.close();
+            String token = getParameter(request, "token");
+            @SuppressWarnings("unchecked")
+            Map<String,Map<String,List<String>>> toks = (Map<String,Map<String,List<String>>>) request.getSession().getAttribute("form-tokens");
+            if (toks == null || !toks.containsKey(token)) {
+                throw new JahiaBadRequestException("Unknown form token.");
+            }
+            // return a jpeg
+            response.setContentType("image/jpeg");
+    
+            WebUtils.setNoCacheHeaders(response);
+    
+            // create the text for the image
+            String capText = captchaProducer.createText();
+    
+            // store the text in the session
+            toks.get(token).put("captcha", Arrays.asList(capText));
+    
+            // create the image with the text
+            BufferedImage bi = captchaProducer.createImage(capText);
+    
+            ServletOutputStream out = response.getOutputStream();
+    
+            // write the data out
+            ImageIO.write(bi, "jpg", out);
+            try {
+                out.flush();
+            } finally {
+                out.close();
+            }
+            
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+            DefaultErrorHandler.getInstance().handle(e, request, response);
         }
+
         return null;
     }
 

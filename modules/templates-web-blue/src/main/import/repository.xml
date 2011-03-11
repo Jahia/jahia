@@ -215,6 +215,7 @@
           <advanced-search jcr:primaryType="jnt:advancedSearchForm">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Advanced search" jcr:primaryType="jnt:translation" />
           </advanced-search>
+          <pager displayPager="true" j:bindedComponent="/templateSets/templates-web-blue/search-results/maincontent/search-results" jcr:primaryType="jnt:pager" pageSize="10" />
           <search-results autoSuggest="true" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Search results" jcr:primaryType="jnt:translation" />
           </search-results>

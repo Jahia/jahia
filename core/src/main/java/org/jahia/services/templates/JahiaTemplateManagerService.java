@@ -52,6 +52,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jdom.JDOMException;
 import org.slf4j.Logger;
@@ -350,6 +351,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } else if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache
             JahiaTemplatesRBLoader.clearCache();
+            JahiaResourceBundle.clearCache();
         }
     }
 

@@ -82,6 +82,10 @@ public class JahiaResourceBundle extends ResourceBundle {
     private static final ReferenceQueue jahiaReferenceQueue = new ReferenceQueue();
 
 
+    public static void clearCache() {
+        jahiaCacheList.clear();
+    }
+    
     public JahiaResourceBundle(Locale locale, String templatesPackageName) {
         this(null, locale, templatesPackageName, null);
     }

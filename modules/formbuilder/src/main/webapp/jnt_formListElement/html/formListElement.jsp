@@ -12,5 +12,5 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<span><fmt:message key="formList.label"/> ${currentNode.properties.label.string}</span>
+<span><fmt:message key="formList.label"/> ${fn:escapeXml(currentNode.properties.label.string)}</span>
 <span><fmt:message key="formList.value"/> ${currentNode.properties.value.string}</span>

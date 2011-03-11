@@ -14,7 +14,7 @@
 <jcr:propertyInitializers var="options" node="${currentNode}"
                           initializers="${fn:split(currentNode.properties.type.string,';')[0]}" name="type"/>
 <p class="field">
-    <label class="left" for="${currentNode.name}">${currentNode.properties.label.string}</label>
+    <label class="left" for="${currentNode.name}">${fn:escapeXml(currentNode.properties.label.string)}</label>
     <select name="${currentNode.name}" id="${currentNode.name}">
         <c:forEach items="${options}" var="option">
             <option value="${option.value.string}"

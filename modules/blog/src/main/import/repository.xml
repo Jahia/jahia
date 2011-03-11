@@ -50,7 +50,7 @@
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Add a new blog entry" />
                             </addBlogLink>
                             <contentList j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-                                <display-metadata categories="false" creationdate="false" creator="true" description="false" j:userView="blog" j:view="authorDisplay" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:displayMetadata" keywords="false" lastcontributor="false" lastmodification="false"/>
+                                <authorDisplay j:about="true" j:birthDate="true" j:email="false" j:firstName="true" j:gender="false" j:lastName="true" j:picture="true" j:title="true" j:userView="restricted" jcr:primaryType="jnt:authorDisplay"/>
                             </contentList>
                             <calendar endDateProperty="jcr:created" j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-posts" jcr:primaryType="jnt:calendar" startDateProperty="jcr:created" />
                             <facets j:bindedComponent="/templateSets/blog/templates/base/blog/row-col1/blog-posts" j:expiration="900" j:perUser="false" j:view="javascripttagcloud" jcr:mixinTypes="jmix:cache jmix:renderable" jcr:primaryType="jnt:facets">

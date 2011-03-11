@@ -376,11 +376,21 @@
 
 [jnt:currentUserDisplay] > jnt:content, jmix:renderableUser, jmix:layoutComponentContent, jmix:mockupStyle, jmix:studioOnly
 
+[jnt:authorDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponent, jmix:mockupStyle, jmix:bindedComponent
+ - j:firstName (boolean)
+ - j:lastName (boolean)
+ - j:title (boolean)
+ - j:gender (boolean)
+ - j:birthDate (boolean)
+ - j:email (boolean)
+ - j:picture (boolean)
+ - j:about (boolean)
+
+
 [jmix:renderableMainResource] mixin
  - j:mainResourceView (string, choicelist[templates=mainresource,resourceBundle,image]) nofulltext
 
 [jmix:renderableUser] mixin
- itemtype = layout
  - j:userView (string, choicelist[templates=jnt:user,resourceBundle,image]) nofulltext
 
 [jmix:renderableList] mixin

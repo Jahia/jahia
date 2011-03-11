@@ -48,6 +48,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -71,6 +72,8 @@ public class DocumentConverter extends JahiaController {
     private DocumentConverterService converterService;
 
     private SettingsBean settingsBean;
+    
+    private boolean requireAuthenticatedUser = true;
 
     private ModelAndView handleGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String workspace = null;
@@ -92,7 +95,9 @@ public class DocumentConverter extends JahiaController {
             }
         }
         // check required parameters
-        if (StringUtils.isEmpty(workspace) || StringUtils.isEmpty(nodePath) || StringUtils.isEmpty(targetFileExtension)) {
+        if (StringUtils.isEmpty(workspace) || !Constants.EDIT_WORKSPACE.equals(workspace)
+                && !Constants.LIVE_WORKSPACE.equals(workspace) || StringUtils.isEmpty(nodePath)
+                || StringUtils.isEmpty(targetFileExtension)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected data not found in the request."
                     + " Please check the documentation of the Jahia Document Converter Service for more details.");
             return null;
@@ -187,11 +192,16 @@ public class DocumentConverter extends JahiaController {
      * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (requireAuthenticatedUser && isUserGuest()) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "The service is available only for authenticated users.");
+            return null;
+        }
+
         if (!converterService.isEnabled()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Conversion service is not enabled.");
             return null;
         }
-
+        
         ModelAndView result = null;
 
         if (ServletFileUpload.isMultipartContent(request)) {
@@ -222,6 +232,10 @@ public class DocumentConverter extends JahiaController {
     
     public static String getPath() {
         return "/cms/convert";
+    }
+
+    public void setRequireAuthenticatedUser(boolean requireAuthenticatedUser) {
+        this.requireAuthenticatedUser = requireAuthenticatedUser;
     }
 
 }

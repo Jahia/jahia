@@ -26,6 +26,7 @@
     <bean name="DocumentConverterController" class="org.jahia.bin.DocumentConverter">
         <property name="converterService" ref="DocumentConverterService" />
         <property name="settingsBean" ref="settingsBean" />
+        <property name="requireAuthenticatedUser" value="true" />
     </bean>
 
     <bean name="converterMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

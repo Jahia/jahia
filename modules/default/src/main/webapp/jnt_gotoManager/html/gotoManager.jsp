@@ -31,7 +31,7 @@
     <c:if test="${currentNode.properties.type.string eq 'roles'}">
         <c:set var="conf" value="rolesmanager"/>
         <c:set var="label" value="label.serverroles"/>
-        <c:set var="icon" value="jnt_permission"/>
+        <c:set var="icon" value="roleManager"/>
     </c:if>
     <c:if test="${multisite eq 'true'}">
         <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>

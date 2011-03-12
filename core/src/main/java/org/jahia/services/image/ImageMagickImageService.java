@@ -90,7 +90,7 @@ public class ImageMagickImageService implements JahiaImageService {
             Info imageInfo = new Info(getFile(i).getPath());
             return Integer.parseInt(imageInfo.getProperty("Geometry").split("[x+]")[1]);
         } catch (InfoException e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage());
         }
     }
 
@@ -99,7 +99,7 @@ public class ImageMagickImageService implements JahiaImageService {
             Info imageInfo = new Info(getFile(i).getPath());
             return Integer.parseInt(imageInfo.getProperty("Geometry").split("[x+]")[0]);
         } catch (InfoException e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage());
         }
     }
 

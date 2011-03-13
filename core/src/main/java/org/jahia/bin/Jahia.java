@@ -657,13 +657,17 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         Jahia.jahiaContextPath = ctxPath.equals("/") ? "" : ctxPath;
     }
 
-	public static String getEdition() {
-		if (EDITION == null) {
-			EDITION = Jahia.class.getResource("/META-INF/jahia-ee-impl-marker.txt") != null ? "EE"
-			        : "CE";
-		}
+    public static String getEdition() {
+        if (EDITION == null) {
+            EDITION = Jahia.class.getResource("/META-INF/jahia-ee-impl-marker.txt") != null ? "EE"
+                    : "CE";
+        }
 
-		return EDITION;
-	}
+        return EDITION;
+    }
+    
+    public static boolean isEnterpriseEdition() {
+        return "EE".equals(getEdition());
+    }
 
 }

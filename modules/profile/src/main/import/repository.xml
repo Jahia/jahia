@@ -124,15 +124,12 @@
                                                       jcr:primaryType="jnt:translation"
                                                       jcr:title="websites list in contribute mode"/>
                                 </websites-list-in-contribute-mode>
-                                <gotoManager jcr:primaryType="jnt:gotoManager" type="document"/>
-                                <gotoManager-3 jcr:primaryType="jnt:gotoManager" type="content"/>
-                                <gotoStudio jcr:primaryType="jnt:gotoStudio">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
-                                                      jcr:primaryType="jnt:translation"/>
-                                </gotoStudio>
-                                <gotoAdmin jcr:primaryType="jnt:gotoAdmin"/>
-                                <gotoManager-1 jcr:primaryType="jnt:gotoManager" type="united content"/>
-                                <gotoManager-2 jcr:primaryType="jnt:gotoManager" type="roles"/>
+                                <gotoManager jcr:primaryType="jnt:gotoManager" type="document" jcr:mixinTypes="jmix:requiredPermissions" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/managers/fileManager"/>
+                                <gotoManager-3 jcr:primaryType="jnt:gotoManager" type="content" jcr:mixinTypes="jmix:requiredPermissions" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/managers/editorialContentManager"/>
+                                <gotoStudio jcr:primaryType="jnt:gotoStudio" jcr:mixinTypes="jmix:requiredPermissions" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/studioMode/studioModeAccess" />
+                                <gotoAdmin jcr:primaryType="jnt:gotoAdmin" jcr:mixinTypes="jmix:requiredPermissions" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/admin/administrationAccess" />
+                                <gotoManager-1 jcr:primaryType="jnt:gotoManager" type="united content"  jcr:mixinTypes="jmix:requiredPermissions" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/managers/contentManager" />
+                                <gotoManager-2 jcr:primaryType="jnt:gotoManager" type="roles" jcr:mixinTypes="jmix:requiredPermissions" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/managers/roleManager" />
                             </pagecontent>
                         </user-jahia-home>
                         <user-content j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"

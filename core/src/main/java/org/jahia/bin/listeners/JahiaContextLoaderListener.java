@@ -98,7 +98,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                 } catch (Exception e) {
                     logger.error("Error initializing Jahia modules Spring application context. Cause: " + e.getMessage(), e);
                 }
-                if (Jahia.getEdition().equalsIgnoreCase("EE")) {
+                if (Jahia.isEnterpriseEdition()) {
                     requireLicense();
                 }
                 // register listeners after the portal is started

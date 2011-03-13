@@ -47,6 +47,7 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.collections.map.LazyMap;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -332,5 +333,9 @@ public class RenderContext {
 
     public void resetStaticAssets() {
         this.staticAssets.clear();
+    }
+    
+    public boolean isEnterpriseEdition() {
+        return Jahia.isEnterpriseEdition();
     }
 }

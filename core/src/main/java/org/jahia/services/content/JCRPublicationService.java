@@ -1013,7 +1013,7 @@ public class JCRPublicationService extends JahiaService {
                 PropertyDefinition definition = p.getDefinition();
                 if (definition != null && (definition.getRequiredType() == PropertyType.REFERENCE ||
                         definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) &&
-                        !p.getName().startsWith("jcr:")) {
+                        !p.getName().startsWith("jcr:") && !p.getName().equals("j:templateNode")) {
                     if (definition.isMultiple()) {
                         Value[] vs = p.getValues();
                         for (Value v : vs) {

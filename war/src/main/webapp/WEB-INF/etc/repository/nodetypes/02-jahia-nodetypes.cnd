@@ -592,7 +592,7 @@ extends = jnt:content
 [jnt:templateSets] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:virtualsite)
 
-[jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
+[jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list, jmix:publication
  + * (jnt:template)
  + * (jnt:contentFolder)
  + * (jnt:folder)

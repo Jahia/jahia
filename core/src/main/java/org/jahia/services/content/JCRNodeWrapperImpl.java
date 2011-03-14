@@ -3098,17 +3098,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         try {
-            if (isNodeType("jnt:virtualsite")) {
-                return (site = (JCRSiteNode) provider.getService().decorate(this));
-            }
             String path = getPath();
+
             if (path.startsWith("/sites/")) {
                 int index = path.indexOf('/', 7);
+                if (index == -1) {
+                    return (site = (JCRSiteNode) provider.getService().decorate(this));
+                }
                 try {
                     return (site = (JCRSiteNode) (getSession().getNode(index == -1 ? path : path.substring(0, index))));
                 } catch (ClassCastException e) {
                     // if node is not a site ( eg ACL / workflow )
-                    return null;
                 }
             }
 

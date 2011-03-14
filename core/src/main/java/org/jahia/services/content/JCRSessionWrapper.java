@@ -96,6 +96,9 @@ public class JCRSessionWrapper implements Session {
 
     private Map<JCRStoreProvider, Session> sessions = new HashMap<JCRStoreProvider, Session>();
 
+    private Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<String, JCRNodeWrapper>();
+    private Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<String, JCRNodeWrapper>();
+
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
 
@@ -173,6 +176,10 @@ public class JCRSessionWrapper implements Session {
 
     public JCRNodeWrapper getNodeByUUID(final String uuid, final boolean checkVersion)
             throws ItemNotFoundException, RepositoryException {
+
+        if (sessionCacheByIdentifier.containsKey(uuid)) {
+            return sessionCacheByIdentifier.get(uuid);
+        }
         for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
             if (!provider.isInitialized()) {
                 logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() +
@@ -201,6 +208,8 @@ public class JCRSessionWrapper implements Session {
                 if (checkVersion  && (versionDate != null || versionLabel != null)) {
                     wrapper = getFrozenVersionAsRegular(n, provider);
                 }
+                sessionCacheByIdentifier.put(uuid, wrapper);
+
                 return wrapper;
             } catch (ItemNotFoundException ee) {
                 // All good
@@ -233,6 +242,9 @@ public class JCRSessionWrapper implements Session {
 
     public JCRItemWrapper getItem(String path, final boolean checkVersion)
             throws PathNotFoundException, RepositoryException {
+        if (sessionCacheByPath.containsKey(path)) {
+            return sessionCacheByPath.get(path);
+        }
         Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
         for (Map.Entry<String, JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
             if (path.startsWith(mp.getKey() + "/")) {
@@ -284,6 +296,8 @@ public class JCRSessionWrapper implements Session {
                     if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
                         wrapper = getFrozenVersionAsRegular(node, provider);
                     }
+                    sessionCacheByPath.put(path, wrapper);
+
                     return wrapper;
                 } else {
                     return provider.getPropertyWrapper((Property) item, this);

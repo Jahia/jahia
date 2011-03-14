@@ -11,14 +11,12 @@
 
 <template:addResources type="css" resources="userProfile.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
-<template:addResources type="javascript" resources="jquery.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
-<template:addResources type="javascript" resources="jquery.jeditable.datepicker.js"/>
-
-<template:addResources type="javascript" resources="datepicker.js,timepicker.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="timepicker.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="i18n/jquery.ui.min.js"/>
 
 <template:addResources type="css" resources="timepicker.css"/>
@@ -134,7 +132,7 @@
             </c:if>
             <span jcr:id="j:birthDate" class="dateEdit${currentNode.identifier}"
                  id="dateEdit${currentNode.identifier}j_birthDate"
-                 jcr:url="${url.basePreview}${user.path}">${displayBirthDate}</span>
+                 jcr:url="${url.basePreview}${user.path}" jcr:value="${birthDate.string}">${displayBirthDate}</span>
         </li>
     </c:if>
 

@@ -13,17 +13,17 @@
 <template:addResources type="css" resources="social.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
-<template:addResources type="javascript" resources="jquery.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.autocomplete.js" />
 <template:addResources type="javascript" resources="jquery.bgiframe.min.js" />
 <template:addResources type="javascript" resources="thickbox-compressed.js" />
-
+<template:addResources type="javascript" resources="timepicker.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
-<template:addResources type="javascript" resources="jquery-ui.min.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 <template:addResources type="javascript" resources="jahia.social.js"/>

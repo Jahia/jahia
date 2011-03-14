@@ -40,7 +40,12 @@ $.editable.addInputType('datetimepicker', {
 
 
     content : function(string, settings, original) {
-        var now = new Date();
+        var now;
+        if(settings.loaddata.defaultValue) {
+            now = new Date(Date.parse(settings.loaddata.defaultValue));
+        } else {
+            now = new Date();
+        }
         $("#datetimepicker_", this).val(now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ':00');
     },
 
@@ -49,7 +54,7 @@ $.editable.addInputType('datetimepicker', {
     plugin : function(settings, original) {
         var form = this;
         settings.onblur = null;
-        $("#datetimepicker_", this).datetime({});
+        $("#datetimepicker_", this).datetime({dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'});
     }
 });
 
@@ -69,7 +74,12 @@ $.editable.addInputType('datepicker', {
 
 
     content : function(string, settings, original) {
-        var now = new Date();
+        var now;
+        if(settings.loaddata.defaultValue) {
+            now = new Date(Date.parse(settings.loaddata.defaultValue));
+        } else {
+            now = new Date();
+        }
         $("#datepicker_", this).val(now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate());
     },
 
@@ -79,6 +89,6 @@ $.editable.addInputType('datepicker', {
         var form = this;
         settings.onblur = null;
         $("#datepicker_", this).datepicker({changeMonth: true,
-			changeYear: true,dateFormat: $.datepicker.ISO_8601,yearRange: '1950:2030'});
+			changeYear: true,dateFormat: $.datepicker.ISO_8601,yearRange: '1900:2050'});
     }
 });

@@ -52,7 +52,7 @@ public class ChangePasswordAction extends Action {
                     EngineMessages policyMsgs = evalResult.getEngineMessages();
                     String res = "";
                     for (EngineMessage message : policyMsgs.getMessages()) {
-                        res += message.isResource() ? MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource(message.getKey(), renderContext.getUILocale()), message.getValues()) : message.getKey();
+                        res += (message.isResource() ? MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource(message.getKey(), renderContext.getUILocale()), message.getValues()) : message.getKey())+"\n";
                     }
                     json.put("errorMessage", res);
                 } else {

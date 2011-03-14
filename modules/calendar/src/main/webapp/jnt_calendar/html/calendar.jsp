@@ -25,7 +25,9 @@
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <template:addCacheDependency node="${linked}"/>
 <c:forEach items="${linked.nodes}" var="linkedChild" varStatus="status">
-    <fmt:formatDate pattern="yyyy-MM-dd" value="${linkedChild.properties[currentNode.properties.startDateProperty.string].date.time}" var="startDate"/>
+    <fmt:formatDate pattern="yyyy-MM-dd"
+                    value="${linkedChild.properties[currentNode.properties.startDateProperty.string].date.time}"
+                    var="startDate"/>
     <c:choose>
         <c:when test="${empty datas[startDate]}">
             <c:set target="${datas}" property="${startDate}" value="1"/>
@@ -36,28 +38,33 @@
     </c:choose>
 </c:forEach>
 <template:addResources key="${renderContext.mainResource.node.identifier}">
-<script type="text/javascript">
-    $(document).ready(function() {
-    // page is now ready, initialize the calendar...
-    $('#calendar${currentNode.identifier}').fullCalendar({
-    <c:if test="${not empty param.calStartDate}">
-        year : ${fn:substring(param.calStartDate,0,4)},
-        month : (${fn:substring(param.calStartDate,5,7)}-1),
-        date : ${fn:substring(param.calStartDate,8,10)},
-    </c:if>
-    events: [
-    <c:forEach items="${datas}" var="data" varStatus="status">
-        <c:if test="${not status.first}">,</c:if>
-        {
-        title : '${data.value}',
-        start : '${data.key}',
-        url : '${url.base}${renderContext.mainResource.node.path}.html?filter={name:"${currentNode.properties.startDateProperty.string}",value:"${data.key}",op:"eq",uuid:"${linked.identifier}",format:"yyyy-MM-dd",type:"date"}&calStartDate=${data.key}'
-        }
-    </c:forEach>
-    ]
-    })
-    });
-</script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // page is now ready, initialize the calendar...
+            $('#calendar${currentNode.identifier}').fullCalendar({
+                <c:if test="${not empty param.calStartDate}">
+                year : ${fn:substring(param.calStartDate,0,4)},
+                month : (${fn:substring(param.calStartDate,5,7)}-1),
+                date : ${fn:substring(param.calStartDate,8,10)},
+                </c:if>
+                events: [
+                    <c:forEach items="${datas}" var="data" varStatus="status">
+                    <c:url value="${renderContext.mainResource.node.url}" context="/" var="eventUrl">
+                    <c:param name="filter" value="{name:'${currentNode.properties.startDateProperty.string}',value:'${data.key}',op:'eq',uuid:'${linked.identifier}',format:'yyyy-MM-dd',type:'date'}"/>
+                    <c:param name="calStartDate" value="${data.key}"/>
+                    </c:url>
+                    <c:if test="${not status.first}">,
+                    </c:if>
+                    {
+                        title : '${data.value}',
+                        start : '${data.key}',
+                        url : "${eventUrl}"
+                    }
+                    </c:forEach>
+                ]
+            })
+        });
+    </script>
 </template:addResources>
 <div class="calendar" id="calendar${currentNode.identifier}"></div>
 

@@ -54,6 +54,7 @@ import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.logging.Filter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,6 +68,8 @@ public class JCRUserNode extends JCRNodeDecorator {
     private JahiaUser user;
     private Map<String, ExtendedPropertyDefinition> propertyDefinitionMap;
     private Map<Integer, ExtendedPropertyDefinition> unstructuredPropertyDefinitions;
+
+    public final List<String> publicProperties = Arrays.asList("j:external", "j:externalSource", "j:publicProperties");
 
     public JCRUserNode(JCRNodeWrapper node) {
         super(node);
@@ -84,11 +87,8 @@ public class JCRUserNode extends JCRNodeDecorator {
         if (user == null) {
             user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
         }
-        if (user == null) {
-            return super.getProperties();
-        }
-        if (user instanceof JCRUser) {
-            return super.getProperties();
+        if (user == null || user instanceof JCRUser) {
+            return new FilteredPropertyIterator(super.getProperties());
         } else {
             return new UserPropertyIterator(node);
         }
@@ -98,6 +98,9 @@ public class JCRUserNode extends JCRNodeDecorator {
     public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
         if (JCRUser.J_EXTERNAL.equals(s) || Constants.CHECKIN_DATE.equals(s)) {
             return super.getProperty(s);
+        }
+        if (!canGetProperty(s)) {
+            throw new PathNotFoundException(s);
         }
         if (user == null) {
             user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
@@ -120,20 +123,20 @@ public class JCRUserNode extends JCRNodeDecorator {
         if (user == null) {
             user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
         }
-        if (user == null) {
-            return super.getPropertiesAsString();
-        }
-        if (user instanceof JCRUser) {
-            return super.getPropertiesAsString();
+        Set entries ;
+        if (user == null || user instanceof JCRUser) {
+            entries = super.getPropertiesAsString().entrySet();
         } else {
-            Properties properties = user.getProperties();
-            Set<Map.Entry<Object, Object>> entries = properties.entrySet();
-            Map<String, String> map = new HashMap<String, String>();
-            for (Map.Entry<Object, Object> entry : entries) {
-                map.put(entry.getKey().toString(), entry.getValue().toString());
-            }
-            return map;
+            entries = user.getProperties().entrySet();
         }
+        Map<String, String> map = new HashMap<String, String>();
+        for (Iterator iterator = entries.iterator(); iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            if (canGetProperty(entry.getKey().toString())) {
+                map.put(entry.getKey().toString(), entry.getValue() != null ? entry.getValue().toString() : null);
+            }
+        }
+        return map;
     }
 
     @Override
@@ -148,7 +151,7 @@ public class JCRUserNode extends JCRNodeDecorator {
             return super.setProperty(s, value);
         }
         if (user instanceof JCRUser) {
-            return super.setProperty(s,value);
+            return super.setProperty(s, value);
         } else {
             String property = user.getProperty(s);
             if (property != null) {
@@ -159,6 +162,81 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
     }
 
+    private boolean canGetProperty(String s) throws RepositoryException {
+        if (!hasPermission("jcr:write") && !publicProperties.contains(s)) {
+            if (!super.hasProperty("j:publicProperties")) {
+                return false;
+            }
+            Property p = super.getProperty("j:publicProperties");
+            Value[] values = p.getValues();
+            for (Value value : values) {
+                if (s.equals(value.getString())) {
+                    return true;
+                }
+            }
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    public class FilteredPropertyIterator implements PropertyIterator {
+        private PropertyIterator propertyIterator;
+
+        private Property nextProperty;
+
+        public FilteredPropertyIterator(PropertyIterator propertyIterator) {
+            this.propertyIterator = propertyIterator;
+            prefetch();
+        }
+
+        public Property nextProperty() {
+            return (Property) next();
+        }
+
+        public void skip(long skipNum) {
+            for (int i=0; i<skipNum; i++) {
+                next();
+            }
+        }
+
+        public long getSize() {
+            return propertyIterator.getSize();
+        }
+
+        public long getPosition() {
+            return propertyIterator.getPosition();
+        }
+
+        public boolean hasNext() {
+            return nextProperty != null;
+        }
+
+        public Object next() {
+            Property next = nextProperty;
+            prefetch();
+            return next;
+        }
+
+        private void prefetch() {
+            try {
+                do {
+                    if (propertyIterator.hasNext()) {
+                        nextProperty = propertyIterator.nextProperty();
+                    } else {
+                        nextProperty = null;
+                    }
+                } while (nextProperty != null && !canGetProperty(nextProperty.getName()));
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+
+        public void remove() {
+            propertyIterator.remove();
+        }
+    }
+
     public class UserPropertyIterator implements PropertyIterator {
         private Properties properties;
         private Set<String> stringPropertyNames;
@@ -166,12 +244,14 @@ public class JCRUserNode extends JCRNodeDecorator {
         private int index = 0;
         private final JCRNodeWrapper node;
 
-        private UserPropertyIterator(JCRNodeWrapper node) {
+        private UserPropertyIterator(JCRNodeWrapper node) throws RepositoryException {
             this.node = node;
             properties = user.getProperties();
             stringPropertyNames = new HashSet<String>();
             for (Object key : properties.keySet()) {
-                stringPropertyNames.add((String) key);
+                if (canGetProperty((String) key)) {
+                    stringPropertyNames.add((String) key);
+                }
             }
             iterator = stringPropertyNames.iterator();
         }

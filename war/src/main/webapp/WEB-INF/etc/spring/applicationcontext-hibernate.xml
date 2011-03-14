@@ -23,13 +23,29 @@
 
         <property name="mappingResources">
             <list>
-                <value>jbpm.repository.hbm.xml</value>
-                <value>jbpm.execution.hbm.xml</value>
-                <value>jbpm.history.hbm.xml</value>
-                <value>jbpm.task.hbm.xml</value>
-                <value>jbpm.identity.hbm.xml</value>
+                <!-- We have forked these files to activate Hibernate caching, make sure you sync them when updating
+                     jBPM. -->
+                <value>jbpm/hibernate/jbpm.repository.hbm.xml</value>
+                <value>jbpm/hibernate/jbpm.execution.hbm.xml</value>
+                <value>jbpm/hibernate/jbpm.history.hbm.xml</value>
+                <value>jbpm/hibernate/jbpm.task.hbm.xml</value>
+                <value>jbpm/hibernate/jbpm.identity.hbm.xml</value>
             </list>
         </property>
+
+        <property name="entityCacheStrategies">
+            <props>
+                <prop key="org.jahia.services.history.HistoryEntry">read-write</prop>
+            </props>
+        </property>
+
+        <property name="collectionCacheStrategies">
+           <props>
+             <prop key="org.jbpm.pvm.internal.repository.DeploymentImpl.resources">read-write</prop>
+             <prop key="org.jbpm.pvm.internal.repository.DeploymentImpl.objectProperties">read-write</prop>
+           </props>
+        </property>
+
         <property name="hibernateProperties">
 			<bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 				<property name="properties">

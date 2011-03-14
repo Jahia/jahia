@@ -834,10 +834,6 @@
         <mime-type>application/x-hdf</mime-type>
     </mime-mapping>
     <mime-mapping>
-        <extension>hqx</extension>
-        <mime-type>application/mac-binhex40</mime-type>
-    </mime-mapping>
-    <mime-mapping>
         <extension>htc</extension>
         <mime-type>text/x-component</mime-type>
     </mime-mapping>
@@ -1350,20 +1346,12 @@
         <mime-type>application/xslt+xml</mime-type>
     </mime-mapping>
     <mime-mapping>
-        <extension>xlsx</extension>
-        <mime-type>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mime-type>
-    </mime-mapping>
-    <mime-mapping>
         <extension>xul</extension>
         <mime-type>application/vnd.mozilla.xul+xml</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>xwd</extension>
         <mime-type>image/x-xwindowdump</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vsd</extension>
-        <mime-type>application/x-visio</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>wav</extension>

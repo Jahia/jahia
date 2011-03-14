@@ -119,8 +119,6 @@ public class ModuleHelper {
                     module = new BindedModule(id, path, divElement, m);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, divElement, m);
-                } else if (type.equals("linker")) {
-                    module = new LinkerModule(id, path, divElement, m);
                 }
                 allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
                 if (module != null) {

@@ -30,7 +30,13 @@
   </process-engine-context>
 
   <transaction-context>
-    <repository-session />
+    <!--repository-session /-->
+    <object class="org.jahia.services.workflow.jbpm.JahiaRepositorySessionImpl">
+      <field name="session"><ref type="org.hibernate.Session"/></field>
+      <field name="repositoryCache"><ref type="org.jbpm.pvm.internal.repository.RepositoryCache"/></field>
+      <field name="deployerManager"><ref type="org.jbpm.pvm.internal.repository.DeployerManager"/></field>
+    </object>
+
     <db-session />
 
     <message-session />

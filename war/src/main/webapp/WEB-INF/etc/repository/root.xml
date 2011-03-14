@@ -67,6 +67,9 @@
     </j:workflowRules>
 
     <permissions jcr:primaryType="jnt:permission">
+        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+          <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="viewer staging-viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        </j:acl>
         <repository-permissions jcr:primaryType="jnt:permission">
             <jcr:all_default jcr:primaryType="jnt:permission">
 
@@ -197,6 +200,10 @@
     </permissions>
     
     <roles jcr:primaryType="jnt:roles" >
+        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+          <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="viewer staging-viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        </j:acl>
+
         <visitor jcr:primaryType="jnt:role"
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
 

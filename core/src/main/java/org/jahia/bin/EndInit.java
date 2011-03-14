@@ -1,6 +1,7 @@
 package org.jahia.bin;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,6 +30,18 @@ public class EndInit extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         long initializationTime = System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime() ;
+        if (SettingsBean.getInstance().isDevelopmentMode()) {
+            logger.info("------------------------------------------------------------------------------------------------");
+            logger.info("D E V E L O P M E N T   M O D E   A C T I V E");
+            logger.info("");
+            logger.info("In development mode, Jahia will allow JSPs to be modified, modules to be re-deployed and other");
+            logger.info("modifications to happen immediately, but these DO have a performance impact. It is strongly ");
+            logger.info("recommended to switch to production mode when running performance tests or going live. The ");
+            logger.info("setting to change modes is called developmentMode in the jahia.properties configuration file.");
+        } else {
+            logger.info("------------------------------------------------------------------------------------------------");
+            logger.info("P R O D U C T I O N   M O D E   A C T I V E");
+        }
         logger.info("------------------------------------------------------------------------------------------------");
         logger.info("Jahia is now ready. Initialization completed in " + (initializationTime/1000) + " seconds");
         logger.info("------------------------------------------------------------------------------------------------");

@@ -103,6 +103,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                 }
                 // register listeners after the portal is started
                 ApplicationsManagerServiceImpl.getInstance().registerListeners();
+            } else {
+                logger.warn("Configuration file could not be found at location " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + ", Jahia will not start !");
             }
             Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, configExists ? SettingsBean
                     .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());

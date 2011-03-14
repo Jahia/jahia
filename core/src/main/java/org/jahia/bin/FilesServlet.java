@@ -48,6 +48,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 
+import javax.jcr.Binary;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
@@ -103,6 +104,7 @@ public class FilesServlet extends HttpServlet {
             String path = data[1];
             String v = data[2];
             String l = data[3];
+            String t = data[4];
 
             if (workspace != null && StringUtils.isNotEmpty(path)) {
                 JCRNodeWrapper n = getNode(data);
@@ -117,21 +119,35 @@ public class FilesServlet extends HttpServlet {
                         return;
                     }
         
-                    JCRFileContent fileContent = n.getFileContent();
-                    res.setContentType(fileContent.getContentType());
-                    int contentLength = (int) fileContent.getContentLength();
+                    JCRNodeWrapper content;
+
+                    if (StringUtils.isNotEmpty(t) && n.hasNode(t)) {
+                        content = n.getNode(t);
+                        if (!content.isNodeType(Constants.NT_RESOURCE)) {
+                            content = null;
+                        }
+                    } else {
+                        content = n.getNode(Constants.JCR_CONTENT);
+
+                    }
+
+                    res.setContentType(content.getProperty(Constants.JCR_MIMETYPE).getString());
+
+                    Binary binary = content.getProperty(Constants.JCR_DATA).getBinary();
+                    int contentLength = (int) binary.getSize();
                     res.setContentLength(contentLength);
-                    
+
                     ServletOutputStream os = res.getOutputStream();
                     if (lastModified != null) {
                         // set 'Last-Modified' response header
                         res.setDateHeader("Last-Modified", lastModified.getTime());
                     }
+
                     if (contentLength < cacheThreshold) {
-                        String cacheKey = workspace + ":" + path + ":" + (v==null ? "0" : v) + ":" + (l==null ? "" : l);
+                        String cacheKey = workspace + ":" + path + ":" + (v==null ? "0" : v) + ":" + (l==null ? "" : l) + ":" + (t==null ? "" : t);
                         byte[] b = (byte[]) cache.get(cacheKey);
                         if (b == null || b.length != contentLength) {
-                            InputStream is = fileContent.downloadFile();
+                            InputStream is = binary.getStream();
                             if(is!=null) {
                                 try {
                                     b = new byte[contentLength];
@@ -154,7 +170,7 @@ public class FilesServlet extends HttpServlet {
                             IOUtils.closeQuietly(os);
                         }
                     } else {
-                        InputStream is = fileContent.downloadFile();
+                        InputStream is = binary.getStream();
                         if(is== null) {
                             code = HttpServletResponse.SC_NOT_FOUND;
                             res.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -174,6 +190,11 @@ public class FilesServlet extends HttpServlet {
     
             code = HttpServletResponse.SC_NOT_FOUND;
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get file",e);
+
+            code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } finally {
             if (logger.isDebugEnabled()) {
                 logger.debug(
@@ -247,7 +268,7 @@ public class FilesServlet extends HttpServlet {
         }
 
         return workspace != null && path != null ? new String[] { workspace, path,
-                req.getParameter("v"), req.getParameter("l") } : BAD_DATA;
+                req.getParameter("v"), req.getParameter("l"), req.getParameter("t") } : BAD_DATA;
     }
 
 }

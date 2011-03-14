@@ -705,7 +705,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getThumbnailUrl(String name) {
-        return getWebdavUrl() + "/" + name;
+        return getUrl() + "?t=" +name;
     }
 
     /**

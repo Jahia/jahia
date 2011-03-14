@@ -35,8 +35,6 @@ package org.jahia.bin;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
@@ -45,6 +43,7 @@ import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -62,6 +61,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -322,7 +322,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             final String name = propertyWrapper.getName().replace(":", "_");
             if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
                 if (!propertyWrapper.isMultiple()) {
-                    map.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getWebdavUrl());
+                    map.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getUrl());
                 }
             } else {
                 if (!propertyWrapper.isMultiple()) {

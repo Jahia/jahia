@@ -13,7 +13,7 @@
         <div class="box2teaser-illustration" style="background-image:url(${image.node.url})"></div>
 
         <div class="box2teaser-text">${currentNode.properties.abstract.string}</div>
-        <div class="box2teaser-more"><a href="${url.base}${currentNode.properties.link.node.path}.html"><fmt:message key="jnt_teaser.readMore"/></a></div>
+        <div class="box2teaser-more"><a href="<c:url value='${url.base}${currentNode.properties.link.node.path}.html'/>"><fmt:message key="jnt_teaser.readMore"/></a></div>
         <div class="box2teaser-bottomright"></div>
         <div class="box2teaser-bottomleft"></div>
         <div class="clear"> </div>

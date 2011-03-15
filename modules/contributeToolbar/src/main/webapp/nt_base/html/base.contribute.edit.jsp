@@ -68,7 +68,7 @@
                 <label>${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}&nbsp;:</label>
             <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}${scriptPropName}"
-                  jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
+                  jcr:url="<c:url value='${url.base}${currentNode.path}'/>">${prop.string}</span>
             </p>
         </c:if>
     </c:forEach>
@@ -102,8 +102,8 @@
                         <c:choose>
                             <c:when test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
                                 <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                     jcr:url="${url.base}${currentNode.path}"
-                                     jeditabletreeselector:baseURL="${url.base}"
+                                     jcr:url="<c:url value='${url.base}${currentNode.path}"'/>
+                                     jeditabletreeselector:baseURL="<c:url value='${url.base}'/>"
                                      jeditabletreeselector:root="${renderContext.site.path}"
                                      jeditabletreeselector:nodetypes="nt:folder,nt:file,jnt:virtualsite"
                                      jeditabletreeselector:selectablenodetypes="nt:file"
@@ -113,7 +113,7 @@
                                 <span><fmt:message key="label.or"/></span>
 
                                 <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                     jcr:url="${url.base}${renderContext.mainResource.node.path}">
+                                     jcr:url="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
                                     <span><fmt:message key="add.file"/></span>
                                 </div>
                             </c:when>
@@ -121,13 +121,13 @@
                                 <jcr:propertyInitializers var="options" nodeType="${type.name}"
                                                           name="${propertyDefinition.name}"/>
                         <div jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
-                              jcr:url="${url.base}${currentNode.path}"
+                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
                               jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</div>
                             </c:when>
                             <c:otherwise>
                                 <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                     jcr:url="${url.base}${currentNode.path}"
-                                     jeditabletreeselector:baseURL="${url.base}"
+                                     jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
+                                     jeditabletreeselector:baseURL="<c:url value='${url.base}'/>"
                                      jeditabletreeselector:root="${renderContext.site.path}"
                                      jeditabletreeselector:nodetypes="jnt:content,jnt:page,jnt:virtualsite"
                                      jeditabletreeselector:selectablenodetypes="jnt:content,jntpage"
@@ -143,7 +143,7 @@
                                value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER ? 'dateTimeEdit' : 'dateEdit'}"/>
                         <div jcr:id="${propertyDefinition.name}" class="${dateTimePicker}${currentNode.identifier}"
                               id="${dateTimePicker}${currentNode.identifier}${scriptPropName}"
-                              jcr:url="${url.base}${currentNode.path}" jcr:value="${prop.string}">
+                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>" jcr:value="${prop.string}">
                             <c:if test="${not empty prop}">
                                 <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy HH:mm"/>
                             </c:if>
@@ -153,18 +153,18 @@
                         <jcr:propertyInitializers var="options" nodeType="${type.name}"
                                                   name="${propertyDefinition.name}"/>
                         <div jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
-                              jcr:url="${url.base}${currentNode.path}"
+                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
                               jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</div>
                     </c:when>
                     <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
                         <div jcr:id="${propertyDefinition.name}" class="ckeditorEdit${currentNode.identifier}"
                               id="ckeditorEdit${currentNode.identifier}${scriptPropName}"
-                              jcr:url="${url.base}${currentNode.path}">${prop.string}</div>
+                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>">${prop.string}</div>
                     </c:when>
                     <c:otherwise>
                         <div jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
                               id="edit${currentNode.identifier}${scriptPropName}"
-                              jcr:url="${url.base}${currentNode.path}">${prop.string}</div>
+                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>">${prop.string}</div>
                     </c:otherwise>
                 </c:choose>
             </c:if>

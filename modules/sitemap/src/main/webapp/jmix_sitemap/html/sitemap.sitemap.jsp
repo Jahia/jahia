@@ -30,7 +30,7 @@
 <c:if test="${level > 1}">
     <li>
 </c:if>
-<a href='<c:url value="${currentNode.path}.html" context="${url.base}"/>'>${currentNode.displayableName}</a>
+<a href='<c:url value="${url.base}${currentNode.path}.html"/>'>${currentNode.displayableName}</a>
 <c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:sitemap')}" var="child" varStatus="childStatus">
     <c:if test="${childStatus.first}">
         <ul <c:if test="${level eq 1}"><c:set var="nbSubItems" value="${jcr:getChildrenOfType(currentNode,'jmix:sitemap')}"/> id="primaryNav" class="col${fn:length(nbSubItems)}"</c:if>>

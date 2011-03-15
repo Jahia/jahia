@@ -43,7 +43,7 @@
         </c:otherwise>
     </c:choose>
     <c:set var="jsNodeName" value="${fn:replace(fn:replace(currentNode.name,'-','_'),'.','_')}"/>
-    <form action="${formAction}" method="post"
+    <form action="<c:url value='${formAction}'/>" method="post"
     <c:if test="${!(resourceNodeType eq 'jnt:file' || resourceNodeType eq 'jnt:folder')}">
           id="${jsNodeName}${scriptTypeName}"
     </c:if>
@@ -61,7 +61,7 @@
             </c:when>
             <c:otherwise>
                 <input type="hidden" name="nodeType" value="${type.name}"/>
-                <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+                <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
                 <%-- Define the output format for the newly created node by default html or by redirectTo--%>
                 <input type="hidden" name="newNodeOutputFormat" value="html"/>
             </c:otherwise>

@@ -291,7 +291,7 @@
                         return false;
                     }
 
-                    $.post('${url.base}${user.path}.changePassword.do',
+                    $.post('<c:url value="${url.base}${user.path}.changePassword.do"/>',
                             $(this).serializeArray(), function(data) {
                         alert(data['errorMessage']);
                         if (data['result']=='success') {

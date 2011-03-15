@@ -30,9 +30,9 @@
     <c:set var="blogHome" value="${url.current}"/>
 </c:if>
 <c:if test="${jcr:hasPermission(currentNode,'jcr:removeNode')}">
-    <form action="${url.base}${currentNode.path}" method="post"
+    <form action="<c:url value='${url.base}${currentNode.path}'/>" method="post"
           id="jahia-blog-article-delete-${currentNode.UUID}">
-        <input type="hidden" name="redirectTo" value="${url.base}${jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page').path}"/>
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${jcr:getParentOfType(renderContext.mainResource.node, "jnt:page").path}'/>"/>
             <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="methodToCall" value="delete"/>
@@ -43,7 +43,7 @@
     <c:if test="${jcr:hasPermission(currentNode,'jcr:write')}">
         <span class="posteditdelete">
             <a class="postdelete"  href="#" onclick="document.getElementById('jahia-blog-article-delete-${currentNode.UUID}').submit();"><fmt:message key="blog.label.delete"/></a>
-            <a class="postedit" href="${url.base}${currentResource.node.path}.blog-edit.html"><fmt:message key="blog.label.edit"/></a>
+            <a class="postedit" href="<c:url value='${url.base}${currentResource.node.path}.blog-edit.html'/>"><fmt:message key="blog.label.edit"/></a>
         </span>
     </c:if>
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
@@ -66,10 +66,10 @@
     <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
     <p class="post-info-links">
         <c:if test="${numberOfPosts == 0}">
-            <a class="comment_count" href="${url.current}#comments">0&nbsp;<fmt:message key="blog.label.comments"/></a>
+            <a class="comment_count" href="<c:url value='${url.current}#comments'/>">0&nbsp;<fmt:message key="blog.label.comments"/></a>
         </c:if>
         <c:if test="${numberOfPosts > 0}">
-            <a class="comment_count" href="${url.current}#comments">${numberOfPosts}&nbsp;<fmt:message key="blog.label.comments"/></a>
+            <a class="comment_count" href="<c:url value='${url.current}#comments'/>">${numberOfPosts}&nbsp;<fmt:message key="blog.label.comments"/></a>
         </c:if>
     </p>
  <div class="clear"></div>

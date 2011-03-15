@@ -41,7 +41,7 @@
 			<a class="personEnlarge" id="apict${currentNode.identifier}" href="#pict${currentNode.identifier}"> <fmt:message key='FullSizePicture'/></a>
             <a class="personBiographiy" href="javascript:;" onclick="ShowHideLayer('${currentNode.identifier}');"><fmt:message
                     key='jnt_person.biography'/></a>
-            <a class="personBiographiy" href="${url.base}${currentNode.path}.vcf"><fmt:message
+            <a class="personBiographiy" href="<c:url value='${url.base}${currentNode.path}.vcf'/>"><fmt:message
                     key='jnt_person.vcard'/></a>
         </div>
          <div id="collapseBox${currentNode.identifier}" class="collapsible" >

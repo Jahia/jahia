@@ -11,4 +11,4 @@
 
 
 <div>${fn:substring(currentNode.properties.body.string,0,350)}... <br/>
-<fmt:message key='readFullStory'/> : <a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name='jcr:title'/></a></div>
+<fmt:message key='readFullStory'/> : <a href="<c:url value='${url.base}${currentNode.path}.detail.html'/>"><jcr:nodeProperty node="${currentNode}" name='jcr:title'/></a></div>

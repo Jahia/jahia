@@ -10,9 +10,9 @@
     <jcr:propertyInitializers nodeType="jnt:task" name="assignee" var="users"/>
 
 
-    <form method="post" action="${url.base}${currentNode.path}/*">
+    <form method="post" action="<c:url value='${url.base}${currentNode.path}/*'/>">
         <input type="hidden" name="nodeType" value="jnt:task">
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}">
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
         <fieldset>
             <legend>
                 <fmt:message key="jnt_task.newTask"/>

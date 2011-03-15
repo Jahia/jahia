@@ -19,13 +19,13 @@
         <div class='itemImage itemImageLeft'>
 			<jcr:nodeProperty var="picture" node="${fromUser}" name="j:picture"/>
 			<c:if test="${not empty picture}">
-	            <a href="${url.base}${fromUser.path}.html"><img
+	            <a href="<c:url value='${url.base}${fromUser.path}.html'/>"><img
 	                    src="${picture.node.thumbnailUrls['avatar_120']}"
 	                    alt="${userNode.properties.title.string} ${userNode.properties.firstname.string} ${userNode.properties.lastname.string}"
 	                    width="64"
 	                    height="64"/></a>
 	        </c:if>
-	        <c:if test="${empty picture}"><a href="${url.base}${fromUser.path}.html">
+	        <c:if test="${empty picture}"><a href="<c:url value='${url.base}${fromUser.path}.html'/>">
 				<img alt="" src="${url.currentModule}/images/friendbig.png" alt="friend" border="0"/></a></c:if>
         </div>
     </div>
@@ -37,7 +37,7 @@
     <c:set var="targetNode" value="${currentNode.properties['j:targetNode'].node}" />
     <p class="message">${fn:escapeXml(message)}&nbsp;
     <c:if test="${not empty targetNode}">
-        <a href="${url.base}${targetNode.path}.html">${fn:escapeXml(targetNode.propertiesAsString['jcr:title'])}</a>
+        <a href="<c:url value='${url.base}${targetNode.path}.html'/>">${fn:escapeXml(targetNode.propertiesAsString['jcr:title'])}</a>
     </c:if>
     </p>
 

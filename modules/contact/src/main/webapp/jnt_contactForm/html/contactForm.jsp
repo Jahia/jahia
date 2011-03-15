@@ -11,9 +11,9 @@
         <c:set var="disabled" value='disabled="true"' />
     </c:if>
     <template:tokenizedForm>
-    <form action="${url.base}${currentNode.path}/*" method="post">
+    <form action="<c:url value='${url.base}${currentNode.path}/*'/>" method="post">
         <input type="hidden" name="nodeType" value="jnt:contact"/>
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
         <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <c:set var="props" value="${currentNode.properties}"/>
@@ -152,6 +152,6 @@
         </div>
     </fieldset>
 <script type="text/javascript">
-    $('#results-${currentNode.identifier}').load('${url.baseLive}${currentNode.path}.results.html.ajax');
+    $('#results-${currentNode.identifier}').load('<c:url value="${url.baseLive}${currentNode.path}.results.html.ajax"/>');
 </script>
 </c:if>

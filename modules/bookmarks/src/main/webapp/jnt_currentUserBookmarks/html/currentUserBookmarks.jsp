@@ -38,7 +38,7 @@
 
 <c:if test="${currentResource.workspace eq 'live'}">
     <script type="text/javascript">
-        $('#bookmarkList${user.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax${ps}');
+        $('#bookmarkList${user.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax${ps}"/>');
     </script>
 </c:if>
 
@@ -48,9 +48,9 @@
     </c:if>
     <script type="text/javascript">
         function deleteBookmark(source) {
-            $.post('${url.base}' + source, {"methodToCall":"delete"},
+            $.post('<c:url value="${url.base}"/>' + source, {"methodToCall":"delete"},
                   function(result) {
-                      $('#bookmarkList${user.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax${ps}');
+                      $('#bookmarkList${user.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax${ps}"/>');
                   },'json');
             }
     </script>

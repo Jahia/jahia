@@ -54,7 +54,7 @@
                     $("#messages${id}").text("Saving...").stop().css("opacity", 1).fadeIn(30);
 
                     // Send request to the server using POST method
-                    $.post("${url.base}${bindedComponent.path}", {'j:lastVote': value,methodToCall:"put",
+                    $.post("<c:url value='${url.base}${bindedComponent.path}'/>", {'j:lastVote': value,methodToCall:"put",
                         'jcr:mixinTypes':['jmix:rating'],cookieName:"rated${bindedComponent.identifier}",
                         cookieValue:"${currentNode.identifier}"}, function(
                             result) {
@@ -112,7 +112,7 @@
         </div>
 
 		<div class="rating-R"><strong><fmt:message key="label.rateThis"/>:</strong> <span id="caption${id}"></span>
-            <form id="rat${id}" action="${url.base}${bindedComponent.path}" method="post">
+            <form id="rat${id}" action="<c:url value='${url.base}${bindedComponent.path}'/>" method="post">
                 <select name="j:lastVote">
                     <option value="1"><fmt:message key="label.rateThis.poor"/></option>
                     <option value="2"><fmt:message key="label.rateThis.fair"/></option>

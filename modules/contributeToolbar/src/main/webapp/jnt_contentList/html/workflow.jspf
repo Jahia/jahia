@@ -13,7 +13,7 @@
                 </c:when>
                 <c:otherwise>
                     <input class="workflow" type="button" value="<fmt:message key="label.publish"/>"
-                           onclick="var callback = '${animatedWFs}${animatedTasks}'+'animatedcollapse.reinit();';startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}.ajax',callback)"/></c:otherwise>
+                           onclick="var callback = '${animatedWFs}${animatedTasks}'+'animatedcollapse.reinit();';startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '${url.current}.ajax',callback)"/></c:otherwise>
             </c:choose>
         </c:forEach>
     </c:if>
@@ -32,7 +32,7 @@
             <c:otherwise>
                 <c:forEach items="${task.outcomes}" var="outcome" varStatus="status">
                     <input class="workflowaction" type="button" value="${task.displayOutcomes[status.index]}"
-                           onclick="var callback = '${animatedWFs}${animatedTasks}'+'animatedcollapse.reinit();';executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}.ajax',callback)"/>
+                           onclick="var callback = '${animatedWFs}${animatedTasks}'+'animatedcollapse.reinit();';executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '${url.current}.ajax',callback)"/>
                 </c:forEach>
             </c:otherwise>
         </c:choose>

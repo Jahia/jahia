@@ -165,7 +165,7 @@ public class GWTInitializer {
         // put live workspace url
         if (request.getAttribute("url") != null) {
             URLGenerator url = (URLGenerator) request.getAttribute("url");
-            params.put(JahiaGWTParameters.BASE_URL, url.getBase());
+            params.put(JahiaGWTParameters.BASE_URL, url.getContext() + url.getBase());
             params.put(JahiaGWTParameters.STUDIO_URL, url.getStudio());
             addLanguageSwitcherLinks(renderContext, params, url);
         } else {

@@ -24,45 +24,48 @@
     <c:set var="targetNode" value="${currentNode.properties.target.node}"/>
 </c:if>
 <c:if test="${jcr:isAllowedChildNodeType(targetNode, 'jnt:file')}">
-<form class="file_upload" id="file_upload${currentNode.identifier}" action="${url.base}${targetNode.path}" method="POST" enctype="multipart/form-data"  accept="application/json">
-    <div id="file_upload_container">
-    	<input type="file" name="file" multiple>
-	    <button><fmt:message key="label.upload"/></button>
-	    <div><fmt:message key="label.dropHere"/></div>
-    </div>
+    <form class="file_upload" id="file_upload${currentNode.identifier}" action="<c:url value='${url.base}${targetNode.path}'/>" method="POST" enctype="multipart/form-data"  accept="application/json">
+        <div id="file_upload_container">
+            <input type="file" name="file" multiple>
+            <button><fmt:message key="label.upload"/></button>
+            <div><fmt:message key="label.dropHere"/></div>
+        </div>
+        <c:url var="targetNodePath" value="${url.base}${linked.path}.html.ajax">
+            <c:param name="targetNodePath" value="${targetNode.path}"/>
+        </c:url>
 
-</form>
-<table id="files${currentNode.identifier}" class="table"></table>
-<script>
-    /*global $ */
-    $(function () {
-        $('#file_upload${currentNode.identifier}').fileUploadUI({
-            namespace: 'file_upload_${currentNode.identifier}',
-            onComplete: function (event, files, index, xhr, handler) {
-                $('#fileList${linked.identifier}').load('${url.base}${linked.path}.html.ajax?targetNodePath=${targetNode.path}');
-            },
-            uploadTable: $('#files${currentNode.identifier}'),
-			dropZone: $('#file_upload_container'),
-			beforeSend: function (event, files, index, xhr, handler, callBack) {
-				handler.formData = {
-					nodeType:"jnt:file",
-					returnContentType:"json",
-					redirectTo:"${url.base}${renderContext.mainResource.node.path}",
-					newNodeOutputFormat:"${renderContext.mainResource.template}.html"
-				};
-				callBack();
-			},
-            buildUploadRow: function (files, index) {
-                return $('<tr><td>' + files[index].name + '<\/td>' +
-                        '<td class="file_upload_progress"><div><\/div><\/td>' +
-                        '<td class="file_upload_cancel">' +
-                        '<button class="ui-state-default ui-corner-all" title="Cancel">' +
-                        '<span class="ui-icon ui-icon-cancel">Cancel<\/span>' +
-                        '<\/button><\/td><\/tr>');
-            }
+    </form>
+    <table id="files${currentNode.identifier}" class="table"></table>
+    <script>
+        /*global $ */
+        $(function () {
+            $('#file_upload${currentNode.identifier}').fileUploadUI({
+                namespace: 'file_upload_${currentNode.identifier}',
+                onComplete: function (event, files, index, xhr, handler) {
+                    $('#fileList${linked.identifier}').load('${targetNodePath}');
+                },
+                uploadTable: $('#files${currentNode.identifier}'),
+                dropZone: $('#file_upload_container'),
+                beforeSend: function (event, files, index, xhr, handler, callBack) {
+                    handler.formData = {
+                        nodeType:"jnt:file",
+                        returnContentType:"json",
+                        redirectTo:"<c:url value='${url.base}${renderContext.mainResource.node.path}'/>",
+                        newNodeOutputFormat:"${renderContext.mainResource.template}.html"
+                    };
+                    callBack();
+                },
+                buildUploadRow: function (files, index) {
+                    return $('<tr><td>' + files[index].name + '<\/td>' +
+                            '<td class="file_upload_progress"><div><\/div><\/td>' +
+                            '<td class="file_upload_cancel">' +
+                            '<button class="ui-state-default ui-corner-all" title="Cancel">' +
+                            '<span class="ui-icon ui-icon-cancel">Cancel<\/span>' +
+                            '<\/button><\/td><\/tr>');
+                }
+            });
         });
-    });
-</script>
+    </script>
 </c:if>
 <c:if test="${!jcr:isAllowedChildNodeType(targetNode, 'jnt:file')}">
     <c:if test="${renderContext.editMode}">

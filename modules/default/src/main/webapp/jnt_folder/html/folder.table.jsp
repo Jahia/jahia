@@ -22,7 +22,7 @@
     <tr>
         <th width="5%">
             <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
-                <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16"
+                <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16" width="16"
                                                                                          border="0"
                                                                                          style="cursor: pointer;"
                                                                                          title="parent" alt="parent"
@@ -65,7 +65,7 @@
                     <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
                          src="${url.currentModule}/images/icons/locked.gif">
                 </c:if>
-                <a href="${url.base}${child.path}.html">
+                <a href="<c:url value='${url.base}${child.path}.html'/>">
                     ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
                 </a>
             </div>

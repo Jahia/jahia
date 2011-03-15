@@ -75,10 +75,10 @@
 </c:if>
 <div class="Form FormBuilder">
     <c:if test="${not renderContext.editMode}">
-    <form action="${action}" method="post" id="${currentNode.name}">
+    <form action="<c:url value='${action}'/>" method="post" id="${currentNode.name}">
         </c:if>
         <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
         <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <c:if test="${not empty chainActive}">

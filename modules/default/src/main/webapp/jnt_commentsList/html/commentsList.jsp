@@ -26,7 +26,7 @@
             <template:addResources type="javascript" resources="jquery.js"/>
             <div id="commentsList${bindedComponent.identifier}"></div>
             <script type="text/javascript">
-                $('#commentsList${bindedComponent.identifier}').load('${url.baseLive}${bindedComponent.path}/comments.hidden.commentsoutoflivemode.html.ajax');
+                $('#commentsList${bindedComponent.identifier}').load('<c:url value="${url.baseLive}${bindedComponent.path}/comments.hidden.commentsoutoflivemode.html.ajax"/>');
             </script>
         </c:when>
         <c:otherwise>

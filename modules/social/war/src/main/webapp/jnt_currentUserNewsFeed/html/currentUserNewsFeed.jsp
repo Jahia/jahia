@@ -52,11 +52,11 @@
             // validate and process form here
             var updateText = $("textarea#statusUpdateText").val();
             // alert('Sending text ' + updateText);
-            submitStatusUpdate('${url.base}', '${currentNode.path}', '${user.path}', '${user.identifier}', updateText);
+            submitStatusUpdate('<c:url value="${url.base}"/>', '${currentNode.path}', '${user.path}', '${user.identifier}', updateText);
             return false;
         });
 
-        loadActivities('${url.base}', '${currentNode.path}', '${user.path}');
+        loadActivities('<c:url value="${url.base}"/>', '${currentNode.path}', '${user.path}');
 
     }
 

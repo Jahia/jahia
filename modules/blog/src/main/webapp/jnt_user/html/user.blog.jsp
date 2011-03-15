@@ -42,7 +42,7 @@
         </c:if>
     </div>
     <div class="aboutMeBody"><!--start aboutMeBody -->
-        <h5><a href="${url.base}${currentNode.path}.html">${person}</a></h5>
+        <h5><a href="<c:url value='${url.base}${currentNode.path}.html'/>">${person}</a></h5>
 
         <p class="aboutMeAge"><fmt:message
                                     key="blog.profile.age"/>: <utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/> <fmt:message key="blog.profile.years"/></p>

@@ -17,7 +17,7 @@
               <input type="hidden" name="redirect" value="${requestScope['javax.servlet.error.request_uri']}"/>
           </c:when>
           <c:otherwise>
-              <input type="hidden" name="redirect" value="${url.base}${renderContext.mainResource.node.path}.html"/>
+              <input type="hidden" name="redirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
           </c:otherwise>
       </c:choose>
     <input type="hidden" name="<%=LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER%>" value="true"/>

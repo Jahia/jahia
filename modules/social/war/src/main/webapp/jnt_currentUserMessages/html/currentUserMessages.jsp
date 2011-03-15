@@ -48,7 +48,7 @@
             $.ajax({
                 type        : "POST",
                 cache       : false,
-                url         : '${url.base}${user.path}.sendmessage.do',
+                url         : '<c:url value="${url.base}${user.path}.sendmessage.do"/>',
                 data        : $(this).serializeArray(),
                 success     : function(data) {
                     alert("<fmt:message key='message.messageSent'/>");
@@ -69,7 +69,7 @@
             e.preventDefault();
             var msgId = $(this).attr('info');
             if (confirm("<fmt:message key='message.removeSocialMessage.confirm'/>")) {
-                removeSocialMessage('${url.base}/${user.path}', msgId,
+                removeSocialMessage('<c:url value="${url.base}/${user.path}"/>', msgId,
                         function() {
                             $("#social-message-" + msgId).remove();
                             if ($("div.social-message-detail div#social-message-detail-" + msgId).length > 0) {

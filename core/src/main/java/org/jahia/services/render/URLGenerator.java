@@ -119,7 +119,7 @@ public class URLGenerator {
      * Set workspace url as attribute of the current request
      */
     protected void initURL() {
-        base = getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+        base = context.getServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
 
         final String resourcePath = context.getMainResource().getNode().getPath() + ((!"default".equals(context.getMainResource().getTemplate()))?"."+context.getMainResource().getTemplate()+".":".") + context.getMainResource().getTemplateType();
 

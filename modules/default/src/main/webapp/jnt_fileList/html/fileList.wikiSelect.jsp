@@ -40,7 +40,10 @@
                         </div>
                     </c:if>
                     <c:if test="${jcr:hasPermission(subchild,'jcr:removeNode')}">
-                        <form action="${url.base}${subchild.path}" method="post"
+                        <c:url var="targetNodePath" value="${url.base}${currentNode.path}.html.ajax">
+                            <c:param name="targetNodePath" value="${targetNode.path}"/>
+                        </c:url>
+                        <form action="<c:url value='${url.base}${subchild.path}'/>" method="post"
                               id="jahia-wiki-item-delete-${subchild.UUID}">
                             <input type="hidden" name="methodToCall" value="delete"/>
                             <button><fmt:message key="label.delete"/></button>
@@ -49,7 +52,7 @@
                                     // bind 'myForm' and provide a simple callback function
                                     var options = {
                                         success: function() {
-                                            $('#fileList${currentNode.identifier}').load('${url.base}${currentNode.path}.html.ajax?targetNodePath=${targetNode.path}');
+                                            $('#fileList${currentNode.identifier}').load('${targetNodePath}');
                                         }
                                     }
                                     $('#jahia-wiki-item-delete-${subchild.UUID}').ajaxForm(options);

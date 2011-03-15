@@ -12,7 +12,7 @@
 
 
 <div class="newsListItem"><!--start newsListItem -->
-    <h4><a href="${url.base}${currentNode.path}.html"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
+    <h4><a href="<c:url value='${url.base}${currentNode.path}.html'/>"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
 
     <p class="newsInfo">
         <span class="newsLabelDate"><fmt:message key="label.date"/>:</span>
@@ -24,13 +24,13 @@
     </p>
 
     <c:if test="${not empty newsImage}">
-        <div class="newsImg"><a href="${url.base}${currentNode.path}.html"><img src="${newsImage.node.url}"/></a></div>
+        <div class="newsImg"><a href="<c:url value='${url.base}${currentNode.path}.html'/>"><img src="${newsImage.node.url}"/></a></div>
     </c:if>
     <p class="newsResume">
         ${functions:abbreviate(functions:removeHtmlTags(currentNode.properties.desc.string),400,450,'...')}
     </p>
 
-    <div class="more"><span><a href="${url.base}${currentNode.path}.html"><fmt:message key="label.read"/>: <jcr:nodeProperty
+    <div class="more"><span><a href="<c:url value='${url.base}${currentNode.path}.html'/>"><fmt:message key="label.read"/>: <jcr:nodeProperty
             node="${currentNode}" name="jcr:title"/></a></span></div>
     <div class="clear"></div>
 </div>

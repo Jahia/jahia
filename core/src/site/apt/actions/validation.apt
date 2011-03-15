@@ -24,9 +24,9 @@ Jahia Actions Framework - Validation
 </template:addResources>
 
 <template:tokenizedForm>
-    <form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
+    <form action="<c:url value='${url.base}${bindedComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
         <input type="hidden" name="nodeType" value="jnt:post"/>
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
         <div id="formGenericComment">
@@ -75,7 +75,7 @@ Jahia Actions Framework - Validation
  First of all you design your form classically
 
 --------------------------------
-    <form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
+    <form action="<c:url value='${url.base}${bindedComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
         <div id="formGenericComment">
             <fieldset>
                 <c:if test="${not renderContext.loggedIn}">
@@ -115,7 +115,7 @@ Jahia Actions Framework - Validation
 
 ---------------------------------
 <input type="hidden" name="nodeType" value="jnt:post"/>
-<input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+<input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
 <input type="hidden" name="newNodeOutputFormat" value="html"/>
 <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
 ---------------------------------

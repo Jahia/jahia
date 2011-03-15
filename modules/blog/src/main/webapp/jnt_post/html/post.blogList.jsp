@@ -11,7 +11,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<a class="atopblogcomments" href="${url.base}${currentNode.parent.parent.path}.html"><jcr:nodeProperty
+<a class="atopblogcomments" href="<c:url value='${url.base}${currentNode.parent.parent.path}.html'/>"><jcr:nodeProperty
         node="${jcr:getParentOfType(currentNode,'jnt:page')}"
         name="jcr:title"/>&nbsp;-&nbsp;<jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a>
 <jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/>

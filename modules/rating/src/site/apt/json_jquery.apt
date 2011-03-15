@@ -43,8 +43,8 @@ rating
 
 +------------------------------------
 // Send request to the server using POST method
-$.post("${url.base}${currentNode.path}",
-{'j:lastVote': value, redirectTo:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"},
+$.post("<c:url value='${url.base}${currentNode.path}'/>",
+{'j:lastVote': value, redirectTo:"<c:url value='${url.base}${renderContext.mainResource.node.path}'/>",newNodeOutputFormat:"html",methodToCall:"put"},
  function(result) {
     // Select stars from "Average rating" control to match the returned average rating value
     $("#avg").stars("select", Math.round(result.${currentNode.name}.j_sumOfVotes/result.${currentNode.name}.j_nbOfVotes));

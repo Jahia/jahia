@@ -18,7 +18,7 @@
         <template:addCacheDependency uuid="${currentNode.properties.link.string}"/>
         <c:if test="${not empty currentNode.properties.link.node}">
             <div class="more">
-                <span><a href="${url.base}${currentNode.properties.link.node.path}.html"><fmt:message key="jnt_teaser.readMore"/></a></span>
+                <span><a href="<c:url value='${url.base}${currentNode.properties.link.node.path}.html'/>"><fmt:message key="jnt_teaser.readMore"/></a></span>
             </div>
         </c:if>
     </div>

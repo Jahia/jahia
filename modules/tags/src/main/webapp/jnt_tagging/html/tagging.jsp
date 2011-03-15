@@ -88,7 +88,7 @@
 
     </script>
     <c:if test="${renderContext.user.name != 'guest'}">
-        <form action="${url.base}${bindedComponent.path}" method="post">
+        <form action="<c:url value='${url.base}${bindedComponent.path}'/>" method="post">
             <label><fmt:message key="label.add.tags"/></label>
             <input type="hidden" name="methodToCall" value="put"/>
             <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>

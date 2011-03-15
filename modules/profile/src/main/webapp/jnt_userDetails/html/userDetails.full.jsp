@@ -62,7 +62,7 @@
         &nbsp;</c:if>
     </p>
     <c:if test="${renderContext.user.username == user.name}">
-      <div class="divButtonRight"><a class="aButton" href="${url.base}${user.path}.user-private.html"><span>Edit my profile</span></a></div>
+      <div class="divButtonRight"><a class="aButton" href="<c:url value='${url.base}${user.path}.user-private.html'/>"><span>Edit my profile</span></a></div>
     </c:if>
     <c:if test="${fn:contains(publicPropertiesAsString, 'j:organization')}">
       <p><span class="user-label">

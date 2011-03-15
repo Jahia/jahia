@@ -16,7 +16,7 @@
 <fieldset>
     <legend><strong>${fn:escapeXml(currentNode.name)}</strong></legend>
     <c:if test="${not empty currentNode.parent}">
-        <c:url var="urlValue" value="${currentNode.parent.path}.raw?${pageContext.request.queryString}" context="${url.base}"/>
+        <c:url var="urlValue" value="${url.base}${currentNode.parent.path}.raw?${pageContext.request.queryString}"/>
         <a href="${urlValue}">[..]</a>
     </c:if>
     <p>
@@ -57,7 +57,7 @@
         <ul>
             <c:if test="${functions:length(currentNode.nodes) == 0}"><li>No child nodes present</li></c:if>
             <c:forEach items="${currentNode.nodes}" var="child">
-                <c:url var="urlValue" value="${child.path}.raw?${pageContext.request.queryString}" context="${url.base}"/>
+                <c:url var="urlValue" value="${url.base}${child.path}.raw?${pageContext.request.queryString}"/>
                 <li><a href="${urlValue}">${fn:escapeXml(child.name)}</a> - types : ${fn:escapeXml(child.nodeTypes)}</li>
             </c:forEach>
         </ul>

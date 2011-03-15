@@ -9,7 +9,7 @@
 <jcr:nodeProperty node="${currentNode}" name="text" var="text"/>
 <item>
     <title>${title.string}</title>
-    <link>${url.base}${currentResource.node.path}.html</link>
+    <link><c:url value='${url.base}${currentResource.node.path}.html'/> </link>
     <description>${text.string}</description>
     <pubDate>${created.time}</pubDate>
     <dc:date>${created.time}</dc:date>

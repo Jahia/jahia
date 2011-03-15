@@ -39,7 +39,7 @@
                         </c:if>
                         <jcr:nodeProperty node="${member}" name="jcr:title" var="title"/>
                         <c:set var="params" value=""/>
-                        <a href="${url.base}${member.path}.html${params}"><strong>
+                        <a href="<c:url value='${url.base}${member.path}.html${params}'/>"><strong>
                         <c:if test="${not empty title}">
                             ${title.string}&nbsp(${member.name})
                         </c:if>

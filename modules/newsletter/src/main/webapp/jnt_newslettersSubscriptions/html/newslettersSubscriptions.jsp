@@ -158,14 +158,14 @@
                 <p><fmt:message key="label.unsubscribe.from">
                     <fmt:param value="${target.displayableName}"/>
                 </fmt:message>
-                &nbsp;<a href="#unsubscribe" onclick="jahiaUnsubscribe('${url.base}${target.path}.unsubscribe.do'); return false;" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='/icons/unsubscribe.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.unsubscribe'/>" height="16" width="16"/></a>
+                &nbsp;<a href="#unsubscribe" onclick="jahiaUnsubscribe('<c:url value="${url.base}${target.path}.unsubscribe.do"/>'); return false;" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='/icons/unsubscribe.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.unsubscribe'/>" height="16" width="16"/></a>
                 </p>
             </c:if>
             <c:if test="${not newsletter:hasSubscribed(target, renderContext.user)}">
                 <p><fmt:message key="label.subscribe.to">
                     <fmt:param value="${target.displayableName}"/>
                 </fmt:message>
-                &nbsp;<a href="#subscribe" onclick="jahiaSubscribe('${url.base}${target.path}.subscribe.do'); return false;" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
+                &nbsp;<a href="#subscribe" onclick="jahiaSubscribe('<c:url value="${url.base}${target.path}.subscribe.do"/>'); return false;" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
                 </p>
             </c:if>
 		</c:if>
@@ -180,7 +180,7 @@
 			<div id="subscribeFormPanel-${currentNode.identifier}" style="width: 350px; height: ${130 + fn:length(currentNode.properties['j:fields'])*50}px;">
 			    <div class="popup-bodywrapper">
 			        <h3 class="boxmessage-title"><fmt:message key='label.subscribe'/>&nbsp;${subscribeTitle}</h3>
-			        <form class="formMessage jahiaSubscribeForm" id="subscribeForm-${currentNode.identifier}" method="post" action="<c:url value='${target.path}.subscribe.do' context='${url.base}'/>">
+			        <form class="formMessage jahiaSubscribeForm" id="subscribeForm-${currentNode.identifier}" method="post" action="<c:url value='${url.base}${target.path}.subscribe.do' />">
 			            <input type="hidden" name="j:to" id="destinationUserKey" value="" />
 			            <fieldset>
 			                <p>
@@ -206,7 +206,7 @@
 			<div id="unsubscribeFormPanel-${currentNode.identifier}" style="width: 350px;height: 150px;">
 			    <div class="popup-bodywrapper">
 			        <h3 class="boxmessage-title"><fmt:message key='label.unsubscribe'/>&nbsp;${subscribeTitle}</h3>
-			        <form class="formMessage jahiaUnsubscribeForm" id="unsubscribeForm-${currentNode.identifier}" method="post" action="<c:url value='${target.path}.unsubscribe.do' context='${url.base}'/>">
+			        <form class="formMessage jahiaUnsubscribeForm" id="unsubscribeForm-${currentNode.identifier}" method="post" action="<c:url value='${url.base}${target.path}.unsubscribe.do'/>">
 			            <input type="hidden" name="j:to" id="destinationUserKey" value="" />
 			            <fieldset>
 			                <p>

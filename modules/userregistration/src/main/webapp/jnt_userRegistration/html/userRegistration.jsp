@@ -60,7 +60,7 @@
         });
     </script>
     <div class="Form">
-    <form method="post" action="<c:url value='${currentNode.path}.newUser.do' context='${url.base}'/>" name="newUser" id="newUser">
+    <form method="post" action="<c:url value='${url.base}${currentNode.path}.newUser.do'/>" name="newUser" id="newUser">
         <input type="hidden" name="userredirectpage" value="${currentNode.properties['userRedirectPage'].node.path}"/>
         <c:if test="${not empty currentNode.properties['from']}">
             <input type="hidden" name="from" value="${currentNode.properties['from'].string}"/>

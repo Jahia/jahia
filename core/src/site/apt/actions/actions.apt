@@ -76,10 +76,10 @@ Calling an Action from your form
 </template:addResources>
 
 <template:tokenizedForm>
-    <form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
+    <form action="<c:url value='${url.base}${bindedComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
 
         <input type="hidden" name="nodeType" value="jnt:post"/>
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
 
@@ -135,7 +135,7 @@ Calling an Action from your form
  Here we see that for calling the Action we use simply the Action name in the url of the form action.
 
 -------------------------------------
-<form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
+<form action="<c:url value='${url.base}${bindedComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
 -------------------------------------
 
 Form parameters and file uploading

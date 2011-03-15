@@ -11,7 +11,7 @@
  <jcr:nodeProperty node="${currentNode}" name="image" var="newsImage"/>
 
 <div class="newsListItem"><!--start newsListItem -->
-    <h4><a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
+    <h4><a href="<c:url value='${url.base}${currentNode.path}.detail.html'/>"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
 
     <p class="newsInfo">
         <span class="newsLabelDate"><fmt:message key="label.date"/> :</span>
@@ -22,13 +22,13 @@
             </span>
     </p>
 
-    <div class="newsImg"><a href="${url.base}${currentNode.path}.detail.html"><img src="${newsImage.node.url}"/></a>
+    <div class="newsImg"><a href="<c:url value='${url.base}${currentNode.path}.detail.html'/>"><img src="${newsImage.node.url}"/></a>
     </div>
     <div class="newsResume">
         ${newsDesc.string}
     </div>
 
-    <div class="more"><span><a href="${url.base}${currentNode.path}.detail.html">
+    <div class="more"><span><a href="<c:url value='${url.base}${currentNode.path}.detail.html'/>">
         <fmt:message key="label.read"/>: <jcr:nodeProperty node="${currentNode}" name="jcr:title"/>
     </a></span></div>
     <div class="clear"></div>

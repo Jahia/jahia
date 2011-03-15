@@ -41,7 +41,7 @@
 
 <form name="myform" method="post">
     <input type="hidden" name="nodeType" value="jnt:task">
-    <input type="hidden" name="redirectTo" value="${url.base}${currentNode.path}.html${ps}">
+    <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${currentNode.path}.html${ps}'/>">
     <input type="hidden" name="state">
 </form>
 
@@ -49,7 +49,7 @@
 <script type="text/javascript">
     function send(task, state) {
         form = document.forms['myform'];
-        form.action = '${url.base}' + task;
+        form.action = '<c:url value="${url.base}"/>' + task;
         form.elements.state.value = state;
         form.submit();
     }
@@ -71,7 +71,7 @@
         <c:forEach items="${nodes}" var="task"
                    begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
             <li>
-            <a href="${url.base}${task.path}.html">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a>
+            <a href="<c:url value='${url.base}${task.path}.html'/>>">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a>
 
                 <c:choose>
                 <c:when test="${task.propertiesAsString.state == 'active'}">
@@ -139,7 +139,7 @@
                                 <c:otherwise>
                                     <c:forEach items="${task.outcomes}" var="outcome">
                                         <input class="workflowaction" type="button" value="${outcome}"
-                                               onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}.ajax','window.location=window.location;')"/>
+                                               onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.current}.ajax"/>','window.location=window.location;')"/>
                                     </c:forEach>
                                 </c:otherwise>
                             </c:choose>
@@ -158,12 +158,13 @@
                     <div class="hidden" id="taskrow${node.identifier}-${task.id}">
                         <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                             <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
+                            <c:url var="myUrl" value="${url.current}.ajax"/>
                             <template:module node="${node}" template="contribute.add">
                                 <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                                 <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                                 <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
                                 <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
-                                <template:param name="workflowTaskFormCallbackURL" value="${url.current}.ajax"/>
+                                <template:param name="workflowTaskFormCallbackURL" value="${myUrl}"/>
                                 <template:param name="workflowTaskFormCallbackJS"
                                                 value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();"/>
                             </template:module>

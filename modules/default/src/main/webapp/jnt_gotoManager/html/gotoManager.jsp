@@ -9,7 +9,7 @@
     <template:addResources type="javascript" resources="jquery.js"/>
     <div id="gotoManager${currentNode.identifier}"/>
     <script type="text/javascript">
-        $('#gotoManager${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax');
+        $('#gotoManager${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
     </script>
     </div>
 </c:if>

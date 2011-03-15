@@ -52,10 +52,10 @@
     <c:set value="${jcr:getParentOfType(linkedNode, 'jmix:moderated')}" var="moderated"/>
 </c:if>
 <template:tokenizedForm>
-    <form action="${url.base}${linked}.addTopic.do" method="post" name="newTopicForm" id="newTopicForm">
+    <form action="<c:url value='${url.base}${linked}.addTopic.do'/>" method="post" name="newTopicForm" id="newTopicForm">
         <input type="hidden" name="nodeType" value="jnt:post"/>
         <input type="hidden" name="redirectTo"
-               value="${url.base}${renderContext.mainResource.node.path}.${renderContext.mainResource.template}"/>
+               value="<c:url value='${url.base}${renderContext.mainResource.node.path}.${renderContext.mainResource.template}'/>"/>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
         <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>

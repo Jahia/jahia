@@ -28,7 +28,7 @@
 
 <jcr:node var="category" path="${jcr:getSystemSitePath()}/categories"/>
 <form id="filter">
-    Category : <select name="categorykey" onchange="javascript:replace('${currentNode.UUID}','${url.current}.ajax?categorykey='+document.forms.filter.categorykey.value)"/>
+    Category : <select name="categorykey" onchange="javascript:replace('${currentNode.UUID}','<c:url value="${url.current}.ajax"/>?categorykey='+document.forms.filter.categorykey.value)"/>
     <c:if test="${empty param.categorykey}"><option selected value="">All</option></c:if>
     <c:if test="${not empty param.categorykey}"><option value="">All</option></c:if>
     <c:forEach items="${category.nodes}" var="cat">

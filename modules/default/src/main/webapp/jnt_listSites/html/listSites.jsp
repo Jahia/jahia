@@ -19,7 +19,7 @@
 <c:if test="${currentResource.workspace eq 'live'}">
 <div id="listsites${currentNode.identifier}"/>
     <script type="text/javascript">
-        $('#listsites${currentNode.identifier}').load('${url.basePreview}${currentNode.path}.html.ajax');
+        $('#listsites${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
     </script>
 </div>
 </c:if>

@@ -38,10 +38,10 @@
         <div class="boxconverter-inner">
             <div class="boxconverter-inner-border">
                 <div class="Form formconverterupload"><!--start formconverterupload-->
-                    <form action="${url.base}${currentNode.path}.convert.do" method="post"
+                    <form action="<c:url value='${url.base}${currentNode.path}.convert.do'/>" method="post"
                           enctype="multipart/form-data" id="conversionForm">
                         <input type="hidden" name="redirectTo"
-                               value="${url.base}${renderContext.mainResource.node.path}"/>
+                               value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
 
                         <p>
                             <label for="uploadfile" class="left"><fmt:message key="label.upload.a.document"/>:</label>

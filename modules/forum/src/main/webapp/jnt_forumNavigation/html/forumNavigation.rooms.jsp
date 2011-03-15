@@ -31,10 +31,10 @@
             <template:addCacheDependency node="${room}"/>
             <c:if test="${jcr:hasPermission(room, 'deleteRoom')}">
                 <template:tokenizedForm>
-                    <form action="${url.base}${room.path}" method="post"
+                    <form action="<c:url value='${url.base}${room.path}'/>" method="post"
                           id="jahia-forum-room-delete-${room.identifier}">
                         <input type="hidden" name="redirectTo"
-                               value="${url.base}${renderContext.mainResource.node.path}"/>
+                               value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
                             <%-- Define the output format for the newly created node by default html or by redirectTo--%>
                         <input type="hidden" name="newNodeOutputFormat" value="html"/>
                         <input type="hidden" name="methodToCall" value="delete"/>
@@ -43,10 +43,10 @@
             </c:if>
             <c:if test="${jcr:hasPermission(room, 'moderatePost')}">
                 <template:tokenizedForm>
-                    <form action="${url.base}${room.path}" method="post"
+                    <form action="<c:url value='${url.base}${room.path}'/>" method="post"
                           id="jahia-forum-room-moderate-${room.identifier}">
                         <input type="hidden" name="redirectTo"
-                               value="${url.base}${renderContext.mainResource.node.path}"/>
+                               value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
                             <%-- Define the output format for the newly created node by default html or by redirectTo--%>
                         <input type="hidden" name="newNodeOutputFormat" value="html"/>
                         <input type="hidden" name="methodToCall" value="put"/>
@@ -56,10 +56,10 @@
             </c:if>
             <c:if test="${jcr:hasPermission(room, 'moderatePost')}">
                 <template:tokenizedForm>
-                    <form action="${url.base}${room.path}" method="post"
+                    <form action="<c:url value='${url.base}${room.path}'/>" method="post"
                           id="jahia-forum-room-unmoderate-${room.identifier}">
                         <input type="hidden" name="redirectTo"
-                               value="${url.base}${renderContext.mainResource.node.path}"/>
+                               value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
                             <%-- Define the output format for the newly created node by default html or by redirectTo--%>
                         <input type="hidden" name="newNodeOutputFormat" value="html"/>
                         <input type="hidden" name="methodToCall" value="put"/>
@@ -99,7 +99,7 @@
                                     </c:choose>
                                 </c:if>
                             </ul>
-                            <a href="${url.base}${room.path}.html">${room.properties['jcr:title'].string}</a>
+                            <a href="<c:url value='${url.base}${room.path}.html'/>">${room.properties['jcr:title'].string}</a>
                             </dt>
                             <dd class="topics">
                                 <fmt:message key="topics"/>
@@ -134,10 +134,10 @@
                                 </c:forEach>
                                 <c:if test="${jcr:hasPermission(section, 'deleteSection')}">
                                     <template:tokenizedForm>
-                                        <form action="${url.base}${section.path}" method="post"
+                                        <form action="<c:url value='${url.base}${section.path}'/>" method="post"
                                               id="jahia-forum-section-delete-${section.identifier}">
                                             <input type="hidden" name="redirectTo"
-                                                   value="${url.base}${renderContext.mainResource.node.path}"/>
+                                                   value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
                                                 <%-- Define the output format for the newly created node by default html or by redirectTo--%>
                                             <input type="hidden" name="newNodeOutputFormat" value="html"/>
                                             <input type="hidden" name="methodToCall" value="delete"/>
@@ -156,7 +156,7 @@
                                     </ul>
                                     </c:if>
                                     <a class="forum-title"
-                                       href="${url.base}${section.path}.html">
+                                       href="<c:url value='${url.base}${section.path}.html'/>">
                                         <jcr:nodeProperty
                                                 node="${section}" name="jcr:title"/>
                                     </a> <br/>
@@ -171,7 +171,7 @@
                                                 key="last.post"/></dfn>
                       <fmt:message key="by"/>
                       <a
-                              href="${url.base}${lastModifiedNode.parent.path}.html"><img height="9"
+                              href="<c:url value='${url.base}${lastModifiedNode.parent.path}.html'/>"><img height="9"
                                                                                           width="11"
                                                                                           title="View the latest post"
                                                                                           alt="View the latest post"

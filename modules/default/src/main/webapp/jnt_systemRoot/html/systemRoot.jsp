@@ -7,11 +7,11 @@
 <ul>
     <c:set var="parent" value="${currentNode.parent}"/>
     <c:if test="${parent.name != ''}">
-        <li><a href="${url.base}${parent.path}.html">..</a></li>
+        <li><a href="<c:url value='${url.base}${parent.path}.html'/>">..</a></li>
     </c:if>
 <c:forEach var="child" items="${currentNode.nodes}">
     <li>
-        <a href="${url.base}${child.path}.html">${child.name}</a>
+        <a href="<c:url value='${url.base}${child.path}.html'/>">${child.name}</a>
     </li>
 </c:forEach>
 </ul>

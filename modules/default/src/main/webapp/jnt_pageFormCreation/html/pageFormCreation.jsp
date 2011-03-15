@@ -21,7 +21,7 @@
     <input type="hidden" name="jcr:mixinTypes" value="jmix:hasTemplateNode"/>
     <input type="hidden" name="j:templateNode" value="${currentNode.properties['templateNode'].string}"/>
     <c:if test="${currentNode.properties.stayOnPage.boolean}">
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
     </c:if>
     <h3>${fn:escapeXml(currentNode.displayableName)}</h3>
     <fieldset>

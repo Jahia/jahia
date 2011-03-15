@@ -10,5 +10,5 @@
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <div class="${currentNode.properties['divClass'].string}"><!--start preferences-->
-    <a title="${fn:escapeXml(currentNode.displayableName)}" class="${currentNode.properties['aClass']}" href="${url.base}${bindedComponent.path}.${currentNode.properties['targetTemplate'].string}.html">${fn:escapeXml(currentNode.displayableName)}</a>
+    <a title="${fn:escapeXml(currentNode.displayableName)}" class="${currentNode.properties['aClass']}" href="<c:url value='${url.base}${bindedComponent.path}.${currentNode.properties["targetTemplate"].string}.html'/>">${fn:escapeXml(currentNode.displayableName)}</a>
 </div>

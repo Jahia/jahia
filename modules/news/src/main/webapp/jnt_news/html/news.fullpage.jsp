@@ -41,7 +41,7 @@
     <div class="newsText">
         ${newsDesc.string}
     </div>
-    <a class="returnLink" href="${url.base}${jcr:getParentOfType(currentNode, 'jnt:page').path}.html" title='<fmt:message key="backToNewsList"/>'><fmt:message key='backToNewsList'/></a>
+    <a class="returnLink" href="<c:url value='${url.base}${jcr:getParentOfType(currentNode, "jnt:page").path}.html'/>" title='<fmt:message key="backToNewsList"/>'><fmt:message key='backToNewsList'/></a>
 
     <div class="clear"></div>
 </div>

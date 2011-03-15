@@ -10,7 +10,7 @@
 <%--<jcr:nodeProperty node="${currentNode}" name="link" var="link"/>--%>
 <div class="visuel">
     <c:if test="${not empty currentNode.properties.link.node}">
-        <a class="visuel" href="${url.base}${currentNode.properties.link.node.path}.html" title="">
+        <a class="visuel" href="<c:url value='${url.base}${currentNode.properties.link.node.path}.html'/>" title="">
     </c:if>
         <img src="${image.node.url}" alt="">
     <c:if test="${not empty currentNode.properties.link.node}">
@@ -18,7 +18,7 @@
     </c:if>
      <template:addCacheDependency uuid="${currentNode.properties.link.string}"/>
     <c:if test="${not empty currentNode.properties.link.node}">
-        <a href="${url.base}${currentNode.properties.link.node.path}.html">
+        <a href="<c:url value='${url.base}${currentNode.properties.link.node.path}.html'/>">
     </c:if>
         <jcr:nodeProperty node="${currentNode}" name="jcr:title"/>
     <c:if test="${not empty currentNode.properties.link.node}">

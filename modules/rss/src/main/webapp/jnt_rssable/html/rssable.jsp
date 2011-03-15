@@ -19,7 +19,7 @@
 <c:set var="bindedComponent" value="${ui:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
     <h3 class="titlerss">
-        <a href="${url.base}${bindedComponent.path}.rss">
+        <a href="<c:url value='${url.base}${bindedComponent.path}.rss'/>">
             <img title="" alt="" src="${url.currentModule}/images/rssable.png"/> ${fn:escapeXml(title.string)}
         </a>
     </h3>

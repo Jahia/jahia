@@ -13,7 +13,7 @@
 <c:set target="${searchTermMatchIndexes}" property="${formId}" value="0"/>
 <c:set target="${searchTermFieldIndexes}" property="${formId}" value="0"/>
 <c:if test="${empty attributes.action}">
-	<c:url var="actionUrl" value="${renderContext.mainResource.node.path}.search.html" context="${url.base}"/>
+	<c:url var="actionUrl" value="${url.base}${renderContext.mainResource.node.path}.search.html"/>
 </c:if>
 <c:set target="${attributes}" property="action" value="${functions:default(attributes.action, actionUrl)}"/>
 <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'searchForm')}"/>

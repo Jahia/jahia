@@ -30,7 +30,10 @@
         <div class="alphabeticalMenu"><!--start alphabeticalMenu-->
             <div class="alphabeticalNavigation">
                 <c:forTokens items="A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z" var="letter" delims=",">
-                    <span><a class="alphabeticalLetter <c:if test='${letter eq selectedLetter}'>current</c:if>" href="javascript:replace('${currentNode.UUID}','${url.current}.ajax?letter=${letter}')" >${letter}</a></span>
+                    <c:url var="myUrl" value="${url.current}.ajax">
+                        <c:param name="letter" value="${letter}"/>
+                    </c:url>
+                    <span><a class="alphabeticalLetter <c:if test='${letter eq selectedLetter}'>current</c:if>" href="javascript:replace('${currentNode.UUID}','${myUrl}')" >${letter}</a></span>
                 </c:forTokens>
             </div>
             <div class='clear'></div></div>

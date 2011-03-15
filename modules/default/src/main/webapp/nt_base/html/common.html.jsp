@@ -47,13 +47,13 @@
 		<div class="nodes">
 			<c:if test="${!param.skipParentLink && level <= 1 && currentNode.depth > 1}">
 				<div class="parent">
-					<a href="<c:url value='${url.base}${currentNode.parent.path}.${template}.html' context='/'/>">..</a>
+					<a href="<c:url value='${url.base}${currentNode.parent.path}.${template}.html'/>">..</a>
 				</div>
 			</c:if>
 			<c:forEach var="child" items="${currentNode.nodes}">
 				<div class="child type-${fn:replace(currentNode.primaryNodeTypeName, ':', '-')}">
 					<c:if test="${!param.inlineNodes}" var="nodesAsLinks">
-						<a href="<c:url value='${url.base}${child.path}.${template}.html' context='/'/>">${fn:escapeXml(child.name)}</a>
+						<a href="<c:url value='${url.base}${child.path}.${template}.html'/>">${fn:escapeXml(child.name)}</a>
 					</c:if>
 					<c:if test="${!nodesAsLinks}">
 						<template:module node="${child}" template="${template}"/>

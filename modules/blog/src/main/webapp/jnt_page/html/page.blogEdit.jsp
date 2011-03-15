@@ -10,8 +10,6 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <template:addResources type="css" resources="blog.css"/>
-
-<template:addWrapper name="hidden.blogWrapper"/>
 <div class="grid_10  alpha omega">
 <form method="post" action="${currentNode.name}/" name="blogPost">
     <input type="hidden" name="autoCheckin" value="true"/>

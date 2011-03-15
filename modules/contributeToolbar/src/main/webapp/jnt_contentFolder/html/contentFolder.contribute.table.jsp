@@ -45,7 +45,7 @@
             <th width="1%">&nbsp;</th>
             <th width="5%">
                 <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
-                    <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16"
+                    <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16" width="16"
                                                                                              border="0"
                                                                                              style="cursor: pointer;"
                                                                                              title="parent" alt="parent"
@@ -76,7 +76,7 @@
                              src="${url.templatesPath}/default/images/icons/locked.gif">
                     </c:if>
 
-                    <a href="${url.base}${child.path}.editContent.html">${fn:escapeXml(child.displayableName)}</a>
+                    <a href="<c:url value='${url.base}${child.path}.editContent.html'/>">${fn:escapeXml(child.displayableName)}</a>
                 </td>
                 <td>
                     <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>

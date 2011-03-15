@@ -6,14 +6,14 @@
 <script type="text/javascript">
     function send(task, state) {
         form = document.forms['myform'];
-        form.action = '${url.base}' + task;
+        form.action = '<c:url value="${url.base}"/>' + task;
         form.elements.state.value = state;
         form.submit();
     }
 </script>
 
 <div class="Form taskFormConsult"><!--start Form -->
-    <form method="post" name="myform" action="${url.base}${currentNode.path}">
+    <form method="post" name="myform" action="<c:url value='${url.base}${currentNode.path}'/>">
         <input type="hidden" name="nodeType" value="jnt:task">
         <input type="hidden" name="state">
 

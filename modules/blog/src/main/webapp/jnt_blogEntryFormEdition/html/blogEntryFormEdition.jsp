@@ -32,7 +32,7 @@
         <input type="hidden" name="nodeType" value="jnt:blogPost">
         <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
         <fmt:formatDate value="${created.time}" type="date" pattern="mm" var="userCreatedMonth"/>
-        <p class="post-info"><fmt:message key="blog.label.by"/> <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
+        <p class="post-info"><fmt:message key="blog.label.by"/> <a href="<c:url value='${url.base}/users/${createdBy.string}.html'/>">${createdBy.string}</a>
             - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
         </p>
 		<p>

@@ -34,6 +34,7 @@ package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 
 import javax.jcr.RepositoryException;
@@ -41,8 +42,9 @@ import javax.jcr.RepositoryException;
 public class SiteParameterAdder implements HtmlTagAttributeVisitor {
 
     public String visit(String value, RenderContext context, Resource resource) {
-        if (value != null && value.startsWith(context.getURLGenerator().getBase())) {
-                if (!value.startsWith(context.getURLGenerator().getBase() + "/sites/") && !value.contains("jsite=")) {
+        URLGenerator urlGenerator = context.getURLGenerator();
+        if (value != null && value.startsWith(urlGenerator.getContext() + urlGenerator.getBase())) {
+                if (!value.startsWith(urlGenerator.getContext() + urlGenerator.getBase() + "/sites/") && !value.contains("jsite=")) {
                     String jsite = context.getRequest().getParameter("jsite");
                     if (jsite == null) {
                         jsite = (String) context.getMainResource().getModuleParams().get("jsite");

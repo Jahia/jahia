@@ -31,7 +31,7 @@
     <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
     <fmt:formatDate value="${created.time}" type="date" pattern="MMM" var="userCreatedMonth"/>
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
-    <h2 class="post-title"><a href="${url.base}${currentNode.path}.html"><c:out value="${title.string}"/></a></h2>
+    <h2 class="post-title"><a href="<c:url value='${url.base}${currentNode.path}.html'/>"><c:out value="${title.string}"/></a></h2>
 
     <p class="post-info"><fmt:message key="blog.label.by"/> <c:set var="fields" value="${currentNode.propertiesAsString}"/>
         ${createdBy.string}
@@ -49,16 +49,16 @@
             ${fn:substring(functions:removeHtmlTags(text.string),0,1200)}
         </p>
     </div>
-    <p class="read-more"><a title="#" href="${url.base}${currentNode.path}.html"><fmt:message key="jnt_blog.readPost"/></a></p>
+    <p class="read-more"><a title="#" href="<c:url value='${url.base}${currentNode.path}.html'/>"><fmt:message key="jnt_blog.readPost"/></a></p>
     <jcr:sql var="numberOfPostsQuery"
              sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
     <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
     <p class="post-info-links">
         <c:if test="${numberOfPosts == 0}">
-            <a class="comment_count" href="${url.base}${currentNode.path}.html#comments">0 <fmt:message key="blog.comments"/></a>
+            <a class="comment_count" href="<c:url value='${url.base}${currentNode.path}.html#comments'/>">0 <fmt:message key="blog.comments"/></a>
         </c:if>
         <c:if test="${numberOfPosts > 0}">
-            <a class="comment_count" href="${url.base}${currentNode.path}.html#comments">${numberOfPosts} <fmt:message key="blog.comments"/></a>
+            <a class="comment_count" href="<c:url value='${url.base}${currentNode.path}.html#comments'/>">${numberOfPosts} <fmt:message key="blog.comments"/></a>
         </c:if>
     </p>
     <!--stop post-->

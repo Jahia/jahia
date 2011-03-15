@@ -52,7 +52,7 @@
 </c:if>
 
     <script type="text/javascript">
-        $(document).ready(function() { jahiaCreateTreeItemSelector("${fieldId}", "${displayFieldId}", "${url.base}", "${root}", "${nodeTypes}", "${selectableNodeTypes}", "${valueType}", ${not empty onSelect ? onSelect : 'null'}, ${not empty onClose ? onClose : 'null'}, ${not empty treeviewOptions ? treeviewOptions :  'null'}, ${not empty fancyboxOptions ? fancyboxOptions : 'null'}); });
+        $(document).ready(function() { jahiaCreateTreeItemSelector("${fieldId}", "${displayFieldId}", "<c:url value='${url.base}'/>", "${root}", "${nodeTypes}", "${selectableNodeTypes}", "${valueType}", ${not empty onSelect ? onSelect : 'null'}, ${not empty onClose ? onClose : 'null'}, ${not empty treeviewOptions ? treeviewOptions :  'null'}, ${not empty fancyboxOptions ? fancyboxOptions : 'null'}); });
     </script>
 
 <div style="display:none"><div id="${fieldId}-treeItemSelector"><ul id="${fieldId}-treeItemSelectorTree"></ul></div></div>

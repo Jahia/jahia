@@ -25,7 +25,7 @@
             <template:addResources type="javascript" resources="jquery.js"/>
             <div id="liveList${currentNode.identifier}"></div>
             <script type="text/javascript">
-                $('#liveList${currentNode.identifier}').load('${url.baseLive}${currentNode.path}.html.ajax');
+                $('#liveList${currentNode.identifier}').load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax"/>');
             </script>
         </c:if>
     </c:when>

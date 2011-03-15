@@ -24,4 +24,4 @@
             </span>
 </c:if>
 <br/>
-<span><a class="returnLink" href="${url.base}${jcr:getParentOfType(currentNode, 'jnt:page').path}.html" title='<fmt:message key="backToPreviousPage"/>'><fmt:message key='backToPreviousPage'/></a></span>
+<span><a class="returnLink" href="<c:url value='${url.base}${jcr:getParentOfType(currentNode, "jnt:page").path}.html'/>" title='<fmt:message key="backToPreviousPage"/>'><fmt:message key='backToPreviousPage'/></a></span>

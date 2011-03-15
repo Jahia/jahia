@@ -105,7 +105,7 @@ default/jnt_maincontent
       The first step is to create the form itself :
 
 +--------------------------------------
-<form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.identifier}jnt_mainContentForm">
+<form action="<c:url value='${url.base}${currentNode.path}/*'/>" method="post" id="${currentNode.identifier}jnt_mainContentForm">
   <input type="hidden" name="nodeType" value="jnt:mainContent"/>
     |
     |
@@ -134,7 +134,7 @@ default/jnt_maincontent
 +--------------------------------------
 
       As always the id of the form must be unique in the page, that is why we use here the definition name and the list id or name.
-    The action leads to <${url.base}${currentNode.path}/*> to create a new object, and we define the type of object we want to create
+    The action leads to < <c:url value='${url.base}${currentNode.path}/*/> > to create a new object, and we define the type of object we want to create
     in an hidden input named <nodeType>.
 
       At the end of the form, we generate two buttons: one to submit and another one to reset the form.
@@ -205,7 +205,7 @@ default/jnt_maincontent
 
 <script>
   $(document).ready(function() {
-    $("#file${currentNode.identifier}jnt_mainContentImage").editable('${url.base}${currentNode.path}', {
+    $("#file${currentNode.identifier}jnt_mainContentImage").editable('<c:url value='${url.base}${currentNode.path}'/>', {
       type : 'ajaxupload',
       onblur : 'ignore',
       submit : 'OK',
@@ -238,7 +238,7 @@ default/jnt_maincontent
       Example of how to edit the property <jcr:title> from the <jnt:maincontent> definition (defined in <mix:title>).
 
 +------------------------------------
-<h3 class="title edit${currentNode.identifier}" jcr:id="jcr:title" jcr:url="${url.base}${currentNode.path}">
+<h3 class="title edit${currentNode.identifier}" jcr:id="jcr:title" jcr:url="<c:url value='${url.base}${currentNode.path}'/>">
   <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
 +------------------------------------
 
@@ -256,7 +256,7 @@ default/jnt_maincontent
 
 +------------------------------------
 <span class="ckeditorEdit${currentNode.identifier}" id="ckeditorEdit${currentNode.identifier}${scriptPropName}"
-  jcr:url="${url.base}${currentNode.path}" jcr:id="body">${currentNode.properties.body.string}</span>
+  jcr:url="<c:url value='${url.base}${currentNode.path}'/>" jcr:id="body">${currentNode.properties.body.string}</span>
 +------------------------------------
 
       Here it works the same as previously, but we need also a javascript id <id="ckeditorEdit${currentNode.identifier}${scriptPropName}">.
@@ -268,7 +268,7 @@ default/jnt_maincontent
 
 +-----------------------------------
 <jcr:propertyInitializers var="options" nodeType="jnt:mainContent" name="align"/>
-<span class="choicelistEdit${currentNode.identifier}" jcr:url="${url.base}${currentNode.path}" jcr:id="align"
+<span class="choicelistEdit${currentNode.identifier}" jcr:url="<c:url value='${url.base}${currentNode.path}'/>" jcr:id="align"
   jcr:options="{<c:forEach items="${options}" varStatus="status" var="option">
   <c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">
   Image Alignment${currentNode.properties.align.string}</span>
@@ -282,7 +282,7 @@ default/jnt_maincontent
       Example of how to edit an existing file for the property <image> of <jnt:maincontent>.
 
 +-------------------------------------
-<div class="imagefloat${currentNode.properties.align.string} file${currentNode.identifier}" jcr:id="image" jcr:url="${url.base}${currentNode.path}">
+<div class="imagefloat${currentNode.properties.align.string} file${currentNode.identifier}" jcr:id="image" jcr:url="<c:url value='${url.base}${currentNode.path}'/>">
   <img src="${image.node.url}" alt="${image.node.url}"/>
 </div>
 +-------------------------------------

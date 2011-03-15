@@ -16,13 +16,13 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:if test="${renderContext.loggedIn}" >
-<form action="${url.basePreview}${currentResource.node.parent.path}.add.do" method="post" name="bookmark" id="bookmarkForm">
+<form action="<c:url value='${url.basePreview}${currentResource.node.parent.path}.add.do'/>" method="post" name="bookmark" id="bookmarkForm">
     <p>
         <jcr:node path="/users/${renderContext.user.name}" var="user" />
 
         <label for="bookmark"><fmt:message key="bookmark.add"/></label>
         <input type="hidden" name="jcr:title" value=""/>
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}">
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
         <input type="hidden" name="nodetype" value="jnt:bookmark">
         <input type="hidden" name="url" value="">
         <input class="button" id="bookmark"  type="submit"/>
@@ -30,7 +30,7 @@
             document.forms['bookmark'].elements['jcr:title'].value = document.title;
             document.forms['bookmark'].elements['url'].value = document.location;
             var options = {
-                success: function() { $('#bookmarkList${user.identifier}').load('${url.basePreview}${user.path}.bookmarks.html.ajax'); }
+                success: function() { $('#bookmarkList${user.identifier}').load('<c:url value="${url.basePreview}${user.path}.bookmarks.html.ajax"/>'); }
             }
             $(document).ready(function() {
                 // bind 'myForm' and provide a simple callback function

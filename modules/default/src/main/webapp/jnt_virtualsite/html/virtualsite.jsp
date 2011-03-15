@@ -23,7 +23,7 @@
     <p>Nodes:</p>
     <ul>
         <c:forEach var="child" items="${currentNode.nodes}">
-            <li><a href="${url.base}${child.path}.html">${child.name}</a></li>
+            <li><a href="<c:url value='${url.base}${child.path}.html'/>">${child.name}</a></li>
         </c:forEach>
     </ul>
 </c:if>
@@ -60,7 +60,7 @@
         <ul>
             <c:forEach items="${templates.nodes}" var="template">
                 <li>
-                    <a href="${url.base}${template.path}">${template.name}</a>
+                    <a href="<c:url value='${url.base}${template.path}'/>">${template.name}</a>
                 </li>
             </c:forEach>
         </ul>
@@ -72,7 +72,7 @@
         <ul>
             <c:forEach items="${pages.nodes}" var="page">
                 <li>
-                    <a href="${url.base}${page.path}">${page.name}</a>
+                    <a href="<c:url value='${url.base}${page.path}'/>">${page.name}</a>
                 </li>
             </c:forEach>
         </ul>

@@ -41,7 +41,7 @@
     }
     if (getCookie('poll${currentNode.identifier}-${renderContext.user.username}') == 'true') {
         var data = {};
-        $.post("${url.base}${currentNode.path}.pollResults.do", data, function(result) {
+        $.post("<c:url value='${url.base}${currentNode.path}.pollResults.do'/>", data, function(result) {
 
 
             var answers = result.answerNodes;
@@ -111,7 +111,7 @@
 
         var data = {};
         data["answerUUID"] = answerUUID;
-        $.post("${url.base}${currentNode.path}.pollVote.do", data, function(result) {
+        $.post("<c:url value='${url.base}${currentNode.path}.pollVote.do'/>", data, function(result) {
 
 
             var answers = result.answerNodes;

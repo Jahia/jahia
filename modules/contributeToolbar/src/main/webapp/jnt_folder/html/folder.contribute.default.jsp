@@ -35,7 +35,7 @@
     <tr>
         <th width="5%" align="center">
             <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
-                <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="${url.currentModule}/images/icons/folder_up.png"></a></div></th>
+                <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="${url.currentModule}/images/icons/folder_up.png"></a></div></th>
             </c:if>
         </th>
         <th width="5%"><fmt:message key="label.type"/></th>
@@ -63,7 +63,7 @@
                 </c:if>
             </td>
             <td>                <c:if test="${jcr:isNodeType(child, 'jnt:folder')}">
-                <a href="${url.base}${child.path}.html"><c:if test="${!empty child.properties['jcr:title'].string}">
+                <a href="<c:url value='${url.base}${child.path}.html'/>"><c:if test="${!empty child.properties['jcr:title'].string}">
         ${fn:escapeXml(child.properties['jcr:title'].string)}
     </c:if>
         <c:if test="${empty child.properties['jcr:title'].string}">
@@ -131,12 +131,12 @@
                             </button>
                         </c:forTokens>
                     </div>
-
+                    <c:url var="myUrl" value="${url.current}"/>
                     <c:forTokens items="${types}" delims="," var="type" varStatus="status">
                         <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
                             <template:module node="${currentNode}" template="contribute.add">
                                 <template:param name="resourceNodeType" value="${type}"/>
-                                <template:param name="currentListURL" value="${url.current}"/>
+                                <template:param name="currentListURL" value="${myUrl}"/>
                             </template:module>
                         </div>
                     </c:forTokens>

@@ -37,9 +37,9 @@
 
 <c:if test="${jcr:hasPermission(currentNode, 'deletePost')}">
     <template:tokenizedForm>
-        <form action="${url.base}${currentNode.path}" method="post"
+        <form action="<c:url value='${url.base}${currentNode.path}'/>" method="post"
               id="jahia-forum-post-delete-${currentNode.UUID}">
-            <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
                 <%-- Define the output format for the newly created node by default html or by redirectTo--%>
             <input type="hidden" name="newNodeOutputFormat" value="html"/>
             <input type="hidden" name="methodToCall" value="delete"/>
@@ -49,9 +49,9 @@
 
 <c:if test="${jcr:hasPermission(currentNode, 'moderatePost') and jcr:isNodeType(currentNode, 'jmix:moderated')}">
     <template:tokenizedForm>
-        <form action="${url.base}${currentNode.path}" method="post"
+        <form action="<c:url value='${url.base}${currentNode.path}'/>" method="post"
               id="jahia-forum-post-moderate-${currentNode.UUID}">
-            <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
                 <%-- Define the output format for the newly created node by default html or by redirectTo--%>
             <input type="hidden" name="newNodeOutputFormat" value="html"/>
             <input type="hidden" name="methodToCall" value="put"/>
@@ -69,7 +69,7 @@
         <%--</c:if>--%>
         <c:if test="${jcr:hasPermission(currentNode, 'createPost')}">
             <li class="forum-quote-icon"><a title="<fmt:message key='reply.quote'/>"
-                                            href="${url.base}${renderContext.mainResource.node.path}.forum-topic-newPost.html?reply=${currentNode.UUID}"> <span>
+                                            href="<c:url value='${url.base}${renderContext.mainResource.node.path}.forum-topic-newPost.html?reply=${currentNode.UUID}'/>"> <span>
         <fmt:message key='reply.quote'/>
         </span> </a></li>
         </c:if>
@@ -102,7 +102,7 @@
         <c:if test="${renderContext.user.name ne 'guest'}">
             <fmt:message key="by"/>
             <strong>&nbsp;<a
-                    href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<span class="timestamp">
+                    href="<c:url value='${url.base}${renderContext.site.path}/users/${createdBy.string}.html'/>">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<span class="timestamp">
             <fmt:formatDate
                     value="${created.time}" pattern="yyyy/MM/dd HH:mm"/>
             </span> </c:if>
@@ -116,7 +116,7 @@
     <c:if test="${jcr:hasPermission(currentNode, 'editPost')}">
         <div class="content editablePost" jcr:id="content"
              id="edit${currentNode.identifier}"
-             jcr:url="${url.base}${currentNode.path}">${content.string}</div>
+             jcr:url="<c:url value='${url.base}${currentNode.path}'/>">${content.string}</div>
     </c:if>
     <c:if test="${not jcr:hasPermission(currentNode, 'editPost')}">
         <div class="content">${content.string}</div>

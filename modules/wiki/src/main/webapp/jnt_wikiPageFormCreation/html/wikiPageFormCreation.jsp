@@ -28,7 +28,7 @@
     <c:set var="pageNode" value="${renderContext.mainResource.node}"/>
 </c:if>
 <template:tokenizedForm>
-    <form name="formWiki" class="formWiki" method="post" action="${url.base}${pageNode.path}/${pageName}">
+    <form name="formWiki" class="formWiki" method="post" action="<c:url value='${url.base}${pageNode.path}/${pageName}'/>">
         <input type="hidden" name="autoCheckin" value="true">
         <input type="hidden" name="nodeType" value="jnt:wikiPage">
         <c:choose>

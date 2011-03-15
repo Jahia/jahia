@@ -21,7 +21,7 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <item>
     <title>${fn:escapeXml(title)}</title>
-    <link><c:url value="${url.server}${url.base}${currentNode.path}.html" context="/"/></link>
+    <link><c:url value="${url.server}${url.base}${currentNode.path}.html"/></link>
     <description>${functions:abbreviate(functions:removeHtmlTags(currentNode.properties.desc.string),200,250,'...')}</description>
     <pubDate><fmt:formatDate value="${created.date.time}" type="both" dateStyle="full" timeStyle="long"/></pubDate>
 </item>

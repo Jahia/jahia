@@ -9,7 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
     <channel>
         <title>RSS Blog</title>
-        <link>${url.base}${currentResource.node.path}.html</link>
+        <link><c:url value='${url.base}${currentResource.node.path}.html'/> </link>
         <description>Blog rss feed</description>
         <language>${requestScope.currentRequest.locale}</language>
         <dc:language>${requestScope.currentRequest.locale}</dc:language>

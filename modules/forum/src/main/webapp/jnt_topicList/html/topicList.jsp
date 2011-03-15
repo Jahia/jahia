@@ -21,7 +21,7 @@
     <div class="topics">
         <jcr:nodeProperty node="${linked}" name="jcr:title" var="topicSubject"/>
             <%--<c:if test="${!empty topicSubject.string}">--%>
-            <%--<h2><a href="${url.base}${linked.parent.path}.forum-topic.html">${topicSubject.string}</a></h2>--%>
+            <%--<h2><a href="<c:url value='${url.base}${linked.parent.path}.forum-topic.html'/>">${topicSubject.string}</a></h2>--%>
             <%--</c:if>--%>
         <div class="forum-box forum-box-style1 topics">
 

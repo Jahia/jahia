@@ -12,7 +12,7 @@
     </c:when>
     <c:when test="${value.type == jcrPropertyTypes.REFERENCE || value.type == jcrPropertyTypes.WEAKREFERENCE}">
         <c:if test="${not empty value.node}" var="valuePresent">
-            <c:url var="urlValue" value="${value.node.path}.raw?${pageContext.request.queryString}" context="${url.base}"/>
+            <c:url var="urlValue" value="${url.base}${value.node.path}.raw?${pageContext.request.queryString}"/>
             <a href="${urlValue}">${fn:escapeXml(value.string)}</a>        
         </c:if>
         <c:if test="${not valuePresent}">${value.string}</c:if>

@@ -22,7 +22,7 @@
     <c:otherwise>
         <script type="text/javascript">
             $(document).ready(function() {
-                $.get('${url.base}${currentNode.path}.html.ajax', null, function(data) {
+                $.get('<c:url value="${url.base}${currentNode.path}.html.ajax"/>', null, function(data) {
                     $("#${currentResource.moduleParams.widgetContentId}").html(data);
                 });
             });

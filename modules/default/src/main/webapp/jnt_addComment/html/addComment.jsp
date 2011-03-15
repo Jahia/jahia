@@ -37,10 +37,10 @@
     <a name="addComments"></a>
 
     <template:tokenizedForm>
-        <form action="${url.base}${bindedComponent.path}.addComment.do" method="post" id="newCommentForm">
+        <form action="<c:url value='${url.base}${bindedComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
 
             <input type="hidden" name="nodeType" value="jnt:post"/>
-            <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
             <input type="hidden" name="newNodeOutputFormat" value="html"/>
             <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
 

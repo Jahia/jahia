@@ -48,7 +48,7 @@ import org.jahia.services.render.Resource;
 
 /**
  * User: Dorth
- * Date: 30 déc. 2010
+ * Date: 30 dï¿½c. 2010
  * Time: 12:07:04
  */
 public final class WebClippingRewriter {
@@ -236,7 +236,7 @@ public final class WebClippingRewriter {
     private String getRewritedUrl(String sourceUrl, RenderContext renderContext)
             throws MalformedURLException {
         try {
-            return renderContext.getURLGenerator().getCurrent() + "?" + WebClippingRewriter.URL_PATH_PARAM_NAME + "=" + URLEncoder.encode(getAbsoluteURL(sourceUrl), "UTF-8");
+            return renderContext.getURLGenerator().getContext() + renderContext.getURLGenerator().getCurrent() + "?" + WebClippingRewriter.URL_PATH_PARAM_NAME + "=" + URLEncoder.encode(getAbsoluteURL(sourceUrl), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return null;

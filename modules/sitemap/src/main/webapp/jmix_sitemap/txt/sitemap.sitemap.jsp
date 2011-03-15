@@ -13,6 +13,6 @@
 </jcr:jqom>
 
 <c:forEach items="${sitemaps.nodes}" varStatus="status" var="sitemapEL">
-<c:url value="${sitemapEL.path}.html" context="${url.base}" />
+<c:url value="${url.base}${sitemapEL.path}.html"/>
 
 </c:forEach>    

@@ -38,7 +38,7 @@
                         $("#messages${id}").text("Saving...").stop().css("opacity", 1).fadeIn(30);
 
                         // Send request to the server using POST method
-                        $.post("${url.base}${currentNode.path}",
+                        $.post("<c:url value='${url.base}${currentNode.path}'/>",
                         {'j:lastVote': value,methodToCall:"put",cookieName:"rated${currentNode.identifier}",cookieValue:"${currentNode.identifier}"},
                                 function(result) {
                                     // Select stars from "Average rating" control to match the returned average rating value
@@ -100,7 +100,7 @@
 
             <div class="rating-R"><strong><fmt:message key="label.rateThis"/>:</strong> <span id="caption${id}"></span>
 
-                <form id="rat${id}" action="${url.base}${currentNode.path}" method="post">
+                <form id="rat${id}" action="<c:url value='${url.base}${currentNode.path}'/>" method="post">
                     <select name="j:lastVote">
                         <option value="1"><fmt:message key="label.rateThis.poor"/></option>
                         <option value="2"><fmt:message key="label.rateThis.fair"/></option>

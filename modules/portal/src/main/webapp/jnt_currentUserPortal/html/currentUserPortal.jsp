@@ -19,10 +19,10 @@
 <c:set var="writeable" value="${currentResource.workspace eq 'live'}"/>
 <c:if test="${writeable}">
     <c:if test="${empty portal}">
-        <form action="${url.base}${user.path}.createPortal.do"
+        <form action="<c:url value='${url.base}${user.path}.createPortal.do'/>"
               method="post">
             <input type="hidden" name="portalPath" value="myportal${fn:replace(renderContext.mainResource.node.path,'/','_')}"/>
-            <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+            <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
             <input type="hidden" name="defaultPortal" value="${currentNode.properties['defaultPortal'].string}"/>
             <c:set var="ps" value=""/>
             <c:forEach items="${param}" var="p">

@@ -30,7 +30,7 @@
 <c:if test="${level > 1}">
     <li>
 </c:if>
-<a href='<c:url value="${currentNode.properties.base.node.path}.html" context="${url.base}"/>'>${currentNode.properties.base.node.properties["jcr:title"].string}
+<a href='<c:url value="${url.base}${currentNode.properties.base.node.path}.html"/>'>${currentNode.properties.base.node.properties["jcr:title"].string}
     level ${level}</a>
 <c:forEach items="${jcr:getChildrenOfType(currentNode.properties.base.node,'jnt:page')}" var="child" varStatus="childStatus">
     <c:if test="${childStatus.first}">

@@ -98,7 +98,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     public String getLink() {
         if (link == null) {
-            link = resolveURL() + getQueryParameter();
+            link = context.getURLGenerator().getContext() + resolveURL() + getQueryParameter();
         }
         return link;
     }

@@ -12,7 +12,7 @@
         </c:when>
         <c:otherwise>
             <input class="workflow" type="button" value="${wf.name}"
-                   onclick="startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}','${animatedWFs}${animatedTasks}animatedcollapse.reinit();')"/></c:otherwise>
+                   onclick="startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '${url.current}','${animatedWFs}${animatedTasks}animatedcollapse.reinit();')"/></c:otherwise>
     </c:choose>
 </c:forEach>
 
@@ -30,7 +30,7 @@
         <c:otherwise>
             <c:forEach items="${task.outcomes}" var="outcome">
                 <input class="workflowaction" type="button" value="${outcome}"
-                       onclick="executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}','${animatedWFs}${animatedTasks}animatedcollapse.reinit();')"/>
+                       onclick="executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '${url.current}','${animatedWFs}${animatedTasks}animatedcollapse.reinit();')"/>
             </c:forEach>
         </c:otherwise>
     </c:choose>

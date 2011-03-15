@@ -36,7 +36,7 @@
         <td>
             <div class="jahia-template-gxt" jahiatype="module" id="newsletter-${newsletter.identifier}" type="existingNode"
                  scriptInfo="" path="${newsletter.path}" template="hidden.system" dragdrop="false">
-                <a href="<c:url context='${url.base}' value='${newsletter.path}.html'/>">
+                <a href="<c:url value='${url.base}${newsletter.path}.html'/>">
                     ${fn:escapeXml(!empty newsletter.propertiesAsString['jcr:title'] ? newsletter.propertiesAsString['jcr:title'] : newsletter.name)}
 				</a>
             </div>

@@ -15,9 +15,9 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <c:set var="cookieName" value="rated${currentNode.identifier}"/>
 <c:if test="${renderContext.loggedIn and (empty cookie[cookieName])}">
-    <form action="${url.base}${currentNode.path}" method="post"
+    <form action="<c:url value='${url.base}${currentNode.path}'/>" method="post"
           id="jahia-forum-post-vote-${currentNode.identifier}">
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
             <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="methodToCall" value="put"/>

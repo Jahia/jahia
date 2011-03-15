@@ -28,7 +28,7 @@
             </li>
             <c:if test="${!empty url.myProfile}">
                 <li class="shortcuts-mysettings">
-                    <a href="${url.base}${url.myProfile}"><fmt:message key="userProfile.link"/></a>
+                    <a href="<c:url value='${url.base}${url.myProfile}'/>"><fmt:message key="userProfile.link"/></a>
                 </li>
             </c:if>
             <c:if test="${jcr:hasPermission(renderContext.mainResource.node, 'editModeAccess')}">
@@ -53,10 +53,10 @@
             <a href="javascript:ts('body',-1)"><fmt:message key="font.down"/></a>
         </li>
 <%-- <li class="shortcuts-home">
-            <a href="${url.base}${renderContext.site.path}/home.html"><fmt:message key="home"/></a>
+            <a href="<c:url value='${url.base}${renderContext.site.path}/home.html'/>"><fmt:message key="home"/></a>
         </li>
         <li class="shortcuts-sitemap">
-            <a href="${url.base}${renderContext.site.path}/home.sitemap.html"><fmt:message key="sitemap"/></a>
+            <a href="<c:url value='${url.base}${renderContext.site.path}/home.sitemap.html'/>"><fmt:message key="sitemap"/></a>
         </li>--%>
     </ul>
 </div>

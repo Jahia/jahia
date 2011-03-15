@@ -26,7 +26,7 @@
                                 value="${not empty title && not empty title.string ? title.string : subchild.name}"/></a>
                     </c:when>
                     <c:otherwise>
-                        <a href="${url.base}${subchild.path}.html"><c:out
+                        <a href="<c:url value='${url.base}${subchild.path}.html'/>"><c:out
                                 value="${not empty title && not empty title.string ? title.string : subchild.name}"/></a>
                     </c:otherwise>
                 </c:choose>

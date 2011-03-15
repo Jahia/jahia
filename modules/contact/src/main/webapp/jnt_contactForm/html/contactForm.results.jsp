@@ -8,4 +8,4 @@
         <li><template:module node="${subchild}" template="default"/>  </li>
    <!-- </div>  -->
 </c:forEach></ul>
-<a href="${url.base}${currentNode.path}.csv" target="_new"><fmt:message key="label.exportCSV"/></a>
+<a href="<c:url value='${url.base}${currentNode.path}.csv'/>" target="_new"><fmt:message key="label.exportCSV"/></a>

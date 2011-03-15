@@ -40,7 +40,7 @@
 
 <form name="myform" method="post">
     <input type="hidden" name="nodeType" value="jnt:task">
-    <input type="hidden" name="redirectTo" value="${url.base}${currentNode.path}.html${ps}">
+    <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${currentNode.path}.html${ps}'/>">
     <input type="hidden" name="state">
 </form>
 
@@ -48,7 +48,7 @@
 <script type="text/javascript">
     function send(task, state) {
         form = document.forms['myform'];
-        form.action = '${url.base}' + task;
+        form.action = '<c:url value="${url.base}"/>' + task;
         form.elements.state.value = state;
         form.submit();
     }
@@ -121,7 +121,7 @@
                                                    width="16"/>
             </td>
             <td headers="Title"><a
-                    href="${url.base}${task.path}.html">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a></td>
+                    href="<c:url value='${url.base}${task.path}.html'/>">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a></td>
             <td class="center" headers="Priority">
                     ${task.propertiesAsString.priority}
             </td>
@@ -207,7 +207,7 @@
                             <c:otherwise>
                                 <c:forEach items="${task.outcomes}" var="outcome">
                                     <input class="workflowaction" type="button" value="${outcome}"
-                                           onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}.ajax','window.location=window.location;')"/>
+                                           onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.current}.ajax"/>','window.location=window.location;')"/>
                                 </c:forEach>
                             </c:otherwise>
                         </c:choose>
@@ -229,12 +229,13 @@
                     <td colspan="5">
                         <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                             <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
+                            <c:url value="${url.current}.ajax" var="myUrl"/>
                             <template:module node="${node}" template="contribute.add">
                                 <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                                 <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                                 <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
                                 <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
-                                <template:param name="workflowTaskFormCallbackURL" value="${url.current}.ajax"/>
+                                <template:param name="workflowTaskFormCallbackURL" value="${myUrl}"/>
                                 <template:param name="workflowTaskFormCallbackJS"
                                                 value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();"/>
                             </template:module>
@@ -304,14 +305,22 @@
     </div>
     <div class="paginationNavigation">
         <c:if test="${currentPage>1}">
+            <c:url var="myUrl" value="${url.current}">
+                <c:param name="begin" value="${ (currentPage-2) * pageSize }"/>
+                <c:param name="end" value="${ (currentPage-1)*pageSize-1}"/>
+            </c:url>
             <a class="previousLink"
-               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ (currentPage-2) * pageSize }&end=${ (currentPage-1)*pageSize-1}')"><fmt:message
+               href="javascript:replace('${currentNode.UUID}-tasks','${myUrl}')"><fmt:message
                     key="jnt_userTask.previous"/></a>
         </c:if>
         <c:forEach begin="1" end="${nbPages}" var="i">
             <c:if test="${i != currentPage}">
+                <c:url var="myUrl" value="${url.current}">
+                    <c:param name="begin" value="${ (i-1) * pageSize }"/>
+                    <c:param name="end" value="${ i*pageSize-1}"/>
+                </c:url>
                     <span><a class="paginationPageUrl"
-                             href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ (i-1) * pageSize }&end=${ i*pageSize-1}')"> ${ i }</a></span>
+                             href="javascript:replace('${currentNode.UUID}-tasks','${myUrl}')"> ${ i }</a></span>
             </c:if>
             <c:if test="${i == currentPage}">
                 <span class="currentPage">${ i }</span>
@@ -319,8 +328,12 @@
         </c:forEach>
 
         <c:if test="${currentPage<nbPages}">
+            <c:url var="myUrl" value="${url.current}">
+                <c:param name="begin" value="${ currentPage * pageSize }"/>
+                <c:param name="end" value="${ (currentPage+1)*pageSize-1}"/>
+            </c:url>
             <a class="nextLink"
-               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ currentPage * pageSize }&end=${ (currentPage+1)*pageSize-1}')"><fmt:message
+               href="javascript:replace('${currentNode.UUID}-tasks','${myUrl}')"><fmt:message
                     key="jnt_userTask.next"/> </a>
         </c:if>
     </div>

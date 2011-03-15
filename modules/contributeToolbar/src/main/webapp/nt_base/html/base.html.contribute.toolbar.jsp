@@ -49,7 +49,7 @@
         function deleteNodes() {
             var uuids = getUuids();
             if (uuids.length > 0) {
-                $.post("${url.base}${renderContext.mainResource.node.path}.deleteNodes.do", {"uuids": uuids}, function(result) {
+                $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.deleteNodes.do'/>", {"uuids": uuids}, function(result) {
                     reload();
                 }, "json");
             }
@@ -58,7 +58,7 @@
         function copyNodes() {
             var uuids = getUuids();
             if (uuids.length > 0) {
-                $.post("${url.base}${renderContext.mainResource.node.path}.copy.do", {"uuids": uuids}, function(result) {
+                $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.copy.do'/>", {"uuids": uuids}, function(result) {
                     showClipboard();
                 }, "json");
             }
@@ -67,7 +67,7 @@
         function cutNodes() {
             var uuids = getUuids();
             if (uuids.length > 0) {
-                $.post("${url.base}${renderContext.mainResource.node.path}.cut.do", {"uuids": uuids}, function(result) {
+                $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.cut.do'/>", {"uuids": uuids}, function(result) {
                     showClipboard();
                 }, "json");
             }
@@ -76,27 +76,27 @@
         function publishNodes() {
             var uuids = getUuids();
             if (uuids.length > 0) {
-                $.post("${url.base}${renderContext.mainResource.node.path}.publishNodes.do", {"uuids": uuids}, function(result) {
+                $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.publishNodes.do'/>", {"uuids": uuids}, function(result) {
                     reload();
                 }, "json");
             }
         }
 
         function pasteNodes(contributeParams) {
-            $.post("${url.base}"+contributeParams.contributeTarget+".paste.do", {}, function(result) {
+            $.post("<c:url value='${url.base}'/>"+contributeParams.contributeTarget+".paste.do", {}, function(result) {
                 reload();
                 hideClipboard();
             }, "json");
         }
 
         function emptyClipboard() {
-            $.post("${url.base}${renderContext.mainResource.node.path}.emptyclipboard.do", {}, function(result) {
+            $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.emptyclipboard.do'/>", {}, function(result) {
                 hideClipboard();
             }, "json");
         }
 
         function showClipboard() {
-            $.post("${url.base}${renderContext.mainResource.node.path}.checkclipboard.do", {}, function(data) {
+            $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.checkclipboard.do'/>", {}, function(data) {
                 if (data != null && data.size > 0) {
                     $(".titleaddnewcontent").show();
                     $(".pastelink").show();
@@ -107,7 +107,7 @@
                     $("#clipboardpreview-${currentNode.identifier}").empty();
                     var paths = data.paths;
                     for (var i = 0; i < paths.length; i++) {
-                        $.get("${url.base}" + paths[i] + ".html.ajax", {}, function(result) {
+                        $.get("<c:url value='${url.base}'/>" + paths[i] + ".html.ajax", {}, function(result) {
                             $("#clipboardpreview-${currentNode.identifier}").append("<div style='border:thin'>");
                             $("#clipboardpreview-${currentNode.identifier}").append(result);
                             $("#clipboardpreview-${currentNode.identifier}").append("</div>");
@@ -188,9 +188,9 @@
                 </c:if>
             </c:otherwise>
         </c:choose>
-        <span><fmt:message key="label.goto"/>: </span> <a href="${url.base}${currentNode.resolveSite.path}/home.html"><img src="${url.context}/icons/siteManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteHomepage"/></a>
-        <a href="${url.base}${currentNode.resolveSite.path}/contents.html"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteContent"/></a>
-        <a href="${url.base}${currentNode.resolveSite.path}/files.html"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteFiles"/></a>
+        <span><fmt:message key="label.goto"/>: </span> <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/home.html'/>"><img src="${url.context}/icons/siteManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteHomepage"/></a>
+        <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/contents.html'/>"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteContent"/></a>
+        <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/files.html'/>"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteFiles"/></a>
     </div>
     <div style="display:none;">
         <div id="clipboardpreview-${currentNode.identifier}">

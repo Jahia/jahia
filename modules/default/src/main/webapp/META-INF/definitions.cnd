@@ -138,7 +138,7 @@
  - pseudo (string)
 
 [jnt:topic] > jnt:content
- - topicSubject (string)
+ - topicSubject (string) primary
  - topicDescription (string)
  + * (jnt:post)
 

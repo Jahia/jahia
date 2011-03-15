@@ -27,29 +27,39 @@
         </c:otherwise>
     </c:choose>
 </c:if>
-<c:if test="${displayOnFirstLevel || fn:length(pageNodes) > 1}">
+<c:if test="${displayOnFirstLevel.boolean || fn:length(pageNodes) > 1}">
     <ul class="breadcrumb">
         <c:forEach items="${functions:reverse(pageNodes)}"
-            var="pageNode" varStatus="status">
-            <c:set var="displayPage" value="true" />
+                   var="pageNode" varStatus="status">
+            <c:set var="displayPage" value="true"/>
             <c:choose>
                 <c:when test="${status.first && !displayHome.boolean}">
-                    <c:set var="displayPage" value="false" />
+                    <c:set var="displayPage" value="false"/>
                 </c:when>
                 <c:when
-                    test="${status.last && !displayCurrentPage.boolean}">
-                    <c:set var="displayPage" value="false" />
+                        test="${status.last && !displayCurrentPage.boolean}">
+                    <c:set var="displayPage" value="false"/>
                 </c:when>
             </c:choose>
             <c:if test="${displayPage}">
-                <li><c:if
-                    test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
+                <li>
+                    <c:if
+                            test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
                     <a href="${url.base}${pageNode.path}.html">
-                </c:if> ${pageNode.properties['jcr:title'].string} <c:if
-                    test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
+                        </c:if> ${pageNode.properties['jcr:title'].string} <c:if
+                            test="${renderContext.mainResource.node.path ne pageNode.path || displayLinkOnCurrentPage.boolean}">
                     </a>
-                </c:if></li>
+                    </c:if></li>
             </c:if>
         </c:forEach>
+        <c:if test="${not jcr:isNodeType(renderContext.mainResource.node, 'jnt:page')}">
+            <c:set var="pageNode" value="${renderContext.mainResource.node}"/>
+            <li>
+                <c:if test="${displayLinkOnCurrentPage.boolean}">
+                <a href="${url.base}${pageNode.path}.html">
+                    </c:if> ${functions:abbreviate(renderContext.mainResource.node.displayableName,15,30,'...')} <c:if test="${displayLinkOnCurrentPage.boolean}">
+                </a>
+                </c:if></li>
+        </c:if>
     </ul>
 </c:if>

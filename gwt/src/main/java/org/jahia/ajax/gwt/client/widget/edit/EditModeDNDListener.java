@@ -292,11 +292,21 @@ public class EditModeDNDListener extends DNDListener {
         } else if (PAGETREE_TYPE.equals(targetType)) {
             if (PAGETREE_TYPE.equals(sourceType)) {
                 status.setData(OPERATION_CALLED, "true");
-                GWTJahiaNode source = ((List<GWTJahiaNode>) sourceNodes).get(0);
+                final GWTJahiaNode source = ((List<GWTJahiaNode>) sourceNodes).get(0);
+                final GWTJahiaNode parent = status.getData(TARGET_PARENT);
 
-                if (e.getDropTarget() instanceof PagesTabItem.PageTreeGridDropTarget) {
-                    callback = ((PagesTabItem.PageTreeGridDropTarget) e.getDropTarget()).getCallback();
-                }
+                callback = new BaseAsyncCallback() {
+                    public void onSuccess(Object result) {
+                        String selectedPath = editLinker.getSelectionContext().getMainNode().getPath();
+                        String replacedPath = selectedPath.replace(source.getPath(), parent.getPath() + "/" + source.getName());
+                        if (!replacedPath.equals(selectedPath)) {
+                            editLinker.onMainSelection(replacedPath, null, null);
+                            editLinker.refresh(Linker.REFRESH_PAGES);
+                        } else if (e.getDropTarget() instanceof PagesTabItem.PageTreeGridDropTarget) {
+                            ((PagesTabItem.PageTreeGridDropTarget) e.getDropTarget()).getCallback().onSuccess(result);
+                        }
+                    }
+                };
 
                 if (status.<Object>getData("type").equals(-1)) {
                     service.moveAtEnd(source.getPath(), targetPath, callback);
@@ -305,7 +315,6 @@ public class EditModeDNDListener extends DNDListener {
                 } else if (status.<Object>getData("type").equals(1)) {
                     GWTJahiaNode node = status.getData(TARGET_NEXT_NODE);
                     if (node == null) {
-                        GWTJahiaNode parent = status.getData(TARGET_PARENT);
                         service.moveAtEnd(source.getPath(), parent.getPath(), callback);
                     } else {
                         service.moveOnTopOf(source.getPath(), node.getPath(), callback);

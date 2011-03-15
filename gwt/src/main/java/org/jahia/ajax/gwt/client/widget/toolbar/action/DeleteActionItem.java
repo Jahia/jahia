@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,8 +160,19 @@ public class DeleteActionItem extends BaseActionItem {
                                                 }
 
                                                 public void onSuccess(Object o) {
-                                                    linker.refresh(EditLinker.REFRESH_ALL);
-                                                    linker.select(null);
+                                                    EditLinker el = null;
+                                                    if (linker instanceof SidePanelTabItem.SidePanelLinker) {
+                                                        el = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
+                                                    } else if (linker instanceof EditLinker) {
+                                                        el = (EditLinker) linker;
+                                                    }
+                                                    if (el != null && l.contains(el.getSelectionContext().getMainNode().getPath())) {
+                                                        linker.refresh(EditLinker.REFRESH_PAGES);
+                                                        linker.select(null);
+                                                    } else {
+                                                        linker.refresh(EditLinker.REFRESH_ALL);
+                                                        linker.select(null);
+                                                    }
                                                 }
                                             });
                                         }

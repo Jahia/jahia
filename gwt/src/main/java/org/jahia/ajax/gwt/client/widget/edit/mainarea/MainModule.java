@@ -213,10 +213,6 @@ public class MainModule extends Module {
                                 editLinker.onModuleSelection(MainModule.this);
                                 editLinker.getSidePanel().refresh(Linker.REFRESH_WORKFLOW);
                                 switchStaticAssets(result.getStaticAssets());
-
-                                setDocumentTitle(result.getName());
-
-//                                evalScripts(html.getElement());
                             }
 
                             @Override public void onApplicationFailure(Throwable caught) {
@@ -400,6 +396,8 @@ public class MainModule extends Module {
             DeployTemplatesActionItem.refreshAllMenus(editLinker);
         }
 
+        setDocumentTitle(Messages.get("label."+config.getName().substring(0,config.getName().length()-4), config.getName()) + " - " + node.getDisplayName());
+
         editLinker.handleNewMainNodeLoaded();
     }
 
@@ -420,12 +418,6 @@ public class MainModule extends Module {
     }
 
     public void handleNewMainSelection(String path, String template, String param) {
-        String previousPath = this.path;
-        String previousTemplate = this.template;
-
-        this.path = path;
-        this.template = template;
-
         Map<String,String> params = null;
         if (param != null && param.length() > 0) {
             params = new HashMap<String,String>();
@@ -434,6 +426,19 @@ public class MainModule extends Module {
                 params.put(key[0], key[1]);
             }
         }
+
+        if ((this.path != null ? this.path.equals(path) : path == null) &&
+                (this.template != null ? this.template.equals(template) : template == null) &&
+                (this.moduleParams != null ? this.moduleParams.equals(params) : params == null)) {
+            return;
+        }
+
+        String previousPath = this.path;
+        String previousTemplate = this.template;
+
+        this.path = path;
+        this.template = template;
+
         moduleParams = params;
 
         module.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");

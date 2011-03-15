@@ -179,6 +179,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         return new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 Node node = jcrGroup.getNode(session);
+                if (node.isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
+                    return false;
+                }
                 session.checkout(node.getParent());
                 session.checkout(node);
                 node.remove();

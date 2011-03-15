@@ -446,7 +446,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 options = sitesFolder.getProperty("j:virtualsitesFolderConfig").getString();
                             }
 
-                            Node f = JCRContentUtils.getPathFolder(sitesFolder, siteKey1, options);
+                            Node f = JCRContentUtils.getPathFolder(sitesFolder, siteKey1, options, "jnt:virtualsitesFolder");
                             try {
                                 f.getNode(siteKey1);
                             } catch (PathNotFoundException e) {

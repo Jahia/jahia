@@ -181,6 +181,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             try {
                 JCRCallback<Boolean> deleteCallcback = new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        Node node = jcrUser.getNode(session);
+                        if (node.isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
+                            return false;
+                        }
                         String query = "SELECT * FROM [jnt:ace] as ace where ace.[j:principal]='u:"+jcrUser.getName()+"'";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
@@ -191,7 +195,6 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                             session.checkout(next);
                             next.remove();
                         }
-                        Node node = jcrUser.getNode(session);
                         session.checkout(node.getParent());
                         session.checkout(node);
                         node.remove();

@@ -575,12 +575,12 @@ public final class JCRContentUtils {
                 || LIVE_WORKSPACE.equals(workspace);
     }
 
-    public static Node getPathFolder(Node root, String name, String options) throws RepositoryException {
+    public static Node getPathFolder(Node root, String name, String options, String nodeType) throws RepositoryException {
         Node result = root;
         if (options.contains("initials")) {
             String s = "" + Character.toUpperCase(name.charAt(0));
             if (!result.hasNode(s)) {
-                result = result.addNode(s, Constants.JAHIANT_SYSTEMNODE);
+                result = result.addNode(s, nodeType);
             } else {
                 result = result.getNode(s);
             }

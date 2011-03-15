@@ -745,7 +745,7 @@ public class JCRStoreProvider {
                             options = usersFolderNode.getProperty("j:usersFolderConfig").getString();
                         }
 
-                        Node f = JCRContentUtils.getPathFolder(usersFolderNode, username, options);
+                        Node f = JCRContentUtils.getPathFolder(usersFolderNode, username, options, "jnt:usersFolder");
 
                         try {
                             f.getNode(username);

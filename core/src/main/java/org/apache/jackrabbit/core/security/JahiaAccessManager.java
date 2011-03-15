@@ -53,7 +53,6 @@ import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -379,13 +378,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             Boolean itemExists = null;
 
             // Always deny write access on system folders
-            if (permissions.contains(Privilege.JCR_WRITE + "_" + workspaceName)) {
+            if (permissions.contains(Privilege.JCR_WRITE + "_" + workspaceName) ||
+                    permissions.contains(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName)||
+                    permissions.contains(Privilege.JCR_REMOVE_NODE + "_" + workspaceName)) {
                 itemExists = getSecuritySession().itemExists(jcrPath);
                 if (itemExists.booleanValue()) {
                     i = getSecuritySession().getItem(jcrPath);
                     if (i.isNode()) {
-                        String ntName = ((Node) i).getPrimaryNodeType().getName();
-                        if (ntName.equals(Constants.JAHIANT_SYSTEMNODE) || ntName.equals("rep:root")) {
+                        if (((Node) i).isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
                             cache.put(absPathStr + " : " + permissions, false);
                             return false;
                         }

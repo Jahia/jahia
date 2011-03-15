@@ -22,22 +22,22 @@
             <preferences jcr:primaryType="jnt:preferences" >
             </preferences>
         </ROOT_NAME_PLACEHOLDER>
-        <guest jcr:primaryType="jnt:user" j:password="" j:external="false"/>
+        <guest jcr:primaryType="jnt:user" jcr:mixinTypes="jmix:systemNode" j:password="" j:external="false"/>
     </users>
 
     <groups jcr:primaryType="jnt:groupsFolder">
-        <guest jcr:primaryType="jnt:group" j:hidden="false">
+        <guest jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
         </guest>
-        <users jcr:primaryType="jnt:group" j:hidden="false">
+        <users jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
         </users>
-        <administrators jcr:primaryType="jnt:group" j:hidden="false">
+        <administrators jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="false">
             <j:members jcr:primaryType="jnt:members">
                 <root jcr:primaryType="jnt:member" j:member="b32d306a-6c74-11de-b3ef-001e4fead50b"/>
             </j:members>
         </administrators>
-        <privileged jcr:primaryType="jnt:group" j:hidden="true">
+        <privileged jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="true">
             <j:members jcr:primaryType="jnt:members">
                 <root jcr:primaryType="jnt:member" j:member="b32d306a-6c74-11de-b3ef-001e4fead50b"/>
             </j:members>
@@ -50,9 +50,9 @@
     <imports jcr:primaryType="jnt:importDropBox"/>
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper"/>
 
-    <mounts jcr:primaryType="jnt:systemFolder" >
-    </mounts>
-    <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>    
+    <mounts jcr:primaryType="jnt:mounts" />
+
+    <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>
 
     <templateSets jcr:primaryType="jnt:templateSets"/>
 

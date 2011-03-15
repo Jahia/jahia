@@ -5,6 +5,7 @@
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <jsp:useBean id="groupErrorMessage" class="java.lang.String" scope="session"/><jsp:useBean id="URL" class="java.lang.String" scope="request"/><%
 JahiaData jData = (JahiaData)request.getAttribute("org.jahia.data.JahiaData");
@@ -34,20 +35,37 @@ int stretcherToOpen   = 1; %>
                 <!-- Remove group -->
                 <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=processRemove")%>' method="post">
                   <table border="0" style="width:100%">
-                    <tr>
-                      <br>
-                      <td>
-                        <b><fmt:message key="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= groupName %>
-                        <input type="hidden" name="groupName" value="<%= groupName%>">
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <br>
-                        <br>
-                        <fmt:message key="org.jahia.admin.users.ManageGroups.areYouSure.label"/>
-                      </td>
-                    </tr>
+        <c:if test="${not groupReadOnly}">
+            <tr>
+              <br>
+              <td>
+                <b><fmt:message key="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= groupName %>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br>
+                <br>
+                  <fmt:message key="org.jahia.admin.users.ManageGroups.areYouSure.label"/>
+              </td>
+            </tr>
+        </c:if>
+        <c:if test="${groupReadOnly}">
+            <tr>
+              <br>
+              <td>
+                <b><fmt:message key="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= groupName %>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br>
+                <br>
+                  <fmt:message key="org.jahia.admin.users.ManageGroups.cannotRemove.label"/>
+              </td>
+            </tr>
+        </c:if>
+
                   </table>
                 </form>
               </div><!-- End remove group -->
@@ -64,9 +82,11 @@ int stretcherToOpen   = 1; %>
 " ><fmt:message key="label.cancel"/></a>
             </span>
           </span>
+            <c:if test="${not groupReadOnly}">
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-ok" href="javascript:document.mainForm.submit();"><fmt:message key="label.ok"/></a>
             </span>
           </span>
+            </c:if>
         </div>

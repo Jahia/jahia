@@ -15,10 +15,7 @@
  - j:nodename (string) protected hidden nofulltext
  - j:fullpath (string) protected hidden nofulltext
 
-[jnt:systemNode] > nt:base, jmix:nodenameInfo
-
-[jnt:systemFolder] > jnt:systemNode
- + * (nt:base)
+[jmix:systemNode] mixin
 
 //---------------------------------------------------------
 // Rules
@@ -238,7 +235,7 @@
 // Users and groups
 //---------------------------------------------------------
 
-[jnt:usersFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list, jmix:autoPublish
+[jnt:usersFolder] > nt:base, jmix:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list, jmix:observable, jmix:autoPublish
  - j:usersFolderConfig (string) nofulltext
  - j:usersFolderSkeleton (string) nofulltext
  + * (jnt:user)
@@ -272,7 +269,7 @@
 [jnt:passwordPolicy] > nt:base
  - j:policy (string) indexed=no
 
-[jnt:user] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:autoPublish
+[jnt:user] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:autoPublish
  - j:accountLocked (boolean)=false autocreated
  - j:password (string) indexed=no
  - j:external (boolean)=false autocreated
@@ -298,7 +295,7 @@
  + passwordHistory (jnt:passwordHistory) = jnt:passwordHistory mandatory autocreated
  + * (nt:base)
 
-[jnt:groupsFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list
+[jnt:groupsFolder] > nt:base, jmix:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list, jmix:observable, jmix:autoPublish
  - j:groupsFolderConfig (string) nofulltext
  - j:groupsFolderSkeleton (string) nofulltext
  + * (jnt:group) = jnt:group
@@ -309,7 +306,7 @@
 [jnt:members]  > nt:base
  + * (jnt:member)
 
-[jnt:group] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable
+[jnt:group] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:observable, jmix:autoPublish
  - j:hidden (boolean)
  - j:external (boolean)=false autocreated
  - j:externalSource (string) nofulltext
@@ -414,7 +411,7 @@
 // Virtual sites
 //---------------------------------------------------------
 
-[jnt:virtualsitesFolder] > jnt:systemNode, jmix:basemetadata, jmix:list
+[jnt:virtualsitesFolder] > nt:base, jmix:systemNode, jmix:basemetadata, jmix:list
  - j:defaultSite (weakreference) < jnt:virtualsite
  - j:virtualsitesFolderConfig (string) nofulltext
  - j:virtualsitesFolderSkeleton (string) nofulltext
@@ -445,6 +442,9 @@
 //---------------------------------------------------------
 
 [jnt:mountPoint] > nt:hierarchyNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+
+[jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode
+ + * (jnt:mountPoint)
 
 [jnt:vfsMountPoint] > jnt:mountPoint
  - j:root (string) nofulltext

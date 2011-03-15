@@ -13,7 +13,8 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<c:if test="${renderContext.loggedIn}">
+<c:set var="cookieName" value="rated${currentNode.identifier}"/>
+<c:if test="${renderContext.loggedIn and (empty cookie[cookieName])}">
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-post-vote-${currentNode.identifier}">
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -21,5 +22,7 @@
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <input type="hidden" name="methodToCall" value="put"/>
         <input type="hidden" name="j:lastVote" value="1"/>
+        <input type="hidden" name="cookieValue" value="${currentNode.identifier}"/>
+        <input type="hidden" name="cookieName" value="${cookieName}"/>
     </form>
 </c:if>        

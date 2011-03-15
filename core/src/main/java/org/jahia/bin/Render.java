@@ -68,10 +68,7 @@ import org.springframework.web.servlet.mvc.Controller;
 
 import javax.jcr.*;
 import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -122,6 +119,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String RETURN_CONTENTTYPE = "returnContentType";
     public static final String RESOURCE_ID = "resourceID";
     public static final String REMOVE_MIXIN = "removeMixin";
+    public static final String COOKIE_VALUE = "cookieValue";
+    public static final String COOKIE_NAME = "cookieName";
+    public static final String COOKIE_PATH = "cookiePath";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -159,6 +159,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(AUTO_ASSIGN_ROLE);
         reservedParameters.add(PARENT_TYPE);
         reservedParameters.add(RETURN_CONTENTTYPE);
+        reservedParameters.add(COOKIE_NAME);
+        reservedParameters.add(COOKIE_VALUE);
+        reservedParameters.add(COOKIE_PATH);
     }
 
     private transient ServletConfig servletConfig;
@@ -301,6 +304,16 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         } else {
             performRedirect(null, null, req, resp, toParameterMapOfListOfString(req), false);
+        }
+        if(req.getParameter(COOKIE_NAME)!=null && req.getParameter(COOKIE_VALUE)!=null) {
+            Cookie cookie = new Cookie(req.getParameter(COOKIE_NAME), req.getParameter(COOKIE_VALUE));
+            cookie.setMaxAge(60*60*24*365);
+            if(req.getParameter(COOKIE_PATH) != null)
+                cookie.setPath(req.getParameter(COOKIE_PATH));
+            else {
+                cookie.setPath("/");
+            }
+            resp.addCookie(cookie);
         }
         String sessionID = "";
         HttpSession httpSession = req.getSession(false);
@@ -583,7 +596,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
         stringList = parameters.get(REDIRECT_HTTP_RESPONSE_CODE);
         int responseCode = !CollectionUtils.isEmpty(stringList) && !StringUtils.isBlank(stringList.get(0)) ?
-                Integer.parseInt(stringList.get(0)) : HttpServletResponse.SC_FOUND;
+                Integer.parseInt(stringList.get(0)) : HttpServletResponse.SC_SEE_OTHER;
 
         stringList = parameters.get(REDIRECT_TO);
         String stayOnPage =
@@ -610,6 +623,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         if (!StringUtils.isEmpty(renderedURL)) {
             if (StringUtils.isEmpty(stayOnPage)) {
+                resp.setHeader("Location", renderedURL);
+            } else if(responseCode == HttpServletResponse.SC_SEE_OTHER){
                 resp.setHeader("Location", renderedURL);
             }
             if (responseCode == HttpServletResponse.SC_FOUND) {

@@ -3100,8 +3100,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             String path = getPath();
 
-            if (path.startsWith("/sites/")) {
-                int index = path.indexOf('/', 7);
+            if (path.startsWith("/sites/") || path.startsWith("/templatesSets/")) {
+                int index = path.indexOf('/', path.indexOf('/',1)+1);
                 if (index == -1) {
                     return (site = (JCRSiteNode) provider.getService().decorate(this));
                 }
@@ -3110,11 +3110,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 } catch (ClassCastException e) {
                     // if node is not a site ( eg ACL / workflow )
                 }
-            }
-
-            if (path.startsWith("/templateSets/")) {
-                int index = path.indexOf('/', 14);
-                return (site = (JCRSiteNode) (getSession().getNode(index == -1 ? path : path.substring(0, index))));
             }
 
             return (site = (JCRSiteNode) (getSession().getNode(JCRContentUtils.getSystemSitePath())));

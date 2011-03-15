@@ -528,6 +528,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     private boolean recurseonACPs(String jcrPath, Session s, Set<String> permissions, String site) throws RepositoryException {
         Set<String> foundRoles = new HashSet<String>();
+        permissions = new HashSet<String>(permissions);
         while (jcrPath.length() > 0) {
             Map<String, Boolean> roles;
 
@@ -622,7 +623,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public boolean matchPermission(Set<String> permissions, String role, Session s) throws RepositoryException {
         Set<Privilege> permsInRole = getPermissionsInRole(role,s);
 
-        permissions = new HashSet<String>(permissions);
         for (Privilege privilege : permsInRole) {
             String privilegeName = privilege.getName();
             if (checkPrivilege(permissions, privilegeName)) {

@@ -410,10 +410,10 @@
         <name>ckeditor</name>
         <path>/META-INF/tags/ckeditor.tag</path>
         <example>
-        	Simple usage - will replace all textarea element, having 'jahia-ckeditor' CSS class with instance of CKEditor after page is loaded 
-        		&lt;uiComponents:ckeditor selector="textarea.jahia-ckeditor"/&gt;
+        	Simple usage - will replace textarea element, having 'jahia-ckeditor' as an id with instance of CKEditor after page is loaded
+        		&lt;uiComponents:ckeditor selector="jahia-ckeditor"/&gt;
         	Advanced usage - overriding the CKEditor configuration 
-        		&lt;uiComponents:ckeditor selector="textarea.jahia-ckeditor"&gt;
+        		&lt;uiComponents:ckeditor selector="jahia-ckeditor"&gt;
         			{
         				skin: 'kama',
         				toolbar: 'Full'

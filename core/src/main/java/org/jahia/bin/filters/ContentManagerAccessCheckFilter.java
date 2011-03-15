@@ -49,14 +49,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaControllerUtils;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
@@ -70,7 +70,7 @@ import org.springframework.context.ApplicationListener;
 
 /**
  * Protects access to the content manager and content picker by enforcing permission checks and validating parameters.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ContentManagerAccessCheckFilter implements Filter,
@@ -107,7 +107,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-            FilterChain chain) throws IOException, ServletException {
+                         FilterChain chain) throws IOException, ServletException {
 
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         if (requireAuthenticatedUser && JahiaUserManagerService.isGuest(getCurrentUser())) {
@@ -130,7 +130,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
             return;
         }
 
-        JahiaSite site = getSite(request);
+        JCRSiteNode site = getSite(request);
         if (site == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -173,38 +173,36 @@ public class ContentManagerAccessCheckFilter implements Filter,
         return mapping;
     }
 
-    protected JahiaSite getSite(HttpServletRequest request) {
-        JahiaSite site = null;
-
+    protected JCRSiteNode getSite(HttpServletRequest request) {
         String siteId = request.getParameter("site");
-        JahiaSitesBaseService siteService = JahiaSitesBaseService.getInstance();
+
         try {
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
             if (StringUtils.isNotEmpty(siteId)) {
-                site = siteService.getSiteByIdenifier(siteId);
+                return currentUserSession.getNodeByUUID(siteId).getResolveSite();
             } else {
-                site = siteService.getDefaultSite();
-                if (site == null) {
-                    site = siteService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                JahiaSitesBaseService siteService = JahiaSitesBaseService.getInstance();
+                JahiaSite defaultSite = siteService.getDefaultSite();
+                if (defaultSite != null) {
+                    return (JCRSiteNode) currentUserSession.getNodeByUUID(defaultSite.getUuid());
                 }
             }
-        } catch (JahiaException e) {
+        } catch (RepositoryException e) {
             logger.warn("Unble to lookup site for UUID '{}'", siteId);
         }
 
-        return site;
+        return null;
     }
 
     public void init(FilterConfig filterConfig) throws ServletException {
         // do nothing
     }
 
-    protected boolean isAllowed(String permission, JahiaSite site) {
+    protected boolean isAllowed(String permission, JCRSiteNode site) {
         boolean allowed = false;
         try {
-            JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession()
-                    .getNodeByIdentifier(site.getUuid());
             allowed = JahiaControllerUtils
-                    .hasRequiredPermission(node, getCurrentUser(), permission);
+                    .hasRequiredPermission(site, getCurrentUser(), permission);
         } catch (ItemNotFoundException e) {
             // ignore
         } catch (RepositoryException e) {

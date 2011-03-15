@@ -30,7 +30,7 @@
         });
     </script>
 </template:addResources>
-<uiComponents:ckeditor selector="jahia-ckeditor"/>
+<uiComponents:ckeditor selector=".jahia-ckeditor"/>
 
 <c:set var="linked" value="${uiComponents:getBindedComponentPath(currentNode, renderContext, 'j:bindedComponent')}"/>
 <script type="text/javascript">

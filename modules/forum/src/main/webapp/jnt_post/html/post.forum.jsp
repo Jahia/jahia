@@ -116,10 +116,10 @@
     <c:if test="${jcr:hasPermission(currentNode, 'editPost')}">
         <div class="content editablePost" jcr:id="content"
              id="edit${currentNode.identifier}"
-             jcr:url="${url.base}${currentNode.path}">${fn:escapeXml(content.string)}</div>
+             jcr:url="${url.base}${currentNode.path}">${content.string}</div>
     </c:if>
     <c:if test="${not jcr:hasPermission(currentNode, 'editPost')}">
-        <div class="content">${fn:escapeXml(content.string)}</div>
+        <div class="content">${content.string}</div>
     </c:if>
 </div>
 

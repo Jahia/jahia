@@ -380,37 +380,6 @@
         <load-on-startup>4</load-on-startup>
     </servlet>
 
-    <!-- ====================================================================== -->
-    <!-- W E B D A V  S E R V E R  S E R V L E T                                  -->
-    <!-- ====================================================================== -->
-    <servlet>
-        <description>
-            The webdav servlet that connects HTTP request to the repository.
-        </description>
-        <servlet-name>JCRWebdavServer</servlet-name>
-        <servlet-class>org.apache.jackrabbit.j2ee.JahiaJCRWebdavServerServlet</servlet-class>
-        <!--
-            Optional parameter to define the value of the 'WWW-Authenticate' header
-        -->
-        <!--
-        <init-param>
-            <param-name>authenticate-header</param-name>
-            <param-value>Basic realm="Jackrabbit Webdav Server"</param-value>
-            <description>
-                Defines the value of the 'WWW-Authenticate' header.
-            </description>
-        </init-param>
-        -->
-        <init-param>
-            <description>
-                defines the prefix for spooling resources out of the repository.
-            </description>
-            <param-name>resource-path-prefix</param-name>
-            <param-value>/server</param-value>
-        </init-param>
-        <load-on-startup>5</load-on-startup>
-    </servlet>
-
     <servlet>
         <servlet-name>Files</servlet-name>
         <servlet-class>org.jahia.bin.FilesServlet</servlet-class>
@@ -556,10 +525,6 @@
     <servlet-mapping>
         <servlet-name>Webdav</servlet-name>
         <url-pattern>/repository/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>JCRWebdavServer</servlet-name>
-        <url-pattern>/server/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Files</servlet-name>

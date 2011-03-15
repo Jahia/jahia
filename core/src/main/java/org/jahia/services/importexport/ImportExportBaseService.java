@@ -595,25 +595,25 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         if (!sizes.containsKey(REPOSITORY_XML)) {
                             // No repository descriptor - Old import format only
                             name = "/" + name;
-                            if (name.startsWith("/content/sites")) {
-                                name = pathMapping.get("/")
-                                        + StringUtils.stripStart(name
-                                                .replaceFirst("/content/sites/[^/]+/files/", ""),
-                                                "/");
-                            } else if (name.startsWith("/content/users")) {
-                                name = name.replaceFirst(
-                                                "/content/users/([^/]+)/",
-                                                "/users/$1/files/");
-                            } else if (name.startsWith("/users")) {
-                                name = name.replaceFirst(
-                                                "/users/([^/]+)/",
-                                                "/users/$1/files/");                                        
-                            } else {
-                                name = pathMapping.get("/")
-                                        + StringUtils.stripStart(name, "/");
-                            }
                             if (!zipentry.isDirectory()) {
                                 try {
+                                    if (name.startsWith("/content/sites")) {
+                                        name = pathMapping.get("/")
+                                                + StringUtils.stripStart(name
+                                                        .replaceFirst("/content/sites/[^/]+/files/", ""),
+                                                        "/");
+                                    } else if (name.startsWith("/content/users")) {
+                                        name = name.replaceFirst(
+                                                        "/content/users/([^/]+)/",
+                                                        "/users/$1/files/");
+                                    } else if (name.startsWith("/users")) {
+                                        name = name.replaceFirst(
+                                                        "/users/([^/]+)/",
+                                                        "/users/$1/files/");                                        
+                                    } else {
+                                        name = pathMapping.get("/")
+                                                + StringUtils.stripStart(name, "/");
+                                    }
                                     String filename = name.substring(name.lastIndexOf('/') + 1);
                                     String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename);
                                     ensureFile(jcrStoreService.getSessionFactory().getCurrentUserSession(), name, zis, contentType, site);
@@ -742,15 +742,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 dir = parentDir.getNode(site.getSiteKey());
             } else {
                 try {
-                    String dirName = name.substring(name.lastIndexOf('/') + 1);
-                    if (!StringUtils.isEmpty(dirName)) {
-                        if (!parentDir.isCheckedOut()) {
-                            session.getWorkspace().getVersionManager()
-                                    .checkout(parentDir.getPath());
-                        }
-                        JCRNodeWrapper createdDir = parentDir.createCollection(dirName);
-                        createdDir.saveSession();
-                    }
+                    parentDir.createCollection(name.substring(name.lastIndexOf('/') + 1));
                 } catch (RepositoryException e) {
                     logger.error("RepositoryException", e);
                 }
@@ -771,10 +763,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             if (!parentDir.hasNode(name)) {
                 logger.debug("Add file to " + parentDir.getPath());
                 try {
-                    if (!parentDir.isCheckedOut()) {
-                        session.getWorkspace().getVersionManager()
-                                .checkout(parentDir.getPath());
-                    }                    
                     JCRNodeWrapper res = parentDir.uploadFile(name, inputStream, type);
                     logger.debug("File added -> " + res);
                     res.saveSession();
@@ -1082,7 +1070,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                     handleImport(zis, documentViewImportHandler);
                     session.save();
-                    break;
                 } else if (name.endsWith(".xml")) {
                     importXML(parentNodePath, zis, false);
                 }

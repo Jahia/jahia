@@ -12,10 +12,10 @@
 <c:if test="${not empty linked}">
   <jcr:sql var="numberOfPostsQuery"
              sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${linked.path}'])"/>
-  <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
-  <jcr:sql var="numberOfThreadsQuery"
-             sql="select [jcr:uuid] from [jnt:page] as t  where isdescendantnode(t,['${linked.path}'])"/>
-  <c:set var="numberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
+    <c:set var="totalNumberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
+    <jcr:sql var="numberOfThreadsQuery"
+             sql="select [jcr:uuid] from [jnt:topic] as t  where isdescendantnode(t,['${linked.path}'])"/>
+    <c:set var="totalNumberOfThreads" value="${numberOfThreadsQuery.rows.size}"/>
   <template:addResources type="css" resources="forum.css"/>
   <template:addCacheDependency node="${linked}"/>
   <div class="topics">
@@ -113,7 +113,7 @@
       </ul>
       <div class="clear"></div>
     </div>
-    <span><fmt:message key="total.threads"/>:&nbsp;${numberOfThreads}</span>
-    <span><fmt:message key="total.posts"/>:&nbsp;${numberOfPosts}</span>
+    <span><fmt:message key="total.threads"/>:&nbsp;${totalNumberOfThreads}</span>
+    <span><fmt:message key="total.posts"/>:&nbsp;${totalNumberOfPosts}</span>
     </div>
 </c:if>

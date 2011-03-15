@@ -1,0 +1,57 @@
+Query versus search tags
+
+  Jahia offers two distinct tag libraries. The search tags and the query tags. Here is a detailed comparison between those tag libraries to let you find out, which one is better for a specific use case.
+
+*-----------+-----------*-------------------*   
+|              | <<Query-tags>> | <<Search-tags>> | 
+*-----------+-----------*-------------------*    
+| Main purpose | Retrieving homogeneous objects of one type (e.g. news items, event, etc.) including filtering and sorting by fields | Site and document repository search using full text queries and metadata search |
+*-----------+-----------*-------------------*    
+| Result objects | Any content node | Hit object, which refers to content nodes, giving access to excerpt, score etc. |
+*-----------+-----------*-------------------*
+| Automatic creation of HTML input form | No | Yes |
+*-----------+-----------*-------------------*
+| Can do programmatic search without input form | Yes | Yes |
+*-----------+-----------*-------------------*
+| Search any content object by fulltext search or constraints on metadata fields | It is possible to search through all containers of any type | Yes |
+*-----------+-----------*-------------------*
+| Limit search to certain content definition | Yes | No (only via SearchCriteria API) |
+*-----------+-----------*-------------------*    
+| Limit search to multiple content definitions | Only when using mixins or inheritance or by using joins | No |
+*-----------+-----------*-------------------* 
+| Ability to search in entire site | Yes | Yes |
+*-----------+-----------*-------------------*
+| Ability to search in multiple or all sites | Yes | Yes |
+*-----------+-----------*-------------------*
+| Ability to limit search to children or descendants of content objects | Yes  | Yes, one node or descendant node constraint is available by tag |
+*-----------+-----------*-------------------*
+| Automatically dereference linked files (from internal or external mounted document repositories) in content objects within the searched scope | No | No |
+*-----------+-----------*-------------------*    
+| Search for files in internal or external document repositories (if supported by connector) | No |  Yes |
+*-----------+-----------*-------------------*
+| Ability to search in current, specific and multiple languages | Yes | Yes |
+*-----------+-----------*-------------------*
+| Ability to search in current, specific and multiple workflow states | Not in multiple | Not in multiple |    
+*-----------+-----------*-------------------*
+| Support of fulltext query syntax | Fulltext query syntax as specified in JSR-283 | Lucene query syntax |
+*-----------+-----------*-------------------*
+| Ability to build complex queries | Yes | No |
+*-----------+-----------*-------------------*
+| Highlighting search term in search result excerpts | No | Yes |
+*-----------+-----------*-------------------*
+| Set limit for number of search results | Yes | Yes |
+*-----------+-----------*-------------------*
+| Sort by relevance | Yes | Yes |
+*-----------+-----------*-------------------*
+| Sort by fields | Yes | No |
+*-----------+-----------*-------------------*
+| Consider ACL to not return hits, which cannot be access by current user | Yes | Yes |
+*-----------+-----------*-------------------*
+| Ability to configure returning one or multiple hits per page | No | Yes (by rules) |
+*-----------+-----------*-------------------*
+| Integrated with faceted search/browsing tags | Yes | No (not yet) |
+*-----------+-----------*-------------------*
+| Integrated with frontend HTML cache | Yes | No |
+*-----------+-----------*-------------------*
+| OpenSearch integration | No | Yes |
+*-----------+-----------*-------------------* 

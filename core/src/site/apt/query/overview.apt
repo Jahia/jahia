@@ -1,0 +1,141 @@
+Search features
+
+  This page gives an overview about the search features integrated in Jahia
+
+* Features
+
+** Indexing
+
+    * No need for separate index data schema configuration (like in Solr) as Jahia automatically does it according to the nodetype definitions (CND)
+    
+    * Content is immediately indexed after editing or publishing, except document text extraction, which is done asynchronously
+    
+    * Support Solr-based filtering for faceted search
+    
+    * Ability to use different score.boosts and text analyzers per field and language (different tokenizers, stemmers, stopwords)
+    
+    * Jahia automatically re-configures the index schema on-the-fly if new modules/templates are deployed or updated on a running server not requiring a server restart
+    
+    * Since Jahia 6.5 is using Jackrabbit, each cluster node has to maintain its own local index
+    
+    * Also due to Jackrabbit re-indexing without the need of restarting the server is no longer supported. You have to {{{http://wiki.apache.org/jackrabbit/Search#Rebuilding_the_Index}shutdown and manually delete the index folders}} 
+    
+    * If required, Jahia can create and update a spellcheck dictionary from a site's index in configurable intervals
+    
+    * There is no longer a distinction between content and document repository, both are now located in the same Jackrabbit based repository. 
+    
+    * Rich document parsing (text extraction) is supported by Apache Tika
+
+** Search
+
+    * Structured search based on any number of constraints on any content and metadata field
+    
+          * Fully supports the query object model as specified in the JSR-283 with the ability to define a selector and multiple constraints and orderings or even multiple selectors using joins. 
+          
+          * Query in a content list by using the child-node constraint. 
+          
+          * Query in multiple lists with same node or mixin type
+          
+                * in current site
+                
+                * in a different site
+                
+                * in multiple sites
+                
+                * in multiple specified sections (descendant, childnode)
+                
+          * Automatically queries content using the current language and workflow state (live/edit mode)
+          
+          * Allow queries in content of other language(s) or workflow state(s) than the current
+          
+          * Sort by any number of fields (also relevance)
+          
+          * Support for faceted search and browsing based on indexed fields, dates, ranges and arbitrary queries
+          
+    * Unstructured search (fulltext)
+    
+          * Supports the fulltext query syntax as specified in the JSR-283 (optional and mandatory words, phrase search, without words, use of wildcards, ranges,...)
+          
+          * Search through all site content
+          
+                * but references are not automatically followed (yet)
+                
+          * Search in internal document repository and/or external repositories (via Jahia's UCH)
+          
+          * Search term highlighting in results
+          
+          * Sort by relevance
+          
+          * Search in multiple sites
+    
+    * Ability to configure returning one or multiple hits per page as well as to use query parameters in the search hit's URL by using rules
+    
+    * Ability to exclude fields from being fulltext searched by configuration
+    
+    * Consider restricted content to not return search hits, which cannot be accessed by the current user
+    
+    * Specify limit for number of search results for better performance, to for instance display just the top ten related content objects
+    
+    * Return total number of hits
+
+** Easy template development
+
+    * Powerful JSP tags to remove the necessity for scriptlets
+    
+          * Tag libraries for creation of simple and advanced search forms (site and document search) with support for unstructured query and metadata search
+          
+          * Tag library for structured queries
+          
+          * Tag library for faceted search support (show hits per facet, display already selected facets in the path and allow to remove them again)
+          
+    * Template developer can create different result snippets per found content type and for instance display the most relevant excerpt of a larger content object (with highlighted search terms) or display other data related to the found content object
+    
+    * Offer URL to link to the page displaying the found content with rule based query parameter manipulation (e.g. container details view or correct page in pagination)
+
+** Advanced features
+
+    * Use Solr-based Spellchecker, which is better supporting multiple terms per query in the „Did you mean“ support
+    
+    * Automatically creates OpenSearch tags to be detectable by OpenSearch clients (like Firefox)
+
+** Administration/Development
+
+    * Possibility of writing the created queries into the jahia log
+    
+    * Luke can be used to view the index and make sample queries
+    
+    * Configure index settings and analyzers, highlighting, spellchecking via Jackrabbit's configuration
+    
+* Used frameworks
+
+  Index/search in Jahia works out-of-the-box with just using the default configuration settings, but you can customize and tune settings in these configurations (mainly based on Jackrabbit, Lucene, Solr and some custom configurations).
+
+  Jahia has integrated multiple search frameworks and uses a selected set of features from each in order to offer a powerful and flexible search solution.
+
+  * Apache Jackrabbit using Apache Lucene (integrated library)
+
+    * From Jahia 6.5 onwards Jahia content is indexed and searched via Jackrabbit, which phased out the custom Jahia index and Compass integration.
+    
+    * Abstract query object model is used as basis for our tags to create container queries    
+    
+    * Rich document parsing (text extraction) and indexing
+    
+    * Luke can be used to view the index and make sample queries
+    
+  * Apache Solr (integrated solr-common-*.jar and some classes)
+
+    * Filtering for faceted search
+    
+    * Using Spellchecker for „Did you mean“ support
+
+  * OpenSearch (integrated library)
+
+    * Supports inbound and outbound OpenSearch calls
+    
+    * Jahia automatically creates OpenSearch tags to be detectable by OpenSearch clients (like Firefox)
+
+  * EntropySoft (library can be integrated via Jahia Unified Content Hub)
+
+    * Allow to search in external repositories mounted in Jahia via the Unversal Content Hub
+    
+    * Transparently convert queries to EntropySoft query language

@@ -1,0 +1,167 @@
+Query basics
+
+  With Jahia 6.5 all the Jahia content is now stored in Jackrabbit, which itself provides powerful query capabilities. This
+  made the proprietary query/indexing code of Jahia obsolete. In order to continue some supporting interesting features, we enhanced
+  the index/query methods of Jackrabbit. Other features are achieved differently now, and some have been dropped or postponed for
+  later releases. The move to Jackrabbit also opened up new powerful possibilities and more flexible querying.
+  
+  Now you have three alternatives to implement queries:
+
+* JCR Java Query Object Model (JQOM) versus SQL-2 versus XPATH
+
+  The {{{http://jcp.org/aboutJava/communityprocess/pr/jsr283/}Java Content Repository (JCR) 2.0 specification (JSR-283)}} has deprecated the 
+  use of SQL and XPATH and replaced this with a specification of the Abstract Query Model (provided implementation is called JCR Java Query Object Model) and 
+  the SQL-2 query syntax (similar to SQL). Still Jackrabbit continues to support the XPATH query language, which was specified in version 1.0 
+  of the JCR.
+  
+  Jahia supports all of them and provides convenient JSP tags for each possibility to ease and speed up development of modules, which use queries.
+  
+  JQOM and SQL-2 are both based on the new Abstract Query Model (AQM), whereas XPATH is using legacy code in the backend. Therefore
+  you will find functional and performance differences between the three approaches. 
+  
+  Jahia recommends the usage of SQL-2 for hardcoded queries and JQOM wherever a query is built dynamically depending on user input. XPATH should
+  only be used as last resort, as due to its longer existence and optimizations some queries may only work or perform well with XPATH (until
+  Jackrabbit will also tune the queries based on AQM). On the other side AQM allows for more complex queries (like joins), which are not 
+  possible with XPATH, but such queries often have some performance penalties. 
+  
+** JQOM
+
+  Already in Jahia 5 we provided tags for container queries, which were heavily based on the Abstract Query Model. Because of this, these tag library
+  is still available in Jahia 6.5 and it is now not only limited to container queries, but you can use it for queries on any node type.
+
+  The following example shows how to query all nodes having the mixin type "jmix:sitemap" and which are wither the current node or a descendant of the
+  current node.
+
++----------------------------------------
+
+        <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+        <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+        <jcr:jqom var="sitemaps">
+            <query:selector nodeTypeName="jmix:sitemap" selectorName="stmp"/>
+            <query:or>
+                <query:descendantNode path="${currentNode.path}" selectorName="stmp"/>
+                <query:sameNode path="${currentNode.path}" selectorName="stmp"/>
+            </query:or>
+        </jcr:jqom>
+
+        <c:forEach items="${sitemaps.nodes}" varStatus="status" var="sitemapEL">
+            <c:url value="${sitemapEL.path}.html" context="${url.base}" />
+        </c:forEach>
+    
++----------------------------------------
+
+  The above example immediately executes the query and writes the results into the pageContext variable named <<<sitemaps>>>.
+  The resulting object is of type <<<javax.jcr.query.QueryResult>>>, which lets you access the resulting nodes or row objects.
+  
+  Like in previous Jahia versions, you can also first define the queries and store them in a variable and refer to this
+  varaiable in <<<\<jcr:jqom\>>>>, like this:
+  
++----------------------------------------
+
+        <query:definition var="listQuery" scope="request">
+            <query:selector nodeTypeName="nt:base"/>
+            <query:descendantNode path="${currentNode.properties['relative'].boolean ? renderContext.mainResource.node.path : renderContext.site.path}"/>
+            <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tags&facet.mincount=${usageThreshold}&facet.limit=${numberOfTagsLimit}&facet.sort=true)" propertyName="j:tags"/>
+        </query:definition>
+
+        <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
+
++----------------------------------------        
+
+  The above example defines a query on the base nodetype and depending on the <<<relative>>> property value in the current node, it finds all nodes, which are descendant
+  of the current node or all nodes of the current site.
+  
+  The column in this case specifies to run Solr based faceting (this is a Jahia specific extension to Jackrabbit) and return the facet counts. You will find more information in the 
+  description of the facet module.
+  
+  In this case the query object model is stored into the <<<listQuery>>> variable, which is then used as reference to run the query in the <<<\<jcr:jqom\>>>>
+  
+  To learn about the different tags, please look directly at the <<<query>>> taglib (TaglibDoc ???). We made sure that for all query elements described in the specification of the
+  {{{http://www.day.com/specs/jcr/2.0/6_Query.html}Abstract Query Model}} we provide a convenient JSP tag.  
+  
+  You can also create the JQOM queries directly using the API like shown in the specification. For example:
+  
++----------------------------------------
+
+        QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
+        QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
+
+        qomBuilder.setSource(factory.selector("jnt:event", "event"));
+        qomBuilder.andConstraint(factory.descendantNode("event", "/sites/eventTest"));
+
+        QueryObjectModel qom = qomBuilder.createQOM();
+        QueryResultWrapper res = (QueryResultWrapper) qom.execute();
+
++----------------------------------------  
+
+  So, as you see, using the JQOM requires more code lines, but it is handy if you need to setup dynamic and conditional queries. For hardcoded
+  queries however we recommend using SQL-2.
+
+** SQL-2
+
+  SQL-2 is a query language, which is also mapped to the Abstract Query Model. So Jackrabbit provides a parser, which will translate the queries and eventually create the JQOM. So both
+  implementations use the same backend query engine in Jackrabbit. 
+  
+  The SQL-2 grammer is heavily based on SQL, with some extensions for hierarchical queries as used in a modern content repositories, and some limitations, so that there is
+  some standard support across all java content repository vendors.
+  
+  You can learn more about SQL-2 at these sources: {{{http://www.h2database.com/jcr/grammar.html}SQL-2 Grammar (railroad diagrams)}}, {{{http://svn.apache.org/viewvc/jackrabbit/trunk/jackrabbit-spi-commons/src/test/resources/org/apache/jackrabbit/spi/commons/query/sql2/test.sql2.txt?view=markup}SQL-2 examples}},
+  {{{http://www.day.com/specs/jcr/2.0/6_Query.html}Specification}}
+  
+  The advantage of SQL-2 towards JQOM is that the query definition is short and easier to read, but there is one additional layer as the query needs to be parsed to the JQOM, so there may
+  still also be some hidden bugs, which fail to correctly translate the query. If you have complex dynamic or conditional queries, then JQOM may be the better choice.  
+
+** XPATH  
+
+  XPATH has been deprecated as of {{{http://www.day.com/maven/jsr170/javadocs/jcr-2.0/javax/jcr/query/Query.html}JCR 2.0}}, but Jackrabbit and Jahia still support it. View it as 
+  last resort, if you cannot make queries work with SQL-2 or JQOM, or it they have bad performance. As XPATH exists much longer and has been optimized a lot, some queries may
+  work much better with XPATH. So you could temporarily implement such queries with XPATH. Jahia also internally implemented some queries with XPATH (e.g. the search tags), as we
+  found that some functionality did not work with SQL-2. Over the time Jahia will also change these remaining XPATH queries to SQL-2.
+  
+  Notice however that when using XPATH queries, you may need to have more knowledge of the way how Jahia stores nodes internally (e.g. translation nodes), as SQL2 and JQOM queries
+  are automatically overwritten to mask the internal storage structure.
+  
+  More information about XPATH query syntax can be found in the {{{http://www.day.com/specs/jcr/1.0/6.6.2_XPath_and_SQL.html}JCR 1.0 specification}} or check this
+  {{{http://wiki.gxdeveloperweb.com/confluence/display/GXDEV/XPath+JCR+Sample+Queries}examples}}. 
+
+* Fulltext search expression
+  
+  The fulltext search expression supported with JQOM and SQL-2 is defined in the {{{http://www.day.com/specs/jcr/2.0/6_Query.html#%226.7.19%20FullTextSearch%22}JCR 2.0 specification}}.
+  
+  This same expression is also supported in the Simple search components textfield, where users can enter fulltext search criteria.  
+  
+  Terms can either be single words or phrases within double quotes. Here is a description of the expression syntax from the specification:
+  
+    * A term not preceded with "-" (minus sign) is satisfied only if the value contains that term.
+    
+    * A term preceded with "-" (minus sign) is satisfied only if the value does not contain that term.
+    
+    * Terms separated by whitespace are implicitly "ANDed".
+    
+    * Terms separated by "OR" are "ORed".
+    
+    * "AND" has higher precedence than "OR".
+    
+    * Within a term, each double quote ("), "-" (minus sign), and "\" (backslash) must be escaped by a preceding "\" (backslash).  
+  
+* Jahia's content datamodel
+
+** Examples 
+  
+   Show example queries unsing site(s), language(s), workspace, tags, categories, date constraint
+
+* Relevance
+
+** Specifying
+
+** Sorting
+
+* Find servlet
+
+* Spellchecker (Did you mean) support
+
+* Suggested typing
+
+* Performance

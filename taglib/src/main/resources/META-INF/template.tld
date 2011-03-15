@@ -159,46 +159,6 @@
             <type>javax.jcr.Node</type>
         </attribute>
     </tag>
-    
-    <tag>
-        <description>Helper tag that will only display if the specified user is the current user or if the property
-        evaluates to a public (non-private)</description>
-        <name>isPublic</name>
-        <tag-class>org.jahia.taglibs.template.users.IsPublicTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description>
-                The userKey that we are want to evaluate the property for. Will be compared against the current
-                request user.
-            </description>
-            <name>userKey</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                The name of the property that contains the boolean to evaluate for public display. Warning, the
-                property that will be looked for is the value of this attribute "Public", so you must have a property
-                declaration. If the property is found and it's value is true, then the body will be evaluated. If the
-                property is NOT found, the body WILL be evaluated. So make sure you don't forget to declare the view
-                property. Here is an example of an email property with public boolean :
-                - j:email (string)
-                - j:emailPublic (boolean)=true                
-            </description>
-            <name>property</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                The invert attribute can be used to inserse the condition check, useful for an "else" behavior. The
-                default is false.
-            </description>
-            <name>invert</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
     <tag>
         <description>Includes an option as a module into the page. The nodetype of the option to render is defined by nodetype attribute.
             The node to display is determined by node attribute. template attribute determine the way the node is rendered.

@@ -208,7 +208,7 @@
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
 
         <staging-viewer jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
-                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editSelector/sitemapSelector" j:hidden="true"/>
+                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/editMode/editSelector/sitemapSelector" j:hidden="true"/>
 
         <editor jcr:primaryType="jnt:role"
                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/wysiwyg-editor-toolbar/full"

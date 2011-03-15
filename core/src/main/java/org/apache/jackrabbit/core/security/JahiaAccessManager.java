@@ -457,6 +457,16 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
+            String ntName = n.getPrimaryNodeType().getName();
+            if (ntName.equals("jnt:acl") || ntName.equals("jnt:ace")) {
+                if (permissions.contains(Privilege.JCR_READ+"_"+workspaceName)) {
+                    permissions.add(Privilege.JCR_READ_ACCESS_CONTROL+"_"+workspaceName);
+                }
+                if (permissions.contains(Privilege.JCR_MODIFY_PROPERTIES+"_"+workspaceName)) {
+                    permissions.add(Privilege.JCR_MODIFY_ACCESS_CONTROL+"_"+workspaceName);
+                }
+            }
+
             // Todo : optimize site resolution
 //            int siteId = 0;
             String site = null;
@@ -591,17 +601,20 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         if (privilegesInRole.containsKey(role)) {
             return privilegesInRole.get(role);
         } else {
-            Node roleNode = s.getNode("/roles/"+role);
             Set<Privilege> list = new HashSet<Privilege>();
-            if (roleNode.hasProperty("j:permissions")) {
-                Value[] perms = roleNode.getProperty("j:permissions").getValues();
-                for (Value value : perms) {
-                    Node p = s.getNodeByIdentifier(value.getString());
-                    Privilege privilege = privilegeRegistry.getPrivilege(p);
-                    list.add(privilege);
+            try {
+                Node roleNode = securitySession.getNode("/roles/"+role);
+                if (roleNode.hasProperty("j:permissions")) {
+                    Value[] perms = roleNode.getProperty("j:permissions").getValues();
+                    for (Value value : perms) {
+                        Node p = s.getNodeByIdentifier(value.getString());
+                        Privilege privilege = privilegeRegistry.getPrivilege(p);
+                        list.add(privilege);
+                    }
                 }
+                privilegesInRole.put(roleNode.getName(), list);
+            } catch (PathNotFoundException e) {
             }
-            privilegesInRole.put(roleNode.getName(), list);
             return list;
         }
     }
@@ -686,7 +699,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             Set<String> grantedRoles = getRoles(absPath);
 
             for (String role : grantedRoles) {
-                Node node = s.getNode("/roles/" + role);
+                Node node = securitySession.getNode("/roles/" + role);
                 if (node.hasProperty("j:permissions")) {
                     Value[] perms = node.getProperty("j:permissions").getValues();
 

@@ -258,13 +258,14 @@ public class SearchHelper {
                 try {
                     parent = jcrService.getUserFolder(session.getUser());
                 } catch (Exception e) {
-                    logger.error("there is no defined user floder.");
+                    logger.error("there is no defined user floder.",e);
                 }
             } else {
                 parent = session.getNode(path);
             }
 
             final String saveSearchPath = parent.getPath() + "/" + contentManager.findAvailableName(parent, name);
+            parent.checkout();
             logger.debug("Save search path: " + saveSearchPath);
             Query q = createQuery(search, session);
 

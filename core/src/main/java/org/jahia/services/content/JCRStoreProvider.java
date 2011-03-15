@@ -33,6 +33,8 @@
 package org.jahia.services.content;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
+import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
@@ -830,6 +832,13 @@ public class JCRStoreProvider {
         QueryManager queryManager = session.getProviderSession(this).getWorkspace().getQueryManager();
         if (queryManager != null) {
             Query q = queryManager.createQuery(sql, Query.JCR_SQL2);
+            if (q instanceof JahiaQueryObjectModelImpl) {
+                JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) q)
+                        .getLuceneQueryFactory();
+
+                lqf.setProvider(this);
+                lqf.setJcrSession(session);
+            }
             QueryResult qr = q.execute();
             NodeIterator ni = qr.getNodes();
             while (ni.hasNext()) {

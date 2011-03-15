@@ -59,7 +59,7 @@
     <j:acl jcr:primaryType="jnt:acl">
       <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
       <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-      <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="staging-viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+      <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="privileged" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
     </j:acl>
 
     <j:workflowRules jcr:primaryType="jnt:workflowRules">
@@ -68,7 +68,7 @@
 
     <permissions jcr:primaryType="jnt:permission">
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-          <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor staging-viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor privileged" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
         </j:acl>
         <repository-permissions jcr:primaryType="jnt:permission">
             <jcr:all_default jcr:primaryType="jnt:permission">
@@ -201,13 +201,15 @@
     
     <roles jcr:primaryType="jnt:roles" >
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-          <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor staging-viewer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor privileged" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
         </j:acl>
 
         <visitor jcr:primaryType="jnt:role"
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
 
-        <staging-viewer jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
+        <author jcr:primaryType="jnt:role" />
+
+        <privileged jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
                  j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/editMode/editSelector/sitemapSelector" j:hidden="true"/>
 
         <editor jcr:primaryType="jnt:role"

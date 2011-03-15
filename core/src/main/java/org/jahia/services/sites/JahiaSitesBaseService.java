@@ -550,8 +550,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
                     JCRNodeWrapper siteNode = getSite(site.getID(), session);
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
-                        siteNode.grantRoles("g:site-privileged", Collections.singleton("staging-viewer"));
-                        siteNode.denyRoles("g:privileged", Collections.singleton("staging-viewer"));
+                        siteNode.grantRoles("g:site-privileged", Collections.singleton("privileged"));
+                        siteNode.denyRoles("g:privileged", Collections.singleton("privileged"));
                     }
                     siteNode.grantRoles("g:site-administrators", Collections.singleton("site-administrator"));
                     session.save();

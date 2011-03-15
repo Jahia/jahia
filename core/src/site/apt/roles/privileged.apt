@@ -7,7 +7,7 @@ Privileged users
   from the default workspace.
 
   For every site, a group <<<site-privileged>>> is created - this group has read access on the root node of the site, through
-  the <<<staging-viewer>>> role. If a section or a folder need to be set as private - even for privileged users - the "break
+  the <<<privileged>>> role. If a section or a folder need to be set as private - even for privileged users - the "break
   all inheritance" flag should be used.
 
 * Shared privileged group

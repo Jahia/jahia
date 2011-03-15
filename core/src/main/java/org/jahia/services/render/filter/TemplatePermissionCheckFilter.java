@@ -32,15 +32,17 @@
 
 package org.jahia.services.render.filter;
 
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRValueWrapperImpl;
+import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.AccessDeniedException;
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -83,9 +85,19 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         if (!"studiomode".equals(renderContext.getEditModeConfigName())) {
             if (node.hasProperty("j:requiredPermissions")) {
                 chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
-                Value[] values = node.getProperty("j:requiredPermissions").getValues();
-                for (Value value : values) {
-                    if (!renderContext.getMainResource().getNode().hasPermission(((JCRValueWrapperImpl) value).getNode().getName())) {
+
+                final Value[] values = node.getProperty("j:requiredPermissions").getValues();
+                List<String> perms = JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
+                    public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        List<String> permissionNames = new ArrayList<String>();
+                        for (Value value : values) {
+                            permissionNames.add(session.getNodeByUUID(value.getString()).getName());
+                        }
+                        return permissionNames;
+                    }
+                });
+                for (String perm : perms) {
+                    if (!resource.getNode().hasPermission(perm)) {
                         return "";
                     }
                 }

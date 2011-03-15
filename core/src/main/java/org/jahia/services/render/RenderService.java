@@ -34,9 +34,7 @@ package org.jahia.services.render;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRValueWrapperImpl;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.RenderChain;
@@ -371,13 +369,21 @@ public class RenderService {
 
         }
         if (templateNode.hasProperty("j:requiredPermissions")) {
-            Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
-            for (Value value : values) {
-                if (!resource.getNode().hasPermission(((JCRValueWrapperImpl) value).getNode().getName())) {
+            final Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
+            List<String> perms = JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
+                public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    List<String> permissionNames = new ArrayList<String>();
+                    for (Value value : values) {
+                        permissionNames.add(session.getNodeByUUID(value.getString()).getName());
+                    }
+                    return permissionNames;
+                }
+            });
+            for (String perm : perms) {
+                if (!resource.getNode().hasPermission(perm)) {
                     return false;
                 }
             }
-
         }
         if (templateNode.hasProperty("j:requireLoggedUser") && templateNode.getProperty("j:requireLoggedUser").getBoolean()) {
             if (!renderContext.isLoggedIn()) {

@@ -93,8 +93,7 @@
                     <fmt:message key="last.post"/>
                     </dfn>
                     <fmt:message key="by"/>
-                    <a
-                                                href="<c:url value='${url.base}${lastModifiedNode.parent.path}.html'/>"><img height="9"
+                    <a href="<c:url value='${url.base}${lastModifiedNode.parent.path}.html'/>"><img height="9"
                                                                                                             width="11"
                                                                                                             title="View the latest post"
                                                                                                             alt="View the latest post"

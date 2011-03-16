@@ -1,88 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
-         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test"
-         xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
-         xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
-    <templateSets jcr:primaryType="jnt:templateSets">
-        <templates-system jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" changefreq="monthly"
-                          j:installedModules="templates-system" priority="0.5" j:siteType="templatesSet">
-            <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="system">
-                    <home jcr:primaryType="jnt:pageTemplate">
-
-                    </home>
-                    <header jcr:primaryType="jnt:contentList">
-                        <header column="2col412" jcr:primaryType="jnt:row"/>
-                    </header>
-                    <footer jcr:primaryType="jnt:contentList">
-                        <footer column="1col16" jcr:primaryType="jnt:row"/>
-                    </footer>
-                    <header-col1 jcr:primaryType="jnt:contentList">
-                        <currentuser j:userView="welcome" jcr:primaryType="jnt:currentUserDisplay"/>
-                    </header-col1>
-                    <footer-col1 jcr:primaryType="jnt:contentList">
-                        <bigText jcr:primaryType="jnt:bigText">
-                            <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation"
-                                              text="&lt;p&gt;  &amp;copy; 2002-2011 Jahia Solutions Group - All rights reserved.&lt;/p&gt; "/>
-                        </bigText>
-                    </footer-col1>
-                    <header-col2 jcr:primaryType="jnt:contentList">
-                        <logo-jahia-xcm.png
-                                j:node="/templateSets/templates-system/templates/files/themes/default/logo-jahia-xcm.png"
-                                jcr:primaryType="jnt:imageReference">
-                            <j:translation_fr jcr:language="fr" j:alternateText="logo-jahia-xcm"
-                                              jcr:primaryType="jnt:translation"/>
-                        </logo-jahia-xcm.png>
-                    </header-col2>
-                </base>
-                <files jcr:primaryType="jnt:folder">
-                    <themes jcr:primaryType="jnt:folder">
-                        <default jcr:primaryType="jnt:folder">
-                            <photo_portrait.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="48"
-                                                j:width="48">
-                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                            </photo_portrait.png>
-                            <my-portal-logo.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="50"
-                                                j:width="129">
-                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                            </my-portal-logo.png>
-                            <jahia-studio-200.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="56"
-                                                  j:width="200">
-                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                            </jahia-studio-200.png>
-                            <jahia-ccp-200.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="49"
-                                               j:width="200">
-                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                            </jahia-ccp-200.png>
-                            <logo-jahia-xcm.png jcr:mixinTypes="jmix:image" j:height="60" jcr:primaryType="jnt:file"
-                                                j:width="115">
-                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                            </logo-jahia-xcm.png>
-                        </default>
-                    </themes>
-                </files>
-                <contents jcr:primaryType="jnt:contentFolder"/>
-            </templates>
-            <files jcr:primaryType="jnt:folder"/>
-            <categories jcr:primaryType="jnt:category"/>
-            <contents jcr:primaryType="jnt:contentFolder"/>
-            <home jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly"
-                  j:templateNode="/templateSets/templates-system/templates/base/home" priority="0.5">
-                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Home"
-                                  jcr:primaryType="jnt:translation"/>
-            </home>
-            <portlets jcr:primaryType="jnt:portletFolder"/>
-        </templates-system>
-    </templateSets>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+  <templateSets jcr:primaryType="jnt:templateSets">
+    <templates-system changefreq="monthly" j:installedModules="templates-system" j:siteType="templatesSet" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
+      <templates jcr:primaryType="jnt:templatesFolder">
+        <base j:view="system" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
+          <home jcr:primaryType="jnt:pageTemplate" />
+          <footer-col1 jcr:primaryType="jnt:contentList">
+            <bigText jcr:primaryType="jnt:bigText">
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  &amp;copy; 2002-2011 Jahia Solutions Group - All rights reserved.&lt;/p&gt; " />
+            </bigText>
+          </footer-col1>
+          <header-col2 jcr:primaryType="jnt:contentList">
+            <logo-jahia-xcm.png j:node="" jcr:primaryType="jnt:imageReference">
+              <j:translation_fr j:alternateText="logo-jahia-xcm" jcr:language="fr" jcr:primaryType="jnt:translation" />
+            </logo-jahia-xcm.png>
+          </header-col2>
+          <page jcr:primaryType="jnt:contentList">
+            <header customColumn="4, 12 " divID="header" jcr:primaryType="jnt:customRow" principalColumn="2" />
+            <content customColumn="16 alpha omega" divID="content" jcr:primaryType="jnt:customRow" principalColumn="1" />
+            <footer customColumn="16" divID="footer" jcr:primaryType="jnt:customRow" principalColumn="1" />
+          </page>
+          <content-colContent jcr:primaryType="jnt:contentList">
+            <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area" />
+          </content-colContent>
+          <footer-colContent jcr:primaryType="jnt:contentList">
+            <copyright jcr:primaryType="jnt:bigText">
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  &amp;copy; 2002-2011 Jahia Solutions Group - All rights reserved.&lt;/p&gt; " />
+            </copyright>
+          </footer-colContent>
+          <header-col1 jcr:primaryType="jnt:contentList">
+            <logo-jahia j:node="/templateSets/templates-system/templates/files/themes/default/logo-jahia.png" jcr:primaryType="jnt:imageReference">
+              <j:translation_en j:alternateText="logo-jahia" jcr:language="en" jcr:primaryType="jnt:translation" />
+            </logo-jahia>
+          </header-col1>
+        </base>
+        <files jcr:primaryType="jnt:folder">
+          <themes jcr:primaryType="jnt:folder">
+            <default jcr:primaryType="jnt:folder">
+              <photo_portrait.png j:height="48" j:width="48" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </photo_portrait.png>
+              <my-portal-logo.png j:height="50" j:width="129" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </my-portal-logo.png>
+              <jahia-studio-200.png j:height="56" j:width="200" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </jahia-studio-200.png>
+              <jahia-ccp-200.png j:height="49" j:width="200" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </jahia-ccp-200.png>
+              <logo-jahia.png j:height="30" j:width="57" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </logo-jahia.png>
+            </default>
+          </themes>
+        </files>
+        <contents jcr:primaryType="jnt:contentFolder" />
+      </templates>
+      <files jcr:primaryType="jnt:folder" />
+      <categories jcr:primaryType="jnt:category" />
+      <contents jcr:primaryType="jnt:contentFolder" />
+      <home changefreq="monthly" j:templateNode="/templateSets/templates-system/templates/base/home" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home" />
+      </home>
+      <portlets jcr:primaryType="jnt:portletFolder" />
+    </templates-system>
+  </templateSets>
 </content>
 

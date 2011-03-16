@@ -21,32 +21,7 @@
 <body id="body">
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 <div id="bodywrapper">
-  <div id="header">
-    <div class="container container_16">
-      <div class="grid_16">
-        <template:area path="header" nodeTypes="jnt:row" />
-      </div>
-    </div>
-    <div class="clear"></div>
-  </div>
-  <div id="content">
-    <div class="container container_16">
-      <div class="grid_16">
-        <template:area path="pagecontent"/>
-      </div>
-    </div>
-    <div class="clear"></div>
-  </div>
-  <div id="footer">
-    <div class="container container_16">
-      <div class="grid_16">
-        <template:area path="footer" nodeTypes="jnt:row" />
-        <div class="clear"></div>
-      </div>
-      <div class="clear"></div>
-    </div>
-  </div>
-  <div class="clear"></div>
+	<template:area path="page"/>
 </div>
 </body>
 </html>

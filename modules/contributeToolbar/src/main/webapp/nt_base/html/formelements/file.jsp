@@ -76,7 +76,7 @@
             callback : function (data, status,original) {
                 var id = $(original).attr('jcr:id');
                 $("#"+id).val(data.uuids[0]);
-                $("#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html(data.urls[0]);
+                $("#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html("<img src='"+data.urls[0]+"'/>");
                 $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").html('<span><fmt:message key="add.file"/></span>');
             }
         });

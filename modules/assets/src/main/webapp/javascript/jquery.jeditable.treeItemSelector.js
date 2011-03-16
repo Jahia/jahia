@@ -18,6 +18,8 @@ $.editable.addInputType('treeItemSelector', {
         var nodeTypes = settings.nodeTypes;
         var selectableNodeTypes = settings.selectableNodeTypes;
         var root = settings.root;
+        var preview = settings.preview;
+        var previewPath = settings.previewPath;
         $("#treeItemSelectorJeditable-treeItemSelectorTrigger").fancybox($.extend({
             autoDimensions: false,
             height: 600,
@@ -37,8 +39,14 @@ $.editable.addInputType('treeItemSelector', {
                     urlExtension: ".tree.json" + queryString,
                     urlStartWith: baseURL + root + ".treeRootItem.json" + queryString,
                     url: baseURL + root + ".treeRootItem.json" + queryString,
+                    preview: preview,
+                    previewPath: previewPath,
                     callback: function (uuid, path, title) {
+                        $("#treepreview").remove();
                         $("#treeItemSelectorJeditable").val(uuid);
+                        if(preview) {
+                            $("#treeItemSelectorJeditable").after("<img src='" + previewPath+path + "' alt='"+title+"' />");
+                        }
                         $.fancybox.close();
                     }
                 }, 'null'));

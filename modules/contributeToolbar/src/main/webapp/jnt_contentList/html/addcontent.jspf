@@ -6,6 +6,7 @@
 <%--@elvariable id="nodeType" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 
 <template:addResources type="css" resources="contribute-toolbar.css"/>
 <script type="text/javascript">
@@ -16,7 +17,21 @@
     };
     contributeParams[contributeParams.length] = contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")};
 </script>
+<style>
 
+        img {
+            border: none;
+        }
+        #treepreview {
+            position: absolute;
+            border: 1px solid #ccc;
+            background: #333;
+            padding: 5px;
+            display: none;
+            color: #fff;
+            z-index:9999;
+        }
+    </style>
 <h3 class="titleaddnewcontent">
     <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content"/>
 </h3>
@@ -47,7 +62,7 @@
                     'autoScale':false,
                     'autoDimensions':false,
                     'onComplete':function() {
-                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; });
+                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(function(){},{toolbar: 'User', filebrowserBrowseUrl: null, filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: '/jahia/engines/liveimagepicker.jsp?files=<c:url value="${url.files}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}', filebrowserLinkBrowseUrl: '/jahia/engines/liveimagepicker.jsp?files=<c:url value="${url.base}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}&type=pages'}); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; });
 
                     },
 

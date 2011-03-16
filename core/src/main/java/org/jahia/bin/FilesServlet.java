@@ -225,7 +225,14 @@ public class FilesServlet extends HttpServlet {
             // throw by the session.setVersionLabel()
             logger.debug(e.getMessage(), e);
         } catch (PathNotFoundException e) {
-            logger.debug(e.getMessage(), e);
+            try {
+                n = session.getNode(data[1]);
+            } catch (PathNotFoundException e1){
+                logger.debug(e.getMessage(), e);
+            } catch (RepositoryException e1) {
+                logger.error("Error accesing path: " + data[1] + " for user "
+                    + (session != null ? session.getUserID() : null), e);
+            }
         } catch (RepositoryException e) {
             logger.error("Error accesing path: " + data[1] + " for user "
                     + (session != null ? session.getUserID() : null), e);

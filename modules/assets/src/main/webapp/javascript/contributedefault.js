@@ -109,9 +109,10 @@ function initEditFields(id) {
         target:$(".file" + id).attr('jcr:url'),
         callback : function (data, status,original) {
             var datas = {'methodToCall':'put'};
+            var callableUrl = $(original).attr('jcr:url');
             datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
             $.post($(original).attr('jcr:url'), datas, function(result) {
-                $(original).html($('<span>' + contributionI18n['uploaded'] + '</span>'));
+                jreplace("renderingOfFile"+id, callableUrl+".html.ajax",null, null);
             }, "json");
         }
     });
@@ -121,7 +122,10 @@ function initEditFields(id) {
         var data = {'methodToCall':'put'};
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
-        $.post($(this).attr('jcr:url'), data, null, "json");
+        var callableUrl = $(this).attr('jcr:url');
+        $.post(callableUrl, data, function(result){
+            jreplace("renderingOfFile"+id, callableUrl+".html.ajax",null, null);
+        }, "json");
         return(value);
     }, {
         type    : 'treeItemSelector',
@@ -133,8 +137,9 @@ function initEditFields(id) {
         selectableNodeTypes : $(".fileSelector" + id).attr('jeditabletreeselector:selectablenodetypes'),
         baseURL : $(".fileSelector" + id).attr('jeditabletreeselector:baseURL'),
         root : $(".fileSelector" + id).attr('jeditabletreeselector:root'),
-        selectorLabel : $(".fileSelector" + id).attr('jeditabletreeselector:selectorLabel')
-
+        selectorLabel : $(".fileSelector" + id).attr('jeditabletreeselector:selectorLabel'),
+        preview : $(".fileSelector" + id).attr('jeditabletreeselector:preview'),
+        previewPath : $(".fileSelector" + id).attr('jeditabletreeselector:previewPath')
     });
 }
 

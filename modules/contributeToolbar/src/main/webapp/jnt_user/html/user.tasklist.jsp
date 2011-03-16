@@ -21,8 +21,6 @@
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
-
-<template:addResources type="javascript" resources="i18n/jquery.ui.min.js"/>
 <template:addResources type="javascript" resources="timepicker.js"/>
 <template:addResources type="css" resources="timepicker.css"/>
 

@@ -27,7 +27,7 @@
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="datepicker.js,timepicker.js,jquery.jeditable.datepicker.js"/>
-<template:addResources type="javascript" resources="jquery.ui.min.js"/>
+<template:addResources type="javascript" resources="jquery-ui.min.js"/>
 <template:addResources type="css" resources="jquery.treeview.css,jquery.fancybox.css"/>
 <template:addResources type="javascript"
                        resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
@@ -51,7 +51,26 @@
     </script>
 </template:addResources>    
 </c:if>
+<style>
 
+        img {
+            border: none;
+        }
+
+        /*  */
+
+        #treepreview {
+            position: absolute;
+            border: 1px solid #ccc;
+            background: #333;
+            padding: 5px;
+            display: none;
+            color: #fff;
+            z-index:9999;
+        }
+
+        /*  */
+    </style>
 <c:if test="${empty currentResource.moduleParams.contentType}">
     <c:set var="contentType" value="content"/>
 </c:if>
@@ -102,12 +121,13 @@
                         <c:choose>
                             <c:when test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
                                 <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                     jcr:url="<c:url value='${url.base}${currentNode.path}"'/>
+                                     jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
                                      jeditabletreeselector:baseURL="<c:url value='${url.base}'/>"
                                      jeditabletreeselector:root="${renderContext.site.path}"
                                      jeditabletreeselector:nodetypes="nt:folder,nt:file,jnt:virtualsite"
                                      jeditabletreeselector:selectablenodetypes="nt:file"
-                                     jeditabletreeselector:selectorLabel="<fmt:message key="label.show.file.picker"/>">
+                                     jeditabletreeselector:selectorLabel="<fmt:message key="label.show.file.picker"/>"
+                                jeditabletreeselector:preview="true" jeditabletreeselector:previewPath="<c:url value='${url.files}'/>">
                                     <span><fmt:message key="label.select.file"/></span>
                                 </div>
                                 <span><fmt:message key="label.or"/></span>
@@ -131,12 +151,14 @@
                                      jeditabletreeselector:root="${renderContext.site.path}"
                                      jeditabletreeselector:nodetypes="jnt:content,jnt:page,jnt:virtualsite"
                                      jeditabletreeselector:selectablenodetypes="jnt:content,jntpage"
-                                     jeditabletreeselector:selectorLabel="<fmt:message key="label.show.content.picker"/>">
+                                     jeditabletreeselector:selectorLabel="<fmt:message key="label.show.content.picker"/>" jeditabletreeselector:preview="false">
                                     <span><fmt:message key="label.select.content"/></span>
                                 </div>
                             </c:otherwise>
                         </c:choose>
-                        <template:module node="${prop.node}" template="default" />
+                            <div id="renderingOfFile${currentNode.identifier}">
+                                <template:module node="${prop.node}" template="default" />
+                            </div>
                     </c:when>
                     <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
                         <c:set var="dateTimePicker"

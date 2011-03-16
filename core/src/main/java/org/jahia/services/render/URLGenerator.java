@@ -123,15 +123,15 @@ public class URLGenerator {
 
         final String resourcePath = context.getMainResource().getNode().getPath() + ((!"default".equals(context.getMainResource().getTemplate()))?"."+context.getMainResource().getTemplate()+".":".") + context.getMainResource().getTemplateType();
 
-        baseLive = getContext() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
+        baseLive = Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
         live = baseLive + resourcePath;
-        baseEdit = getContext() + Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        baseEdit = Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         edit = baseEdit + resourcePath;
-        basePreview = getContext() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        basePreview = Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         preview = basePreview + resourcePath;
-        baseContribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        baseContribute = Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         contribute = baseContribute + resourcePath;
-        studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
+        studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
         if (context.getSite() != null) {
             try {
                 if (context.getSite().hasProperty("j:templatesSet")) {
@@ -153,13 +153,13 @@ public class URLGenerator {
         } else {
             studio += ".html";
         }
-        find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
-        findPrincipal = getContext() + FindPrincipal.getFindPrincipalServletPath();
-        logout = getContext() + Logout.getLogoutServletPath();
-        initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
-        convert = getContext() + DocumentConverter.getPath() + "/" + resource.getWorkspace();
-        captcha = getContext() + Captcha.getCaptchaServletPath();
-        templatesPath = getContext() + "/modules";
+        find = Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+        findPrincipal = FindPrincipal.getFindPrincipalServletPath();
+        logout = Logout.getLogoutServletPath();
+        initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+        convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
+        captcha = Captcha.getCaptchaServletPath();
+        templatesPath = "/modules";
         if (!context.getUser().getUsername().equals("guest")) {
             myProfile = "/users/" + context.getUser().getUsername() + ".html";
         }

@@ -35,7 +35,7 @@
                 <c:if test="${(empty displayTab and status.first) or (displayTab eq subList.name)}">
                     <c:set var="tabCssClass" value=' class="selected"'/>
                 </c:if>
-                <li><a href="${url.mainResource}?displayTab=${subList.name}${ps}"${tabCssClass}><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a></li>
+                <li><a href="<c:url value='${url.mainResource}?displayTab=${subList.name}${ps}'/>"${tabCssClass}><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a></li>
             </c:forEach>
         </ul>
     </div>

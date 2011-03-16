@@ -48,7 +48,7 @@
         <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
     </c:forEach>
 
-    <form action="${url.basePreview}${user.path}" method="post" id="updateVisibility">
+    <form action="<c:url value='${url.basePreview}${user.path}'/>" method="post" id="updateVisibility">
         <ul class="listvisibility">
     <c:forTokens
             items="j:firstName,j:lastName,j:gender,j:title,j:birthDate,age,j:organization,j:function,j:about,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:picture,preferredLanguage"

@@ -94,7 +94,7 @@
             <td>
                 <c:if test="${child.locked}">
                     <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
-                         src="${url.templatesPath}/default/images/icons/locked.gif">
+                         src="<c:url value='${url.templatesPath}/default/images/icons/locked.gif'/>">
                 </c:if>
             </td>
             <td class="lastCol">

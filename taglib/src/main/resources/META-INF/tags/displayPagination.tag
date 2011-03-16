@@ -32,7 +32,7 @@
         <c:set var="searchUrl" value="${url.mainResource}?"/>
     </c:otherwise>
     </c:choose>
-    <c:url value="${searchUrl}" context="/" var="basePaginationUrl">
+    <c:url value="${searchUrl}" var="basePaginationUrl">
         <c:if test="${not empty param}">
             <c:forEach items="${param}" var="extraParam">
                 <c:if test="${extraParam.key ne 'begin' and extraParam.key ne 'end' and extraParam.key ne 'pagesize'}">

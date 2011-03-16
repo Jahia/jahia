@@ -61,7 +61,7 @@
                 return getText(result["node"]);
             }
 
-            $(".newTagInput").autocomplete("${url.find}", {
+            $(".newTagInput").autocomplete("<c:url value='${url.find}'/>", {
                 dataType: "json",
                 cacheLength: 1,
                 parse: function parse(data) {

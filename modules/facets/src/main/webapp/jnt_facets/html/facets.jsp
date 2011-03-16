@@ -160,7 +160,7 @@
                 <ul>        
             </c:if>
             <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
-                <c:url var="facetUrl" value="${url.mainResource}" context="/">
+                <c:url var="facetUrl" value="${url.mainResource}">
                     <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
                 </c:url>
                 <li><a href="${facetUrl}"><facet:facetValueLabel currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/></a> (${facetValue.value})<br/></li>

@@ -21,7 +21,7 @@
     <ul>
         <c:if test="${renderContext.loggedIn}">
             <li class="shortcuts-login">
-                <a href='${url.logout}'><span><fmt:message key="logout"/></span></a>
+                <a href='<c:url value="${url.logout}"/>'><span><fmt:message key="logout"/></span></a>
             </li>
             <li>
                 <span class="currentUser"><c:choose><c:when test="${not empty currentUser.properties['j:firstName']}">${currentUser.properties['j:firstName']} ${currentUser.properties['j:lastName']}</c:when><c:otherwise>${currentUser.username}</c:otherwise></c:choose><c:if test="${not empty currentAliasUser}">(&nbsp;<fmt:message key="as.user"/>&nbsp;${currentAliasUser.username})</c:if></span>
@@ -33,12 +33,12 @@
             </c:if>
             <c:if test="${jcr:hasPermission(renderContext.mainResource.node, 'editModeAccess')}">
                 <li class="shortcuts-edit">
-                    <a href="${url.edit}"><fmt:message key="edit"/></a>
+                    <a href="<c:url value='${url.edit}'/>"><fmt:message key="edit"/></a>
                 </li>
             </c:if>
             <c:if test="${jcr:hasPermission(renderContext.mainResource.node, 'contributeModeAccess')}">
                 <li class="shortcuts-contribute">
-                    <a href="${url.contribute}"><fmt:message key="contribute"/></a>
+                    <a href="<c:url value='${url.contribute}'/>"><fmt:message key="contribute"/></a>
                 </li>
             </c:if>
         </c:if>

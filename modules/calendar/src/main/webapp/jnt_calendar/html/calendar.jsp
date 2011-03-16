@@ -49,7 +49,7 @@
                 </c:if>
                 events: [
                     <c:forEach items="${datas}" var="data" varStatus="status">
-                    <c:url value="${renderContext.mainResource.node.url}" context="/" var="eventUrl">
+                    <c:url value="${renderContext.mainResource.node.url}" var="eventUrl">
                     <c:param name="filter" value="{name:'${currentNode.properties.startDateProperty.string}',value:'${data.key}',op:'eq',uuid:'${linked.identifier}',format:'yyyy-MM-dd',type:'date'}"/>
                     <c:param name="calStartDate" value="${data.key}"/>
                     </c:url>

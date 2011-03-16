@@ -12,7 +12,7 @@
     var contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")} = {
         contributeTarget: "${currentNode.path}",
         contributeReplaceTarget: "${currentNode.UUID}",
-        contributeReplaceUrl: "${url.mainResource}.ajax?jarea=${areaResource.identifier}"
+        contributeReplaceUrl: "<c:url value='${url.mainResource}.ajax?jarea=${areaResource.identifier}'/>"
     };
     contributeParams[contributeParams.length] = contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")};
 </script>
@@ -33,7 +33,7 @@
     <c:forEach items="${types}" var="nodeType" varStatus="status">
         <li><a href="<c:url value='${url.base}${currentNode.path}.contribute.add.html.ajax?resourceNodeType=${nodeType.name}&path=${renderContext.mainResource.node.path}'/>" id="addButton${currentNode.identifier}-${status.index}">
         <jcr:icon var="icon" type="${nodeType}"/>
-		<img title="" align="absmiddle" alt="" src="${url.templatesPath}/${icon}.png"/> ${jcr:label(nodeType, renderContext.mainResourceLocale)}
+		<img title="" align="absmiddle" alt="" src="<c:url value='${url.templatesPath}/${icon}.png'/>"/> ${jcr:label(nodeType, renderContext.mainResourceLocale)}
         </a></li>                                  
     </c:forEach>
     </ul>

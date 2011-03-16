@@ -44,7 +44,7 @@
         <td>${child.properties["jcr:mimeType"].string}
 
             <jcr:icon var="icon" node="${child}"/>
-            <img src="${url.templatesPath}/${icon}_large.png"/>
+            <img src="<c:url value='${url.templatesPath}/${icon}_large.png'/>"/>
             <%--<c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">--%>
                 <%--<jcr:icon var="icon" node="${child}"/>--%>
                 <%--<img src="${url.templatesPath}/${icon}_large.png"/>--%>

@@ -24,6 +24,7 @@ public class CaptchaTag extends TagSupport {
             String id = (String) pageContext.getAttribute("currentFormId");
 
             out.print("<img src=\"");
+            out.print(((URLGenerator)pageContext.findAttribute("url")).getContext());
             out.print(((URLGenerator)pageContext.findAttribute("url")).getCaptcha());
             out.print("?token=##formtoken("+id+")##\" />" );
 

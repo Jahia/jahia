@@ -31,13 +31,13 @@
     <jcr:node var="home" path="${node.path}/home"/>
     <c:if test="${jcr:hasPermission(home,'jcr:addChildNodes')}">
     <li><c:if test="${currentNode.properties.type.string eq 'edit'}">
-        ${node.properties['jcr:title'].string} <a href="${url.baseEdit}${node.path}/home.html"> <img src="${url.context}/icons/editMode.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.editMode"/></a>
+        ${node.properties['jcr:title'].string} <a href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"> <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.editMode"/></a>
     </c:if>
     <c:if test="${currentNode.properties.type.string eq 'contribute'}">
-        ${node.properties['jcr:title'].string} <a href="${url.baseContribute}${node.path}/home.html"><img src="${url.context}/icons/contribute.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.contribute"/></a>
+        ${node.properties['jcr:title'].string} <a href="<c:url value='${url.baseContribute}${node.path}/home.html'/>"><img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.contribute"/></a>
     </c:if>
     <c:if test="${currentNode.properties.type.string eq 'live' && home.properties['j:published'].boolean}">
-            ${node.properties['jcr:title'].string} <a href="${url.baseLive}${node.path}/home.html"><img src="${url.context}/icons/live.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.live"/></a>
+            ${node.properties['jcr:title'].string} <a href="<c:url value='${url.baseLive}${node.path}/home.html'/>"><img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.live"/></a>
     </c:if>
     </li>
     </c:if>

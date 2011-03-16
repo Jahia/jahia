@@ -49,7 +49,7 @@
                                                                                              border="0"
                                                                                              style="cursor: pointer;"
                                                                                              title="parent" alt="parent"
-                                                                                             src="${url.templatesPath}/default/images/icons/folder_up.png"></a>
+                                                                                             src="<c:url value='${url.templatesPath}/default/images/icons/folder_up.png'/>"></a>
                 </c:if>
             </th>
             <th width="35%"><fmt:message key="label.title"/></th>
@@ -68,12 +68,12 @@
                 </td>
                 <td>
                     <jcr:icon var="icon" node="${child}"/>
-                    <img src="${url.templatesPath}/${icon}_large.png"/>
+                    <img src="<c:url value='${url.templatesPath}/${icon}_large.png'/>"/>
                 </td>
                 <td>
                     <c:if test="${child.locked}">
                         <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
-                             src="${url.templatesPath}/default/images/icons/locked.gif">
+                             src="<c:url value='${url.templatesPath}/default/images/icons/locked.gif'/>">
                     </c:if>
 
                     <a href="<c:url value='${url.base}${child.path}.editContent.html'/>">${fn:escapeXml(child.displayableName)}</a>
@@ -84,7 +84,7 @@
                 <td>
                     <fmt:formatDate value="${child.properties['jcr:lastModified'].date.time}"
                                     pattern="yyyy-MM-dd HH:mm"/>
-                </td align="center">
+                </td>
                 <td>
                     <fmt:formatDate value="${child.properties['j:lastPublished'].date.time}"
                                     pattern="yyyy-MM-dd HH:mm"/>

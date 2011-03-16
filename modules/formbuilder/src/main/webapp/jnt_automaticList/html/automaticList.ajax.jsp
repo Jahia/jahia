@@ -21,7 +21,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        $("#${currentNode.name}").autocomplete("${url.initializers}", {
+        $("#${currentNode.name}").autocomplete("<c:url value='${url.initializers}'/>", {
             dataType: "json",
             parse: function parse(data) {
                 return $.map(data, function(row) {

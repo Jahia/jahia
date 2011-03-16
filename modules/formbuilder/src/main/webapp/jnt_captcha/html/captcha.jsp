@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <div class="formMarginLeft">
-    <img src="${url.captcha}"/>
+    <img src="<c:url value='${url.captcha}'/>"/>
 
     <p>
         <input type="text" name="captcha" value="${sessionScope.formDatas.captcha[0]}"/>

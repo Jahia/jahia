@@ -40,7 +40,7 @@
                                                                                      border="0"
                                                                                      style="cursor: pointer;"
                                                                                      title="parent" alt="parent"
-                                                                                     src="${url.templatesPath}/default/images/icons/folder_up.png"></a>
+                                                                                     src="<c:url value='${url.templatesPath}/default/images/icons/folder_up.png'/>"></a>
         </c:if>
         ${fn:escapeXml(currentNode.displayableName)}
     </h3>

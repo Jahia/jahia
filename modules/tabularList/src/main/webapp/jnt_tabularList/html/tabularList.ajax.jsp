@@ -42,7 +42,7 @@
                         <c:choose>
                             <c:when test="${renderContext.editMode}">
                                 <li>
-                                    <a href="${url.mainResource}?displayTab=${subList.name}"><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a>
+                                    <a href="<c:url value='${url.mainResource}?displayTab=${subList.name}'/>"><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a>
                                 </li>
                             </c:when>
                             <c:otherwise>

@@ -175,7 +175,7 @@
                     <script type="text/javascript">
                         var word_list = new Array(<c:forEach items="${currentFacet.values}" var="facetValue" varStatus="status">
                                 <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
-                                <c:url var="facetUrl" value="${url.mainResource}" context="/">
+                                <c:url var="facetUrl" value="${url.mainResource}">
                                 <c:param name="${facetParamVarName}"
                                value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
                                 </c:url>

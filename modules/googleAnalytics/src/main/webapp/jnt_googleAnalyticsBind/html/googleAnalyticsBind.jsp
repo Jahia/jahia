@@ -19,6 +19,7 @@
     <jsp:useBean id="gaMap" class="java.util.HashMap" scope="request"/>
 </c:if>
 <c:if test="${!empty renderContext.site.properties['webPropertyID'].string}">
-<c:set target="${gaMap}" property="${currentNode.identifier}" value="${bindedComponent.url}"/>
+<c:url value="${bindedComponent.url}" var="bUrl"/>
+<c:set target="${gaMap}" property="${currentNode.identifier}" value="${bUrl}"/>
 </c:if>
 

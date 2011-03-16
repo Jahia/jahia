@@ -41,7 +41,7 @@
         <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
         <td>
             <jcr:icon var="icon" node="${child}"/>
-            <img src="${url.templatesPath}/${icon}_large.png"/>
+            <img src="<c:url value='${url.templatesPath}/${icon}_large.png'/>"/>
 
             <%--<c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">--%>
                 <%--<img src="${url.templatesPath}/${child.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_large.png"/>--%>
@@ -55,7 +55,7 @@
                  scriptInfo="" path="${child.path}" template="hidden.system" dragdrop="false">
                 <c:if test="${child.locked}">
                     <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
-                         src="${url.templatesPath}/default/images/icons/locked.gif">
+                         src="<c:url value='${url.templatesPath}/default/images/icons/locked.gif'/>">
                 </c:if>
                 <a href="<c:url value='${url.base}${child.path}.viewContent.html'/>">
                     ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}

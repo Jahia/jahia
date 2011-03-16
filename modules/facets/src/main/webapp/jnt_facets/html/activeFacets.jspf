@@ -22,7 +22,7 @@
 <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet" varStatus="activeFacetStat">
     <c:forEach items="${facet.value}" var="facetValue">
         <c:set var="facetParam" value="${facet:getDeleteFacetUrl(facet, facetValue, activeFacetsVars[facetParamVarName])}"/>
-        <c:url var="facetUrl" value="${url.mainResource}" context="/">
+        <c:url var="facetUrl" value="${url.mainResource}">
             <c:if test="${not empty facetParam}">
                 <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facetParam)}"/>
             </c:if>

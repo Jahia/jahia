@@ -27,6 +27,10 @@
     	margin-left:0;
         list-style:none;
 }
+#columns ul.column{
+	padding:0;
+	margin:0;
+}
 #columns .widget {
     margin: 30px 20px 0 20px;
     padding: 2px;

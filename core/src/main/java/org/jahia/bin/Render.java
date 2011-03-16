@@ -137,6 +137,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private JCRSessionFactory jcrSessionFactory;
 
     private Integer sessionExpiryTime = null;
+    private Integer cookieExpirationInDays = 1;
 
     private Set<String> allowedMethods = new HashSet<String>();
 
@@ -307,7 +308,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         if(req.getParameter(COOKIE_NAME)!=null && req.getParameter(COOKIE_VALUE)!=null) {
             Cookie cookie = new Cookie(req.getParameter(COOKIE_NAME), req.getParameter(COOKIE_VALUE));
-            cookie.setMaxAge(60*60*24*365);
+            cookie.setMaxAge(60*60*24*cookieExpirationInDays);
             if(req.getParameter(COOKIE_PATH) != null)
                 cookie.setPath(req.getParameter(COOKIE_PATH));
             else {
@@ -940,6 +941,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      */
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
         this.jcrSessionFactory = jcrSessionFactory;
+    }
+
+    public void setCookieExpirationInDays(Integer cookieExpirationInDays) {
+        this.cookieExpirationInDays = cookieExpirationInDays;
     }
 
     /**

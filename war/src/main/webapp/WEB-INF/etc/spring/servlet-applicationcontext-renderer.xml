@@ -26,6 +26,7 @@
         <property name="settingsBean" ref="settingsBean" />
         <property name="renderService" ref="RenderService" />
         <property name="jcrSessionFactory" ref="jcrSessionFactory" />
+        <property name="cookieExpirationInDays" value="1"/>
     </bean>
 
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

@@ -22,7 +22,7 @@
                 <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
                 <c:choose>
                     <c:when test='${jcr:isNodeType(subchild, "nt:file")}'>
-                        <a href="${url.files}${subchild.path}"><c:out
+                        <a href="<c:url value='${url.files}${subchild.path}'/>"><c:out
                                 value="${not empty title && not empty title.string ? title.string : subchild.name}"/></a>
                     </c:when>
                     <c:otherwise>

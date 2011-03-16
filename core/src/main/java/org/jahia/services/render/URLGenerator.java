@@ -170,7 +170,7 @@ public class URLGenerator {
     }
 
     public String getFiles() {
-        return getContext() + "/files";
+        return "/files";
     }
 
     public String getBase() {
@@ -274,7 +274,7 @@ public class URLGenerator {
     public String getMainResource() {
         if (context.isEditMode()) {
             if (context.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
-                return  getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getMainResource().getNode().getPath() + ".html";
+                return  Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getMainResource().getNode().getPath() + ".html";
             }
             return getEdit();
         } else if (context.isContributionMode()) {

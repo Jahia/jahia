@@ -5,6 +5,7 @@
   <process-engine-context>
 
     <command-service name="txRequiredCommandService">
+      <jbpmeventgenerator-interceptor />
       <skip-interceptor />
       <retry-interceptor />
       <environment-interceptor />
@@ -12,6 +13,7 @@
     </command-service>
 
     <command-service name="newTxRequiredCommandService">
+      <jbpmeventgenerator-interceptor />
       <retry-interceptor />
       <environment-interceptor policy="requiresNew" />
       <standard-transaction-interceptor />

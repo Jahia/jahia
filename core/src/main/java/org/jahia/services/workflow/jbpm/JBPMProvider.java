@@ -41,6 +41,7 @@ import org.jahia.services.workflow.*;
 import org.jahia.utils.FileUtils;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
+import org.jbpm.api.cmd.Command;
 import org.jbpm.api.history.HistoryActivityInstance;
 import org.jbpm.api.history.HistoryProcessInstance;
 import org.jbpm.api.history.HistoryProcessInstanceQuery;
@@ -69,7 +70,7 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 2 févr. 2010
  */
-public class JBPMProvider implements WorkflowProvider, InitializingBean {
+public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEventGeneratorInterceptor.JBPMEventListener {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMProvider.class);
     private String key;
     private WorkflowService workflowService;
@@ -523,6 +524,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             }
 
         }
+
+        // now let's connect to JBPM event generator we have added.
+        JBPMEventGeneratorInterceptor.registerListener(this);
+
     }
 
     public String getProcessDefinitionType(ProcessDefinition definition) {
@@ -755,5 +760,14 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
 
+    public <T> boolean canProcess(Command<T> command) {
+        return true;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
+    public <T> void beforeCommand(Command<T> command) {
+    }
+
+    public <T> void afterCommand(Command<T> command) {
+
+    }
 }

@@ -44,14 +44,14 @@
                             <input type="hidden" name="methodToCall" value="delete"/>
                             <button><fmt:message key="label.delete"/></button>
                             <script type="text/javascript">
-                                <c:url var="targetNodePath" value="${url.base}${currentNode.path}.html.ajax">
+                                <c:url var="urlPath" value="${url.base}${currentNode.path}.html.ajax">
                                     <c:param name="targetNodePath" value="${targetNode.path}"/>
                                 </c:url>
                                 $(document).ready(function() {
                                     // bind 'myForm' and provide a simple callback function
                                     var options = {
                                         success: function() {
-                                            $('#fileList${currentNode.identifier}').load('${targetNodePath}');
+                                            $('#fileList${currentNode.identifier}').load('${urlPath}');
                                             var dataText =CKEDITOR.instances.editContent.getData();
                                             while ((i = dataText.search('${subchild.url}')) > 0 ) {
                                                 var before = dataText.substring(0,i);

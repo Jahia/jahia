@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
@@ -145,7 +146,7 @@ public class PagesTabItem extends SidePanelTabItem {
         target.setAllowDropOnLeaf(true);
         target.setAllowSelfAsSource(true);
         target.setAutoExpand(true);
-        target.setFeedback(DND.Feedback.INSERT);
+        target.setFeedback(DND.Feedback.BOTH);
 
         source.addDNDListener(editLinker.getDndListener());
         target.addDNDListener(editLinker.getDndListener());
@@ -183,7 +184,17 @@ public class PagesTabItem extends SidePanelTabItem {
             if (activeItem != null) {
                 GWTJahiaNode activeNode = (GWTJahiaNode) activeItem.getModel();
                 GWTJahiaNode parent = pageTree.getTreeStore().getParent(activeNode);
-                if (status == 1) {
+
+                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, activeNode);
+                e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, parent);
+                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, activeNode.get("path"));
+
+                if (status == 1 && activeItem.isExpanded() && activeItem.getItemCount() > 0) {
+                    List<GWTJahiaNode> children = pageTree.getTreeStore().getChildren(activeNode);
+                    GWTJahiaNode n = children.get(0);
+                    e.getStatus().setData(EditModeDNDListener.TARGET_NEXT_NODE, n);
+                    e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, activeNode);
+                } else if (status == 1) {
                     List<GWTJahiaNode> children = pageTree.getTreeStore().getChildren(parent);
                     int next = children.indexOf(activeNode) + 1;
                     if (next < children.size()) {
@@ -202,20 +213,16 @@ public class PagesTabItem extends SidePanelTabItem {
                 } else {
                     e.getStatus().setStatus(false);
                 }
-
-                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, activeNode);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, parent);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, activeNode.get("path"));
             } else {
                 e.getStatus().setData(EditModeDNDListener.TARGET_NODE, null);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, null);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, null);
+                e.getStatus().setStatus(false);
             }
         }
 
         @Override
         protected void onDragDrop(DNDEvent event) {
-            //
         }
 
         public AsyncCallback<Object> getCallback() {

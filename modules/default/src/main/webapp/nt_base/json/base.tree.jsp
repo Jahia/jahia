@@ -6,6 +6,6 @@
 <c:set var="nodeTypes" value="${functions:default(currentResource.moduleParams.nodeTypes, param.nodeTypes)}"/>
 <json:array name="${currentResource.moduleParams.arrayName}">
 	<c:forEach items="${not empty nodeTypes ? jcr:getChildrenOfType(currentNode, nodeTypes) : currentNode.nodes}" var="child">
-		<template:module node="${child}" templateType="json" editable="false" template="treeItem"/>
+		<template:module node="${child}" templateType="json" editable="false" view="treeItem"/>
 	</c:forEach>
 </json:array>

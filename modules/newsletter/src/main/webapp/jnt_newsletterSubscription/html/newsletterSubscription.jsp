@@ -159,17 +159,17 @@
 			${subscribeTitle}<br/>
 		<c:if test="${renderContext.loggedIn}">
             <c:if test="${newsletter:hasSubscribed(target, renderContext.user)}">
-                &nbsp;<a href="#unsubscribe" onclick="jahiaUnsubscribe('<c:url value="${url.base}${target.path}.unsubscribe.do"/>'); return false;" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='/icons/unsubscribe.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.unsubscribe'/>" height="16" width="16"/></a>
+                &nbsp;<a href="#unsubscribe" onclick="jahiaUnsubscribe('<c:url value="${url.base}${target.path}.unsubscribe.do"/>'); return false;" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='${url.currentModule}/icons/unsubscribe.png'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.unsubscribe'/>" height="16" width="16"/></a>
                 </p>
             </c:if>
             <c:if test="${not newsletter:hasSubscribed(target, renderContext.user)}">
-                &nbsp;<a href="#subscribe" onclick="jahiaSubscribe('<c:url value="${url.base}${target.path}.subscribe.do"/>'); return false;" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
+                &nbsp;<a href="#subscribe" onclick="jahiaSubscribe('<c:url value="${url.base}${target.path}.subscribe.do"/>'); return false;" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='${url.currentModule}/icons/jnt_subscriptions.png'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
                 </p>
             </c:if>
 		</c:if>
 		<c:if test="${not renderContext.loggedIn}">
-			&nbsp;<a href="#subscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.subscribe'/></a>
-			&nbsp;<a href="#unsubscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='/icons/unsubscribe.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.unsubscribe'/></a>
+			&nbsp;<a href="#subscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='${url.currentModule}/icons/jnt_subscriptions.png'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.subscribe'/></a>
+			&nbsp;<a href="#unsubscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='${url.currentModule}/icons/unsubscribe.png'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.unsubscribe'/></a>
 			</p>
 			<div class="jahiaFancyboxForm">
 			<div id="subscribeFormPanel-${currentNode.identifier}" style="width: 400px; height: ${180 + fn:length(currentNode.properties['j:fields'])*50}px;">

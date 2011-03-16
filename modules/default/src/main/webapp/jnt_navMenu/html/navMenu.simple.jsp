@@ -92,9 +92,9 @@
                 <c:if test="${(startLevelValue < navMenuLevel or inpath) and correctType}">
                     <li>
                             <%--if level, path and type matches, display menu and its children--%>
-                        <template:module node="${menuItem}" template="${menuItemTemplate}" editable="false"/>
+                        <template:module node="${menuItem}" view="${menuItemTemplate}" editable="false"/>
                         <c:if test="${hasChildren}">
-                            <template:include template="simple">
+                            <template:include view="simple">
                                 <template:param name="base" value="${menuItem.identifier}"/>
                                 <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
                                 <template:param name="omitFormatting" value="true"/>
@@ -105,7 +105,7 @@
             </c:when>
             <c:otherwise>
                 <c:if test="${hasChildren}">
-                    <template:include template="simple">
+                    <template:include view="simple">
                         <template:param name="base" value="${menuItem.identifier}"/>
                         <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
                         <template:param name="omitFormatting" value="true"/>

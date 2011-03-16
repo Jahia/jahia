@@ -38,7 +38,7 @@
             </c:if>
         </c:forEach>
         <c:forEach items="${currentNode.nodes}" var="subResponseNode">
-            <template:module node="${subResponseNode}" template="default"/>
+            <template:module node="${subResponseNode}" view="default"/>
         </c:forEach>
     </c:forEach>
 </div>

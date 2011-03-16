@@ -82,7 +82,7 @@
                         <div class="imagefloatleft">
                             <div class="itemImage itemImageLeft"><span class="icon_large ${functions:fileExtension(lastNode.properties.originDocName.string)}_large"></span></div>
                             <div class="itemImageConverterArrow itemImageLeft">
-                            	<img alt="" src="${url.currentModule}/img/convert.png"/>
+                            	<img alt="" src="<c:url value='${url.currentModule}/img/convert.png'/>"/>
                             </div>
                             <div class="itemImage itemImageLeft"><span class="icon_large ${functions:fileExtension(lastNode.name)}_large"></span></div>
                         </div>
@@ -90,7 +90,7 @@
                                 key="label.from"/>:&nbsp;${fn:escapeXml(functions:abbreviate(lastNode.properties.originDocName.string,20,30,'...'))}</h3>
 
                         <h3><fmt:message key="label.to"/>:&nbsp;<a href="${lastNode.url}"><img alt=""
-                                                                                 src="${url.currentModule}/img/download.png"/>&nbsp;${fn:escapeXml(functions:abbreviate(lastNode.name,20,30,'...'))}
+                                                                                 src="<c:url value='${url.currentModule}/img/download.png'/>"/>&nbsp;${fn:escapeXml(functions:abbreviate(lastNode.name,20,30,'...'))}
                         </a></h3>
                    <span class="clearMaringPadding converterdate"><fmt:message
                            key="label.conversion.date"/>:&nbsp;<fmt:formatDate
@@ -158,10 +158,10 @@
         <c:set var="conversionStatus">
             <c:choose>
                 <c:when test="${subchild.properties.conversionSucceeded.boolean}">
-                    <img alt="" src="${url.currentModule}/img/valide.png"/>
+                    <img alt="" src="<c:url value='${url.currentModule}/img/valide.png'/>"/>
                 </c:when>
                 <c:otherwise>
-                    <img alt="" src="${url.currentModule}/img/error.png"/>
+                    <img alt="" src="<c:url value='${url.currentModule}/img/error.png'/>"/>
                 </c:otherwise>
             </c:choose>
         </c:set>
@@ -177,7 +177,7 @@
                     type="both"/></td>
             <td class="center" headers="User">${subchild.properties['jcr:lastModifiedBy'].string}</td>
             <td class="center" headers="Download"><a
-                    href="${subchild.url}"><img alt="" src="${url.currentModule}/img/download.png"/></a>
+                    href="${subchild.url}"><img alt="" src="<c:url value='${url.currentModule}/img/download.png'/>"/></a>
             </td>
         </tr>
     </c:forEach>

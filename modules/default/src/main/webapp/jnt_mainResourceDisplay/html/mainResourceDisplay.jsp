@@ -27,7 +27,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <template:area template="${mainTemplate}" mockupStyle="${currentNode.properties['j:mockupStyle'].string}" templateType="${renderContext.mainResource.templateType}" />
+        <template:area view="${mainTemplate}" mockupStyle="${currentNode.properties['j:mockupStyle'].string}" templateType="${renderContext.mainResource.templateType}" />
     </c:otherwise>
 </c:choose>
 

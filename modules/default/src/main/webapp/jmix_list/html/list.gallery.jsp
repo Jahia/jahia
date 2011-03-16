@@ -15,7 +15,7 @@
 <template:addResources type="javascript" resources="jquery.js,jquery.fancybox.js,jquery.fancybox.load.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 <p>
     <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status">
         <jcr:node var="child" uuid="${child.properties['j:node'].string}"/>
@@ -37,4 +37,4 @@
 <c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
-<template:include template="hidden.footer"/>
+<template:include view="hidden.footer"/>

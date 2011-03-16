@@ -62,7 +62,7 @@
                 <span class="right value">${currentNode.properties.state.string}</span>
                 <c:choose>
                     <c:when test="${currentNode.properties.state.string == 'active'}">
-                        <span><img alt="" src="${url.currentModule}/images/right_16.png"/></span>
+                        <span><img alt="" src="<c:url value='${url.currentModule}/images/right_16.png'/>"/></span>
             <span>
                 <a href="javascript:send('${currentNode.path}','suspended')"><fmt:message key="jnt_task.suspended"/></a>&nbsp;
                 <a href="javascript:send('${currentNode.path}','cancelled')"><fmt:message key="jnt_task.cancel"/></a>&nbsp;
@@ -70,17 +70,17 @@
             </span>
                     </c:when>
                     <c:when test="${currentNode.properties.state.string == 'finished'}">
-                        <img alt="" src="${url.currentModule}/images/tick_16.png"/>
+                        <img alt="" src="<c:url value='${url.currentModule}/images/tick_16.png'/>"/>
                     </c:when>
                     <c:when test="${currentNode.properties.state.string == 'suspended'}">
-                        <span><img alt="" src="${url.currentModule}/images/bubble_16.png"/></span>
+                        <span><img alt="" src="<c:url value='${url.currentModule}/images/bubble_16.png'/>"/></span>
             <span>
                 <a href="javascript:send('${currentNode.path}','cancelled')"><fmt:message key="jnt_task.cancel"/></a>&nbsp;
                 <a href="javascript:send('${currentNode.path}','active')"><fmt:message key="jnt_task.continue"/></a>
             </span>
                     </c:when>
                     <c:when test="${currentNode.properties.state.string == 'canceled'}">
-                        <img alt="" src="${url.currentModule}/images/warning_16.png"/>
+                        <img alt="" src="<c:url value='${url.currentModule}/images/warning_16.png'/>"/>
                     </c:when>
                 </c:choose>
             </p>

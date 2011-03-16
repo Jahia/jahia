@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="Columns.css"/>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 <c:if test="${!empty currentNode.properties['j:columns'].string}">
     <c:set var="columns" value="${currentNode.properties['j:columns'].string}"/>
 </c:if>
@@ -28,7 +28,7 @@
         </c:if>
         <div class="column-item">
             <div class="spacer">
-                <template:module node="${subchild}" template="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/>
+                <template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/>
             </div>
         </div>
     </c:forEach>
@@ -41,4 +41,4 @@
     </c:if>
     <div class="clear"></div>
 </div>
-<template:include template="hidden.footer"/>
+<template:include view="hidden.footer"/>

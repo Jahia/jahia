@@ -31,7 +31,7 @@
     </c:when>
     <c:otherwise>
         <c:set var="user" value="${bindedComponent.properties['jcr:createdBy'].string}"/>
-        <template:module path="/users/${user}" template="${mainTemplate}">
+        <template:module path="/users/${user}" view="${mainTemplate}">
             <template:param name="displayFirstName" value="${currentNode.properties['j:firstName'].string}"/>
             <template:param name="displayLastName" value="${currentNode.properties['j:lastName'].string}"/>
             <template:param name="displayTitle" value="${currentNode.properties['j:title'].string}"/>

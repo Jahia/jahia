@@ -30,21 +30,21 @@
             <c:choose>
                 <c:when test="${not empty startDate && empty endDate}">
                     <c:if test="${subchild.properties['jcr:created'].time > startDate.time}">
-                        <template:module node="${subchild}" template="hidden.summaryEl"/>
+                        <template:module node="${subchild}" view="hidden.summaryEl"/>
                     </c:if>
                 </c:when>
                 <c:when test="${empty endDate && not empty endDate}">
                     <c:if test="${subchild.properties['jcr:created'].time > startDate.time}">
-                        <template:module node="${subchild}" template="hidden.summaryEl"/>
+                        <template:module node="${subchild}" view="hidden.summaryEl"/>
                     </c:if>
                 </c:when>
                 <c:when test="${not empty endDate && not empty endDate}">
                     <c:if test="${subchild.properties['jcr:created'].time > startDate.time && subchild.properties['jcr:created'].time < endDate.time}">
-                        <template:module node="${subchild}" template="hidden.summaryEl"/>
+                        <template:module node="${subchild}" view="hidden.summaryEl"/>
                     </c:if>
                 </c:when>
                 <c:otherwise>
-                    <template:module node="${subchild}" template="hidden.summaryEl"/>
+                    <template:module node="${subchild}" view="hidden.summaryEl"/>
                 </c:otherwise>
             </c:choose>
         </c:forEach>

@@ -35,7 +35,7 @@
     <tr>
         <th width="5%" align="center">
             <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
-                <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="${url.currentModule}/images/icons/folder_up.png"></a></div></th>
+                <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="<c:url value='${url.currentModule}/images/icons/folder_up.png'/>"></a></th>
             </c:if>
         </th>
         <th width="5%"><fmt:message key="label.type"/></th>
@@ -56,7 +56,7 @@
             </td>
             <td >
                 <c:if test="${jcr:isNodeType(child, 'jnt:folder')}">
-                    <img  height="24" width="24" border="0" style="cursor: pointer;" src="${url.currentModule}/images/icons/folder-files.png"/>
+                    <img  height="24" width="24" border="0" style="cursor: pointer;" src="<c:url value='${url.currentModule}/images/icons/folder-files.png'/>"/>
                 </c:if>
                 <c:if test="${!jcr:isNodeType(child, 'jnt:folder')}">
                     ${fn:escapeXml(child.fileContent.contentType)}
@@ -113,7 +113,7 @@
                 <%-- include add nodes forms --%>
                 <c:set var="types" value="jnt:folder,jnt:file"/>
                 <h3 class="titleaddnewcontent">
-                    <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message
+                    <img title="" alt="" src="<c:url value='${url.currentModule}/images/add.png'/>"/><fmt:message
                         key="label.add.new.content"/>
                 </h3>
                 <script language="JavaScript">
@@ -134,7 +134,7 @@
                     <c:url var="myUrl" value="${url.current}"/>
                     <c:forTokens items="${types}" delims="," var="type" varStatus="status">
                         <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
-                            <template:module node="${currentNode}" template="contribute.add">
+                            <template:module node="${currentNode}" view="contribute.add">
                                 <template:param name="resourceNodeType" value="${type}"/>
                                 <template:param name="currentListURL" value="${myUrl}"/>
                             </template:module>

@@ -14,7 +14,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 
 <table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
     <thead>
@@ -25,7 +25,7 @@
                                                                                          border="0"
                                                                                          style="cursor: pointer;"
                                                                                          title="parent" alt="parent"
-                                                                                         src="${url.currentModule}/images/icons/folder_up.png"></a>
+                                                                                         src="<c:url value='${url.currentModule}/images/icons/folder_up.png'/>"></a>
             </c:if>
         </th>
         <th width="35%"><fmt:message key="label.title"/></th>
@@ -89,4 +89,4 @@
     <template:module path="*"/>
 </c:if>
 
-<template:include template="hidden.footer"/>
+<template:include view="hidden.footer"/>

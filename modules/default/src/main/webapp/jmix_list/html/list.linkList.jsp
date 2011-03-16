@@ -14,7 +14,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 <c:if test="${not empty moduleMap.currentList}">
     <ul>
         <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
@@ -41,4 +41,4 @@
 <c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
-<template:include template="hidden.footer"/>
+<template:include view="hidden.footer"/>

@@ -15,7 +15,7 @@
 <c:set target="${renderContext}" property="contentType" value="application/rss+xml;charset=UTF-8"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:description" var="description"/>
-<template:include template="hidden.header" templateType="html"/>
+<template:include view="hidden.header" templateType="html"/>
 <c:if test="${not empty title}">
     <c:set var="title" value="${title.string}"/>
 </c:if>

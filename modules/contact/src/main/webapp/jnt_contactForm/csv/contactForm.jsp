@@ -18,5 +18,5 @@
 </c:forTokens>
 <c:forEach items="${jcr:getChildrenOfType(currentNode, 'jnt:contact')}" var="subchild" varStatus="status" end="20">
 <c:if test="${status.first}">
-<template:module node="${subchild}" template="headers"/>
+<template:module node="${subchild}" view="headers"/>
 </c:if><template:module node="${subchild}"/></c:forEach>

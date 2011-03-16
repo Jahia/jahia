@@ -72,34 +72,34 @@
 <tr>
     <th class="center" id="Type" scope="col"><fmt:message key="jnt_task.type"/> <a href="#"
                                                                                    title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>" alt="up"/></a><a
             title="sort down"
             href="#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>" alt="down"/></a></th>
     <th id="Title" scope="col"><fmt:message key="mix_title.jcr_title"/> <a href="#"
                                                                            title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png"
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>"
             alt="up"/></a><a
             title="sort down" href="#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png"
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>"
             alt="down"/></a></th>
     <th class="center" id="State" scope="col"><fmt:message key="jnt_task.state"/> <a href="#"
                                                                                      title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>" alt="up"/></a><a
             title="sort down"
             href="#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>" alt="down"/></a></th>
     <th class="center" id="Priority" scope="col"><fmt:message key="jnt_task.priority"/> <a
             href="#" title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>" alt="up"/></a><a
             title="sort down"
             href="#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>" alt="down"/></a></th>
     <th id="Date" scope="col"><fmt:message key="jnt_task.dueDate"/> <a href="#" title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png"
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>"
             alt="up"/></a><a
             title="sort down" href="#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png"
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>"
             alt="down"/></a></th>
 </tr>
 </thead>
@@ -117,7 +117,7 @@
                begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
         <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
             <td class="center" headers="Type"><img alt=""
-                                                   src="${url.currentModule}/images/flag_16.png" height="16"
+                                                   src="<c:url value='${url.currentModule}/images/flag_16.png'/>" height="16"
                                                    width="16"/>
             </td>
             <td headers="Title"><a
@@ -128,7 +128,7 @@
             <td class="center" headers="State">
                 <c:choose>
                     <c:when test="${task.propertiesAsString.state == 'active'}">
-                        <span><img alt="" src="${url.currentModule}/images/right_16.png" height="16" width="16"/></span>
+                        <span><img alt="" src="<c:url value='${url.currentModule}/images/right_16.png'/>" height="16" width="16"/></span>
                         <span>
                             <a href="javascript:send('${task.path}','suspended')"><fmt:message
                                     key="jnt_task.suspended"/></a>&nbsp;
@@ -139,10 +139,10 @@
                         </span>
                     </c:when>
                     <c:when test="${task.propertiesAsString.state == 'finished'}">
-                        <img alt="" src="${url.currentModule}/images/tick_16.png" height="16" width="16"/>
+                        <img alt="" src="<c:url value='${url.currentModule}/images/tick_16.png'/>" height="16" width="16"/>
                     </c:when>
                     <c:when test="${task.propertiesAsString.state == 'suspended'}">
-                        <span><img alt="" src="${url.currentModule}/images/bubble_16.png" height="16"
+                        <span><img alt="" src="<c:url value='${url.currentModule}/images/bubble_16.png'/>" height="16"
                                    width="16"/></span>
                         <span>
                             <a href="javascript:send('${task.path}','cancelled')"><fmt:message
@@ -152,7 +152,7 @@
                         </span>
                     </c:when>
                     <c:when test="${task.propertiesAsString.state == 'canceled'}">
-                        <img alt="" src="${url.currentModule}/images/warning_16.png" height="16" width="16"/>
+                        <img alt="" src="<c:url value='${url.currentModule}/images/warning_16.png'/>" height="16" width="16"/>
                     </c:when>
                 </c:choose>
             </td>
@@ -180,7 +180,7 @@
             <jcr:node var="node" uuid="${task.variables.nodeId}"/>
             <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'}">
                 <td class="center" headers="Type">
-                    <img alt="" src="${url.currentModule}/images/workflow.png"/>
+                    <img alt="" src="<c:url value='${url.currentModule}/images/workflow.png'/>"/>
                 </td>
                 <td headers="Title">
                     <c:set var="taskTitle"
@@ -230,7 +230,7 @@
                         <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                             <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
                             <c:url value="${url.current}.ajax" var="myUrl"/>
-                            <template:module node="${node}" template="contribute.add">
+                            <template:module node="${node}" view="contribute.add">
                                 <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                                 <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                                 <template:param name="workflowTaskFormTaskName" value="${task.name}"/>

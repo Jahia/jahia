@@ -30,7 +30,7 @@
 <fmt:message key="label.noItemFound" var="notFoundLabel"/>
 <c:set target="${moduleMap}" property="emptyListMessage" value="${notFoundLabel}" />
 <c:set target="${moduleMap}" property="begin" value="0"/>
-<template:include template="hidden.load"/>
+<template:include view="hidden.load"/>
 <c:if test="${empty moduleMap.currentList and not empty moduleMap.listQuerySql}">
     <jcr:sql var="result" sql="${moduleMap.listQuerySql}"/>
     <c:set target="${moduleMap}" property="currentList" value="${result.nodes}"/>

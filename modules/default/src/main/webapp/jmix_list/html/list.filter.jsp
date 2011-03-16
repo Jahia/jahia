@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:include template="hidden.load"/>
+<template:include view="hidden.load"/>
 
 <c:if test="${empty editable}">
     <c:set var="editable" value="false"/>
@@ -43,7 +43,7 @@
 <c:forEach items="${moduleMap.currentList}" var="subchild">
     <p>
         <c:if test="${empty param.categorykey}">
-            <template:module node="${subchild}" template="${moduleMap.subNodesView}" editable="${moduleMap.editable}" />
+            <template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}" />
         </c:if>
 
         <c:if test="${not empty param.categorykey}">
@@ -56,7 +56,7 @@
                 </c:if>
             </c:forEach>
             <c:if test="${contains eq true}">
-                <template:module node="${subchild}" template="${moduleMap.subNodesView}"  editable="${moduleMap.editable}" />
+                <template:module node="${subchild}" view="${moduleMap.subNodesView}"  editable="${moduleMap.editable}"/>
             </c:if>
         </c:if>
     </p>

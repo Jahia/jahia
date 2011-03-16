@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 <c:set var="firstInLevel" value="${statusNavMenu.first}"/>
 <c:set var="lastInLevel" value="${statusNavMenu.last}"/>
 <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="menuStatus">
@@ -21,7 +21,7 @@
            value="${jcr:hasChildrenOfType(subchild,'jnt:navMenu,jmix:navMenuItem') ? 'hasChildren' : 'noChildren'}${(menuStatus.first and firstInLevel) ? ' firstInLevel' : ''}${(menuStatus.last and lastInLevel) ? ' lastInLevel' : ''}"
            scope="request"/>
     <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
-    <template:module node="${subchild}" template="${moduleMap.subNodesView}"
+    <template:module node="${subchild}" view="${moduleMap.subNodesView}"
                      editable="${moduleMap.editable}"/>
 </c:forEach>
 <c:if test="${not omitFormatting}">
@@ -30,4 +30,4 @@
 <c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
-<template:include template="hidden.footer"/>
+<template:include view="hidden.footer"/>

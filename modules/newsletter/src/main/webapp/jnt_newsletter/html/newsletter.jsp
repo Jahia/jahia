@@ -19,10 +19,10 @@
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="css" resources="timepicker.css"/>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 
 <p>
-    <img src="<c:url value='/images/jahiapp-newsletter-small.png' context='${url.currentModule}'/>"/>
+    <img src="<c:url value='${url.currentModule}/images/jahiapp-newsletter-small.png'/>"/>
 </p>
 <table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
     <thead>
@@ -96,7 +96,7 @@
     <template:module path="*"/>
 </c:if>
 
-<template:include template="hidden.footer"/>
+<template:include view="hidden.footer"/>
 
 <c:if test="${empty currentNode.properties['j:lastPublished']}">
     <fmt:message key="label.publishToAddSuscribers"/>

@@ -22,7 +22,7 @@
     </br>
     <ul>
     <c:forEach var="child" items="${currentNode.nodes}">
-        <template:module node="${child}" template="debug.version"/>
+        <template:module node="${child}" view="debug.version"/>
     </c:forEach>
     </ul>
     </li>

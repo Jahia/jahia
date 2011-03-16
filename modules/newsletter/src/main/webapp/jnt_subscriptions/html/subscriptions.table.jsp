@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 
 <h1><fmt:message key="jnt_subscriptions"/>:&nbsp;${moduleMap.listTotalSize}</h1>
 
@@ -70,4 +70,4 @@
     <template:module path="*"/>
 </c:if>
 
-<template:include template="hidden.footer"/>
+<template:include view="hidden.footer"/>

@@ -27,7 +27,7 @@
 	    <div id="flashcontent${currentNode.UUID}">
             <div class="flashcontent"><!--START FLASH -->
                 <strong><fmt:message key="label.flashplayer.info"/></strong><br />
-                <a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="${url.currentModule}/images/160x41_Get_Flash_Player.jpg" alt="get flash player" /></a>
+                <a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="<c:url value='${url.currentModule}/images/160x41_Get_Flash_Player.jpg'/>" alt="get flash player" /></a>
 			</div>
 	    </div>
         <script type="text/javascript">

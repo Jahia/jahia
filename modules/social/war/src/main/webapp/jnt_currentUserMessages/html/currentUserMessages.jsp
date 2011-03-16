@@ -124,7 +124,7 @@
              sql="select * from [jnt:socialMessage] where isdescendantnode(['${user.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
     <template:addCacheDependency path="${user.path}/messages/inbox"/>
     <h3 class="social-title-icon titleIcon"><fmt:message key="receivedMessages"/><img title="" alt=""
-                                                                                      src="${url.currentModule}/images/mailbox.png"/>
+                                                                                      src="<c:url value='${url.currentModule}/images/mailbox.png'/>"/>
     </h3>
     <div class="boxsocial"><!--start boxsocial -->
         <div class=" boxsocialmarginbottom16">

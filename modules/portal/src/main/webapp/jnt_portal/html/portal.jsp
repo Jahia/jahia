@@ -81,7 +81,7 @@
     <div id="columns">
         <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
             <ul id="column${column}" class="column">
-                <template:module path="column${column}" template="portal"/>
+                <template:module path="column${column}" view="portal"/>
             </ul>
         </c:forEach>
     </div>

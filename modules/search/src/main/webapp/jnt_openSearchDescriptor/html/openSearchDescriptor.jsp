@@ -23,4 +23,4 @@
     </template:addResources>
     <c:set var="org.jahia.modules.search.addOpenSearch" value="true" scope="request"/>
 </c:if>
-<a href="#opensearch" onclick="addOpenSearch('${descriptorUrl}'); return false;" title="${fn:escapeXml(title)}"><img src="${url.currentModule}/icons/jnt_openSearchDescriptor.png" height="16" width="16" alt=" "/>&nbsp;${fn:escapeXml(title)}</a>
+<a href="#opensearch" onclick="addOpenSearch('${descriptorUrl}'); return false;" title="${fn:escapeXml(title)}"><img src="<c:url value='${url.currentModule}/icons/jnt_openSearchDescriptor.png'/>" height="16" width="16" alt=" "/>&nbsp;${fn:escapeXml(title)}</a>

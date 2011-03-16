@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 
-<template:include template="hidden.load"/>
+<template:include view="hidden.load"/>
 
 <template:addResources type="javascript" resources="jquery.js,jquery.bxSlider.js,jquery.bxSlider.load.js"/>
 <template:addResources type="css" resources="jquery.bxSlider.css"/>

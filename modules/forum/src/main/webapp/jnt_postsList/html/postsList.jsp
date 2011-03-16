@@ -19,7 +19,7 @@
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js,ckeditor/adapters/jquery.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 
 <script>
     function initCuteTime() {
@@ -59,20 +59,20 @@
                             <c:when test="${jcr:isNodeType(subchild, 'jmix:moderated')}">
                                 <c:if test="${jcr:hasPermission(subchild, 'moderatePost') or subchild.properties.moderated.boolean}">
                                     <div class="forum-box forum-box-style${(status.index mod 2)+1}">
-                                        <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
+                                        <template:module node="${subchild}" view="${moduleMap.subNodesView}"/>
                                     </div>
                                 </c:if>
                             </c:when>
                             <c:otherwise>
                                 <div class="forum-box forum-box-style${(status.index mod 2)+1}">
-                                        <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
+                                        <template:module node="${subchild}" view="${moduleMap.subNodesView}"/>
                                     </div>
                             </c:otherwise>
                         </c:choose>
                     </c:when>
                     <c:otherwise>
                         <div class="forum-box forum-box-style${(status.index mod 2)+1}">
-                            <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
+                            <template:module node="${subchild}" view="${moduleMap.subNodesView}"/>
                         </div>
                     </c:otherwise>
                 </c:choose>

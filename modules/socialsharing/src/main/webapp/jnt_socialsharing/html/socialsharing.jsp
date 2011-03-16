@@ -28,7 +28,7 @@
             <c:set var="shareUrl" value="${fn:replace(shareUrl,'[url]',parentPageUrl)}"/>
             <c:set var="shareUrl" value="${fn:replace(shareUrl,'[title]',parentPageTitle)}"/>
 
-            ${currentNode.properties['jcr:title'].string}<a href="${shareUrl}"><img src="${url.currentModule}/images/${socialNetwork.string}_32.png" alt="${socialNetwork.string}" /></a>
+            ${currentNode.properties['jcr:title'].string}<a href="${shareUrl}"><img src="<c:url value='${url.currentModule}/images/${socialNetwork.string}_32.png'/>" alt="${socialNetwork.string}" /></a>
         </li>
     </c:forEach>
 </ul>

@@ -16,7 +16,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/print.css'/>" media="print" />
     <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
 </head>
 

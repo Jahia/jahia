@@ -41,7 +41,7 @@
             <c:set var="path" value="${currentNode.properties['j:basenode'].node.path}"/>
         </c:if>
 
-        <template:area template="${currentNode.properties['j:referenceView'].string}"
+        <template:area view="${currentNode.properties['j:referenceView'].string}"
                                  path="${path}/${currentNode.name}"
                                  nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">

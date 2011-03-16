@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 <c:if test="${empty editable}">
     <c:set var="editable" value="false"/>
 </c:if>
@@ -43,7 +43,7 @@
                 <c:when test="${(renderContext.editModeConfigName eq 'studiomode') || !(renderContext.editModeConfigName eq 'editmode')}">
                     <c:forEach items="${currentNode.nodes}" var="subchild">
                         <p>
-                            <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}"  editable="${moduleMap.editable}" />
+                            <template:module node="${subchild}" view="${moduleMap.subNodesTemplate}"  editable="${moduleMap.editable}" />
                         </p>
                     </c:forEach>
                 </c:when>
@@ -58,7 +58,7 @@
 
                     <c:forEach items="${list.nodes}" var="subchild">
                         <p>
-                            <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}"  editable="${moduleMap.editable}" />
+                            <template:module node="${subchild}" view="${moduleMap.subNodesTemplate}"  editable="${moduleMap.editable}" />
                         </p>
                     </c:forEach>
                 </c:otherwise>

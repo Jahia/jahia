@@ -13,13 +13,13 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="fileList.css, simpleList.css"/>
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 <ol class="${currentNode.properties['j:className'].string}">
 <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
-    <li><template:module node="${subchild}" template="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/></li>
+    <li><template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/></li>
 </c:forEach>
 <c:if test="${moduleMap.editable and renderContext.editMode}">
     <li><template:module path="*"/></li>
 </c:if>
 </ol>
-<template:include template="hidden.footer"/>
+<template:include view="hidden.footer"/>

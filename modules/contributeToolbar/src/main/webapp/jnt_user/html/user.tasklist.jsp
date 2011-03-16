@@ -67,34 +67,34 @@
 <tr>
     <th class="center" id="Type" scope="col"><fmt:message key="jnt_task.type"/> <a href="user.tasklist.jsp#"
                                                                                    title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>" alt="up"/></a><a
             title="sort down"
             href="user.tasklist.jsp#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png" alt="down'/>"/></a></th>
     <th id="Title" scope="col"><fmt:message key="mix_title.jcr_title"/> <a href="user.tasklist.jsp#"
                                                                            title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png"
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>"
             alt="up"/></a><a
             title="sort down" href="user.tasklist.jsp#"> <img
             src="${url.currentModule}/images/sort-arrow-down.png"
             alt="down"/></a></th>
     <th class="center" id="State" scope="col"><fmt:message key="jnt_task.state"/> <a href="user.tasklist.jsp#"
                                                                                      title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>" alt="up"/></a><a
             title="sort down"
             href="user.tasklist.jsp#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>" alt="down"/></a></th>
     <th class="center" id="Priority" scope="col"><fmt:message key="jnt_task.priority"/> <a
             href="user.tasklist.jsp#" title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a><a
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>" alt="up"/></a><a
             title="sort down"
             href="user.tasklist.jsp#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>" alt="down"/></a></th>
     <th id="Date" scope="col"><fmt:message key="jnt_task.dueDate"/> <a href="user.tasklist.jsp#" title="sort up"><img
-            src="${url.currentModule}/images/sort-arrow-up.png"
+            src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>"
             alt="up"/></a><a
             title="sort down" href="user.tasklist.jsp#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png"
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>"
             alt="down"/></a></th>
 </tr>
 </thead>
@@ -105,7 +105,7 @@
     <jcr:node var="node" uuid="${task.variables.nodeId}"/>
     <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'}">
     <td class="center" headers="Type">
-        <img alt="" src="${url.currentModule}/images/workflow.png"/>
+        <img alt="" src="<c:url value='${url.currentModule}/images/workflow.png'/>"/>
     </td>
     <td headers="Title">
 		<c:if test="${'user-connection' == task.variables.workflow.key}" var="isUserConnectionRequest">
@@ -158,7 +158,7 @@
             <c:url var="myUrl" value="${url.current}.ajax"/>
             <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                 <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                <template:module node="${node}" template="contribute.add">
+                <template:module node="${node}" view="contribute.add">
                     <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                     <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                     <template:param name="workflowTaskFormTaskName" value="${task.name}"/>

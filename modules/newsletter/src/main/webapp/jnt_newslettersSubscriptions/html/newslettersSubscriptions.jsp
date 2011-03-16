@@ -158,14 +158,14 @@
                 <p><fmt:message key="label.unsubscribe.from">
                     <fmt:param value="${target.displayableName}"/>
                 </fmt:message>
-                &nbsp;<a href="#unsubscribe" onclick="jahiaUnsubscribe('<c:url value="${url.base}${target.path}.unsubscribe.do"/>'); return false;" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='/icons/unsubscribe.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.unsubscribe'/>" height="16" width="16"/></a>
+                &nbsp;<a href="#unsubscribe" onclick="jahiaUnsubscribe('<c:url value="${url.base}${target.path}.unsubscribe.do"/>'); return false;" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='${url.currentModule}/icons/unsubscribe.png'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.unsubscribe'/>" height="16" width="16"/></a>
                 </p>
             </c:if>
             <c:if test="${not newsletter:hasSubscribed(target, renderContext.user)}">
                 <p><fmt:message key="label.subscribe.to">
                     <fmt:param value="${target.displayableName}"/>
                 </fmt:message>
-                &nbsp;<a href="#subscribe" onclick="jahiaSubscribe('<c:url value="${url.base}${target.path}.subscribe.do"/>'); return false;" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
+                &nbsp;<a href="#subscribe" onclick="jahiaSubscribe('<c:url value="${url.base}${target.path}.subscribe.do"/>'); return false;" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='${url.currentModule}/icons/jnt_subscriptions.png'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/></a>
                 </p>
             </c:if>
 		</c:if>
@@ -173,8 +173,8 @@
             <p><fmt:message key="label.subscribe.or.unsubscribe">
                     <fmt:param value="${target.displayableName}"/>
                 </fmt:message>
-			&nbsp;<a href="#subscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='/icons/jnt_subscriptions.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.subscribe'/></a>
-			&nbsp;<a href="#unsubscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='/icons/unsubscribe.png' context='${url.currentModule}'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.unsubscribe'/></a>
+			&nbsp;<a href="#subscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.subscribe'/>"><img src="<c:url value='${url.currentModule}/icons/jnt_subscriptions.png'/>" alt="<fmt:message key='label.subscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.subscribe'/></a>
+			&nbsp;<a href="#unsubscribeFormPanel-${currentNode.identifier}" rel="${currentNode.identifier}" class="showSubscriptionForm" title="<fmt:message key='label.unsubscribe'/>"><img src="<c:url value='${url.currentModule}/icons/unsubscribe.png'/>" alt="<fmt:message key='label.unsubscribe'/>" title="<fmt:message key='label.subscribe'/>" height="16" width="16"/><fmt:message key='label.unsubscribe'/></a>
 			</p>
 			<div class="jahiaFancyboxForm">
 			<div id="subscribeFormPanel-${currentNode.identifier}" style="width: 350px; height: ${130 + fn:length(currentNode.properties['j:fields'])*50}px;">

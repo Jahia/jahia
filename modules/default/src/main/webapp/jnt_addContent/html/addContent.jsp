@@ -19,7 +19,7 @@
     <div style="display:none;">
         <div id="add${currentNode.identifier}-${status.index}"
              style="width:800px;">
-            <template:module node="${target}" template="contribute.add">
+            <template:module node="${target}" view="contribute.add">
                 <template:param name="resourceNodeType" value="${nodeType.name}"/>
             </template:module>
         </div>

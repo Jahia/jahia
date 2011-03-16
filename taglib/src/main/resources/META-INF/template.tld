@@ -62,8 +62,8 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The default template used for displaying the node. Can be overriden with template of the node itself.</description>
-            <name>template</name>
+            <description>The default view used for displaying the node. Can be overriden with template of the node itself.</description>
+            <name>view</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -101,7 +101,7 @@
         </attribute>
         <attribute>
             <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
-            <name>template</name>
+            <name>view</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -180,7 +180,7 @@
         </attribute>
         <attribute>
             <description>Name of the template used for the rendering</description>
-            <name>template</name>
+            <name>view</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -312,7 +312,7 @@
         </attribute>
         <attribute>
             <description>The default template used for displaying the node. Can be overriden with template of the node itself.</description>
-            <name>template</name>
+            <name>view</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -374,7 +374,7 @@
         </attribute>
         <attribute>
             <description>The default template used for displaying the node. Can be overriden with template of the node itself.</description>
-            <name>template</name>
+            <name>view</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

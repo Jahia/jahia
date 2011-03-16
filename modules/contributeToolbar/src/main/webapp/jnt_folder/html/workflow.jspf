@@ -40,7 +40,7 @@
         <c:choose>
             <c:when test="${not empty wf.formResourceName}">
                 <div style="display:none;" id="workflow${child.identifier}-${wf.key}" class="workflowformdiv">
-                    <template:module node="${child}" template="contribute.add">
+                    <template:module node="${child}" view="contribute.add">
                         <template:param name="resourceNodeType" value="${wf.formResourceName}"/>
                         <template:param name="workflowStartForm" value="${wf.provider}:${wf.key}"/>
                         <template:param name="workflowStartFormWFName" value="${wf.name}"/>
@@ -57,7 +57,7 @@
             <c:when test="${not empty task.formResourceName}">
                 <div style="display:none;" id="task${child.identifier}-${task.id}" class="taskformdiv">
                     <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                    <template:module node="${child}" template="contribute.add">
+                    <template:module node="${child}" view="contribute.add">
                         <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                         <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                         <template:param name="workflowTaskFormTaskName" value="${task.name}"/>

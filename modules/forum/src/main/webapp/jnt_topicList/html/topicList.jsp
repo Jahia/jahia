@@ -7,7 +7,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 <c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty linked}">
     <jcr:sql var="numberOfPostsQuery"
@@ -41,7 +41,7 @@
                     <c:if test="${jcr:isNodeType(subchild, 'jnt:topic')}">
                         <template:addCacheDependency node="${subchild}"/>
                         <li class="row">
-                            <template:module node="${subchild}" template="${moduleMap.subNodesView}"/>
+                            <template:module node="${subchild}" view="${moduleMap.subNodesView}"/>
                         </li>
                         <c:set var="found" value="true"/>
                     </c:if>

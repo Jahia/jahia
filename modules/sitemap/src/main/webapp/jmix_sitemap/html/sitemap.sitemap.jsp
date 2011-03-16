@@ -35,7 +35,7 @@
     <c:if test="${childStatus.first}">
         <ul <c:if test="${level eq 1}"><c:set var="nbSubItems" value="${jcr:getChildrenOfType(currentNode,'jmix:sitemap')}"/> id="primaryNav" class="col${fn:length(nbSubItems)}"</c:if>>
     </c:if>
-    <template:module node="${child}" template="sitemap" editable="false">
+    <template:module node="${child}" view="sitemap" editable="false">
         <template:param name="level" value="${level +1}"/>
     </template:module>
     <c:if test="${childStatus.last}">

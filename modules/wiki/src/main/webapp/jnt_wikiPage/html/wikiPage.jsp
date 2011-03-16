@@ -5,7 +5,7 @@
 
 <div class="wiki">
     <h2>${currentNode.properties["jcr:title"].string}</h2>
-    <template:module node="${currentNode}" template="syntax"/>
+    <template:module node="${currentNode}" view="syntax"/>
     <div class="clear"></div>
 </div>
 

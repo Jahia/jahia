@@ -13,9 +13,9 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:include template="hidden.header"/>
+<template:include view="hidden.header"/>
 <p>
-    <img src="<c:url value='/images/jahiapp-newsletter-small.png' context='${url.currentModule}'/>"/>
+    <img src="<c:url value='${url.currentModule}/images/jahiapp-newsletter-small.png'/>"/>
 </p>
 <table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
     <thead>
@@ -31,7 +31,7 @@
     <c:forEach items="${moduleMap.currentList}" var="newsletter" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
         <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
         <td align="center">
-            <img src="<c:url value='/icons/jnt_newsletter_large.png' context='${url.currentModule}'/>" height="48" width="48" alt=" "/>
+            <img src="<c:url value='${url.currentModule}/icons/jnt_newsletter_large.png'/>" height="48" width="48" alt=" "/>
         </td>
         <td>
             <div class="jahia-template-gxt" jahiatype="module" id="newsletter-${newsletter.identifier}" type="existingNode"
@@ -63,4 +63,4 @@
     <template:module path="*"/>
 </c:if>
 
-<template:include template="hidden.footer"/>
+<template:include view="hidden.footer"/>

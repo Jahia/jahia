@@ -14,7 +14,7 @@
 <h1>Test Page</h1><br/>
 
 <c:forEach items="${currentNode.nodes}" var="childs">
-    <template:module node="${childs}" template="default"/>
+    <template:module node="${childs}" view="default"/>
 </c:forEach>
 
 <c:if test="${renderContext.editMode}">

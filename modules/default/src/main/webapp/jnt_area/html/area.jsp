@@ -18,7 +18,7 @@
         <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
 
         <div class="area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <div class="areaTemplate">
+            <div class="areaTemplate"> <img src="<c:url value='${url.currentModule}/images/icons/edit.png'/>" alt="edit" style="display: inline;"/>
                 <span>Area : ${currentNode.name}</span>
             </div>
             <%--<c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"--%>
@@ -48,7 +48,7 @@
         <c:if test="${empty listLimit}">
             <c:set var="listLimit" value="${-1}"/>
         </c:if>
-        <template:area template="${currentNode.properties['j:areaView'].string}" listLimit="${listLimit}"
+        <template:area view="${currentNode.properties['j:areaView'].string}" listLimit="${listLimit}"
                                  path="${currentNode.name}" nodeTypes="${nodeTypes}" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                 <template:param name="subNodesView" value="${currentNode.properties['j:subNodesView'].string}"/>

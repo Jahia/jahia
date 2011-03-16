@@ -27,7 +27,7 @@
     <p><fmt:message key="checkbox.listOfValidation"/></p>
     <ol>
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElementValidation')}" var="formElement" varStatus="status">
-        <li><template:module node="${formElement}" template="edit"/></li>
+        <li><template:module node="${formElement}" view="edit"/></li>
     </c:forEach>
     </ol>
         <div class="addvalidation">

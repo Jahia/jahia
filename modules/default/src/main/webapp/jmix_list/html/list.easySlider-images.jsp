@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 
-<template:include template="hidden.load"/>
+<template:include view="hidden.load"/>
 
 <c:if test="${not renderContext.editMode}">
     <template:addResources type="javascript" resources="jquery.js,jquery.easySlider1.7.js,jquery.easySlider1.7.load.js"/>
@@ -34,7 +34,7 @@
                     </c:choose>
                 </c:if>
                 <c:if test="${renderContext.editMode}">
-                    <template:module node="${child}" template="default"/>
+                    <template:module node="${child}" view="default"/>
                 </c:if>
             </li>
         </c:forEach>

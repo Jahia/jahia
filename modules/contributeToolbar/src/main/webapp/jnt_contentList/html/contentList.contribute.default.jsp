@@ -41,7 +41,7 @@
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
 <utils:setBundle basename="JahiaContributeToolbar" useUILocale="true"/>
 <div id="${currentNode.UUID}">
-    <template:include templateType="html" template="hidden.header"/>
+    <template:include templateType="html" view="hidden.header"/>
     <c:set var="animatedTasks" value=""/>
     <c:set var="animatedWFs" value=""/>
 
@@ -62,7 +62,7 @@
     <c:if test="${moduleMap.editable and renderContext.editMode}">
         <template:module path="*"/>
     </c:if>
-    <template:include templateType="html" template="hidden.footer"/>
+    <template:include templateType="html" view="hidden.footer"/>
 
 </div>
 <c:if test="${not renderContext.ajaxRequest}">

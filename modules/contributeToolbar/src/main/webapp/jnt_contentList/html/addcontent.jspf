@@ -33,11 +33,11 @@
         }
     </style>
 <h3 class="titleaddnewcontent">
-    <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content"/>
+    <img title="" alt="" src="<c:url value='${url.currentModule}/images/add.png'/>"/><fmt:message key="label.add.new.content"/>
 </h3>
 
 <h3 class="titleaddnewcontent" style="display:none;">
-<img title="" alt="" src="${url.currentModule}/images/paste.png"/><a href="#" id="paste-${currentNode.identifier}" class="pastelink" onclick="pasteNodes(contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")});" style="display:none;"><fmt:message
+<img title="" alt="" src="<c:url value='${url.currentModule}/images/paste.png'/>"/><a href="#" id="paste-${currentNode.identifier}" class="pastelink" onclick="pasteNodes(contributeParameters${fn:replace(currentNode.UUID,"-" ,"_")});" style="display:none;"><fmt:message
         key="label.paste"/></a>
 </h3>
 

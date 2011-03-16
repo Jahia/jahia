@@ -56,7 +56,7 @@
 						<a href="<c:url value='${url.base}${child.path}.${template}.html'/>">${fn:escapeXml(child.name)}</a>
 					</c:if>
 					<c:if test="${!nodesAsLinks}">
-						<template:module node="${child}" template="${template}"/>
+						<template:module node="${child}" view="${template}"/>
 					</c:if>
 				</div>
 			</c:forEach>

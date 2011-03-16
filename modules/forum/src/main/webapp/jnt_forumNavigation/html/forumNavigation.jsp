@@ -97,7 +97,7 @@
                                                                                                             width="11"
                                                                                                             title="View the latest post"
                                                                                                             alt="View the latest post"
-                                                                                                            src="${url.currentModule}/css/img/icon_topic_latest.gif"/>${createdBy.string} </a><br/>
+                                                                                                            src="<c:url value='${url.currentModule}/css/img/icon_topic_latest.gif'/>"/>${createdBy.string} </a><br/>
                     <fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/>
                     </span> </c:if>
                 </dd>

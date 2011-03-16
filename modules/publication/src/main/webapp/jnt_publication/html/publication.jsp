@@ -15,7 +15,7 @@
                     <img src="${preview.node.url}" alt="${preview.node.propertiesAsString['jcr:title']}">
                 </c:if>
                 <c:if test="${empty preview.node.url}">
-                    <img src="${url.currentModule}/images/no_preview.png" alt="no preview"/>
+                    <img src="<c:url value='${url.currentModule}/images/no_preview.png'/>" alt="no preview"/>
                 </c:if>
             </a>
         </div>

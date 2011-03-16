@@ -93,10 +93,10 @@
                                scope="request"/>
                         <li class="${listItemCssClass}">
                             <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
-                            <template:module node="${menuItem}" template="${menuItemTemplate}" editable="false"/>
+                            <template:module node="${menuItem}" view="${menuItemTemplate}" editable="false"/>
                                 <%--<a href="">${menuItem.name}</a>--%>
                             <c:if test="${hasChildren}">
-                                <template:include template="default">
+                                <template:include view="default">
                                     <template:param name="base" value="${menuItem.identifier}"/>
                                     <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
                                     <template:param name="omitFormatting" value="true"/>
@@ -106,7 +106,7 @@
                     </c:when>
                     <c:otherwise>
                         <c:if test="${hasChildren}">
-                            <template:include template="default">
+                            <template:include view="default">
                                 <template:param name="base" value="${menuItem.identifier}"/>
                                 <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
                                 <template:param name="omitFormatting" value="true"/>

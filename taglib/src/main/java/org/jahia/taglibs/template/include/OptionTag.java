@@ -60,7 +60,7 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(OptionTag.class);
     private String nodetype;
     private JCRNodeWrapper node;
-    private String template;
+    private String view;
     private Map<String, String> parameters = new HashMap<String, String>();
 
     /**
@@ -85,7 +85,7 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                 if (pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE) == null) {
                     currentResource.removeOption(mixinNodeType);
                 }
-                Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), template,
+                Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), view,
                         Resource.CONFIGURATION_INCLUDE);
                 wrappedResource.setResourceNodeType(mixinNodeType);
                 for (Map.Entry<String, String> param : parameters.entrySet()) {
@@ -126,7 +126,7 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
         }
         nodetype = null;
         node = null;
-        template = null;
+        view = null;
         parameters.clear();
         return super.doEndTag();
     }
@@ -139,8 +139,8 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
         this.node = node;
     }
 
-    public void setTemplate(String template) {
-        this.template = template;
+    public void setView(String view) {
+        this.view = view;
     }
 
     public void addParameter(String name, String value) {

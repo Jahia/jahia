@@ -33,7 +33,6 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRValueWrapperImpl;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.bin.Studio;
@@ -71,7 +70,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected String nodeName;
 
-    protected String template;
+    protected String view;
 
     protected String templateType = null;
 
@@ -103,8 +102,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return node;
     }
 
-    public String getTemplate() {
-        return template;
+    public String getView() {
+        return view;
     }
 
     public String getTemplateType() {
@@ -131,8 +130,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         this.node = node;
     }
 
-    public void setTemplate(String template) {
-        this.template = template;
+    public void setView(String view) {
+        this.view = view;
     }
 
     public void setTemplateType(String templateType) {
@@ -227,7 +226,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     templateType = currentResource.getTemplateType();
                 }
 
-                Resource resource = new Resource(node, templateType, template, getConfiguration());
+                Resource resource = new Resource(node, templateType, view, getConfiguration());
 
                 String charset = pageContext.getResponse().getCharacterEncoding();
                 for (Map.Entry<String, String> param : parameters.entrySet()) {
@@ -282,7 +281,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
             path = null;
             node = null;
-            template = null;
+            view = null;
             editable = true;
             templateType = null;
             nodeTypes = null;

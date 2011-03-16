@@ -201,7 +201,7 @@
 <div style="display:none;">
     <div id="tasks" >
         <%-- Just load the resources here ! --%>
-        <template:module path="/users/${renderContext.user.username}" template="tasklist" var="temp"/>
+        <template:module path="/users/${renderContext.user.username}" view="tasklist" var="temp"/>
     </div>
 </div>
 <div id="contributewrapper">

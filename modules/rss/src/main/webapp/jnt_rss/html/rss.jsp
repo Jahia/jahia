@@ -15,7 +15,7 @@
 <c:set var="syndFeed" value="${rss.feed}"/>
 <c:if test="${not empty title && not empty title.string}">
     <h3 class="titlerss">
-        <img title="" alt="" src="${url.currentModule}/images/rss.png"/> ${fn:escapeXml(title.string)}
+        <img title="" alt="" src="<c:url value='${url.currentModule}/images/rss.png'/>"/> ${fn:escapeXml(title.string)}
     </h3>
 </c:if>
 <c:if test="${empty syndFeed}">

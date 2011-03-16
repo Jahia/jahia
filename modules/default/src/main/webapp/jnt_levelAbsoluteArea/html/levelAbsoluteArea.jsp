@@ -51,7 +51,7 @@
         </c:forEach>
 
         <c:if test="${not empty node}">
-            <template:area template="${currentNode.properties['j:referenceView'].string}"
+            <template:area view="${currentNode.properties['j:referenceView'].string}"
                                      path="${node.path}/${currentNode.name}"
                                      nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea">
                 <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">

@@ -89,7 +89,7 @@
         <c:if test="${(startLevelValue < navMenuLevel or inpath) and correctType}">
             <li>
                     <%--if level, path and type matches, display the menu--%>
-                <template:module node="${menuItem}" template="${menuItemTemplate}" editable="false"/>
+                <template:module node="${menuItem}" view="${menuItemTemplate}" editable="false"/>
             </li>
         </c:if>
     </c:forEach>

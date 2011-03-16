@@ -157,7 +157,7 @@
                             </c:otherwise>
                         </c:choose>
                             <div id="renderingOfFile${currentNode.identifier}">
-                                <template:module node="${prop.node}" template="default" />
+                                <template:module node="${prop.node}" view="default" />
                             </div>
                     </c:when>
                     <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">

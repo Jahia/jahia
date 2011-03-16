@@ -75,7 +75,7 @@
 
                 <c:choose>
                 <c:when test="${task.propertiesAsString.state == 'active'}">
-                <span><img alt="" src="${url.currentModule}/images/right_16.png" height="16" width="16"/></span>
+                <span><img alt="" src="<c:url value='${url.currentModule}/images/right_16.png'/>" height="16" width="16"/></span>
                 <span>
                     <a href="javascript:send('${task.path}','suspended')"><fmt:message
                             key="jnt_task.suspended"/></a>&nbsp;
@@ -86,10 +86,10 @@
                 </span>
                 </c:when>
                 <c:when test="${task.propertiesAsString.state == 'finished'}">
-                <img alt="" src="${url.currentModule}/images/tick_16.png" height="16" width="16"/>
+                <img alt="" src="<c:url value='${url.currentModule}/images/tick_16.png'/>" height="16" width="16"/>
                 </c:when>
                 <c:when test="${task.propertiesAsString.state == 'suspended'}">
-                <span><img alt="" src="${url.currentModule}/images/bubble_16.png" height="16"
+                <span><img alt="" src="<c:url value='${url.currentModule}/images/bubble_16.png'/>" height="16"
                            width="16"/></span>
                 <span>
                     <a href="javascript:send('${task.path}','cancelled')"><fmt:message
@@ -99,7 +99,7 @@
                 </span>
                 </c:when>
                 <c:when test="${task.propertiesAsString.state == 'canceled'}">
-                <img alt="" src="${url.currentModule}/images/warning_16.png" height="16" width="16"/>
+                <img alt="" src="<c:url value='${url.currentModule}/images/warning_16.png'/>" height="16" width="16"/>
                 </c:when>
                 </c:choose>
             </li>
@@ -159,7 +159,7 @@
                         <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                             <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
                             <c:url var="myUrl" value="${url.current}.ajax"/>
-                            <template:module node="${node}" template="contribute.add">
+                            <template:module node="${node}" view="contribute.add">
                                 <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                                 <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                                 <template:param name="workflowTaskFormTaskName" value="${task.name}"/>

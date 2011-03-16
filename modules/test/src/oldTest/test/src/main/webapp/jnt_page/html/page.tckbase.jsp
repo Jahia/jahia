@@ -6,7 +6,7 @@
 <c:forEach items="${currentNode.nodes}" var="subchild">
 <c:if test="${subchild.name != 'maincontent' and subchild.name != 'navLink' and subchild.primaryNodeTypeName != 'jnt:page'}">
 <p>
-    <template:module node="${subchild}" template="${moduleMap.subNodesView}" />
+    <template:module node="${subchild}" view="${moduleMap.subNodesView}" />
 </p>
 </c:if>
 </c:forEach>

@@ -21,7 +21,7 @@
                 <h3><jcr:nodeProperty node="${subchild}" name='jcr:title'/></h3>
             </div>
             <div class="widget-content" id="widget${subchild.UUID}">
-                <template:module node="${subchild}" template="portal">
+                <template:module node="${subchild}" view="portal">
                     <template:param name="widgetContentId" value="widget${subchild.UUID}"/>
                 </template:module>
             </div>

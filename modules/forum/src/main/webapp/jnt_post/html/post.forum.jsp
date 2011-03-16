@@ -60,7 +60,7 @@
     </template:tokenizedForm>
 </c:if>
 
-<template:option node="${currentNode}" template="hidden.plusone_minorone_form" nodetype="jmix:rating"/>
+<template:option node="${currentNode}" view="hidden.plusone_minorone_form" nodetype="jmix:rating"/>
 <div class="forum-postbody">
 	<div class="arrow-left"></div>
     <ul class="forum-profile-icons">
@@ -94,7 +94,7 @@
     </ul>
 
 
-<template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/>
+<template:option node="${currentNode}" view="hidden.plusone_minorone" nodetype="jmix:rating"/>
 
     <h4 class="forum-h4-first">${title.string}</h4>
 
@@ -128,7 +128,7 @@
     <c:when test="${not empty userNode}">
         <dl class="forum-postprofile">
             <dt>
-                <template:module node="${userNode}" template="mini"/>
+                <template:module node="${userNode}" view="mini"/>
             </dt>
             <dd><strong>
                 <fmt:message key="number.of.posts"/>

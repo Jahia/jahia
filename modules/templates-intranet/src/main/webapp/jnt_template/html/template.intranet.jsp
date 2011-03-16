@@ -16,7 +16,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
-<link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
+<link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/print.css'/>" media="print" />
 </head>
 <body id="body">
 <%@ include file="../../common/declarations.jspf" %>
@@ -106,11 +106,11 @@
   <template:addResources type="css" resources="edit.css" />
 </c:if>
 <template:addResources>
-  <!--[if IE]><link rel="stylesheet" type="text/css" href="${url.currentModule}/css/ie.css" media="screen" /><![endif]-->
+  <!--[if IE]><link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/ie.css'/>" media="screen" /><![endif]-->
   <!--[if lte IE 6]>
-<link rel="stylesheet" type="text/css" href="${url.currentModule}/css/ie6.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/ie6.css'/>" media="screen" />
     <style type="text/css">
-    body { behavior: url(${url.currentModule}/scripts/csshover3.htc); }
+    body { behavior: url(<c:url value='${url.currentModule}/scripts/csshover3.htc'/>); }
     </style>
 <![endif]-->
 </template:addResources>

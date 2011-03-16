@@ -197,7 +197,7 @@
     <jcr:sql var="socialConnections"
              sql="select * from [jnt:socialConnection] as uC where isdescendantnode(uC,['${user.path}'])"/>
     <template:addCacheDependency path="${user.path}/connections"/>
-    <h3 class="social-title-icon titleIcon"><fmt:message key="friendsList"/><img title="" alt="" src="${url.currentModule}/images/friends.png"/>
+    <h3 class="social-title-icon titleIcon"><fmt:message key="friendsList"/><img title="" alt="" src="<c:url value='${url.currentModule}/images/friends.png'/>"/>
     </h3>
     <ul class="social-list">
         <c:forEach items="${socialConnections.nodes}" var="socialConnection">
@@ -213,7 +213,7 @@
 			                    height="32"/></a>
 			        </c:if>
 			        <c:if test="${empty picture}"><a href="<c:url value='${url.base}${connectedToUser.path}.html'/>">
-						<img alt="" src="${url.currentModule}/images/friend.png" alt="friend" border="0"/></a></c:if>
+						<img alt="" src="<c:url value='${url.currentModule}/images/friend.png'/>" alt="friend" border="0"/></a></c:if>
                 </div>
                 <a class="social-list-remove removeFriendAction" title="<fmt:message key="removeFriend"/>" href="currentUserConnections.jsp#"
                    rel="${socialConnection.properties['j:connectedFrom'].node.identifier}:${socialConnection.properties['j:connectedTo'].node.identifier}:${socialConnection.properties['j:type'].string}"><span><fmt:message

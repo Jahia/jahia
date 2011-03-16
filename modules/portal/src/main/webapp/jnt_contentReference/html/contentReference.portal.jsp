@@ -16,6 +16,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:module node="${currentNode.properties['j:node'].node}" template="portal">
+<template:module node="${currentNode.properties['j:node'].node}" view="portal">
     <template:param name="widgetContentId" value="${currentResource.moduleParams.widgetContentId}"/>
 </template:module>

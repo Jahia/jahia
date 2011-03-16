@@ -26,7 +26,7 @@
 	                    height="64"/></a>
 	        </c:if>
 	        <c:if test="${empty picture}"><a href="<c:url value='${url.base}${fromUser.path}.html'/>">
-				<img alt="" src="${url.currentModule}/images/friendbig.png" alt="friend" border="0"/></a></c:if>
+				<img alt="" src="<c:url value='${url.currentModule}/images/friendbig.png'/>" alt="friend" border="0"/></a></c:if>
         </div>
     </div>
     <c:if test="${not empty fields['j:from']}">

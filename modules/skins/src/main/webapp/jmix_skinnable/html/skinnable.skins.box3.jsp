@@ -3,7 +3,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="box3.css"/>
 <template:addResources>
-<!--[if lte IE 6]><link rel="stylesheet" type="text/css" href="${url.currentModule}/css/box3-ie6.css" media="screen" /><![endif]-->
+<!--[if lte IE 6]><link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/box3-ie6.css'/>" media="screen" /><![endif]-->
 </template:addResources>
 <div class="box3-container">
     <div class="box3-topright"></div>

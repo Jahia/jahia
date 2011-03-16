@@ -18,7 +18,7 @@
         <c:if test="${status.first}">
             <ul>
         </c:if>
-        <template:module node="${node}" template="hidden.tree"/>
+        <template:module node="${node}" view="hidden.tree"/>
         <c:if test="${status.last}">
             </ul>
         </c:if>

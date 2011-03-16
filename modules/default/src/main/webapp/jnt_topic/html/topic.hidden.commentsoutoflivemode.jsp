@@ -31,7 +31,7 @@
     <c:set target="${moduleMap}" property="commentsList" value="${currentNode.nodes}"/>
     <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(currentNode.nodes)}"/>
     <c:forEach items="${moduleMap.commentsList}" var="subchild" varStatus="status">
-        <template:module node="${subchild}" template="default"/>
+        <template:module node="${subchild}" view="default"/>
     </c:forEach>
 </ul>
 <template:removePager id="${currentNode.identifier}"/>

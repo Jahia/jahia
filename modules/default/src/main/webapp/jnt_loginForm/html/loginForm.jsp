@@ -74,11 +74,11 @@
                             <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/>
                         </c:if>
                         <c:if test="${empty picture}">
-                            <img src="${url.currentModule}/images/userbig.png" alt="" border="0"/>
+                            <img src="<c:url value='${url.currentModule}/images/userbig.png'/>" alt="" border="0"/>
                         </c:if>
                     </c:when>
                     <c:otherwise>
-                        <img src="${url.currentModule}/images/userbig.png" alt="" border="0"/>
+                        <img src="<c:url value='${url.currentModule}/images/userbig.png'/>" alt="" border="0"/>
                     </c:otherwise>
                 </c:choose>
             </div>

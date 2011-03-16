@@ -30,7 +30,7 @@
                         height="60"/><%--/a--%>
             </c:if>
             <c:if test="${empty picture}"><%--a href="<c:url value='${url.base}${renderContext.site.path}/users/${createdBy.string}.html'/>"--%><img alt=""
-                                                                                                    src="${url.currentModule}/images/userbig.png"/></a></c:if>
+                                                                                                    src="<c:url value='${url.currentModule}/images/userbig.png'/>"/></a></c:if>
         </div>
     </div>
 

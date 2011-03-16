@@ -17,12 +17,12 @@
 <jcr:node var="comments" path="${currentNode.path}/comments"/>
 <c:choose>
     <c:when test="${not empty currentResource.moduleParams.subTemplate}">
-        <template:module node="${comments}" template="${currentResource.moduleParams.subTemplate}"/>
+        <template:module node="${comments}" view="${currentResource.moduleParams.subTemplate}"/>
     </c:when>
     <c:when test="${currentNode.properties.shortView.boolean == true}">
-        <template:module node="${comments}" template="summary"/>
+        <template:module node="${comments}" view="summary"/>
     </c:when>
     <c:otherwise>
-        <template:module node="${comments}" template="default"/>
+        <template:module node="${comments}" view="default"/>
     </c:otherwise>
 </c:choose>

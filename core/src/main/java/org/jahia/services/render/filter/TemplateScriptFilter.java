@@ -43,6 +43,7 @@ import org.slf4j.profiler.Profiler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Date;
 
 /**
  * TemplateScriptFilter
@@ -70,11 +71,20 @@ public class TemplateScriptFilter extends AbstractFilter {
                 logger.debug("Render " + script.getView().getPath() + " for resource: " + resource +
                              " with mainResource " + renderContext.getMainResource());
             }
+            long start = 0;
             if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
-                output.append("\n<fieldset> <legend>").append(script.getView().getInfo()).append(" node=").append(resource.getNode().getPath()).append("</legend>");
+                output.append("\n<fieldset> ");
+                start = System.currentTimeMillis();
             }
             output.append(script.execute(resource, renderContext));
             if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
+                output.append("<legend>")
+                        .append("<img src=\"")
+                        .append(renderContext.getURLGenerator().getContext())
+                        .append("/modules/default/images/icons/information.png")
+                        .append("\" title=\"").append(script.getView().getInfo()).append(" node : ").append(resource.getNode().getPath())
+                        .append(" in ").append(System.currentTimeMillis() - start).append( "ms")
+                        .append("\"/></legend>");
                 output.append("</fieldset> ");
             }
 

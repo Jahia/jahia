@@ -71,10 +71,13 @@ public class TemplateScriptFilter extends AbstractFilter {
                              " with mainResource " + renderContext.getMainResource());
             }
             if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
-                output.append("\n<span class='hidden' script='").append(script.getView().getInfo()).append("' node='").append(resource.getNode().getPath()).append("'></span>\n");
+                output.append("\n<fieldset> <legend>").append(script.getView().getInfo()).append(" node=").append(resource.getNode().getPath()).append("</legend>");
             }
             output.append(script.execute(resource, renderContext));
-            
+            if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
+                output.append("</fieldset> ");
+            }
+
         } catch (RenderException e) {
             output.append(handleError(script.getView().getInfo(), e, renderContext, resource));
         } finally {

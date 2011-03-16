@@ -418,12 +418,10 @@ body {
 }
 #bodywrapper .paginationPosition {
 	float:left;
-	font-size:0.85em;
 	color:#36393d;
 }
 #bodywrapper .paginationNavigation {
 	float:right;
-	font-size:0.85em;
 
 }
 #bodywrapper .paginationNavigation a:link,
@@ -464,7 +462,6 @@ body {
 }
 #bodywrapper .alphabeticalLabel {
 	float:left;
-	font-size:0.9em;
 	font-weight:bold;
 	color:#333;
 }
@@ -575,7 +572,6 @@ body {
 #bodywrapper div.bottomanchor {
 	padding:0.2em;
 	margin: 1em 0;
-	font-size:0.85em;
 	clear:both
 }
 #bodywrapper .bottomanchor a,
@@ -626,7 +622,6 @@ body {
 {
     border-collapse:collapse;
 	margin-bottom:1em;
-	font-size:0.85em;
 	border:none;
 }
 #body .table, #body .table th, #body .table td

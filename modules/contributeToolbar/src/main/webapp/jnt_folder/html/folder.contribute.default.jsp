@@ -85,7 +85,7 @@
             </td>
             <td>
                 <fmt:formatDate value="${child.properties['jcr:lastModified'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
-            </td align="center">
+            </td>
             <td>
                 <fmt:formatDate value="${child.properties['j:lastPublished'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
             </td>
@@ -143,4 +143,4 @@
                 </c:if>
             </c:if>
 
-        </div>
+</div>

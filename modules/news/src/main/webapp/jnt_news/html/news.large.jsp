@@ -21,8 +21,8 @@
                 <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>
             </span>
     </p>
-
-    <div class="newsImg"><a href="<c:url value='${url.base}${currentNode.path}.detail.html'/>"><img src="${newsImage.node.url}"/></a>
+    <c:url value="${url.files}${newsImage.node.path}" var="imageUrl"/>
+    <div class="newsImg"><a href="<c:url value='${url.base}${currentNode.path}.detail.html'/>"><img src="${imageUrl}"/></a>
     </div>
     <div class="newsResume">
         ${newsDesc.string}

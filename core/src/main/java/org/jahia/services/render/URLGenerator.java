@@ -170,7 +170,7 @@ public class URLGenerator {
     }
 
     public String getFiles() {
-        return "/files";
+        return "/files"+ "/" + resource.getWorkspace();
     }
 
     public String getBase() {

@@ -15,7 +15,8 @@
 
 <div class="newsSummary">
     <!--start newsListItem -->
-    <div class="newsSummaryImg"><img src="${newsImage.node.url}" alt='<jcr:nodeProperty node="${currentNode}" name="jcr:title"/>'/></div>
+    <c:url value="${url.files}${newsImage.node.path}" var="imageUrl"/>
+    <div class="newsSummaryImg"><img src="${imageUrl}" alt='<jcr:nodeProperty node="${currentNode}" name="jcr:title"/>'/></div>
     <h4><a href="<c:url value='${url.base}${currentNode.path}.html'/>"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
     <p class="newsSummaryresume"> ${fn:substring(functions:removeHtmlTags(newsDesc.string),0,120)}</p>
     <div class="clear"> </div>

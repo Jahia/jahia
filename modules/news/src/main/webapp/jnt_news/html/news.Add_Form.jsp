@@ -23,8 +23,8 @@
                 <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>
             </span>
         </p>
-
-        <div class="newsImg"><a href="${url.current}"><img src="${newsImage.node.url}"/></a></div>
+        <c:url value="${url.files}${newsImage.node.path}" var="imageUrl"/>
+        <div class="newsImg"><a href="${url.current}"><img src="${imageUrl}"/></a></div>
         <div class="newsResume">
             <textarea rows="10" cols="80" name="newsDesc">${newsDesc.string}</textarea>
         </div>

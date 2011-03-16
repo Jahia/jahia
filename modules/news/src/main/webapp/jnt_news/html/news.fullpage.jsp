@@ -36,7 +36,8 @@
         </div>
     </c:if>
     <!-- image and news body -->
-    <div class="newsImg"><img src="${newsImage.node.url}"/></div>
+    <c:url value="${url.files}${newsImage.node.path}" var="imageUrl"/>
+    <div class="newsImg"><img src="${imageUrl}"/></div>
 
     <div class="newsText">
         ${newsDesc.string}

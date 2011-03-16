@@ -24,7 +24,8 @@
     </p>
 
     <c:if test="${not empty newsImage}">
-        <div class="newsImg"><a href="<c:url value='${url.base}${currentNode.path}.html'/>"><img src="${newsImage.node.url}"/></a></div>
+        <c:url value="${url.files}${newsImage.node.path}" var="imageUrl"/>
+        <div class="newsImg"><a href="<c:url value='${url.base}${currentNode.path}.html'/>"><img src="${imageUrl}"/></a></div>
     </c:if>
     <p class="newsResume">
         ${functions:abbreviate(functions:removeHtmlTags(currentNode.properties.desc.string),400,450,'...')}

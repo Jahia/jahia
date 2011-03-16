@@ -37,7 +37,6 @@
         </c:otherwise>
     </c:choose>
 </c:forEach>
-<template:addResources key="${renderContext.mainResource.node.identifier}">
     <script type="text/javascript">
         $(document).ready(function() {
             // page is now ready, initialize the calendar...
@@ -49,7 +48,7 @@
                 </c:if>
                 events: [
                     <c:forEach items="${datas}" var="data" varStatus="status">
-                    <c:url value="${renderContext.mainResource.node.url}" var="eventUrl">
+                    <c:url value="${url.base}${renderContext.mainResource.node.path}.html" var="eventUrl">
                     <c:param name="filter" value="{name:'${currentNode.properties.startDateProperty.string}',value:'${data.key}',op:'eq',uuid:'${linked.identifier}',format:'yyyy-MM-dd',type:'date'}"/>
                     <c:param name="calStartDate" value="${data.key}"/>
                     </c:url>
@@ -65,6 +64,5 @@
             })
         });
     </script>
-</template:addResources>
 <div class="calendar" id="calendar${currentNode.identifier}"></div>
 

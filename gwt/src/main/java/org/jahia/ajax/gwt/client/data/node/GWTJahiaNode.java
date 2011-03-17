@@ -310,14 +310,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return get(SITE_UUID);
     }
 
-    public void setSiteType(String siteType) {
-        set(SITE_TYPE, siteType);
-    }
-
-    public String getSiteType() {
-        return get(SITE_TYPE);
-    }
-
     public void setSiteKey(String siteKey) {
         set(SITE_KEY, siteKey);
     }

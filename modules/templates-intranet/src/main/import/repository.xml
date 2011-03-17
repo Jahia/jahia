@@ -146,6 +146,11 @@
                         <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
                       </pagecontent>
                     </contentTemplate>
+                    <user j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="10" jcr:primaryType="jnt:contentTemplate">
+                      <pagecontent j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                        <userDetails j:bindedComponent="/templateSets/profile/templates/user" j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails" />
+                      </pagecontent>
+                    </user>
                 </base>
             </templates>
             <search-results jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base" priority="0.5">

@@ -31,6 +31,11 @@
               <j:translation_en j:alternateText="logo-jahia" jcr:language="en" jcr:primaryType="jnt:translation" />
             </logo-jahia>
           </header-col1>
+            <user j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="10" jcr:primaryType="jnt:contentTemplate">
+              <pagecontent j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                <userDetails j:bindedComponent="/templateSets/profile/templates/user" j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails" />
+              </pagecontent>
+            </user>
         </base>
         <files jcr:primaryType="jnt:folder">
           <themes jcr:primaryType="jnt:folder">

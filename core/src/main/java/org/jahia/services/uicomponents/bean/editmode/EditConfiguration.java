@@ -57,6 +57,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private List<EngineTab> engineTabs;
 
+    private String sitesLocation;
 
     public void setBeanName(String name) {
         this.name = name;
@@ -116,5 +117,13 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setEngineTabs(List<EngineTab> engineTabs) {
         this.engineTabs = engineTabs;
+    }
+
+    public String getSitesLocation() {
+        return sitesLocation;
+    }
+
+    public void setSitesLocation(String sitesLocation) {
+        this.sitesLocation = sitesLocation;
     }
 }

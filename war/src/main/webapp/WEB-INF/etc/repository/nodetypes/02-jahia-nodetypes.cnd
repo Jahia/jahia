@@ -422,13 +422,14 @@
  - j:serverName (string) protected nofulltext
  - j:description (string) protected
  - j:siteId (long) protected
- - j:installedModules (string) multiple nofulltext
- - j:languages (string) multiple nofulltext
+ - j:installedModules (string) multiple protected nofulltext
+ - j:languages (string) multiple protected nofulltext
  - j:mandatoryLanguages (string) multiple nofulltext
- - j:defaultLanguage (string) nofulltext
+ - j:defaultLanguage (string) protected nofulltext
  - j:mixLanguage (boolean) = false
- - j:templatesSet (string)
+ - j:templatesSet (string) protected
  - j:siteType (string) protected
+ - j:dependencies (string) multiple protected nofulltext
  + * (nt:base)
 
 //---------------------------------------------------------

@@ -317,7 +317,7 @@ public class NavigationHelper {
                         NodeIterator ni =
                                 currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")).getNodes();
                         while (ni.hasNext()) {
-                            GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next());
+                            GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
                             if (displayName != "") {
                                 node.setDisplayName(displayName);
                             }
@@ -780,7 +780,6 @@ public class NavigationHelper {
             JCRSiteNode site = node.getResolveSite();
             if (site != null) {
                 n.setSiteUUID(site.getUUID());
-                n.setSiteType(site.hasProperty("j:siteType") ? site.getProperty("j:siteType").getString() : "");
                 n.setAclContext("site:" + site.getName());
                 n.setSiteKey(site.getSiteKey());
             } else {

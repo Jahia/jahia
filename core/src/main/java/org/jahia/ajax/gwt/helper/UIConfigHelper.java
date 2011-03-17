@@ -583,6 +583,7 @@ public class UIConfigHelper {
                 gwtConfig.setContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
                 gwtConfig.setTabs(createGWTSidePanelTabList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTabs()));
                 gwtConfig.setEngineTabs(createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs()));
+                gwtConfig.setSitesLocation(config.getSitesLocation());
                 return gwtConfig;
             } else {
                 throw new GWTJahiaServiceException("Bean. 'editconfig'  not found in spring config file");

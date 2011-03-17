@@ -187,6 +187,11 @@
               <illustration j:level="1" jcr:primaryType="jnt:levelAbsoluteArea" j:allowedTypes="jnt:imageReference" />
             </illustration>
           </publications>
+            <user j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="10" jcr:primaryType="jnt:contentTemplate">
+              <pagecontent j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                <userDetails j:bindedComponent="/templateSets/profile/templates/user" j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails" />
+              </pagecontent>
+            </user>
         </base>
         <contents jcr:primaryType="jnt:contentFolder" />
         <files jcr:primaryType="jnt:folder">

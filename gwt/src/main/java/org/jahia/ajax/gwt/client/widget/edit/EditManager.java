@@ -60,6 +60,11 @@ public class EditManager extends ContentPanel {
 
     public EditManager(String html, String path, String template, String nodeTypes, String locale, GWTEditConfiguration config) {
         long start = System.currentTimeMillis();
+
+        JahiaGWTParameters.setSiteNode(config.getSiteNode());
+        JahiaGWTParameters.setSitesLocation(config.getSitesLocation());
+        JahiaGWTParameters.setSitesMap(config.getSitesMap());
+
         borderLayout =  new BorderLayout();
         setLayout(borderLayout);
         setHeaderVisible(false);

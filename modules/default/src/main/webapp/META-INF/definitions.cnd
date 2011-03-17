@@ -163,7 +163,9 @@
  - type (string, choicelist) = content < content,document,"united content",roles
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent
- - type (string, choicelist) = edit < contribute,edit,live
+ - edit (boolean)
+ - contribute (boolean)
+ - live (boolean)
 
 [jmix:gadget] mixin
 

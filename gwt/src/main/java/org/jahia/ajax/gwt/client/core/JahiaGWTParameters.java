@@ -32,14 +32,20 @@
 
 package org.jahia.ajax.gwt.client.core;
 
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.google.gwt.i18n.client.Dictionary;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jahia.
@@ -75,8 +81,11 @@ public class JahiaGWTParameters {
     private static String languageDisplayName;
     private static String siteUUID;
     private static String siteKey;
-    private static String siteType;
     private static String workspace;
+
+    private static String sitesLocation;
+    private static Map<String, GWTJahiaNode> sitesMap;
+    private static GWTJahiaNode siteNode;
 
     public static String getServiceEntryPoint() {
         return jahiaParamDictionary.get(SERVICE_ENTRY_POINT);
@@ -181,19 +190,39 @@ public class JahiaGWTParameters {
         $wnd.jahiaGWTParameters.siteKey  = newSiteKey;
     }-*/;
 
-    public static void setSite(GWTJahiaNode site, Linker linker) {
-        setSiteUUID(site.getSiteUUID());
-        setSiteKey(site.getSiteKey());
-        setSiteType(site.getSiteType());
-        DeployTemplatesActionItem.refreshAllMenus(linker);
+    public static GWTJahiaNode getSiteNode() {
+        return siteNode;
     }
 
-    public static String getSiteType() {
-        return siteType;
+    public static void setSiteNode(GWTJahiaNode siteNode) {
+        JahiaGWTParameters.siteNode = siteNode;
+
+        setSiteUUID(siteNode.getSiteUUID());
+        setSiteKey(siteNode.getSiteKey());
     }
 
-    public static void setSiteType(String newSiteType) {
-        siteType = newSiteType;
+
+    public static String getSitesLocation() {
+        return sitesLocation;
+    }
+
+    public static void setSitesLocation(String sitesLocation) {
+        JahiaGWTParameters.sitesLocation = sitesLocation;
+    }
+
+    public static Map<String, GWTJahiaNode> getSitesMap() {
+        return sitesMap;
+    }
+
+    public static void setSitesMap(Map<String, GWTJahiaNode> sitesMap) {
+        JahiaGWTParameters.sitesMap = sitesMap;
+    }
+
+    public static void setSite(GWTJahiaNode node, Linker linker) {
+        setSiteNode(sitesMap.get(node.getSiteUUID()));
+        if (linker != null) {
+            DeployTemplatesActionItem.refreshAllMenus(linker);
+        }
     }
 
     public static String getWorkspace() {
@@ -259,4 +288,17 @@ public class JahiaGWTParameters {
     public static interface UrlUpdater {
         void updateEntryPointUrl();
     }
+
+    public static void refreshSitesList() {
+        JahiaContentManagementService
+                .App.getInstance().getRoot(Arrays.asList(sitesLocation), Arrays.asList("jnt:virtualsite"), null, null,GWTJahiaNode.DEFAULT_SITE_FIELDS,null,null, false,new BaseAsyncCallback<List<GWTJahiaNode>>() {
+            public void onSuccess(List<GWTJahiaNode> sites) {
+                sitesMap.clear();
+                for (GWTJahiaNode site : sites) {
+                    sitesMap.put(site.getUUID(), site);
+                }
+            }
+        });
+    }
+
 }

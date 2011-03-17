@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -53,6 +54,9 @@ public class ContentManager extends TriPanelBrowserLayout {
                                   final int southSize) {
         // superclass constructor (define linker)
         super(config);
+
+        JahiaGWTParameters.setSiteNode(config.getSiteNode());
+
         setWidth("100%");
         setHeight("500px");
         setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, southSize));

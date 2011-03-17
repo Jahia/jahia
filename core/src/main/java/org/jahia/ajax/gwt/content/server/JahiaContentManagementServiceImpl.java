@@ -252,8 +252,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             config = uiConfig.getGWTManagerConfiguration(getSite(), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), name);
+            config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
             setAvailablePermissions(config);
-        } catch (RepositoryException e) {
+        }catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -271,6 +272,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             config = uiConfig.getGWTEditConfiguration(retrieveCurrentSession().getNode(path), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), name);
+            config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
+
+            List<GWTJahiaNode> sites = getRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, false);
+
+            Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
+            for (GWTJahiaNode site : sites) {
+                sitesMap.put(site.getSiteUUID(), site);
+            }
+            config.setSitesMap(sitesMap);
+
             setAvailablePermissions(config);
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);

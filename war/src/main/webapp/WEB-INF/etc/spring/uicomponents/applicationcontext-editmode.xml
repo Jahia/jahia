@@ -16,6 +16,7 @@
 
     <!-- studiomode -->
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+        <property name="sitesLocation" value="/templateSets/*"/>
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="layout" value="button-label"/>
@@ -565,6 +566,7 @@
 
 
     <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+        <property name="sitesLocation" value="/sites/*"/>
         <property name="topToolbar">
             <bean id="editModeToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="layout" value="button-label"/>

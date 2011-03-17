@@ -33,9 +33,11 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -46,6 +48,9 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     protected String name;
     private List<GWTEngineTab> engineTabs;
     private List<String> permissions;
+    private GWTJahiaNode siteNode;
+    private String sitesLocation;
+    private Map<String, GWTJahiaNode> sitesMap;
 
     public GWTConfiguration() {
     	super();
@@ -73,5 +78,29 @@ public class GWTConfiguration implements IsSerializable, Serializable {
 
     public void setPermissions(List<String> permissions) {
         this.permissions = permissions;
+    }
+
+    public GWTJahiaNode getSiteNode() {
+        return siteNode;
+    }
+
+    public void setSiteNode(GWTJahiaNode siteNode) {
+        this.siteNode = siteNode;
+    }
+
+    public String getSitesLocation() {
+        return sitesLocation;
+    }
+
+    public void setSitesLocation(String sitesLocation) {
+        this.sitesLocation = sitesLocation;
+    }
+
+    public Map<String, GWTJahiaNode> getSitesMap() {
+        return sitesMap;
+    }
+
+    public void setSitesMap(Map<String, GWTJahiaNode> sitesMap) {
+        this.sitesMap = sitesMap;
     }
 }

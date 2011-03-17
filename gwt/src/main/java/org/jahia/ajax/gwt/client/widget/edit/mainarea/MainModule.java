@@ -379,9 +379,9 @@ public class MainModule extends Module {
 
     public void setNode(GWTJahiaNode node) {
         this.node = node;
-        if (node.getNodeTypes().contains("jnt:page") || node.getInheritedNodeTypes().contains("jnt:page")) {
+//        if (node.getNodeTypes().contains("jnt:page") || node.getInheritedNodeTypes().contains("jnt:page")) {
 //            editManager.getEditLinker().getCreatePageButton().setEnabled(true);
-        }
+//        }
         if (node.isShared()) {
 //            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"),
@@ -391,9 +391,6 @@ public class MainModule extends Module {
             JahiaGWTParameters.setSite(node, editLinker);
             SiteSwitcherActionItem.refreshAllSitesList(editLinker);
             editLinker.getSidePanel().refresh(EditLinker.REFRESH_ALL);
-        } else {
-            JahiaGWTParameters.setSiteType(node.getSiteType());
-            DeployTemplatesActionItem.refreshAllMenus(editLinker);
         }
 
         setDocumentTitle(Messages.get("label."+config.getName().substring(0,config.getName().length()-4), config.getName()) + " - " + node.getDisplayName());

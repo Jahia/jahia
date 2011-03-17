@@ -30,14 +30,15 @@
 <c:forEach items="${result.nodes}" var="node">
     <jcr:node var="home" path="${node.path}/home"/>
     <c:if test="${jcr:hasPermission(home,'jcr:addChildNodes')}">
-    <li><c:if test="${currentNode.properties.type.string eq 'edit'}">
-        ${node.properties['jcr:title'].string} <a href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"> <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.editMode"/></a>
+    <li>${node.properties['jcr:title'].string}
+        <c:if test="${currentNode.properties.edit.boolean}">
+        <a href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"> <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.editMode"/></a>
     </c:if>
-    <c:if test="${currentNode.properties.type.string eq 'contribute'}">
-        ${node.properties['jcr:title'].string} <a href="<c:url value='${url.baseContribute}${node.path}/home.html'/>"><img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.contribute"/></a>
+    <c:if test="${currentNode.properties.contribute.boolean}">
+        <a href="<c:url value='${url.baseContribute}${node.path}/home.html'/>"><img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.contribute"/></a>
     </c:if>
-    <c:if test="${currentNode.properties.type.string eq 'live' && home.properties['j:published'].boolean}">
-            ${node.properties['jcr:title'].string} <a href="<c:url value='${url.baseLive}${node.path}/home.html'/>"><img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.live"/></a>
+    <c:if test="${currentNode.properties.live.boolean && home.properties['j:published'].boolean}">
+        <a href="<c:url value='${url.baseLive}${node.path}/home.html'/>"><img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.live"/></a>
     </c:if>
     </li>
     </c:if>

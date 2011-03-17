@@ -946,7 +946,7 @@ public class ContentManagerHelper {
                 session.save();
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, isTemplatesSet);
 
-                return navigation.getGWTJahiaNode(templateSet);
+                return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             } catch (RepositoryException e) {
@@ -957,7 +957,9 @@ public class ContentManagerHelper {
                 List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", key, false, false, false, false, session);
                 siteType = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key, isTemplatesSet);
-                return result.get(0);
+
+                JCRNodeWrapper templateSet = session.getNodeByUUID(result.get(0).getUUID());
+                return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

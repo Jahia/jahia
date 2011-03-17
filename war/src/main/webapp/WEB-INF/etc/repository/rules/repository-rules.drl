@@ -182,6 +182,13 @@ rule "Deploy initial modules for new site"
             - the node has the type jnt:virtualsite
     then
         Deploy module content-browser on site node
+end
+
+rule "Deploy initial modules for system site"
+    when
+       A new node "systemsite" is created
+            - the node has the type jnt:virtualsite
+    then
         Deploy module profile on site node
 end
 

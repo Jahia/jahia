@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -47,6 +48,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -54,7 +56,6 @@ import java.util.List;
  * User: toto
  * Date: Feb 4, 2010
  * Time: 4:19:51 PM
- * 
  */
 public class SiteSwitcherActionItem extends BaseActionItem {
     private static List<SiteSwitcherActionItem> instances = new ArrayList<SiteSwitcherActionItem>();
@@ -91,36 +92,29 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     }
 
     private void refreshSitesList(final Linker linker) {
-        JahiaContentManagementService
-                .App.getInstance().getRoot(root, Arrays.asList("jnt:virtualsite"), null, null,null,null,null, false,new BaseAsyncCallback<List<GWTJahiaNode>>() {
-            public void onSuccess(List<GWTJahiaNode> sites) {
-                mainComponent.removeAllListeners();
-                mainComponent.getStore().removeAll();
-                mainComponent.getStore().add(sites);
-                for (GWTJahiaNode site : sites) {
-                    if (site.getUUID().equals(JahiaGWTParameters.getSiteUUID())) {
-                        mainComponent.setValue(site);
-                        break;
-                    }
-                }
-
-                mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-                    @Override
-                    public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                        final GWTJahiaNode jahiaNode = event.getSelection().get(0);
-                        JahiaGWTParameters.setSite(jahiaNode, linker);
-                        ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
-                        if (root.get(0).startsWith("/templateSets")) {
-                            ((EditLinker) linker).onMainSelection(jahiaNode.getPath(), null, null);
-                        } else {
-                            ((EditLinker) linker).onMainSelection(jahiaNode.getPath()+"/home", null, null);
-                        }
-                    }
-                });
+        List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>(JahiaGWTParameters.getSitesMap().values());
+        mainComponent.removeAllListeners();
+        mainComponent.getStore().removeAll();
+        mainComponent.getStore().add(sites);
+        for (GWTJahiaNode site : sites) {
+            if (site.getUUID().equals(JahiaGWTParameters.getSiteUUID())) {
+                mainComponent.setValue(site);
+                break;
             }
+        }
+        mainComponent.getStore().sort("displayName", Style.SortDir.ASC);
 
-            public void onApplicationFailure(Throwable throwable) {
-                mainComponent.getStore().removeAll();
+        mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                final GWTJahiaNode jahiaNode = event.getSelection().get(0);
+                JahiaGWTParameters.setSite(jahiaNode, linker);
+                ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
+                if (root.get(0).startsWith("/templateSets")) {
+                    ((EditLinker) linker).onMainSelection(jahiaNode.getPath(), null, null);
+                } else {
+                    ((EditLinker) linker).onMainSelection(jahiaNode.getPath() + "/home", null, null);
+                }
             }
         });
     }

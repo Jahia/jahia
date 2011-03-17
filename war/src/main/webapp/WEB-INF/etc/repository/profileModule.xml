@@ -4,7 +4,7 @@
               xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
               xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap"
               jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5"
-              j:siteType="templatesSet">
+              j:siteType="profileModule" j:dependencies="profile">
     <portlets jcr:primaryType="jnt:portletFolder"/>
     <files jcr:primaryType="jnt:folder"/>
     <contents jcr:primaryType="jnt:contentFolder"/>

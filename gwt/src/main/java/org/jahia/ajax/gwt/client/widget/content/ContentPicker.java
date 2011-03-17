@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
@@ -60,6 +61,9 @@ public class ContentPicker extends TriPanelBrowserLayout {
                          final List<String> types, List<String> filters, List<String> mimeTypes,
                          final GWTManagerConfiguration config, boolean multiple) {
         super(config);
+
+        JahiaGWTParameters.setSiteNode(config.getSiteNode());
+
         //setWidth("714px");
         setHeight("700px");
 

@@ -40,7 +40,8 @@
             onblur  : 'ignore',
             submit  : '<button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message key="label.ok"/></button>',
             cancel  : '<button type="submit"><span class="icon-contribute icon-cancel"></span><fmt:message key="label.cancel"/></button>',
-            tooltip : '<fmt:message key="label.edit"/>'
+            tooltip : '<fmt:message key="label.edit"/>',
+            event     : "dblclick"
         });
     });
 </script>

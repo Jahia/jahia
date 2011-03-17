@@ -307,12 +307,16 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         while (iterator.hasNext()) {
             Node member = (Node) iterator.next();
             if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
+                if (!member.hasProperty("j:member")) {
+                    logger.warn("Missing member property, ignoring group member " + member.getName() + "...");
+                    continue;
+                }
                 Property memberProperty = member.getProperty("j:member");
                 Node memberNode = null;
                 try {
                     memberNode = memberProperty.getNode();
                 } catch (ItemNotFoundException infe) {
-                    logger.warn("Couldn't find group member " + memberProperty.getString(), " ignoring...");
+                    logger.warn("Couldn't find group member " + member.getName() + "(uuid=" + memberProperty.getString() + "), ignoring...");
                 }
                 if (memberNode != null) {
                     if (memberNode.isNodeType(Constants.JAHIANT_USER)) {

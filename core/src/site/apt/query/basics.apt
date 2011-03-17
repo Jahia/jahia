@@ -112,19 +112,70 @@ Query basics
   
   The advantage of SQL-2 towards JQOM is that the query definition is short and easier to read, but there is one additional layer as the query needs to be parsed to the JQOM, so there may
   still also be some hidden bugs, which fail to correctly translate the query. If you have complex dynamic or conditional queries, then JQOM may be the better choice.  
+  
+  Here is an example how to use an SQL-2 query in the modules by using <<<\<jcr:sql\>>>> and other tags:
+
++----------------------------------------
+
+        <jcr:sql var="receivedMessages"
+                 sql="select * from [jnt:socialMessage] where isdescendantnode(['${user.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
+             
+        <ul class="userMessagesList">
+        <c:forEach items="${receivedMessages.nodes}" var="userMessage">
+            <li id="social-message-${userMessage.identifier}">
+                <template:module path="${userMessage.path}" />
+            </li>
+        </c:forEach>             
+        </ul>
+             
++----------------------------------------             
+
+  And here is an example of how to use the API to run SQL-2 queries:
+  
++----------------------------------------
+  
+        QueryManager queryManager = session.getWorkspace().getQueryManager();
+        String query = "SELECT * FROM [jnt:news] as news WHERE contains(news.*, 'ACME') ORDER BY news.[date]";
+        Query q = queryManager.createQuery(query, Query.JCR_SQL2);
+        QueryResultWrapper queryResult = (QueryResultWrapper) q.execute();  
+
++----------------------------------------  
 
 ** XPATH  
 
   XPATH has been deprecated as of {{{http://www.day.com/maven/jsr170/javadocs/jcr-2.0/javax/jcr/query/Query.html}JCR 2.0}}, but Jackrabbit and Jahia still support it. View it as 
   last resort, if you cannot make queries work with SQL-2 or JQOM, or it they have bad performance. As XPATH exists much longer and has been optimized a lot, some queries may
   work much better with XPATH. So you could temporarily implement such queries with XPATH. Jahia also internally implemented some queries with XPATH (e.g. the search tags), as we
-  found that some functionality did not work with SQL-2. Over the time Jahia will also change these remaining XPATH queries to SQL-2.
+  found that some functionality did not work with SQL-2. Over the time Jahia will also migrate these remaining XPATH queries to SQL-2.
   
   Notice however that when using XPATH queries, you may need to have more knowledge of the way how Jahia stores nodes internally (e.g. translation nodes), as SQL2 and JQOM queries
-  are automatically overwritten to mask the internal storage structure.
+  are automatically overwritten to mask the internal storage structure. Also for JQOM and SQL-2 Jahia is internally modifying the query and adding the current language as a constraint
+  (if no other constraint is existing on the language property). This is not done with XPATH queries. 
   
   More information about XPATH query syntax can be found in the {{{http://www.day.com/specs/jcr/1.0/6.6.2_XPath_and_SQL.html}JCR 1.0 specification}} or check this
   {{{http://wiki.gxdeveloperweb.com/confluence/display/GXDEV/XPath+JCR+Sample+Queries}examples}}. 
+
+  For using XPATH queries in your JSP modules, you can use the <<<\<jcr:xpath\>>>> tag similarly as the <<<\<jcr:sql\>>>> tag in the above example.
+  
+  Here is an example of how to use XPATH queries in the API:
+  
++----------------------------------------
+
+        QueryResult result = session.getWorkspace().getQueryManager()
+                .createQuery("/jcr:root"
+                                + (StringUtils.isEmpty(site) ? "" : "/sites/"
+                                        + JCRContentUtils
+                                                .stringToJCRPathExp(site))
+                                + "//element(*, jnt:vanityUrl)[@j:url = "
+                                + JCRContentUtils.stringToQueryLiteral(url)
+                                + "]", Query.XPATH).execute();
+        List<VanityUrl> existingUrls = new ArrayList<VanityUrl>();
+        for (NodeIterator it = result.getNodes(); it.hasNext();) {
+            JCRNodeWrapper node = (JCRNodeWrapper) it.next();
+            existingUrls.add(populateJCRData(node, new VanityUrl()));
+        }
+
++----------------------------------------
 
 * Fulltext search expression
   
@@ -148,20 +199,103 @@ Query basics
   
 * Jahia's content datamodel
 
-** Examples 
+  There are some specialities in the way how Jahia stores nodes, mainly in regards of how we store multilingual nodes/properties.
+  Generally this is hidden thus not transparent to the Content manager UI or even when using the JCR API. Also for JQOM and SQL-2
+  queries Jahia will in the backend modify the query in order to correctly handle multilingual content, but if you use XPATH, you 
+  will need to know how it works.
   
-   Show example queries unsing site(s), language(s), workspace, tags, categories, date constraint
+  Basically when a node is based on a node type, which defines multilingual properties (i18n attribute), Jahia will automatically create
+  a subnode of type <<<jnt:translation>>> for each language into which the content node is translated to. For instance when a node uses mixins 
+  like <<<mix:title>>> or <<<jmix:description>>>, this will already create <<<jnt:translation>>> nodes for each language, because they 
+  contain internationalized properties
 
-* Relevance
++----------------------------------------
+  
+        [mix:title]
+          mixin
+          - jcr:title (STRING) i18n boost=2.0          
 
-** Specifying
++----------------------------------------
 
-** Sorting
+  This means that all non internationalized properties will be stored in the main node, and all internationalized properties will be stored 
+  in the <<<jnt:translation>>> subnodes (one subnode per language) which will also contain the property <<<jcr:language>>> with the locale name (=ISO 639 language 
+  code and optionally the ISO 3166 country code delimited with a underscore).
+  
+  In order to make queries perform fast and to remove the necessity to use joins, we are indexing all non internationalized properties also 
+  within the index document of the translation nodes. We made modifications to Jackrabbit's query engine (for JQOM and SQL-2) in order to 
+  gracefully handle this design decision and let Jahia module developers and users create queries as if all properties are stored in the main 
+  node. Only if you decide to use XPATH you may have to take care about this.
 
-* Find servlet
+** Query using language(s)
 
-* Spellchecker (Did you mean) support
+  If your query does not contain a constraint with the <<<jcr:language>>> property and if the selector node type contains multilingual properties,
+  Jahia will automatically extend the query to return just objects of the current language.
+  
+  If you want to also query in other languages than the current, you have to add the constraint on <<<jcr:language>>> yourself.
+  
+  For instance this is an example query to retrieve French news by date:
+  
++----------------------------------------
 
-* Suggested typing
+        SELECT * FROM [jnt:news] as news 
+            WHERE ISCHILDNODE(news, [/sites/mySite/home/page8/news]) AND news.[jcr:language] = 'fr' 
+            ORDER BY news.[date]
 
-* Performance
++----------------------------------------  
+
+** Query using site(s)
+
+  If you have multiple sites in your workspace and you want to limit the queries to particular sites, you have to use the "descendanNode" constraint
+  on the site's root node, which is /sites/\<yourSiteName\>.
+  
+  For instance if you want to query all news nodes in the current language in sites <<<myFirstSite>>> or <<<mySecondSite>>> you can use the 
+  constraint as in the following example: 
+   
++----------------------------------------
+
+        SELECT * FROM [jnt:news] as news 
+            WHERE ISDESCENDANTNODE(news, [/sites/myFirstSite]) OR ISDESCENDANTNODE(news, [/sites/mySecondSite]) 
+            ORDER BY news.[date]
+
++----------------------------------------
+  
+** Query using workflow state
+  
+  In Jahia 5 and 6 the required object state (live or staging) was part of the query. Since Jahia 6.5 this is no longer part of the query, 
+  because we now have two workspaces: "live" and "default" (=edit mode). Now you either have to get the Query Manager from one of these
+  two workspaces and then you either query all published "live" objects or the objects in the edit workspace.
+  
+  This is done automatically depending on the workspace key in the URL of the request.   
+  
+** Query using categories or tags
+
+  Categories and tags are stored as references, so you need to specify the UUID of the category or tag node in the query, like this: 
+  
++----------------------------------------
+
+          SELECT * FROM [jnt:news] as news 
+            WHERE news.[j:defaultCategory] = 'adfb06e2-f0bd-45c5-b0e8-15691f6bbd37'
+            
+          SELECT * FROM [jnt:news] as news 
+            WHERE news.[j:tags] = 'af0f02f8-1c4a-4026-9d79-4939e373db2c'
+                        
++----------------------------------------            
+
+  Usually you will first get the category or tag node and then use getIdentifier() to retrieve its UUID.
+  
+* REST API
+
+  See the {{{../../jahia-modules/rest.html}REST article}} for a description how to use Jahia's REST API to do queries.
+
+* Suggested typing  
+  
+  See {{{../../jahia-modules/autocompletion.html}integration of auto-completion}} for a description how to use the indexed data for suggested typing. 
+  
+* Performance hints
+  
+  * If you could get thousands of result nodes and as the user can not view all of them, always try to set a limit to limit the number of
+  result nodes.
+  
+  * If not necessary try to avoid joins until they perform well.
+  
+  * Look at the Jackrabbit mailing list archive to get some advice regarding performance of queries 

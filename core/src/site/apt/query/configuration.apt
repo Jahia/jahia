@@ -1,16 +1,124 @@
 Configuration
 
+  The configuration for search and indexing in Jahia 6.5 has changed a lot compared to previous versions as we are
+  now using the standard configuration possibilities of Apache Jackrabbit.
+
+  This document lists the configuration possibilities to adapt search/indexing:
+
 * Nodetype definitions (CND)
 
-  boost, analyzer, fulltext
-  
-* Jahia extensions
+  In the nodetype definitions there are some search/indexing attributes, which can be set on property definitions:
 
-* Indexing configration
+*---------------*-----------------*-----------------+
+| <<Attribute>> | <<Possible values>> | <<Description>> |
+*---------------*-----------------*-----------------+
+|  nofulltext | empty | With this option you can control whether the field should be included when doing full-text search and if it should be part of the search hit excerpts. On default all date, boolean, float, integer, color, application fields are not fulltextsearchable, while the other field types are. The option can have the values: yes or no in order to change the default behaviour. In Jahia 6.5 you can also use the option nofulltext without values to specify that a field is not full-text searchable. |
+*---------------*-----------------*-----------------+
+|  queryops | =, \<\>, \<, \<=, \>, \>=, LIKE | The supported query operators (not used for now) |
+*---------------*-----------------*-----------------+
+|  noqueryorder (previously: sortable) | empty | Query results are not orderable by this property (not used for now) |
+*---------------*-----------------*-----------------+ 
+|  indexed (or: ind, x) | no, tokenized, untokenized | When setting 'no' the field will not be indexed. As Jackrabbit is always creating a tokenized and an untokenized version of the field, the two other options are meaningless. |
+*---------------*-----------------*-----------------+
+|  scoreboost (or: boost, b) | A value between 1.0 and 5.0 | The option is used to modify the boost factor of a specified field. If you do not specify the option or if it is the default, we also check the indexing_configuration.xml (see {{{http://wiki.apache.org/jackrabbit/IndexingConfiguration#Index_rules}IndexingConfiguration}} for more info) or otherwise the default 1.0 will be taken. |
+*---------------*-----------------*-----------------+
+|  analyzer | ... | The analyzer option in CND is not used for now. You can set different analyzers per field in the indexing_configuration.xml (see {{{http://wiki.apache.org/jackrabbit/IndexingConfiguration#Index_Analyzers}IndexingConfiguration}} for more info) |
+*---------------*-----------------*-----------------+
+|  facetable | empty | This option will create a second version of the field in the Lucene document in order to store the field untokenized, which is required to make faceted search and browsing. |
+*---------------*-----------------*-----------------+
 
-** Locale specific indexing
+Examples:
+
++----------------------------------------
+
+[mix:title]
+  mixin
+  - jcr:title (STRING) i18n boost=2.0       
+
+[jnt:event] > jnt:content, jmix:editorialContent, mix:title, jmix:structuredContent
+ - startDate (date) facetable
+ - endDate (date) facetable
+ - location (string) i18n facetable
+ - eventsType (string, choicelist[resourceBundle]) facetable  < meeting,consumerShow,roadShow,conference,show,pressConference
+ - body (string, richtext) i18n
+    
++----------------------------------------     
 
 * Search configuration
 
-* Text extraction
+  Besides the {{{http://wiki.apache.org/jackrabbit/Search}default Jackrabbit Search configuration options}}, which you can use, Jahia uses 
+  the following default and custom settings:
+  
++----------------------------------------  
+<SearchIndex class="org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex">
+    <param name="path" value="${wsp.home}/index"/>
+    <param name="analyzer" value="org.jahia.services.search.analyzer.StandardAnalyzer"/>
+    <!-- setting textFilterClasses to empty value disables Jackrabbit document extraction -->            
+    <param name="textFilterClasses" value=""/>
+    <param name="supportHighlighting" value="true"/>
+    <param name="excerptProviderClass" value="org.jahia.services.search.jcr.HTMLExcerpt"/>
+    <param name="indexingConfiguration" value="${rep.home}/indexing_configuration.xml"/>
+    <param name="indexingConfigurationClass" value="org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl"/>            
+    <param name="spellCheckerClass" value="org.jahia.services.search.spell.CompositeSpellChecker"/>
 
+    <!-- This next parameter allows to specify that we want to limit the initially loaded result size -->
+    <param name="resultFetchSize" value="100"/>
+
+    <!-- Increase the cache size if the doc number cache hits are below 90% -->
+    <!--param name="cacheSize" value="100000" /-->
+</SearchIndex>  
++----------------------------------------  
+
+*---------------*-----------------+
+| analyzer | The <<<org.jahia.services.search.analyzer.StandardAnalyzer>>> wraps <<<org.apache.lucene.analysis.standard.StandardAnalyzer>>>, but also adds the <<<org.apache.lucene.analysis.ISOLatin1AccentFilter>>> to replace accented characters in the ISO Latin 1 character set (ISO-8859-1) by their unaccented equivalent. |  
+*---------------*-----------------+
+| textFilterClasses | Jahia uses applicationcontext-text-extraction.xml to configure text extraction.  |
+*---------------*-----------------+
+| supportHighlighting | If set to true additional information is stored in the index to support highlighting using the rep:excerpt() function.  |
+*---------------*-----------------+
+| excerptProviderClass | <<<org.jahia.services.search.jcr.HTMLExcerpt>>> sets \<span class="searchHighlightedText"\> \</span\> around the matching term. |
+*---------------*-----------------+
+| indexingConfigurationClass | <<<org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl>>> is a Jahia extension of <<<org.apache.jackrabbit.core.query.lucene.IndexingConfigurationImpl>>>, which has some additional settings for faceting and control copying of non-i18n to documents of jnt:translation nodes. |
+*---------------*-----------------+
+| spellCheckerClass | Jahia's <<<org.jahia.services.search.spell.CompositeSpellChecker>>> is based on Solr and is better for phrases. We also added functionality to just take the terms of the current locale and site. |
+*---------------*-----------------+
+| resultFetchSize | The number of results the query handler should initially fetch when a query is executed. We set it much lower than the default to increase performance. |
+*---------------*-----------------+
+| cacheSize | Size of the document number cache. This cache maps uuids to lucene document numbers. Increase the cache size if the doc number cache hits are below 90%. |
+*---------------*-----------------+
+
+
+* Indexing configuration
+
+  Besides the {{{http://wiki.apache.org/jackrabbit/IndexingConfiguration}default Jackrabbit Indexing configuration options}}, which you can use, 
+  Jahia uses the following default and custom settings:
+  
++----------------------------------------
+<aggregate primaryType="jnt:file">
+    <include>jcr:content</include>
+</aggregate>
+
+<i18ncopy>
+    <exclude-property>j:tags</exclude-property>    
+    <exclude-property>j:locktoken</exclude-property>
+    <exclude-property>jcr:language</exclude-property>        
+    <exclude-property>jcr:lastModified</exclude-property>
+    <exclude-property>jcr:lastModifiedBy</exclude-property>
+    <exclude-property>j:lastPublished</exclude-property>
+    <exclude-property>j:lastPublishedBy</exclude-property>        
+    <exclude-property>j:published</exclude-property>        
+</i18ncopy>
++----------------------------------------   
+
+  On default we copy the content of file documents up to the file node's index, to remove the necessity to use joins and have the file's content and metadata
+  in the same node.
+  
+  With the <<<i18ncopy>>> section, we just define, which properties should not be copied from the main node to the index document of the translated node. 
+
+** Locale specific indexing
+
+  See {{{http://wiki.apache.org/jackrabbit/IndexingConfiguration#Index Analyzers}Jackrabbit's Index Analyzers description}} for an example to
+  use <<<org.apache.lucene.analysis.Analyzer.GermanAnalyzer>>>. 
+  
+  \[TODO: How to define stop-words etc. \]
+  

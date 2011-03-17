@@ -88,7 +88,7 @@
               <contentList j:skin="skins.box7" j:style="grey" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                 <loginForm j:displayLoginButton="false" j:displayRememberMeButton="false" jcr:primaryType="jnt:loginForm" />
               </contentList>
-              <profile-page-items j:node="/templateSets/profile/contents/profile-page-items" jcr:primaryType="jnt:folderReference" />
+              <profile-page-items j:node="/templateSets/profile/contents/profile-page-items" jcr:primaryType="jnt:contentFolderReference"/>
               <user-profile-aside-left j:allowedTypes="" jcr:primaryType="jnt:area" />
             </user-base-layout-col1>
             <user-base-layout-col3 jcr:primaryType="jnt:contentList">

@@ -327,7 +327,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
      */
     protected float getPropertyBoost(Name propertyName) {
         ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node, getPropertyName(propertyName));
-        float scoreBoost = propDef != null ? (float) propDef.getScoreboost() : super
+        float scoreBoost = propDef != null && propDef.getScoreboost() != 1.0 ? (float) propDef.getScoreboost() : super
                 .getPropertyBoost(propertyName);
         return scoreBoost;
     }

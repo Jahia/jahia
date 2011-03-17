@@ -33,6 +33,8 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.cache.Cache;
+import org.jahia.services.cache.CacheService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -52,6 +54,8 @@ import org.jbpm.api.task.Participation;
 import org.jbpm.api.task.Task;
 import org.jbpm.jpdl.internal.activity.TaskActivity;
 import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
+import org.jbpm.pvm.internal.cmd.DeleteDeploymentCmd;
+import org.jbpm.pvm.internal.cmd.DeployCmd;
 import org.jbpm.pvm.internal.model.ActivityImpl;
 import org.jbpm.pvm.internal.svc.HistoryServiceImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
@@ -60,6 +64,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -73,6 +78,7 @@ import java.util.*;
 public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEventGeneratorInterceptor.JBPMEventListener {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMProvider.class);
     private String key;
+    private CacheService cacheService;
     private WorkflowService workflowService;
     private RepositoryService repositoryService;
     private ExecutionService executionService;
@@ -85,6 +91,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private JahiaUserManagerService userManager;
     private JahiaGroupManagerService groupManager;
     private static JBPMProvider instance;
+    private Cache workflowDefByKey;
+    public static final String WORKFLOW_DEFINITION_BY_KEY_CACHE = "workflowDefByKey";
 
     static {
         participationRoles.put(WorkflowService.CANDIDATE, Participation.CANDIDATE);
@@ -115,6 +123,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         this.userManager = userManager;
     }
 
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+
     public void setProcessEngine(ProcessEngine processEngine) {
         repositoryService = processEngine.getRepositoryService();
         executionService = processEngine.getExecutionService();
@@ -130,8 +142,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         return instance;
     }
 
-    public void start() {
+    public void start() throws Exception {
+        workflowDefByKey = cacheService.getCache(WORKFLOW_DEFINITION_BY_KEY_CACHE, true);
         registerListeners();
+        deployDeclaredProcesses();
         workflowService.addProvider(this);
     }
 
@@ -146,6 +160,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
      *                   as failure to set an essential property) or if initialization fails.
      */
     public void afterPropertiesSet() throws Exception {
+    }
+
+    private void deployDeclaredProcesses() throws IOException {
         if (processes != null && processes.length > 0) {
             logger.info("Found " + processes.length + " workflow processes to be deployed.");
             List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
@@ -215,8 +232,12 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     }
 
     public WorkflowDefinition getWorkflowDefinitionByKey(String key, Locale locale) {
+        if (workflowDefByKey.containsKey(key)) {
+            return (WorkflowDefinition) workflowDefByKey.get(key);
+        }
         ProcessDefinition value = getProcessDefinitionByKey(key);
         WorkflowDefinition wf = convertToWorkflowDefinition(value, locale);
+        workflowDefByKey.put(key, wf);
         return wf;
     }
 
@@ -761,13 +782,22 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
 
     public <T> boolean canProcess(Command<T> command) {
-        return true;  //To change body of implemented methods use File | Settings | File Templates.
+        if ((command instanceof DeployCmd) ||
+           ((command instanceof DeleteDeploymentCmd))) {
+            return true;
+        }
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public <T> void beforeCommand(Command<T> command) {
     }
 
     public <T> void afterCommand(Command<T> command) {
-
+        if (command instanceof DeployCmd) {
+            DeployCmd deployCmd = (DeployCmd) command;
+        } else if (command instanceof DeleteDeploymentCmd) {
+            DeleteDeploymentCmd deleteDeploymentCmd = (DeleteDeploymentCmd) command;
+            workflowDefByKey.flush();
+        }
     }
 }

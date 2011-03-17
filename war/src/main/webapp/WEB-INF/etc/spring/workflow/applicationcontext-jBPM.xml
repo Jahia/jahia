@@ -21,5 +21,6 @@
         </property>
         <property name="userManager" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="JahiaGroupManagerService"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
     </bean>
 </beans>

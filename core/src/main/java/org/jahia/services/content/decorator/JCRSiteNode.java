@@ -34,6 +34,7 @@ package org.jahia.services.content.decorator;
 
 import static org.jahia.services.sites.SitesSettings.*;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
@@ -292,8 +293,12 @@ public class JCRSiteNode extends JCRNodeDecorator {
      * @return the corresponding template set name of this virtual site
      */
     public String getTemplatePackageName() {
-        return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackageByFileName(getTemplateFolder()).getName();
+        JahiaTemplatesPackage templatePackageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getTemplatePackageByFileName(getTemplateFolder());
+        if (templatePackageByFileName == null ) {
+            return null;
+        }
+        return templatePackageByFileName.getName();
     }
 
 }

@@ -97,14 +97,20 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
         menu.removeAll();
 
-        if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
-            for (GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
-                MenuItem item = new MenuItem(site.getSiteKey());
-                addDeployListener(item, linker, "/sites/" + site.getSiteKey());
-                item.setData("site",site);
+        if ("templatesSet".equals(JahiaGWTParameters.getSiteType())) {
+            if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
+                for (GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
+                    MenuItem item = new MenuItem(site.getSiteKey());
+                    addDeployListener(item, linker, "/sites/" + site.getSiteKey());
+                    item.setData("site",site);
+                    menu.add(item);
+                }
+            } else {
+                MenuItem item = new MenuItem(Messages.get("label.nosites", "No target sites"));
+                item.setEnabled(false);
                 menu.add(item);
             }
-        } else if ("module".equals(JahiaGWTParameters.getSiteType())) {
+        } else {
             for (GWTJahiaSite site : sites) {
                 String label = site.getSiteKey();
                 if (site.getInstalledModules().contains(JahiaGWTParameters.getSiteKey())) {
@@ -115,10 +121,6 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 item.setData("site",site);
                 menu.add(item);
             }
-        } else {
-            MenuItem item = new MenuItem(Messages.get("label.nosites", "No target sites"));
-            item.setEnabled(false);
-            menu.add(item);
         }
         setSubMenu(menu);
         setEnabled(true);

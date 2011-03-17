@@ -24,42 +24,22 @@
                     </currentUserBookmarks>
                 </portal-components>
             </contents>
-            <templates jcr:primaryType="jnt:templatesFolder">
+            <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base/user-base">
                 <files jcr:primaryType="jnt:folder">
                     <themes jcr:primaryType="jnt:folder">
                         <default jcr:primaryType="jnt:folder"/>
                     </themes>
                 </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
-                <base j:view="apps" jcr:primaryType="jnt:template">
-                    <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <user-base-layout customColumn="3, 10, 3" divID="content" jcr:primaryType="jnt:customRow"
-                                              principalColumn="2"/>
-                        </pagecontent>
-
-                        <user-base-layout-colContent jcr:primaryType="jnt:contentList">
-                            <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area"/>
-                        </user-base-layout-colContent>
-
-                        <user-base-layout-col1 jcr:primaryType="jnt:contentList">
-                            <user-profile-aside-left j:allowedTypes="" jcr:primaryType="jnt:area"/>
-                        </user-base-layout-col1>
-
-                        <user-base-layout-col3 jcr:primaryType="jnt:contentList">
-                            <user-profile-aside-right j:allowedTypes="" jcr:primaryType="jnt:area"/>
-                        </user-base-layout-col3>
-                        <user-bookmarks j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
-                                        jcr:primaryType="jnt:contentTemplate" j:priority="10">
-                            <pagecontent jcr:primaryType="jnt:contentList">
-                                <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks">
-                                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation"
-                                                      jcr:title="My bookmarks"/>
-                                </currentUserBookmarks>
-                            </pagecontent>
-                        </user-bookmarks>
-                    </user-base>
-                </base>
+                <user-bookmarks j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                jcr:primaryType="jnt:contentTemplate" j:priority="10">
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks">
+                            <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation"
+                                              jcr:title="My bookmarks"/>
+                        </currentUserBookmarks>
+                    </pagecontent>
+                </user-bookmarks>
             </templates>
         </bookmarks>
     </templateSets>

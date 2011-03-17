@@ -238,9 +238,23 @@ public class RenderService {
                 // Display a template node in studio
                 JCRNodeWrapper parent = current.getParent();
                 while (!(parent.isNodeType("jnt:templatesFolder"))) {
-                    template = new org.jahia.services.render.Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
+                    boolean hasView = parent.hasProperty("j:view");
+                    template = new org.jahia.services.render.Template(hasView ? parent.getProperty("j:view").getString() :
                             templateName, parent.getIdentifier(), template);
+                    if (hasView) {
+                        break;
+                    }
                     parent = parent.getParent();
+                }
+                if (parent.isNodeType("jnt:templatesFolder") && parent.hasProperty("j:rootTemplatePath")) {
+                    String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
+                    JCRNodeWrapper systemSite = node.getSession().getNode(JCRContentUtils.getSystemSitePath());
+                    parent = systemSite.getNode("templates"+ rootTemplatePath);
+                    while (!(parent.isNodeType("jnt:templatesFolder"))) {
+                        template = new org.jahia.services.render.Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
+                                templateName, parent.getIdentifier(), template);
+                        parent = parent.getParent();
+                    }
                 }
             } else {
                 if (resource.getTemplate().equals("default") && current.hasProperty("j:templateNode")) {

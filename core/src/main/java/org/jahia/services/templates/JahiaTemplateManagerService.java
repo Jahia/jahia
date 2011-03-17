@@ -611,10 +611,22 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         names.clear();
 
+        JCRNodeWrapper templatesDestinationNode = destinationNode;
+        if (source.isNodeType("jnt:templatesFolder") && source.hasProperty("j:rootTemplatePath")) {
+            String rootTemplatePath = source.getProperty("j:rootTemplatePath").getString();
+            if (rootTemplatePath.startsWith("/")) {
+                rootTemplatePath = rootTemplatePath.substring(1);
+            }
+            templatesDestinationNode = templatesDestinationNode.getNode(rootTemplatePath);
+            templatesDestinationNode.checkout();
+        }
+
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
             boolean isTemplateNode = child.isNodeType("jnt:template");
             boolean isPageNode = child.isNodeType("jnt:page");
+
+            JCRNodeWrapper currentDestination = isTemplateNode ? templatesDestinationNode : destinationNode;
 
             if (doChildren || isTemplateNode) {
                 names.add(child.getName());
@@ -622,11 +634,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 boolean currentModule = false;
                 boolean newNode = false;
                 JCRNodeWrapper node;
-                if (destinationNode.hasNode(child.getName())) {
-                    node = destinationNode.getNode(child.getName());
+                if (currentDestination.hasNode(child.getName())) {
+                    node = currentDestination.getNode(child.getName());
                     currentModule = (!node.hasProperty("j:moduleTemplate") && moduleName == null) || (node.hasProperty("j:moduleTemplate") && node.getProperty("j:moduleTemplate").getString().equals(moduleName));
                 } else {
-                    node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                    node = currentDestination.addNode(child.getName(), child.getPrimaryNodeTypeName());
                     newNode = true;
                     if (!inTemplatesFolder) {
                         newNodes.add(node.getIdentifier());

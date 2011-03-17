@@ -138,5 +138,8 @@
         <param name="supportHighlighting" value="true"/>
     </SearchIndex>
 
+    <ISMLocking class="">
+
+    </ISMLocking>
 
 </Repository>

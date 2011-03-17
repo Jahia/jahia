@@ -54,43 +54,23 @@
                     <column5 j:lastPublished="2011-02-11T15:43:51.367+01:00" j:lastPublishedBy=" system root" jcr:created="2011-02-11T15:45:12.182+01:00" jcr:createdBy="root" jcr:lastModified="2011-02-11T15:45:15.473+01:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:contentList" />
                 </defaultPortal>
             </contents>
-            <templates jcr:primaryType="jnt:templatesFolder">
+            <templates jcr:primaryType="jnt:templatesFolder"  j:rootTemplatePath="/base/user-base">
                 <files jcr:primaryType="jnt:folder">
                     <themes jcr:primaryType="jnt:folder">
                         <default jcr:primaryType="jnt:folder"/>
                     </themes>
                 </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
-                <base j:view="apps" jcr:primaryType="jnt:template">
-                    <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <user-base-layout customColumn="3, 10, 3" divID="content" jcr:primaryType="jnt:customRow"
-                                              principalColumn="2"/>
-                        </pagecontent>
-
-                        <user-base-layout-colContent jcr:primaryType="jnt:contentList">
-                            <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area"/>
-                        </user-base-layout-colContent>
-
-                        <user-base-layout-col1 jcr:primaryType="jnt:contentList">
-                            <user-profile-aside-left j:allowedTypes="" jcr:primaryType="jnt:area"/>
-                        </user-base-layout-col1>
-
-                        <user-base-layout-col3 jcr:primaryType="jnt:contentList">
-                            <user-profile-aside-right j:allowedTypes="" jcr:primaryType="jnt:area"/>
-                        </user-base-layout-col3>
-                        <user-portal j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false"
-                                     j:priority="50"
-                                     j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live"
-                                     jcr:primaryType="jnt:contentTemplate">
-                            <pagecontent jcr:primaryType="jnt:contentList">
-                                <currentUserPortal defaultPortal="/templateSets/portal/contents/defaultPortal"
-                                                   j:bindedComponent="/templateSets/portal/templates/base/user-base/user-portal"
-                                                   jcr:primaryType="jnt:currentUserPortal"/>
-                            </pagecontent>
-                        </user-portal>
-                    </user-base>
-                </base>
+                <user-portal j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false"
+                             j:priority="50"
+                             j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live"
+                             jcr:primaryType="jnt:contentTemplate">
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <currentUserPortal defaultPortal="/templateSets/portal/contents/defaultPortal"
+                                           j:bindedComponent="/templateSets/portal/templates/base/user-base/user-portal"
+                                           jcr:primaryType="jnt:currentUserPortal"/>
+                    </pagecontent>
+                </user-portal>
             </templates>
         </portal>
     </templateSets>

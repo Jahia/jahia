@@ -593,6 +593,7 @@ extends = jnt:content
  + * (jnt:virtualsite)
 
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list, jmix:publication
+ - j:rootTemplatePath (string)
  + * (jnt:template)
  + * (jnt:contentFolder)
  + * (jnt:folder)

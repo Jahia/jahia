@@ -88,7 +88,7 @@
         </c:if>
         <c:if test="${jcr:hasPermission(currentNode, 'editPost')}">
             <li class="edit-post-icon"><a title="<fmt:message key='edit.post'/>" href="#edit"
-                                          onclick="$('#edit${currentNode.UUID}').click(); return false;"><span><fmt:message
+                                          onclick="$('#edit${currentNode.UUID}').dblclick(); return false;"><span><fmt:message
                     key="edit.post"/></span></a></li>
         </c:if>
     </ul>

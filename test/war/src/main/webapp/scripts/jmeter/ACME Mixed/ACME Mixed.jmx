@@ -1925,7 +1925,7 @@
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Search on ${SITE_KEY}" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Searchs" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Contrôleur Boucle" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -1978,7 +1978,7 @@
         <hashTree/>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Search Hit Guest Live" enabled="true"/>
         <hashTree>
-          <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Search Hit Live ${globalSearchKeyword}" enabled="true">
+          <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Search Hit Live keyWord=${globalSearchKeyword} site=${siteKeys}" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments"/>
             </elementProp>
@@ -1988,7 +1988,7 @@
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/cms/render/live/en/sites/${SITE_KEY}/search-results.html?src_terms[0].fields.tags=true&amp;methodToCall=get&amp;src_terms[0].fields.siteContent=true&amp;src_terms[0].term=${globalSearchKeyword}&amp;src_sites.values=${SITE_KEY}&amp;src_languages.values=en&amp;src_originSiteKey=${SITE_KEY}</stringProp>
+            <stringProp name="HTTPSampler.path">/cms/render/live/en/sites/${siteKeys}/search-results.html?src_terms[0].fields.tags=true&amp;methodToCall=get&amp;src_terms[0].fields.siteContent=true&amp;src_terms[0].term=${globalSearchKeyword}&amp;src_sites.values=${siteKeys}&amp;src_languages.values=en&amp;src_originSiteKey=${siteKeys}</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
@@ -2004,7 +2004,7 @@
             </UniformRandomTimer>
             <hashTree/>
             <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Arbre de résultats" enabled="true">
-              <boolProp name="ResultCollector.error_logging">false</boolProp>
+              <boolProp name="ResultCollector.error_logging">true</boolProp>
               <objProp>
                 <name>saveConfig</name>
                 <value class="SampleSaveConfiguration">
@@ -2033,7 +2033,6 @@
                 </value>
               </objProp>
               <stringProp name="filename"></stringProp>
-              <boolProp name="ResultCollector.success_only_logging">true</boolProp>
             </ResultCollector>
             <hashTree/>
           </hashTree>

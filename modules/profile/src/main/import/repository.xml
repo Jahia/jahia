@@ -2,7 +2,6 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <templateSets jcr:primaryType="jnt:templateSets">
     <profile changefreq="monthly" j:installedModules="profile" j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
-      <home changefreq="monthly" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5" />
       <portlets jcr:primaryType="jnt:portletFolder" />
       <files jcr:primaryType="jnt:folder" />
       <contents jcr:primaryType="jnt:contentFolder">
@@ -22,17 +21,16 @@
           </tasks>
         </profile-page-items>
       </contents>
-      <templates jcr:primaryType="jnt:templatesFolder">
+      <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base">
         <files jcr:primaryType="jnt:folder">
           <themes jcr:primaryType="jnt:folder">
             <default jcr:primaryType="jnt:folder" />
           </themes>
         </files>
         <contents jcr:primaryType="jnt:contentFolder" />
-        <base j:view="apps" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
           <user j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="10" jcr:primaryType="jnt:contentTemplate">
             <pagecontent j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
-              <userDetails j:bindedComponent="/templateSets/profile/templates/base/user" j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails" />
+              <userDetails j:bindedComponent="/templateSets/profile/templates/user" j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails" />
             </pagecontent>
           </user>
           <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
@@ -48,7 +46,7 @@
               </pagecontent>
               <row-col3 j:skin="skins.box2style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList" />
               <row-col1 j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
-                <editUserDetails-1 age="true" j:about="false" j:bindedComponent="/templateSets/profile/templates/base/user-base/user-edit-details" j:birthDate="false" j:email="false" j:facebookID="false" j:firstName="false" j:function="false" j:gender="true" j:lastName="false" j:linkedinID="false" j:organization="false" j:picture="true" j:skypeID="false" j:title="false" j:twitterID="false" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true" />
+                <editUserDetails-1 age="true" j:about="false" j:bindedComponent="/templateSets/profile/templates/user-edit-details" j:birthDate="false" j:email="false" j:facebookID="false" j:firstName="false" j:function="false" j:gender="true" j:lastName="false" j:linkedinID="false" j:organization="false" j:picture="true" j:skypeID="false" j:title="false" j:twitterID="false" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true" />
               </row-col1>
               <row-col2 j:skin="skins.box7" j:style="green" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Public fields" />
@@ -98,7 +96,6 @@
               <user-profile-aside-right j:allowedTypes="" jcr:primaryType="jnt:area" />
             </user-base-layout-col3>
           </user-base>
-        </base>
       </templates>
     </profile>
   </templateSets>

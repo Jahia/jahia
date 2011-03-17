@@ -2,7 +2,7 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
         <wiki changefreq="monthly" j:installedModules="wiki" j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
-            <home changefreq="monthly" j:templateNode="/templateSets/wiki/templates/base/wiki" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5" />
+            <home changefreq="monthly" j:templateNode="/templateSets/wiki/templates/wiki" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5" />
             <contents jcr:primaryType="jnt:contentFolder" />
             <files jcr:primaryType="jnt:folder">
                 <jahiapp-wiki.png j:height="50" j:width="116" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
@@ -12,8 +12,7 @@
                 </jahiapp-wiki.png>
             </files>
             <portlets jcr:primaryType="jnt:portletFolder" />
-            <templates jcr:primaryType="jnt:templatesFolder">
-                <base j:view="apps" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
+            <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base">
                     <wiki jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row" />
@@ -73,7 +72,7 @@
                                     <mainResourceDisplay j:mainResourceView="contribute" jcr:primaryType="jnt:mainResourceDisplay" />
                                     <upload-image j:skin="skins.box8" j:style="mushroom" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                                         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Manage files" />
-                                        <fileUpload j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/modify/upload-image/fileList" jcr:primaryType="jnt:fileUpload" />
+                                        <fileUpload j:bindedComponent="/templateSets/wiki/templates/wiki-content/row-col1/tabularList/modify/upload-image/fileList" jcr:primaryType="jnt:fileUpload" />
                                         <fileList j:view="wikiSelect" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:fileList" />
                                     </upload-image>
                                 </modify>
@@ -91,7 +90,7 @@
                             <backToParentPage jcr:primaryType="jnt:backToParentPage">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Back to Wiki home page" />
                             </backToParentPage>
-                            <contentInfo categories="false" creationdate="true" creator="true" description="false" j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:displayMetadata" keywords="false" lastcontributor="true" lastmodification="true" />
+                            <contentInfo categories="false" creationdate="true" creator="true" description="false" j:bindedComponent="/templateSets/wiki/templates/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:displayMetadata" keywords="false" lastcontributor="true" lastmodification="true" />
                             <wiki-search j:skin="skins.box8" j:style="yellow" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki search" />
                                 <search jcr:primaryType="jnt:simpleSearchForm" result="/templateSets/wiki/search-result">
@@ -100,18 +99,10 @@
                             </wiki-search>
                         </row-col2>
                         <information jcr:primaryType="jnt:contentList">
-                            <contentInfo categories="false" creationdate="true" creator="true" description="false" j:bindedComponent="/templateSets/wiki/templates/base/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:displayMetadata" keywords="false" lastcontributor="true" lastmodification="true" />
+                            <contentInfo categories="false" creationdate="true" creator="true" description="false" j:bindedComponent="/templateSets/wiki/templates/wiki-content/row-col1/tabularList/pagecontent/mainResourceDisplay" jcr:primaryType="jnt:displayMetadata" keywords="false" lastcontributor="true" lastmodification="true" />
                         </information>
                     </wiki-content>
                     <wiki-searchResults j:hiddenTemplate="false" jcr:primaryType="jnt:pageTemplate" />
-                    <row column="2col124" jcr:primaryType="jnt:row" />
-                    <row-col2 jcr:primaryType="jnt:contentList">
-                        <search jcr:primaryType="jnt:simpleSearchForm">
-                            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Search" />
-                        </search>
-                        <information j:allowedTypes="" jcr:primaryType="jnt:area" />
-                    </row-col2>
-                </base>
                 <contents jcr:primaryType="jnt:contentFolder" />
                 <files jcr:primaryType="jnt:folder">
                     <jahiapp-wiki-logo.png j:height="60" j:width="116" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
@@ -121,7 +112,7 @@
                     </jahiapp-wiki-logo.png>
                 </files>
             </templates>
-            <search-result changefreq="monthly" j:templateNode="/templateSets/wiki/templates/base/wiki-searchResults" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
+            <search-result changefreq="monthly" j:templateNode="/templateSets/wiki/templates/wiki-searchResults" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Wiki Search Results" />
                 <pagecontent jcr:primaryType="jnt:contentList">
                     <search-results autoSuggest="true" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2" jcr:primaryType="jnt:searchResults">

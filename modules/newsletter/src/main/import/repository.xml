@@ -7,11 +7,9 @@
         <newsletter j:siteType="module" jcr:mixinTypes="jmix:accessControlled jmix:sitemap"
                     jcr:primaryType="jnt:virtualsite"
                     changefreq="monthly" j:installedModules="newsletter" priority="0.5">
-            <home jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly"
-                  j:templateNode="/templateSets/newsletter/templates/base/newsletters" priority="0.5"/>
             <newsletter-subscribe-confirmation jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page"
                                                changefreq="monthly"
-                                               j:templateNode="/templateSets/newsletter/templates/base/newsletter-confirmation"
+                                               j:templateNode="/templateSets/newsletter/templates/newsletter-confirmation"
                                                priority="0.5">
                 <j:translation_en jcr:title="Newsletter subscription confirmation" jcr:mixinTypes="mix:title"
                                   jcr:primaryType="jnt:translation" jcr:language="en"/>
@@ -30,7 +28,7 @@
             </newsletter-subscribe-confirmation>
             <newsletter-unsubscribe-confirmation jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page"
                                                  changefreq="monthly"
-                                                 j:templateNode="/templateSets/newsletter/templates/base/newsletter-confirmation"
+                                                 j:templateNode="/templateSets/newsletter/templates/newsletter-confirmation"
                                                  priority="0.5">
                 <j:translation_en jcr:title="Newsletter unsubscription confirmation" jcr:mixinTypes="mix:title"
                                   jcr:primaryType="jnt:translation" jcr:language="en"/>
@@ -49,7 +47,7 @@
             </newsletter-unsubscribe-confirmation>
             <newsletter-subscriptions jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page"
                                                  changefreq="monthly"
-                                                 j:templateNode="/templateSets/newsletter/templates/base/newsletter-subscriptions"
+                                                 j:templateNode="/templateSets/newsletter/templates/newsletter-subscriptions"
                                                  priority="0.5">
                 <j:translation_en jcr:title="Newsletter subscriptions" jcr:mixinTypes="mix:title"
                                   jcr:primaryType="jnt:translation" jcr:language="en"/>
@@ -62,20 +60,18 @@
             <contents jcr:primaryType="jnt:contentFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <portlets jcr:primaryType="jnt:portletFolder"/>
-            <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="apps">
-                    <newsletters jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletters jnt:newsletter"
-                                 j:defaultTemplate="true" j:priority="10">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <mainResourceDisplay j:mainResourceView="default"
-                                                 jcr:primaryType="jnt:mainResourceDisplay"/>
-                        </pagecontent>
-                    </newsletters>
-                    <newsletter-confirmation j:requiredPermissions="" jcr:primaryType="jnt:pageTemplate"
-                                             j:hiddenTemplate="true"/>
-                    <newsletter-subscriptions j:requiredPermissions="" jcr:primaryType="jnt:pageTemplate"
-                                             j:hiddenTemplate="true"/>
-                </base>
+            <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base">
+                <newsletters jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletters jnt:newsletter"
+                             j:defaultTemplate="true" j:priority="10">
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <mainResourceDisplay j:mainResourceView="default"
+                                             jcr:primaryType="jnt:mainResourceDisplay"/>
+                    </pagecontent>
+                </newsletters>
+                <newsletter-confirmation j:requiredPermissions="" jcr:primaryType="jnt:pageTemplate"
+                                         j:hiddenTemplate="true"/>
+                <newsletter-subscriptions j:requiredPermissions="" jcr:primaryType="jnt:pageTemplate"
+                                          j:hiddenTemplate="true"/>
                 <newsletter-issue jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:contentTemplate"
                                   j:view="newsletter" j:hiddenTemplate="false" j:applyOn="jnt:newsletterIssue"
                                   j:defaultTemplate="true" j:priority="10">

@@ -7,7 +7,7 @@
     <portlets jcr:primaryType="jnt:portletFolder"/>
     <files jcr:primaryType="jnt:folder"/>
     <contents jcr:primaryType="jnt:contentFolder"/>
-    <templates jcr:primaryType="jnt:templatesFolder">
+    <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base/user-base">
         <files jcr:primaryType="jnt:folder">
             <themes jcr:primaryType="jnt:folder">
                 <default jcr:primaryType="jnt:folder">
@@ -16,9 +16,6 @@
             </themes>
         </files>
         <contents jcr:primaryType="jnt:contentFolder"/>
-
-        <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:template" j:theme="/templatesSet/files/themes/default">
-        </base>
 
     </templates>
 

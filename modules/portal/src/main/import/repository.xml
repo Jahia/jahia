@@ -67,7 +67,7 @@
                              jcr:primaryType="jnt:contentTemplate">
                     <pagecontent jcr:primaryType="jnt:contentList">
                         <currentUserPortal defaultPortal="/templateSets/portal/contents/defaultPortal"
-                                           j:bindedComponent="/templateSets/portal/templates/base/user-base/user-portal"
+                                           j:bindedComponent="/templateSets/portal/templates/user-portal"
                                            jcr:primaryType="jnt:currentUserPortal"/>
                     </pagecontent>
                 </user-portal>

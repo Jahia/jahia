@@ -236,25 +236,14 @@ public class RenderService {
 
             if (current.isNodeType("jnt:template")) {
                 // Display a template node in studio
-                JCRNodeWrapper parent = current.getParent();
-                while (!(parent.isNodeType("jnt:templatesFolder"))) {
-                    boolean hasView = parent.hasProperty("j:view");
-                    template = new org.jahia.services.render.Template(hasView ? parent.getProperty("j:view").getString() :
-                            templateName, parent.getIdentifier(), template);
-                    if (hasView) {
-                        break;
-                    }
-                    parent = parent.getParent();
-                }
-                if (parent.isNodeType("jnt:templatesFolder") && parent.hasProperty("j:rootTemplatePath")) {
-                    String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
-                    JCRNodeWrapper systemSite = node.getSession().getNode(JCRContentUtils.getSystemSitePath());
-                    parent = systemSite.getNode("templates"+ rootTemplatePath);
+                if (!current.hasProperty("j:view") || "default".equals(current.getProperty("j:view"))) {
+                    JCRNodeWrapper parent = current.getParent();
                     while (!(parent.isNodeType("jnt:templatesFolder"))) {
                         template = new org.jahia.services.render.Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
                                 templateName, parent.getIdentifier(), template);
                         parent = parent.getParent();
                     }
+                    template = addContextualTemplates(node, templateName, template, parent);
                 }
             } else {
                 if (resource.getTemplate().equals("default") && current.hasProperty("j:templateNode")) {
@@ -286,10 +275,39 @@ public class RenderService {
                     throw new TemplateNotFoundException(resource.getTemplate());
                 }
             }
+            if (template != null) {
+                Template currentTemplate = template;
+                // Be sure to take the first template which has a defined view
+                do {
+                    if (!currentTemplate.getView().equals("default")) {
+                        template = currentTemplate;
+                    }
+                    currentTemplate = currentTemplate.getNext();
+                } while (currentTemplate != null);
+
+                if ("default".equals(template.getView())) {
+                    JCRNodeWrapper parent = node.getSession().getNodeByUUID(template.getNode()).getParent();
+                    template = addContextualTemplates(node, templateName, template, parent);
+                }
+            }
         } catch (AccessDeniedException e) {
             throw e;
         } catch (RepositoryException e) {
             logger.error("Cannot find template", e);
+        }
+        return template;
+    }
+
+    private Template addContextualTemplates(JCRNodeWrapper node, String templateName, Template template, JCRNodeWrapper parent) throws RepositoryException {
+        if (parent.isNodeType("jnt:templatesFolder") && parent.hasProperty("j:rootTemplatePath")) {
+            String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
+            JCRNodeWrapper systemSite = node.getSession().getNode(JCRContentUtils.getSystemSitePath());
+            parent = systemSite.getNode("templates"+ rootTemplatePath);
+            while (!(parent.isNodeType("jnt:templatesFolder"))) {
+                template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
+                        templateName, parent.getIdentifier(), template);
+                parent = parent.getParent();
+            }
         }
         return template;
     }

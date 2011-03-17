@@ -16,7 +16,7 @@
       <portlets jcr:primaryType="jnt:portletFolder" />
       <templates jcr:primaryType="jnt:templatesFolder">
         <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="templates-web-blue">
-          <home jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:pageTemplate" j:view="templates-web-blue">
+          <home jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:pageTemplate" >
             <pagecontent jcr:primaryType="jnt:contentList">
               <content jcr:primaryType="jnt:customRow" customColumn="10 alpha,6 omega" />
             </pagecontent>

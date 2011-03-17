@@ -42,7 +42,16 @@
                                                 <property name="siteType" value="module"/>
                                             </bean>
                                         </property>
-                                        <property name="titleKey" value="label.newTemplatesModuleSet"/>
+                                        <property name="titleKey" value="label.newModule"/>
+                                        <property name="icon" value="newTemplatesSet"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTemplatesSetActionItem">
+                                                <property name="siteType" value="profileModule"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newProfileModule"/>
                                         <property name="icon" value="newTemplatesSet"/>
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">

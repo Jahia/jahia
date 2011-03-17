@@ -355,7 +355,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public void createModule(String moduleName, boolean isModule) {
+    public void createModule(String moduleName, boolean isTemplatesSet) {
         File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
         if (tmplRootFolder.exists()) {
             return;
@@ -369,7 +369,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             new File(tmplRootFolder, "WEB-INF").mkdirs();
             new File(tmplRootFolder, "resources").mkdirs();
             new File(tmplRootFolder, "css").mkdirs();
-            if (!isModule) {
+            if (isTemplatesSet) {
                 new File(tmplRootFolder, "jnt_template/html").mkdirs();
                 File defaultTpl = new File(settingsBean.getJahiaTemplatesDiskPath() + "/default/jnt_template/html/template.jsp");
                 if (defaultTpl.exists()) {

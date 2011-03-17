@@ -72,9 +72,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class ContentManagerHelper {
 
-    private static final String MODULE_SKELETONS = "WEB-INF/etc/repository/module.xml,WEB-INF/etc/repository/module-*.xml,modules/**/META-INF/module-skeleton.xml,modules/**/META-INF/module-skeleton-*.xml";
-    
-    private static final String TEMPLATE_SET_SKELETONS = "WEB-INF/etc/repository/templatesSet.xml,WEB-INF/etc/repository/templatesSet-*.xml,modules/**/META-INF/templatesSet-skeleton.xml,modules/**/META-INF/templatesSet-skeleton-*.xml";
+    private static final String MODULE_SKELETONS = "WEB-INF/etc/repository/${type}.xml,WEB-INF/etc/repository/${type}-*.xml,modules/**/META-INF/${type}-skeleton.xml,modules/**/META-INF/${type}-skeleton-*.xml";
 
 // ------------------------------ FIELDS ------------------------------
 
@@ -930,7 +928,7 @@ public class ContentManagerHelper {
     }
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
-        boolean isModule = "module".equals(siteType);
+        boolean isTemplatesSet = "templatesSet".equals(siteType);
         if (baseSet == null) {
             String shortName = JCRContentUtils.generateNodeName(key, 50);
 
@@ -940,14 +938,13 @@ public class ContentManagerHelper {
                 templateSet.setProperty("j:siteType", siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
 
-                if (isModule) {
-                    JCRContentUtils.importSkeletons(MODULE_SKELETONS, "/templateSets/" + shortName, session);
-                } else {
-                    JCRContentUtils.importSkeletons(TEMPLATE_SET_SKELETONS, "/templateSets/" + shortName, session);
+                String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
+                JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
+                if (isTemplatesSet) {
                     templateSet.getNode("templates/base").setProperty("j:view", shortName);
                 }
                 session.save();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, isModule);
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, isTemplatesSet);
 
                 return navigation.getGWTJahiaNode(templateSet);
             } catch (IOException e) {
@@ -959,7 +956,7 @@ public class ContentManagerHelper {
             try {
                 List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", key, false, false, false, false, session);
                 siteType = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key, isModule);
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key, isTemplatesSet);
                 return result.get(0);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

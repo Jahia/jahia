@@ -232,6 +232,33 @@
                   <stringProp name="RandomTimer.range">${maxWaitTime}</stringProp>
                 </UniformRandomTimer>
                 <hashTree/>
+                <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Post-Processeur BeanShell" enabled="true">
+                  <boolProp name="resetInterpreter">false</boolProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="script">import org.apache.jmeter.services.FileServer;
+
+
+    String baseDir = FileServer.getFileServer().getBaseDir();
+    log.info(&quot;Base dir = &quot; + baseDir);
+    String key = vars.get(&quot;COUNTER_SITES&quot;);
+    String acme = &quot;ACME&quot;;
+    String siteKey = acme + key;
+    String path = vars.get(&quot;PATH&quot;);
+    try {
+        File p = new File(baseDir, path);
+        if (!p.exists()) {
+            p.mkdirs();
+        }
+        File f = new File(baseDir, path + &quot;/siteKeys.txt&quot;);
+        BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
+        out.write(siteKey+&quot;\n&quot;);
+        out.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }</stringProp>
+                </BeanShellPostProcessor>
+                <hashTree/>
               </hashTree>
             </hashTree>
             <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Add users to site-privileged group" enabled="true">

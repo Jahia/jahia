@@ -135,7 +135,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
                                     }
                                 }
                             }
-                            jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME" + (numberOfSites) + "/home")
+                            jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME" + (numberOfSites))
                                     .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                             session.save();
                             siteKey = null;

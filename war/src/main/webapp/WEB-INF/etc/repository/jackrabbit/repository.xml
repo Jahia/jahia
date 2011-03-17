@@ -68,8 +68,8 @@
 
         <SearchIndex class="org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex">
             <param name="path" value="${wsp.home}/index"/>
-            <!-- setting textFilterClasses to empty value disables Jackrabbit document extraction -->
             <param name="analyzer" value="org.jahia.services.search.analyzer.StandardAnalyzer"/>
+            <!-- setting textFilterClasses to empty value disables Jackrabbit document extraction -->            
             <param name="textFilterClasses" value=""/>
             <param name="supportHighlighting" value="true"/>
             <param name="excerptProviderClass" value="org.jahia.services.search.jcr.HTMLExcerpt"/>

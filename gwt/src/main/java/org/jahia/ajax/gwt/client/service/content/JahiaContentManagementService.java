@@ -356,6 +356,9 @@ public interface JahiaContentManagementService extends RemoteService {
     
     boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings) throws GWTJahiaServiceException;
 
+    String getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel,
+                                  String workspace, String locale) throws GWTJahiaServiceException;
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

@@ -1820,4 +1820,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 	    return schedulerHelper.deleteAllCompletedJobs();
     }
 
+    public String getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel, String workspace,
+                             String locale) throws GWTJahiaServiceException {
+        final JCRSessionWrapper session = retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
+                locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale(), false);
+        try {
+            JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(identifier);
+            return getResponse().encodeURL(this.navigation.getNodeURL(servlet, nodeByIdentifier.getPath(), versionDate, versionLabel, session.getWorkspace().getName(),
+                    session.getLocale()));
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e);
+        }
+    }
+
 }

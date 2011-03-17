@@ -209,4 +209,11 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     }
 
 
+    public void setMainUUID(String uuid) {
+        set("mainUUID", uuid);
+    }
+
+    public String getMainUUID() {
+        return get("mainUUID");
+    }
 }

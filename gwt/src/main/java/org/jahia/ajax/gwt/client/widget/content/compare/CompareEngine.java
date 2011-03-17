@@ -35,10 +35,14 @@ package org.jahia.ajax.gwt.client.widget.content.compare;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
@@ -49,7 +53,6 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 9:27:04 AM
- * 
  */
 public class CompareEngine extends Window {
     public static final int BUTTON_HEIGHT = 24;
@@ -61,6 +64,8 @@ public class CompareEngine extends Window {
     private VersionViewer leftPanel;
     private VersionViewer rightPanel;
     protected ButtonBar buttonBar;
+    private String uuid;
+    private String path;
 
 
     /**
@@ -68,15 +73,23 @@ public class CompareEngine extends Window {
      *
      * @param node   the content object to be edited
      * @param linker the edit linker for refresh purpose
+     * @param b
      */
-    public CompareEngine(GWTJahiaNode node, String locale, Linker linker) {
+    public CompareEngine(GWTJahiaNode node, String locale, Linker linker, boolean displayVersionSelector) {
         this.linker = linker;
         this.node = node;
         this.locale = locale;
-        init();
+        init(displayVersionSelector);
     }
 
-    protected void init() {
+    public CompareEngine(String uuid, String locale, boolean displayVersionSelector,String path) {
+        this.locale = locale;
+        this.uuid = uuid;
+        this.path = path;
+        init(displayVersionSelector);
+    }
+
+    protected void init(boolean displayVersionSelector) {
         setLayout(new BorderLayout());
         setBodyBorder(false);
         setSize(1300, 750);
@@ -84,7 +97,11 @@ public class CompareEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setHeading(Messages.get("label_compare " + node.getPath(), "Compare " + node.getPath()));
+        if(node!=null) {
+            setHeading(Messages.get("label_compare " + node.getPath(), "Compare " + node.getPath()));
+        } else {
+            setHeading(Messages.get("label_compare " + path, "Compare " + path));
+        }
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
         panel.setWidth("100%");
@@ -94,19 +111,34 @@ public class CompareEngine extends Window {
         panel.setHeaderVisible(false);
 
         //live version
-        leftPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(), linker, "live", false);
+        if (node != null) {
+            leftPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
+                    linker, "live", false, displayVersionSelector);
+        } else {
+            leftPanel = new VersionViewer(uuid, locale, "live", false, displayVersionSelector);
+        }
         leftPanel.setSize(650, 750);
         BorderLayoutData liveLayoutData = new BorderLayoutData(Style.LayoutRegion.WEST, 650);
         liveLayoutData.setCollapsible(true);
         add(leftPanel, liveLayoutData);
 
         // staging version
-        rightPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(), linker, "default", true){
-            @Override
-            public String getCompareWith() {
-                return leftPanel.getInnerHTML();
-            }
-        };
+        if (node != null) {
+            rightPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
+                    linker, "default", true, displayVersionSelector) {
+                @Override
+                public String getCompareWith() {
+                    return leftPanel.getInnerHTML();
+                }
+            };
+        } else {
+            rightPanel = new VersionViewer(uuid, locale, "default", true, displayVersionSelector) {
+                @Override
+                public String getCompareWith() {
+                    return leftPanel.getInnerHTML();
+                }
+            };
+        }
         rightPanel.setSize(650, 750);
         BorderLayoutData stagingLayoutData = new BorderLayoutData(Style.LayoutRegion.CENTER, 650);
         add(rightPanel, stagingLayoutData);

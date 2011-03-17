@@ -171,6 +171,15 @@
         </property>
     </bean>
 
+    <!-- show version mode-->
+    <bean id="Toolbar.Item.ShowVersionEngine" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="titleKey" value="label.version"/>
+        <property name="icon" value="showCompareEngine"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowVersionEngine"/>
+        </property>
+    </bean>
+
     <!-- Separator item-->
     <bean id="Toolbar.Item.Separator" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

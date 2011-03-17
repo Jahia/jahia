@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
@@ -63,19 +64,20 @@ import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 9:32:54 AM
- * 
  */
 public class VersionViewer extends ContentPanel {
     private GWTJahiaNode currentNode;
     private Linker linker = null;
     private String locale;
     private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
+    private final String uuid;
     private String workspace = "default";
     private Frame currentFrame;
     private ComboBox<GWTJahiaNodeVersion> versionComboBox;
-//    private Slider slider;
+    //    private Slider slider;
     private boolean addButtons;
     private Button restoreButton;
+    private boolean displayHighLigthButton;
 
     /**
      * Constructor
@@ -84,20 +86,34 @@ public class VersionViewer extends ContentPanel {
      * @param linker
      * @param addButtons
      */
-    public VersionViewer(GWTJahiaNode node, String locale, Linker linker, String workspace, boolean addButtons) {
+    public VersionViewer(GWTJahiaNode node, String locale, Linker linker, String workspace, boolean addButtons,
+                         boolean displayVersionSelector) {
         super();
         this.linker = linker;
         this.currentNode = node;
         this.workspace = workspace;
         this.locale = locale;
         this.addButtons = addButtons;
-        init();
+        this.uuid = node.getUUID();
+        init(displayVersionSelector);
+    }
+
+    public VersionViewer(String uuid, String locale, String workspace, boolean displayHighLigthButton,
+                         boolean displayVersionSelector) {
+        super();
+        this.uuid = uuid;
+        this.workspace = workspace;
+        this.locale = locale;
+        this.displayHighLigthButton = displayHighLigthButton;
+        init(displayVersionSelector);
     }
 
     /**
      * init component
+     *
+     * @param displayVersionSelector
      */
-    private void init() {
+    private void init(final boolean displayVersionSelector) {
 
 //        slider = new Slider() {
 //            @Override protected String onFormatValue(int value) {
@@ -126,97 +142,105 @@ public class VersionViewer extends ContentPanel {
 //                                });
 //            }
 //        });
+        Label label = null;
+        if(!displayVersionSelector) {
+            if ("live".equals(workspace)) {
+                label = new Label(Messages.get("label_live_version ", "Live version "));
+            } else {
+                label = new Label(Messages.get("label_staging_version ", "Staging version "));
+            }
 
-        // combo box that allows to select the version
-        versionComboBox = new ComboBox<GWTJahiaNodeVersion>();
-        versionComboBox.setForceSelection(true);
-        versionComboBox.setWidth(400);
-        versionComboBox.setEditable(false);
-//        if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
-        if ("live".equals(workspace)) {
-            versionComboBox.setEmptyText(Messages.get("label_live_version ", "Live version "));
-        } else {
-            versionComboBox.setEmptyText(Messages.get("label_staging_version ", "Staging version "));
         }
+        // combo box that allows to select the version
+        if (displayVersionSelector) {
+            versionComboBox = new ComboBox<GWTJahiaNodeVersion>();
+            versionComboBox.setForceSelection(true);
+            versionComboBox.setWidth(400);
+            versionComboBox.setEditable(false);
+//        if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
+            if ("live".equals(workspace)) {
+                versionComboBox.setEmptyText(Messages.get("label_live_version ", "Live version "));
+            } else {
+                versionComboBox.setEmptyText(Messages.get("label_staging_version ", "Staging version "));
+            }
 
-        // prepare data before rendering
-        versionComboBox.setView(new ListView<GWTJahiaNodeVersion>() {
-            @Override
-            protected GWTJahiaNodeVersion prepareData(GWTJahiaNodeVersion version) {
-                super.prepareData(version);
-                if (version.getVersionNumber() != null) {
-                    String value = Messages.get("label.version", "Version") + " ";
-                    if (version.getLabel() != null && !"".equals(version.getLabel())) {
-                        String[] strings = version.getLabel().split("_at_");
-                        if (strings.length == 2) {
-                            String s1;
-                            if (strings[0].contains("published")) {
-                                s1 = Messages.get("label.version.published", "published at");
-                            } else if (strings[0].contains("uploaded")) {
-                                s1 = Messages.get("label.version.uploaded", "uploaded at");
+            // prepare data before rendering
+            versionComboBox.setView(new ListView<GWTJahiaNodeVersion>() {
+                @Override
+                protected GWTJahiaNodeVersion prepareData(GWTJahiaNodeVersion version) {
+                    super.prepareData(version);
+                    if (version.getVersionNumber() != null) {
+                        String value = Messages.get("label.version", "Version") + " ";
+                        if (version.getLabel() != null && !"".equals(version.getLabel())) {
+                            String[] strings = version.getLabel().split("_at_");
+                            if (strings.length == 2) {
+                                String s1;
+                                if (strings[0].contains("published")) {
+                                    s1 = Messages.get("label.version.published", "published at");
+                                } else if (strings[0].contains("uploaded")) {
+                                    s1 = Messages.get("label.version.uploaded", "uploaded at");
+                                } else {
+                                    s1 = Messages.get("label.version." + strings[0], strings[0]);
+                                }
+                                value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat().format(
+                                        DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
                             } else {
-                                s1 = Messages.get("label.version." + strings[0], strings[0]);
+                                value = version.getLabel();
                             }
-                            value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat()
-                                    .format(DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                        }
+                        version.set("displayField", value);
+                    } else {
+                        if ("live".equals(version.getWorkspace())) {
+                            version.set("displayField", Messages.get("label_live_version", "Live version"));
                         } else {
-                            value = version.getLabel();
+                            version.set("displayField", Messages.get("label_staging_version", "Staging version"));
                         }
                     }
-                    version.set("displayField", value);
-                } else {
-                    if ("live".equals(version.getWorkspace())) {
-                        version.set("displayField", Messages.get("label_live_version", "Live version"));
-                    } else {
-                        version.set("displayField", Messages.get("label_staging_version", "Staging version"));
+                    return version;
+                }
+            });
+            versionComboBox.setDisplayField("displayField");
+
+            // load version with pagination
+            final ListStore<GWTJahiaNodeVersion> store;
+
+            final RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>>() {
+                @Override
+                public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
+                    loadVersions((PagingLoadConfig) loadConfig, callback);
+                }
+            };
+
+            // paging loader
+            final PagingLoader<PagingLoadResult<GWTJahiaNodeVersion>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNodeVersion>>(
+                    proxy);
+            loader.addListener(Loader.BeforeLoad, new Listener<LoadEvent>() {
+                public void handleEvent(LoadEvent be) {
+                    be.<ModelData>getConfig().set("start", be.<ModelData>getConfig().get("offset"));
+                }
+            });
+
+            // list store that contains previous version and current workspace version
+            store = new ListStore<GWTJahiaNodeVersion>(loader);
+            versionComboBox.setStore(store);
+
+            // general parameter
+            versionComboBox.setLazyRender(false);
+            versionComboBox.setTypeAhead(true);
+            versionComboBox.setHideTrigger(false);
+            versionComboBox.setPageSize(10);
+
+
+            versionComboBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeVersion>() {
+                @Override
+                public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeVersion> event) {
+                    refresh();
+                    if (event.getSelectedItem().getLabel() != null) {
+                        restoreButton.setEnabled(true);
                     }
                 }
-                return version;
-            }
-        });
-        versionComboBox.setDisplayField("displayField");
-
-        // load version with pagination
-        final ListStore<GWTJahiaNodeVersion> store;
-
-        final RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>> proxy =
-                new RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>>() {
-                    @Override
-                    public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
-                        loadVersions((PagingLoadConfig) loadConfig, callback);
-                    }
-                };
-
-        // paging loader
-        final PagingLoader<PagingLoadResult<GWTJahiaNodeVersion>> loader =
-                new BasePagingLoader<PagingLoadResult<GWTJahiaNodeVersion>>(proxy);
-        loader.addListener(Loader.BeforeLoad, new Listener<LoadEvent>() {
-            public void handleEvent(LoadEvent be) {
-                be.<ModelData>getConfig().set("start", be.<ModelData>getConfig().get("offset"));
-            }
-        });
-
-        // list store that contains previous version and current workspace version
-        store = new ListStore<GWTJahiaNodeVersion>(loader);
-        versionComboBox.setStore(store);
-
-        // general parameter
-        versionComboBox.setLazyRender(false);
-        versionComboBox.setTypeAhead(true);
-        versionComboBox.setHideTrigger(false);
-        versionComboBox.setPageSize(10);
-
-
-        versionComboBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNodeVersion>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeVersion> event) {
-                refresh();
-                if (event.getSelectedItem().getLabel() != null) {
-                    restoreButton.setEnabled(true);
-                }
-            }
-        });
-
+            });
+        }
         final Button refresh = new Button();
         refresh.setIcon(StandardIconsProvider.STANDARD_ICONS.refresh());
         refresh.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -238,43 +262,69 @@ public class VersionViewer extends ContentPanel {
                     }
                 }
             });
-
-            restoreButton = new Button(Messages.get("label.restore", "Restore"));
-            restoreButton.setEnabled(false);
-            restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    mask(Messages.get("label.restoring","Restoring")+"...", "x-mask-loading");
-                    final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) versionComboBox.getValue();
-                    contentService.restoreNode(version, false, new BaseAsyncCallback() {
-                        public void onSuccess(Object result) {
-                            unmask();
-                            versionComboBox.select(0);
-                            versionComboBox.reset();
-                            load(null);
-                        }
-                    });
-                }
-            });
-
+            if (displayVersionSelector) {
+                restoreButton = new Button(Messages.get("label.restore", "Restore"));
+                restoreButton.setEnabled(false);
+                restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        mask(Messages.get("label.restoring", "Restoring") + "...", "x-mask-loading");
+                        final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) versionComboBox.getValue();
+                        contentService.restoreNode(version, false, new BaseAsyncCallback() {
+                            public void onSuccess(Object result) {
+                                unmask();
+                                versionComboBox.select(0);
+                                versionComboBox.reset();
+                                load(null);
+                            }
+                        });
+                    }
+                });
+            }
             // add in the toolbar
+            final Label finalLabel = label;
             final ActionToolbarLayoutContainer headerToolBar = new ActionToolbarLayoutContainer("compare-engine") {
                 public void afterToolbarLoading() {
-                    insertItem(restoreButton, 0);
+                    if (displayVersionSelector) {
+                        insertItem(restoreButton, 0);
+                    }
                     insertItem(hButton, 0);
                     insertItem(refresh, 0);
-                    insertItem(versionComboBox, 0);
+                    if (displayVersionSelector) {
+                        insertItem(versionComboBox, 0);
+                    } else {
+                        insertItem(finalLabel,0);
+                    }
                 }
             };
             headerToolBar.initWithLinker(linker);
             // add to widget
             setTopComponent(headerToolBar);
         } else {
+
             // case of th live mode
 //            LayoutContainer ctn = new LayoutContainer();
             ToolBar headerToolBar = new ToolBar();
-            headerToolBar.add(versionComboBox);
+            if (displayVersionSelector) {
+                headerToolBar.add(versionComboBox);
+            } else {
+                headerToolBar.add(label);
+            }
             headerToolBar.add(refresh);
+            if (displayHighLigthButton) {
+                final ToggleButton hButton = new ToggleButton("Highligthing");
+                hButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent componentEvent) {
+                        if (hButton.isPressed()) {
+                            displayHighLigth();
+                        } else {
+                            refresh();
+                        }
+                    }
+                });
+                headerToolBar.add(hButton);
+            }
             setTopComponent(headerToolBar);
 //
 //            ctn.add(headerToolBar);
@@ -308,21 +358,23 @@ public class VersionViewer extends ContentPanel {
      */
     private void loadVersions(PagingLoadConfig loadConfig,
                               final AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
-        int limit = 500;
-        int offset = 0;
-        if (loadConfig != null) {
-            limit = loadConfig.getLimit();
-            offset = loadConfig.getOffset();
-        }
+        if (currentNode != null) {
+            int limit = 500;
+            int offset = 0;
+            if (loadConfig != null) {
+                limit = loadConfig.getLimit();
+                offset = loadConfig.getOffset();
+            }
 
-        JahiaContentManagementService.App.getInstance().getVersions(currentNode, limit, offset, callback);
+            JahiaContentManagementService.App.getInstance().getVersions(currentNode, limit, offset, callback);
+        }
     }
 
     /**
      * Render widget
      */
     private void load(GWTJahiaNodeVersion version) {
-        if (currentNode != null) {
+        if (uuid != null) {
             if (version == null || (version.getVersionNumber() == null || version.getVersionNumber().length() == 0)) {
                 if (version != null) {
                     currentFrame = setUrl(version.getUrl());
@@ -330,7 +382,7 @@ public class VersionViewer extends ContentPanel {
                 } else {
                     mask();
                     // version is not specified. Current.
-                    contentService.getNodeURL(null, currentNode.getPath(), null, null, workspace, locale,
+                    contentService.getNodeURLByIdentifier(null, uuid, null, null, workspace, locale,
                             new BaseAsyncCallback<String>() {
                                 public void onSuccess(String url) {
                                     currentFrame = setUrl(url);
@@ -374,7 +426,7 @@ public class VersionViewer extends ContentPanel {
      * Compare version
      */
     public void displayHighLigth() {
-        contentService.getHighlighted(getCompareWith(), getInnerHTML(), new BaseAsyncCallback<String>() {
+        contentService.getHighlighted(getInnerHTML(), getCompareWith(), new BaseAsyncCallback<String>() {
             public void onSuccess(String s) {
                 IFrameElement frameElement = IFrameElement.as(currentFrame.getElement());
                 Document document = frameElement.getContentDocument();

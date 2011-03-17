@@ -580,6 +580,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.PreviewAsGuest"/>
                                     <ref bean="Toolbar.Item.ShowCompareEngine"/>
+                                    <ref bean="Toolbar.Item.ShowVersionEngine"/>
                                     <ref bean="Toolbar.Item.ViewACLStatus"/>
                                     <ref bean="Toolbar.Item.ViewPublicationIconStatus"/>
                                 </list>

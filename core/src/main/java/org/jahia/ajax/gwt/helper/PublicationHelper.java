@@ -201,32 +201,32 @@ public class PublicationHelper {
         List<String> mainPaths = new ArrayList<String>();
         for (PublicationInfo pubInfo : pubInfos) {
             final Collection<GWTJahiaPublicationInfo> infoCollection =
-                    (Collection<GWTJahiaPublicationInfo>) convert(pubInfo, pubInfo.getRoot().getPath(), mainPaths,
+                    (Collection<GWTJahiaPublicationInfo>) convert(pubInfo, pubInfo.getRoot(), mainPaths,
                             currentUserSession, language).values();
             gwtInfos.addAll(infoCollection);
         }
         return gwtInfos;
     }
 
-    private OrderedMap convert(PublicationInfo pubInfo, String mainPath, List<String> mainPaths, JCRSessionWrapper currentUserSession, String language) {
+    private OrderedMap convert(PublicationInfo pubInfo, PublicationInfoNode root, List<String> mainPaths, JCRSessionWrapper currentUserSession, String language) {
         PublicationInfoNode node = pubInfo.getRoot();
         OrderedMap gwtInfos = new LinkedMap();
         List<PublicationInfo> references = new ArrayList<PublicationInfo>();
 
-        convert(gwtInfos, mainPath, mainPaths, null, node, references, currentUserSession, language);
+        convert(gwtInfos, root, mainPaths, null, node, references, currentUserSession, language);
 
         OrderedMap res = new LinkedMap();
 
         res.putAll(gwtInfos);
         for (PublicationInfo pi : references) {
             if (!gwtInfos.containsKey(pi.getRoot().getUuid())) {
-                res.putAll(convert(pi, pi.getRoot().getPath(), mainPaths, currentUserSession, language));
+                res.putAll(convert(pi, pi.getRoot(), mainPaths, currentUserSession, language));
             }
         }
         return res;
     }
 
-    private GWTJahiaPublicationInfo convert(OrderedMap all, String mainPath, List<String> mainPaths,
+    private GWTJahiaPublicationInfo convert(OrderedMap all, PublicationInfoNode root, List<String> mainPaths,
                                             WorkflowRule lastRule, PublicationInfoNode node, List<PublicationInfo> references,
                                             JCRSessionWrapper currentUserSession, String language) {
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getUuid(), node.getStatus(), node.isCanPublish());
@@ -255,7 +255,9 @@ public class PublicationHelper {
             gwtInfo.setTitle(node.getPath());
         }
 
+        String mainPath = root.getPath();
         gwtInfo.setMainPath(mainPath);
+        gwtInfo.setMainUUID(root.getUuid());
         gwtInfo.setLanguage(language);
         if (!mainPaths.contains(mainPath)) {
             mainPaths.add(mainPath);
@@ -298,7 +300,7 @@ public class PublicationHelper {
                 for (PublicationInfo pi : sub.getReferences()) {
                     if (!refUuids.contains(pi.getRoot().getUuid())) {
                         refUuids.add(pi.getRoot().getUuid());
-                        all.putAll(convert(pi, pi.getRoot().getPath(), mainPaths, currentUserSession, language));
+                        all.putAll(convert(pi, pi.getRoot(), mainPaths, currentUserSession, language));
                     }
                 }
 
@@ -310,7 +312,7 @@ public class PublicationHelper {
             if (!refUuids.contains(pi.getRoot().getUuid())) {
                 refUuids.add(pi.getRoot().getUuid());
                 if (!mainPaths.contains(pi.getRoot().getPath())) {
-                    all.putAll(convert(pi, pi.getRoot().getPath(), mainPaths, currentUserSession, language));
+                    all.putAll(convert(pi, pi.getRoot(), mainPaths, currentUserSession, language));
                 }
             }
         }
@@ -321,7 +323,7 @@ public class PublicationHelper {
 
         for (PublicationInfoNode sub : node.getChildren()) {
             if (sub.getPath().indexOf("/j:translation") == -1) {
-                convert(all, mainPath, mainPaths, lastRule, sub, references, currentUserSession, language);
+                convert(all, root, mainPaths, lastRule, sub, references, currentUserSession, language);
             }
         }
 

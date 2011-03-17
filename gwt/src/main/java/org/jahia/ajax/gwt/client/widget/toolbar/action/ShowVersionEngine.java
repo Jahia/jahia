@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
  * Time: 10:12:21 AM
  * 
  */
-public class ShowCompareEngine extends BaseActionItem {
+public class ShowVersionEngine extends BaseActionItem {
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -58,7 +58,7 @@ public class ShowCompareEngine extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         if (lh.getSingleSelection() != null) {
             String locale = JahiaGWTParameters.getUILanguage();
-            new CompareEngine(lh.getSingleSelection(), locale, linker,false).show();
+            new CompareEngine(lh.getSingleSelection(), locale, linker,true).show();
         }
 
     }

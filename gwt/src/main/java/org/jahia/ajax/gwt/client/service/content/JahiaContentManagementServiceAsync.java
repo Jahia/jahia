@@ -178,6 +178,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
 
+    void getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
+
     void importContent(String parentPath, String fileKey, Boolean asynchronously, AsyncCallback async);
 
     void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String,GWTJahiaWorkflowDefinition>> async);

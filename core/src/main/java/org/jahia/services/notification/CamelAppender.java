@@ -67,7 +67,7 @@ public class CamelAppender extends AppenderSkeleton {
 		CamelNotificationService notificationService = getNotificationService();
 		if (notificationService != null) {
 			// sending formatted message to the configured URI
-			notificationService.sendMessagesWithBodyAndHeaders(targetUri,
+			notificationService.queueMessagesWithBodyAndHeaders(targetUri,
 			        getLayout().format(event), null);
 		}
 	}

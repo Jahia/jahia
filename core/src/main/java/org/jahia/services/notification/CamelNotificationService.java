@@ -32,7 +32,10 @@
 
 package org.jahia.services.notification;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
@@ -47,14 +50,53 @@ import org.springframework.beans.factory.DisposableBean;
  * @since JAHIA 6.5
  * Created : 28 juin 2010
  */
-public class CamelNotificationService implements CamelContextAware, DisposableBean {
+public class CamelNotificationService implements CamelContextAware, DisposableBean, Runnable {
+
+    public class CamelMessage {
+        private String target;
+        private Object body;
+        private Map<String, Object> headers;
+
+        public CamelMessage(String target, Object body, Map<String, Object> headers) {
+            this.target = target;
+            this.body = body;
+            this.headers = headers;
+        }
+
+        public String getTarget() {
+            return target;
+        }
+
+        public Object getBody() {
+            return body;
+        }
+
+        public Map<String, Object> getHeaders() {
+            return headers;
+        }
+    }
 
     private CamelContext camelContext;
     private ProducerTemplate template;
+    private Thread queueProcessor;
+    private String queueProcessorThreadName = "notificationQueueProcessor";
+    private long queueProcessorFrequency = 5000;
+    private ConcurrentLinkedQueue queue = new ConcurrentLinkedQueue<CamelMessage>();
+    private AtomicBoolean queueProcessorRunning = new AtomicBoolean(true);
+
+    public void setQueueProcessorThreadName(String queueProcessorThreadName) {
+        this.queueProcessorThreadName = queueProcessorThreadName;
+    }
+
+    public void setQueueProcessorFrequency(long queueProcessorFrequency) {
+        this.queueProcessorFrequency = queueProcessorFrequency;
+    }
 
     public void setCamelContext(CamelContext camelContext) {
         this.camelContext = camelContext;
         template = camelContext.createProducerTemplate();
+        queueProcessor = new Thread(this, queueProcessorThreadName);
+        queueProcessor.start();
     }
 
     public void sendMessagesWithBodyAndHeaders(String target, Object body, Map<String, Object> headers) {
@@ -66,6 +108,10 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
         } else {
             template.sendBody(target, body);
         }
+    }
+
+    public void queueMessagesWithBodyAndHeaders(String target, Object body, Map<String, Object> headers) {
+        queue.add(new CamelMessage(target, body, headers));
     }
 
     public void registerRoute(RoutesBuilder routesBuilder) throws Exception {
@@ -80,5 +126,23 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
 		if (template != null) {
 			template.stop();
 		}
+        if (queueProcessor != null) {
+            queueProcessorRunning.set(false);
+        }
+    }
+
+    public void run() {
+        try {
+            while (queueProcessorRunning.get()) {
+                Iterator<CamelMessage> queueIterator = queue.iterator();
+                while (queueIterator.hasNext()) {
+                    CamelMessage message = queueIterator.next();
+                    sendMessagesWithBodyAndHeaders(message.getTarget(), message.getBody(), message.getHeaders());
+                }
+                Thread.sleep(queueProcessorFrequency);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 }

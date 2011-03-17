@@ -77,7 +77,7 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Edit Reader" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Edit Reader" enabled="true">
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Contrôleur boucle" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
@@ -320,7 +320,7 @@
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Live Reader" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Live Reader" enabled="true">
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Contrôleur boucle" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
@@ -562,7 +562,7 @@
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Live Guest Reader" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Live Guest Reader" enabled="true">
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Contrôleur boucle" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
@@ -749,7 +749,7 @@
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Page adder" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ACME Page adder" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -1929,10 +1929,10 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Contrôleur Boucle" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">5</stringProp>
+          <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">20</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+        <stringProp name="ThreadGroup.num_threads">50</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">30</stringProp>
         <longProp name="ThreadGroup.start_time">1300360716000</longProp>
         <longProp name="ThreadGroup.end_time">1300360716000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -1988,7 +1988,7 @@
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/cms/render/live/en/sites/${SITE_KEY}/search-results.html?src_terms[0].fields.tags=true&amp;methodToCall=get&amp;src_terms[0].fields.siteContent=true&amp;src_terms[0].term=${globalSearchKeyword}&amp;src_sites.values=${SITE_KEY}&amp;src_languages.values=en&amp;src_originSiteKey=${SITE_KEY}&amp;src_terms[0].fields.tags=true&amp;src_terms[0].fields.siteContent=true&amp;src_sites.values=${SITE_KEY}&amp;src_languages.values=en&amp;src_originSiteKey=${SITE_KEY}&amp;begin=10&amp;end=19&amp;pagesize=10</stringProp>
+            <stringProp name="HTTPSampler.path">/cms/render/live/en/sites/${SITE_KEY}/search-results.html?src_terms[0].fields.tags=true&amp;methodToCall=get&amp;src_terms[0].fields.siteContent=true&amp;src_terms[0].term=${globalSearchKeyword}&amp;src_sites.values=${SITE_KEY}&amp;src_languages.values=en&amp;src_originSiteKey=${SITE_KEY}</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>

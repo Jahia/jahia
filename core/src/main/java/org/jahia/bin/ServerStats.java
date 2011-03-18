@@ -13,7 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,7 +23,7 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 /**
  * Simple servlet to expose server statistics in JSON.
  */
-public class ServerStats extends HttpServlet implements Controller {
+public class ServerStats implements Controller {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ServerStats.class);
 
     private RequestLoadAverage requestLoadAverage;

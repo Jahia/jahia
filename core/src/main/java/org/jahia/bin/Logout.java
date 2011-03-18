@@ -35,7 +35,6 @@ package org.jahia.bin;
 import java.util.Locale;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,7 +52,7 @@ import org.springframework.web.servlet.mvc.Controller;
  * Date: Nov 17, 2009
  * Time: 1:47:45 PM
  */
-public class Logout extends HttpServlet implements Controller {
+public class Logout implements Controller {
 
     private CookieAuthConfig cookieAuthConfig;
 

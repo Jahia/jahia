@@ -148,7 +148,7 @@ public final class JahiaControllerUtils {
             String[] parsedPermissions = permissions.split(andOperator ? "\\+" : "\\|");
             hasPermission = andOperator;
             for (String perm : parsedPermissions) {
-                hasPermission = node.hasPermission(perm);
+                hasPermission = node.hasPermission(perm.trim());
                 if (andOperator) {
                     if (!hasPermission) {
                         break;

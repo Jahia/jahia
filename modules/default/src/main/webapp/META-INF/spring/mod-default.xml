@@ -37,23 +37,19 @@
     </bean>
 
     <bean class="org.jahia.modules.defaultmodule.MoveAction">
-        <property name="name" value="move"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
     </bean>
 
     <bean class="org.jahia.modules.defaultmodule.StartWorkflowAction">
-        <property name="name" value="startWorkflow"/>
         <property name="workflowService" ref="workflowService"/>
         <property name="publicationService" ref="jcrPublicationService"/>
     </bean>
 
     <bean class="org.jahia.modules.defaultmodule.ExecuteTaskAction">
-        <property name="name" value="executeTask"/>
         <property name="workflowService" ref="workflowService"/>
     </bean>
 
     <bean class="org.jahia.modules.defaultmodule.CommentTaskAction">
-        <property name="name" value="commentTask"/>
         <property name="workflowService" ref="workflowService"/>
     </bean>
 
@@ -76,7 +72,6 @@
     </bean>
 
     <bean class="org.jahia.modules.defaultmodule.actions.PublishAction">
-        <property name="name" value="publish"/>
         <property name="publicationService" ref="jcrPublicationService"/>
         <property name="requiredPermission" value="publish"/>
         <property name="requiredWorkspace" value="default"/>

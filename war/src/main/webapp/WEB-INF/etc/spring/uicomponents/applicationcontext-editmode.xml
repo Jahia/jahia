@@ -142,7 +142,7 @@
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="icon" value="user"/>
-                            <property name="titleKey" value="label.user.log"/>
+                            <property name="titleKey" value="label.user.loggedAs"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Logout"/>
@@ -657,7 +657,7 @@
                         
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <!-- <property name="icon" value="user"/> -->
-                            <property name="titleKey" value="label.user.log"/>
+                            <property name="titleKey" value="label.user.loggedAs"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Logout"/>

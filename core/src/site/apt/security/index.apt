@@ -87,7 +87,7 @@ Security aspects
 
 ** Protecting render actions
 
-  Render actions, which are subclsses of <<<org.jahia.bin.Action>>>, can be protected in a several ways
+  Render actions, which are subclasses of <<<org.jahia.bin.Action>>>, can be protected in several ways
   from execution by a unauthorized user or in the wrong context.
   
 *** Valid authenticated user
@@ -133,9 +133,9 @@ Security aspects
       
 *** Required workspace
  
-  An action execution can be limited to a particular workspace (<<<edit>>> or <<<live>>>).
+  An action execution can be limited to a particular workspace (<<<default>>> or <<<live>>>).
   
-  For example, the <<<publish>>> action is relevant for the <<<edit>>> workspace only: 
+  For example, the <<<publish>>> action is relevant for the <<<default>>> workspace only:
 
 +-----------------------------  
 <bean class="org.jahia.modules.defaultmodule.actions.PublishAction">

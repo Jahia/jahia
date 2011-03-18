@@ -6,4 +6,4 @@
  - to (string)
  - cc (string)
  - bcc (string)
- - userRedirectPage (reference) mandatory
+ - userRedirectPage (weakreference) mandatory

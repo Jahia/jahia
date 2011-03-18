@@ -181,7 +181,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         } catch (RepositoryException e) {
         }
         try {        
-            for (PropertyIterator it = resource.getReferences(); it.hasNext();) {
+            for (PropertyIterator it = resource.getWeakReferences(); it.hasNext();) {
                 try {
                     JCRNodeWrapper node = (JCRNodeWrapper) it.nextProperty().getParent();
                     AbstractHit<?> hit = node.isNodeType(Constants.JAHIANT_PAGE) ? new PageHit(node,

@@ -30,7 +30,7 @@
 [jmix:categorized] mixin
  extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = classification
- - j:defaultCategory (reference, category[autoSelectParent=false]) facetable multiple
+ - j:defaultCategory (weakreference, category[autoSelectParent=false]) facetable multiple
 
 [jmix:description] mixin
  itemtype = metadata
@@ -200,7 +200,7 @@
 //---------------------------------------------------------
 
 [jnt:tag] > nt:base, jmix:nodenameInfo, jmix:basemetadata
- - tags (reference) multiple hidden < jnt:tag
+ - tags (weakreference) multiple hidden < jnt:tag
 
 [jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list, jmix:basemetadata
  + * (jnt:tag) = jnt:tag
@@ -637,7 +637,7 @@ extends = jnt:content
 
 [jnt:portlet] > nt:base, jmix:nodenameInfo, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:publication
  - j:application (string) hidden nofulltext
- - j:applicationRef (reference) hidden < jnt:portletDefinition
+ - j:applicationRef (weakreference) hidden < jnt:portletDefinition
  - j:definition (string)
  - j:cacheScope (string, choicelist) nofulltext < 'private','public'
  - j:expirationTime (long)
@@ -675,7 +675,7 @@ extends = jnt:content
  - j:columnIndex (long)
  - j:rowIndex (long)
  - j:status (string) nofulltext
- - j:portlet (reference) < jnt:portlet
+ - j:portlet (weakreference) < jnt:portlet
 
 [jnt:layout]  > nt:base,  jmix:basemetadata
  - j:page (weakreference)

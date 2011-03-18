@@ -1068,7 +1068,7 @@ public class ContentManagerHelper {
             } else if (!getRecursedLocksAndFileUsages(referencedNode, missedPaths, user.getUsername())) {
                 try {
                     String referenceToRemove = referencedNode.getIdentifier();
-                    PropertyIterator r = referencedNode.getReferences();
+                    PropertyIterator r = referencedNode.getWeakReferences();
                     while (r.hasNext()) {
                         JCRPropertyWrapper reference = (JCRPropertyWrapper) r.next();
                         if (!reference.getPath().startsWith("/referencesKeeper")) {

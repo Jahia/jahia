@@ -10,6 +10,6 @@
 - j:sortDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
 - maxItems (long) = 10 indexed=no
 - j:startNode (weakreference)
-- j:filter (reference, category[autoSelectParent=false]) multiple
+- j:filter (weakreference, category[autoSelectParent=false]) multiple
 - j:noResultsMessage (string) i18n indexed=no
 - j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,image,dependentProperties='j:type']) nofulltext itemtype = layout

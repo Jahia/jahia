@@ -9,5 +9,5 @@
 
 [jnt:lastNews] > jnt:content, jmix:list, mix:title, jmix:queryContent, jmix:cache
   - maxNews (long) = 10 indexed=no
-  - filter (reference, category[autoSelectParent=false])
+  - filter (weakreference, category[autoSelectParent=false])
   - j:subNodesView (string, choicelist[templates=jnt:news,resourceBundle,image]) nofulltext itemtype = layout

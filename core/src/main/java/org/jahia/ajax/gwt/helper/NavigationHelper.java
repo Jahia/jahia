@@ -87,8 +87,6 @@ public class NavigationHelper {
     private PublicationHelper publication;
     private WorkflowHelper workflow;
     
-    private boolean ignoreWeakreferencesInUsages;
-    
     private Set<String> ignoreInUsages = Collections.emptySet();
 
 
@@ -504,10 +502,7 @@ public class NavigationHelper {
             }
 
             try {
-                fillUsages(result, node.getReferences());
-                if (!ignoreWeakreferencesInUsages) {
-                	fillUsages(result, node.getWeakReferences());
-                }
+                fillUsages(result, node.getWeakReferences());
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -882,8 +877,7 @@ public class NavigationHelper {
         //count
         if (fields.contains(GWTJahiaNode.COUNT)) {
             try {
-                n.set("count",
-                        (!ignoreWeakreferencesInUsages ? JCRContentUtils.size(node.getWeakReferences()) : 0) + JCRContentUtils.size(node.getReferences()));
+                n.set("count", JCRContentUtils.size(node.getWeakReferences()));
             } catch (RepositoryException e) {
                 logger.warn("Unable to count node references for node");
             }
@@ -1281,10 +1275,6 @@ public class NavigationHelper {
         }
 
         return url;
-    }
-
-	public void setIgnoreWeakreferencesInUsages(boolean ignoreWeakreferencesInUsages) {
-    	this.ignoreWeakreferencesInUsages = ignoreWeakreferencesInUsages;
     }
 
 	public void setIgnoreInUsages(Set<String> ignoreInUsages) {

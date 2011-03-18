@@ -1869,7 +1869,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         getSession().move(getPath(), parent.getPath() + "/" + newName);
         this.localPath = parent.getPath() + "/" + newName;
-        this.objectNode = getSession().getNode(localPath);
+        this.objectNode = getSession().getProviderSession(getProvider()).getNode(localPath);
         if ((nodePositionFound) && (parent.getPrimaryNodeType().hasOrderableChildNodes())) {
             parent.orderBefore(newName, nextNodeName);
         }

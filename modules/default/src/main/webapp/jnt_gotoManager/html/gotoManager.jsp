@@ -7,6 +7,7 @@
 <c:if test="${gotoType != 'roles' || renderContext.enterpriseEdition}">
 <c:if test="${currentResource.workspace eq 'live'}">
     <template:addResources type="javascript" resources="jquery.js"/>
+    <template:addResources type="css" resources="goto-links.css"/>
     <div id="gotoManager${currentNode.identifier}"/>
     <script type="text/javascript">
         $('#gotoManager${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
@@ -42,15 +43,15 @@
             <c:forEach items="${result.nodes}" var="node">
                 <jcr:node var="home" path="${node.path}/home"/>
                 <c:if test="${jcr:hasPermission(home,'fileManager')}">
-                    <li>${fn:escapeXml(node.displayableName)}&nbsp;<a
+                    <li><img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" "
+                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; ">${fn:escapeXml(node.displayableName)}&nbsp;<a
                             href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}"
                             target="_blank">
                         <c:if test="${!empty currentNode.properties['jcr:title']}">
                             ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
                         </c:if>
                         <c:if test="${empty currentNode.properties['jcr:title']}">
-                            <img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" "
-                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; ">
+
                             <fmt:message key="${label}"/>
                         </c:if>
                     </a>
@@ -60,13 +61,13 @@
         </ul>
     </c:if>
     <c:if test="${multisite ne 'true'}">
-        <a href="${url.context}/engines/manager.jsp?conf=${conf}" target="_blank">
+                        <img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" " role="presentation"
+                     style="position:relative; top: 4px; margin-right:2px; "><a href="${url.context}/engines/manager.jsp?conf=${conf}" target="_blank">
             <c:if test="${!empty currentNode.properties['jcr:title']}">
                 ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
             </c:if>
             <c:if test="${empty currentNode.properties['jcr:title']}">
-                <img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" " role="presentation"
-                     style="position:relative; top: 4px; margin-right:2px; ">
+
                 <fmt:message key="${label}"/>
             </c:if>
         </a>

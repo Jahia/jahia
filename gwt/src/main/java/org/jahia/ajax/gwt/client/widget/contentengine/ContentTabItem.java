@@ -94,7 +94,7 @@ public class ContentTabItem extends PropertiesTabItem {
             } else {
                 propertiesEditor.insert(nameFieldSet, 0);
             }
-            if (nameEditable) {
+            if (nameEditable && !engine.isMultipleSelection()) {
                 if (engine.getDefaultLanguageCode().equals(this.language)) {
                     boolean autoUpdate = true;
 

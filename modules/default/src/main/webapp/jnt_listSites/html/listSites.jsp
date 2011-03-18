@@ -27,7 +27,7 @@
 <c:if test="${currentResource.workspace ne 'live'}">
 
 <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
-<h3>Sites</h3>
+<h4>Sites</h4>
 <ul class="list-sites">
 <c:forEach items="${result.nodes}" var="node">
     <jcr:node var="home" path="${node.path}/home"/>

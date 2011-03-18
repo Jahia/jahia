@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="Toolbar.Item.NewRole" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:role"/>
+                <property name="parentTypes" value="jnt:roles"/>
+                <property name="useEngine" value="false"/>
+                <property name="useMainNode" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.new"/>
+        <property name="icon" value="newRole"/>
+    </bean>
+
+    <!-- role manager -->
+    <bean id="rolesmanager" parent="abstractmanager">
+        <property name="requiredPermission" value="rolesManager"/>
+        <property name="nodeTypes" value="jnt:role"/>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewRole"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Import"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Import"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+        <property name="hideLeftPanel" value="true"/>
+        <property name="displaySearch" value="false"/>
+        <property name="expandRoot" value="true"/>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="false"/>
+        <property name="searchInContent" value="false"/>
+        <property name="searchInFile" value="false"/>
+        <property name="defaultView" value="list"/>
+
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <property name="key" value="roleRepository"/>
+                    <property name="paths">
+                        <list>
+                            <value>/roles</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <!-- tabs -->
+        <property name="engineTabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <ref bean="Engine.Tab.Content" />
+                <ref bean="Engine.Tab.RolePermissions" />
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,*,label.name</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="rolesAdministrationModule" class="org.jahia.modules.rolesmanager.ManageRoles" parent="abstractAdministrationModule">
+        <property name="urlKey" value="serverPermissions" />
+        <property name="permissionName" value="adminRoles" />
+        <property name="name" value="serverPermissions" />
+        <property name="icon" value="policeman_usa" />
+        <property name="label" value="label.serverroles" />
+        <property name="urlAction" value="serverPermissions" />
+        <property name="urlParams" value="&amp;sub=display" />
+    </bean>
+</beans>

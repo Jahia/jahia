@@ -16,6 +16,12 @@
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <c:if test="${createdBy.string ne ' guest '}">
     <jcr:node var="userNode" path="/users/${createdBy.string}"/>
+    <c:forEach items="${userNode.properties}" var="property">
+        <c:if test="${property.name == 'j:firstName'}"><c:set var="firstname" value="${property.string}"/></c:if>
+        <c:if test="${property.name == 'j:lastName'}"><c:set var="lastname" value="${property.string}"/></c:if>
+        <c:if test="${property.name == 'j:email'}"><c:set var="email" value="${property.string}"/></c:if>
+        <c:if test="${property.name == 'j:title'}"><c:set var="title" value="${property.string}"/></c:if>
+    </c:forEach>
 </c:if>
 <li class="genericListCommentLi">
     <div class="image">
@@ -24,13 +30,13 @@
             <jcr:nodeProperty var="picture" node="${userNode}" name="j:picture"/>
             <c:if test="${not empty picture}">
                 <%--a href="<c:url value='${url.base}${renderContext.site.path}/users/${createdBy.string}.html'/>"--%><img
-                        src="${picture.node.thumbnailUrls['avatar_60']}"
-                        alt="${userNode.properties.title.string} ${userNode.properties.firstname.string} ${userNode.properties.lastname.string}"
-                        width="60"
-                        height="60"/><%--/a--%>
+                    src="${picture.node.thumbnailUrls['avatar_60']}"
+                    alt="${title} ${firstname} ${lastname}"
+                    width="60"
+                    height="60"/><%--/a--%>
             </c:if>
             <c:if test="${empty picture}"><%--a href="<c:url value='${url.base}${renderContext.site.path}/users/${createdBy.string}.html'/>"--%><img alt=""
-                                                                                                    src="<c:url value='${url.currentModule}/images/userbig.png'/>"/></a></c:if>
+                                                                                                                                                     src="<c:url value='${url.currentModule}/images/userbig.png'/>"/></a></c:if>
         </div>
     </div>
 
@@ -42,7 +48,7 @@
     <p>
         <span class="author">
             <c:if test="${createdBy.string ne 'guest'}">
-            <a href="<c:url value='${url.base}/users/${createdBy.string}.html'/>">${createdBy.string}</a></c:if>
+                <a href="<c:url value='${url.base}/users/${createdBy.string}.html'/>">${createdBy.string}</a></c:if>
             <c:if test="${createdBy.string eq 'guest'}">${fn:escapeXml(currentNode.properties.pseudo.string)}</c:if>:&nbsp;</span>
         ${fn:escapeXml(content.string)}
     </p>

@@ -5,7 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
     <h5>
-        <a class="atopblog" href="${url.base}${currentNode.path}.html">
+        <a class="atopblog" href="<c:url value='${url.base}${currentNode.path}.html'/>">
             <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
             <c:if test="${!empty title}">${title.string}</c:if>
             <c:if test="${empty title}">no title</c:if>

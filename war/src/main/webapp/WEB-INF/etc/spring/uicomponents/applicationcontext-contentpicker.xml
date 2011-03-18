@@ -87,7 +87,7 @@
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
         <property name="searchInFile" value="true"/>   
-        <property name="useCheckboxForSelection" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>
@@ -193,7 +193,7 @@
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
         <property name="searchInFile" value="true"/>   
-        <property name="useCheckboxForSelection" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <property name="defaultView" value="thumbs"/>
         <!-- accordion panels-->
         <property name="repositories">
@@ -283,7 +283,7 @@
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
         <property name="searchInFile" value="true"/>   
-        <property name="useCheckboxForSelection" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>
@@ -360,7 +360,7 @@
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
         <property name="searchInFile" value="true"/>   
-        <property name="useCheckboxForSelection" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>
@@ -421,7 +421,7 @@
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="false"/>   
-        <property name="useCheckboxForSelection" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>
@@ -490,7 +490,7 @@
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="true"/>   
-        <property name="useCheckboxForSelection" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>
@@ -608,7 +608,7 @@
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
         <property name="searchInFile" value="false"/>   
-        <property name="useCheckboxForSelection" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <property name="hideLeftPanel" value="true"/>
         <property name="defaultView" value="detailed"/>
         <!-- accordion panels-->
@@ -641,7 +641,7 @@
         </property>
 
         <property name="displaySearch" value="false"/>
-        <property name="useCheckboxForSelection" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>
@@ -677,7 +677,7 @@
         </property>
 
         <property name="displaySearch" value="false"/>
-        <property name="useCheckboxForSelection" value="false"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>

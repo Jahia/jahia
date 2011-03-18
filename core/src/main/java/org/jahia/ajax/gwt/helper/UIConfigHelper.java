@@ -310,7 +310,7 @@ public class UIConfigHelper {
                 gwtConfig.setMimeTypes(config.getMimeTypes());
                 gwtConfig.setDefaultView(config.getDefaultView());
                 gwtConfig.setEnableFileDoubleClick(config.isEnableFileDoubleClick());
-                gwtConfig.setUseCheckboxForSelection(config.isUseCheckboxForSelection());
+                gwtConfig.setAllowsMultipleSelection(config.isAllowsMultipleSelection());
                 gwtConfig.setExpandRoot(config.isExpandRoot());
                 gwtConfig.setDisplaySearch(config.isDisplaySearch());
                 gwtConfig.setDisplaySearchInPage(config.isDisplaySearchInPage());

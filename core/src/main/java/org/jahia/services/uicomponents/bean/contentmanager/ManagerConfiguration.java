@@ -62,7 +62,7 @@ public class ManagerConfiguration implements Serializable {
 
     private String defaultView;
     private boolean enableFileDoubleClick = true;
-    private boolean useCheckboxForSelection = true;
+    private boolean allowsMultipleSelection = true;
 
     private List<EngineTab> engineTabs;
 
@@ -186,12 +186,12 @@ public class ManagerConfiguration implements Serializable {
         this.contextMenu = contextMenu;
     }
 
-    public boolean isUseCheckboxForSelection() {
-        return useCheckboxForSelection;
+    public boolean isAllowsMultipleSelection() {
+        return allowsMultipleSelection;
     }
 
-    public void setUseCheckboxForSelection(boolean useCheckboxForSelection) {
-        this.useCheckboxForSelection = useCheckboxForSelection;
+    public void setAllowsMultipleSelection(boolean allowsMultipleSelection) {
+        this.allowsMultipleSelection = allowsMultipleSelection;
     }
 
     public boolean isExpandRoot() {

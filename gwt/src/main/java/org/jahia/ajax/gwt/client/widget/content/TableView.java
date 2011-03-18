@@ -70,7 +70,7 @@ public class TableView extends AbstractView {
         NodeColumnConfigList columns = new NodeColumnConfigList(configuration.getTableColumns());
         columns.init();
         CheckBoxSelectionModel<GWTJahiaNode> checkboxSelectionModel = null;
-        if (configuration.isUseCheckboxForSelection()) {
+        if (configuration.isAllowsMultipleSelection()) {
             checkboxSelectionModel = new CheckBoxSelectionModel<GWTJahiaNode>();
             columns.add(0, checkboxSelectionModel.getColumn());
         }
@@ -94,7 +94,11 @@ public class TableView extends AbstractView {
             m_grid.addPlugin(checkboxSelectionModel);
         }
         selectionModel = m_grid.getSelectionModel();
-        selectionModel.setSelectionMode(Style.SelectionMode.MULTI);
+        if (configuration.isAllowsMultipleSelection()) {
+            selectionModel.setSelectionMode(Style.SelectionMode.MULTI);
+        } else {
+            selectionModel.setSelectionMode(Style.SelectionMode.SINGLE);
+        }
 
         m_grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {

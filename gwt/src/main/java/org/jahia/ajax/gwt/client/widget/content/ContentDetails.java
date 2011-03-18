@@ -355,6 +355,14 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         }
                     }
 
+                    // case of contentTabItem
+                    if (item instanceof ContentTabItem) {
+                        if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
+                            String nodeName = ((ContentTabItem) item).getName().getValue();
+                            getNode().setName(nodeName);
+                        }
+                    }
+
                     if (item instanceof ListOrderingContentTabItem) {
 
                         // if the manual ranking was activated update new ranking

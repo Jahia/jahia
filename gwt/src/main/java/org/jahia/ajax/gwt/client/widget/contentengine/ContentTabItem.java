@@ -84,7 +84,7 @@ public class ContentTabItem extends PropertiesTabItem {
     }
 
     @Override
-    public void init(NodeHolder engine, AsyncTabItem tab, String language) {
+    public void init(final NodeHolder engine, AsyncTabItem tab, String language) {
         super.init(engine, tab, language);
 
         if (engine.getMixin() != null) {
@@ -94,6 +94,7 @@ public class ContentTabItem extends PropertiesTabItem {
             } else {
                 propertiesEditor.insert(nameFieldSet, 0);
             }
+
             if (nameEditable && !engine.isMultipleSelection()) {
                 if (engine.getDefaultLanguageCode().equals(this.language)) {
                     boolean autoUpdate = true;
@@ -129,6 +130,37 @@ public class ContentTabItem extends PropertiesTabItem {
                     autoUpdateLabel.setText("&nbsp;" + Messages.get("label.switchToUpdateName", "Switch to default language to update name"));
                     nameText.setEnabled(false);
                 }
+
+                if (titleField != null && engine.getDefaultLanguageCode().equals(this.language)) {
+                    autoUpdateName.addListener(Events.Change, new Listener<ComponentEvent>() {
+                        public void handleEvent(ComponentEvent event) {
+                            nameText.setEnabled(!autoUpdateName.getValue());
+
+                            if (autoUpdateName.isEnabled()) {
+                                autoUpdateName.setData("realValue", autoUpdateName.getValue());
+                            }
+
+                            if (autoUpdateName.getValue()) {
+                                if (titleField.getValue() != null) {
+                                    nameText.setValue((String) titleField.getValue());
+                                } else {
+                                    nameText.setValue(engine.getNodeName());
+                                }
+                            }
+                        }
+                    });
+                    titleField.addListener(Events.KeyUp, new Listener<FieldEvent>() {
+                        public void handleEvent(FieldEvent fe) {
+                            if (autoUpdateName.getValue()) {
+                                if (titleField.getValue() != null) {
+                                    nameText.setValue((String) titleField.getValue());
+                                } else {
+                                    nameText.setValue(engine.getNodeName());
+                                }
+                            }
+                        }
+                    });
+                }
             } else {
                 if (autoUpdateName != null) {
                     autoUpdateName.setVisible(false);
@@ -136,8 +168,9 @@ public class ContentTabItem extends PropertiesTabItem {
                 autoUpdateLabel.setText("");
                 nameText.setEnabled(false);
             }
-            tab.layout();
+
         }
+        tab.layout();
     }
 
     @Override
@@ -159,7 +192,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameText.setWidth("250");
                 nameText.setMaxLength(maxLength);
                 nameText.setStyleAttribute("padding-left", "0");
-                nameText.setValue(engine.getNodeName());
+//                nameText.setValue(engine.getNodeName());
                 nameText.setFireChangeEventOnSetValue(true);
                 nameText.addListener(Events.Change, new Listener<FieldEvent>() {
                     public void handleEvent(FieldEvent fe) {
@@ -169,7 +202,7 @@ public class ContentTabItem extends PropertiesTabItem {
                     }
                 });
 
-                tab.setData("NodeName", engine.getNodeName());
+//                tab.setData("NodeName", engine.getNodeName());
 
 
                 final HBoxLayout hBoxLayout = new HBoxLayout();
@@ -197,39 +230,15 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameFieldSet.add(name, fd);
             }
 
-            if (titleField != null && engine.getDefaultLanguageCode().equals(this.language)) {
-                autoUpdateName.addListener(Events.Change, new Listener<ComponentEvent>() {
-                    public void handleEvent(ComponentEvent event) {
-                        nameText.setEnabled(!autoUpdateName.getValue());
-
-                        if (autoUpdateName.isEnabled()) {
-                            autoUpdateName.setData("realValue", autoUpdateName.getValue());
-                        }
-
-                        if (autoUpdateName.getValue()) {
-                            if (titleField.getValue() != null) {
-                                nameText.setValue((String) titleField.getValue());
-                            } else {
-                                nameText.setValue(engine.getNodeName());
-                            }
-                        }
-                    }
-                });
-
-                titleField.addListener(Events.KeyUp, new Listener<FieldEvent>() {
-                    public void handleEvent(FieldEvent fe) {
-                        if (autoUpdateName.getValue()) {
-                            if (titleField.getValue() != null) {
-                                nameText.setValue((String) titleField.getValue());
-                            } else {
-                                nameText.setValue(engine.getNodeName());
-                            }
-                        }
-                    }
-                });
+            if (tab.getData("NodeName") == null || !tab.getData("NodeName").equals(engine.getNodeName())) {
+                tab.setData("NodeName", engine.getNodeName());
+                autoUpdateName.removeAllListeners();
+                if (titleField != null) {
+                    titleField.removeAllListeners();
+                }
+                nameText.setValue(engine.getNodeName());
+                autoUpdateName.setData("realValue", null);
             }
-
-
         } else {
             isNodeNameFieldDisplayed = false;
         }

@@ -185,3 +185,5 @@
 
 [jnt:fileUpload] > jnt:content, jmix:siteComponent, jmix:bindedComponent
  - target (weakreference)
+
+[jnt:logout] > jnt:content, jmix:siteComponent, jmix:studioOnly, mix:title

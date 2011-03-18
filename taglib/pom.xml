@@ -13,6 +13,12 @@
     <name>Jahia Tag Libraries</name>
     <packaging>jar</packaging>
 
+    <scm>
+        <connection>scm:svn:${jahia.svn.base.url}/taglib</connection>
+        <developerConnection>scm:svn:${jahia.svn.base.url}/taglib</developerConnection>
+        <url>${jahia.svn.base.url}/taglib</url>
+    </scm>
+    
     <dependencies>
         <!--Cross project dependencies-->
         <dependency>
@@ -99,13 +105,37 @@
             </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <profile>
+            <id>dev-reports</id>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jxr-plugin</artifactId>
+                        <version>${jxr.plugin.version}</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.sourceforge.maven-taglib</groupId>
+                        <artifactId>maven-taglib-plugin</artifactId>
+                        <version>2.4</version>
+                        <reportSets>
+                            <reportSet>
+                                <reports>
+                                    <report>tagreference</report>
+                                    <report>validate</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+    </profiles>
+    
     <reporting>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>${jxr.plugin.version}</version>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -126,19 +156,6 @@
                     <reportSet>
                         <reports>
                             <report>taglibrarydoc</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>net.sourceforge.maven-taglib</groupId>
-                <artifactId>maven-taglib-plugin</artifactId>
-                <version>2.4</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>tagreference</report>
-                            <report>validate</report>
                         </reports>
                     </reportSet>
                 </reportSets>

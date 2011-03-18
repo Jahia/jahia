@@ -91,6 +91,10 @@ public class AddResourcesTag extends AbstractJahiaTag {
                 logger.error(e.getMessage(), e);
             }
         }
+        if (renderContext == null) {
+            logger.warn("No render context found. Unable to add a resoure");
+            return;
+        }
 
         final Map<String, String> mapping = getStaticAssetMapping();
 

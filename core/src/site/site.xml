@@ -23,6 +23,7 @@
             <item name="Actions" href="actions/actions.html">
                 <item name="Validation" href="actions/validation.html"/>
             </item>
+            <item name="Query" href="query/index.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

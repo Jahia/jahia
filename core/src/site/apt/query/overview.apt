@@ -54,7 +54,7 @@ Search features
           
     * Unstructured search (fulltext)
     
-          * Supports the fulltext query syntax as specified in the JSR-283 (optional and mandatory words, phrase search, without words, use of wildcards, ranges,...)
+          * Supports the fulltext query syntax as specified in the JSR-283 (optional and mandatory words, phrase search, without words, use of wildcards)
           
           * Search through all site content
           
@@ -68,7 +68,7 @@ Search features
           
           * Search in multiple sites
     
-    * Ability to configure returning one or multiple hits per page as well as to use query parameters in the search hit's URL by using rules
+          * Ability to configure returning one or multiple hits per page as well as to use query parameters in the search hit's URL by using rules
     
     * Ability to exclude fields from being fulltext searched by configuration
     
@@ -94,7 +94,7 @@ Search features
 
 ** Advanced features
 
-    * Use Solr-based Spellchecker, which is better supporting multiple terms per query in the „Did you mean“ support
+    * Use Solr-based Spellchecker, which is better supporting multiple terms per query in the "Did you mean?" support
     
     * Automatically creates OpenSearch tags to be detectable by OpenSearch clients (like Firefox)
 
@@ -126,7 +126,7 @@ Search features
 
     * Filtering for faceted search
     
-    * Using Spellchecker for „Did you mean“ support
+    * Using Spellchecker for "Did you mean?" support
 
   * OpenSearch (integrated library)
 
@@ -138,4 +138,4 @@ Search features
 
     * Allow to search in external repositories mounted in Jahia via the Unversal Content Hub
     
-    * Transparently convert queries to EntropySoft query language
+    * Automatically convert queries to EntropySoft query language

@@ -29,71 +29,65 @@ Query basics
   Already in Jahia 5 we provided tags for container queries, which were heavily based on the Abstract Query Model. Because of this, these tag library
   is still available in Jahia 6.5 and it is now not only limited to container queries, but you can use it for queries on any node type.
 
-  The following example shows how to query all nodes having the mixin type "jmix:sitemap" and which are wither the current node or a descendant of the
+  The following example shows how to query all nodes having the mixin type "jmix:sitemap" and which are either the current node or a descendant of the
   current node.
 
 +----------------------------------------
+<%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-        <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
-        <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jcr:jqom var="sitemaps">
+    <query:selector nodeTypeName="jmix:sitemap" selectorName="stmp"/>
+    <query:or>
+        <query:descendantNode path="${currentNode.path}" selectorName="stmp"/>
+        <query:sameNode path="${currentNode.path}" selectorName="stmp"/>
+    </query:or>
+</jcr:jqom>
 
-        <jcr:jqom var="sitemaps">
-            <query:selector nodeTypeName="jmix:sitemap" selectorName="stmp"/>
-            <query:or>
-                <query:descendantNode path="${currentNode.path}" selectorName="stmp"/>
-                <query:sameNode path="${currentNode.path}" selectorName="stmp"/>
-            </query:or>
-        </jcr:jqom>
-
-        <c:forEach items="${sitemaps.nodes}" varStatus="status" var="sitemapEL">
-            <c:url value="${url.base}${sitemapEL.path}.html" />
-        </c:forEach>
-    
+<c:forEach items="${sitemaps.nodes}" varStatus="status" var="sitemapEL">
+    <c:url value="${url.base}${sitemapEL.path}.html" />
+</c:forEach>   
 +----------------------------------------
 
-  The above example immediately executes the query and writes the results into the pageContext variable named <<<sitemaps>>>.
+  The above example immediately executes the query and writes the results into the <<<pageContext>>> variable named <<<sitemaps>>>.
   The resulting object is of type <<<javax.jcr.query.QueryResult>>>, which lets you access the resulting nodes or row objects.
   
   Like in previous Jahia versions, you can also first define the queries and store them in a variable and refer to this
   varaiable in <<<\<jcr:jqom\>>>>, like this:
   
 +----------------------------------------
+<query:definition var="listQuery" scope="request">
+    <query:selector nodeTypeName="nt:base"/>
+    <query:descendantNode path="${currentNode.properties['relative'].boolean ? renderContext.mainResource.node.path : renderContext.site.path}"/>
+    <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tags&facet.mincount=${usageThreshold}&facet.limit=${numberOfTagsLimit}&facet.sort=true)" propertyName="j:tags"/>
+</query:definition>
 
-        <query:definition var="listQuery" scope="request">
-            <query:selector nodeTypeName="nt:base"/>
-            <query:descendantNode path="${currentNode.properties['relative'].boolean ? renderContext.mainResource.node.path : renderContext.site.path}"/>
-            <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tags&facet.mincount=${usageThreshold}&facet.limit=${numberOfTagsLimit}&facet.sort=true)" propertyName="j:tags"/>
-        </query:definition>
-
-        <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
-
+<jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
 +----------------------------------------        
 
   The above example defines a query on the base nodetype and depending on the <<<relative>>> property value in the current node, it finds all nodes, which are descendant
   of the current node or all nodes of the current site.
   
   The column in this case specifies to run Solr based faceting (this is a Jahia specific extension to Jackrabbit) and return the facet counts. You will find more information in the 
-  description of the facet module.
+  description of the {{{../../jahia-modules/facets/index.html}facet module}}.
   
   In this case the query object model is stored into the <<<listQuery>>> variable, which is then used as reference to run the query in the <<<\<jcr:jqom\>>>>
   
-  To learn about the different tags, please look directly at the <<<query>>> taglib (TaglibDoc ???). We made sure that for all query elements described in the specification of the
+  To learn about the different tags, please look directly at the <<<query>>> tag library (<<<query.tld>>>). We made sure that for all query elements described in the specification of the
   {{{http://www.day.com/specs/jcr/2.0/6_Query.html}Abstract Query Model}} we provide a convenient JSP tag.  
   
-  You can also create the JQOM queries directly using the API like shown in the specification. For example:
+  You can also create the JQOM queries directly using the API like shown in the {{{http://www.day.com/specs/jcr/2.0/6_Query.html}specification}}. For example:
   
 +----------------------------------------
+QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
+QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
 
-        QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
-        QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
+qomBuilder.setSource(factory.selector("jnt:event", "event"));
+qomBuilder.andConstraint(factory.descendantNode("event", "/sites/eventTest"));
 
-        qomBuilder.setSource(factory.selector("jnt:event", "event"));
-        qomBuilder.andConstraint(factory.descendantNode("event", "/sites/eventTest"));
-
-        QueryObjectModel qom = qomBuilder.createQOM();
-        QueryResultWrapper res = (QueryResultWrapper) qom.execute();
-
+QueryObjectModel qom = qomBuilder.createQOM();
+QueryResultWrapper res = (QueryResultWrapper) qom.execute();
 +----------------------------------------  
 
   So, as you see, using the JQOM requires more code lines, but it is handy if you need to setup dynamic and conditional queries. For hardcoded
@@ -101,11 +95,11 @@ Query basics
 
 ** SQL-2
 
-  SQL-2 is a query language, which is also mapped to the Abstract Query Model. So Jackrabbit provides a parser, which will translate the queries and eventually create the JQOM. So both
+  SQL-2 is a query language, which is also mapped to the Abstract Query Model. So Jackrabbit provides a parser, which will translate the queries and eventually create the JQOM and then both
   implementations use the same backend query engine in Jackrabbit. 
   
-  The SQL-2 grammer is heavily based on SQL, with some extensions for hierarchical queries as used in a modern content repositories, and some limitations, so that there is
-  some standard support across all java content repository vendors.
+  The SQL-2 grammar is heavily based on SQL, with some extensions for hierarchical queries as used in modern content repositories, but some limitations, so that there is
+  common standard support across all Java content repository vendors.
   
   You can learn more about SQL-2 at these sources: {{{http://www.h2database.com/jcr/grammar.html}SQL-2 Grammar (railroad diagrams)}}, {{{http://svn.apache.org/viewvc/jackrabbit/trunk/jackrabbit-spi-commons/src/test/resources/org/apache/jackrabbit/spi/commons/query/sql2/test.sql2.txt?view=markup}SQL-2 examples}},
   {{{http://www.day.com/specs/jcr/2.0/6_Query.html}Specification}}
@@ -116,39 +110,35 @@ Query basics
   Here is an example how to use an SQL-2 query in the modules by using <<<\<jcr:sql\>>>> and other tags:
 
 +----------------------------------------
-
-        <jcr:sql var="receivedMessages"
-                 sql="select * from [jnt:socialMessage] where isdescendantnode(['${user.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
+<jcr:sql var="receivedMessages"
+    sql="select * from [jnt:socialMessage] where isdescendantnode(['${user.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
              
-        <ul class="userMessagesList">
-        <c:forEach items="${receivedMessages.nodes}" var="userMessage">
-            <li id="social-message-${userMessage.identifier}">
-                <template:module path="${userMessage.path}" />
-            </li>
-        </c:forEach>             
-        </ul>
-             
+<ul class="userMessagesList">
+    <c:forEach items="${receivedMessages.nodes}" var="userMessage">
+        <li id="social-message-${userMessage.identifier}">
+            <template:module path="${userMessage.path}" />
+        </li>
+    </c:forEach>             
+</ul>             
 +----------------------------------------             
 
   And here is an example of how to use the API to run SQL-2 queries:
   
 +----------------------------------------
-  
-        QueryManager queryManager = session.getWorkspace().getQueryManager();
-        String query = "SELECT * FROM [jnt:news] as news WHERE contains(news.*, 'ACME') ORDER BY news.[date]";
-        Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-        QueryResultWrapper queryResult = (QueryResultWrapper) q.execute();  
-
+QueryManager queryManager = session.getWorkspace().getQueryManager();
+String query = "SELECT * FROM [jnt:news] as news WHERE contains(news.*, 'ACME') ORDER BY news.[date]";
+Query q = queryManager.createQuery(query, Query.JCR_SQL2);
+QueryResultWrapper queryResult = (QueryResultWrapper) q.execute();  
 +----------------------------------------  
 
 ** XPATH  
 
   XPATH has been deprecated as of {{{http://www.day.com/maven/jsr170/javadocs/jcr-2.0/javax/jcr/query/Query.html}JCR 2.0}}, but Jackrabbit and Jahia still support it. View it as 
-  last resort, if you cannot make queries work with SQL-2 or JQOM, or it they have bad performance. As XPATH exists much longer and has been optimized a lot, some queries may
+  last resort, if you cannot make queries work with SQL-2 or JQOM, or if they have bad performance. As XPATH exists much longer and has been optimized a lot, some queries may
   work much better with XPATH. So you could temporarily implement such queries with XPATH. Jahia also internally implemented some queries with XPATH (e.g. the search tags), as we
   found that some functionality did not work with SQL-2. Over the time Jahia will also migrate these remaining XPATH queries to SQL-2.
   
-  Notice however that when using XPATH queries, you may need to have more knowledge of the way how Jahia stores nodes internally (e.g. translation nodes), as SQL2 and JQOM queries
+  Notice however that when using XPATH queries, you may need to have more knowledge of the way how Jahia stores nodes internally (e.g. translation nodes), as SQL-2 and JQOM queries
   are automatically overwritten to mask the internal storage structure. Also for JQOM and SQL-2 Jahia is internally modifying the query and adding the current language as a constraint
   (if no other constraint is existing on the language property). This is not done with XPATH queries. 
   
@@ -157,31 +147,28 @@ Query basics
 
   For using XPATH queries in your JSP modules, you can use the <<<\<jcr:xpath\>>>> tag similarly as the <<<\<jcr:sql\>>>> tag in the above example.
   
-  Here is an example of how to use XPATH queries in the API:
+  Here is an example of how to use XPATH queries with the API:
   
 +----------------------------------------
-
-        QueryResult result = session.getWorkspace().getQueryManager()
-                .createQuery("/jcr:root"
-                                + (StringUtils.isEmpty(site) ? "" : "/sites/"
-                                        + JCRContentUtils
-                                                .stringToJCRPathExp(site))
-                                + "//element(*, jnt:vanityUrl)[@j:url = "
-                                + JCRContentUtils.stringToQueryLiteral(url)
-                                + "]", Query.XPATH).execute();
-        List<VanityUrl> existingUrls = new ArrayList<VanityUrl>();
-        for (NodeIterator it = result.getNodes(); it.hasNext();) {
-            JCRNodeWrapper node = (JCRNodeWrapper) it.next();
-            existingUrls.add(populateJCRData(node, new VanityUrl()));
-        }
-
+QueryResult result = session.getWorkspace().getQueryManager()
+    .createQuery("/jcr:root"
+        + (StringUtils.isEmpty(site) ? "" : "/sites/"
+            + JCRContentUtils.stringToJCRPathExp(site))
+        + "//element(*, jnt:vanityUrl)[@j:url = "
+        + JCRContentUtils.stringToQueryLiteral(url)
+        + "]", Query.XPATH).execute();
+List<VanityUrl> existingUrls = new ArrayList<VanityUrl>();
+for (NodeIterator it = result.getNodes(); it.hasNext();) {
+    JCRNodeWrapper node = (JCRNodeWrapper) it.next();
+    existingUrls.add(populateJCRData(node, new VanityUrl()));
+}
 +----------------------------------------
 
 * Fulltext search expression
   
   The fulltext search expression supported with JQOM and SQL-2 is defined in the {{{http://www.day.com/specs/jcr/2.0/6_Query.html#%226.7.19%20FullTextSearch%22}JCR 2.0 specification}}.
   
-  This same expression is also supported in the Simple search components textfield, where users can enter fulltext search criteria.  
+  This same expression is also supported in the simple search components' input field, where users can enter fulltext search criteria.  
   
   Terms can either be single words or phrases within double quotes. Here is a description of the expression syntax from the specification:
   
@@ -202,24 +189,22 @@ Query basics
   There are some specialities in the way how Jahia stores nodes, mainly in regards of how we store multilingual nodes/properties.
   Generally this is hidden thus not transparent to the Content manager UI or even when using the JCR API. Also for JQOM and SQL-2
   queries Jahia will in the backend modify the query in order to correctly handle multilingual content, but if you use XPATH, you 
-  will need to know how it works.
+  will need to know this data structure.
   
-  Basically when a node is based on a node type, which defines multilingual properties (i18n attribute), Jahia will automatically create
-  a subnode of type <<<jnt:translation>>> for each language into which the content node is translated to. For instance when a node uses mixins 
+  Basically when a node is based on a node type, which defines multilingual properties (<<<i18n>>> attribute), Jahia will automatically create
+  a subnode of type <<<jnt:translation>>> for each language into which the content node is translated. For instance when a node uses mixins 
   like <<<mix:title>>> or <<<jmix:description>>>, this will already create <<<jnt:translation>>> nodes for each language, because they 
   contain internationalized properties
 
 +----------------------------------------
-  
-        [mix:title]
-          mixin
-          - jcr:title (STRING) i18n boost=2.0          
-
+[mix:title]
+  mixin
+  - jcr:title (STRING) i18n boost=2.0          
 +----------------------------------------
 
   This means that all non internationalized properties will be stored in the main node, and all internationalized properties will be stored 
   in the <<<jnt:translation>>> subnodes (one subnode per language) which will also contain the property <<<jcr:language>>> with the locale name (=ISO 639 language 
-  code and optionally the ISO 3166 country code delimited with a underscore).
+  code and optionally the ISO 3166 country code delimited with an underscore).
   
   In order to make queries perform fast and to remove the necessity to use joins, we are indexing all non internationalized properties also 
   within the index document of the translation nodes. We made modifications to Jackrabbit's query engine (for JQOM and SQL-2) in order to 
@@ -233,30 +218,26 @@ Query basics
   
   If you want to also query in other languages than the current, you have to add the constraint on <<<jcr:language>>> yourself.
   
-  For instance this is an example query to retrieve French news by date:
+  For instance this is an example query to retrieve French news sorted by date:
   
 +----------------------------------------
-
-        SELECT * FROM [jnt:news] as news 
-            WHERE ISCHILDNODE(news, [/sites/mySite/home/page8/news]) AND news.[jcr:language] = 'fr' 
-            ORDER BY news.[date]
-
+SELECT * FROM [jnt:news] as news 
+    WHERE ISCHILDNODE(news, [/sites/mySite/home/page8/news]) AND news.[jcr:language] = 'fr' 
+    ORDER BY news.[date]
 +----------------------------------------  
 
 ** Query using site(s)
 
-  If you have multiple sites in your workspace and you want to limit the queries to particular sites, you have to use the "descendanNode" constraint
-  on the site's root node, which is /sites/\<yourSiteName\>.
+  If you have multiple sites in your workspace and you want to limit the queries to particular sites, you have to use the <descendanNode> constraint
+  on the site's root node, which is <<</sites/\<yourSiteName\>>>>.
   
-  For instance if you want to query all news nodes in the current language in sites <<<myFirstSite>>> or <<<mySecondSite>>> you can use the 
+  For instance if you want to query all news nodes in the current language in the sites <<<myFirstSite>>> or <<<mySecondSite>>> you can use the 
   constraint as in the following example: 
    
 +----------------------------------------
-
-        SELECT * FROM [jnt:news] as news 
-            WHERE ISDESCENDANTNODE(news, [/sites/myFirstSite]) OR ISDESCENDANTNODE(news, [/sites/mySecondSite]) 
-            ORDER BY news.[date]
-
+SELECT * FROM [jnt:news] as news 
+    WHERE ISDESCENDANTNODE(news, [/sites/myFirstSite]) OR ISDESCENDANTNODE(news, [/sites/mySecondSite]) 
+    ORDER BY news.[date]
 +----------------------------------------
   
 ** Query using workflow state
@@ -272,20 +253,18 @@ Query basics
   Categories and tags are stored as references, so you need to specify the UUID of the category or tag node in the query, like this: 
   
 +----------------------------------------
-
-          SELECT * FROM [jnt:news] as news 
-            WHERE news.[j:defaultCategory] = 'adfb06e2-f0bd-45c5-b0e8-15691f6bbd37'
+SELECT * FROM [jnt:news] as news 
+    WHERE news.[j:defaultCategory] = 'adfb06e2-f0bd-45c5-b0e8-15691f6bbd37'
             
-          SELECT * FROM [jnt:news] as news 
-            WHERE news.[j:tags] = 'af0f02f8-1c4a-4026-9d79-4939e373db2c'
-                        
+SELECT * FROM [jnt:news] as news 
+    WHERE news.[j:tags] = 'af0f02f8-1c4a-4026-9d79-4939e373db2c'
 +----------------------------------------            
 
   Usually you will first get the category or tag node and then use getIdentifier() to retrieve its UUID.
   
 * REST API
 
-  See the {{{../../jahia-modules/rest.html}REST article}} for a description how to use Jahia's REST API to do queries.
+  See the {{{../../jahia-modules/rest.html#Find}REST article}} for a description how to use Jahia's REST API to do queries.
 
 * Suggested typing  
   

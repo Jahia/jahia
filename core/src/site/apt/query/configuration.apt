@@ -1,4 +1,4 @@
-Configuration
+Search and indexing configuration
 
   The configuration for search and indexing in Jahia 6.5 has changed a lot compared to previous versions as we are
   now using the standard configuration possibilities of Apache Jackrabbit.
@@ -27,7 +27,7 @@ Configuration
 |  facetable | empty | This option will create a second version of the field in the Lucene document in order to store the field untokenized, which is required to make faceted search and browsing. |
 *---------------*-----------------*-----------------+
 
-Examples:
+** Examples:
 
 +----------------------------------------
 
@@ -72,15 +72,15 @@ Examples:
 *---------------*-----------------+
 | analyzer | The <<<org.jahia.services.search.analyzer.StandardAnalyzer>>> wraps <<<org.apache.lucene.analysis.standard.StandardAnalyzer>>>, but also adds the <<<org.apache.lucene.analysis.ISOLatin1AccentFilter>>> to replace accented characters in the ISO Latin 1 character set (ISO-8859-1) by their unaccented equivalent. |  
 *---------------*-----------------+
-| textFilterClasses | Jahia uses applicationcontext-text-extraction.xml to configure text extraction.  |
+| textFilterClasses | Jahia uses <<<applicationcontext-text-extraction.xml>>> to configure text extraction.  |
 *---------------*-----------------+
-| supportHighlighting | If set to true additional information is stored in the index to support highlighting using the rep:excerpt() function.  |
+| supportHighlighting | If set to true additional information is stored in the index to support highlighting using the <<<rep:excerpt()>>> function.  |
 *---------------*-----------------+
-| excerptProviderClass | <<<org.jahia.services.search.jcr.HTMLExcerpt>>> sets \<span class="searchHighlightedText"\> \</span\> around the matching term. |
+| excerptProviderClass | <<<org.jahia.services.search.jcr.HTMLExcerpt>>> sets <<<\<span class="searchHighlightedText"\> \</span\>>>> around the matching term. |
 *---------------*-----------------+
-| indexingConfigurationClass | <<<org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl>>> is a Jahia extension of <<<org.apache.jackrabbit.core.query.lucene.IndexingConfigurationImpl>>>, which has some additional settings for faceting and control copying of non-i18n to documents of jnt:translation nodes. |
+| indexingConfigurationClass | <<<org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl>>> is a Jahia extension of <<<org.apache.jackrabbit.core.query.lucene.IndexingConfigurationImpl>>>, which has some additional settings for faceting and controls copying of non-i18n properties to index documents of <<<jnt:translation>>> nodes. |
 *---------------*-----------------+
-| spellCheckerClass | Jahia's <<<org.jahia.services.search.spell.CompositeSpellChecker>>> is based on Solr and is better for phrases. We also added functionality to just take the terms of the current locale and site. |
+| spellCheckerClass | Jahia's <<<org.jahia.services.search.spell.CompositeSpellChecker>>> is based on Solr and is better for phrases. We also added functionality to just take the terms of the current locale and site. The setting of the refresh interval is done by choosing an inner class, like in {{{http://wiki.apache.org/jackrabbit/SpellChecker}Jackrabbit's SpellChecker}}. |
 *---------------*-----------------+
 | resultFetchSize | The number of results the query handler should initially fetch when a query is executed. We set it much lower than the default to increase performance. |
 *---------------*-----------------+
@@ -117,7 +117,7 @@ Examples:
 
 ** Locale specific indexing
 
-  See {{{http://wiki.apache.org/jackrabbit/IndexingConfiguration#Index Analyzers}Jackrabbit's Index Analyzers description}} for an example to
+  See {{{http://wiki.apache.org/jackrabbit/IndexingConfiguration#Index_Analyzers}Jackrabbit's Index Analyzers description}} for an example to
   use <<<org.apache.lucene.analysis.Analyzer.GermanAnalyzer>>>. 
   
   \[TODO: How to define stop-words etc. \]

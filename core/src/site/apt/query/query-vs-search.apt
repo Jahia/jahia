@@ -13,7 +13,7 @@ Query versus search tags
 *-----------+-----------*-------------------*
 | Can do programmatic search without input form | Yes | Yes |
 *-----------+-----------*-------------------*
-| Search any content object by fulltext search or constraints on metadata fields | It is possible to search through all containers of any type | Yes |
+| Search any content object by fulltext search or constraints on metadata fields | It is possible to search through all fulltext content of any node type | Yes |
 *-----------+-----------*-------------------*
 | Limit search to certain content definition | Yes | No (only via SearchCriteria API) |
 *-----------+-----------*-------------------*    
@@ -23,17 +23,17 @@ Query versus search tags
 *-----------+-----------*-------------------*
 | Ability to search in multiple or all sites | Yes | Yes |
 *-----------+-----------*-------------------*
-| Ability to limit search to children or descendants of content objects | Yes  | Yes, one node or descendant node constraint is available by tag |
+| Ability to limit search to children or descendants of content objects | Yes  | Yes, but just one node or descendant node constraint is available per search |
 *-----------+-----------*-------------------*
 | Automatically dereference linked files (from internal or external mounted document repositories) in content objects within the searched scope | No | No |
 *-----------+-----------*-------------------*    
-| Search for files in internal or external document repositories (if supported by connector) | No |  Yes |
+| Search for files in internal or external document repositories (if supported by connector) | Yes |  Yes |
 *-----------+-----------*-------------------*
 | Ability to search in current, specific and multiple languages | Yes | Yes |
 *-----------+-----------*-------------------*
 | Ability to search in current, specific and multiple workflow states | Not in multiple | Not in multiple |    
 *-----------+-----------*-------------------*
-| Support of fulltext query syntax | Fulltext query syntax as specified in JSR-283 | Lucene query syntax |
+| Support of fulltext query syntax as specified in JSR-283 | Yes | Yes |
 *-----------+-----------*-------------------*
 | Ability to build complex queries | Yes | No |
 *-----------+-----------*-------------------*
@@ -45,7 +45,7 @@ Query versus search tags
 *-----------+-----------*-------------------*
 | Sort by fields | Yes | No |
 *-----------+-----------*-------------------*
-| Consider ACL to not return hits, which cannot be access by current user | Yes | Yes |
+| Consider ACL to not return hits, which cannot be accessed by current user | Yes | Yes |
 *-----------+-----------*-------------------*
 | Ability to configure returning one or multiple hits per page | No | Yes (by rules) |
 *-----------+-----------*-------------------*

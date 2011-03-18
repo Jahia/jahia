@@ -4,14 +4,14 @@ Search and Query
   
   This section will give you
 
-    * an overview of the query/search features in Jahia
+    * an {{{./overview.html}overview}} of the query/search features in Jahia
   
-    * a comparison between query and search tags
+    * a {{{./query-vs-search.html}comparison}} between query and search tags
   
-    * short guides about how to configure and solve some common problems
+    * the {{{./basics.html}basics}} about using queries 
     
-    * examples how to create queries
+    * an explanation of the {{{./configuration.html}search/indexing configuration}} options
     
-  More information about the search module and examples how to create simple and advanced search forms are described in the search module.
+  More information about the search module and examples how to create simple and advanced {{{../../jahia-modules/search/forms.html}search forms}} are described in the {{{../../jahia-modules/search/index.html}search module}}.
 
-  We also provide more detailed information about using the facet module and you can reference the taglibDoc to get details about the provided tags.
+  We also provide more detailed information about using the {{{../../jahia-modules/facets/index.html}facet module}} and you can reference the taglibDoc to get details about the provided tags.

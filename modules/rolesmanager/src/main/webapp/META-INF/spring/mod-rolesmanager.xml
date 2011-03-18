@@ -53,6 +53,7 @@
         </property>
 
         <property name="hideLeftPanel" value="true"/>
+        <property name="allowsMultipleSelection" value="false"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>

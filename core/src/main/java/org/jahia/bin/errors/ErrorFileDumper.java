@@ -38,6 +38,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
+import org.jahia.utils.RequestLoadAverage;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
@@ -61,6 +62,7 @@ public class ErrorFileDumper {
 
     private static Map<String, Set<Throwable>> exceptions = new HashMap<String, Set<Throwable>>();
     private static ExecutorService executorService;
+    private static ThreadMonitor threadMonitorInstance = new ThreadMonitor();
 
     /**
      * A low priority thread factory
@@ -371,21 +373,34 @@ public class ErrorFileDumper {
     
             }
         }
-        
-        ThreadMonitor threadMonitor = null;
-        if (threads) {
+
+        RequestLoadAverage loadAverage = RequestLoadAverage.getInstance();
+        if (loadAverage != null) {
+            if (loadAverage.getOneMinuteLoad() < 10) {
+                ThreadMonitor threadMonitor = null;
+                if (threads) {
+                    strOut.println();
+                    strOut.println("Thread status:");
+                    strOut.println("--------------");
+                    threadMonitor = new ThreadMonitor();
+                    threadMonitor.generateThreadInfo(strOut);
+                }
+
+                if (deadlocks) {
+                    strOut.println();
+                    strOut.println("Deadlock status:");
+                    threadMonitor = threadMonitor != null ? threadMonitor : new ThreadMonitor();
+                    strOut.print(threadMonitor.findDeadlock());
+                }
+            } else {
+                strOut.println("Thread info and deadlock status were not generated because of current request high load.");
+            }
+
             strOut.println();
-            strOut.println("Thread status:");
-            strOut.println("--------------");
-            threadMonitor = new ThreadMonitor();
-            threadMonitor.generateThreadInfo(strOut);
-        }
-        
-        if (deadlocks) {
+            strOut.println("Request load average:");
+            strOut.println("---------------------");
+            strOut.println("Over one minute=" + loadAverage.getOneMinuteLoad() + " Over five minute=" + loadAverage.getFiveMinuteLoad() + " Over fifteen minute=" + loadAverage.getFifteenMinuteLoad());
             strOut.println();
-            strOut.println("Deadlock status:");
-            threadMonitor = threadMonitor != null ? threadMonitor : new ThreadMonitor();
-            strOut.print(threadMonitor.findDeadlock());
         }
         
         strOut.flush();

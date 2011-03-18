@@ -52,6 +52,7 @@ import org.jahia.bin.Edit;
 import org.jahia.bin.Find;
 import org.jahia.bin.FindPrincipal;
 import org.jahia.bin.Initializers;
+import org.jahia.bin.Login;
 import org.jahia.bin.Logout;
 import org.jahia.bin.Render;
 import org.jahia.bin.Studio;
@@ -106,6 +107,8 @@ public class URLGenerator {
     private String convert;
     private String myProfile;
 
+    private String login;
+
     public URLGenerator(RenderContext context, Resource resource) {
         this.context = context;
         this.resource = resource;
@@ -156,6 +159,7 @@ public class URLGenerator {
         find = Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         findPrincipal = FindPrincipal.getFindPrincipalServletPath();
         logout = Logout.getLogoutServletPath();
+        login = Login.getServletPath();
         initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
         captcha = Captcha.getCaptchaServletPath();
@@ -378,6 +382,10 @@ public class URLGenerator {
 
     public String getMyProfile() {
         return myProfile;
+    }
+
+    public String getLogin() {
+        return login;
     }
 
 }

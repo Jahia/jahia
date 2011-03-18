@@ -34,16 +34,15 @@ package org.jahia.bin;
 
 import java.util.Iterator;
 
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.sites.JahiaSite;
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-import org.jahia.params.valves.LoginEngineAuthValveImpl;
-import org.jahia.services.sites.JahiaSitesBaseService;
-
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jahia.params.valves.LoginEngineAuthValveImpl;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 /**
  * Login action controller.
@@ -51,10 +50,15 @@ import javax.servlet.http.HttpServletResponse;
  * Date: Nov 17, 2009
  * Time: 1:47:38 PM
  */
-public class Login extends HttpServlet implements Controller {
+public class Login implements Controller {
 	
-	private JahiaSitesBaseService sitesService;
-	
+    private JahiaSitesBaseService sitesService;
+
+    public static String getServletPath() {
+        // TODO move this into configuration
+        return "/cms/login";
+    }
+    
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet
      * will render. A <code>null</code> return value is not an error: It indicates that
@@ -116,7 +120,8 @@ public class Login extends HttpServlet implements Controller {
         return null;
     }
 
-	public void setSitesService(JahiaSitesBaseService sitesService) {
-		this.sitesService = sitesService;
-	}
+    public void setSitesService(JahiaSitesBaseService sitesService) {
+        this.sitesService = sitesService;
+    }
+
 }

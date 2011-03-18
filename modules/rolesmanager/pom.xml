@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+	Jahia Enterprise Edition v6.5
+	
+	Copyright (C) 2002-2011 Jahia Solutions Group. All rights reserved.
+	
+	Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
+	with Document Management and Portal features.
+	
+	The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+	IMPLIED.
+	
+	Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
+	you and Jahia (Jahia Sustainable Enterprise License - JSEL).
+	
+	If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jahia-ee-modules</artifactId>
+        <groupId>org.jahia.modules</groupId>
+        <version>6.5-SNAPSHOT</version>
+    </parent>
+    <groupId>org.jahia.modules</groupId>
+    <artifactId>rolesmanager</artifactId>
+    <name>Jahia Roles Manager</name>
+    <packaging>war</packaging>
+    <description>This is a custom module for running on a Jahia server.</description>
+    <dependencies>
+        <dependency>
+            <artifactId>jahia-ee-gwt</artifactId>
+            <groupId>org.jahia.server</groupId>
+            <version>${jahia.package.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
+                <configuration>
+                    <archiveClasses>true</archiveClasses>
+                    <attachClasses>true</attachClasses>
+                    <webResources>
+                        <resource>
+                            <directory>${project.build.directory}</directory>
+                            <includes>
+                                <include>site/**</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+	                <archive>
+	                    <manifestEntries>
+	                    	<Implementation-Title>${project.name}</Implementation-Title>
+	                    	<Implementation-Version>${project.version}</Implementation-Version>
+	                    	<Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+	                    	<Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+	                    	<Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+	                    	<Specification-Title>${project.name}</Specification-Title>
+	                    	<Specification-Version>${project.version}</Specification-Version>
+	                    	<Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+	                        <package-name>${project.name}</package-name>
+                            <depends>Jahia Static Assets</depends>
+                            <root-folder>${project.artifactId}</root-folder>
+	                    </manifestEntries>
+	                </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${project.info.reports.plugin.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>project-team</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>

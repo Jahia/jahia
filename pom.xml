@@ -58,11 +58,12 @@
         <driver.mysql.version>5.1.15</driver.mysql.version>
         <driver.postgresql.version>9.0-801.jdbc3</driver.postgresql.version>
 
-        <!-- MANIFEST.MF information -->
+        <!-- Meta information -->
         <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>
         <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
         <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
         <jahia.manifest.vendor.email>info@jahia.org</jahia.manifest.vendor.email>
+        <jahia.svn.base.url>http://10.8.37.111/svn/jahia/trunk</jahia.svn.base.url>
         
         <license.plugin.version>1.8.0</license.plugin.version>
         <javadoc.plugin.version>2.7</javadoc.plugin.version>
@@ -83,7 +84,7 @@
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
         
         <!-- Jahia Maven plugin version and default settings -->
-        <jahia.plugin.version>2.24</jahia.plugin.version>
+        <jahia.plugin.version>2.25</jahia.plugin.version>
         <!-- common settings -->
 		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB> 
 		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
@@ -103,9 +104,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</connection>
-        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
-        <url>http://10.8.37.111/svn/jahia/trunk</url>
+        <connection>scm:svn:${jahia.svn.base.url}</connection>
+        <developerConnection>scm:svn:${jahia.svn.base.url}</developerConnection>
+        <url>${jahia.svn.base.url}</url>
     </scm>
     <developers>
         <developer>

@@ -219,7 +219,7 @@ public class JCRVersionService extends JahiaService {
         JCRTemplate.getInstance().doExecuteWithSystemSession(null, node.getSession().getWorkspace().getName(), null,
                 new JCRCallback<Object>() {
                     public Object doInJCR(final JCRSessionWrapper session) throws RepositoryException {
-                        String workspace = StringUtils.substringBefore(label, "_");
+                        String workspace = label!=null?StringUtils.substringBefore(label, "_"):"live";
                         JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null,
                                 new JCRCallback<Object>() {
                                     public Object doInJCR(final JCRSessionWrapper frozensession) throws RepositoryException {
@@ -230,7 +230,7 @@ public class JCRVersionService extends JahiaService {
                                             versionManager.checkout(path);
                                         }
 
-                                        // Todo: first get frozen node for thislabel
+                                        // Todo: first get frozen node for this label
                                         frozensession.setVersionLabel(label);
                                         frozensession.setVersionDate(versionDate);
                                         JCRNodeWrapper frozenVersionAsRegular = frozensession.getNodeByUUID(destinationNode.getIdentifier());

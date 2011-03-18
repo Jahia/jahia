@@ -937,6 +937,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 allSubTree, retrieveCurrentSession());
     }
 
+    public void restoreNodeByIdentifierAndDate(String identifier,Date versionDate, boolean allSubTree)
+            throws GWTJahiaServiceException {
+        // restore by label
+        versioning.restoreVersionLabel(identifier, versionDate, null, allSubTree, retrieveCurrentSession());
+    }
+
     public void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException {
         for (String[] uploaded : uploadeds) {
             contentManager.uploadedFile(uploaded[0], uploaded[1], Integer.parseInt(uploaded[2]), uploaded[3],

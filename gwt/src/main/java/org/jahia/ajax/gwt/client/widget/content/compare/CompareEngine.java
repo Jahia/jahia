@@ -125,7 +125,7 @@ public class CompareEngine extends Window {
         // staging version
         if (node != null) {
             rightPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
-                    linker, "default", true, displayVersionSelector) {
+                    linker, "live", true, displayVersionSelector) {
                 @Override
                 public String getCompareWith() {
                     return leftPanel.getInnerHTML();

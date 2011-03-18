@@ -136,6 +136,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         Element element = null;
         final Cache cache = cacheProvider.getCache();
         boolean cacheable = !notCacheableFragment.contains(key);
+        if(renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v")!=null){
+            cacheable = false;
+        }
         if (renderContext.getRequest().getParameter("ec") != null && renderContext.getRequest().getParameter(
                 "ec").equals(resource.getNode().getIdentifier())) {
             cacheable = false;
@@ -240,6 +243,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
         }
         boolean cacheable = !notCacheableFragment.contains(key);
+        if(renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v")!=null){
+            cacheable = false;
+        }
         if (renderContext.getRequest().getParameter("ec") != null && renderContext.getRequest().getParameter(
                 "ec").equals(resource.getNode().getIdentifier())) {
             cacheable = false;
@@ -474,9 +480,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         String nodePath = "/"+StringUtils.substringAfter(split[1],"/");
                         String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1],"/")), nodePath);
                         cacheKey = keyGenerator.replaceField(cacheKey, "acls", acls);
-                        if (renderContext.getRequest().getParameter("ec") != null && renderContext.getRequest().getParameter(
-                "ec").equals(keyAttrbs.get("resourceID"))) {
-                            cacheKey = keyGenerator.replaceField(cacheKey, "queryString",renderContext.getRequest().getQueryString());
+                        if (renderContext.getRequest().getParameter("ec") != null &&
+                            renderContext.getRequest().getParameter("ec").equals(keyAttrbs.get("resourceID"))) {
+                            cacheKey = keyGenerator.replaceField(cacheKey, "queryString",
+                                    renderContext.getRequest().getQueryString());
+                        }
+                        if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
+                            cacheKey = keyGenerator.replaceField(cacheKey, "queryString", UUID.randomUUID().toString());
                         }
                     } catch (ParseException e) {
                         logger.error(e.getMessage(), e);

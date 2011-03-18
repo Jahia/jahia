@@ -351,7 +351,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
                           URLResolver urlResolver) throws Exception {
         if (req.getParameter(JahiaPortalURLParserImpl.PORTLET_INFO) != null) {
-            Resource resource = urlResolver.getResource(null, null);
+            Resource resource = urlResolver.getResource();
             renderContext.setMainResource(resource);
             JCRSiteNode site = resource.getNode().getResolveSite();
             renderContext.setSite(site);
@@ -374,9 +374,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         Action action;
         Resource resource = null;
         if (urlResolver.getPath().endsWith(".do")) {
-            Date date = getVersionDate(req);
-            String versionLabel = getVersionLabel(req);
-            resource = urlResolver.getResource(date, versionLabel);
+            resource = urlResolver.getResource();
             renderContext.setMainResource(resource);
             try {
                 JCRSiteNode site = resource.getNode().getResolveSite();
@@ -648,9 +646,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
         try {
             final HttpSession session = req.getSession();
-
+            Date date = getVersionDate(req);
+            String versionLabel = getVersionLabel(req);
             URLResolver urlResolver = new URLResolver(req.getPathInfo(), req.getServerName(), req);
-
+            urlResolver.setVersionDate(date);
+            urlResolver.setVersionLabel(versionLabel);
             // check permission
             try {
                 if (!hasAccess(urlResolver.getNode())) {
@@ -692,10 +692,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 } else {
                     Resource resource;
 
-                    Date date = getVersionDate(req);
-                    String versionLabel = getVersionLabel(req);
-
-                    resource = urlResolver.getResource(date, versionLabel);
+                    resource = urlResolver.getResource();
                     renderContext.setMainResource(resource);
 
                     JCRSiteNode site = resource.getNode().getResolveSite();

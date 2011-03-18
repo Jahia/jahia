@@ -179,6 +179,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion, boolean allSubTree) throws GWTJahiaServiceException;
 
+    public void restoreNodeByIdentifierAndDate(String identifier,Date versionDate, boolean allSubTree) throws GWTJahiaServiceException;
+
     public void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException;
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName) throws GWTJahiaServiceException;

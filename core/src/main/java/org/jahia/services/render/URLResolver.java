@@ -101,6 +101,8 @@ public class URLResolver {
     private String redirectUrl;
     private String vanityUrl;
     private String method;
+    private Date versionDate;
+    private String versionLabel;
 
     public void setRenderContext(RenderContext renderContext) {
         this.renderContext = renderContext;
@@ -326,32 +328,11 @@ public class URLResolver {
      * @throws RepositoryException
      */
     public Resource getResource() throws RepositoryException {
-        return resolveResource(getWorkspace(), getLocale(), getPath(), null, null);
-    }
-
-    /**
-     * Creates a versioned resource from the path in the URL.
-     * <p/>
-     * The path should looks like : [nodepath][.templatename].[templatetype] or [nodepath].[templatetype]
-     *
-     * Workspace, locale and path are taken from the given resolved URL.
-     *
-     * @param versionDate
-     *            The version date to get the resource of a versioned node, or the closest before this date
-     * @param versionLabel
-     * @return The resource, if found
-     * @throws PathNotFoundException
-     *             if the resource cannot be resolved
-     * @throws RepositoryException
-     */
-    public Resource getResource(Date versionDate, String versionLabel)
-            throws RepositoryException {
-        return resolveResource(getWorkspace(), getLocale(), getPath(),
-                versionDate,versionLabel);
+        return resolveResource(getWorkspace(), getLocale(), getPath());
     }
 
     public Resource getResource(String path) throws RepositoryException {
-        return resolveResource(getWorkspace(), getLocale(), path, null, null);
+        return resolveResource(getWorkspace(), getLocale(), path);
     }
 
     /**
@@ -408,7 +389,10 @@ public class URLResolver {
                                         workspace,
                                         locale,
                                         null);
-
+                        if(userSession.getVersionDate()==null)
+                            userSession.setVersionDate(versionDate);
+                        if(userSession.getVersionLabel()==null)
+                            userSession.setVersionLabel(versionLabel);
                         try {
                             node = userSession.getNode(nodePath);
                         } catch (PathNotFoundException e) {
@@ -439,8 +423,7 @@ public class URLResolver {
      *             if the resource cannot be resolved
      * @throws RepositoryException
      */
-    protected Resource resolveResource(final String workspace, final Locale locale, final String path,
-                                       final Date versionDate, final String versionLabel)
+    protected Resource resolveResource(final String workspace, final Locale locale, final String path)
             throws RepositoryException {
         if (logger.isDebugEnabled()) {
             logger.debug("Resolving resource for workspace '" + workspace
@@ -514,8 +497,10 @@ public class URLResolver {
                             userSession = JCRSessionFactory.getInstance()
                                     .getCurrentUserSession(workspace, locale);
                         }
-                        userSession.setVersionDate(versionDate);
-                        userSession.setVersionLabel(versionLabel);
+                        if(userSession.getVersionDate()==null)
+                            userSession.setVersionDate(versionDate);
+                        if(userSession.getVersionLabel()==null)
+                            userSession.setVersionLabel(versionLabel);
 
                         try {
                             node = userSession.getNode(nodePath);
@@ -618,5 +603,21 @@ public class URLResolver {
         }
         
         return workspace;
+    }
+
+    public void setVersionDate(Date versionDate) {
+        this.versionDate = versionDate;
+    }
+
+    public void setVersionLabel(String versionLabel) {
+        this.versionLabel = versionLabel;
+    }
+
+    public Date getVersionDate() {
+        return versionDate;
+    }
+
+    public String getVersionLabel() {
+        return versionLabel;
     }
 }

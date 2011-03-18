@@ -27,8 +27,8 @@
             }
         }
     </script>
-    <ui:loginArea class=" loginForm" action="${pageContext.request.contextPath}/cms/login">
-        <h3 class="loginicon">${currentNode.properties['jcr:title'].string}</h3>
+    <ui:loginArea class=" loginForm" action="<c:url value='${url.login}'/>">
+        <h3 class="loginicon">${fn:escapeXml(currentNode.displayableName)}</h3>
         <ui:isLoginError var="loginResult">
             <span class="error"><fmt:message bundle="JahiaInternalResources" key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
         </ui:isLoginError>
@@ -83,9 +83,8 @@
                 </c:choose>
             </div>
         </div>
-        <h3 class="logouticon">Logout</h3>
-        <p>Logged as ${renderContext.user.username}
-            <c:if test="${!empty currentAliasUser}">( as ${currentAliasUser.username}) </c:if>
+        <h3 class="logouticon"><fmt:message key="label.logout"/></h3>
+        <p><fmt:message key="label.loggedAs"/>&nbsp;${renderContext.user.username}<c:if test="${!empty currentAliasUser}"> (as ${currentAliasUser.username})</c:if>
         </p>
         <p><a class="aButton"
               href='<c:url value="${url.logout}"/>'><span><fmt:message key="label.logout"/></span></a></p>

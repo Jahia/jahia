@@ -54,10 +54,7 @@
         form.submit();
     }
 </script>
-<div id="tasklist" class="boxtasks">
-<div class=" boxtasksgrey boxtaskspadding16 boxtasksmarginbottom16">
-<div class="boxtasks-inner">
-<div class="boxtasks-inner-border"><!--start boxtasks -->
+<div id="tasklist">
 <div id="${user.UUID}">
 
 <ul>
@@ -184,6 +181,4 @@
 </div>
 <div class="clear"></div>
 </div>
-</div>
-</div>
-</div>
+

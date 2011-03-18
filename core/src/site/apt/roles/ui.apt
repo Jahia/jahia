@@ -6,17 +6,21 @@ Roles/permissions management UI
 
 * Roles {management}
 
-  Management UI can be accessed via <Jahia Administration> -> <Server Settings> -> <Manager server roles> menu.
+  Management UI can be accessed via <Jahia Administration> -> <Server settings> -> <Manage roles> menu.
 
   The UI provides simple actions for managing roles: create, delete, import, export etc.
   
 ** Role definition
 
   The <Content> tab allows to set the title, description, and the optional list of types on which the roles can be applied.
+  
+[./images/roles/ui-roles.png]
 
 ** Granting {permissions} to roles
 
   The <Permissions> tab displays a tree of all available permissions in the system. Permissions can be set or removed from the role.
+  
+[./images/roles/ui-permissions.png]
   
 * Roles {engine} tab
 
@@ -25,4 +29,4 @@ Roles/permissions management UI
   The <Roles> engine tab is a table with one line per user / group, and one column per role. A role can be assigned to
   a user or a group by checking the corresponding checkbox.
 
-
+[./images/roles/ui-granting-roles-details.png]

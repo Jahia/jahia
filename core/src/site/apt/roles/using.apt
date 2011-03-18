@@ -4,10 +4,10 @@ Using permissions
   
 * {JSP} templates
 
-  With functions included in the <Jahia functions> taglib (uri: <<<http://www.jahia.org/tags/functions>>>)
+  With functions included in the <Jahia JCR> taglib (uri: <<<http://www.jahia.org/tags/jcr>>>)
   template developers can restrict access to particular areas of their templates.
   
-  Here are simple examples that show the usage of those functions:
+  Here is a simple example that show the usage of such a function:
   
 +-------------
     <c:if test="${jcr:hasPermission(currentNode,'jcr:write')}">
@@ -15,10 +15,12 @@ Using permissions
     </c:if>
 +-------------
 
+  Notice that the permission is used without the workspace name suffix, this is because Jahia will automatically 
+  attach the current workspace name when resolving the permission. 
     
 * {Java} API
 
-  A permission is always checked for a user on a specific node. The JCR API provides a method to check
+  A permission is always checked for a user on a specific node. The JCR <<<AccessControlManager>>> API provides a method to check
   permissions on a node :
 
 +---------------------

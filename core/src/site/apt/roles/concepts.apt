@@ -48,7 +48,7 @@ Jahia Authorization system concepts
 
     An ACL (access control list) defines which roles are granted to a user or group on a specific node. It defines the
     access policy on a node and its sub-tree : ACLs are inherited on all sub-nodes. ACL are structured in multiple Access
-    Control Entries - one entry for every user and every group that need to have a roles.
+    Control Entries - one entry for every user and every group that need to have a role.
 
     ACL are stored as a <<<jnt:acl>>> sub-node on the node where it is set. It contains a list of <<<jnt:ace>>>.
 

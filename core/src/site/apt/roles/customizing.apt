@@ -9,7 +9,7 @@ Customizing built-in roles and permissions
   
 * {Built-in} roles/permissions
 
-  Built-in roles and permissions are dedicated to the all standard Jahia operations, for administration, edit mode,
+  Built-in roles and permissions are dedicated to all standard Jahia operations, administration, edit mode,
   studio, contribute mode, ...
 
   Predefined permissions are organized in main groups :
@@ -26,7 +26,7 @@ Customizing built-in roles and permissions
 
   * <<<managers>>> - access to different managers (document manager, portlet manager, content manager, etc.) can be granted using these permissions
 
-  * <<<workflow-tasks>>> - permissions used by workflow definitions for task/permission mapping (see {{{../workflow/workflow.apt}workflow}})
+  * <<<workflow-tasks>>> - permissions used by workflow definitions for task/permission mapping (see {{{../workflow/workflow.html}workflow}})
 
   * <<<wysiwyg-editor-toolbar>>> - by using these permissions it is possible to distinguish between three built-in types of the WYSIWYG HTML Editor (CKEditor) toolbar: full, basic and light.
 
@@ -42,32 +42,35 @@ Customizing built-in roles and permissions
   In order to provide initial assignment of permissions to an existing role, just add the role in the import
   file with the <<<j:permissions>>> property set with the new permission.
 
-  An example of the roles/permissions is given below:
+  An example of the <<<permissions.xml>>> import file is given below:
   
 +-------------
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0"
-                    xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
-                    xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
-                    xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
-
-    ...
-
-    <permissions jcr:primaryType="jnt:permission">
-        <actions jcr:primaryType="jnt:permission">
-            <blog jcr:primaryType="jnt:permission">
-                <createNewBlog jcr:primaryType="jnt:permission"/>
-                <addBlogEntry jcr:primaryType="jnt:permission"/>
-                <editBlogEntry jcr:primaryType="jnt:permission"/>
-            </blog>
-        </actions>
-    </permissions>
-
-    <roles>
-        <visitor jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/actions/blog/createNewBlog"/>
-    </roles>
-</content>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions jcr:primaryType="jnt:permission"
+        xmlns:jcr="http://www.jcp.org/jcr/1.0"
+        xmlns:j="http://www.jahia.org/jahia/1.0"
+        xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+    <actions jcr:primaryType="jnt:permission">
+        <blog jcr:primaryType="jnt:permission">
+            <createNewBlog jcr:primaryType="jnt:permission"/>
+            <addBlogEntry jcr:primaryType="jnt:permission"/>
+            <editBlogEntry jcr:primaryType="jnt:permission"/>
+            <testEditBlogEntry jcr:primaryType="jnt:permission"/>
+            <test21EditBlogEntry jcr:primaryType="jnt:permission"/>
+        </blog>
+    </actions>
+</permissions>
 +-------------
 
+  And the <<<roles.xml>>> for initial assignment of a permission looks for instance like this:
+  
++-------------  
+<?xml version="1.0" encoding="UTF-8"?>
+<roles jcr:primaryType="jnt:roles"
+       xmlns:jcr="http://www.jcp.org/jcr/1.0"
+       xmlns:j="http://www.jahia.org/jahia/1.0"
+       xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+    <visitor jcr:primaryType="jnt:role"
+             j:permissions="/permissions/actions/blog/createNewBlog"/>
+</roles>
++-------------  

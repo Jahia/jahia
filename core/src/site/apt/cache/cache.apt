@@ -33,19 +33,19 @@ content in the output, otherwise it ask for rendering only the missing part.
  To enable manual set-up of expiracy delay in the engines, you must apply the mixin type <<<jmix:cache>>>
  to the targeted object definition.
 
--------------------------------
++-------------------------------
 [jnt:lastNews] > jnt:content, jmix:list, mix:title, jmix:queryContent, jmix:cache
   - maxNews (long) = 10 indexed=no
   - filter (reference, category[autoSelectParent=false])
--------------------------------
++-------------------------------
 
  You can also hardcode an expiration on a per template basis in a template properties file.
  Example from the jnt_banner/html/banner.properties file in default module.
 
--------------------------------
++-------------------------------
 #Make banner non cacheable
 cache.expiration = 0
--------------------------------
++-------------------------------
 
  Expiration delays are expressed in seconds.
 
@@ -75,13 +75,13 @@ cache.expiration = 0
  But for subsequent submission of new comments, we do not update anymore the ain resource but only the subnode comments,
  so in our script we have to tell the system to flush this html fragment when the main resource subnode comments is updated
 
----------------------------------------
++---------------------------------------
 <jcr:node var="comments" path="${bindedComponent.path}/comments"/>
 <c:if test="${not empty comments}">
     <template:addCacheDependency node="${comments}"/>
     <template:module node="${comments}" />
 </c:if>
----------------------------------------
++---------------------------------------
 
   Here what you have to keep in mind is that if your script load another node than the current node or the binded on then you
   will have to add a dependency manually.
@@ -89,13 +89,13 @@ cache.expiration = 0
   You can also define dependencies based on some regular expression, this is really useful for html fragment using search queries
    to display content.
 
------------------------------------------
++-----------------------------------------
 <query:definition var="result"
   statement="select * from [jnt:blogPost] as blogPost  where isdescendantnode(blogPost, ['${renderContext.mainResource.node.path}']) order by blogPost.[jcr:lastModified] desc" limit="20"/>
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${result}" />
 <template:addCacheDependency flushOnPathMatchingRegexp="${renderContext.mainResource.node.path}/[^/]*/[^/]*"/>
------------------------------------------
++-----------------------------------------
 
   This fragment will be flushed for any change on any nodes down to two sub level of the main resource.
 
@@ -105,7 +105,7 @@ cache.expiration = 0
 
  initialize users acls :
 
-  * query all user acls (jnt:ace nodes whith property principal containing something like 'u:*')
+  * query all user acls (jnt:ace nodes with property principal containing something like 'u:*')
 
   * for each found acls get the associated content path
 
@@ -136,4 +136,4 @@ cache.expiration = 0
 
  Then we get the roles list for this user on the related path and we concatenate that with the groups list.
 
- We store this acl key in the user cache for this path so we do not need to do that asecond time.
+ We store this acl key in the user cache for this path so we do not need to do that a second time.

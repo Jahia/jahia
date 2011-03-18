@@ -10,7 +10,7 @@ Jahia 6.5 - Core Module - Custom Property Renderer
   Renderers are initialized in the same manner as the initializers, in the same Spring file (<<<applicationcontext-jcr.xml>>>).
   Each renderer must extend <<<ChoiceListRenderer>>> interface.
 
--------------------------------
++-------------------------------
 <bean id="countryInitializerRenderer" class="org.jahia.services.content.nodetypes.initializers.CountryChoiceListInitializerAndRendererImpl"/>
 <bean id="countryFlagInitializer" class="org.jahia.services.content.nodetypes.initializers.CountryFlagChoiceListInitializerAndRendererImpl"/>
 <bean id="choiceListRenderers" class="org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService" factory-method="getInstance">
@@ -21,14 +21,14 @@ Jahia 6.5 - Core Module - Custom Property Renderer
     </map>
   </property>
 </bean>
--------------------------------
++-------------------------------
 
   Renderers are used through a tag in the templates, the tag can directly render the content of the property
   in its own manner, or can simply return a map of objects.
 
   Example from the CountryFlagChoiceListInitializerAndRendererImpl :
 
-----------------------------------
++----------------------------------
 public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
     public Map<String, Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
             throws RepositoryException {
@@ -61,18 +61,18 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         return "<img src=\""+context.getRequest().getContextPath()+flagPath+"\"><span>"+displayName+"</span>";
     }
 }
-----------------------------------
++----------------------------------
 
   Example of usage in the templates :
 
-----------------------------------
++----------------------------------
 <span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;<jcr:nodePropertyRenderer node="${currentNode}" name="country" renderer="flagcountry"/></span>
-----------------------------------
++----------------------------------
 
   Or :
 
-----------------------------------
++----------------------------------
 <jcr:nodePropertyRenderer node="${currentNode}" name="country" renderer="flagcountry" var="country"/>
 
 <span class="jobtxt">${fn:escapeXml(values.town)},&nbsp;<img src="${country.flag}"/>&nbsp;${country.displayName}</span>    
-----------------------------------
++----------------------------------

@@ -5,9 +5,9 @@ Jahia 6.5 - Core Module - ChoiceList Initializers
 
   The simplest example is to use choicelist for the selector and to list the allowed values in the constraint of the definition :
 
-------------------------------------
++------------------------------------
 - contract (string, choicelist) < contract1, contract2, contract3, contract4  
-------------------------------------
++------------------------------------
 
   This will give you a dropdown list like that :
 
@@ -16,9 +16,9 @@ Jahia 6.5 - Core Module - ChoiceList Initializers
   This is nice but maybe our end users will want to have something more explanatory for choosing the right values.\
   We will now show you how to use resource bundle to modify the rendering of your dropdown list :
 
-------------------------------------
++------------------------------------
 - contract (string, choicelist[resourceBundle]) < contract1, contract2, contract3, contract4
-------------------------------------
++------------------------------------
 
   This will give you a dropdown list like that :
 
@@ -29,7 +29,7 @@ Jahia 6.5 - Core Module - ChoiceList Initializers
   ChoiceList Initializers are implementations of the <<<ChoiceListInitializer>>> interface. All implementations are managed by the <<<ChoiceListInitializerService>>>.
   This service is defined in the <<<applicationcontext-jcr.xml>>> file :
 
--------------------------------------
++-------------------------------------
     <bean id="rbInitializer" class="org.jahia.services.content.nodetypes.initializers.ResourceBundleChoiceListInitializerImpl"/>
     <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" factory-method="getInstance">
         <property name="initializers">
@@ -38,7 +38,7 @@ Jahia 6.5 - Core Module - ChoiceList Initializers
             </map>
         </property>
     </bean>
--------------------------------------
++-------------------------------------
 
   When initializing the <<<ChoiceListInitializerService>>> we pass a map of initializers we want to used in the system. Each Initializer will be associated to a keyword.
   Here the <<<ResourceBundleChoiceListInitializerImpl>>> will be attached to the keyword <<<resourceBundle>>>.
@@ -46,10 +46,10 @@ Jahia 6.5 - Core Module - ChoiceList Initializers
   This way you can have one initializer that fill the values, and other in the pipe that change some of those values or add properties to them.
   Here an example for the Templates choicelist in the layout panel :
 
---------------------------------------
++--------------------------------------
 [jmix:renderable] > jmix:layout, jmix:contentMixin mixin
  - j:view (string, choicelist[templates,resourceBundle,image])
---------------------------------------
++--------------------------------------
 
   This means that for displaying this dropdown list we first call the <<<templates>>> initializer that is responsible for filling the available values.\
   Then this list of values is passed to the <<<resourceBundle>>> initializer which will try to replace the label displayed in the dropdown list

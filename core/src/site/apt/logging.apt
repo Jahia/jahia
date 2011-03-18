@@ -73,7 +73,7 @@ Logging service
  setup. Unless you have a strong need for another implementation, we recommend you use the default service implementation,
  but you might have a need to customize the event templates, in order for example to ease post-processing of the logs.
 
--------------------------
++-------------------------
     <bean id="loggingService" class="org.jahia.services.logging.MetricsLoggingServiceImpl" factory-method="getInstance">
         <property name="logTemplatesMap">
             <map>
@@ -85,7 +85,7 @@ Logging service
             </map>
         </property>
     </bean>
--------------------------
++-------------------------
 
 ** WEB-INF/etc/config/log4j.xml
 
@@ -97,7 +97,7 @@ Logging service
   responsible for setting up the logging to the destination are presented first, and then the required categories simply
   have references to the declared appenders.
 
--------------------------
++-------------------------
     <appender name="profilerLogs" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="jahia_profiler.log"/>
         <param name="Threshold" value="debug"/>
@@ -137,14 +137,14 @@ Logging service
         <priority value="debug"/>
         <appender-ref ref="profilerLogs"/>
     </category>
--------------------------
++-------------------------
 
 ** WEB-INF/etc/spring/jcr/applicationcontext-jcr.xml
 
  This configuration file contains the settings to configure logging for the JCR tree operations. Here is an extract of
  the default configuration.
 
--------------------------
++-------------------------
     <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true">
 ...
@@ -166,7 +166,7 @@ Logging service
         </property>
 ...
     </bean>
--------------------------
++-------------------------
 
  As you can see in the above configuration, the logging JCR event listener is configured only for the "default"
  workspace, which is the editing workspace. Also note that the event listener can take a nodeTypesList parameter that

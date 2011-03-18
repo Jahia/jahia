@@ -1,0 +1,147 @@
+Security aspects
+
+* Overview
+
+  Provides a brief overview of the security considerations and the ways
+  for reducing risks and protecting system and data.  
+  
+* User authentication and data
+
+  In this chapter we describe how the user data is protected and which security-related
+  concerns can arise in regard to the user authentication.
+
+** Password encryption
+
+  Passwords for Jahia users are stored in the JCR repository one way encrypted (SHA-1). 
+
+** Resetting root user password
+
+  TODO
+
+** User login brute-force attacks
+
+  TODO
+
+** Sensitive user data
+
+  Non-public user profile data (user node properties) are not exposed for an unauthorized access. 
+
+* Template and action protection
+
+** Module resources
+
+  In all Jahia modules the following sensitive resources are protected from a direct access via Web browser:
+  
+  * content definition files (<<<*.cnd>>>)
+  
+  * rule files (<<<*.drl>>> and <<<*.dsl>>>)
+
+  * I18N resource bundles and template properties (<<<*.properties>>>)
+  
+  * scripting templates for mail notifications (<<</mails/*.*>>>)
+  
+  * all resources under <<<META-INF>>> and <<<WEB-INF>>> folders
+  
+  * JSP templates (<<<*.jsp>>>)
+  
+  []
+
+  So, when developing new modules take care, please, of protecting sensitive files by e.g. placing them into
+  the <<<META-INF>>> folder, which is protected by default.
+  
+  <<<META-INF>>> is also the default folder for content and rule definition files.
+
+** XSS vulnerabilities
+
+  When developing custom JSP templates, especially those, requiring user interaction,
+  the following rules of thumb can be used to reduce the risk of simple
+  cross-site scripting {{{http://en.wikipedia.org/wiki/Cross-site_scripting}XSS}} attacks,
+  such as JavaScript code injection.
+  
+  * when using values of request parameters in templates markup, they need to be escaped, e.g.:
+  
++-----------------------------
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+...
+<label for="username"><fmt:message key="label.username"/></label>
+<input type="text" name="username" id="username" value="${fn:escapeXml(param.username)}" />
++-----------------------------  
+
+  * expect that values, coming from request parameters can be not well-formed or malicious.
+    For example, if your template expects a JCR node path as a request parameter <<<path>>>, you should
+    take care of checking if the path value really corresponds to a node, i.e.:
+  
++-----------------------------
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+...
+<jcr:node path="${param.path}" var="myNode"/>
+<c:if test="${not empty myNode}">
+   do something
+</c:if>
+<c:if test="${empty myNode}">
+   unknown node path
+</c:if>
++-----------------------------  
+
+** Protecting render actions
+
+  Render actions, which are subclsses of <<<org.jahia.bin.Action>>>, can be protected in a several ways
+  from execution by a unauthorized user or in the wrong context.
+  
+*** Valid authenticated user
+
+  An execution of an action can require a valid authenticated user. This is the default level of
+  protection for all render actions.
+  
+  If your action should be "available" for non-authenticated users or a protection is done in a
+  different manner, you can "relax" this constraint by specifying a <<<false>>> value for
+  action's <<<requireAuthenticatedUser>>> property in its Spring bean definition file.
+  
++-----------------------------  
+<bean class="org.jahia.modules.forum.actions.AddTopic" >
+    <property name="name" value="addTopic"/>
+    <property name="requireAuthenticatedUser" value="false"/>
+</bean>
++-----------------------------  
+   
+*** Required permissions
+ 
+  You can additionally specify a permission or multiple permissions a user, which is trying to execute this action,
+  should have on the target content node.
+  
+  For example:
+  
++-----------------------------  
+<bean class="org.jahia.modules.blog.AddBlogEntryAction">
+    <property name="requiredPermission" value="addBlogEntry"/>
+</bean>
++-----------------------------  
+  
+  An action can require multiple permissions:
+  
++-----------------------------  
+    <property name="requiredPermission" value="accessIntranetArea+addBlogEntry"/>
++-----------------------------  
+
+  or any of the specified permissions:
+    
++-----------------------------  
+    <property name="requiredPermission" value="addBlogEntry|moderateBlog"/>
++-----------------------------  
+      
+*** Required workspace
+ 
+  An action execution can be limited to a particular workspace (<<<edit>>> or <<<live>>>).
+  
+  For example, the <<<publish>>> action is relevant for the <<<edit>>> workspace only: 
+
++-----------------------------  
+<bean class="org.jahia.modules.defaultmodule.actions.PublishAction">
+    <property name="name" value="publish"/>
+    <property name="publicationService" ref="jcrPublicationService"/>
+    <property name="requiredPermission" value="publish"/>
+    <property name="requiredWorkspace" value="default"/>
+</bean>
++-----------------------------  

@@ -1,4 +1,4 @@
-Core Module - CKEditor integration
+Core Module - CKEditor integration (TO BE UPDATED)
 
   CKEditor is a text editor to be used inside web pages. It's a WYSIWYG editor, which means that the text being edited on it looks as similar as possible to the results users have when publishing it. It brings to the web common editing features found on desktop editing applications like Microsoft Word and OpenOffice. In Jahia, CKeditor is used to display richText property of a content node.
 

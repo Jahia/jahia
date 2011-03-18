@@ -1,4 +1,4 @@
-Jahia Crazy Jane - Core module - UiComponents framework
+Jahia 6.5 - Core module - UiComponents framework
 
   UiComponents framework allows integrators to customize a part of the Edit mode and Content managers.
 
@@ -32,15 +32,15 @@ Jahia Crazy Jane - Core module - UiComponents framework
 
     [[1]] create a bean that extends  org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration and with id "filemanager"
 
--------------------------------------------
++-------------------------------------------
    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
    </bean>
--------------------------------------------
++-------------------------------------------
 
     [[2]] set some simple properties
 
 
--------------------------------------------
++-------------------------------------------
    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint,jnt:portlet"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
@@ -52,11 +52,11 @@ Jahia Crazy Jane - Core module - UiComponents framework
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
    </bean>
--------------------------------------------
++-------------------------------------------
 
     [[3]] set the list of the displayed repositories of the rigth panel
 
--------------------------------------------
++-------------------------------------------
    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
        ...
        <!-- accordion panels-->
@@ -73,11 +73,11 @@ Jahia Crazy Jane - Core module - UiComponents framework
         </property>
        ...
    </bean>
--------------------------------------------
++-------------------------------------------
 
     [[4]] set the list of the displayed columns of the left panel
 
--------------------------------------------
++-------------------------------------------
    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
       ...
       <!-- tabs -->
@@ -91,11 +91,11 @@ Jahia Crazy Jane - Core module - UiComponents framework
         </property>
       ...
    </bean>
--------------------------------------------
++-------------------------------------------
 
     [[5]] set the list of the displayed tab info of the bottom panel
 
--------------------------------------------
++-------------------------------------------
    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
       ...
       <!-- tabs -->
@@ -109,11 +109,11 @@ Jahia Crazy Jane - Core module - UiComponents framework
         </property>
       ...
    </bean>
--------------------------------------------
++-------------------------------------------
 
     [[6]] set the visibility rule if nested
 
--------------------------------------------
++-------------------------------------------
    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         ...
         <property name="visibility">
@@ -123,21 +123,21 @@ Jahia Crazy Jane - Core module - UiComponents framework
         </property>
         ...
    </bean>
--------------------------------------------
++-------------------------------------------
 
     [[7]] set the toolbars (see applicationcontext-toolbar.xml for toolbar set beans)
 
--------------------------------------------
++-------------------------------------------
    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
       ...
       <property name="toolbarSet" ref="document-manager"/>
       ...
    </bean>
--------------------------------------------
++-------------------------------------------
 
     At the end, the configuration of the file manager is:
 
--------------------------------------------
++-------------------------------------------
  <!-- file manager -->
     <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint,jnt:portlet"/>
@@ -186,7 +186,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
             </bean>
         </property>
     </bean>    
--------------------------------------------
++-------------------------------------------
 
 
 * Edit Mode
@@ -217,24 +217,24 @@ Jahia Crazy Jane - Core module - UiComponents framework
 
     [[1]] create an edit mode configuration bean
 
-----------------
- <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
++----------------
+    <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
 
-  </bean>
-----------------
+    </bean>
++----------------
 
     [[2]] set the toolbars
 
-----------------------
++----------------------
     <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="topToolbar" ref="editmode-topbar"/>
         <property name="contextMenu" ref="editmode-contextmenu"/>
     </bean>
-----------------------
++----------------------
 
     [[3]] set the create engine for pages and contents
 
-------------------
++------------------
    <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         ...
         <!-- create engine-->
@@ -246,11 +246,11 @@ Jahia Crazy Jane - Core module - UiComponents framework
         </property>
         ...
     </bean>
-------------------
++------------------
 
     [[4]] set the edit engine for pages and contents (in this case it's the same)
 
----------------------
++---------------------
 
    <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         ...
@@ -263,11 +263,11 @@ Jahia Crazy Jane - Core module - UiComponents framework
         ...
     </bean>
 
-----------------------
++----------------------
 
     [[5]] set the tabs on the side panel
 
--------------------------
++-------------------------
 
     <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         ...
@@ -287,11 +287,11 @@ Jahia Crazy Jane - Core module - UiComponents framework
         ...
     </bean>
 
--------------------------
++-------------------------
 
     Finally, the configuration bean for the edit mode is:
 
---------------------------------
++--------------------------------
   <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="topToolbar" ref="editmode-topbar"/>
         <property name="contextMenu" ref="editmode-contextmenu"/>
@@ -326,7 +326,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
         </property>
     </bean>
 
---------------------------------
++--------------------------------
 
 
 * How to set visibility rules such as "nested permissions" on a specific part of the content manager and the edit mode?
@@ -335,7 +335,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
 
   Example 1:
 
---------------------------
++--------------------------
    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         ...
         <property name="visibility">
@@ -345,14 +345,14 @@ Jahia Crazy Jane - Core module - UiComponents framework
         </property>
         ...
    </bean>
----------------------------
++---------------------------
 
    means that the filemanager is visible only for users who have the site permission "filemanagers" of the group "contentmanager".
 
 
    Example 2:
 
--------------------------
++-------------------------
     <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
         <property name="key" value="websiteRepository"/>
         <property name="visibility">
@@ -361,7 +361,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
             </bean>
         </property>
     </bean>
--------------------------
++-------------------------
 
    means that the repository "website" is visible only for users who have the site permission "website" of the group "contentmanager"
 

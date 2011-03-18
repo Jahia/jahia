@@ -1,6 +1,6 @@
-Jahia Crazy 6.5
+Jahia 6.5
 
-This module defines an object of type “article” that is very structured and complete. It combines a title, an
+  This module defines an object of type "article" that is very structured and complete. It combines a title, an
 introduction (both unique), and a set of paragraphs based on my module "main content". The purpose section
 also defines the ability of each paragraph to add an insert (highlights or quote) that will fit within the text on the
 right or left of it.

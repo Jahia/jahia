@@ -3,21 +3,21 @@ Core Module
  This module contains all the core parts of Jahia.
  We will describe several functionalities here.
 
- * {{{./initializers_renderers/initializers.html}ChoiceList Initializers}}
-
- * {{{./interceptors.html}Interceptors}}
-
  * {{{./cache/cache.html}Caches}}
+
+ * {{{./initializers_renderers/initializers.html}ChoiceList Initializers}}
 
  * {{{./ckeditor/index.html}CKEditor Integration}}
 
- * {{{./logging.html}Logging service customization}}
- 
- * {{{./htmlexternalizer/description.html}HTML externalization}}
-
- * {{{./htmlcleanup.html}HTML cleanup}} - removing "unwanted" HTML tags from rich text.
-
  * {{{./history/history.html}Content History configuration}} - how to configure automatic purging of content history.
 
+ * {{{./htmlexternalizer/description.html}HTML externalization}}
+
+ * {{{./interceptors.html}Interceptors}}
+
+ * {{{./logging.html}Logging service customization}}
+ 
  * {{{./roles/index.html}Roles}} - how to configure and use roles and permissions.
+
+ * {{{./security/index.html}Security aspects}} - security considerations, like password encryption, protection of render actions, JSPs and other resources.
  

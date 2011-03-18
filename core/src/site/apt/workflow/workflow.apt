@@ -7,15 +7,15 @@ Workflow Integration
 
  The main configuration file for the workflow service is :
 
--------------------------
++-------------------------
  WEB-INF/etc/spring/workflow/applicationcontext-workflow.xml
--------------------------
++-------------------------
 
  The jBPM provider configuration file is the following :
 
--------------------------
++-------------------------
  WEB-INF/etc/spring/workflow/applicationcontext-jBPM.xml
--------------------------
++-------------------------
 
 * Defining new workflows in modules
 

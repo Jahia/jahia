@@ -27,7 +27,7 @@ Jahia 6.5 - Core Module - Property interceptors
 
   Interceptors are declared in the JCRStoreService bean from the applicationContext-jcr.xml file.
 
------------------------------------------------
++-----------------------------------------------
       <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
             factory-method="getInstance" lazy-init="true">
 
@@ -39,18 +39,18 @@ Jahia 6.5 - Core Module - Property interceptors
               </list>
           </property>
       </bean>
------------------------------------------------
++-----------------------------------------------
 
 
 * Implementing an interceptor
 
 An interceptor needs to implement the PropertyInterceptor interface.
 
------------------------------------------------
++-----------------------------------------------
     boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException;
 
     Value beforeSetValue(JCRNodeWrapper node, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException ;
 
     Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException;
------------------------------------------------
++-----------------------------------------------
 

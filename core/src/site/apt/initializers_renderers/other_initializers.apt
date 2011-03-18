@@ -11,15 +11,15 @@ Jahia 6.5 - Core Module - Other Initializer
   The node initializer allow you to bind a dropdown list to the content of a node in the JCR, by defining the root path
   of this dropdown list and the type of child nodes you want to list.
 
------------------------------------
++-----------------------------------
 - firstLevelCategory (weakreference,choicelist[nodes='/categories;jnt:category'])
------------------------------------
++-----------------------------------
 
   This will create a dropdown listing all the <<<jnt:category>>> elements from the folder <<</categories>>>.
 
------------------------------------
++-----------------------------------
  - j:theme (weakreference,choicelist[nodes='$currentSite/files/themes;jnt:folder'])
------------------------------------
++-----------------------------------
 
   This will create a dropdown listing all the subfolders elements of the folder  themes in the current site.
 
@@ -33,13 +33,13 @@ Jahia 6.5 - Core Module - Other Initializer
 
     This is as simple as that :
 
------------------------------------
++-----------------------------------
 - type (string,choicelist[script=type.groovy])
------------------------------------
++-----------------------------------
 
     The initializer will look for the script in the module containing the definition in the scripts folder :
 
------------------------------------
++-----------------------------------
    .
    |-jnt_lastNews
    |---html
@@ -48,7 +48,7 @@ Jahia 6.5 - Core Module - Other Initializer
    |-resources
    |-scripts
    |-WEB-INF
------------------------------------
++-----------------------------------
 
   The type of script is defined by the extension of the script, for example if your script has the name <<<type.groovy>>>,
   the script engine manager will try to find a declared script engine for the groovy extension .
@@ -64,7 +64,7 @@ Jahia 6.5 - Core Module - Other Initializer
 
     Example of Groovy script parsing an XML file to fill the values :
 
---------------------------------------
++--------------------------------------
 class RecordsHandler extends DefaultHandler {
     def values
 
@@ -88,6 +88,6 @@ def reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader()
 reader.setContentHandler(handler)
 reader.parse(new InputSource(new FileInputStream(file)))
 return newValues
---------------------------------------
++--------------------------------------
 
     Each script can also access to the list of values from its predecessors as it is binded to the <<<values>>> variable.  

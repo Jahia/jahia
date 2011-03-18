@@ -24,13 +24,14 @@
                 <item name="Validation" href="actions/validation.html"/>
             </item>
             <item name="Query" href="query/index.html"/>
+            <item name="Security aspects" href="security/index.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>
     </body>
     <skin>
-        <groupId>org.apache.maven.skins</groupId>
-        <artifactId>maven-default-skin</artifactId>
-        <version>1.0</version>
+        <groupId>org.jahia</groupId>
+        <artifactId>site-skin-beta</artifactId>
+        <version>6.5-SNAPSHOT</version>
     </skin>
 </project>

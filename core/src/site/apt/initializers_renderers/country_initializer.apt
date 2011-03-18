@@ -8,7 +8,7 @@ Jahia 6.5 - Core Module - Country Initializer Example
 
   The code of the country initializer :
 
--------------------------------------------
++-------------------------------------------
 public class CountryChoiceListInitializerImpl implements ChoiceListInitializer {
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {
@@ -26,7 +26,7 @@ public class CountryChoiceListInitializerImpl implements ChoiceListInitializer {
         return l;
     }
 }
--------------------------------------------
++-------------------------------------------
 
   You see that in this example when we create the <<<ChoiceListValue>>> we do not associated any properties,
   but only a display name in current locale of the user, and a value not sensitive to the locale the iso code of the country.
@@ -34,7 +34,7 @@ public class CountryChoiceListInitializerImpl implements ChoiceListInitializer {
 
   Now the code of the initializer for adding an image property to the <<<ChoiceListValue>>> objects of my list :
 
---------------------------------------------
++--------------------------------------------
 public class CountryFlagChoiceListInitializerImpl implements ChoiceListInitializer {
     public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
                                                      String param, String realNodeType, List<ChoiceListValue> values) {
@@ -58,13 +58,13 @@ public class CountryFlagChoiceListInitializerImpl implements ChoiceListInitializ
         return new ArrayList<ChoiceListValue>();
     }
 }
---------------------------------------------
++--------------------------------------------
 
   This initializer if placed at the start of the pipe will be of no use as it will return an empty list.
 
   Those initializers need to be declared in the <<<ChoiceListInitializerService>>> :
 
---------------------------------------------
++--------------------------------------------
 <bean id="rbInitializer" class="org.jahia.services.content.nodetypes.initializers.ResourceBundleChoiceListInitializerImpl"/>
 <bean id="countryInitializerRenderer" class="org.jahia.services.content.nodetypes.initializers.CountryChoiceListInitializerImpl"/>
 <bean id="countryFlagInitializer" class="org.jahia.services.content.nodetypes.initializers.CountryFlagChoiceListInitializerImpl"/>
@@ -77,13 +77,13 @@ public class CountryFlagChoiceListInitializerImpl implements ChoiceListInitializ
     </map>
   </property>
 </bean>  
---------------------------------------------
++--------------------------------------------
 
  A definition example :
 
---------------------------------------------
++--------------------------------------------
 - country (string, choicelist[country,flag])
---------------------------------------------
++--------------------------------------------
 
  This will generate a dropdown list like that :
 

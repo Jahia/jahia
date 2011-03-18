@@ -16,6 +16,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.js"/>
+<template:addResources type="css" resources="listsites.css"/>
 <c:if test="${currentResource.workspace eq 'live'}">
 <div id="listsites${currentNode.identifier}"/>
     <script type="text/javascript">
@@ -26,19 +27,21 @@
 <c:if test="${currentResource.workspace ne 'live'}">
 
 <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
-<ul>
+<h3>Sites</h3>
+<ul class="list-sites">
 <c:forEach items="${result.nodes}" var="node">
     <jcr:node var="home" path="${node.path}/home"/>
     <c:if test="${jcr:hasPermission(home,'jcr:addChildNodes')}">
-    <li>${node.properties['jcr:title'].string}
-        <c:if test="${currentNode.properties.edit.boolean}">
-        <a href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"> <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.editMode"/></a>
+    <li class="listsiteicon">${node.properties['jcr:title'].string}
+        <c:if test="${currentNode.properties.edit.boolean}"><br />
+
+         <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"><fmt:message key="label.editMode"/></a>
     </c:if>
     <c:if test="${currentNode.properties.contribute.boolean}">
-        <a href="<c:url value='${url.baseContribute}${node.path}/home.html'/>"><img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.contribute"/></a>
+        <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseContribute}${node.path}/home.html'/>"><fmt:message key="label.contribute"/></a>
     </c:if>
     <c:if test="${currentNode.properties.live.boolean && home.properties['j:published'].boolean}">
-        <a href="<c:url value='${url.baseLive}${node.path}/home.html'/>"><img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.live"/></a>
+        <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseLive}${node.path}/home.html'/>"><fmt:message key="label.live"/></a>
     </c:if>
     </li>
     </c:if>

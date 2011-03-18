@@ -1,0 +1,22 @@
+/******************************************************************************
+*  List Sites
+******************************************************************************/
+
+#bodywrapper ul.list-sites  {
+	margin:0;
+	margin:0.5em 0 1em 0;
+	list-style:none;
+	padding:0;
+}
+
+#bodywrapper ul.list-sites li {
+	padding:2px 5px;
+	margin:0;
+	list-style:none
+}
+#bodywrapper ul.list-sites li.listsiteicon {
+	background:transparent url(../icons/jnt_virtualsite.png) no-repeat scroll top left;
+	padding-left:24px;
+	line-height:1.375em;
+	display:block
+}

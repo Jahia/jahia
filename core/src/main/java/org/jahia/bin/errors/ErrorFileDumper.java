@@ -393,6 +393,7 @@ public class ErrorFileDumper {
                     strOut.print(threadMonitor.findDeadlock());
                 }
             } else {
+                strOut.println();
                 strOut.println("Thread info and deadlock status were not generated because of current request high load.");
             }
 

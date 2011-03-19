@@ -735,6 +735,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     public boolean isAdmin(String username, int siteId) {
         if (isAdmin == null) {
+            // optimize away guest, we assume he can never be site administrator.
+            if (JahiaLoginModule.GUEST.equals(username)) {
+                return false;
+            }
             JahiaUser user = userService.lookupUser(username);
             if (user != null) {
                 return isAdmin = user.isAdminMember(siteId);

@@ -230,7 +230,8 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameFieldSet.add(name, fd);
             }
 
-            if (tab.getData("NodeName") == null || !tab.getData("NodeName").equals(engine.getNodeName())) {
+            String nodeName = (String) tab.getData("NodeName");
+            if (nodeName == null || !nodeName.equals(engine.getNodeName())) {
                 tab.setData("NodeName", engine.getNodeName());
                 autoUpdateName.removeAllListeners();
                 if (titleField != null) {

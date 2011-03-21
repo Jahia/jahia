@@ -118,8 +118,6 @@
     </template:addResources>
 </c:if>
 
-<div class='grid_8 alpha'><!--start grid_8-->
-
     <jcr:sql var="receivedMessages"
              sql="select * from [jnt:socialMessage] where isdescendantnode(['${user.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
     <template:addCacheDependency path="${user.path}/messages/inbox"/>
@@ -142,18 +140,6 @@
         </div>
         <div class='clear'></div>
     </div>
-
-</div><!--stop grid_18-->
-<div class='grid_8 omega'><!--start grid_8-->
-
-    <div id="socialMessageDetail" class="social-message-detail">
-
-    </div>
-
-    <div class='clear'></div>
-
-</div>
-<!--stop grid_8-->
 
 <div class='clear'></div>
 <div class="jahiaFancyboxForm">

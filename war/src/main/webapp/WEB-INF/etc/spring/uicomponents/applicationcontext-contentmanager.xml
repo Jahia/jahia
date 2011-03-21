@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean name="managerEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
         <property name="customEditors">
@@ -23,16 +23,16 @@
         <!-- edit engine -->
         <property name="engineTabs">
             <list>
-                <ref bean="Engine.Tab.Content" />
-                <ref bean="Engine.Tab.Layout" />
-                <ref bean="Engine.Tab.Metadata" />
-                <ref bean="Engine.Tab.Tags" />
-                <ref bean="Engine.Tab.Categories" />
-                <ref bean="Engine.Tab.Options" />
-                <ref bean="Engine.Tab.Roles" />
-                <ref bean="Engine.Tab.Usages" />
-                <ref bean="Engine.Tab.Workflow" />
-                <ref bean="Engine.Tab.Seo" />
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.Layout"/>
+                <ref bean="Engine.Tab.Metadata"/>
+                <ref bean="Engine.Tab.Tags"/>
+                <ref bean="Engine.Tab.Categories"/>
+                <ref bean="Engine.Tab.Options"/>
+                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.Workflow"/>
+                <ref bean="Engine.Tab.Seo"/>
             </list>
         </property>
 
@@ -164,7 +164,7 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
-        <property name="searchInFile" value="true"/>        
+        <property name="searchInFile" value="true"/>
         <!-- accordion panels-->
         <property name="repositories">
             <list>
@@ -178,13 +178,13 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Info" />
-                <ref bean="Engine.Tab.Metadata" />
-                <ref bean="Engine.Tab.Roles" />
-                <ref bean="Engine.Tab.Usages" />
-                <ref bean="Engine.Tab.Tags" />
-                <ref bean="Engine.Tab.Categories" />
-                <ref bean="Engine.Tab.Versioning" />
+                <ref bean="Engine.Tab.Info"/>
+                <ref bean="Engine.Tab.Metadata"/>
+                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.Tags"/>
+                <ref bean="Engine.Tab.Categories"/>
+                <ref bean="Engine.Tab.Versioning"/>
             </list>
         </property>
         <!-- table columns-->
@@ -287,7 +287,7 @@
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
         <property name="searchInContent" value="true"/>
-        <property name="searchInFile" value="true"/>    
+        <property name="searchInFile" value="true"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="defaultView" value="detailed"/>
 
@@ -301,10 +301,10 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Info" />
-                <ref bean="Engine.Tab.Content" />
-                <ref bean="Engine.Tab.Roles" />
-                <ref bean="Engine.Tab.Usages" />
+                <ref bean="Engine.Tab.Info"/>
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.Usages"/>
             </list>
         </property>
         <!-- table columns-->
@@ -376,7 +376,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>                        
+                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                     </list>
                 </property>
             </bean>
@@ -405,7 +405,7 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
-        <property name="searchInFile" value="false"/>           
+        <property name="searchInFile" value="false"/>
         <property name="defaultView" value="list"/>
 
         <!-- accordion panels-->
@@ -417,9 +417,9 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Content" />
-                <ref bean="Engine.Tab.Roles" />
-                <ref bean="Engine.Tab.Usages" />
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.Usages"/>
             </list>
         </property>
         <!-- table columns-->
@@ -509,7 +509,7 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="false"/>
         <property name="searchInContent" value="false"/>
-        <property name="searchInFile" value="false"/>           
+        <property name="searchInFile" value="false"/>
         <property name="defaultView" value="list"/>
 
         <!-- accordion panels-->
@@ -524,8 +524,8 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Roles" />
-                <ref bean="Engine.Tab.Usages" />
+                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.Usages"/>
             </list>
         </property>
         <!-- table columns-->
@@ -578,7 +578,7 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="false"/>
-        <property name="searchInFile" value="true"/>           
+        <property name="searchInFile" value="true"/>
         <property name="defaultView" value="list"/>
 
         <!-- accordion panels-->
@@ -593,9 +593,9 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Portlets" />
-                <ref bean="Engine.Tab.Roles" />
-                <ref bean="Engine.Tab.Usages" />
+                <ref bean="Engine.Tab.Portlets"/>
+                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.Usages"/>
             </list>
         </property>
         <!-- table columns-->
@@ -687,7 +687,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>                        
+                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                     </list>
                 </property>
             </bean>
@@ -724,7 +724,7 @@
         <property name="displaySearchInFile" value="true"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
-        <property name="searchInFile" value="true"/>           
+        <property name="searchInFile" value="true"/>
         <!-- accordion -->
         <property name="repositories">
             <list>
@@ -735,17 +735,17 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Info" />
+                <ref bean="Engine.Tab.Info"/>
                 <ref bean="Engine.Tab.Content"/>
                 <ref bean="Engine.Tab.Metadata"/>
-                <ref bean="Engine.Tab.Tags" />
-                <ref bean="Engine.Tab.Categories" />
-                <ref bean="Engine.Tab.Options" />
-                <ref bean="Engine.Tab.Roles" />
-                <ref bean="Engine.Tab.Usages" />
-                <ref bean="Engine.Tab.Workflow" />
-                <ref bean="Engine.Tab.Versioning" />
-                <ref bean="Engine.Tab.Seo" />
+                <ref bean="Engine.Tab.Tags"/>
+                <ref bean="Engine.Tab.Categories"/>
+                <ref bean="Engine.Tab.Options"/>
+                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.Workflow"/>
+                <ref bean="Engine.Tab.Versioning"/>
+                <ref bean="Engine.Tab.Seo"/>
             </list>
         </property>
 
@@ -882,17 +882,17 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Info" />
-                <ref bean="Engine.Tab.Content" />
-                <ref bean="Engine.Tab.Metadata" />
-                <ref bean="Engine.Tab.Tags" />
-                <ref bean="Engine.Tab.Categories" />
-                <ref bean="Engine.Tab.Options" />
-                <ref bean="Engine.Tab.Roles" />
-                <ref bean="Engine.Tab.Usages" />
-                <ref bean="Engine.Tab.Workflow" />
-                <ref bean="Engine.Tab.Versioning" />
-                <ref bean="Engine.Tab.Seo" />
+                <ref bean="Engine.Tab.Info"/>
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.Metadata"/>
+                <ref bean="Engine.Tab.Tags"/>
+                <ref bean="Engine.Tab.Categories"/>
+                <ref bean="Engine.Tab.Options"/>
+                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.Workflow"/>
+                <ref bean="Engine.Tab.Versioning"/>
+                <ref bean="Engine.Tab.Seo"/>
             </list>
         </property>
 
@@ -930,12 +930,19 @@
     <!-- sitemanager manager -->
     <bean id="sitemanager" parent="abstractmanager">
         <property name="requiredPermission" value="siteManager"/>
-        <property name="nodeTypes" value="jnt:page"/>
+        <property name="nodeTypes">
+            <list>
+                <value>jnt:page</value>
+                <value>jnt:content</value>
+            </list>
+        </property>
         <property name="folderTypes">
             <list>
                 <value>jnt:virtualsitesFolder</value>
                 <value>jnt:virtualsite</value>
                 <value>jmix:navMenuItem</value>
+                <value>jnt:contentFolder</value>
+                <value>jnt:contentList</value>
             </list>
         </property>
         <property name="toolbars">
@@ -965,6 +972,22 @@
                                     <ref bean="Toolbar.Item.PasteReference"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
+                                        </property>
+                                        <property name="titleKey" value="label.publish"/>
+                                        <property name="icon" value="publish"/>
+                                        <!--<property name="workflowAction" value="publish"/>-->
+                                    </bean>
+
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem"/>
+                                        </property>
+                                        <property name="titleKey" value="label.publishall"/>
+                                        <property name="icon" value="publishAll"/>
+                                    </bean>
                                 </list>
                             </property>
                         </bean>
@@ -974,13 +997,10 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Refresh"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.ListView"/>
-                                    <ref bean="Toolbar.Item.ThumbsView"/>
-                                    <ref bean="Toolbar.Item.Detailedview"/>
                                 </list>
                             </property>
                         </bean>
+                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                     </list>
                 </property>
             </bean>
@@ -999,6 +1019,22 @@
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
+                            </property>
+                            <property name="titleKey" value="label.publish"/>
+                            <property name="icon" value="publish"/>
+                            <!--<property name="workflowAction" value="publish"/>-->
+                        </bean>
+
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem"/>
+                            </property>
+                            <property name="titleKey" value="label.publishall"/>
+                            <property name="icon" value="publishAll"/>
+                        </bean>
                     </list>
                 </property>
             </bean>
@@ -1008,7 +1044,7 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="searchInContent" value="true"/>
-        <property name="searchInFile" value="false"/>           
+        <property name="searchInFile" value="false"/>
         <property name="defaultView" value="list"/>
 
 
@@ -1023,11 +1059,11 @@
         <!-- tabs -->
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Info" />
-                <ref bean="Engine.Tab.Roles" />
-                <ref bean="Engine.Tab.Usages" />
-                <ref bean="Engine.Tab.Versioning" />
-                <ref bean="Engine.Tab.Seo" />
+                <ref bean="Engine.Tab.Info"/>
+                <ref bean="Engine.Tab.Roles"/>
+                <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.Versioning"/>
+                <ref bean="Engine.Tab.Seo"/>
             </list>
         </property>
 
@@ -1041,11 +1077,9 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
                 <value>icon,40,empty</value>
-                <value>displayName,*,label.title</value>
-                <value>name,100,label.name</value>
-                <value>mix:lastModified.jcr:lastModified,100</value>
-                <value>mix:lastModified.jcr:lastModifiedBy,100</value>
-                <value>publicationInfo,30</value>
+                <value>displayName,350,label.title</value>
+                <value>mix:lastModified.jcr:lastModified,150</value>
+                <value>publicationInfo,40</value>
             </list>
         </property>
     </bean>

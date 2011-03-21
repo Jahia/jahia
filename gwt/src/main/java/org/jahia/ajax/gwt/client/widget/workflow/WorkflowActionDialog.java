@@ -219,7 +219,7 @@ public class WorkflowActionDialog extends LayoutContainer {
                         }
                     }
                     JahiaContentManagementService.App.getInstance().initializeCreateEngine(result.getName(),
-                            linker.getSelectionContext().getSingleSelection().getPath(),
+                            linker.getSelectionContext().getMultipleSelection().size()>1?linker.getSelectionContext().getMultipleSelection().get(0).getPath():linker.getSelectionContext().getSingleSelection().getPath(),
                             new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
                                 public void onSuccess(GWTJahiaCreateEngineInitBean result2) {
                                     propertiesEditor = new PropertiesEditor(Arrays.asList(result), variables,

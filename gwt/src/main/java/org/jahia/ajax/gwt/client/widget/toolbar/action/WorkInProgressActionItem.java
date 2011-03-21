@@ -59,13 +59,17 @@ public class WorkInProgressActionItem extends BaseActionItem {
     }
 
     public static void removeStatus(String status) {
-        instance.statuses.remove(status);
-        instance.refreshStatus();
+        if(instance!=null) {
+            instance.statuses.remove(status);
+            instance.refreshStatus();
+        }
     }
 
     public static void setStatus(String status) {
-        instance.statuses.add(status);
-        instance.refreshStatus();
+        if(instance!=null) {
+            instance.statuses.add(status);
+            instance.refreshStatus();
+        }
     }
 
     private void refreshStatus(List<GWTJahiaJobDetail> oldJobs) {

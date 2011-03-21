@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateTimePropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -45,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -56,14 +58,15 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
  * User: ktlili
  * Date: Apr 22, 2010
  * Time: 2:54:17 PM
- * 
  */
 public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     private List<GWTColumn> columnList;
@@ -75,20 +78,20 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
         }
     };
-    private transient final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER =
-            new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
-                                     ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                    String lockOwner = modelData.getLockOwner();
-                    if (modelData.isLocked() || lockOwner != null) {
-                        return lockOwner != null && lockOwner.equals(JahiaGWTParameters.SYSTEM_USER) ?
-                                "<img src='../images/icons/gwt/lock_information.png'>" :
-                                StandardIconsProvider.STANDARD_ICONS.lock().getHTML();
-                    } else {
-                        return "";
-                    }
-                }
-            };
+
+    private transient final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+        public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
+                             ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+            String lockOwner = modelData.getLockOwner();
+            if (modelData.isLocked() || lockOwner != null) {
+                return lockOwner != null && lockOwner.equals(
+                        JahiaGWTParameters.SYSTEM_USER) ? "<img src='../images/icons/gwt/lock_information.png'>" : StandardIconsProvider.STANDARD_ICONS.lock().getHTML();
+            } else {
+                return "";
+            }
+        }
+    };
+
     private transient final GridCellRenderer<GWTJahiaNode> SIZE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
@@ -100,31 +103,39 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             }
         }
     };
+
     private transient final GridCellRenderer<GWTJahiaNode> DATE_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             Date d = modelData.get(s);
             if (d != null) {
-                return new DateTimePropertyEditor(DateTimeFormat.getFormat(CalendarField.DEFAULT_DATE_FORMAT))
-                        .getStringValue(d);
+                return new DateTimePropertyEditor(DateTimeFormat.getFormat(
+                        CalendarField.DEFAULT_DATE_FORMAT)).getStringValue(d);
             } else {
                 return "-";
             }
         }
     };
-    private transient final GridCellRenderer<GWTJahiaNode> PUBLICATION_RENDERER =
-            new GridCellRenderer<GWTJahiaNode>() {
-                public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
-                                     ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
-                    final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
-                    return GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
-                }
-            };
+
+    private transient final GridCellRenderer<GWTJahiaNode> PUBLICATION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+        public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
+                             ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
+            final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
+            HorizontalPanel p = new HorizontalPanel();
+            Object res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
+            if (res instanceof Widget) {
+                p.add((Widget) res);
+            }
+            if (info.isLocked()) {
+                p.add(StandardIconsProvider.STANDARD_ICONS.lock().createImage());
+            }
+            return p;
+        }
+    };
 
     private transient final GridCellRenderer<GWTJahiaNode> VERSION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
-        public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i,
-                             int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore,
-                             Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
+        public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1,
+                             ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
             List<GWTJahiaNodeVersion> versions = gwtJahiaNode.getVersions();
             if (versions != null) {
                 SimpleComboBox<String> combo = new SimpleComboBox<String>();
@@ -132,19 +143,20 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 combo.setTriggerAction(ComboBox.TriggerAction.ALL);
                 for (GWTJahiaNodeVersion version : versions) {
                     String value = Messages.get("label.version", "Version") + " ";
-                    if(version.getLabel()!=null && !"".equals(version.getLabel())) {                        
+                    if (version.getLabel() != null && !"".equals(version.getLabel())) {
                         String[] strings = version.getLabel().split("_at_");
-                        if(strings.length==2) {
+                        if (strings.length == 2) {
                             String s1;
-                            if(strings[0].contains("published"))
+                            if (strings[0].contains("published")) {
                                 s1 = Messages.get("label.version.published", "published at");
-                            else
+                            } else {
                                 s1 = Messages.get("label.version.uploaded", "uploaded at");
-                            value = value + s1 + " " +
-                                DateTimeFormat.getMediumDateTimeFormat().format(DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                            }
+                            value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat().format(
+                                    DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
                         }
                     }
-                    combo.add(value+" ("+version.getVersionNumber()+")");
+                    combo.add(value + " (" + version.getVersionNumber() + ")");
                 }
                 final String s2 = "Always Latest Version";
                 combo.add(s2);
@@ -153,8 +165,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                     @Override
                     public void selectionChanged(
                             SelectionChangedEvent<SimpleComboValue<String>> simpleComboValueSelectionChangedEvent) {
-                        SimpleComboValue<String> value =
-                                simpleComboValueSelectionChangedEvent.getSelectedItem();
+                        SimpleComboValue<String> value = simpleComboValueSelectionChangedEvent.getSelectedItem();
                         String value1 = value.getValue();
                         if (!s2.equals(value1)) {
                             gwtJahiaNode.setSelectedVersion(value1.split("\\(")[0].trim());
@@ -177,12 +188,12 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     };
 
     public NodeColumnConfigList(List<GWTColumn> columnList) {
-        this(columnList,false);
+        this(columnList, false);
     }
 
     public NodeColumnConfigList(List<GWTColumn> columnList, boolean init) {
         this.columnList = columnList;
-        if(init){
+        if (init) {
             init();
         }
     }
@@ -195,7 +206,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
      * @return
      */
     public void init() {
-        List<GWTColumn> columns = columnList == null ? new ArrayList<GWTColumn>() : new ArrayList<GWTColumn>(columnList);
+        List<GWTColumn> columns = columnList == null ? new ArrayList<GWTColumn>() : new ArrayList<GWTColumn>(
+                columnList);
 
         for (GWTColumn column : columns) {
             int i = column.getSize();
@@ -225,7 +237,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 col.setRenderer(VERSION_RENDERER);
             } else if ("jcr:created".equals(column.getKey())) {
                 col.setRenderer(DATE_RENDERER);
-            }  else if ("jcr:lastModified".equals(column.getKey())) {
+            } else if ("jcr:lastModified".equals(column.getKey())) {
                 col.setRenderer(DATE_RENDERER);
             } else if ("index".equals(column.getKey())) {
                 col.setHeader("");

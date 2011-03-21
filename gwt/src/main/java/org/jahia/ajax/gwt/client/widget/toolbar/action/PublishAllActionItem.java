@@ -31,22 +31,18 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.List;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  * Created by IntelliJ IDEA.
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:58:56 PM
-* 
-*/
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:58:56 PM
+ */
 public class PublishAllActionItem extends PublishActionItem {
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -55,9 +51,15 @@ public class PublishAllActionItem extends PublishActionItem {
     }
 
     public void handleNewLinkerSelection() {
-        gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
-        if (gwtJahiaNode != null) {
-            updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName() + " - " + JahiaGWTParameters.getLanguageDisplayName());
+        if (linker.getSelectionContext().getMultipleSelection().size() > 1) {
+            setEnabled(true);
+            updateTitle(Messages.get("label.publish.all.selected.items"));
+        } else {
+            gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
+            if (gwtJahiaNode != null) {
+                updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName() + " - " +
+                            JahiaGWTParameters.getLanguageDisplayName());
+            }
         }
     }
 

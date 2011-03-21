@@ -102,20 +102,20 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getPermissionsAsBitSet();
     }
 
-    public boolean grantRoles(String user, Set<String> roles) throws RepositoryException {
-        return node.grantRoles(user, roles);
+    public boolean grantRoles(String principalKey, Set<String> roles) throws RepositoryException {
+        return node.grantRoles(principalKey, roles);
     }
 
-    public boolean denyRoles(String user, Set<String> roles) throws RepositoryException {
-        return node.denyRoles(user, roles);
+    public boolean denyRoles(String principalKey, Set<String> roles) throws RepositoryException {
+        return node.denyRoles(principalKey, roles);
     }
 
-    public boolean changeRoles(String user, Map<String, String> perm) throws RepositoryException {
-        return node.changeRoles(user, perm);
+    public boolean changeRoles(String principalKey, Map<String, String> perm) throws RepositoryException {
+        return node.changeRoles(principalKey, perm);
     }
 
-    public boolean revokeRolesForUser(String user) throws RepositoryException {
-        return node.revokeRolesForUser(user);
+    public boolean revokeRolesForPrincipal(String principalKey) throws RepositoryException {
+        return node.revokeRolesForPrincipal(principalKey);
     }
 
     public boolean revokeAllRoles()  throws RepositoryException{

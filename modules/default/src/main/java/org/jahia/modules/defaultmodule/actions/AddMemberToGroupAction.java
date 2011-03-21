@@ -62,7 +62,8 @@ public class AddMemberToGroupAction extends Action {
         }
         JahiaGroup targetJahiaGroup = jahiaGroupManagerService.lookupGroup(siteID, groupName);
 
-        if (parameters.get("userKey") != null) {
+        if ((parameters.get("principals") != null) &&
+            (parameters.get("roles") != null)) {
             String userKey = parameters.get("userKey").get(0);
             JahiaUser jahiaUser = jahiaUserManagerService.lookupUserByKey(userKey);
             if (jahiaUser == null) {
@@ -71,16 +72,6 @@ public class AddMemberToGroupAction extends Action {
             }
             if (!targetJahiaGroup.isMember(jahiaUser)) {
                 targetJahiaGroup.addMember(jahiaUser);
-            }
-        } else if (parameters.get("groupKey") != null) {
-            String groupKey = parameters.get("groupKey").get(0);
-            JahiaGroup jahiaGroup = jahiaGroupManagerService.lookupGroup(groupKey);
-            if (jahiaGroup == null) {
-                logger.warn("Group " + groupKey + " could not be found, will not add as member of group " + targetJahiaGroup.getGroupKey());
-                return ActionResult.BAD_REQUEST;
-            }
-            if (!targetJahiaGroup.isMember(jahiaGroup)) {
-                targetJahiaGroup.addMember(jahiaGroup);
             }
         } else {
             return ActionResult.BAD_REQUEST;

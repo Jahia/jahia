@@ -32,7 +32,6 @@
 
 package org.jahia.services.content;
 
-import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.decorator.JCRPlaceholderNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -283,26 +282,40 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     BitSet getPermissionsAsBitSet();
 
-    boolean grantRoles(String user, Set<String> roles) throws RepositoryException;
-
-    boolean denyRoles(String user, Set<String> roles) throws RepositoryException;
+    /**
+     * Grant roles to a principal on this node.
+     * @param principalKey the name of a principal with a prefix, such as "u:" for users, "g:" for groups
+     * @param roles the names of roles that this principal should be granted.
+     * @return true if action was successful, or false if not
+     * @throws RepositoryException
+     */
+    boolean grantRoles(String principalKey, Set<String> roles) throws RepositoryException;
 
     /**
-     * Change the permissions of a user on the node.
+     * Deny roles to a principal on this node.
+     * @param principalKey the name of a principal with a prefix, such as "u:" for users, "g:" for groups
+     * @param roles the names of roles that this principal should be denied.
+     * @return true if action was successful, or false if not
+     * @throws RepositoryException
+     */
+    boolean denyRoles(String principalKey, Set<String> roles) throws RepositoryException;
+
+    /**
+     * Change the permissions of a principal on the node.
      *
-     * @param user  The user to update
+     * @param principalKey the name of a principal with a prefix, such as "u:" for users, "g:" for groups
      * @param perms A map with the name of the permission, and "GRANT" or "DENY" as a value
      * @return true if action was successful, or false if not
      */
-    boolean changeRoles(String user, Map<String, String> perms) throws RepositoryException;
+    boolean changeRoles(String principalKey, Map<String, String> perms) throws RepositoryException;
 
     /**
-     * Revoke all permissions for the specified user
+     * Revoke all permissions for the specified principal
      *
-     * @param user
+     * @param principalKey the name of a principal with a prefix, such as "u:" for users, "g:" for groups
      * @return true if action was successful, or false if not
      */
-    boolean revokeRolesForUser(String user) throws RepositoryException;
+    boolean revokeRolesForPrincipal(String principalKey) throws RepositoryException;
 
     /**
      * Revoke all permissions for all users

@@ -85,4 +85,9 @@
         <property name="requiredPermission" value="addMemberToGroup" />
     </bean>
 
+    <bean class="org.jahia.modules.defaultmodule.actions.AddPrincipalsInRolesAction">
+        <property name="name" value="addInRoles"/>
+        <property name="requiredPermission" value="addPrincipalsInRoles" />
+    </bean>
+
 </beans>

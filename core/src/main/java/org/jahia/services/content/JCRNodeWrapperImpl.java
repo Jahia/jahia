@@ -341,26 +341,32 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return privileges;
     }
 
-    public boolean grantRoles(String user, Set<String> roles) throws RepositoryException {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean grantRoles(String principalKey, Set<String> roles) throws RepositoryException {
         Map m = new HashMap<String, String>();
         for (String role : roles) {
             m.put(role, "GRANT");
         }
-        return changeRoles(user, m);
-    }
-
-    public boolean denyRoles(String user, Set<String> roles) throws RepositoryException {
-        Map m = new HashMap<String, String>();
-        for (String role : roles) {
-            m.put(role, "DENY");
-        }
-        return changeRoles(user, m);
+        return changeRoles(principalKey, m);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean changeRoles(String user, Map<String, String> roles) throws RepositoryException {
+    public boolean denyRoles(String principalKey, Set<String> roles) throws RepositoryException {
+        Map m = new HashMap<String, String>();
+        for (String role : roles) {
+            m.put(role, "DENY");
+        }
+        return changeRoles(principalKey, m);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean changeRoles(String principalKey, Map<String, String> roles) throws RepositoryException {
         if (!objectNode.isCheckedOut() && objectNode.isNodeType(Constants.MIX_VERSIONABLE)) {
             objectNode.getSession().getWorkspace().getVersionManager().checkout(objectNode.getPath());
         }
@@ -382,7 +388,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         Node aced = null;
         while (ni.hasNext()) {
             Node ace = ni.nextNode();
-            if (ace.getProperty("j:principal").getString().equals(user)) {
+            if (ace.getProperty("j:principal").getString().equals(principalKey)) {
                 if (ace.getProperty("j:aceType").getString().equals("GRANT")) {
                     aceg = ace;
                 } else {
@@ -391,14 +397,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
         if (aceg == null) {
-            aceg = acl.addNode("GRANT_" + user.replace(':', '_'), "jnt:ace");
-            aceg.setProperty("j:principal", user);
+            aceg = acl.addNode("GRANT_" + principalKey.replace(':', '_'), "jnt:ace");
+            aceg.setProperty("j:principal", principalKey);
             aceg.setProperty("j:protected", false);
             aceg.setProperty("j:aceType", "GRANT");
         }
         if (aced == null) {
-            aced = acl.addNode("DENY_" + user.replace(':', '_'), "jnt:ace");
-            aced.setProperty("j:principal", user);
+            aced = acl.addNode("DENY_" + principalKey.replace(':', '_'), "jnt:ace");
+            aced.setProperty("j:principal", principalKey);
             aced.setProperty("j:protected", false);
             aced.setProperty("j:aceType", "DENY");
         }
@@ -444,13 +450,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean revokeRolesForUser(String user) throws RepositoryException {
+    public boolean revokeRolesForPrincipal(String principalKey) throws RepositoryException {
         Node acl = getOrCreateAcl();
 
         NodeIterator ni = acl.getNodes();
         while (ni.hasNext()) {
             Node ace = ni.nextNode();
-            if (ace.getProperty("j:principal").getString().equals(user)) {
+            if (ace.getProperty("j:principal").getString().equals(principalKey)) {
                 ace.remove();
             }
         }

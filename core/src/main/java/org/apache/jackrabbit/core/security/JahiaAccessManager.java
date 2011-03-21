@@ -189,9 +189,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
 
         if (!jahiaPrincipal.isSystem()) {
-            jahiaUser = userService.lookupUser(jahiaPrincipal.getName());
-            if (jahiaUser != null) {
-                userMembership = new HashSet<String>(groupService.getUserMembership(jahiaUser));
+            if (!JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName())) {
+                jahiaUser = userService.lookupUser(jahiaPrincipal.getName());
+                if (jahiaUser != null) {
+                    userMembership = new HashSet<String>(groupService.getUserMembership(jahiaUser));
+                }
             }
         } else {
             userMembership = new HashSet<String>();

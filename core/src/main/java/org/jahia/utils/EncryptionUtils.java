@@ -45,83 +45,82 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
  */
 public final class EncryptionUtils {
 
-	private static ByteDigester sha1DigesterLegacy;
+    private static ByteDigester sha1DigesterLegacy;
 
-	private static StringEncryptor stringEncryptor;
+    private static StringEncryptor stringEncryptor;
 
-	private static ByteDigester getSHA1DigesterLegacy() {
-		if (sha1DigesterLegacy == null) {
-			synchronized (EncryptionUtils.class) {
-				if (sha1DigesterLegacy == null) {
-					//StandardByteDigester digister = new StandardByteDigester();
-					PooledByteDigester digister = new PooledByteDigester();
-					digister.setAlgorithm("SHA-1");
-					digister.setSaltSizeBytes(0);
-					digister.setIterations(1);
-					digister.setPoolSize(4);
-					sha1DigesterLegacy = digister;
-				}
-			}
-		}
+    private static ByteDigester getSHA1DigesterLegacy() {
+        if (sha1DigesterLegacy == null) {
+            synchronized (EncryptionUtils.class) {
+                if (sha1DigesterLegacy == null) {
+                    // StandardByteDigester digister = new StandardByteDigester();
+                    PooledByteDigester digister = new PooledByteDigester();
+                    digister.setAlgorithm("SHA-1");
+                    digister.setSaltSizeBytes(0);
+                    digister.setIterations(1);
+                    digister.setPoolSize(4);
+                    sha1DigesterLegacy = digister;
+                }
+            }
+        }
 
-		return sha1DigesterLegacy;
-	}
+        return sha1DigesterLegacy;
+    }
 
-	private static StringEncryptor getStringEncryptor() {
-		if (stringEncryptor == null) {
-			synchronized (EncryptionUtils.class) {
-				if (stringEncryptor == null) {
-					StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-					encryptor.setPassword(new String(new byte[] { 74, 97, 104, 105, 97, 32, 120,
-					        67, 77, 32, 54, 46, 53 }));
-					// encryptor.setAlgorithm("PBEWithMD5AndTripleDES");
-					stringEncryptor = encryptor;
-				}
-			}
-		}
+    private static StringEncryptor getStringEncryptor() {
+        if (stringEncryptor == null) {
+            synchronized (EncryptionUtils.class) {
+                if (stringEncryptor == null) {
+                    StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+                    encryptor.setPassword(new String(new byte[] { 74, 97, 104, 105, 97, 32, 120,
+                            67, 77, 32, 54, 46, 53 }));
+                    // encryptor.setAlgorithm("PBEWithMD5AndTripleDES");
+                    stringEncryptor = encryptor;
+                }
+            }
+        }
 
-		return stringEncryptor;
-	}
+        return stringEncryptor;
+    }
 
-	/**
-	 * Bi-directional password base decryption of the provided text.
-	 * 
-	 * @param encrypted
-	 *            the text to be decrypted
-	 * @return password base decrypted text
-	 */
-	public static String passwordBaseDecrypt(String encrypted) {
-		return getStringEncryptor().decrypt(encrypted);
-	}
+    /**
+     * Bi-directional password base decryption of the provided text.
+     * 
+     * @param encrypted
+     *            the text to be decrypted
+     * @return password base decrypted text
+     */
+    public static String passwordBaseDecrypt(String encrypted) {
+        return getStringEncryptor().decrypt(encrypted);
+    }
 
-	/**
-	 * Bi-directional password base encryption of the provided text.
-	 * 
-	 * @param source
-	 *            the text to be encrypted
-	 * @return password base encrypted text
-	 */
-	public static String passwordBaseEncrypt(String source) {
-		return getStringEncryptor().encrypt(source);
-	}
+    /**
+     * Bi-directional password base encryption of the provided text.
+     * 
+     * @param source
+     *            the text to be encrypted
+     * @return password base encrypted text
+     */
+    public static String passwordBaseEncrypt(String source) {
+        return getStringEncryptor().encrypt(source);
+    }
 
-	/**
-	 * Created the Base64 encoded SHA-1 digest of the provided text. The method
-	 * is introduced for compatibility with the password encryption in Jahia
-	 * prior to 6.5.
-	 * 
-	 * @param source
-	 *            the source text to be digested
-	 * @return the Base64 encoded SHA-1 digest of the provided text
-	 */
-	public static String sha1DigestLegacy(String source) {
-		return new String(Base64.encodeBase64(getSHA1DigesterLegacy().digest(source.getBytes())));
-	}
+    /**
+     * Created the Base64 encoded SHA-1 digest of the provided text. The method is introduced for compatibility with the password encryption
+     * in Jahia prior to 6.5.
+     * 
+     * @param source
+     *            the source text to be digested
+     * @return the Base64 encoded SHA-1 digest of the provided text
+     */
+    public static String sha1DigestLegacy(String source) {
+        return new String(Base64.encodeBase64(getSHA1DigesterLegacy().digest(source.getBytes())));
+    }
 
-	/**
-	 * Initializes an instance of this class.
-	 */
-	private EncryptionUtils() {
-		super();
-	}
+    /**
+     * Initializes an instance of this class.
+     */
+    private EncryptionUtils() {
+        super();
+    }
 }

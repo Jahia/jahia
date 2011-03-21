@@ -3,6 +3,7 @@
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <utility:setBundle basename="JahiaInternalResources"/>
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -34,7 +35,8 @@ function keyDown(e) {
 
     <div id="adminLogin">
     <h2 class="loginlogo_beta"></h2>
-        <ui:loginArea action="${pageContext.request.contextPath}/cms/login">
+        <c:url value="${pageContext.request.contextPath}/cms/login" var="loginUrl"/>
+        <ui:loginArea action="${loginUrl}">
             <h3 class="loginIcon"><fmt:message key="label.login"/></h3>
             <br class="clearFloat" />
         <ui:isLoginError var="loginResult">

@@ -27,7 +27,8 @@
             }
         }
     </script>
-    <ui:loginArea class=" loginForm" action="${pageContext.request.contextPath}${url.login}">
+    <c:url value="${url.login}" var="loginUrl"/>
+    <ui:loginArea class="loginForm" action="${loginUrl}">
         <h3 class="loginicon">${fn:escapeXml(currentNode.displayableName)}</h3>
         <ui:isLoginError var="loginResult">
             <span class="error"><fmt:message bundle="JahiaInternalResources" key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>

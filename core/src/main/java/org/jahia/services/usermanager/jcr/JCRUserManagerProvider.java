@@ -519,7 +519,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                 try {
                     String newPwd = IOUtils.toString(is);
                     logger.info("Resetting root user password");
-                    lookupRootUser().setPassword(newPwd);
+                    lookupRootUser().setPassword(StringUtils.chomp(newPwd).trim());
                     logger.info("New root user password set.");
                 } finally {
                     IOUtils.closeQuietly(is);

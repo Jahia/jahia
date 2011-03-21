@@ -192,6 +192,12 @@
                 <userDetails j:bindedComponent="/templateSets/profile/templates/user" j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails" />
               </pagecontent>
             </user>
+            <content-template j:applyOn="jnt:content" j:defaultTemplate="true" j:hiddenTemplate="true" j:priority="1"
+                              j:view="default" jcr:primaryType="jnt:contentTemplate">
+                <pagecontent jcr:primaryType="jnt:contentList">
+                    <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay"/>
+                </pagecontent>
+            </content-template>
         </base>
         <contents jcr:primaryType="jnt:contentFolder" />
         <files jcr:primaryType="jnt:folder">

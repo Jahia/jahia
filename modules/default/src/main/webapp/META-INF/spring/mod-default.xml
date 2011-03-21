@@ -87,6 +87,8 @@
 
     <bean class="org.jahia.modules.defaultmodule.actions.AddPrincipalsInRolesAction">
         <property name="name" value="addInRoles"/>
+        <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService"/>
+        <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
         <property name="requiredPermission" value="addPrincipalsInRoles" />
     </bean>
 

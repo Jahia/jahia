@@ -233,12 +233,14 @@ public class ContentTabItem extends PropertiesTabItem {
             String nodeName = (String) tab.getData("NodeName");
             if (nodeName == null || !nodeName.equals(engine.getNodeName())) {
                 tab.setData("NodeName", engine.getNodeName());
-                autoUpdateName.removeAllListeners();
                 if (titleField != null) {
                     titleField.removeAllListeners();
                 }
                 nameText.setValue(engine.getNodeName());
-                autoUpdateName.setData("realValue", null);
+                if (autoUpdateName != null) {
+                    autoUpdateName.removeAllListeners();
+                    autoUpdateName.setData("realValue", null);
+                }
             }
         } else {
             isNodeNameFieldDisplayed = false;

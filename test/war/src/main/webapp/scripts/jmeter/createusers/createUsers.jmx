@@ -199,7 +199,7 @@
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSampler>
           <hashTree/>
-          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="User Loop" enabled="false">
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="User Loop" enabled="true">
             <boolProp name="LoopController.continue_forever">true</boolProp>
             <stringProp name="LoopController.loops">${NumberOfUsers}</stringProp>
           </LoopController>

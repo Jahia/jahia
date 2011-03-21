@@ -22,7 +22,7 @@ $.editable.addInputType('treeItemSelector', {
         var previewPath = settings.previewPath;
         $("#treeItemSelectorJeditable-treeItemSelectorTrigger").fancybox($.extend({
             autoDimensions: false,
-            height: 600,
+            height: 400,
             width: 350,
             hideOnOverlayClick: false,
             hideOnContentClick: false,

@@ -65,7 +65,7 @@ public abstract class AbstractView extends TopRightComponent {
                         selectionModel.setSelection(visibleSelection);
                     }
                     for (GWTJahiaNode node : store.getModels()) {
-                        node.setParent((TreeModel) gwtJahiaNode);
+                        node.setParent((TreeModel) AbstractView.this.root);
                     }
                 }
             }

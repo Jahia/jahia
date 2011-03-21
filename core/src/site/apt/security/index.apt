@@ -16,11 +16,22 @@ Security aspects
 
 ** Resetting root user password
 
-  TODO
+  The following is the procedure for resetting the password of the <root> user in Jahia 6.5:
+  
+  [[1]] Create a plain text file <<<\<jahia-web-app-root\>/WEB-INF/etc/config/root.pwd>>> with a new root
+  user password in clear text
+  
+  [[2]] Restart the server
 
-** User login brute-force attacks
+  [[3]] You can now login with your new password as root
+  
+  []
 
-  TODO
+** Locking a user account
+
+  User account can be locked in Jahia 6.5 either using a User Management UI in Jahia Administration
+  or using the Content Manager and setting the <<<j:accountLocked>>> property on the corresponding
+  user node to <<<true>>>. 
 
 ** Sensitive user data
 
@@ -144,4 +155,23 @@ Security aspects
     <property name="requiredPermission" value="publish"/>
     <property name="requiredWorkspace" value="default"/>
 </bean>
++-----------------------------  
+
+* Miscellaneous
+
+** Disabling directory listing for WebDAV servlet
+
+  In case a WebDAV client access is not used for managing resources in the JCR content repository,
+  it is recommended that the directory listing is disabled for the WebDAV servlet, mapped to <<</repository>>>.
+  
+  
+  For this the following key in <<<WEB-INF/etc/config/jahia.properties>>> file needs to be set to <<<true>>>:
+  
++-----------------------------  
+######################################################################
+### WebDAV ###########################################################
+######################################################################
+# Disable the directory listing for /repository servlet.
+# (WebDAV client access won't work in such a case)
+repositoryDirectoryListingDisabled = true
 +-----------------------------  

@@ -15,6 +15,11 @@
  *   http://www.gnu.org/licenses/gpl.html
  */
 
+/*
+ * Jahia spectification. add class="bodywrapper bodywrapper-popup" to  fancybox-content declaration
+ *
+ */
+
 ;(function($) {
 	var tmp, loading, overlay, wrap, outer, content, close, title, nav_left, nav_right,
 
@@ -1049,7 +1054,7 @@
 			.appendTo( wrap );
 
 		outer.append(
-			content = $('<div id="fancybox-content"></div>'),
+			content = $('<div id="fancybox-content" class="bodywrapper bodywrapper-popup"></div>'),
 			close = $('<a id="fancybox-close"></a>'),
 			title = $('<div id="fancybox-title"></div>'),
 

@@ -18,7 +18,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
 </head>
-<body id="body">
+<body>
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 <div class="bodywrapper">
 	<template:area path="page"/>

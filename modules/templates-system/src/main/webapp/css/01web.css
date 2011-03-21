@@ -607,28 +607,28 @@ body {
 /******************************************************************************
 *  Tables
 ******************************************************************************/
-#body .table th img{
+.bodywrapper .table th img{
 	vertical-align: middle
 }
-#body .table,
-#body .table caption
+.bodywrapper .table,
+.bodywrapper .table caption
 {
     margin: auto;
 	line-height:1.9em;
 
 }
 
-#body .table
+.bodywrapper .table
 {
     border-collapse:collapse;
 	margin-bottom:1em;
 	border:none;
 }
-#body .table, #body .table th, #body .table td
+.bodywrapper .table, .bodywrapper .table th, .bodywrapper .table td
 {
 border: 1px solid #ccc;
 }
-#body .table caption
+.bodywrapper .table caption
 {
 	font-weight:normal;
 	font-size:2em;
@@ -636,29 +636,29 @@ border: 1px solid #ccc;
 	padding:0;
 }
 
-#body .table th {
+.bodywrapper .table th {
     color: #fff;
 	white-space:nowrap;
 	background-color:#333;
 	padding:2px;
 }
-#body .table td
+.bodywrapper .table td
 {
 	background-color:#fff;
 	padding:2px;
 }
-#body .table tr:hover{
+.bodywrapper .table tr:hover{
 	background-color:#ccc
 }
-#body .table .odd td{background-color:#fff}
-#body .table .even td{ background-color:#eaeaea}
-#body .col1{}
-#body .col2{}
-#body .col3{}
-#body .col4{}
+.bodywrapper .table .odd td{background-color:#fff}
+.bodywrapper .table .even td{ background-color:#eaeaea}
+.bodywrapper .col1{}
+.bodywrapper .col2{}
+.bodywrapper .col3{}
+.bodywrapper .col4{}
 
-#body .table td.center,
-#body .table th.center
+.bodywrapper .table td.center,
+.bodywrapper .table th.center
 {
 	text-align:center;
 }

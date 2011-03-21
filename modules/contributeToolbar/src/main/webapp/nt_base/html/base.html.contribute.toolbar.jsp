@@ -163,7 +163,7 @@
                 key="label.clipboard.reset"/></a>
         <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><img src="<c:url value='/icons/clipboard.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.clipboard.contains"/></a>
-        <a href="<c:url value='${url.basePreview}/users/${renderContext.user.username}.tasklist.html.ajax'/>" class="fancylink"><img src="<c:url value='/icons/user.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+        <a href="<c:url value='${url.basePreview}/users/${renderContext.user.username}.contributeTasklist.html.ajax'/>" class="fancylink"><img src="<c:url value='/icons/user.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.goto.myTasks"/></a>
         <c:choose>
             <c:when test="${jcr:isNodeType(currentNode, 'jnt:folder') || jcr:isNodeType(currentNode, 'nt:file')}">
@@ -201,7 +201,7 @@
 <div style="display:none;">
     <div id="tasks" >
         <%-- Just load the resources here ! --%>
-        <template:module path="/users/${renderContext.user.username}" view="tasklist" var="temp"/>
+        <template:module path="/users/${renderContext.user.username}" view="contributeTasklist" var="temp"/>
     </div>
 </div>
 <div id="contributewrapper">

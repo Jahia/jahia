@@ -65,35 +65,34 @@
 </colgroup>
 <thead>
 <tr>
-    <th class="center" id="Type" scope="col"><fmt:message key="jnt_task.type"/> <a href="user.tasklist.jsp#"
+    <th class="center" id="Type" scope="col"><fmt:message key="jnt_task.type"/> <a href="user.contributeTasklist.jsp#"
                                                                                    title="sort up"><img
             src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>" alt="up"/></a><a
             title="sort down"
-            href="user.tasklist.jsp#"> <img
+            href="user.contributeTasklist.jsp#"> <img
             src="<c:url value='${url.currentModule}/images/sort-arrow-down.png" alt="down'/>"/></a></th>
-    <th id="Title" scope="col"><fmt:message key="mix_title.jcr_title"/> <a href="user.tasklist.jsp#"
+    <th id="Title" scope="col"><fmt:message key="mix_title.jcr_title"/> <a href="user.contributeTasklist.jsp#"
                                                                            title="sort up"><img
             src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>"
             alt="up"/></a><a
-            title="sort down" href="user.tasklist.jsp#"> <img
-            src="${url.currentModule}/images/sort-arrow-down.png"
-            alt="down"/></a></th>
-    <th class="center" id="State" scope="col"><fmt:message key="jnt_task.state"/> <a href="user.tasklist.jsp#"
+            title="sort down" href="user.contributeTasklist.jsp#"> <img
+            src="<c:url value='${url.currentModule}/images/sort-arrow-down.png" alt="down'/>"/></a></th>
+    <th class="center" id="State" scope="col"><fmt:message key="jnt_task.state"/> <a href="user.contributeTasklist.jsp#"
                                                                                      title="sort up"><img
             src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>" alt="up"/></a><a
             title="sort down"
-            href="user.tasklist.jsp#"> <img
+            href="user.contributeTasklist.jsp#"> <img
             src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>" alt="down"/></a></th>
     <th class="center" id="Priority" scope="col"><fmt:message key="jnt_task.priority"/> <a
-            href="user.tasklist.jsp#" title="sort up"><img
+            href="user.contributeTasklist.jsp#" title="sort up"><img
             src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>" alt="up"/></a><a
             title="sort down"
-            href="user.tasklist.jsp#"> <img
+            href="user.contributeTasklist.jsp#"> <img
             src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>" alt="down"/></a></th>
-    <th id="Date" scope="col"><fmt:message key="jnt_task.dueDate"/> <a href="user.tasklist.jsp#" title="sort up"><img
+    <th id="Date" scope="col"><fmt:message key="jnt_task.dueDate"/> <a href="user.contributeTasklist.jsp#" title="sort up"><img
             src="<c:url value='${url.currentModule}/images/sort-arrow-up.png'/>"
             alt="up"/></a><a
-            title="sort down" href="user.tasklist.jsp#"> <img
+            title="sort down" href="user.contributeTasklist.jsp#"> <img
             src="<c:url value='${url.currentModule}/images/sort-arrow-down.png'/>"
             alt="down"/></a></th>
 </tr>

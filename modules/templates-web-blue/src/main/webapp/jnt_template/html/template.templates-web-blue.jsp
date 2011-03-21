@@ -20,7 +20,7 @@
     <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
 </head>
 
-<body id="body">
+<body>
 
 <div class="bodywrapper"><!--start bodywrapper-->
             <template:area path="pagecontent"/>

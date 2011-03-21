@@ -1,34 +1,34 @@
 /******************************************************************************
 *  Tag this article
 ******************************************************************************/
-#bodywrapper .tagthisarticle span span {
+.bodywrapper .tagthisarticle span span {
 	background:transparent url(img/article-tag.gif) no-repeat scroll 0 70%;
 	display:inline;
 	margin-right:8px;
 	padding:5px 0 5px 18px;
 }
-#bodywrapper .tagthisarticle  {
+.bodywrapper .tagthisarticle  {
 	margin:0.5em 0;
 }
-#bodywrapper .tagthisarticle form {
+.bodywrapper .tagthisarticle form {
 	margin:0.5em 0;
 }
 /******************************************************************************
 * article
 ******************************************************************************/
-#bodywrapper .quote-top{
+.bodywrapper .quote-top{
 	width:25%;
 	background: #eaeaea url(img/quote-top.png) no-repeat top left;
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	font-size:1.1em;
 	font-weight:bold;
 }
-#bodywrapper .quote-bottom{
+.bodywrapper .quote-bottom{
 	background: url(img/quote-bottom.png) no-repeat bottom right;
 	padding:23px 10px 23px 10px;
 }
 
-#bodywrapper .exergue-top{
+.bodywrapper .exergue-top{
 	width:25%;
 	background-color: #eaeaea ;
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;	
@@ -36,13 +36,13 @@
 	border-top:4px solid #333;
 	font-weight:bold;
 }
-#bodywrapper .quote-top-full,
-#bodywrapper .exergue-top-full{
+.bodywrapper .quote-top-full,
+.bodywrapper .exergue-top-full{
 	width:100%;
 	margin:5px 0px;
 	display:block
 }
 	
-#bodywrapper .exergue-bottom{
+.bodywrapper .exergue-bottom{
 	padding:10px;
 }

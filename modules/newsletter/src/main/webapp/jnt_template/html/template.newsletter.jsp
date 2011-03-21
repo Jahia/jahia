@@ -18,7 +18,7 @@
 <title>${fn:escapeXml(currentNode.displayableName)}</title>
 </head>
 <body>
-<div id="bodywrapper">
+<div class="bodywrapper">
     <table style="font-size:11px;background-color:#eaeaea;width:100%;font-family: Arial, Helvetica, sans-serif;line-height:160%;"
            width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>

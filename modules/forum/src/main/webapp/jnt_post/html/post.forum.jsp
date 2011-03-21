@@ -157,5 +157,5 @@
         </dl>
     </c:otherwise>
 </c:choose>
-<div class="back2top"><a title="Top" class="top" href="#bodywrapper">Top</a></div>
+<div class="back2top"><a title="Top" class="top" href=".bodywrapper">Top</a></div>
 <div class="clear"></div>

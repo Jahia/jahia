@@ -1,17 +1,17 @@
 /******************************************************************************
 *  Events generic
 ******************************************************************************/
-#bodywrapper .eventsBody{
+.bodywrapper .eventsBody{
 	margin:0 0 0 60px
 }
-#bodywrapper div.eventsInfoDate  {
+.bodywrapper div.eventsInfoDate  {
 	float:left;
 	width:46px;
 	margin:0;
 	padding:0;
 	text-align:center;
 }
-#bodywrapper .eventsMeta{
+.bodywrapper .eventsMeta{
 	clear:both;
 	color:#333;
 	margin:0.5em 0;
@@ -19,29 +19,29 @@
 	border:1px solid #ccc;
 	padding:0.5em;
 }
-#bodywrapper .eventsMeta a,
-#bodywrapper .eventsMeta a:link,
-#bodywrapper .eventsMeta a:visited {
+.bodywrapper .eventsMeta a,
+.bodywrapper .eventsMeta a:link,
+.bodywrapper .eventsMeta a:visited {
 	color:#333;
 	text-decoration:none;
 }
-#bodywrapper .eventsMeta a:hover,
-#bodywrapper .eventsMeta a:active {
+.bodywrapper .eventsMeta a:hover,
+.bodywrapper .eventsMeta a:active {
 	text-decoration:underline;
 }
 
-#bodywrapper div.eventsTxtDate
+.bodywrapper div.eventsTxtDate
 {
 	width:46px;
 	height:16px;
 	display:block;
 	background: url(img/eventstxtdate.png) no-repeat 50% 0%;
 }
-#bodywrapper div.eventsTxtDate span
+.bodywrapper div.eventsTxtDate span
 {
 	display:none
 }
-#bodywrapper div.eventsDate
+.bodywrapper div.eventsDate
 {
 	font-family:Georgia, "Times New Roman", Times, serif;
 	text-align:center;
@@ -49,20 +49,20 @@
 	padding-top:8px;
 	width:46px;
 }
-#bodywrapper .eventsListItem .day{
+.bodywrapper .eventsListItem .day{
 	font-size:120%;
 	display:block;
 	line-height:130%;
 	font-weight:bold;
 	color:#333
 }
-#bodywrapper .eventsListItem .month{
+.bodywrapper .eventsListItem .month{
 	font-size:70%;
 	display:block;
 	line-height:90%;
 	color:#666
 }
-#bodywrapper .eventsListItem .year{
+.bodywrapper .eventsListItem .year{
 	font-size:85%;
 	display:block;
 	line-height:90%;
@@ -70,14 +70,14 @@
 	padding-bottom:5px;
 	color:#666
 }
-#bodywrapper p.eventsLocation{
+.bodywrapper p.eventsLocation{
 	font-weight:bold;
 	color:#000;
 	font-size:90%;
 	text-transform:uppercase;
 	padding:0;
 }
-#bodywrapper p.eventsType{
+.bodywrapper p.eventsType{
 	font-weight:bold;
 	color:#000;
 	font-size:90%;
@@ -88,11 +88,11 @@
 /******************************************************************************
 *  Events List
 ******************************************************************************/
-#bodywrapper .eventsList{
+.bodywrapper .eventsList{
 	clear:both;
 }
 
-#bodywrapper .eventsListItem {
+.bodywrapper .eventsListItem {
 	border-bottom:1px solid #ccc;
 	margin-bottom:1em;
 	clear:both;
@@ -100,30 +100,30 @@
 	position:relative
 }
 
-#bodywrapper .eventsListItem p{
+.bodywrapper .eventsListItem p{
 	margin-bottom:0.5em;
 }
 
-#bodywrapper .eventsListItem h4 {
+.bodywrapper .eventsListItem h4 {
 	margin: 0;
 	border:none;
 	font-size:2em;
 	font-weight:normal;
 	line-height:normal;
 }
-#bodywrapper .eventsListItem h4 a,
-#bodywrapper .eventsListItem h4 a:link,
-#bodywrapper .eventsListItem h4 a:visited {
+.bodywrapper .eventsListItem h4 a,
+.bodywrapper .eventsListItem h4 a:link,
+.bodywrapper .eventsListItem h4 a:visited {
 	color:#333;
 	text-decoration:none;
 	background:none;
 }
-#bodywrapper .eventsListItem h4 a:hover,
-#bodywrapper .eventsListItem h4 a:active {
+.bodywrapper .eventsListItem h4 a:hover,
+.bodywrapper .eventsListItem h4 a:active {
 	text-decoration:underline;
 	background:none;
 }
-#bodywrapper span.categorytitle {
+.bodywrapper span.categorytitle {
 	background:transparent url(img/categorytitle.png) no-repeat scroll 0 50%;
 	display:inline;
 	margin-right:8px;

@@ -4,16 +4,16 @@ body {
 	font-size:11px;
 	background-color:#eaeaea;
 }
-#bodywrapper img 			{ border: 0px;}
+.bodywrapper img 			{ border: 0px;}
 
-#bodywrapper a,
-#bodywrapper a:link,
-#bodywrapper a:visited {
+.bodywrapper a,
+.bodywrapper a:link,
+.bodywrapper a:visited {
 	color:#0066ff ;
 	text-decoration:none;
 }
-#bodywrapper a:hover,
-#bodywrapper a:active {
+.bodywrapper a:hover,
+.bodywrapper a:active {
 	color:#0066ff ;
 	text-decoration:underline;
 }

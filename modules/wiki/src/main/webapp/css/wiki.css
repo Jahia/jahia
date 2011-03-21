@@ -1,77 +1,77 @@
 /******************************************************************************
 * WIKI form
 ******************************************************************************/
-#bodywrapper .formWiki {
+.bodywrapper .formWiki {
 	margin:1em 0;
 }
-#bodywrapper .formWiki p{
+.bodywrapper .formWiki p{
 	margin:0.5em 0;
 	padding:0;
 }
-#bodywrapper .formWiki fieldset {
+.bodywrapper .formWiki fieldset {
 	border:none	
 }
-#bodywrapper .formWiki legend {
+.bodywrapper .formWiki legend {
 	display:none	
 }
-#bodywrapper .formWiki label {
+.bodywrapper .formWiki label {
 display:block
 }
-#bodywrapper .formWiki input, #bodywrapper .formWiki textarea {
+.bodywrapper .formWiki input, .bodywrapper .formWiki textarea {
 	width:98%;
 	clear:both
 }
-#bodywrapper .formWiki input.button{
+.bodywrapper .formWiki input.button{
 	width:auto
 }
 /******************************************************************************
 * WIKI Search
 ******************************************************************************/
-#bodywrapper #wikisearch p{
+.bodywrapper #wikisearch p{
 	margin:0;
 	padding:0;
 }
-#bodywrapper #wikisearch fieldset {
+.bodywrapper #wikisearch fieldset {
 	padding:0 ;
 	border:none;
 }
-#bodywrapper #wikisearch .search{
+.bodywrapper #wikisearch .search{
 	width:90%
 }
 /******************************************************************************
 * WIKI textarea
 ******************************************************************************/
-#bodywrapper.textareawiki {
+.bodywrapper.textareawiki {
 	width:90%
 }
 
 /******************************************************************************
 * special Links
 ******************************************************************************/
-#bodywrapper  a.external{
+.bodywrapper  a.external{
 	padding:0 13px 0 0;
 	background:transparent url(img/external.png) no-repeat scroll right center;
 }
-#bodywrapper  a.wikidef{
+.bodywrapper  a.wikidef{
 	padding:0 13px 0 0;
 	background:transparent url(img/wikidef.png) no-repeat scroll right center;
 }
-#bodywrapper  a.wikidef-new{
+.bodywrapper  a.wikidef-new{
 	padding:0 13px 0 0;
 	background:transparent url(img/wikidef-new.png) no-repeat scroll right center;
 }
-#bodywrapper a.wikidef-new:link, #bodywrapper a.wikidef-new:visited {
+.bodywrapper a.wikidef-new:link, .bodywrapper a.wikidef-new:visited {
     color:red;
 }
 /******************************************************************************
 * listwiki Arrow
 ******************************************************************************/
-#bodywrapper ul.listwiki  {
+.bodywrapper ul.listwiki  {
 	margin:5px 0;
 	position:relative;
 	list-style:none;
 }
-#bodywrapper .listwiki li {
+.bodywrapper .listwiki li {
 	background: url(img/wiki-arrow.png) no-repeat 0 5px;
 	padding:0 0 0 12px;
 	clear:left;
@@ -80,65 +80,65 @@ display:block
 /******************************************************************************
 *  boxwiki
 ******************************************************************************/
-#bodywrapper div.boxwiki {
+.bodywrapper div.boxwiki {
 	position:relative;
 	clear:both;
 }
 
-#bodywrapper div.boxwiki h3.boxwikititleh3 {
+.bodywrapper div.boxwiki h3.boxwikititleh3 {
 	margin:0;
 	padding:0;
 	display:inline
 }
-#bodywrapper div.boxwiki-inner {
+.bodywrapper div.boxwiki-inner {
 	background-color:#fff;
 	border:1px solid #cecece;
 	height:1%;
 
 }
-#bodywrapper div.boxwiki-inner p {
+.bodywrapper div.boxwiki-inner p {
 	padding:0px 0px 10px 0px;
 }
-#bodywrapper .boxwiki-inner .boxwiki-inner-border {
+.bodywrapper .boxwiki-inner .boxwiki-inner-border {
 	border:1px solid #fff;
 	height:1%;
 	background-color:#fff;
 }
 /*boxwikishadow*/
-#bodywrapper div.boxwikishadow {
+.bodywrapper div.boxwikishadow {
 	border:1px solid #cecece;
 }
 
-#bodywrapper div.boxwikishadow div.boxwiki-inner {
+.bodywrapper div.boxwikishadow div.boxwiki-inner {
 	background-color:#fff;
 	border:1px solid #cecece;
 	margin:-2px 0 0 -2px;
 }
 /*boxwiki color*/
-#bodywrapper .boxwikigrey .boxwiki-inner .boxwiki-inner-border {
+.bodywrapper .boxwikigrey .boxwiki-inner .boxwiki-inner-border {
 	background-color:#e1e1e1
 }
-#bodywrapper .boxwikiyellow .boxwiki-inner .boxwiki-inner-border {
+.bodywrapper .boxwikiyellow .boxwiki-inner .boxwiki-inner-border {
 	background-color:#FCF0BA
 }
-#bodywrapper .boxwikiwhite .boxwiki-inner {
+.bodywrapper .boxwikiwhite .boxwiki-inner {
 	background-color:#fff
 }
-#bodywrapper .boxwikiwhite .boxwiki-inner .boxwiki-inner-border {
+.bodywrapper .boxwikiwhite .boxwiki-inner .boxwiki-inner-border {
 	background-color:#fff
 }
 
 /*boxwiki padding*/
-#bodywrapper .boxwikipadding16 .boxwiki-inner .boxwiki-inner-border {
+.bodywrapper .boxwikipadding16 .boxwiki-inner .boxwiki-inner-border {
 	padding:16px;
 }
 
 /*boxwiki margin*/
-#bodywrapper .boxwikimarginbottom16{
+.bodywrapper .boxwikimarginbottom16{
 	margin-bottom:16px;
 }
 /*boxwiki title*/
-#bodywrapper h4.boxwiki-title {
+.bodywrapper h4.boxwiki-title {
 	background:#666666 url(img/boxwiki-h4title.png) repeat-x top right;
 	border:1px solid #666666;
 	color:#fff;
@@ -154,7 +154,7 @@ display:block
 /******************************************************************************
 * Menu simple
 ******************************************************************************/
-#bodywrapper ul#menuwiki  {
+.bodywrapper ul#menuwiki  {
 	list-style:none;
 	margin:0;
 	padding:0;
@@ -163,7 +163,7 @@ display:block
 	background:#efefef;
 	border-bottom:1px solid #CCCCCC;
 }
-#bodywrapper ul#menuwiki  li{
+.bodywrapper ul#menuwiki  li{
 	list-style:none;
 	margin:0;
 	padding:0;
@@ -171,8 +171,8 @@ display:block
 }
 
 /*Links*/
-#bodywrapper ul#menuwiki a,
-#bodywrapper ul#menuwiki a:visited {
+.bodywrapper ul#menuwiki a,
+.bodywrapper ul#menuwiki a:visited {
 	text-decoration:none;
 	padding:5px;
 	display:block;
@@ -180,13 +180,13 @@ display:block
 	height:1%
 }
 
-#bodywrapper ul#menuwiki ul.submenu a:hover{
+.bodywrapper ul#menuwiki ul.submenu a:hover{
 	background-color:#BBDDEE; 
 	color:#333;
 }
 
 
-#bodywrapper ul#menuwiki .menuwikitop{
+.bodywrapper ul#menuwiki .menuwikitop{
 	border:1px solid #CECECE;
 	border-width:0 1px;
 	overflow:hidden;
@@ -194,14 +194,14 @@ display:block
 }
 
 /*Header Links*/
-#bodywrapper ul#menuwiki .menuwikitop a{
+.bodywrapper ul#menuwiki .menuwikitop a{
 	margin:0 0 1px 0;
 	border-top:1px solid white;
 }
-#bodywrapper ul#menuwiki ul.submenu a{
+.bodywrapper ul#menuwiki ul.submenu a{
 	border-top:none;
 }
-#bodywrapper ul#menuwiki ul.submenu {
+.bodywrapper ul#menuwiki ul.submenu {
 	border-top:1px solid #CCCCCC;
 	border-bottom:1px solid #CCCCCC;
 	width:100%;
@@ -211,6 +211,6 @@ display:block
 }
 
 /*Header Link Hover*/
-#bodywrapper ul#menuwiki .menuwikitop a:hover{
+.bodywrapper ul#menuwiki .menuwikitop a:hover{
 	color:#333;
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
 * contactForm
 ******************************************************************************/
-#bodywrapper .contactForm input[type="text"], #bodywrapper .contactForm textarea {
+.bodywrapper .contactForm input[type="text"], .bodywrapper .contactForm textarea {
 	width:50%;
 }

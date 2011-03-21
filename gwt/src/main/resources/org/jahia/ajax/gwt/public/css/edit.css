@@ -131,11 +131,11 @@
 
 }
 
-#bodywrapper .label-placeholder {
+.bodywrapper .label-placeholder {
     display:inline;
 }
 
-#bodywrapper button.button-placeholder {
+.bodywrapper button.button-placeholder {
 	font-family:tahoma,arial,verdana,sans-serif;
 	font-size:9px;
 	font-weight:bold;
@@ -154,7 +154,7 @@
 	-moz-box-shadow: 0px 1px 2px #cccccc;
 	box-shadow: 0px 1px 2px #cccccc;
 }
-#bodywrapper button.button-placeholder:hover {
+.bodywrapper button.button-placeholder:hover {
 	background: #009800 url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder-on.png) repeat-x scroll left top;
 	color: #fff;
 }
@@ -285,7 +285,7 @@
 }
 
 /****************************************************************************/
-#bodywrapper .area {
+.bodywrapper .area {
 	height:200px;
 	overflow: hidden;
 	background-color:#d8effb;
@@ -294,7 +294,7 @@
 	position:relative;
 	border: 1px dashed #99ccff;
 }
-#bodywrapper .areaTemplate{
+.bodywrapper .areaTemplate{
 	background-color: #336699;
 	border:1px solid #003366;
 	color:#fff;
@@ -314,10 +314,10 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-#bodywrapper .AreaInformation{
+.bodywrapper .AreaInformation{
 	color:#666;
 }
-#bodywrapper .absoluteArea {
+.bodywrapper .absoluteArea {
 	height:200px;
 	overflow: hidden;
 	background-color:#ffcccc;
@@ -326,7 +326,7 @@
 	position:relative;
 	border: 1px dashed #cc6666;
 }
-#bodywrapper .absoluteAreaTemplate{
+.bodywrapper .absoluteAreaTemplate{
 	background-color: #c30;
 	border:1px solid #990000;
 	color:#fff;
@@ -346,7 +346,7 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-#bodywrapper .mainResourceDisplay {
+.bodywrapper .mainResourceDisplay {
 	height:200px;
 	overflow:hidden;
 	background-color:#eaeaea;
@@ -355,7 +355,7 @@
 	position:relative;
 	border: 1px dashed #333;
 }
-#bodywrapper .mainResourceDisplayTemplate{
+.bodywrapper .mainResourceDisplayTemplate{
 	background-color: #333;
 	border:1px solid #000;
 	color:#fff;
@@ -375,7 +375,7 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-#bodywrapper .authorDisplayArea {
+.bodywrapper .authorDisplayArea {
 	height:200px;
 	overflow: hidden;
 	padding:5px;
@@ -384,7 +384,7 @@
 	border: 1px dashed #99ccff;
 	background:#d8effb url(images/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
 }
-#bodywrapper .authorDisplayTemplate{
+.bodywrapper .authorDisplayTemplate{
 	background-color: #336699;
 	border:1px solid #003366;
 	color:#fff;
@@ -404,7 +404,7 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-#bodywrapper .area-liveOnly {
+.bodywrapper .area-liveOnly {
 	min-height:100px;
 	overflow: hidden;
 	background:#ccffcc url(images/area-liveonly-bg.png) no-repeat scroll 50% 50% ;
@@ -413,16 +413,16 @@
 	position:relative;
 	border: 1px dashed #99cc99;
 }
-#bodywrapper .dashedArea {
+.bodywrapper .dashedArea {
     background : url(images/placeholder-area.png) top left;
     height:100%;
 }
-#bodywrapper .area-notcreated .dashedArea {
+.bodywrapper .area-notcreated .dashedArea {
     background : url(images/area-notcreated.png) top left;
     height:100%;
 }
 
-#bodywrapper .area-liveOnly .dashedArea {
+.bodywrapper .area-liveOnly .dashedArea {
     background : url(images/area-liveOnly.png) top left;
     height:100%;
 }

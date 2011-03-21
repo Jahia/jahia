@@ -22,7 +22,7 @@
 <body id="body">
 <%@ include file="../../common/declarations.jspf" %>
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
-<div id="bodywrapper">
+<div class="bodywrapper">
   <div id="header" class="colorResource1 imgResource1">
     <div class="container container_16">
       <div class="grid_16">

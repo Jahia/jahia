@@ -100,7 +100,7 @@
     font-size: 12px;
 
 }
-#bodywrapper #myContentSearch ul {
+.bodywrapper #myContentSearch ul {
     margin: 1em 0;
     padding: 0;
 }
@@ -165,7 +165,7 @@
     font-size: 12px;
 
 }
-#bodywrapper #myContentFeed ul{
+.bodywrapper #myContentFeed ul{
     margin: 0;
     padding: 0;
 }

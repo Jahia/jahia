@@ -1079,6 +1079,7 @@
                             <property name="search"
                                       value="select * from [jnt:content] as content where not content.[jcr:primaryType] = 'jnt:socialActivity' order by content.['jcr:lastModified'] desc"/>
                             <property name="limit" value="100"/>
+                            <property name="cssWrapper" value="bodywrapper"/>
                         </bean>
                     </property>
 
@@ -1223,6 +1224,7 @@
                         <value>jnt:contentTemplate</value>
                     </list>
                 </property>
+                <property name="cssWrapper" value="bodywrapper"/>
             </bean>
         </property>
     </bean>

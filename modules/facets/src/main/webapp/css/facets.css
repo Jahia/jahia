@@ -1,7 +1,7 @@
 /******************************************************************************
 * Facets Area Layout
 ******************************************************************************/
-#bodywrapper div.facets {
+.bodywrapper div.facets {
 margin:2em 0;
 padding:1em;
 border: solid 1px #cecece;
@@ -10,7 +10,7 @@ border: solid 1px #cecece;
 /******************************************************************************
 * Facets List
 ******************************************************************************/
-#bodywrapper div.activefacetsList{
+.bodywrapper div.activefacetsList{
 	background-color:#ffffff ;
 	margin:0;
 	padding:1em 1em 0.5em;
@@ -19,14 +19,14 @@ border: solid 1px #cecece;
 	line-height:normal;
 	margin-bottom:1em;
 }
-#bodywrapper .activefacetsList h4 {
+.bodywrapper .activefacetsList h4 {
 	margin:0;
 	padding:0;
 }
-#bodywrapper .activefacetsList ul {
+.bodywrapper .activefacetsList ul {
 	margin:0.2em 0.5em;
 }
-#bodywrapper .activefacetsList li{
+.bodywrapper .activefacetsList li{
 	list-style-type:none;
 	padding:0.4em;
 	float:left;
@@ -36,19 +36,19 @@ border: solid 1px #cecece;
 /******************************************************************************
 * Categories
 ******************************************************************************/
-#bodywrapper div.facetsList {
+.bodywrapper div.facetsList {
 	margin-bottom:1em;
 }
-#bodywrapper .facetsList h4 {	}
-#bodywrapper .facetsList ul {
+.bodywrapper .facetsList h4 {	}
+.bodywrapper .facetsList ul {
 	margin:0.2em 0.5em;
 }
-#bodywrapper .facetsList li{
+.bodywrapper .facetsList li{
 	list-style-type:none;
 	background: url(img/facetsListArrow.png) no-repeat  0.5em 50%;
 	padding:0.2em;
 	padding-left:18px;
 }
-#bodywrapper .facetsList li:hover{
+.bodywrapper .facetsList li:hover{
 	background-color:#eaeaea
 }

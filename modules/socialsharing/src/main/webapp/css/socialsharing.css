@@ -1,8 +1,8 @@
-##bodywrapper .socialsharing
+#.bodywrapper .socialsharing
 {
     list-style-type :none;
 }
-#bodywrapper .socialsharing li
+.bodywrapper .socialsharing li
 {
      display:inline;
      margin:5px;

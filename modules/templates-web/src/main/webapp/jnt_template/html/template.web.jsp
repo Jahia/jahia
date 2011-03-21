@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/print.css'/>" media="print"/>
 </head>
 <body id="body">
-<div id="bodywrapper">
+<div class="bodywrapper">
     <!--start bodywrapper-->
     <div id="topheader" class="noprint">
         <!--start topheader-->

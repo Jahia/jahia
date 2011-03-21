@@ -1,4 +1,4 @@
-#bodywrapper input[type = radio ],#bodywrapper input[type = checkbox ] {
+.bodywrapper input[type = radio ],.bodywrapper input[type = checkbox ] {
 	background:none;
 	border:none;
 	color:transparent;

@@ -1,25 +1,25 @@
 /******************************************************************************
 * icon Add
 ******************************************************************************/
-#bodywrapper a.social-add {
+.bodywrapper a.social-add {
 	width:16px;
 	height:16px;
 	display:block;
 	background: url(img/add.png) no-repeat top right;
 }
-#bodywrapper a.social-add span {
+.bodywrapper a.social-add span {
 	display:none
 }
 /******************************************************************************
 * Title  with icon h3
 ******************************************************************************/
-#bodywrapper h3.social-title-icon {
+.bodywrapper h3.social-title-icon {
 	color:#333;
 	font-size:1.8em;
 	padding:0 40px 5px 2px;
 	position:relative;
 }
-#bodywrapper h3.social-title-icon img {
+.bodywrapper h3.social-title-icon img {
 	position:absolute;
 	right:0;
 	top:-5px;
@@ -28,7 +28,7 @@
 *  boxsocial
 ******************************************************************************/
 /*boxsocial title*/
-#bodywrapper h4.boxsocial-title {
+.bodywrapper h4.boxsocial-title {
 	background:#666666 url(img/boxsocial-h4title.png) repeat-x top right;
 	border:1px solid #666666;
 	color:#fff;
@@ -40,59 +40,59 @@
 	clear:both;
 	margin:0;
 }
-#bodywrapper div.boxsocial {
+.bodywrapper div.boxsocial {
 	position:relative;
 	clear:both;
 }
 
-#bodywrapper div.boxsocial h3.boxsocialtitleh3 {
+.bodywrapper div.boxsocial h3.boxsocialtitleh3 {
 	margin:0;
 	padding:0;
 	display:inline
 }
-#bodywrapper div.boxsocial-inner {
+.bodywrapper div.boxsocial-inner {
 	background-color:#fff;
 	border:1px solid #cecece;
 	height:1%;
 
 }
 
-#bodywrapper .boxsocial-inner .boxsocial-inner-border {
+.bodywrapper .boxsocial-inner .boxsocial-inner-border {
 	border:1px solid #fff;
 	height:1%;
 	background-color:#fff;
 }
 /*boxsocialshadow*/
-#bodywrapper div.boxsocialshadow {
+.bodywrapper div.boxsocialshadow {
 	border:1px solid #cecece;
 }
 
-#bodywrapper div.boxsocialshadow div.boxsocial-inner {
+.bodywrapper div.boxsocialshadow div.boxsocial-inner {
 	background-color:#fff;
 	border:1px solid #cecece;
 	margin:-2px 0 0 -2px;
 }
 /*boxsocial color*/
-#bodywrapper .boxsocialgrey .boxsocial-inner .boxsocial-inner-border {
+.bodywrapper .boxsocialgrey .boxsocial-inner .boxsocial-inner-border {
 	background-color:#e1e1e1
 }
-#bodywrapper .boxsocialyellow .boxsocial-inner .boxsocial-inner-border {
+.bodywrapper .boxsocialyellow .boxsocial-inner .boxsocial-inner-border {
 	background-color:#FCF0BA
 }
-#bodywrapper .boxsocialwhite .boxsocial-inner {
+.bodywrapper .boxsocialwhite .boxsocial-inner {
 	background-color:#fff
 }
-#bodywrapper .boxsocialwhite .boxsocial-inner .boxsocial-inner-border {
+.bodywrapper .boxsocialwhite .boxsocial-inner .boxsocial-inner-border {
 	background-color:#fff
 }
 
 /*boxsocial padding*/
-#bodywrapper .boxsocialpadding16 .boxsocial-inner .boxsocial-inner-border {
+.bodywrapper .boxsocialpadding16 .boxsocial-inner .boxsocial-inner-border {
 	padding:16px;
 }
 
 /*boxsocial margin*/
-#bodywrapper .boxsocialmarginbottom16{
+.bodywrapper .boxsocialmarginbottom16{
 	margin-bottom:16px;
 }
 
@@ -100,14 +100,14 @@
 * social-list
 ******************************************************************************/
 
-#bodywrapper ul.social-list  {
+.bodywrapper ul.social-list  {
 	position:relative;
 	margin:0;
 	margin-bottom:20px;
 	list-style:none;
 	border:1px solid #ccc;
 }
-#bodywrapper .social-list li {
+.bodywrapper .social-list li {
 	background-color:#e1e1e1;
 	border-color:#fff #fff #ccc ;
 	border-style:solid;
@@ -116,17 +116,17 @@
 	margin:0;
 	list-style:none;
 }
-#bodywrapper .social-list li p {
+.bodywrapper .social-list li p {
 	padding:0;
 }
-#bodywrapper .social-list li:last-child {
+.bodywrapper .social-list li:last-child {
 	border-bottom-color:#fff;
 }
-#bodywrapper ul.social-list h4 {
+.bodywrapper ul.social-list h4 {
 	border-bottom:none;
 }
 /*Social list actions*/
-#bodywrapper ul.social-list a.social-list-remove {
+.bodywrapper ul.social-list a.social-list-remove {
 	width:16px;
 	height:16px;
 	display:block;
@@ -134,10 +134,10 @@
 	float:right;
 	margin-left:4px;
 }
-#bodywrapper ul.social-list a.social-list-remove span {
+.bodywrapper ul.social-list a.social-list-remove span {
 	display:none
 }
-#bodywrapper ul.social-list a.social-list-sendmessage {
+.bodywrapper ul.social-list a.social-list-sendmessage {
 	width:16px;
 	height:16px;
 	display:block;
@@ -145,11 +145,11 @@
 	float:right;
 	margin-left:4px;
 }
-#bodywrapper ul.social-list a.social-list-sendmessage span {
+.bodywrapper ul.social-list a.social-list-sendmessage span {
 	display:none
 }
 
-#bodywrapper ul.social-list div.thumbnail {
+.bodywrapper ul.social-list div.thumbnail {
 	background-color: white;
 	padding: 5px;
 	border:1px solid #B9DDFA;
@@ -158,71 +158,71 @@
 /******************************************************************************
 * statusUpdateForm
 ******************************************************************************/
-#bodywrapper .statusUpdateForm {
+.bodywrapper .statusUpdateForm {
 	margin:0
 }
-#bodywrapper .statusUpdateForm p{
+.bodywrapper .statusUpdateForm p{
 	margin:0.5em 0;
 	padding:0;
 }
-#bodywrapper .statusUpdateForm fieldset {
+.bodywrapper .statusUpdateForm fieldset {
 	border:none
 }
-#bodywrapper .statusUpdateForm legend {
+.bodywrapper .statusUpdateForm legend {
 	display:none
 }
-#bodywrapper .statusUpdateForm label {
+.bodywrapper .statusUpdateForm label {
 display:block
 }
-#bodywrapper .statusUpdateForm input, #bodywrapper .statusUpdateForm textarea {
+.bodywrapper .statusUpdateForm input, .bodywrapper .statusUpdateForm textarea {
 	width:98%;
 	clear:both
 }
-#bodywrapper .statusUpdateForm input.button{
+.bodywrapper .statusUpdateForm input.button{
 	width:auto
 }
 /******************************************************************************
 *  activitiesList
 ******************************************************************************/
 
-#bodywrapper ul.activitiesList  {
+.bodywrapper ul.activitiesList  {
 	position:relative;
 	margin:0;
 	list-style:none;
 	padding:0
 }
-#bodywrapper .activitiesList li {
+.bodywrapper .activitiesList li {
 	padding:10px;
 	margin:0;
 	margin-bottom:0px;
 	list-style:none;
 	background: url(img/hr.png) repeat-x bottom left;
 }
-#bodywrapper .activitiesList li:last-child {
+.bodywrapper .activitiesList li:last-child {
 	background:none;
 }
-#bodywrapper .activitiesList .itemImageLeft {
+.bodywrapper .activitiesList .itemImageLeft {
 	margin-right:20px
 }
-#bodywrapper .activitiesList .itemImageRight {
+.bodywrapper .activitiesList .itemImageRight {
 	margin-left:20px
 }
 
-#bodywrapper .activitiesList li p {
+.bodywrapper .activitiesList li p {
 	padding:0;
 }
-#bodywrapper .activitiesList li.last {
+.bodywrapper .activitiesList li.last {
 	background:none;
 }
 
-#bodywrapper .activitiesList .timestamp {
+.bodywrapper .activitiesList .timestamp {
 	font-size:0.8em;
 	font-weight:normal;
 	line-height:1.2em;
 	margin-left:0.5em;
 }
 
-#bodywrapper .activitiesList h5.author {
+.bodywrapper .activitiesList h5.author {
 	display:inline;
 	margin:0;
 	padding:0;
@@ -232,67 +232,67 @@ display:block
 *  Users Messages list
 ******************************************************************************/
 
-#bodywrapper ul.userMessagesList  {
+.bodywrapper ul.userMessagesList  {
 	position:relative;
 	margin:0;
 	list-style:none;
 	padding:0;
 }
-#bodywrapper .userMessagesList li {
+.bodywrapper .userMessagesList li {
 	padding:10px;
 	margin:0;
 	margin-bottom:0px;
 	list-style:none;
 	background: url(img/hr.png) repeat-x bottom left;
 }
-#bodywrapper .userMessagesList li:last-child {
+.bodywrapper .userMessagesList li:last-child {
 	background:none;
 }
-#bodywrapper .userMessagesList .itemImageLeft,
-#bodywrapper .userMessagesDetail .itemImageLeft {
+.bodywrapper .userMessagesList .itemImageLeft,
+.bodywrapper .userMessagesDetail .itemImageLeft {
 	margin-right:20px
 }
-#bodywrapper .userMessagesList .itemImageRight,
-#bodywrapper .userMessagesDetail .itemImageRight {
+.bodywrapper .userMessagesList .itemImageRight,
+.bodywrapper .userMessagesDetail .itemImageRight {
 	margin-left:20px
 }
 
-#bodywrapper .userMessagesList li p,
-#bodywrapper .userMessagesDetail p {
+.bodywrapper .userMessagesList li p,
+.bodywrapper .userMessagesDetail p {
 	padding:0;
 }
-#bodywrapper .userMessagesList li.last {
+.bodywrapper .userMessagesList li.last {
 	background:none;
 }
 
-#bodywrapper .userMessagesList .timestamp,
-#bodywrapper .userMessagesDetail .timestamp {
+.bodywrapper .userMessagesList .timestamp,
+.bodywrapper .userMessagesDetail .timestamp {
 	font-size:0.8em;
 	font-weight:normal;
 	line-height:1.2em;
 	margin-left:0.5em;
 }
 
-#bodywrapper .userMessagesList h5.messageSenderName,
-#bodywrapper .userMessagesDetail h5.messageSenderName {
+.bodywrapper .userMessagesList h5.messageSenderName,
+.bodywrapper .userMessagesDetail h5.messageSenderName {
 	display:inline;
 	margin:0;
 	padding:0;
 	font-weight:bold;
 }
 
-#bodywrapper ul.messageActionList {
+.bodywrapper ul.messageActionList {
 	padding:0;
 	margin:0;
 	float:right;
 }
-#bodywrapper ul.messageActionList li{
+.bodywrapper ul.messageActionList li{
 	display:inline;
 	background:none;
 	padding:0;
 	margin:0;
 }
-#bodywrapper ul.messageActionList a.messageActionReply {
+.bodywrapper ul.messageActionList a.messageActionReply {
 	width:16px;
 	height:16px;
 	display:block;
@@ -300,10 +300,10 @@ display:block
 	float:right;
 	margin-left:4px;
 }
-#bodywrapper ul.messageActionList a.messageActionReply span {
+.bodywrapper ul.messageActionList a.messageActionReply span {
 	display:none
 }
-#bodywrapper ul.messageActionList a.messageActionDelete {
+.bodywrapper ul.messageActionList a.messageActionDelete {
 	width:16px;
 	height:16px;
 	display:block;
@@ -311,7 +311,7 @@ display:block
 	float:right;
 	margin-left:4px;
 }
-#bodywrapper ul.messageActionList a.messageActionDelete span {
+.bodywrapper ul.messageActionList a.messageActionDelete span {
 	display:none
 }
 

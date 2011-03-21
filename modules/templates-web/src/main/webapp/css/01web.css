@@ -17,7 +17,7 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	line-height:160%;
 }
-#bodywrapper {
+.bodywrapper {
 }
 /******************************************************************************
 * Utils
@@ -25,50 +25,50 @@ body {
 .collapsible {
 	display:none;
 }
-#bodywrapper .clear 	{
+.bodywrapper .clear 	{
 	clear:both;
 }
-#bodywrapper .clearitem 	{
+.bodywrapper .clearitem 	{
 	clear:both;
 }
 
-#bodywrapper br.clear {
+.bodywrapper br.clear {
 	clear:both;
 	font-family: Arial, Helvetica, sans-serif;
 	line-height:0px;	/* no height ! */
 	font-size:0px;
 }
-#bodywrapper .hide, #bodywrapper .hidden {
+.bodywrapper .hide, .bodywrapper .hidden {
 	display:none;
 }
 
-#bodywrapper .floatright {
+.bodywrapper .floatright {
 	float:right;
 	position:relative;
 	margin: 5px;
 }
-#bodywrapper .floatleft {
+.bodywrapper .floatleft {
 	float:left;
 	position:relative;
 	margin: 5px;
 }
 
-#bodywrapper .leftside{
+.bodywrapper .leftside{
 	float:left;
 	position:relative;
 }
-#bodywrapper .rightside{
+.bodywrapper .rightside{
 	float: right;
 	position:relative;
 }
-#bodywrapper .clearMaringPadding{
+.bodywrapper .clearMaringPadding{
 	padding:0;
 	margin:0;
 }
 /******************************************************************************
 *  topheader
 ******************************************************************************/
-#bodywrapper #topheader{
+.bodywrapper #topheader{
 	position:relative;
 	z-index:900;
 	width:960px;
@@ -77,13 +77,13 @@ body {
 /******************************************************************************
 *  Languages
 ******************************************************************************/
-#bodywrapper div#languages {
+.bodywrapper div#languages {
 	float:right;
 	display:inline;
 	padding:10px;
 }
 
-#bodywrapper #languages ul  {
+.bodywrapper #languages ul  {
 	list-style: none;
 	float:left;
 	display:inline;
@@ -91,24 +91,24 @@ body {
 	font-size:85%;
 	line-height:normal;
 }
-#bodywrapper #languages li {
+.bodywrapper #languages li {
 	display:inline;
 	padding:0 5px;
 	background: none;
 }
-#bodywrapper #languages li.selected {
+.bodywrapper #languages li.selected {
 	color:#900;
 	text-decoration:underline
 }
-#bodywrapper #languages a,
-#bodywrapper #languages a:link,
-#bodywrapper #languages a:visited {
+.bodywrapper #languages a,
+.bodywrapper #languages a:link,
+.bodywrapper #languages a:visited {
 	color:#333;
 	text-decoration:none;
 	background:none;
 }
-#bodywrapper #languages a:hover,
-#bodywrapper #languages a:active {
+.bodywrapper #languages a:hover,
+.bodywrapper #languages a:active {
 	color:#900;
 	text-decoration:underline;
 	background:none;
@@ -116,14 +116,14 @@ body {
 /******************************************************************************
 *  Float Right List for ordered or unordered links list
 ******************************************************************************/
-#bodywrapper .FloatRightList ul {
+.bodywrapper .FloatRightList ul {
 	text-align:right;
 	list-style:none;
 	margin:0;
 	padding:0;
 }
 
-#bodywrapper .FloatRightList li {
+.bodywrapper .FloatRightList li {
 	list-style:none;
 	padding-left:1em;
 	display:inline;
@@ -132,12 +132,12 @@ body {
 /******************************************************************************
 * list Arrow
 ******************************************************************************/
-#bodywrapper ul.arrowList, .arrowList ul {
+.bodywrapper ul.arrowList, .arrowList ul {
 	margin:5px 0;
 	position:relative;
 	list-style:none;
 }
-#bodywrapper .arrowList li {
+.bodywrapper .arrowList li {
 	background: url(img/arrow.png) no-repeat 0 2px;
 	padding:0 0 0 12px;
 	clear:left;
@@ -147,7 +147,7 @@ body {
 *  Hilight List
 ******************************************************************************/
 
-#bodywrapper .hilightList ul {
+.bodywrapper .hilightList ul {
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
@@ -155,14 +155,14 @@ body {
 	padding:0;
 	border-bottom:none;
 }
-#bodywrapper .hilightList li {
+.bodywrapper .hilightList li {
 	list-style-type:none;
 	margin:0;
 	padding:0;
 }
-#bodywrapper .hilightList li a,
-#bodywrapper .hilightList li a:link,
-#bodywrapper .hilightList li a:visited
+.bodywrapper .hilightList li a,
+.bodywrapper .hilightList li a:link,
+.bodywrapper .hilightList li a:visited
 {
 	border-bottom:1px solid #ccc;
 	padding:0.2em 0.5em;
@@ -170,8 +170,8 @@ body {
 	text-decoration:none;
 	color:#333;
 }
-#bodywrapper .hilightList li a:hover,
-#bodywrapper .hilightList li a:active {
+.bodywrapper .hilightList li a:hover,
+.bodywrapper .hilightList li a:active {
 	text-decoration:none;
 	color:#900;
 	background-color:#eaeaea
@@ -180,7 +180,7 @@ body {
 /******************************************************************************
 * header-part1
 ******************************************************************************/
-#bodywrapper div#headerPart1{
+.bodywrapper div#headerPart1{
 	position:relative;
 	width: 940px;
 }
@@ -188,7 +188,7 @@ body {
 /******************************************************************************
 *  page
 ******************************************************************************/
-#bodywrapper #page {
+.bodywrapper #page {
 	padding:10px;
 	width:960px;
 	background-color:#fff;
@@ -198,14 +198,14 @@ body {
 *  bottomheader
 ******************************************************************************/
 /*Navigation N1*/
-#bodywrapper div .navigationN1{
+.bodywrapper div .navigationN1{
 	clear:both;
 	background:#dad9d8 url(img/navigationN1-top.png) no-repeat top left;
 	margin: 0;
 	padding:0 ;
 	width:960px
 }
-#bodywrapper .navigationN1 ul {
+.bodywrapper .navigationN1 ul {
 	clear:both;
 	list-style-type:none;
 	overflow:hidden;
@@ -214,14 +214,14 @@ body {
 	padding:0 ;
 	width:960px
 }
-#bodywrapper .navigationN1 li {
+.bodywrapper .navigationN1 li {
 	display:inline;
 	float:left;
 	margin:0;
 	padding:0;
 }
 
-#bodywrapper .navigationN1 li a {
+.bodywrapper .navigationN1 li a {
 	background:transparent url(img/navigationN1-separator.png) no-repeat 100% 50% ;
 	color:#333;
 	display:inline;
@@ -233,22 +233,22 @@ body {
 	text-transform:uppercase;
 	white-space:nowrap
 }
-#bodywrapper .navigationN1 li.lastInLevel a {
+.bodywrapper .navigationN1 li.lastInLevel a {
 	background:none;
 }
-#bodywrapper .navigationN1 li a:hover,
-#bodywrapper .navigationN1 li.selected a,
-#bodywrapper .navigationN1 li.selected a:link,
-#bodywrapper .navigationN1 li.selected a:visited,
-#bodywrapper .navigationN1 li.selected a:hover,
-#bodywrapper .navigationN1 li.selected a:active {
+.bodywrapper .navigationN1 li a:hover,
+.bodywrapper .navigationN1 li.selected a,
+.bodywrapper .navigationN1 li.selected a:link,
+.bodywrapper .navigationN1 li.selected a:visited,
+.bodywrapper .navigationN1 li.selected a:hover,
+.bodywrapper .navigationN1 li.selected a:active {
 	color:#900;
 }
 
 /******************************************************************************
 *  content
 ******************************************************************************/
-#bodywrapper #content{
+.bodywrapper #content{
 	padding-top:20px;
 	padding-bottom:20px;
 	position:relative;
@@ -258,18 +258,18 @@ body {
 /******************************************************************************
 * footer
 ******************************************************************************/
-#bodywrapper #footer{
+.bodywrapper #footer{
 	clear:both;
 }
-#bodywrapper #footer a,
-#bodywrapper #footer a:link,
-#bodywrapper #footer a:visited {
+.bodywrapper #footer a,
+.bodywrapper #footer a:link,
+.bodywrapper #footer a:visited {
 	color:#333;
 	text-decoration:none;
 	background:none;
 }
-#bodywrapper #footer a:hover,
-#bodywrapper #footer a:active {
+.bodywrapper #footer a:hover,
+.bodywrapper #footer a:active {
 	color:#900;
 	text-decoration:underline;
 	background:none;
@@ -277,7 +277,7 @@ body {
 /******************************************************************************
 *  footerPart1
 ******************************************************************************/
-#bodywrapper #footerPart1{
+.bodywrapper #footerPart1{
 	background-color:#EAEAEA;
 	clear:both;
 	color:#333333;
@@ -292,7 +292,7 @@ body {
 /******************************************************************************
 *  footerPart2
 ******************************************************************************/
-#bodywrapper #footerPart2{
+.bodywrapper #footerPart2{
 	clear:both;
 	text-align:left;
 	font-size:85%;
@@ -306,7 +306,7 @@ body {
 /******************************************************************************
 *  footerPart3
 ******************************************************************************/
-#bodywrapper #footerPart3{
+.bodywrapper #footerPart3{
 	clear:both;
 	text-align:left;
 	font-size:85%;
@@ -318,44 +318,44 @@ body {
 	padding-top:10px;
 	padding-bottom:10px;
 }
-#bodywrapper #footerPart3 p {
+.bodywrapper #footerPart3 p {
 	text-transform:capitalize;
 	padding:0.2em 0 0.2em 0;
 }
-#bodywrapper #footerPart3 p.footerText {
+.bodywrapper #footerPart3 p.footerText {
 	font-style:italic;
 	padding:0.2em 0 2em 0;
 	color:#dad0c7
 }
-#bodywrapper #footerPart3 a,
-#bodywrapper #footerPart3 a:link,
-#bodywrapper #footerPart3 a:visited {
+.bodywrapper #footerPart3 a,
+.bodywrapper #footerPart3 a:link,
+.bodywrapper #footerPart3 a:visited {
 	color:#333;
 	text-decoration:none;
 }
-#bodywrapper #footerPart3 a:hover,
-#bodywrapper #footerPart3 a:active {
+.bodywrapper #footerPart3 a:hover,
+.bodywrapper #footerPart3 a:active {
 	color:#333;
 	text-decoration:underline;
 }
 /*bottomshortcuts*/
 
-#bodywrapper div#bottomshortcuts{
+.bodywrapper div#bottomshortcuts{
 	display:inline;
 }
 
-#bodywrapper #bottomshortcuts ul  {
+.bodywrapper #bottomshortcuts ul  {
 	margin:0;
 	padding:0;
 	list-style:none;
 }
-#bodywrapper #bottomshortcuts li {
+.bodywrapper #bottomshortcuts li {
 	display:inline;
 	background: url(img/bottomshortcuts-bullet.png) no-repeat 100% 50%;
 	padding-right:10px;
 	margin-right:10px;
 }
-#bodywrapper #bottomshortcuts .last {
+.bodywrapper #bottomshortcuts .last {
 	background:none;
 	padding-right:0;
 	margin-right:0;
@@ -363,50 +363,50 @@ body {
 /******************************************************************************
 *  General
 ******************************************************************************/
-#bodywrapper a,
-#bodywrapper a:link,
-#bodywrapper a:visited {
+.bodywrapper a,
+.bodywrapper a:link,
+.bodywrapper a:visited {
 	color:#900;
 	text-decoration:underline;
 }
-#bodywrapper a:hover,
-#bodywrapper a:active {
+.bodywrapper a:hover,
+.bodywrapper a:active {
 	color:#900;
 	text-decoration:none;
 }
-#bodywrapper p{
+.bodywrapper p{
 	margin:0.5em 0;
 }
-#bodywrapper ul  {
+.bodywrapper ul  {
 	margin:1em 0 1em 2em;
 	padding:0;
 	list-style-position:outside;
 }
 
-#bodywrapper li  {
+.bodywrapper li  {
 	margin:0;
 	padding:0;
 }
-#bodywrapper ol  {
+.bodywrapper ol  {
 	margin:1em 0 1em 2em;
 	padding:0;
 	list-style-position:outside;
 }
 
-#bodywrapper ol li {
+.bodywrapper ol li {
 	margin:0;
 	padding:0;
 	background: none;
 	list-style: decimal
 }
-#bodywrapper dt {
+.bodywrapper dt {
 	font-weight:bold;
 	color:#900
 }
-#bodywrapper dd {
+.bodywrapper dd {
 	padding:0 0 0 0.5em;
 }
-#bodywrapper h1 {
+.bodywrapper h1 {
 	color:#333;
 	font-weight:normal;
 	font-size:2.2em;
@@ -414,7 +414,7 @@ body {
 	margin:0;
 	padding:0;
 }
-#bodywrapper h2 {
+.bodywrapper h2 {
 	color:#900;
 	font-weight:normal;
 	font-size:2em;
@@ -422,7 +422,7 @@ body {
 	padding:0;
 }
 
-#bodywrapper h3 {
+.bodywrapper h3 {
 	color:#333;
 	font-size:1.4em;
 	font-weight:bold;
@@ -430,7 +430,7 @@ body {
 	padding:0;
 }
 
-#bodywrapper h4 {
+.bodywrapper h4 {
 	font-size:1.2em;
 	color:#333;
 	font-weight:bold;
@@ -439,7 +439,7 @@ body {
 	border-bottom:1px dotted #ccc
 }
 
-#bodywrapper h5 {
+.bodywrapper h5 {
 	font-size:1em;
 	font-weight:bold;
 	color:#333;
@@ -448,12 +448,12 @@ body {
 
 }
 
-#bodywrapper fieldset {
+.bodywrapper fieldset {
 	padding:0.5em;
 	border:1px solid #ccc;
 	margin:0.5em 0;
 }
-#bodywrapper legend {
+.bodywrapper legend {
 	font-size:1em;
 	color:#333;
 	padding:0 0.5em;
@@ -464,14 +464,14 @@ body {
 	font-weight:bold;
 	text-transform:uppercase
 }
-#bodywrapper hr {
+.bodywrapper hr {
 	height:1px;
 	background-color:#ccc;
 	color:#ccc;
 	border: none;
 	margin : 1em 0;
 }
-#bodywrapper blockquote {
+.bodywrapper blockquote {
 	background:#eaeaea url(img/blockquote.png) no-repeat top left;
 	border:1px solid #ccc;
 	font-style:italic;
@@ -480,7 +480,7 @@ body {
 	padding:20px;
 }
 
-#bodywrapper div.intro{
+.bodywrapper div.intro{
 	color:#333;
 	line-height:1.6em;
 	font-size:1.4em;
@@ -490,17 +490,17 @@ body {
 	padding:0.5em 0.5em;
 	margin : 1em 0;
 }
-#bodywrapper div.intro p{
+.bodywrapper div.intro p{
 	padding:0;
 	margin : 0;
 }
-#bodywrapper textarea {
+.bodywrapper textarea {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size:100%
 }
-#bodywrapper input,
-#bodywrapper select,
-#bodywrapper textarea {
+.bodywrapper input,
+.bodywrapper select,
+.bodywrapper textarea {
 	background-color:transparent;
 	background:#fff url(img/input_bg.png) repeat-x top left;
 	border:1px solid #ccc;
@@ -508,29 +508,29 @@ body {
 	padding:4px 5px;
 }
 
-#bodywrapper input.gobutton{
+.bodywrapper input.gobutton{
 	background:none;
 	border:none;
 	margin:0;
 		padding:0;
 	vertical-align: bottom;
 }
-#bodywrapper .small {
+.bodywrapper .small {
 	font-weight:0.8em;
 }
-#bodywrapper .colorlight {
+.bodywrapper .colorlight {
 	color:#666
 }
 /******************************************************************************
 *  Float Right Links List ordered or unordered
 ******************************************************************************/
-#bodywrapper ul.FloatRightList {
+.bodywrapper ul.FloatRightList {
 	text-align:right;
 	list-style:none;
 	margin:0;
 	padding:0;
 }
-#bodywrapper .FloatRightList li {
+.bodywrapper .FloatRightList li {
 	list-style:none;
 	padding-left:1em;
 	display:inline;
@@ -539,67 +539,67 @@ body {
 /******************************************************************************
 *  Images
 ******************************************************************************/
-#bodywrapper .imagefloatright {
+.bodywrapper .imagefloatright {
 	float:right;
 	margin-bottom:20px;
 	padding-left:20px;
 }
-#bodywrapper .imagefloatleft {
+.bodywrapper .imagefloatleft {
 	float:left;
 	margin-bottom:20px;
 	padding-right:20px;
 }
-#bodywrapper .imagefloatright {
+.bodywrapper .imagefloatright {
 	float:right;
 	margin-bottom:20px;
 	padding-left:20px;
 }
 
-#bodywrapper .itemImage {
+.bodywrapper .itemImage {
 	background-color:#F4F4F4;
 	border:1px solid #CCC;
 	position:relative;
 	padding:1px;
 	margin-bottom:10px;
 }
-#bodywrapper .imagefloatleft .itemImage  {
+.bodywrapper .imagefloatleft .itemImage  {
 	margin-bottom:0px;
 }
-#bodywrapper .imagefloatright .itemImage  {
+.bodywrapper .imagefloatright .itemImage  {
 	margin-bottom:0px;
 }
-#bodywrapper div.itemImageRight {
+.bodywrapper div.itemImageRight {
 	float:right;
 }
-#bodywrapper div.itemImageLeft {
+.bodywrapper div.itemImageLeft {
 	float:left;
 }
-#bodywrapper .itemImage img {
+.bodywrapper .itemImage img {
 	background-color:#e1e1e1;
 	display: block;
 	padding:9px;
 }
-#bodywrapper .itemImagewhite img{
+.bodywrapper .itemImagewhite img{
 	background-color:#fff;
 	display: block;
 }
 /******************************************************************************
 *  Button
 ******************************************************************************/
-#bodywrapper .divButton{
+.bodywrapper .divButton{
 	text-align:center;
 	margin:0 0 10px 0;
 	overflow:hidden;
 }
-#bodywrapper .divButtonRight{
+.bodywrapper .divButtonRight{
 	text-align:right;
 	overflow:hidden;
 }
-#bodywrapper input.button, #bodywrapper button {
+.bodywrapper input.button, .bodywrapper button {
 	margin-right:0.5em;
 }
 
-#bodywrapper .button,  #bodywrapper button{
+.bodywrapper .button,  .bodywrapper button{
 	background:#fff url(img/bg-button.png) repeat-x bottom left;
 	border:1px solid #333;
 	color:#333;
@@ -609,7 +609,7 @@ body {
 	font-size:80%;
 	padding:6px 15px 4px 15px;
 }
-#bodywrapper .button:hover, #bodywrapper button:hover {
+.bodywrapper .button:hover, .bodywrapper button:hover {
 	cursor: pointer;
 	background:#fff url(img/bg-button-on.png) repeat-x top left;
 	color:#900;
@@ -617,12 +617,12 @@ body {
 /******************************************************************************
 * Title h3
 ******************************************************************************/
-#bodywrapper h3.titleIcon {
+.bodywrapper h3.titleIcon {
 	color:#333;
 	padding:0 50px 5px 2px;
 	position:relative;
 }
-#bodywrapper h3.titleIcon img {
+.bodywrapper h3.titleIcon img {
 	position:absolute;
 	right:0;
 	top:-5px;
@@ -631,9 +631,9 @@ body {
 *  <A> Button
 ******************************************************************************/
 
-#bodywrapper  a.aButton,
-#bodywrapper  a.aButton:link,
-#bodywrapper  a.aButton:visited {
+.bodywrapper  a.aButton,
+.bodywrapper  a.aButton:link,
+.bodywrapper  a.aButton:visited {
 	background: transparent url(img/button-right.png) no-repeat scroll top right;
 	display: block;
 	float: left;
@@ -645,104 +645,104 @@ body {
 	color:#fff;
 	margin-top: 5px;
 }
-#bodywrapper  a.aButton span {
+.bodywrapper  a.aButton span {
 	/* Background left image */
 	background: transparent url(img/button-left.png) no-repeat;
 	display: block;
 	line-height: 12px; /* CHANGE THIS VALUE ACCORDING TO BUTTONG HEIGHT */
 	padding: 6px 0 6px 18px;
 }
-#bodywrapper  a.aButton:hover span{
+.bodywrapper  a.aButton:hover span{
 	text-decoration:underline;
 }
-#bodywrapper  a.aButtonRight,
-#bodywrapper  a.aButtonRight:link,
-#bodywrapper  a.aButtonRight:visited{
+.bodywrapper  a.aButtonRight,
+.bodywrapper  a.aButtonRight:link,
+.bodywrapper  a.aButtonRight:visited{
 	float: right;
 }
 /******************************************************************************
 *  <A> bottomanchor
 ******************************************************************************/
-#bodywrapper div.bottomanchor {
+.bodywrapper div.bottomanchor {
 	border-top:1px dotted #ccc;
 	line-height:1.2em;
 	padding:0.2em;
 	margin: 1em 0;
 	clear:both;
 }
-#bodywrapper .bottomanchor a,
-#bodywrapper .bottomanchor a:link,
-#bodywrapper .bottomanchor a:visited  {
+.bodywrapper .bottomanchor a,
+.bodywrapper .bottomanchor a:link,
+.bodywrapper .bottomanchor a:visited  {
 	float:right;
 	margin:0 ;
 	font-size:80%;
 	background: url(img/bottomanchor.png) no-repeat top right;
 	padding-right:20px;
 }
-#bodywrapper .bottomanchor a:hover ,
-#bodywrapper .bottomanchor a:active  {
+.bodywrapper .bottomanchor a:hover ,
+.bodywrapper .bottomanchor a:active  {
 	cursor: pointer;
 	background: url(img/bottomanchor-on.png) no-repeat top right;
 }
 /******************************************************************************
 *  Sort
 ******************************************************************************/
-#bodywrapper .sort{
+.bodywrapper .sort{
 	text-align:right
 }
 /******************************************************************************
 *  Thumbnails
 ******************************************************************************/
-#bodywrapper div.thumbnail {
+.bodywrapper div.thumbnail {
 	float:left;
 	position:relative;
 	margin-right:20px;
 }
-#bodywrapper div.thumbnailRight {
+.bodywrapper div.thumbnailRight {
 	float:right;
 	position:relative;
 	margin-left:20px;
 }
-#bodywrapper div.thumbnail img {
+.bodywrapper div.thumbnail img {
 	position:relative
 }
 /******************************************************************************
 * Thumbnails  List
 ******************************************************************************/
-#bodywrapper div.thumbnailList{
+.bodywrapper div.thumbnailList{
 	margin-top:10px;
 	margin-bottom:10px;
 }
-#bodywrapper div.thumbnailList a{
+.bodywrapper div.thumbnailList a{
 	float:left;
 	margin-right:10px;
 	margin-bottom:10px;
 	border:1px solid #fff
 }
-#bodywrapper div.thumbnailList a:hover{
+.bodywrapper div.thumbnailList a:hover{
 	border:1px solid #000
 }
 /******************************************************************************
 * breadcrumb
 ******************************************************************************/
 
-#bodywrapper ul.breadcrumb  {
+.bodywrapper ul.breadcrumb  {
 	font-size:90%;
 	margin:1em 0;
 	padding:0;
 	list-style:none;
 	color:#999;
 }
-#bodywrapper ul.breadcrumb li {
+.bodywrapper ul.breadcrumb li {
 	display:inline;
 	margin:0;
 	padding:0;
 	background: none;
 	margin: 0.4em ;
 }
-#bodywrapper ul.breadcrumb a,
-#bodywrapper ul.breadcrumb a:link,
-#bodywrapper ul.breadcrumb a:visited
+.bodywrapper ul.breadcrumb a,
+.bodywrapper ul.breadcrumb a:link,
+.bodywrapper ul.breadcrumb a:visited
 {
 	padding:0 1em 0 0;
 	margin:0;
@@ -750,16 +750,16 @@ body {
 	color:#999;
 	text-decoration:underline;
 }
-#bodywrapper ul.breadcrumb li:last-child a {
+.bodywrapper ul.breadcrumb li:last-child a {
     background-image:none;
 }
 
-#bodywrapper ul.breadcrumb a:hover,
-#bodywrapper ul.breadcrumb a:active {
+.bodywrapper ul.breadcrumb a:hover,
+.bodywrapper ul.breadcrumb a:active {
 	color:#900;
 	text-decoration:underline;
 }
-#bodywrapper pre {
+.bodywrapper pre {
 	background-color:#EAEAEA;
 	border-left:4px solid #CCCCCC;
 	font-family:Courier,"Courier New",monospace;
@@ -773,190 +773,190 @@ body {
 /******************************************************************************
 * navigationN2
 ******************************************************************************/
-#bodywrapper div .navigationN2 {
+.bodywrapper div .navigationN2 {
 	border-top:5px solid #ddd3ca;
 	margin-bottom:10px;
 }
 
-#bodywrapper .navigationN2 ul{
+.bodywrapper .navigationN2 ul{
 	margin:0;
 	padding:0;
 	list-style: none;
 	background-color:#fff;
 
 }
-#bodywrapper .navigationN2 li{
+.bodywrapper .navigationN2 li{
 	margin:0;
 	padding:0;
 	background: none;
 	line-height:2.2em;
 	list-style:none
 }
-#bodywrapper .navigationN2 li li{
+.bodywrapper .navigationN2 li li{
 	margin:0;
 	padding:0;
 	border-bottom:none;
 }
-#bodywrapper .navigationN2 a,
-#bodywrapper .navigationN2 a:link,
-#bodywrapper .navigationN2 a:visited {
+.bodywrapper .navigationN2 a,
+.bodywrapper .navigationN2 a:link,
+.bodywrapper .navigationN2 a:visited {
 	display: block;
 	text-decoration: none;
 	height:1%;
 	background: none;
 	color:#333;
 }
-#bodywrapper .navigationN2 a:hover,
-#bodywrapper .navigationN2 a:active{
+.bodywrapper .navigationN2 a:hover,
+.bodywrapper .navigationN2 a:active{
 	background:none;
 	color:#900;
 }
 
-#bodywrapper .navigationN2 .level_1 a,
-#bodywrapper .navigationN2 .level_1 a:link,
-#bodywrapper .navigationN2 .level_1 a:visited {
+.bodywrapper .navigationN2 .level_1 a,
+.bodywrapper .navigationN2 .level_1 a:link,
+.bodywrapper .navigationN2 .level_1 a:visited {
 	padding:0 2px 0 20px;
 	background: url(img/bg-navigationN2-L1.png) no-repeat 10px 50%;
 	border-bottom:1px solid #ccc;
 	margin:1px 0;
 }
-#bodywrapper .navigationN2 .level_1 a.inpath,
-#bodywrapper .navigationN2 .level_1 a.inpath:link ,
-#bodywrapper .navigationN2 .level_1 a.inpath:visited ,
-#bodywrapper .navigationN2 .level_1 a.inpath:hover ,
-#bodywrapper .navigationN2 .level_1 a.inpath:active{
+.bodywrapper .navigationN2 .level_1 a.inpath,
+.bodywrapper .navigationN2 .level_1 a.inpath:link ,
+.bodywrapper .navigationN2 .level_1 a.inpath:visited ,
+.bodywrapper .navigationN2 .level_1 a.inpath:hover ,
+.bodywrapper .navigationN2 .level_1 a.inpath:active{
 	font-weight:bold;
 	background: #eaeaea url(img/bg-navigationN2-L1-on.png) no-repeat 6px 50%;
 }
 
-#bodywrapper .navigationN2 .level_1 a:hover,
-#bodywrapper .navigationN2 .level_1 a:active{
+.bodywrapper .navigationN2 .level_1 a:hover,
+.bodywrapper .navigationN2 .level_1 a:active{
 	color:#900;
 	background: url(img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
 	background-color:#ddd3ca;
 }
-#bodywrapper .navigationN2 .level_1 a.selected,
-#bodywrapper .navigationN2 .level_1 a.selected:link ,
-#bodywrapper .navigationN2 .level_1 a.selected:visited ,
-#bodywrapper .navigationN2 .level_1 a.selected:hover,
-#bodywrapper .navigationN2 .level_1 a.selected:active {
+.bodywrapper .navigationN2 .level_1 a.selected,
+.bodywrapper .navigationN2 .level_1 a.selected:link ,
+.bodywrapper .navigationN2 .level_1 a.selected:visited ,
+.bodywrapper .navigationN2 .level_1 a.selected:hover,
+.bodywrapper .navigationN2 .level_1 a.selected:active {
 	background: url(img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
 	color:#c03;
 }
 
-#bodywrapper .navigationN2 .level_2 a,
-#bodywrapper .navigationN2 .level_2 a:link,
-#bodywrapper .navigationN2 .level_2 a:visited {
+.bodywrapper .navigationN2 .level_2 a,
+.bodywrapper .navigationN2 .level_2 a:link,
+.bodywrapper .navigationN2 .level_2 a:visited {
 	padding:0 2px 0 40px;
 	background: url(img/bg-navigationN2-L2.png) no-repeat 30px 50% ;
 }
-#bodywrapper .navigationN2 .level_2 a.inpath,
-#bodywrapper .navigationN2 .level_2 a.inpath:link ,
-#bodywrapper .navigationN2 .level_2 a.inpath:visited ,
-#bodywrapper .navigationN2 .level_2 a.inpath:hover ,
-#bodywrapper .navigationN2 .level_2 a.inpath:active{
+.bodywrapper .navigationN2 .level_2 a.inpath,
+.bodywrapper .navigationN2 .level_2 a.inpath:link ,
+.bodywrapper .navigationN2 .level_2 a.inpath:visited ,
+.bodywrapper .navigationN2 .level_2 a.inpath:hover ,
+.bodywrapper .navigationN2 .level_2 a.inpath:active{
 	font-weight:bold;
 	background: #eaeaea url(img/bg-navigationN2-L2-on.png) no-repeat 26px 50% ;
 }
-#bodywrapper .navigationN2 .level_2 a:hover,
-#bodywrapper .navigationN2 .level_2 a:active{
+.bodywrapper .navigationN2 .level_2 a:hover,
+.bodywrapper .navigationN2 .level_2 a:active{
 	color:#900;
 	background: url(img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
 	background-color:#ddd3ca;
 }
 
-#bodywrapper .navigationN2 .level_2 a.selected,
-#bodywrapper .navigationN2 .level_2 a.selected:link ,
-#bodywrapper .navigationN2 .level_2 a.selected:visited ,
-#bodywrapper .navigationN2 .level_2 a.selected:hover,
-#bodywrapper .navigationN2 .level_2 a.selected:active {
+.bodywrapper .navigationN2 .level_2 a.selected,
+.bodywrapper .navigationN2 .level_2 a.selected:link ,
+.bodywrapper .navigationN2 .level_2 a.selected:visited ,
+.bodywrapper .navigationN2 .level_2 a.selected:hover,
+.bodywrapper .navigationN2 .level_2 a.selected:active {
 	background: url(img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
 	color:#c03;
 }
-#bodywrapper .navigationN2 .level_3 a,
-#bodywrapper .navigationN2 .level_3 a:link,
-#bodywrapper .navigationN2 .level_3 a:visited {
+.bodywrapper .navigationN2 .level_3 a,
+.bodywrapper .navigationN2 .level_3 a:link,
+.bodywrapper .navigationN2 .level_3 a:visited {
 	padding:0 2px 0 60px;
 	background: url(img/bg-navigationN2-L3.png) no-repeat 50px 50% ;
 
 }
-#bodywrapper .navigationN2 .level_3 a.inpath,
-#bodywrapper .navigationN2 .level_3 a.inpath:link ,
-#bodywrapper .navigationN2 .level_3 a.inpath:visited ,
-#bodywrapper .navigationN2 .level_3 a.inpath:hover ,
-#bodywrapper .navigationN2 .level_3 a.inpath:active{
+.bodywrapper .navigationN2 .level_3 a.inpath,
+.bodywrapper .navigationN2 .level_3 a.inpath:link ,
+.bodywrapper .navigationN2 .level_3 a.inpath:visited ,
+.bodywrapper .navigationN2 .level_3 a.inpath:hover ,
+.bodywrapper .navigationN2 .level_3 a.inpath:active{
 	font-weight:bold;
 	background: #eaeaea url(img/bg-navigationN2-L3-on.png) no-repeat 46px 50% ;
 }
-#bodywrapper .navigationN2 .level_3 a:hover,
-#bodywrapper .navigationN2 .level_3 a:active{
+.bodywrapper .navigationN2 .level_3 a:hover,
+.bodywrapper .navigationN2 .level_3 a:active{
 	color:#900;
 	background: url(img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
 	background-color:#ddd3ca;
 }
-#bodywrapper .navigationN2 .level_3 a.selected,
-#bodywrapper .navigationN2 .level_3 a.selected:link ,
-#bodywrapper .navigationN2 .level_3 a.selected:visited ,
-#bodywrapper .navigationN2 .level_3 a.selected:hover,
-#bodywrapper .navigationN2 .level_3 a.selected:active {
+.bodywrapper .navigationN2 .level_3 a.selected,
+.bodywrapper .navigationN2 .level_3 a.selected:link ,
+.bodywrapper .navigationN2 .level_3 a.selected:visited ,
+.bodywrapper .navigationN2 .level_3 a.selected:hover,
+.bodywrapper .navigationN2 .level_3 a.selected:active {
 	background: url(img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
 	color:#c03;
 }
-#bodywrapper .navigationN2 .level_4 a,
-#bodywrapper .navigationN2 .level_4 a:link,
-#bodywrapper .navigationN2 .level_4 a:visited {
+.bodywrapper .navigationN2 .level_4 a,
+.bodywrapper .navigationN2 .level_4 a:link,
+.bodywrapper .navigationN2 .level_4 a:visited {
 	padding:0 2px 0 80px;
 	background: url(img/bg-navigationN2-L4.png) no-repeat 70px 50%;
 
 }
-#bodywrapper .navigationN2 .level_4 a.inpath,
-#bodywrapper .navigationN2 .level_4 a.inpath:link ,
-#bodywrapper .navigationN2 .level_4 a.inpath:visited ,
-#bodywrapper .navigationN2 .level_4 a.inpath:hover,
-#bodywrapper .navigationN2 .level_4 a.inpath:active{
+.bodywrapper .navigationN2 .level_4 a.inpath,
+.bodywrapper .navigationN2 .level_4 a.inpath:link ,
+.bodywrapper .navigationN2 .level_4 a.inpath:visited ,
+.bodywrapper .navigationN2 .level_4 a.inpath:hover,
+.bodywrapper .navigationN2 .level_4 a.inpath:active{
 	font-weight:bold;
 	background: #eaeaea url(img/bg-navigationN2-L4-on.png) no-repeat 66px 50% ;
 }
-#bodywrapper .navigationN2 .level_4 a:hover,
-#bodywrapper .navigationN2 .level_4 a:active{
+.bodywrapper .navigationN2 .level_4 a:hover,
+.bodywrapper .navigationN2 .level_4 a:active{
 	color:#900;
 	background: url(img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
 	background-color:#ddd3ca;
 }
-#bodywrapper .navigationN2 .level_4 a.selected,
-#bodywrapper .navigationN2 .level_4 a.selected:link ,
-#bodywrapper .navigationN2 .level_4 a.selected:visited ,
-#bodywrapper .navigationN2 .level_4 a.selected:hover,
-#bodywrapper .navigationN2 .level_4 a.selected:active {
+.bodywrapper .navigationN2 .level_4 a.selected,
+.bodywrapper .navigationN2 .level_4 a.selected:link ,
+.bodywrapper .navigationN2 .level_4 a.selected:visited ,
+.bodywrapper .navigationN2 .level_4 a.selected:hover,
+.bodywrapper .navigationN2 .level_4 a.selected:active {
 	background: url(img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
 	color:#c03;
 }
-#bodywrapper .navigationN2 .level_5 a,
-#bodywrapper .navigationN2 .level_5 a:link,
-#bodywrapper .navigationN2 .level_5 a:visited {
+.bodywrapper .navigationN2 .level_5 a,
+.bodywrapper .navigationN2 .level_5 a:link,
+.bodywrapper .navigationN2 .level_5 a:visited {
 	padding:0 2px 0 100px ;
 	background: url(img/bg-navigationN2-L5.png) no-repeat 90px 50% ;
 }
-#bodywrapper .navigationN2 .level_5 a.inpath,
-#bodywrapper .navigationN2 .level_5 a.inpath:link ,
-#bodywrapper .navigationN2 .level_5 a.inpath:visited ,
-#bodywrapper .navigationN2 .level_5 a.inpath:hover ,
-#bodywrapper .navigationN2 .level_5 a.inpath:active{
+.bodywrapper .navigationN2 .level_5 a.inpath,
+.bodywrapper .navigationN2 .level_5 a.inpath:link ,
+.bodywrapper .navigationN2 .level_5 a.inpath:visited ,
+.bodywrapper .navigationN2 .level_5 a.inpath:hover ,
+.bodywrapper .navigationN2 .level_5 a.inpath:active{
 	font-weight:bold;
 	background: #eaeaea url(img/bg-navigationN2-L5-on.png) no-repeat 86px 50% ;
 }
 
-#bodywrapper .navigationN2 .level_5 a:hover,
-#bodywrapper .navigationN2 .level_5 a:active{
+.bodywrapper .navigationN2 .level_5 a:hover,
+.bodywrapper .navigationN2 .level_5 a:active{
 	color:#900;
 	background: url(img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
 	background-color:#ddd3ca;
 }
-#bodywrapper .navigationN2 .level_5 a.selected,
-#bodywrapper .navigationN2 .level_5 a.selected:link ,
-#bodywrapper .navigationN2 .level_5 a.selected:visited ,
-#bodywrapper .navigationN2 .level_5 a.selected:hover,
-#bodywrapper .navigationN2 .level_5 a.selected:active {
+.bodywrapper .navigationN2 .level_5 a.selected,
+.bodywrapper .navigationN2 .level_5 a.selected:link ,
+.bodywrapper .navigationN2 .level_5 a.selected:visited ,
+.bodywrapper .navigationN2 .level_5 a.selected:hover,
+.bodywrapper .navigationN2 .level_5 a.selected:active {
 	background: url(img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
 	color:#c03;
 }
@@ -964,7 +964,7 @@ body {
 /******************************************************************************
 * more info
 ******************************************************************************/
-#bodywrapper div.more {
+.bodywrapper div.more {
 	float:right;
 	font-size:11px;
 	font-weight:bold;
@@ -973,20 +973,20 @@ body {
 	margin-bottom:0;
 	display:block;
 }
-#bodywrapper .more span {
+.bodywrapper .more span {
 }
-#bodywrapper a.returnLink {
+.bodywrapper a.returnLink {
     background: transparent url( img/returnlink.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
 /******************************************************************************
 *  News List newsList3
 ******************************************************************************/
-#bodywrapper ul.newsList3 {
+.bodywrapper ul.newsList3 {
 	margin:0;
 	padding:0;
 }
-#bodywrapper .newsList3 li{
+.bodywrapper .newsList3 li{
 	list-style-type:none;
 	margin:0;
 	padding:0;
@@ -996,29 +996,29 @@ body {
 	padding:0.2em;
 	padding-left:30px;
 }
-#bodywrapper .newsList3 li:hover{
+.bodywrapper .newsList3 li:hover{
 background-color:#eaeaea
 }
 
-#bodywrapper .newsList3 li.lastnews  {
+.bodywrapper .newsList3 li.lastnews  {
 	border:none;
 }
 
-#bodywrapper .newsList3 a,
-#bodywrapper .newsList3 a:link,
-#bodywrapper .newsList3 a:visited {
+.bodywrapper .newsList3 a,
+.bodywrapper .newsList3 a:link,
+.bodywrapper .newsList3 a:visited {
 	color:#333;
 	text-decoration:none;
 }
-#bodywrapper .newsList3 a:hover,
-#bodywrapper .newsList3 a:active {
+.bodywrapper .newsList3 a:hover,
+.bodywrapper .newsList3 a:active {
 	color:#900;
 	text-decoration:underline;
 }
 /******************************************************************************
 *  Pagination
 ******************************************************************************/
-#bodywrapper div.pagination {
+.bodywrapper div.pagination {
 	height:1%;
 	overflow:hidden;
 	text-transform:uppercase;
@@ -1027,40 +1027,40 @@ background-color:#eaeaea
 	padding:0.5em 0.5em;
 	margin:0.5em 0;
 }
-#bodywrapper .paginationPosition {
+.bodywrapper .paginationPosition {
 	float:left;
 	font-size:0.9em;
 	font-weight:bold;
 	color:#333;
 	padding:0.5em;
 }
-#bodywrapper .paginationNavigation {
+.bodywrapper .paginationNavigation {
 	float:right;
 	font-size:0.9em;
 
 }
-#bodywrapper .paginationNavigation a,
-#bodywrapper .paginationNavigation a:link,
-#bodywrapper .paginationNavigation a:visited,
-#bodywrapper .paginationNavigation a:hover,
-#bodywrapper .paginationNavigation a:active {
+.bodywrapper .paginationNavigation a,
+.bodywrapper .paginationNavigation a:link,
+.bodywrapper .paginationNavigation a:visited,
+.bodywrapper .paginationNavigation a:hover,
+.bodywrapper .paginationNavigation a:active {
 	text-decoration:none;
 	padding:0.2em 0.5em;
 	cursor:pointer;
 }
 
-#bodywrapper .paginationNavigation a:hover {
+.bodywrapper .paginationNavigation a:hover {
 	background:#900;
 	color:#fff;
 }
-#bodywrapper .paginationNavigation .currentPage{
+.bodywrapper .paginationNavigation .currentPage{
 	background:#900;
 	color:#fff;
 	padding:0.2em 0.5em;
 }
 
 
-#bodywrapper .paginationNavigation span {
+.bodywrapper .paginationNavigation span {
 	text-decoration:none;
 	color:#666;
 	padding:0;
@@ -1068,7 +1068,7 @@ background-color:#eaeaea
 /******************************************************************************
 *  AlphabeticalMenu
 ******************************************************************************/
-#bodywrapper div.alphabeticalMenu {
+.bodywrapper div.alphabeticalMenu {
 	height:1%;
 	overflow:hidden;
 	text-transform:uppercase;
@@ -1077,37 +1077,37 @@ background-color:#eaeaea
 	padding:0.5em 0.5em;
 	margin:0.5em 0;
 }
-#bodywrapper .alphabeticalLabel {
+.bodywrapper .alphabeticalLabel {
 	float:left;
 	font-size:0.9em;
 	font-weight:bold;
 	color:#333;
 }
-#bodywrapper .alphabeticalNavigation {
+.bodywrapper .alphabeticalNavigation {
 	float:right;
 	font-size:0.9em;
 
 }
-#bodywrapper .alphabeticalNavigation a:link,
-#bodywrapper .alphabeticalNavigation a:visited,
-#bodywrapper .alphabeticalNavigation a:hover,
-#bodywrapper .alphabeticalNavigation a:active {
+.bodywrapper .alphabeticalNavigation a:link,
+.bodywrapper .alphabeticalNavigation a:visited,
+.bodywrapper .alphabeticalNavigation a:hover,
+.bodywrapper .alphabeticalNavigation a:active {
 	text-decoration:none;
 	padding:0.2em 0.5em;
 }
 
-#bodywrapper .alphabeticalNavigation a:hover {
+.bodywrapper .alphabeticalNavigation a:hover {
 	background:#900;
 	color:#fff;
 }
-#bodywrapper .alphabeticalNavigation .current{
+.bodywrapper .alphabeticalNavigation .current{
 	background:#900;
 	color:#fff;
 	padding:0.2em 0.5em;
 }
 
 
-#bodywrapper .alphabeticalNavigation span {
+.bodywrapper .alphabeticalNavigation span {
 	text-decoration:none;
 	color:#666;
 	padding:0;
@@ -1115,20 +1115,20 @@ background-color:#eaeaea
 /******************************************************************************
 *  formSearchTop
 ******************************************************************************/
-#bodywrapper #formSearchTop {
+.bodywrapper #formSearchTop {
 	margin:0;
 	margin-bottom:10px;
 	padding:0;
 	display: block;
 }
-#bodywrapper #formSearchTop label{
+.bodywrapper #formSearchTop label{
 	font-weight: normal;
 }
-#bodywrapper #formSearchTopA label{
+.bodywrapper #formSearchTopA label{
 	display:none
 }
 
-#bodywrapper #formSearchTopA {
+.bodywrapper #formSearchTopA {
 	background:transparent url(img/bg-formsearchtop.png) no-repeat 0 0;
 	margin:0;
 	padding:0;
@@ -1136,16 +1136,16 @@ background-color:#eaeaea
 	height: 36px;
 	display: block;
 }
-#bodywrapper #formSearchTop:hover{
+.bodywrapper #formSearchTop:hover{
 	background:transparent url(img/bg-formsearchtop.png) no-repeat 0px -36px;
 
 }
-#bodywrapper #formSearchTop p{
+.bodywrapper #formSearchTop p{
 	margin:0;
 	padding:0;
 }
 
-#bodywrapper #formSearchTop .text{
+.bodywrapper #formSearchTop .text{
 	margin:10px 0 0 20px;
 	background-color: transparent;
 	border:none;
@@ -1154,12 +1154,12 @@ background-color:#eaeaea
 	width:232px;
 }
 
-#bodywrapper #formSearchTop .gobutton{
+.bodywrapper #formSearchTop .gobutton{
 	margin-left:2px;
 	vertical-align: bottom;
 }
 
-#bodywrapper #formSearchTop p.loginFormTopSection{
+.bodywrapper #formSearchTop p.loginFormTopSection{
 	margin:0 1.5em;
 	padding:0;
 	clear:both;
@@ -1169,40 +1169,40 @@ background-color:#eaeaea
 /******************************************************************************
 *  links List
 ******************************************************************************/
-#bodywrapper ul.links {
+.bodywrapper ul.links {
 	margin:0;
 	padding:0;
 }
-#bodywrapper .links li{
+.bodywrapper .links li{
 	list-style-type:none;
 	margin:0;
 	padding:0;
 	font-weight:bold;
 	border-bottom:1px solid #eaeaea
 }
-#bodywrapper .links li:hover{
+.bodywrapper .links li:hover{
 	background-color:#eaeaea
 }
-#bodywrapper li.link  {
+.bodywrapper li.link  {
 	background: url(img/link.png) no-repeat 0.5em 0.6em;
 	padding:0.5em;
 	padding-left:30px;
 }
-#bodywrapper li.externallink  {
+.bodywrapper li.externallink  {
 	background: url(img/externallink.png) no-repeat 0.5em 0.5em;
 	padding:0.5em;
 	padding-left:30px;
 }
-#bodywrapper .links li.lastlink  {
+.bodywrapper .links li.lastlink  {
 	border-bottom:none
 }
-#bodywrapper .links a,
-#bodywrapper .links a:link,
-#bodywrapper .links a:visited {
+.bodywrapper .links a,
+.bodywrapper .links a:link,
+.bodywrapper .links a:visited {
 	text-decoration:none;
 }
-#bodywrapper .links a:hover,
-#bodywrapper .links a:active {
+.bodywrapper .links a:hover,
+.bodywrapper .links a:active {
 	text-decoration:underline;
 }
 
@@ -1211,7 +1211,7 @@ background-color:#eaeaea
 /******************************************************************************
 *  Summary
 ******************************************************************************/
-#bodywrapper ul.summary, #bodywrapper .summary {
+.bodywrapper ul.summary, .bodywrapper .summary {
 	margin:10px 0;
 	line-height:130%;
 	padding: 10px;
@@ -1219,22 +1219,22 @@ background-color:#eaeaea
 	border:1px solid #ccc;
 	list-style:none;
 }
-#bodywrapper .summary a,
-#bodywrapper .summary a:link,
-#bodywrapper .summary a:visited {
+.bodywrapper .summary a,
+.bodywrapper .summary a:link,
+.bodywrapper .summary a:visited {
 	text-decoration:none;
 }
-#bodywrapper .summary a:hover,
-#bodywrapper .summary a:active {
+.bodywrapper .summary a:hover,
+.bodywrapper .summary a:active {
 	text-decoration:underline;
 }
 
-#bodywrapper .summary ul {
+.bodywrapper .summary ul {
 	margin:0;
 	padding:0 0 0 2em;
 	list-style:none;
 }
-#bodywrapper .summary li {
+.bodywrapper .summary li {
 	padding:0;
 	margin-bottom:10px
 }
@@ -1242,18 +1242,18 @@ background-color:#eaeaea
 /******************************************************************************
 *  Tables
 ******************************************************************************/
-#bodywrapper .table th img{
+.bodywrapper .table th img{
 	vertical-align: middle
 }
-#bodywrapper .table,
-#bodywrapper .table caption
+.bodywrapper .table,
+.bodywrapper .table caption
 {
     margin: auto;
 	line-height:1.9em;
 
 }
 
-#bodywrapper .table
+.bodywrapper .table
 {
     border-collapse:collapse;
 	margin-bottom:1em;
@@ -1261,7 +1261,7 @@ background-color:#eaeaea
 	border:none;
 }
 
-#bodywrapper .table caption
+.bodywrapper .table caption
 {
 	font-weight:normal;
 	font-size:2em;
@@ -1269,44 +1269,44 @@ background-color:#eaeaea
 	padding:0;
 
 }
-#bodywrapper .table, #bodywrapper .table th, #bodywrapper .table td
+.bodywrapper .table, .bodywrapper .table th, .bodywrapper .table td
 {
 border: 1px solid #ccc;
 }
-#bodywrapper .table th {
+.bodywrapper .table th {
     color: #333;
 	white-space:nowrap;
 	background-color:#CCCCCC;
 	padding:5px;
 }
-#bodywrapper .table td
+.bodywrapper .table td
 {
 	background-color:#fff;
 	padding:5px;
 }
-#bodywrapper .table tr:hover{
+.bodywrapper .table tr:hover{
 	background-color:#f0f0f0
 }
-#bodywrapper .table .odd td{background-color:#eaeaea}
-#bodywrapper .table .even td{ background-color:#fff}
-#bodywrapper .col1{}
-#bodywrapper .col2{}
-#bodywrapper .col3{}
-#bodywrapper .col4{}
+.bodywrapper .table .odd td{background-color:#eaeaea}
+.bodywrapper .table .even td{ background-color:#fff}
+.bodywrapper .col1{}
+.bodywrapper .col2{}
+.bodywrapper .col3{}
+.bodywrapper .col4{}
 
-#bodywrapper .table td.center,
-#bodywrapper .table th.center
+.bodywrapper .table td.center,
+.bodywrapper .table th.center
 {
 	text-align:center;
 }
 /******************************************************************************
 *  Visibility
 ******************************************************************************/
-#bodywrapper .visibility
+.bodywrapper .visibility
 {
 	display:block
 }
-#bodywrapper span.visibility
+.bodywrapper span.visibility
 {
 	font-weight:bold;
 	font-size:0.85em
@@ -1314,22 +1314,22 @@ border: 1px solid #ccc;
 /******************************************************************************
 *  Preferences Form
 ******************************************************************************/
-#bodywrapper .preferencesForm
+.bodywrapper .preferencesForm
 {
 margin:10px 0;
 }
-#bodywrapper .preferencesForm fieldset
+.bodywrapper .preferencesForm fieldset
 {
 border:none
 }
-#bodywrapper .preferencesForm legend
+.bodywrapper .preferencesForm legend
 {
 display:none
 }
 /******************************************************************************
 *  menu-tabs-home
 ******************************************************************************/
-#bodywrapper div.idTabs-home{
+.bodywrapper div.idTabs-home{
 	margin-top:1em;
 	margin-bottom:1em
 }
@@ -1337,14 +1337,14 @@ display:none
  /******************************************************************************
 *  video
 ******************************************************************************/
-#bodywrapper div.clip{
+.bodywrapper div.clip{
 	margin-bottom: 0.5em ;
 }
 /******************************************************************************
 *  Code
 ******************************************************************************/
-#bodywrapper code,
-#bodywrapper .code{
+.bodywrapper code,
+.bodywrapper .code{
 	font-family: "Courier New", Courier, monospace;
 	font-weight: bold;
 	color: #333;
@@ -1354,7 +1354,7 @@ display:none
 /******************************************************************************
 *  highlight
 ******************************************************************************/
-#bodywrapper .highlight{
+.bodywrapper .highlight{
 	background-color:#ffff99;
 	padding-right:0.5em;
 	padding-left:0.5em;
@@ -1362,12 +1362,12 @@ display:none
 /******************************************************************************
 *  Home shortcuts
 ******************************************************************************/
-#bodywrapper ul.homeShortcuts {
+.bodywrapper ul.homeShortcuts {
 	margin:0.5em 0;
 	padding:0;
 	list-style:none;
 }
-#bodywrapper .homeShortcuts li{
+.bodywrapper .homeShortcuts li{
 	margin:0;
 	padding:0.5em 0;
 	border-bottom:1px solid #ccc;
@@ -1375,27 +1375,27 @@ display:none
 	list-style:none;
 }
 
-#bodywrapper .homeShortcuts li:hover{
+.bodywrapper .homeShortcuts li:hover{
 	background-color:#eaeaea;
 	border-bottom:1px solid #ccc;
 }
-#bodywrapper li.codebase {
+.bodywrapper li.codebase {
 	background:url(../img-text/codebase.png) no-repeat 0px 2px;
 	padding-left:26px;
 }
-#bodywrapper li.faq {
+.bodywrapper li.faq {
 	background:url(../img-text/faq.png) no-repeat 0px 2px;
 	padding-left:26px;
 }
-#bodywrapper li.hotFixes {
+.bodywrapper li.hotFixes {
 	background:url(../img-text/hotFixes.png) no-repeat 0px 2px;
 	padding-left:26px;
 }
-#bodywrapper li.forum {
+.bodywrapper li.forum {
 	background:url(../img-text/forum.png) no-repeat 0px 2px;
 	padding-left:26px;
 }
-#bodywrapper li.architecture {
+.bodywrapper li.architecture {
 	background:url(../img-text/architecture.png) no-repeat 0px 2px;
 	padding-left:26px;
 }
@@ -1403,7 +1403,7 @@ display:none
 /******************************************************************************
 *  Preferences
 ******************************************************************************/
-#bodywrapper div.preferences{
+.bodywrapper div.preferences{
 	border: 1px solid #ccc;
 	background-color:#eaeaea;
 	padding:5px;
@@ -1411,23 +1411,23 @@ display:none
 	line-height:100%;
 	margin:1em 0;
 }
-#bodywrapper .preferences p{
+.bodywrapper .preferences p{
 	margin:0;
 	padding:0
 }
-#bodywrapper .preferences h2{
+.bodywrapper .preferences h2{
 	margin:0;
 	padding:0;
 	font-size:1.2em;
 	font-weight:bold;
 }
-#bodywrapper .preferences .preference-label{
+.bodywrapper .preferences .preference-label{
 	font-weight:bold;
 }
 /******************************************************************************
 *  Back
 ******************************************************************************/
-#bodywrapper .back{
+.bodywrapper .back{
 	float:right;
 	font-size:11px;
 	font-weight:bold;
@@ -1440,20 +1440,20 @@ display:none
 /******************************************************************************
 * Form
 ******************************************************************************/
-#bodywrapper .Form  p{
+.bodywrapper .Form  p{
 	clear:both;
 	margin:0.5em 0;
 	padding:0px
 }
-#bodywrapper .Form {
+.bodywrapper .Form {
 	margin:1em 0 0 0;
 	overflow:hidden;
 }
-#bodywrapper .formMarginLeft{
+.bodywrapper .formMarginLeft{
 	margin:0 0 0 25%;
 	padding:0 1em 0 2.3em;
 }
-#bodywrapper .Form label.left {
+.bodywrapper .Form label.left {
 	float:left;
 	width:25%;
 	margin:0 1em 0 1em;
@@ -1464,7 +1464,7 @@ display:none
 /******************************************************************************
 *  error
 ******************************************************************************/
-#bodywrapper .error{
+.bodywrapper .error{
 	padding:10px;
 	margin:10px;
 	background-color:#ffebe8;

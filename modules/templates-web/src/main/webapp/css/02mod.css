@@ -1,8 +1,8 @@
 /******************************************************************************
 * Portal
 ******************************************************************************/
-#bodywrapper .color-box {background:#666 ;}
-#bodywrapper #columns .widget {
+.bodywrapper .color-box {background:#666 ;}
+.bodywrapper #columns .widget {
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
@@ -13,16 +13,16 @@
 /******************************************************************************
 * Portal Panel slider
 ******************************************************************************/
-#bodywrapper  #panel {
+.bodywrapper  #panel {
 background-color:#eaeaea;
 }
-#bodywrapper .slide {
+.bodywrapper .slide {
 	background: url(img/mod/btn-slide.gif) no-repeat center top;
 }
 #panel .content .left, #panel .content .right {
 border:none
 }
-#bodywrapper #toppanel ul.panellist {
+.bodywrapper #toppanel ul.panellist {
 border:none
 }
 #panel .content .right {
@@ -31,13 +31,13 @@ border:none
 /******************************************************************************
 shortcuts
 ******************************************************************************/
-#bodywrapper #shortcuts{
+.bodywrapper #shortcuts{
 	height:38px;
 	position:relative;
 	width:100px;
 	float:right
 }
-#bodywrapper #shortcuts h3 {
+.bodywrapper #shortcuts h3 {
 	background:#6d6d6d url(img/mod/shortcuts-bg.png) repeat-x top left;
 	border:1px solid #333;
 	margin:5px;
@@ -55,23 +55,23 @@ shortcuts
 	text-decoration:none;
 	width:100px
 }
-#bodywrapper #shortcuts h3:hover {
+.bodywrapper #shortcuts h3:hover {
 	background:#a60000 url(img/mod/shortcuts-bg-on.png) repeat-x top left;
 	border:1px solid #990000;
 }
-#bodywrapper #shortcuts h3 a,
-#bodywrapper #shortcuts h3 a:link,
-#bodywrapper #shortcuts h3 a:visited {
+.bodywrapper #shortcuts h3 a,
+.bodywrapper #shortcuts h3 a:link,
+.bodywrapper #shortcuts h3 a:visited {
 	color:#fff;
 	text-decoration:none
 }
-#bodywrapper #shortcuts h3 a:hover,
-#bodywrapper #shortcuts h3 a:active{
+.bodywrapper #shortcuts h3 a:hover,
+.bodywrapper #shortcuts h3 a:active{
 	text-decoration:none;
 	color:#fff
 }
 
-#bodywrapper #shortcuts ul {
+.bodywrapper #shortcuts ul {
 	background-color:#eaeaea;
 	border:1px solid #ccc;
 	display:none;
@@ -89,78 +89,78 @@ shortcuts
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
-#bodywrapper #shortcuts li {
+.bodywrapper #shortcuts li {
 	font-size:1.1em;
 	line-height:20px;
 	padding:5px 5px 5px 10px;
 }
-#bodywrapper #shortcuts li a {
+.bodywrapper #shortcuts li a {
 	text-decoration:none;
 	color:#333;
 }
-#bodywrapper #shortcuts li a:hover {
+.bodywrapper #shortcuts li a:hover {
 	text-decoration:none;
 	color:#990000;
 }
 /******************************************************************************
 shortcuts inline
 ******************************************************************************/
-#bodywrapper .shortcuts-inline li.shortcuts-print {
+.bodywrapper .shortcuts-inline li.shortcuts-print {
     background: transparent url( img/mod/shortcuts-print.png ) no-repeat 0% 50% !important;
 }
 
-#bodywrapper .shortcuts-inline li.shortcuts-typoincrease {
+.bodywrapper .shortcuts-inline li.shortcuts-typoincrease {
     background: transparent url( img/mod/shortcuts-typoincrease.png ) no-repeat 0% 50% !important;
 }
 
-#bodywrapper .shortcuts-inline li.shortcuts-typoreduce {
+.bodywrapper .shortcuts-inline li.shortcuts-typoreduce {
     background: transparent url( img/mod/shortcuts-typoreduce.png ) no-repeat 0% 50% !important;
 }
 
-#bodywrapper .shortcuts-inline li.shortcuts-home {
+.bodywrapper .shortcuts-inline li.shortcuts-home {
     background: transparent url( img/mod/shortcuts-home.png ) no-repeat 0% 50% !important;
 }
 
-#bodywrapper .shortcuts-inline li.shortcuts-contact {
+.bodywrapper .shortcuts-inline li.shortcuts-contact {
     background: transparent url( img/mod/shortcuts-contact.png ) no-repeat 0% 50% !important;
 }
 
-#bodywrapper .shortcuts-inline li.shortcuts-sitemap {
+.bodywrapper .shortcuts-inline li.shortcuts-sitemap {
     background: transparent url( img/mod/shortcuts-sitemap.png ) no-repeat 0% 50% !important;
 }
 
-#bodywrapper .shortcuts-inline li.shortcuts-mysettings {
+.bodywrapper .shortcuts-inline li.shortcuts-mysettings {
     background: transparent url( img/mod/shortcuts-mysettings.png ) no-repeat 0% 50% !important;
 }
-#bodywrapper .shortcuts-inline li.shortcuts-contribute {
+.bodywrapper .shortcuts-inline li.shortcuts-contribute {
     background: transparent url( img/mod/shortcuts-contribute.png ) no-repeat 0% 50% !important;
 }
-#bodywrapper .shortcuts-inline li.shortcuts-edit {
+.bodywrapper .shortcuts-inline li.shortcuts-edit {
     background: transparent url( img/mod/shortcuts-edit.png ) no-repeat 0% 50% !important;
 }
 /******************************************************************************
 *  idTabs
 ******************************************************************************/
 
-#bodywrapper  ul.idTabs {
+.bodywrapper  ul.idTabs {
 	background:transparent url(img/mod/tab-bg.png) repeat-x bottom left;
 }
 
-#bodywrapper .idTabs li a {
+.bodywrapper .idTabs li a {
 	background:transparent url(img/mod/tab-left.png) no-repeat scroll 0 0;
 	color:#fff;
 }
-#bodywrapper .idTabs li a.selected,
-#bodywrapper .idTabs li a:hover,
-#bodywrapper .idTabs li a.selected {
+.bodywrapper .idTabs li a.selected,
+.bodywrapper .idTabs li a:hover,
+.bodywrapper .idTabs li a.selected {
 	color:#fff;
 }
-#bodywrapper .idTabs li a span {
+.bodywrapper .idTabs li a span {
 	background:transparent url(img/mod/tab-right.png) no-repeat scroll 100% 0;
 	color:#cccccc;
 }
-#bodywrapper .idTabs li a.selected span,
-#bodywrapper .idTabs li a:hover span,
-#bodywrapper .idTabs li a.idTabs span {
+.bodywrapper .idTabs li a.selected span,
+.bodywrapper .idTabs li a:hover span,
+.bodywrapper .idTabs li a.idTabs span {
 	color:#fff;
 }

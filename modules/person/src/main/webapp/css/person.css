@@ -1,11 +1,11 @@
 /******************************************************************************
 *  Person generic
 ******************************************************************************/
-#bodywrapper div.personListItem{
+.bodywrapper div.personListItem{
 	border-bottom: 1px solid #ccc;
 	padding:5px;
 }
-#bodywrapper div.personPhoto{
+.bodywrapper div.personPhoto{
 	float:left;
 	width:100px;
 	height:100px;
@@ -13,37 +13,37 @@
 	border: 1px solid #ccc;
 	overflow:hidden;
 }
-#bodywrapper p.personFonction, #bodywrapper p.personEmail, #bodywrapper p.personBusinessUnit{
+.bodywrapper p.personFonction, .bodywrapper p.personEmail, .bodywrapper p.personBusinessUnit{
 	margin:0;
 	padding:0;
 }
-#bodywrapper .personBody{
+.bodywrapper .personBody{
 	margin:0 0 0 120px
 }
-#bodywrapper .personBody p{
+.bodywrapper .personBody p{
 	margin:0;
 	padding:0;
 }
-#bodywrapper .personAction{
+.bodywrapper .personAction{
 }
-#bodywrapper .personAction a,
-#bodywrapper .personAction a:link,
-#bodywrapper .personAction a:visited {
+.bodywrapper .personAction a,
+.bodywrapper .personAction a:link,
+.bodywrapper .personAction a:visited {
 	margin-right:0.5em
 }
-#bodywrapper .personAction a:hover,
-#bodywrapper .personAction a:active {
+.bodywrapper .personAction a:hover,
+.bodywrapper .personAction a:active {
 	text-decoration:underline;
 }
-#bodywrapper a.personEnlarge{
+.bodywrapper a.personEnlarge{
 	background:transparent url(img/personenlarge.png) no-repeat 0% 50%;
 	padding-left:16px;
 }
-#bodywrapper a.personDownload{
+.bodywrapper a.personDownload{
 	background:transparent url(img/persondownload.png) no-repeat 0% 50%;
 	padding-left:16px;
 }
-#bodywrapper a.personBiographiy{
+.bodywrapper a.personBiographiy{
 	background:transparent url(img/personbiographiy.png) no-repeat 0% 50%;
 	padding-left:16px;
 }

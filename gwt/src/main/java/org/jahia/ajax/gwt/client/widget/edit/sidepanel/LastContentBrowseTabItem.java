@@ -69,6 +69,7 @@ import java.util.List;
 class LastContentBrowseTabItem extends SidePanelTabItem {
     protected String search;
     protected int limit;
+    private String cssWrapper;
 
     protected transient LayoutContainer contentContainer;
     protected transient ListStore<GWTJahiaNode> contentStore;
@@ -111,7 +112,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         grid.setAutoExpandColumn("displayName");
         final LayoutContainer previewLayoutContainer = new LayoutContainer();
         previewLayoutContainer.setLayout(new FitLayout());
-        previewLayoutContainer.setId("bodywrapper");
+        previewLayoutContainer.addStyleName(cssWrapper);
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
@@ -187,5 +188,9 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
 
     public void setLimit(int limit) {
         this.limit = limit;
+    }
+
+    public void setCssWrapper(String cssWrapper) {
+        this.cssWrapper = cssWrapper;
     }
 }

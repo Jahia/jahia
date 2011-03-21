@@ -1,17 +1,17 @@
-#bodywrapper #panel a:focus {
+.bodywrapper #panel a:focus {
 	outline: none;
 }
-#bodywrapper #panel {
+.bodywrapper #panel {
 	background: #DAD0C7;
 	display: none;
 }
-#bodywrapper .slide {
+.bodywrapper .slide {
 	margin: 0;
 	padding: 0;
 	border-top: solid 4px #ccc;
 	background: url(img/btn-slide.gif) no-repeat center top;
 }
-#bodywrapper .btn-slide {
+.bodywrapper .btn-slide {
 	background: url(img/white-arrow.gif) no-repeat right -50px;
 	text-align: center;
 	width: 144px;
@@ -23,21 +23,21 @@
 	color: #fff;
 	text-decoration: none;
 }
-#bodywrapper a.btn-slide, #bodywrapper a.btn-slide:link, #bodywrapper a.btn-slide:visited{
+.bodywrapper a.btn-slide, .bodywrapper a.btn-slide:link, .bodywrapper a.btn-slide:visited{
 	color: #fff;
 	text-decoration:none
 }
 
-#bodywrapper .active {
+.bodywrapper .active {
 	background-position: right 12px;
 }
 
 /*-----------------------*/
-#bodywrapper #panel li, #bodywrapper #panel ul {
+.bodywrapper #panel li, .bodywrapper #panel ul {
 	margin:0;
 	padding:0;
 }
-#bodywrapper #panel ul.panellist {
+.bodywrapper #panel ul.panellist {
 	padding:0;
 	height:180px;
 	border:1px solid #b9a99b;
@@ -47,12 +47,12 @@
 	overflow : -moz-scrollbars-vertical;
 	background-color:#fff
 }
-#bodywrapper #panel ul.panellist li {
+.bodywrapper #panel ul.panellist li {
 	cursor:pointer;
 	list-style:none;
 	padding:0px 5px;
 }
-#bodywrapper #panel ul.panellist li:hover {
+.bodywrapper #panel ul.panellist li:hover {
 	background-color: #eaeaea
 }
 

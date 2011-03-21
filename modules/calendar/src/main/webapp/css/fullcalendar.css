@@ -8,7 +8,7 @@
  * Date: Sun Feb 21 20:30:11 2010 -0800
  *
  */
-#bodywrapper .calendar {
+.bodywrapper .calendar {
 	margin-bottom:1em;
 }
 .fc,
@@ -16,7 +16,7 @@
 .fc .fc-content {
 	font-size: 1em;
 	}
-#bodywrapper .fc-header h2 {
+.bodywrapper .fc-header h2 {
 	font-size: 1.2em;
 	margin:0;
 	line-height:1.8em}

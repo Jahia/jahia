@@ -66,6 +66,7 @@ public class LayoutTabItem extends PropertiesTabItem {
     private transient LayoutContainer ctn;
     private transient LayoutContainer htmlPreview;
     private transient SelectionChangedListener<GWTJahiaValueDisplayBean> listener;
+    private String cssWrapper;
 
     @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         if (dataType == null) {
@@ -132,7 +133,7 @@ public class LayoutTabItem extends PropertiesTabItem {
                 tab.add(ctn);
                 htmlPreview = new ContentPanel(new FitLayout());
                 htmlPreview.setTitle(Messages.get("label.preview", "Preview"));
-                htmlPreview.setId("bodywrapper");
+                htmlPreview.addStyleName(cssWrapper);
                 htmlPreview.setStyleAttribute("background-color", "white");
                 htmlPreview.addStyleName("x-panel");
                 htmlPreview.setScrollMode(Style.Scroll.AUTO);
@@ -165,5 +166,9 @@ public class LayoutTabItem extends PropertiesTabItem {
             listener = null;
         }
         super.setProcessed(processed);
+    }
+
+    public void setCssWrapper(String cssWrapper) {
+        this.cssWrapper = cssWrapper;
     }
 }

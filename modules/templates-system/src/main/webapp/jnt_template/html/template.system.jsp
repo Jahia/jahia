@@ -20,7 +20,7 @@
 </head>
 <body id="body">
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
-<div id="bodywrapper">
+<div class="bodywrapper">
 	<template:area path="page"/>
 </div>
 </body>

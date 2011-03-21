@@ -22,7 +22,7 @@
 
 <body id="body">
 
-<div id="bodywrapper"><!--start bodywrapper-->
+<div class="bodywrapper"><!--start bodywrapper-->
             <template:area path="pagecontent"/>
 </div>
 <!--stop bodywrapper-->

@@ -2,67 +2,67 @@
 * columns LAYOUT
 ******************************************************************************/
 /*2columns*/
-#bodywrapper .columns2 {
+.bodywrapper .columns2 {
     width: 100%;
     overflow: hidden;
     clear: both;
 }
 
-#bodywrapper .columns2 .column-item {
+.bodywrapper .columns2 .column-item {
     float: left;
     width: 50%;
     overflow: hidden;
     display: block;
 }
 
-#bodywrapper .columns2 .column-item .spacer {
+.bodywrapper .columns2 .column-item .spacer {
     padding: 10px;
 }
 
 /*3columns*/
-#bodywrapper .columns3 {
+.bodywrapper .columns3 {
     width: 100%;
     overflow: hidden;
     clear: both;
 }
 
-#bodywrapper .columns3 .column-item {
+.bodywrapper .columns3 .column-item {
     float: left;
     width: 33.3%;
     overflow: hidden;
     display: block;
 }
 
-#bodywrapper .columns3 .column-item .spacer {
+.bodywrapper .columns3 .column-item .spacer {
     padding: 10px;
 }
 
 /*4columns*/
-#bodywrapper .columns4 {
+.bodywrapper .columns4 {
     width: 100%;
     overflow: hidden;
     clear: both;
 }
 
-#bodywrapper .columns4 .column-item {
+.bodywrapper .columns4 .column-item {
     float: left;
     width: 24.9%;
     overflow: hidden;
     display: block;
 }
 
-#bodywrapper .columns4 .column-item .spacer {
+.bodywrapper .columns4 .column-item .spacer {
     padding: 10px;
 }
 
 /*5columns*/
-#bodywrapper .columns5 {
+.bodywrapper .columns5 {
     width: 100%;
     overflow: hidden;
     clear: both;
 }
 
-#bodywrapper .columns5 .column-item {
+.bodywrapper .columns5 .column-item {
     float: left;
     width: 18.7%;
     overflow: hidden;
@@ -70,6 +70,6 @@
     padding-left:8px;
 }
 
-#bodywrapper .columns5 .column-item .spacer {
+.bodywrapper .columns5 .column-item .spacer {
     padding: 10px;
 }

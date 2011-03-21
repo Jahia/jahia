@@ -1,48 +1,48 @@
 
 /* box style 1 
 ----------------------------------------*/
-#bodywrapper #forum-body .forum-box-style1 {
+.bodywrapper #forum-body .forum-box-style1 {
 	background: none;
 	background-color:#e3eff9
 }
 /* box style 2 
 ----------------------------------------*/
-#bodywrapper #forum-body .forum-box-style2 {
+.bodywrapper #forum-body .forum-box-style2 {
 	background: none;
 	background-color:#f6f6f6
 }
 /******************************************************************************
 * forum-actions
 ******************************************************************************/
-#bodywrapper #forum-body .forum-buttons a,
-#bodywrapper #forum-body .forum-buttons a:link,
-#bodywrapper #forum-body .forum-buttons a:visited{
+.bodywrapper #forum-body .forum-buttons a,
+.bodywrapper #forum-body .forum-buttons a:link,
+.bodywrapper #forum-body .forum-buttons a:visited{
 	background:#043b9d url(img/mod/bg-button.png) repeat-x top left;
 	border:1px solid #003399;
 }
-#bodywrapper #forum-body .forum-buttons a:hover,
-#bodywrapper #forum-body .forum-buttons a:active {
+.bodywrapper #forum-body .forum-buttons a:hover,
+.bodywrapper #forum-body .forum-buttons a:active {
 	background:#043b9d url(img/mod/bg-button-on.png) repeat-x bottom left;
 	border:1px solid #003399;
 }
 /******************************************************************************
 *  forum Form comments
 ******************************************************************************/
-#bodywrapper #forum-body ul.forum-profile-icons li a,
-#bodywrapper #forum-body ul.forum-profile-icons li a:link,
-#bodywrapper #forum-body ul.forum-profile-icons li a:visited{
+.bodywrapper #forum-body ul.forum-profile-icons li a,
+.bodywrapper #forum-body ul.forum-profile-icons li a:link,
+.bodywrapper #forum-body ul.forum-profile-icons li a:visited{
 	background:#043b9d url(img/mod/bg-button.png) repeat-x top left;
 	border:1px solid #003399;
 }
-#bodywrapper #forum-body ul.forum-profile-icons li a:hover,
-#bodywrapper #forum-body ul.forum-profile-icons li a:active {
+.bodywrapper #forum-body ul.forum-profile-icons li a:hover,
+.bodywrapper #forum-body ul.forum-profile-icons li a:active {
 	background:#043b9d url(img/mod/bg-button-on.png) repeat-x bottom left;
 	border:1px solid #003399;
 }
 /******************************************************************************
 * forum row 
 ******************************************************************************/
-#bodywrapper #forum-body li.row:hover {
+.bodywrapper #forum-body li.row:hover {
 	background-color:#b9ddfa;
 }
 /******************************************************************************
@@ -51,8 +51,8 @@
 #columns .widget .widget-head h3 {
 color:#fff
 }
-#bodywrapper .color-box {background:#3366cc;}
-#bodywrapper #columns .widget {
+.bodywrapper .color-box {background:#3366cc;}
+.bodywrapper #columns .widget {
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
@@ -60,10 +60,10 @@ color:#fff
 /******************************************************************************
 * News
 ******************************************************************************/
-#bodywrapper .newsListItem {
+.bodywrapper .newsListItem {
 	margin-bottom:2em;
 }
-#bodywrapper .newsImg img {
+.bodywrapper .newsImg img {
     border: 1px solid #ccc;
     margin-right: 0.5em;
     padding: 10px;
@@ -72,7 +72,7 @@ color:#fff
 	-webkit-box-shadow: 0 1px 5px #999;
 	box-shadow: 0 1px 5px #999;
 }
-#bodywrapper .newsimg-right img {
+.bodywrapper .newsimg-right img {
     border: 1px solid #ccc;
     margin-left: 0.5em;
     padding: 10px;
@@ -81,7 +81,7 @@ color:#fff
 	-webkit-box-shadow: 0 1px 5px #999;
 	box-shadow: 0 1px 5px #999;
 }
-#bodywrapper .newsSummary img {
+.bodywrapper .newsSummary img {
     border: 1px solid #ccc;
     margin-right: 0.5em;
     padding: 5px;
@@ -95,16 +95,16 @@ color:#fff
 /******************************************************************************
 shortcuts
 ******************************************************************************/
-#bodywrapper #shortcuts{
+.bodywrapper #shortcuts{
 	height:38px;
 	position:relative;
 	width:82px;
 	float:right;
 }
-#bodywrapper .navigation #shortcuts{
+.bodywrapper .navigation #shortcuts{
 	float:right;
 }
-#bodywrapper #shortcuts h3 {
+.bodywrapper #shortcuts h3 {
 	background-image:url(img/mod/shortcuts-bg.png);
 	padding:8px 10px 10px 10px;
 	width:82px;
@@ -117,21 +117,21 @@ shortcuts
 	color:#747474;
 	margin:0;
 }
-#bodywrapper #shortcuts h3:hover {
+.bodywrapper #shortcuts h3:hover {
 	background-image:url(img/mod/shortcuts-bg-on.png);
 }
-#bodywrapper #shortcuts h3 a,
-#bodywrapper #shortcuts h3 a:link,
-#bodywrapper #shortcuts h3 a:visited {
+.bodywrapper #shortcuts h3 a,
+.bodywrapper #shortcuts h3 a:link,
+.bodywrapper #shortcuts h3 a:visited {
 	color:#747474
 }
-#bodywrapper #shortcuts h3 a:hover,
-#bodywrapper #shortcuts h3 a:active{
+.bodywrapper #shortcuts h3 a:hover,
+.bodywrapper #shortcuts h3 a:active{
 	text-decoration:none;
 	color:#747474
 }
 
-#bodywrapper #shortcuts ul {
+.bodywrapper #shortcuts ul {
 	background-color:#F4F4F4;
 	border:1px solid #A7A7A7;
 	display:none;
@@ -146,28 +146,28 @@ shortcuts
 	width:138px;
 	z-index:100;
 }
-#bodywrapper #shortcuts li {
+.bodywrapper #shortcuts li {
 	font-size:1.1em;
 	line-height:20px;
 	padding:5px 5px 5px 10px;
 }
-#bodywrapper #shortcuts li a {
+.bodywrapper #shortcuts li a {
 	color: #747474;
 }
-#bodywrapper #shortcuts li a:hover {
+.bodywrapper #shortcuts li a:hover {
 	color: #3366cc;
 	text-decoration:none
 }
-#bodywrapper .shortcuts-inline li.shortcuts-login {
+.bodywrapper .shortcuts-inline li.shortcuts-login {
 	background-color:#747474;
 }
 /******************************************************************************
 Search form top
 ******************************************************************************/
-#bodywrapper #search-bar form.simplesearchform .text-input {
+.bodywrapper #search-bar form.simplesearchform .text-input {
 	width:304px !important;
 }
-#bodywrapper #search-bar form.simplesearchform {
+.bodywrapper #search-bar form.simplesearchform {
 	width:340px !important;
 }
 /******************************************************************************
@@ -177,34 +177,34 @@ Calendar
 	background-color:#3366CC;
 	border-color:#3366CC;
 }
-#bodywrapper .fc-header h2 {
+.bodywrapper .fc-header h2 {
 	background:none
 }
 /******************************************************************************
 *  idTabs
 ******************************************************************************/
 
-#bodywrapper  ul.idTabs {
+.bodywrapper  ul.idTabs {
 	background:transparent url(img/mod//tab-bg.png) repeat-x bottom left;
 }
 
 
-#bodywrapper .idTabs li a {
+.bodywrapper .idTabs li a {
 	background:transparent url(img/mod/tab-left.png) no-repeat scroll 0 0;
 	color:#fff;
 }
-#bodywrapper .idTabs li a.selected,
-#bodywrapper .idTabs li a:hover,
-#bodywrapper .idTabs li a.selected {
+.bodywrapper .idTabs li a.selected,
+.bodywrapper .idTabs li a:hover,
+.bodywrapper .idTabs li a.selected {
 	color:#fff;
 }
-#bodywrapper .idTabs li a span {
+.bodywrapper .idTabs li a span {
 	background:transparent url(img/mod/tab-right.png) no-repeat scroll 100% 0;
 	color:#b9ddfa;
 
 }
-#bodywrapper .idTabs li a.selected span,
-#bodywrapper .idTabs li a:hover span,
-#bodywrapper .idTabs li a.idTabs span {
+.bodywrapper .idTabs li a.selected span,
+.bodywrapper .idTabs li a:hover span,
+.bodywrapper .idTabs li a.idTabs span {
 	color:#fff;
 }

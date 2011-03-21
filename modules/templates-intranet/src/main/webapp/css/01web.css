@@ -31,7 +31,7 @@ body {
 	font-size:80%;
 	line-height:1.6em;
 }
-#bodywrapper {
+.bodywrapper {
 }
 /******************************************************************************
 * Utils
@@ -39,54 +39,54 @@ body {
 .collapsible {
 	display:none;
 }
-#bodywrapper .clear {
+.bodywrapper .clear {
 	clear:both;
 }
-#bodywrapper .clearitem 	{
+.bodywrapper .clearitem 	{
 	clear:both;
 }
-#bodywrapper br.clear {
+.bodywrapper br.clear {
 	clear:both;
 	font-family: Arial, Helvetica, sans-serif;
 	line-height:0px;	/* no height ! */
 	font-size:0px;
 }
-#bodywrapper .hide, #bodywrapper .hidden {
+.bodywrapper .hide, .bodywrapper .hidden {
 	display:none;
 }
-#bodywrapper .floatright {
+.bodywrapper .floatright {
 	float:right;
 	position:relative;
 	margin: 5px;
 }
-#bodywrapper .floatleft {
+.bodywrapper .floatleft {
 	float:left;
 	position:relative;
 	margin: 5px;
 }
-#bodywrapper .leftside{
+.bodywrapper .leftside{
 	float:left;
 	position:relative;
 }
-#bodywrapper .rightside{
+.bodywrapper .rightside{
 	float: right;
 	position:relative;
 }
-#bodywrapper .clearMaringPadding{
+.bodywrapper .clearMaringPadding{
 	padding:0;
 	margin:0;
 }
 /******************************************************************************
 *  Float Right List for ordered or unordered links list
 ******************************************************************************/
-#bodywrapper .FloatRightList ul {
+.bodywrapper .FloatRightList ul {
 	text-align:right;
 	list-style:none;
 	margin:0;
 	padding:0;
 }
 
-#bodywrapper .FloatRightList li {
+.bodywrapper .FloatRightList li {
 	list-style:none;
 	padding-left:1em;
 	display:inline;
@@ -95,12 +95,12 @@ body {
 /******************************************************************************
 * list Arrow
 ******************************************************************************/
-#bodywrapper ul.arrowList, .arrowList ul {
+.bodywrapper ul.arrowList, .arrowList ul {
 	margin:5px 0;
 	position:relative;
 	list-style:none;
 }
-#bodywrapper .arrowList li {
+.bodywrapper .arrowList li {
 	background: url(img/arrow.png) no-repeat 0 2px;
 	padding:0 0 0 12px;
 	clear:left;
@@ -110,7 +110,7 @@ body {
 *  Hilight List
 ******************************************************************************/
 
-#bodywrapper .hilightList ul {
+.bodywrapper .hilightList ul {
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
@@ -118,14 +118,14 @@ body {
 	padding:0;
 	border-bottom:none;
 }
-#bodywrapper .hilightList li {
+.bodywrapper .hilightList li {
 	list-style-type:none;
 	margin:0;
 	padding:0;
 }
-#bodywrapper .hilightList li a,
-#bodywrapper .hilightList li a:link,
-#bodywrapper .hilightList li a:visited
+.bodywrapper .hilightList li a,
+.bodywrapper .hilightList li a:link,
+.bodywrapper .hilightList li a:visited
 {
 	border-bottom:1px solid #ccc;
 	padding:0.2em 0.5em;
@@ -133,8 +133,8 @@ body {
 	text-decoration:none;
 	color:#333;
 }
-#bodywrapper .hilightList li a:hover,
-#bodywrapper .hilightList li a:active {
+.bodywrapper .hilightList li a:hover,
+.bodywrapper .hilightList li a:active {
 	text-decoration:none;
 	color:#3366cc;
 	background-color:#eaeaea
@@ -143,7 +143,7 @@ body {
 /******************************************************************************
 *  Topheader
 ******************************************************************************/
-#bodywrapper #topheader{
+.bodywrapper #topheader{
 	background-color:#fff;
 	border-bottom:1px solid #b9ddfa;
 	padding:10px 0;
@@ -153,26 +153,26 @@ body {
 	color:#747474;
 	font-size:85%;
 }
-#bodywrapper #topheader a,
-#bodywrapper #topheader a:link,
-#bodywrapper #topheader a:visited
+.bodywrapper #topheader a,
+.bodywrapper #topheader a:link,
+.bodywrapper #topheader a:visited
 {
 	color:#747474;
 	text-decoration:none;
 }
-#bodywrapper #topheader a:hover,
-#bodywrapper #topheader a:active {
+.bodywrapper #topheader a:hover,
+.bodywrapper #topheader a:active {
 	color:#747474;
 	text-decoration:underline;
 }
-#bodywrapper #search-bar {
+.bodywrapper #search-bar {
 	margin:10px 0 7px;
 	position:relative;
 }
 /******************************************************************************
 *  Bottom Header
 ******************************************************************************/
-#bodywrapper #bottomheader{
+.bodywrapper #bottomheader{
 	background:#e3f0f9 url(img/bottomheader-bg.png) repeat-x bottom left;
 	padding-top:10px;
 	position:relative;
@@ -183,7 +183,7 @@ body {
 * Breadcrumb
 ******************************************************************************/
 
-#bodywrapper ul.breadcrumb  {
+.bodywrapper ul.breadcrumb  {
 	margin:0.2em 0;
 	padding:0;
 	list-style:none;
@@ -191,16 +191,16 @@ body {
 	text-transform:uppercase;
 	font-size:85%;
 }
-#bodywrapper ul.breadcrumb li {
+.bodywrapper ul.breadcrumb li {
 	display:inline;
 	margin:0;
 	padding:0;
 	background: none;
 	margin: 0 ;
 }
-#bodywrapper ul.breadcrumb a,
-#bodywrapper ul.breadcrumb a:link,
-#bodywrapper ul.breadcrumb a:visited
+.bodywrapper ul.breadcrumb a,
+.bodywrapper ul.breadcrumb a:link,
+.bodywrapper ul.breadcrumb a:visited
 {
 	padding:0 1em 0 0;
 	margin:0;
@@ -208,8 +208,8 @@ body {
 	color:#747474;
 	text-decoration:none;
 }
-#bodywrapper ul.breadcrumb a:hover,
-#bodywrapper ul.breadcrumb a:active {
+.bodywrapper ul.breadcrumb a:hover,
+.bodywrapper ul.breadcrumb a:active {
 	color:#747474;
 	text-decoration:underline;
 }
@@ -217,11 +217,11 @@ body {
 * Languages
 ******************************************************************************/
 
-#bodywrapper div#languages {
+.bodywrapper div#languages {
 	float:right;
 	display:inline;
 }
-#bodywrapper #languages ul  {
+.bodywrapper #languages ul  {
 	list-style: none;
 	float:left;
 	display:inline;
@@ -229,19 +229,19 @@ body {
 	text-transform:uppercase;
 	font-size:80%;
 }
-#bodywrapper #languages li {
+.bodywrapper #languages li {
 	display:inline;
 	padding:0 5px;
 	background: none;
 	line-height:normal
 }
-#bodywrapper #languages li.selected {
+.bodywrapper #languages li.selected {
 	text-decoration:underline
 }
 /******************************************************************************
 *  content
 ******************************************************************************/
-#bodywrapper #content{
+.bodywrapper #content{
 	background-color:#fff;
 	padding-top:20px;
 	padding-bottom:20px;
@@ -252,7 +252,7 @@ body {
 /******************************************************************************
 *  topfooter
 ******************************************************************************/
-#bodywrapper #topfooter{
+.bodywrapper #topfooter{
 	border-top:1px solid #DDDDDD;
 	background-color:#f6f6f6;
 	position:relative;
@@ -263,7 +263,7 @@ body {
 /******************************************************************************
 *  bottomfooter
 ******************************************************************************/
-#bodywrapper #bottomfooter{
+.bodywrapper #bottomfooter{
 	border-top:1px solid #DDDDDD;
 	background-color:#fff;
 	position:relative;
@@ -271,131 +271,131 @@ body {
 	width:100%;
 	padding:10px 0;
 }
-#bodywrapper #bottomfooter p {
+.bodywrapper #bottomfooter p {
 	font-size:0.85em;
 	padding:0.2em 0 0.2em 0;
 }
-#bodywrapper #bottomfooter a,
-#bodywrapper #bottomfooter a:link,
-#bodywrapper #bottomfooter a:visited {
+.bodywrapper #bottomfooter a,
+.bodywrapper #bottomfooter a:link,
+.bodywrapper #bottomfooter a:visited {
 	color:#333;
 	text-decoration:none;
 }
-#bodywrapper #bottomfooter a:hover,
-#bodywrapper #bottomfooter a:active {
+.bodywrapper #bottomfooter a:hover,
+.bodywrapper #bottomfooter a:active {
 	color:#333;
 	text-decoration:underline;
 }
 /******************************************************************************
 * navigationN2
 ******************************************************************************/
-#bodywrapper div .navigationN2 {
+.bodywrapper div .navigationN2 {
 	border-top:5px solid #7B7B7B;
 	margin-bottom:10px;
 }
 
-#bodywrapper .navigationN2 ul{
+.bodywrapper .navigationN2 ul{
 	margin:0;
 	padding:0;
 	list-style: none;
 	background-color:#f4f4f4;
 
 }
-#bodywrapper .navigationN2 li{
+.bodywrapper .navigationN2 li{
 	margin:0;	
 	padding:0;
 	background: none;
 	line-height:2.2em;
 	list-style:none
 }
-#bodywrapper .navigationN2 li li{
+.bodywrapper .navigationN2 li li{
 	margin:0;
 	padding:0;
 	border-bottom:none;
 }
-#bodywrapper .navigationN2 a,
-#bodywrapper .navigationN2 a:link,
-#bodywrapper .navigationN2 a:visited {
+.bodywrapper .navigationN2 a,
+.bodywrapper .navigationN2 a:link,
+.bodywrapper .navigationN2 a:visited {
 	display: block;
 	text-decoration: none;
 	height:1%;
 	background: none;
 	color:#333;
 }
-#bodywrapper .navigationN2 a:hover,
-#bodywrapper .navigationN2 a:active{
+.bodywrapper .navigationN2 a:hover,
+.bodywrapper .navigationN2 a:active{
 	background:none;
 }
 
-#bodywrapper .navigationN2 .level_1 a,
-#bodywrapper .navigationN2 .level_1 a:link,
-#bodywrapper .navigationN2 .level_1 a:visited {
+.bodywrapper .navigationN2 .level_1 a,
+.bodywrapper .navigationN2 .level_1 a:link,
+.bodywrapper .navigationN2 .level_1 a:visited {
 	padding:0 2px 0 20px;
 	background: url(img/bg-navigationN2.png) no-repeat 10px 50%;
 	border-bottom:1px solid #b9ddfa;
 	margin:1px 0;
 }
-#bodywrapper .navigationN2 .level_1 a:hover,
-#bodywrapper .navigationN2 .level_1 a:active{
+.bodywrapper .navigationN2 .level_1 a:hover,
+.bodywrapper .navigationN2 .level_1 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 10px 50%;
 	background-color:#ddd3ca;
 }
 
-#bodywrapper .navigationN2 .level_2 a,
-#bodywrapper .navigationN2 .level_2 a:link,
-#bodywrapper .navigationN2 .level_2 a:visited {
+.bodywrapper .navigationN2 .level_2 a,
+.bodywrapper .navigationN2 .level_2 a:link,
+.bodywrapper .navigationN2 .level_2 a:visited {
 	padding:0 2px 0 40px;
 	background: url(img/bg-navigationN2.png) no-repeat 30px 50% ;
 }
 
-#bodywrapper .navigationN2 .level_2 a:hover,
-#bodywrapper .navigationN2 .level_2 a:active{
+.bodywrapper .navigationN2 .level_2 a:hover,
+.bodywrapper .navigationN2 .level_2 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 30px 50% ;
 	background-color:#ddd3ca;
 }
 
-#bodywrapper .navigationN2 .level_3 a,
-#bodywrapper .navigationN2 .level_3 a:link,
-#bodywrapper .navigationN2 .level_3 a:visited {
+.bodywrapper .navigationN2 .level_3 a,
+.bodywrapper .navigationN2 .level_3 a:link,
+.bodywrapper .navigationN2 .level_3 a:visited {
 	padding:0 2px 0 60px;
 	background: url(img/bg-navigationN2.png) no-repeat 50px 50% ;
 
 }
-#bodywrapper .navigationN2 .level_3 a:hover,
-#bodywrapper .navigationN2 .level_3 a:active{
+.bodywrapper .navigationN2 .level_3 a:hover,
+.bodywrapper .navigationN2 .level_3 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 50px 50% ;
 	background-color:#ddd3ca;
 }
 
-#bodywrapper .navigationN2 .level_4 a,
-#bodywrapper .navigationN2 .level_4 a:link,
-#bodywrapper .navigationN2 .level_4 a:visited {
+.bodywrapper .navigationN2 .level_4 a,
+.bodywrapper .navigationN2 .level_4 a:link,
+.bodywrapper .navigationN2 .level_4 a:visited {
 	padding:0 2px 0 80px;
 	background: url(img/bg-navigationN2.png) no-repeat 70px 50%;
 
 }
-#bodywrapper .navigationN2 .level_4 a:hover,
-#bodywrapper .navigationN2 .level_4 a:active{
+.bodywrapper .navigationN2 .level_4 a:hover,
+.bodywrapper .navigationN2 .level_4 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 70px 50% ;
 	background-color:#ddd3ca;
 }
 
-#bodywrapper .navigationN2 .level_5 a,
-#bodywrapper .navigationN2 .level_5 a:link,
-#bodywrapper .navigationN2 .level_5 a:visited {
+.bodywrapper .navigationN2 .level_5 a,
+.bodywrapper .navigationN2 .level_5 a:link,
+.bodywrapper .navigationN2 .level_5 a:visited {
 	padding:0 2px 0 100px ;
 	background: url(img/bg-navigationN2.png) no-repeat 90px 50% ;
 }
-#bodywrapper .navigationN2 .level_5 a:hover,
-#bodywrapper .navigationN2 .level_5 a:active{
+.bodywrapper .navigationN2 .level_5 a:hover,
+.bodywrapper .navigationN2 .level_5 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 90px 50% ;
 	background-color:#ddd3ca;
 }
-#bodywrapper .navigationN2 li.selected a {
+.bodywrapper .navigationN2 li.selected a {
 	background-image: url(img/bg-navigationN2-selected.png) !important;
 	color:#3366CC;
 }
-#bodywrapper .navigationN2 li.selected li a {
+.bodywrapper .navigationN2 li.selected li a {
 	background-image: url(img/bg-navigationN2.png)!important;
 	color:#333;
 }
@@ -403,66 +403,66 @@ body {
 /******************************************************************************
 *  General
 ******************************************************************************/
-#bodywrapper img {
+.bodywrapper img {
 	border: 0px;
 }
-#bodywrapper a,
-#bodywrapper a:link,
-#bodywrapper a:visited {
+.bodywrapper a,
+.bodywrapper a:link,
+.bodywrapper a:visited {
 	color:#3366cc;
 	text-decoration:none;
 }
-#bodywrapper a:hover,
-#bodywrapper a:active {
+.bodywrapper a:hover,
+.bodywrapper a:active {
 	color:#3366cc;
 	text-decoration:underline;
 }
-#bodywrapper p {
+.bodywrapper p {
 	padding:1em 0 1em 0;
 }
-#bodywrapper ul {
+.bodywrapper ul {
 	list-style-type:square;
 	list-style-position:outside;
 	margin-bottom:6px;
 	margin-left:20px;
 	margin-top:6px;
 }
-#bodywrapper ol  {
+.bodywrapper ol  {
 	margin:1em 0 1em 2em;
 	padding:0;
 	list-style-position:outside;
 }
-#bodywrapper ol li {
+.bodywrapper ol li {
 	margin:0;
 	padding:0;
 	background: none;
 	list-style: decimal
 }
-#bodywrapper ul li {
+.bodywrapper ul li {
 	margin-bottom:2px;
 	padding-left:8px;
 }
-#bodywrapper div.intro{
+.bodywrapper div.intro{
 	font-size:1.4em;
 	font-style:italic;
 	line-height:1.2em;
 	font-family: STREET, Arial, Helvetica, sans-serif;
 }
-#bodywrapper div.intro p{
+.bodywrapper div.intro p{
 	padding:10px 0;
 }
-#bodywrapper p.intro {
+.bodywrapper p.intro {
 	font-size:1.3em;
 	line-height:1.4em;
 }
-#bodywrapper h1 {
+.bodywrapper h1 {
 	color:#666666;
 	font-weight:normal;
 	font-size:2.8em;
 	line-height:normal;
 	padding:0 0 0.5em 0;
 }
-#bodywrapper h2.pageTitle {
+.bodywrapper h2.pageTitle {
 	margin:0;
 	padding:0;
 	color:#007DC3;
@@ -475,7 +475,7 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	text-transform:uppercase
 }
-#bodywrapper h2 {
+.bodywrapper h2 {
 	font-weight:normal; 
 	color:#007DC3;
 	font-size:2em;
@@ -485,30 +485,30 @@ body {
 	background:transparent url(img/hr-bg.png) repeat-x bottom left;
 	font-family: STREET, Arial, Helvetica, sans-serif;
 }
-#bodywrapper h3 {
+.bodywrapper h3 {
 	font-weight:normal;
 	font-size:1.7em;
 	margin-bottom:10px;
 	margin-top:10px;
 	font-family: STREET, Arial, Helvetica, sans-serif;
 }
-#bodywrapper h4 {
+.bodywrapper h4 {
 	font-size:1.4em;
 	margin-bottom:10px;
 	margin-top:10px;
 	font-family: STREET, Arial, Helvetica, sans-serif;
 	font-weight:normal;
 }
-#bodywrapper h5 {
+.bodywrapper h5 {
 	font-weight:bold;
 	font-size:1em;
 }
-#bodywrapper fieldset {
+.bodywrapper fieldset {
 	padding:0.5em;
 	border:1px solid #b9ddfa;
 	margin:0.5em 0;
 }
-#bodywrapper legend {
+.bodywrapper legend {
 	font-size:1em;
 	color:#333;
 	padding:0 0.5em;
@@ -519,13 +519,13 @@ body {
 	font-weight:bold;
 	text-transform:uppercase
 }
-#bodywrapper hr {
+.bodywrapper hr {
 	height:2px;
 	background:transparent url(img/hr-bg.png) repeat-x bottom left;
 	border: none;
 	margin : 18px 0;
 }
-#bodywrapper blockquote {
+.bodywrapper blockquote {
 	background:#e3eff9 url(img/blockquote.png) no-repeat top left;
 	border:1px solid #b9ddfa;
 	font-style:italic;
@@ -533,7 +533,7 @@ body {
 	margin-top:20px;
 	padding:20px;
 }
-#bodywrapper pre {
+.bodywrapper pre {
 	background-color:#e3eff9;
 	border-left:4px solid #b9ddfa;
 	font-family:Courier,"Courier New",monospace;
@@ -544,28 +544,28 @@ body {
 	padding:20px;
 	line-height:100%
 }
-#bodywrapper code, #bodywrapper .code {
+.bodywrapper code, .bodywrapper .code {
 	background-color:#eaeaea;
 	font-family:Courier,"Courier New",monospace;
 	font-weight:normal;
 	padding-right:0.5em;
 	padding-left:0.5em;
 }
-#bodywrapper .highlight{
+.bodywrapper .highlight{
 	background-color:#ffff99;
 	padding-right:0.5em;
 	padding-left:0.5em;
 }
-#bodywrapper textarea {
+.bodywrapper textarea {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size:100%
 }
-#bodywrapper p.field{
+.bodywrapper p.field{
 	margin-bottom:0.2em
 }
-#bodywrapper input,
-#bodywrapper select,
-#bodywrapper textarea {
+.bodywrapper input,
+.bodywrapper select,
+.bodywrapper textarea {
 	background-color:transparent;
 	background:#fff url(img/input_bg.png) repeat-x top left;
 	border:1px solid #B9DDFA;
@@ -574,32 +574,32 @@ body {
 	background-color:#fff;
 	
 }
-#bodywrapper label{
+.bodywrapper label{
 	font-weight:bold;
 }
-#bodywrapper input.gobutton{
+.bodywrapper input.gobutton{
 	background:none;
 	border:none;
 	margin:0;
 	padding:0;
 	vertical-align: bottom;
 }
-#bodywrapper .small {
+.bodywrapper .small {
 	font-weight:0.8em;
 }
-#bodywrapper .colorlight {
+.bodywrapper .colorlight {
 	color:#666
 }
 /******************************************************************************
 *  Float Right List for ordered or unordered links list
 ******************************************************************************/
-#bodywrapper ul.FloatRightList {
+.bodywrapper ul.FloatRightList {
 	text-align:right;
 	list-style:none;
 	margin:0;
 	padding:0;
 }
-#bodywrapper .FloatRightList li {
+.bodywrapper .FloatRightList li {
 	list-style:none;
 	padding-left:1em;
 	display:inline;
@@ -608,53 +608,53 @@ body {
 /******************************************************************************
 *  Images
 ******************************************************************************/
-#bodywrapper .imagefloatright {
+.bodywrapper .imagefloatright {
 	float:right;
 	margin-bottom:20px;
 	padding-left:20px;
 }
-#bodywrapper .imagefloatleft {
+.bodywrapper .imagefloatleft {
 	float:left;
 	margin-bottom:20px;
 	padding-right:20px;
 }
-#bodywrapper .imagefloatright {
+.bodywrapper .imagefloatright {
 	float:right;
 	margin-bottom:20px;
 	padding-left:20px;
 }
-#bodywrapper .itemImage {
+.bodywrapper .itemImage {
 	background-color:#F4F4F4;
 	border:1px solid #b9ddfa;
 	position:relative;
 	padding:1px;
 	margin-bottom:10px;
 }
-#bodywrapper .imagefloatleft .itemImage  {
+.bodywrapper .imagefloatleft .itemImage  {
 	margin-bottom:0px;
 }
-#bodywrapper .imagefloatright .itemImage  {
+.bodywrapper .imagefloatright .itemImage  {
 	margin-bottom:0px;
 }
-#bodywrapper div.itemImageRight {
+.bodywrapper div.itemImageRight {
 	float:right;
 }
-#bodywrapper div.itemImageLeft {
+.bodywrapper div.itemImageLeft {
 	float:left;
 }
-#bodywrapper .itemImage img {
+.bodywrapper .itemImage img {
 	background-color:#e1e1e1;
 	display: block;
 	padding:9px;
 }
-#bodywrapper .itemImagewhite img{
+.bodywrapper .itemImagewhite img{
 	background-color:#fff;
 	display: block;
 }
 /******************************************************************************
 *  Pagination
 ******************************************************************************/
-#bodywrapper div.pagination {
+.bodywrapper div.pagination {
 	height:1%;
 	overflow:hidden;
 	text-transform:uppercase;
@@ -663,36 +663,36 @@ body {
 	margin:0.5em 0;
 	background:#e3eff9 url(img/1px-white.png) repeat-x top left;
 }
-#bodywrapper .paginationPosition {
+.bodywrapper .paginationPosition {
 	float:left;
 	font-size:0.85em;
 	color:#36393d;
 	padding:0.5em;
 }
-#bodywrapper .paginationNavigation {
+.bodywrapper .paginationNavigation {
 	float:right;
 	font-size:0.85em;
 
 }
-#bodywrapper .paginationNavigation a,
-#bodywrapper .paginationNavigation a:link,
-#bodywrapper .paginationNavigation a:visited,
-#bodywrapper .paginationNavigation a:hover,
-#bodywrapper .paginationNavigation a:active {
+.bodywrapper .paginationNavigation a,
+.bodywrapper .paginationNavigation a:link,
+.bodywrapper .paginationNavigation a:visited,
+.bodywrapper .paginationNavigation a:hover,
+.bodywrapper .paginationNavigation a:active {
 	text-decoration:none;
 	padding:0.2em 0.5em;
 	cursor:pointer;
 }
-#bodywrapper .paginationNavigation a:hover {
+.bodywrapper .paginationNavigation a:hover {
 	background:#3366cc;
 	color:#fff;
 }
-#bodywrapper .paginationNavigation .currentPage{
+.bodywrapper .paginationNavigation .currentPage{
 	background:#3366cc;
 	color:#fff;
 	padding:0.2em 0.5em;
 }
-#bodywrapper .paginationNavigation span {
+.bodywrapper .paginationNavigation span {
 	text-decoration:none;
 	color:#666;
 	padding:0;
@@ -700,7 +700,7 @@ body {
 /******************************************************************************
 *  AlphabeticalMenu
 ******************************************************************************/
-#bodywrapper div.alphabeticalMenu {
+.bodywrapper div.alphabeticalMenu {
 	height:1%;
 	overflow:hidden;
 	text-transform:uppercase;
@@ -709,19 +709,19 @@ body {
 	margin:0.5em 0;
 	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
 }
-#bodywrapper .alphabeticalLabel {
+.bodywrapper .alphabeticalLabel {
 	float:left;
 	font-size:0.9em;
 	font-weight:bold;
 	color:#333;
 }
-#bodywrapper .alphabeticalNavigation {
+.bodywrapper .alphabeticalNavigation {
 	float:right;
 }
-#bodywrapper .alphabeticalNavigation a:link,
-#bodywrapper .alphabeticalNavigation a:visited,
-#bodywrapper .alphabeticalNavigation a:hover,
-#bodywrapper .alphabeticalNavigation a:active {
+.bodywrapper .alphabeticalNavigation a:link,
+.bodywrapper .alphabeticalNavigation a:visited,
+.bodywrapper .alphabeticalNavigation a:hover,
+.bodywrapper .alphabeticalNavigation a:active {
 		height:28px;
 		line-height:28px;
 		border:1px solid #b9ddfa;
@@ -729,11 +729,11 @@ body {
 		padding:6px 10px;
 		text-decoration:none;
 }
-#bodywrapper .alphabeticalNavigation a:hover {
+.bodywrapper .alphabeticalNavigation a:hover {
 		background:#333;
 		color:#fff;
 }
-#bodywrapper .alphabeticalNavigation a.current{
+.bodywrapper .alphabeticalNavigation a.current{
 		height:28px;
 		line-height:28px;
 		border:1px solid #b9ddfa;
@@ -742,7 +742,7 @@ body {
 		padding:6px 10px;
 		text-decoration:none;
 }
-#bodywrapper .alphabeticalNavigation span {
+.bodywrapper .alphabeticalNavigation span {
 		text-decoration:none;
 		color:#666;
 		padding:0;
@@ -750,19 +750,19 @@ body {
 /******************************************************************************
 *  Button
 ******************************************************************************/
-#bodywrapper .divButton{
+.bodywrapper .divButton{
 	text-align:center;
 	margin:0 0 10px 0;
 	overflow:hidden;
 }
-#bodywrapper .divButtonRight{
+.bodywrapper .divButtonRight{
 	text-align:right;
 	overflow:hidden;
 }
-#bodywrapper input.button, #bodywrapper button {
+.bodywrapper input.button, .bodywrapper button {
 	margin-right:0.5em;
 }
-#bodywrapper input.button, #bodywrapper button {
+.bodywrapper input.button, .bodywrapper button {
 	background:#043b9d url(img/bg-button.png) repeat-x top left;
 	border:1px solid #003399;
 	color:#fff;
@@ -772,7 +772,7 @@ body {
 	-moz-border-radius: 3px;
 	border-radius: 3px; 
 }
-#bodywrapper .button:hover, #bodywrapper button:hover {
+.bodywrapper .button:hover, .bodywrapper button:hover {
 	cursor: pointer;
 	background:#043b9d url(img/bg-button-on.png) repeat-x bottom left;
 	color:#fff;
@@ -780,9 +780,9 @@ body {
 /******************************************************************************
 *  <A> Button
 ******************************************************************************/
-#bodywrapper  a.aButton,
-#bodywrapper  a.aButton:link,
-#bodywrapper  a.aButton:visited {
+.bodywrapper  a.aButton,
+.bodywrapper  a.aButton:link,
+.bodywrapper  a.aButton:visited {
 	background: transparent url(img/button-right.png) no-repeat scroll top right;
 	display: block;
 	float: left;
@@ -793,125 +793,125 @@ body {
 	color:#fff;
 	margin-top: 5px;
 }
-#bodywrapper  a.aButton span {
+.bodywrapper  a.aButton span {
 	background: transparent url(img/button-left.png) no-repeat;
 	display: block;
 	line-height: 12px;
 	padding: 6px 0 6px 18px;
 }
-#bodywrapper  a.aButton:hover span{
+.bodywrapper  a.aButton:hover span{
 	text-decoration:underline;
 }
-#bodywrapper  a.aButtonRight,
-#bodywrapper  a.aButtonRight:link,
-#bodywrapper  a.aButtonRight:visited{
+.bodywrapper  a.aButtonRight,
+.bodywrapper  a.aButtonRight:link,
+.bodywrapper  a.aButtonRight:visited{
 	float: right;
 }
 /******************************************************************************
 *  Anchor
 ******************************************************************************/
-#bodywrapper div.bottomanchor {
+.bodywrapper div.bottomanchor {
 	padding:0.2em;
 	margin: 1em 0;
 	font-size:0.85em;
 	clear:both;
 }
-#bodywrapper .bottomanchor a,
-#bodywrapper .bottomanchor a:link,
-#bodywrapper .bottomanchor a:visited  {
+.bodywrapper .bottomanchor a,
+.bodywrapper .bottomanchor a:link,
+.bodywrapper .bottomanchor a:visited  {
 	float:right;
 	margin:0 ;
 	text-transform:uppercase
 }
-#bodywrapper .bottomanchor a:hover ,
-#bodywrapper .bottomanchor a:active  {
+.bodywrapper .bottomanchor a:hover ,
+.bodywrapper .bottomanchor a:active  {
 	cursor: pointer;
 	text-decoration: underline;
 }
 /******************************************************************************
 *  Thumbnails
 ******************************************************************************/
-#bodywrapper div.thumbnail {
+.bodywrapper div.thumbnail {
 	float:left;
 	position:relative;
 	margin-right:20px;
 }
-#bodywrapper div.thumbnailRight {
+.bodywrapper div.thumbnailRight {
 	float:right;
 	position:relative;
 	margin-left:20px;
 }
-#bodywrapper div.thumbnail img {
+.bodywrapper div.thumbnail img {
 	position:relative
 }
 /******************************************************************************
 * Thumbnails  List
 ******************************************************************************/
-#bodywrapper div.thumbnailList{
+.bodywrapper div.thumbnailList{
 	margin-top:10px;
 	margin-bottom:10px;
 }
-#bodywrapper div.thumbnailList a{
+.bodywrapper div.thumbnailList a{
 	float:left;
 	margin-right:10px;
 	margin-bottom:10px;
 	border:1px solid #fff
 }
-#bodywrapper div.thumbnailList a:hover{
+.bodywrapper div.thumbnailList a:hover{
 	border:1px solid #000
 }
 /******************************************************************************
 *  Tables
 ******************************************************************************/
-#bodywrapper .table th img{
+.bodywrapper .table th img{
 	vertical-align: middle
 }
-#bodywrapper .table,
-#bodywrapper .table caption
+.bodywrapper .table,
+.bodywrapper .table caption
 {
     margin: auto;
 	line-height:1.9em;
 
 }
-#bodywrapper .table
+.bodywrapper .table
 {
     border-collapse:collapse;
 	margin-bottom:1em;
 	font-size:0.85em;
 	border:none;
 }
-#bodywrapper .table, #bodywrapper .table th, #bodywrapper .table td {
+.bodywrapper .table, .bodywrapper .table th, .bodywrapper .table td {
 	border: 1px solid #fff;
 }
-#bodywrapper .table caption
+.bodywrapper .table caption
 {
 	font-weight:normal;
 	font-size:2em;
 	margin:0 ;
 	padding:0;
 }
-#bodywrapper .table th {
+.bodywrapper .table th {
     color: #333;
 	white-space:nowrap;
 	background-color:#b9ddfa;
 	padding:5px;
 }
-#bodywrapper .table td
+.bodywrapper .table td
 {
 	background-color:#fff;
 	padding:5px;
 }
-#bodywrapper .table tr:hover{
+.bodywrapper .table tr:hover{
 	background-color:#b9ddfa
 }
-#bodywrapper .table .odd td{background-color:#e3eff9}
-#bodywrapper .table .even td{ background-color:#fff}
-#bodywrapper .col1{}
-#bodywrapper .col2{}
-#bodywrapper .col3{}
-#bodywrapper .col4{}
-#bodywrapper .table td.center,
-#bodywrapper .table th.center
+.bodywrapper .table .odd td{background-color:#e3eff9}
+.bodywrapper .table .even td{ background-color:#fff}
+.bodywrapper .col1{}
+.bodywrapper .col2{}
+.bodywrapper .col3{}
+.bodywrapper .col4{}
+.bodywrapper .table td.center,
+.bodywrapper .table th.center
 {
 	text-align:center;
 }
@@ -919,7 +919,7 @@ body {
 /******************************************************************************
 *  Summary
 ******************************************************************************/
-#bodywrapper ul.summary, #bodywrapper .summary {
+.bodywrapper ul.summary, .bodywrapper .summary {
 	margin:10px 0;
 	line-height:130%;
 	padding: 10px;
@@ -928,56 +928,56 @@ body {
 	list-style:none;
 }
 
-#bodywrapper .summary a,
-#bodywrapper .summary a:link,
-#bodywrapper .summary a:visited {
+.bodywrapper .summary a,
+.bodywrapper .summary a:link,
+.bodywrapper .summary a:visited {
 	text-decoration:none;
 }
-#bodywrapper .summary a:hover,
-#bodywrapper .summary a:active {
+.bodywrapper .summary a:hover,
+.bodywrapper .summary a:active {
 	text-decoration:underline;
 }
 
-#bodywrapper .summary ul {
+.bodywrapper .summary ul {
 	margin:0;
 	padding:0 0 0 2em;
 	list-style:none;
 }
-#bodywrapper .summary li {
+.bodywrapper .summary li {
 	padding:0;
 	margin-bottom:10px
 }
 /******************************************************************************
 * Form
 ******************************************************************************/
-#bodywrapper .Form  p{
+.bodywrapper .Form  p{
 	clear:both;
 	margin:0.2em 0;
 	padding:0px
 }
-#bodywrapper .Form { 
+.bodywrapper .Form {
 	margin:1em 0 0 0;
 	overflow:hidden;
 }
-#bodywrapper .formMarginLeft{ 
+.bodywrapper .formMarginLeft{
 	margin:0 0 0 25%;
 	padding:0 1em 0 2.3em;
 }
-#bodywrapper .Form label.left {
+.bodywrapper .Form label.left {
 	float:left; 
 	width:25%;
 	margin:0 1em 0 1em;
 	padding:2px;
 	text-align:right;
 }
-#bodywrapper .divButton{
+.bodywrapper .divButton{
 	text-align:center;
 	margin:0.5em 0;
 }
 /******************************************************************************
 *  Error
 ******************************************************************************/
-#bodywrapper .error{
+.bodywrapper .error{
 	padding:10px;
 	margin:10px;
 	background-color:#ffebe8;
@@ -986,17 +986,17 @@ body {
 /******************************************************************************
 * Links
 ******************************************************************************/
-#bodywrapper div.more {
+.bodywrapper div.more {
     float: right;
     background: transparent url( img/more.png ) no-repeat 0 50%;
     padding: 0 0 0 15px;
     margin-bottom: 0;
     display: block;
 }
-#bodywrapper .more span {
+.bodywrapper .more span {
 }
 
-#bodywrapper a.returnLink {
+.bodywrapper a.returnLink {
     background: transparent url( img/returnlink.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
@@ -1004,27 +1004,27 @@ body {
 *  idTabs
 ******************************************************************************/
 
-#bodywrapper  ul.idTabs {
+.bodywrapper  ul.idTabs {
 	background:transparent url(img/mod//tab-bg.png) repeat-x bottom left;
 }
 
 
-#bodywrapper .idTabs li a {
+.bodywrapper .idTabs li a {
 	background:transparent url(img/mod/tab-left.png) no-repeat scroll 0 0;
 	color:#fff;
 }
-#bodywrapper .idTabs li a.selected,
-#bodywrapper .idTabs li a:hover,
-#bodywrapper .idTabs li a.selected {
+.bodywrapper .idTabs li a.selected,
+.bodywrapper .idTabs li a:hover,
+.bodywrapper .idTabs li a.selected {
 	color:#fff;
 }
-#bodywrapper .idTabs li a span {
+.bodywrapper .idTabs li a span {
 	background:transparent url(img/mod/tab-right.png) no-repeat scroll 100% 0;
 	color:#b9ddfa;
 
 }
-#bodywrapper .idTabs li a.selected span,
-#bodywrapper .idTabs li a:hover span,
-#bodywrapper .idTabs li a.idTabs span {
+.bodywrapper .idTabs li a.selected span,
+.bodywrapper .idTabs li a:hover span,
+.bodywrapper .idTabs li a.idTabs span {
 	color:#fff;
 }

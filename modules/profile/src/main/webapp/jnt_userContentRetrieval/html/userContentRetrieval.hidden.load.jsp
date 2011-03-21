@@ -16,6 +16,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
+<template:addResources type="css" resources="userProfile.css"/>
 
 <%-- Get parameters of the module --%>
 <jcr:nodeProperty node="${currentNode}" name='jcr:title' var="title"/>

@@ -39,7 +39,7 @@
 <query:definition var="listQuery" limit="${nbOfResult.long}">
     <query:selector nodeTypeName="${type.string}"/>
     <query:comparison propertyName="jcr:createdBy" value="${user.name}" operator="=" />
-    <query:descendantNode path="${not empty startNode and not empty startNode.node ? startNode.node.path : renderContext.site.path}"/>
+    <query:descendantNode path="/sites"/>
     <query:or>
         <c:forEach var="filter" items="${filters}">
             <c:if test="${not empty filter.string}">

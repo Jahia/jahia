@@ -31,13 +31,13 @@ public class PublicationJob extends BackgroundJob {
         String lock = (String) jobDataMap.get(LOCK);
         List<String> comments = (List<String>) jobDataMap.get(PUBLICATION_COMMENTS);
 
-        String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
         JCRPublicationService.getInstance().publish(uuids, source, destination, comments);
 
         if (lock != null) {
             JCRPublicationService.getInstance().unlockForPublication(uuids, source, lock);
         }
 
+        String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
         JCRVersionService.getInstance().addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
     }
 }

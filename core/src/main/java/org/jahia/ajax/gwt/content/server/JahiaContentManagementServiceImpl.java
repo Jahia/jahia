@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.sun.tools.javac.resources.version;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
@@ -109,6 +110,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.Collator;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -898,10 +901,37 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException {
         try {
-            return navigation.getVersions(JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path));
+            List<GWTJahiaNodeVersion> versions = navigation.getVersions(
+                    JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path),true);
+            sortVersions(versions);
+            return versions;
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    private void sortVersions(List<GWTJahiaNodeVersion> versions) {
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+        Collections.sort(versions, new Comparator<GWTJahiaNodeVersion>() {
+            public int compare(GWTJahiaNodeVersion o1, GWTJahiaNodeVersion o2) {
+                String[] strings1 = o1.getLabel().split("_at_");
+                String[] strings2 = o2.getLabel().split("_at_");
+                if (strings1.length == 2 && strings2.length == 2) {
+                    try {
+
+                        Date dateV2 = simpleDateFormat.parse(strings2[1]);
+                        o2.setDate(dateV2);
+                        Date dateV1 = simpleDateFormat.parse(strings1[1]);
+                        o1.setDate(dateV1);
+                        return dateV2.compareTo(dateV1);
+                    } catch (ParseException e) {
+                        return o1.getLabel().compareTo(o2.getLabel());
+                    }
+                } else {
+                    return o1.getLabel().compareTo(o2.getLabel());
+                }
+            }
+        });
     }
 
     public BasePagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, int limit, int offset)
@@ -910,7 +940,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             List<GWTJahiaNodeVersion> result = navigation.getVersions(
                     JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale()).getNode(
                             node.getPath()), true);
-
+            sortVersions(result);
             // add current workspace version
             final GWTJahiaNodeVersion liveVersion = new GWTJahiaNodeVersion("live", node);
             result.add(0, liveVersion);

@@ -73,7 +73,9 @@ public class VersionViewer extends ContentPanel {
     private boolean addButtons;
     private Button restoreButton;
     private boolean displayHighLigthButton;
+    private final CompareEngine compareEngine;
     private Date[] previousValue;
+    private Date versionDate = null;
 
     /**
      * Constructor
@@ -83,24 +85,27 @@ public class VersionViewer extends ContentPanel {
      * @param addButtons
      */
     public VersionViewer(GWTJahiaNode node, String locale, Linker linker, String workspace, boolean addButtons,
-                         boolean displayVersionSelector) {
+                         boolean displayVersionSelector, CompareEngine compareEngine) {
         super();
         this.linker = linker;
         this.workspace = workspace;
         this.locale = locale;
         this.addButtons = addButtons;
         this.displayHighLigthButton = addButtons;
+        this.compareEngine = compareEngine;
         this.uuid = node.getUUID();
         init(displayVersionSelector);
     }
 
     public VersionViewer(String uuid, String locale, String workspace, boolean displayHighLigthButton,
-                         boolean displayVersionSelector) {
+                         boolean displayVersionSelector, Date versionDate, CompareEngine compareEngine) {
         super();
         this.uuid = uuid;
         this.workspace = workspace;
         this.locale = locale;
         this.displayHighLigthButton = displayHighLigthButton;
+        this.versionDate = versionDate;
+        this.compareEngine = compareEngine;
         init(displayVersionSelector);
     }
 
@@ -139,13 +144,35 @@ public class VersionViewer extends ContentPanel {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     mask(Messages.get("label.restoring", "Restoring") + "...", "x-mask-loading");
-                    contentService.restoreNodeByIdentifierAndDate(uuid,versionComboBox.getValue(), false, new BaseAsyncCallback<Void>() {
-                        public void onSuccess(Void result) {
-                            unmask();
-                            versionComboBox.reset();
-                            load();
-                        }
-                    });
+                    contentService.restoreNodeByIdentifierAndDate(uuid, versionComboBox.getValue(), false,
+                            new BaseAsyncCallback<Void>() {
+                                public void onSuccess(Void result) {
+                                    unmask();
+                                    versionComboBox.reset();
+                                    load();
+                                    compareEngine.setRefreshOpener(true);
+                                }
+                            });
+                }
+            });
+        } else {
+            previousValue = new Date[]{versionDate};
+        }
+
+        if(!displayVersionSelector && versionDate!=null) {
+            restoreButton = new Button(Messages.get("label.restore", "Restore"));
+            restoreButton.setEnabled(false);
+            restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    mask(Messages.get("label.restoring", "Restoring") + "...", "x-mask-loading");
+                    contentService.restoreNodeByIdentifierAndDate(uuid, versionDate, false,
+                            new BaseAsyncCallback<Void>() {
+                                public void onSuccess(Void result) {
+                                    unmask();
+                                    compareEngine.setRefreshOpener(true);
+                                }
+                            });
                 }
             });
         }
@@ -160,16 +187,16 @@ public class VersionViewer extends ContentPanel {
         });
 
         final ToggleButton hButton = new ToggleButton("Highligthing");
-                hButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent componentEvent) {
-                        if (hButton.isPressed()) {
-                            displayHighLigth();
-                        } else {
-                            refresh();
-                        }
-                    }
-                });
+        hButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent componentEvent) {
+                if (hButton.isPressed()) {
+                    displayHighLigth();
+                } else {
+                    refresh();
+                }
+            }
+        });
 
         // case of preview or edit: no version
         if (addButtons && !workspace.equals("live")) {
@@ -203,7 +230,7 @@ public class VersionViewer extends ContentPanel {
             if (displayHighLigthButton) {
                 headerToolBar.add(hButton);
             }
-            if (displayVersionSelector) {
+            if (displayVersionSelector || versionDate!=null) {
                 headerToolBar.add(restoreButton);
             }
             setTopComponent(headerToolBar);

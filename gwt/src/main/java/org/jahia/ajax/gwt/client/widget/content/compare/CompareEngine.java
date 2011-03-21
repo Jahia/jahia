@@ -47,6 +47,9 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
+
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,11 +65,12 @@ public class CompareEngine extends Window {
 
     //private LayoutContainer mainComponent;
     private VersionViewer leftPanel;
-    private VersionViewer rightPanel;
     protected ButtonBar buttonBar;
     private String uuid;
     private String path;
-
+    private Date versionDate = null;
+    private NodeHolder engine = null;
+    private boolean refreshOpener = false;
 
     /**
      * Initializes an instance of this class.
@@ -82,10 +86,20 @@ public class CompareEngine extends Window {
         init(displayVersionSelector);
     }
 
-    public CompareEngine(String uuid, String locale, boolean displayVersionSelector,String path) {
+    public CompareEngine(String uuid, String locale, boolean displayVersionSelector, String path) {
         this.locale = locale;
         this.uuid = uuid;
         this.path = path;
+        init(displayVersionSelector);
+    }
+
+    public CompareEngine(String uuid, String locale, boolean displayVersionSelector, String path, Date versionDate,
+                         NodeHolder engine) {
+        this.locale = locale;
+        this.uuid = uuid;
+        this.path = path;
+        this.versionDate = versionDate;
+        this.engine = engine;
         init(displayVersionSelector);
     }
 
@@ -97,7 +111,7 @@ public class CompareEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        if(node!=null) {
+        if (node != null) {
             setHeading(Messages.get("label_compare " + node.getPath(), "Compare " + node.getPath()));
         } else {
             setHeading(Messages.get("label_compare " + path, "Compare " + path));
@@ -113,9 +127,9 @@ public class CompareEngine extends Window {
         //live version
         if (node != null) {
             leftPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
-                    linker, "live", false, displayVersionSelector);
+                    linker, "live", false, displayVersionSelector, this);
         } else {
-            leftPanel = new VersionViewer(uuid, locale, "live", false, displayVersionSelector);
+            leftPanel = new VersionViewer(uuid, locale, "live", false, displayVersionSelector, versionDate, this);
         }
         leftPanel.setSize(650, 750);
         BorderLayoutData liveLayoutData = new BorderLayoutData(Style.LayoutRegion.WEST, 650);
@@ -123,16 +137,17 @@ public class CompareEngine extends Window {
         add(leftPanel, liveLayoutData);
 
         // staging version
+        VersionViewer rightPanel;
         if (node != null) {
             rightPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
-                    linker, "live", true, displayVersionSelector) {
+                    linker, displayVersionSelector ? "live" : "default", true, displayVersionSelector, this) {
                 @Override
                 public String getCompareWith() {
                     return leftPanel.getInnerHTML();
                 }
             };
         } else {
-            rightPanel = new VersionViewer(uuid, locale, "default", true, displayVersionSelector) {
+            rightPanel = new VersionViewer(uuid, locale, "default", true, displayVersionSelector, null, this) {
                 @Override
                 public String getCompareWith() {
                     return leftPanel.getInnerHTML();
@@ -174,7 +189,23 @@ public class CompareEngine extends Window {
         buttonBar.add(cancel);
     }
 
+    @Override
+    protected void onHide() {
+        super.onHide();
+        if (refreshOpener) {
+            if (engine != null) {
+                engine.close();
+                engine.getLinker().refresh(Linker.REFRESH_ALL);
+            }
+            if (linker != null) {
+                linker.refresh(Linker.REFRESH_ALL);
+            }
+        }
+    }
 
+    public void setRefreshOpener(boolean refreshOpener) {
+        this.refreshOpener = refreshOpener;
+    }
 }
 
 

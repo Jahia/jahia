@@ -72,6 +72,8 @@ import javax.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -215,6 +217,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         try {
             long msLong = Long.parseLong(msString);
+            if(logger.isDebugEnabled()) {
+                logger.debug("Display version of date : "+ SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(new Date(msLong)));
+            }
             return new Date(msLong);
         } catch (NumberFormatException nfe) {
             logger.warn("Invalid version date found in URL " + msString);

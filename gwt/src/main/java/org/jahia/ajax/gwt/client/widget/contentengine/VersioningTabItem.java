@@ -36,7 +36,9 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -51,9 +53,11 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.content.ImagePopup;
+import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -83,7 +87,7 @@ public class VersioningTabItem extends EditEngineTabItem {
 
                 ColumnConfig column = new ColumnConfig();
                 column.setId("label");
-                column.setSortable(true);
+                column.setSortable(false);
                 column.setHeader("Name");
                 column.setWidth(100);
                 column.setRenderer(new GridCellRenderer() {
@@ -102,8 +106,10 @@ public class VersioningTabItem extends EditEngineTabItem {
                                 } else {
                                     s1 = Messages.get("label.version." + strings[0], strings[0]);
                                 }
+                                Date date = DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(
+                                        strings[1]);
                                 value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat()
-                                        .format(DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                                        .format(date);
                             } else {
                                 value = version.getLabel();
                             }
@@ -111,12 +117,6 @@ public class VersioningTabItem extends EditEngineTabItem {
                         return value;
                     }
                 });
-                configs.add(column);
-                column = new ColumnConfig();
-                column.setId("versionNumber");
-                column.setSortable(true);
-                column.setHeader("Version");
-                column.setWidth(50);
                 configs.add(column);
                 if (PermissionsUtils.isPermitted("jcr:write", engine.getNode()) && !engine.getNode().isLocked()) {
                     column = new ColumnConfig();
@@ -126,77 +126,24 @@ public class VersioningTabItem extends EditEngineTabItem {
                     column.setRenderer(new GridCellRenderer() {
                         public Object render(ModelData model, String property, ColumnData config, int rowIndex,
                                              int colIndex, ListStore listStore, Grid grid) {
-                            Button button = new Button(Messages.get("label.restore", "Restore"));
+                            ButtonBar buttonBar = new ButtonBar();
+                            Button button = new Button(Messages.get("label.compare", "Compare"));
                             final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) model;
                             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
-                                    tab.mask(Messages.get("label.restoring","Restoring")+"...", "x-mask-loading");
-                                    JahiaContentManagementService.App.getInstance().restoreNode(version, false, new BaseAsyncCallback() {
-                                        public void onSuccess(Object result) {
-                                            tab.removeAll();
-                                            init(engine, (AsyncTabItem) tab, locale);
-                                            engine.getLinker().refresh(EditLinker.REFRESH_MAIN + EditLinker.REFRESH_PAGES);
-                                            engine.close();
-                                        }
-                                    });
+                                    // add 30s to the date to be sure to display the right version
+                                    new CompareEngine(version.getNode().getUUID(),locale,false,version.getNode().getPath(),new Date(version.getDate().getTime()+(30l*1000l)),engine).show();
                                 }
                             });
-                            return button;
+                            buttonBar.add(button);
+                            return buttonBar;
                         }
                     });
                     configs.add(column);
                 }
                 Grid<GWTJahiaNodeVersion> grid = new Grid<GWTJahiaNodeVersion>(all, new ColumnModel(configs));
                 grid.setAutoExpandColumn("label");
-                grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
-                    public void handleEvent(GridEvent ge) {
-                        List<GWTJahiaNodeVersion> sel = ge.getGrid().getSelectionModel().getSelectedItems();
-                        if (sel != null && sel.size() == 1) {
-                            final GWTJahiaNodeVersion version = sel.get(0);
-                            GWTJahiaNode el = version.getNode();
-                            if (el.isFile()) {
-                                if (el.isDisplayable()) {
-                                    ImagePopup.popImage(el);
-                                } else {
-                                    if (el.getUrl() != null) {
-                                        HTML link = new HTML(
-                                                Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" +
-                                                        el.getUrl() + "\" target=\"_new\">" + el.getName() + "</a>");
-                                        final com.extjs.gxt.ui.client.widget.Window dl =
-                                                new com.extjs.gxt.ui.client.widget.Window();
-                                        dl.setModal(true);
-                                        dl.setHeading(Messages.get("label.download"));
-                                        dl.setLayout(new FlowLayout());
-                                        dl.setScrollMode(Style.Scroll.AUTO);
-                                        dl.add(link);
-                                        dl.setHeight(120);
-                                        dl.show();
-                                    } else {
-                                        Window.alert(Messages.get("failure.download.label"));
-                                    }
-                                }
-                            } else {
-                                JahiaContentManagementService.App.getInstance().getNodeURL(null, el.getPath(), version.getDate(), version.getLabel(), "default", locale, new BaseAsyncCallback<String>() {
-                                            public void onSuccess(String result) {
-                                                final com.extjs.gxt.ui.client.widget.Window dl =
-                                                        new com.extjs.gxt.ui.client.widget.Window();
-                                                dl.setModal(true);
-                                                dl.setHeading(Messages.get("label.preview", "Preview") + " " +
-                                                        Messages.get("label.version", "version") + " " +
-                                                        version.getVersionNumber());
-                                                dl.setLayout(new FlowLayout());
-                                                dl.setScrollMode(Style.Scroll.AUTO);
-                                                dl.setUrl(result);
-                                                dl.setHeight(600);
-                                                dl.setWidth(800);
-                                                dl.show();
-                                            }
-                                        });
-                            }
-                        }
-                    }
-                });
                 tab.add(grid);
                 tab.layout();
                 tab.show();

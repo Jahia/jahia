@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.HTML;
@@ -131,13 +132,15 @@ public class LayoutTabItem extends PropertiesTabItem {
             if (ctn == null) {
                 ctn = new LayoutContainer(new FitLayout());
                 tab.add(ctn);
-                htmlPreview = new ContentPanel(new FitLayout());
-                htmlPreview.setTitle(Messages.get("label.preview", "Preview"));
+                htmlPreview = new LayoutContainer();
                 htmlPreview.addStyleName(cssWrapper);
                 htmlPreview.setStyleAttribute("background-color", "white");
-                htmlPreview.addStyleName("x-panel");
-                htmlPreview.setScrollMode(Style.Scroll.AUTO);
-                tab.add(htmlPreview);
+                FieldSet f = new FieldSet();
+                f.addStyleName("x-panel");
+                f.setHeading(Messages.get("label.preview", "Preview"));
+                f.setScrollMode(Style.Scroll.AUTO);
+                f.add(htmlPreview);
+                tab.add(f);
             }
 
             ctn.add(propertiesEditor);

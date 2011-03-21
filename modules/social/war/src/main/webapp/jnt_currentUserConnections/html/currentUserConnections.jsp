@@ -93,7 +93,7 @@
             }
         });
 
-        $("#searchUsersTerm").autocomplete("${url.findPrincipal}", {
+        $("#searchUsersTerm").autocomplete("<c:url value='${url.findPrincipal}'/>", {
             dataType: "json",
             cacheLength: 1,
             parse: function parse(data) {

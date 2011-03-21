@@ -129,7 +129,7 @@
 <div class="boxconverter-inner-border"><!--start boxconverter -->
 
 <table width="100%" class="table tableConverterRapport "
-       summary="<fmt:message key="label.conversion.report"/>">
+       summary="<fmt:message key='label.conversion.report'/>">
     <caption class="hidden">
         <fmt:message key="label.conversion.report"/>
     </caption>

@@ -282,12 +282,12 @@
 
                 $("#changePassword").submit(function() {
                     if ($("#password").val() == "") {
-                        alert("<fmt:message key="org.jahia.admin.userMessage.specifyPassword.label"/>");
+                        alert("<fmt:message key='org.jahia.admin.userMessage.specifyPassword.label'/>");
                         return false;
                     }
 
                     if ($("#password").val() != $("#passwordconfirm").val()) {
-                        alert("<fmt:message key="org.jahia.admin.userMessage.passwdNotMatch.label"/>");
+                        alert("<fmt:message key='org.jahia.admin.userMessage.passwdNotMatch.label'/>");
                         return false;
                     }
 

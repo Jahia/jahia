@@ -51,7 +51,7 @@
                                 </c:if>
                                 <c:if test="${language.country == ''}">
                                     <span class="flagList flag_${language}_plain_on">&nbsp;</span>
-                                </c:if><a title="<fmt:message key="switchTo"/>"
+                                </c:if><a title="<fmt:message key='switchTo'/>"
                                             href="<c:url context='/' value='${switchUrl}'/>">${renderedLanguage}</a>
                             </li>
                         </c:otherwise>

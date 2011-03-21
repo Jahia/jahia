@@ -38,7 +38,7 @@
                             <li class="selected"><span>${renderedLanguage}</span></li>
                         </c:when>
                         <c:otherwise>
-                            <li class=""><a title="<fmt:message key="switchTo"/>"
+                            <li class=""><a title="<fmt:message key='switchTo'/>"
                                             href="<c:url context='/' value='${switchUrl}'/>">${renderedLanguage}</a>
                             </li>
                         </c:otherwise>

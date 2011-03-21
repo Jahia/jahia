@@ -126,7 +126,7 @@
                                      jeditabletreeselector:root="${renderContext.site.path}"
                                      jeditabletreeselector:nodetypes="nt:folder,nt:file,jnt:virtualsite"
                                      jeditabletreeselector:selectablenodetypes="nt:file"
-                                     jeditabletreeselector:selectorLabel="<fmt:message key="label.show.file.picker"/>"
+                                     jeditabletreeselector:selectorLabel="<fmt:message key='label.show.file.picker'/>"
                                 jeditabletreeselector:preview="true" jeditabletreeselector:previewPath="<c:url value='${url.files}'/>">
                                     <span><fmt:message key="label.select.file"/></span>
                                 </div>
@@ -151,7 +151,7 @@
                                      jeditabletreeselector:root="${renderContext.site.path}"
                                      jeditabletreeselector:nodetypes="jnt:content,jnt:page,jnt:virtualsite"
                                      jeditabletreeselector:selectablenodetypes="jnt:content,jntpage"
-                                     jeditabletreeselector:selectorLabel="<fmt:message key="label.show.content.picker"/>" jeditabletreeselector:preview="false">
+                                     jeditabletreeselector:selectorLabel="<fmt:message key='label.show.content.picker'/>" jeditabletreeselector:preview="false">
                                     <span><fmt:message key="label.select.content"/></span>
                                 </div>
                             </c:otherwise>

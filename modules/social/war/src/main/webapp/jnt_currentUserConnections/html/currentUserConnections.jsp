@@ -215,10 +215,10 @@
 			        <c:if test="${empty picture}"><a href="<c:url value='${url.base}${connectedToUser.path}.html'/>">
 						<img alt="" src="<c:url value='${url.currentModule}/images/friend.png'/>" alt="friend" border="0"/></a></c:if>
                 </div>
-                <a class="social-list-remove removeFriendAction" title="<fmt:message key="removeFriend"/>" href="currentUserConnections.jsp#"
+                <a class="social-list-remove removeFriendAction" title="<fmt:message key='removeFriend'/>" href="currentUserConnections.jsp#"
                    rel="${socialConnection.properties['j:connectedFrom'].node.identifier}:${socialConnection.properties['j:connectedTo'].node.identifier}:${socialConnection.properties['j:type'].string}"><span><fmt:message
                         key="removeFriend"/></span></a>
-                <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" rel="${connectedToUser.name}"
+                <a class="social-list-sendmessage showSendMessage" title="<fmt:message key='sendMessage'/>" rel="${connectedToUser.name}"
                    href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
                 <h4>
                     <a href="<c:url value='${url.base}${connectedToUser.path}.html'/>"><c:out value="${jcr:userFullName(connectedToUser)}"/></a>
@@ -253,7 +253,7 @@
                         key="message.label.body"/> :</label>
                     <textarea name="j:body" id="messagebody" cols="45" rows="3"
                               tabindex="21"></textarea></p>
-                <input class="button" type="button" value="<fmt:message key="message.label.send"/>"
+                <input class="button" type="button" value="<fmt:message key='message.label.send'/>"
                        tabindex="28"
                        id="messagesendbutton" onclick="$('#sendMessage').submit();">
             </fieldset>

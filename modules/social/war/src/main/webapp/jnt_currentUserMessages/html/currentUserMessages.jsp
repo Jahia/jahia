@@ -176,7 +176,7 @@
                         key="message.label.body"/> :</label>
                     <textarea name="j:body" id="messagebody" cols="45" rows="3"
                               tabindex="21"></textarea></p>
-                <input class="button" type="button" value="<fmt:message key="message.label.send"/>"
+                <input class="button" type="button" value="<fmt:message key='message.label.send'/>"
                        tabindex="28"
                        id="messagesendbutton" onclick="$('#sendMessage').submit();">
             </fieldset>

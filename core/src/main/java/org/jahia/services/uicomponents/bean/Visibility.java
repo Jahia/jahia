@@ -35,6 +35,8 @@ package org.jahia.services.uicomponents.bean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
@@ -46,7 +48,7 @@ import java.util.Locale;
  * Time: 09:19:13
  */
 public class Visibility {
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Visibility.class);
+    private static final Logger logger = LoggerFactory.getLogger(Visibility.class);
 
     //visibility parameter
     private String permission;

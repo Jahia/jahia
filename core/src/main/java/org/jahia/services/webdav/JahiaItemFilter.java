@@ -32,24 +32,43 @@
 
 package org.jahia.services.webdav;
 
-import org.jahia.services.content.JCRNodeWrapper;
+import javax.jcr.Item;
+import javax.jcr.Session;
+
+import org.apache.jackrabbit.webdav.simple.DefaultItemFilter;
+import org.jahia.settings.SettingsBean;
 
 /**
- * Action callback for performing WebDAV operations.
+ * WebDAV resource filter that disables directory listing completely if activated in <code>jahia.properties</code> or delegates to the
+ * {@link DefaultItemFilter} otherwise.
  * 
  * @author Sergiy Shyrkov
  */
-public interface WebDAVCallback {
+public class JahiaItemFilter extends DefaultItemFilter {
 
-    /**
-     * This action will be executed by {@link WebDAVTemplate} in order to add
-     * additional functionality, like transaction support.
-     * 
-     * @param file
-     *            the WebDAV resource to perform the action on
-     * @return <code>true</code> if the action was successfull and the commit
-     *         should be made; <code>false</code> - to perform rollback
-     */
-    boolean doInWebDAV(JCRNodeWrapper file);
+    private Boolean directoryListingDisabled;
+
+    public JahiaItemFilter() {
+        super();
+        init();
+    }
+
+    private void init() {
+        try {
+            directoryListingDisabled = Boolean
+                    .valueOf(SettingsBean.getInstance().getPropertiesFile()
+                            .getProperty("repositoryDirectoryListingDisabled", "false"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isFilteredItem(Item item) {
+        return directoryListingDisabled ? true : super.isFilteredItem(item);
+    }
+
+    public boolean isFilteredItem(String name, Session session) {
+        return directoryListingDisabled ? true : super.isFilteredItem(name, session);
+    }
 
 }

@@ -66,7 +66,7 @@
     <filter>
         <!-- class element defines the resource filter to be used. The specified class
              must implement the ItemFilter interface -->
-        <class name="org.apache.jackrabbit.webdav.simple.DefaultItemFilter" />
+        <class name="org.jahia.services.webdav.JahiaItemFilter" />
         <!-- Nodetype names to be used to filter child nodes.
              A child node can be filtered if the declaring nodetype of its definition
              is one of the nodetype names specified in the nodetypes Element.

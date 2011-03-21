@@ -983,7 +983,7 @@
         <property name="titleKey" value="label.webfolder"/>
         <property name="icon" value="webfolder"/>
         <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.WebFolderVisibility">
                 <property name="userAgent" value="ie"/>
             </bean>
         </property>

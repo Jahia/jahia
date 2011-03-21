@@ -30,47 +30,30 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.webdav;
+package org.jahia.services.uicomponents.bean.contentmanager;
+
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.services.content.JCRNodeWrapper;
-
-import javax.transaction.Status;
-import javax.jcr.RepositoryException;
+import org.jahia.services.uicomponents.bean.Visibility;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 
 /**
- * Adds support for transactional operation on the WebDAV resources.
+ * Checks if the "Open in a Web folder" toolbar item can be shown (if the WebDAV directory listing is not disabled).
  * 
  * @author Sergiy Shyrkov
+ * 
  */
-public class WebDAVTemplate {
+public class WebFolderVisibility extends Visibility {
 
-    private JCRNodeWrapper file;
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param file
-     *            the WebDAV file to perform actions
-     */
-    public WebDAVTemplate(JCRNodeWrapper file) {
-        super();
-        this.file = file;
-    }
-
-    /**
-     * Executes the specified action within the transaction scope.
-     * 
-     * @param action
-     *            an action to be performed on the WebDAV resource
-     */
-    public void transactionalCall(WebDAVCallback action) {
-            boolean ok = action.doInWebDAV(file);
-            if (ok) {
-                try {
-                    file.saveSession();
-                } catch (RepositoryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-            }
+    @Override
+    public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale,
+            HttpServletRequest request) {
+        return !Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile()
+                .getProperty("repositoryDirectoryListingDisabled", "false"))
+                && super.getRealValue(contextNode, jahiaUser, locale, request);
     }
 }

@@ -297,3 +297,10 @@ moduleGenerationWaitTime = 10000
 # dumps can be defined. If the interval is set to -1, then automatic thread 
 # dumps will be disabled.
 minimumIntervalAfterLastAutoThreadDump = 60000
+
+######################################################################
+### WebDAV ###########################################################
+######################################################################
+# Disable the directory listing for /repository servlet.
+# (WebDAV client access won't work in such a case)
+repositoryDirectoryListingDisabled = false

@@ -1,4 +1,4 @@
-Core Module - Caches
+Jahia 6.5 - Core Module - Caches
 
  Caches in Jahia 6.5 are coded as a rendering filter. The default filter is the AggregateCacheFilter. This filter
 caches each module separately and then aggregates all modules on rendering time to deliver the full page to the client.

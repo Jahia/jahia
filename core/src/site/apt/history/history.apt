@@ -1,4 +1,4 @@
-Content History configuration
+Jahia 6.5 - Content History configuration
 
  By default, content history is kept for a year, and a job is executed every year to purge the content that is older
  than a year. This document explains how to modify this default configuration to fit your needs.

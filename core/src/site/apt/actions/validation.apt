@@ -1,4 +1,4 @@
-Jahia Actions Framework - Validation
+Jahia 6.5 - Actions Framework - Validation
 
  Form validation works in two phases, first you have to do some javascript validation on client side.
  Then Jahia will validate the captcha for you if present, and then your Action could do any validation needed.

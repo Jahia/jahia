@@ -6,7 +6,7 @@ to interact with your content through action on said content.
  Actions are activated on an HTTP POST request, to comply with the REST methodology. Provided actions allows a lot of interactions already,
 like adding a comment on any node, starting workflows, sending form submission by mail, register new user, etc.
 
- Actions are simple class extending the <<<<org.jahia.bin.Action>>> abstract class, the super class is responaibl of handling
+ Actions are simple class extending the <<<<org.jahia.bin.Action>>> abstract class, the super class is responsible of handling
 permissions and other restrictions. You have to override the method doExecute, to provide your own Action.
 
 ----------------------------
@@ -53,7 +53,7 @@ public class AddComment extends Action {
 
  This action is defined in the default module.
 
-Calling an Action from your form
+Calling an Action from your forms
 
  To call an action this as simple as on node calling node.actionName.do, example for the AddComment Action:
 
@@ -145,7 +145,7 @@ Form parameters and file uploading
  permissions check) and the uploading of files. If your action needs to manage files, the file will be uploaded in temporary folder,
  so you will only have to choose where to save it in the JCR or elsewhere.
 
- Example of getting an uploaded fiel in your action and handling it in there :
+ Example of getting an uploaded file in your action and handling it in there :
 
 --------------------------------
 final FileUpload fu = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
@@ -158,9 +158,9 @@ Chaining Actions in one request
 
  Jahia provides a ChainAction class that allows to chain actions called.
 
-Interacting with other Jahia systems
+Interacting with other Jahia subsystems
 
- Your action can also interact or be called by other Jahia systems like rules or GWT UI, for this your action must
+ Your action can also interact or be called by other Jahia subsystems like rules or GWT UI, for this your action must
  also implements the <<<<BackgroundAction>>>> interface:
 
 ----------------------

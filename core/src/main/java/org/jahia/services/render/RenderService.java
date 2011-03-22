@@ -221,7 +221,7 @@ public class RenderService {
         try {
             JCRNodeWrapper site;
             String jsite = renderContext.getRequest().getParameter("jsite");
-            if (jsite == null) {
+            if (jsite == null && renderContext.getMainResource() != null) {
                 jsite = (String) renderContext.getMainResource().getModuleParams().get("jsite");
             }
             if(jsite!=null) {

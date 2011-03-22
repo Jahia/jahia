@@ -34,6 +34,7 @@ package org.jahia.bin;
 
 import java.util.Locale;
 
+import javax.jcr.Node;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,8 +42,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.CookieAuthConfig;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.render.*;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -78,23 +84,40 @@ public class Logout implements Controller {
         }
         Locale uiLocale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_UI_LOCALE);
         Locale locale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_LOCALE);
-        
+
         request.getSession().invalidate();
 
         request.getSession().setAttribute(ProcessingContext.SESSION_UI_LOCALE, uiLocale);
         request.getSession().setAttribute(ProcessingContext.SESSION_LOCALE, locale);
-        
+
         String redirectActiveStr = request.getParameter("redirectActive");
         boolean redirectActive = true;
         if (redirectActiveStr != null) {
             redirectActive = Boolean.parseBoolean(redirectActiveStr);
         }
-
         String redirect = request.getParameter("redirect");
         if (redirect == null) {
             redirect = request.getHeader("referer");
         }
-
+        String url = request.getServerName().startsWith(request.getContextPath())?redirect.substring(redirect.indexOf(request.getContextPath())):redirect;
+        // Remove servlet Dispatcher (hardcoded "/cms")
+        url = url.substring(url.indexOf(request.getContextPath()) + request.getContextPath().length());
+        url = url.startsWith("/cms")?url.substring(url.indexOf("/cms") + 4):url;
+        URLResolver r = new URLResolver (url,request.getServerName(),request);
+        boolean redirectToStart = false;
+        try {
+            RenderContext context = new RenderContext(request,response, ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(JahiaUserManagerService.GUEST_USERNAME));
+            JCRNodeWrapper n = JCRContentUtils.findDisplayableNode(r.getNode(), context);
+            redirect = request.getContextPath() + Render.getRenderServletPath() + "/" + r.getWorkspace() + "/" + r.getLocale() + n.getPath() + ".html";
+            if (r.getNode().getResolveSite() == null) {
+                redirectToStart = true;
+            }
+        } catch (Exception e) {
+            redirectToStart = true;
+        }
+        if (redirectToStart) {
+            redirect = request.getContextPath() + "/start";
+        }
         if (redirectActive) {
             response.sendRedirect(StringUtils.isEmpty(redirect) ? "/" : redirect);
         }

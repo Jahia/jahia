@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
+
+<urlrewrite>
+
+    <outbound-rule enabled="false">
+        <name>Use HTTPS for login</name>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/login(.*)$</from>
+        <to last="true">https://%{server-name}$1/cms/login$2</to>
+        <!-- localhost dev mode
+        <to last="true">https://localhost:8443$1/cms/login$2</to>
+        -->
+    </outbound-rule>
+    
+</urlrewrite>

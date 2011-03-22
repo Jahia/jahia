@@ -7,23 +7,20 @@
 <%@tag import="org.jahia.params.valves.LoginEngineAuthValveImpl"%>
 <c:set var="org.jahia.tags.login.form.class" value="<%= this.getClass() %>" scope="request"/>
 <c:if test="${!currentRequest.logged}">
-  <c:set var="formId" value="<%= this.toString() %>"/>
-  <c:set target="${attributes}" property="action" value="${functions:default(attributes.action, jahia.page.url)}"/>
-  <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'loginForm')}"/>
-  <c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
-  <form ${functions:attributes(attributes)}>
-      <c:choose>
-          <c:when test="${not empty requestScope['javax.servlet.error.request_uri']}">
-              <input type="hidden" name="redirect" value="${requestScope['javax.servlet.error.request_uri']}"/>
-          </c:when>
-          <c:otherwise>
-              <input type="hidden" name="redirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
-          </c:otherwise>
-      </c:choose>
-    <input type="hidden" name="<%=LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER%>" value="true"/>
-    <c:if test="${doRedirect}">
-        <input type="hidden" name="<%=LoginEngineAuthValveImpl.DO_REDIRECT%>" value="true"/>
-    </c:if>
-    <jsp:doBody/>
-  </form>
+    <c:set var="formId" value="<%= this.toString() %>"/>
+    <c:url value="/cms/login" var="loginUrl"/>
+    <c:set target="${attributes}" property="action" value="${functions:default(attributes.action, loginUrl)}"/>
+    <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'loginForm')}"/>
+	<c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
+    <form ${functions:attributes(attributes)}>
+        <c:set var="redirectTo" value="${functions:default(attributes.redirectTo, requestScope['javax.servlet.error.request_uri'])}"/>
+        <c:if test="${not empty redirectTo}">
+            <input type="hidden" name="redirect" value="${requestScope['javax.servlet.error.request_uri']}"/>
+        </c:if>
+        <c:if test="${redirectTo}">
+            <input type="hidden" name="redirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
+        </c:if>
+        <input type="hidden" name="<%=LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER%>" value="true"/>
+        <jsp:doBody/>
+    </form>
 </c:if>

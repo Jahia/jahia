@@ -1,42 +1,27 @@
-<%@page language="java" contentType="text/html; charset=UTF-8"%>
+<%@page language="java" contentType="text/html; charset=UTF-8"
+%><?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <utility:setBundle basename="JahiaInternalResources"/>
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jahia65.css" type="text/css"/>
     <title><fmt:message key="label.login"/></title>
-<script type="text/javascript">
-function autoFocus() {
-    document.loginForm.username.focus();
-}
-
-document.onkeydown = keyDown;
-
-function keyDown(e) {
-    if (!e) e = window.event;
-    var ieKey = e.keyCode;
-    if (ieKey == 13) {
-    	document.loginForm.submit();
-    }
-}
-</script>
-
+    <script type="text/javascript">
+    document.onkeydown = function (e) { if ((e || window.event).keyCode == 13) document.loginForm.submit(); };
+    </script>
 </head>
-<body onLoad="autoFocus()" class="login">
-
-
+<body onload="document.loginForm.username.focus()" class="login">
     <div id="adminLogin">
     <h2 class="loginlogo_beta"></h2>
-        <c:url value="${pageContext.request.contextPath}/cms/login" var="loginUrl"/>
-        <ui:loginArea action="${loginUrl}">
+        <ui:loginArea>
             <h3 class="loginIcon"><fmt:message key="label.login"/></h3>
             <br class="clearFloat" />
         <ui:isLoginError var="loginResult">
@@ -54,6 +39,7 @@ function keyDown(e) {
             </tr>
             </tbody>
         </table>
+        <c:if test="${not fn:startsWith(param.redirect, '/administration')}">
         <br/>
         <table align="center" width="100%" cellspacing="5">
           <tr>
@@ -62,11 +48,11 @@ function keyDown(e) {
               </td>
             </tr>
         </table>
+        </c:if>
         <div id="actionBar" class="alignCenter">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="#login" onClick="document.forms.loginForm.submit(); return false;" tabindex="5" title="<fmt:message key="label.login"/>">
-                  <fmt:message key="label.login"/></a>
+              <a class="ico-ok" href="#login" onClick="document.forms.loginForm.submit(); return false;" tabindex="5" title="<fmt:message key='label.login'/>"><fmt:message key="label.login"/></a>
              </span>
           </span>
         </div>

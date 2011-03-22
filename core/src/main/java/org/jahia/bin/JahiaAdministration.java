@@ -74,7 +74,6 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.applications.ServletIncludeRequestWrapper;
 import org.jahia.services.applications.ServletIncludeResponseWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -90,16 +89,17 @@ import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
-
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 
 /**
@@ -300,9 +300,6 @@ public class JahiaAdministration extends HttpServlet {
         final JahiaSite site = jParams.getSite();
 
         try {
-            if (operation.equals("processlogin")) {                     // operation : process login...
-                processLogin(request, response, session, null, null);
-            } else {
                 Boolean accessGranted = (Boolean) session.getAttribute(CLASS_NAME + "accessGranted");
                 if (accessGranted == null) {
                     accessGranted = Boolean.FALSE;
@@ -370,7 +367,6 @@ public class JahiaAdministration extends HttpServlet {
                     logger.debug("session login not valid.");
                     displayLogin(request, response, session);
                 }
-            }
         } catch (Exception e) {
             logger.error("Error during " + operation + " operation of a new element we must flush all caches to ensure integrity between database and viewing", e);
             if (isValidLoginSession(session)) {
@@ -469,161 +465,16 @@ public class JahiaAdministration extends HttpServlet {
                               HttpServletResponse response,
                               HttpSession session)
             throws IOException, ServletException {
-        // retrieve previous form values...
-        String jahiaLoginUsername = (String) request.getAttribute(CLASS_NAME + "jahiaLoginUsername");
-
-        // set default values (if necessary)...
-        if (jahiaLoginUsername == null) {
-            jahiaLoginUsername = "";
-        }
-
-        // set request attributes...
-        request.setAttribute("jahiaLoginUsername", jahiaLoginUsername);
         if (!response.isCommitted()) {
-            boolean isNutchCrawler = false;
-            for (Enumeration<?> agentEnum = request.getHeaders("user-agent"); agentEnum.hasMoreElements();) {
-                String reqUserAgent = (String)agentEnum.nextElement();
-                if (reqUserAgent.contains("nutch")) {
-                    isNutchCrawler = true;
-                    break;
-                }
-            }
-            if (isNutchCrawler) {    
-                response.setHeader("WWW-Authenticate", "BASIC realm=\"Secured Jahia tools\"");
-                response.sendError(SC_UNAUTHORIZED);
-            }    
-        }
-        doRedirect(request, response, session, JSP_PATH + "login.jsp");
-    } // end displayLogin
-
-
-    //-------------------------------------------------------------------------
-    /**
-     * Process and check validity of inputs from the login page.
-     *
-     * @param request  Servlet request.
-     * @param response Servlet response.
-     * @param session  Servlet session for the current user.
-     * @param rootName String containing root username fo bypass login.
-     * @param rootPass String containing root password fo bypass login.
-     * without accessing server settings. Actually a global implementation
-     * would grant permissions to each administration action.
-     */
-    private void processLogin(HttpServletRequest request,
-                              HttpServletResponse response,
-                              HttpSession session,
-                              String rootName,
-                              String rootPass)
-            throws IOException, ServletException {
-        logger.debug("processLogin started");
-
-        boolean loginError = true;
-        String jahiaLoginUsername = null;
-        String jahiaLoginPassword = null;
-
-        JahiaUser theUser = null;
-        boolean superAdmin = false;
-        int entrySiteID = 0;
-
-        // get form values...
-        if (rootName == null && rootPass == null) {
-            if (request.getParameter("login_username") != null) {
-                jahiaLoginUsername = request.getParameter("login_username").trim();
-            }
-            if (request.getParameter("login_password") != null) {
-                jahiaLoginPassword = request.getParameter("login_password").trim();                
-            }
+            request.getRequestDispatcher(
+                    request.getContextPath() + Login.getServletPath() + "?redirect="
+                            + URLEncoder.encode(servletPath, "UTF-8")).forward(request, response);
         } else {
-            jahiaLoginUsername = rootName;
-            jahiaLoginPassword = rootPass;
+            response.sendRedirect(response.encodeRedirectURL(request.getContextPath()
+                    + Login.getServletPath() + "?redirect="
+                    + URLEncoder.encode(servletPath, "UTF-8")));
         }
-
-        // check form validity...
-        if (StringUtils.isEmpty(jahiaLoginUsername) || StringUtils.isEmpty(jahiaLoginPassword)) {
-            request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", JahiaResourceBundle.getJahiaInternalResource("message.invalidUsernamePassword",
-                    request.getLocale()));
-        } else {
-
-            theUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(jahiaLoginUsername);
-
-            if (theUser == null) {
-                String s = JahiaResourceBundle.getJahiaInternalResource("message.invalidUsernamePassword",
-                        request.getLocale());
-                logger.warn("Unable to find user with the name \"{}\"."
-                        + " Login failed. Remote IP is {}.", jahiaLoginUsername,
-                        request.getRemoteAddr());
-                request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", s);
-            }
-
-            if (theUser != null) {
-                if (theUser.verifyPassword(jahiaLoginPassword)) {
-                    if (!theUser.isRoot() && Boolean.valueOf(theUser.getProperty("j:accountLocked"))) {
-                        logger.debug("Login failed. Account is locked for user " + jahiaLoginUsername);
-                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.accountLocked", request.getLocale());
-                        request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                    } else {
-                        if (ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(SUPERADMIN_SITE_ID).isMember(theUser)) {
-                            loginError = false;
-                            superAdmin = true;
-                            logger.debug("Login granted: " + jahiaLoginUsername + " entered correct password.");
-                        } else {
-                            List<JahiaSite> adminGrantedSites;
-                            try {
-                                adminGrantedSites = getAdminGrantedSites(theUser);
-                            } catch (JahiaException e) {
-                                adminGrantedSites = new ArrayList<JahiaSite>();
-                            }
-                            superAdmin = false;
-                            if (adminGrantedSites.size() > 0) {
-                                loginError = false;
-                                JahiaSite firstAdminSite = adminGrantedSites.get(0);
-                                entrySiteID = firstAdminSite.getID();
-                            } else {
-                                String dspMsg = JahiaResourceBundle.getJahiaInternalResource("label.isntadministrator1",
-                                        request.getLocale());
-                                dspMsg += " ";
-                                dspMsg += jahiaLoginUsername;
-                                dspMsg += " ";
-                                dspMsg += JahiaResourceBundle.getJahiaInternalResource("label.isntadministrator2",
-                                        request.getLocale());
-                                request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                                logger.error("Login Error: user {} is not a system administrator.", jahiaLoginUsername);
-                            }
-                        }
-                    }
-                } else {
-                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.invalidUsernamePassword",
-                            request.getLocale());
-                    request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                    logger.warn("Login Error: user {} entered bad password.", jahiaLoginUsername);
-                }
-            }
-        }
-
-        if (!loginError) {                                                           // access granted...
-            // i lookup user on the superadmin group. so... only a super admin can arrive on this set attribute :o)
-            session.setAttribute(CLASS_NAME + "isSuperAdmin", superAdmin);
-            session.setAttribute(CLASS_NAME + "manageSiteID", entrySiteID);
-            session.setAttribute(CLASS_NAME + "accessGranted", Boolean.TRUE);
-            session.setAttribute(CLASS_NAME + "jahiaLoginUsername", jahiaLoginUsername);
-            if (entrySiteID == 0) {
-                session.setAttribute(CLASS_NAME + "configJahia", Boolean.TRUE);
-            }
-            session.setAttribute(ProcessingContext.SESSION_USER, theUser);
-            JCRSessionFactory.getInstance().setCurrentUser(theUser);
-
-            Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
-            session.setAttribute(ProcessingContext.SESSION_UI_LOCALE, sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(theUser, sessionLocale) : UserPreferencesHelper.getPreferredLocale(theUser));
-            
-            displayMenu(request, response, session);
-        } else {                                                                    // access failed...
-            session.setAttribute(CLASS_NAME + "isSuperAdmin", Boolean.FALSE);
-            session.setAttribute(CLASS_NAME + "accessGranted", Boolean.FALSE);
-            session.setAttribute(CLASS_NAME + "configJahia", Boolean.FALSE);
-            request.setAttribute(CLASS_NAME + "jahiaLoginUsername", jahiaLoginUsername);
-            displayLogin(request, response, session);
-        }
-    } // end processLogin
+    }
 
 
     //-------------------------------------------------------------------------

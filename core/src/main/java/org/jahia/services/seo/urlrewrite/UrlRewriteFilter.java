@@ -64,15 +64,15 @@ import org.tuckey.web.filters.urlrewrite.utils.ServerNameMatcher;
  */
 public class UrlRewriteFilter implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger(UrlRewriteFilter.class);
     public static final String CMS_APPLICATION_CONTEXT = "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet";
+    private static final Logger logger = LoggerFactory.getLogger(UrlRewriteFilter.class);
+
+    private FilterConfig config;
 
     private boolean enabled = true;
 
     private boolean outboundRulesEnabled = true;
-
-    private UrlRewriteService urlRewriteService;
-    private VanityUrlService vanityUrlService;
+    private SimpleUrlHandlerMapping renderMapping;
 
     private boolean statusEnabled = true;
 
@@ -80,10 +80,11 @@ public class UrlRewriteFilter implements Filter {
 
     private ServerNameMatcher statusServerNameMatcher;
 
-    private FilterConfig config;
+    private UrlRewriteService urlRewriteService;
+    private VanityUrlService vanityUrlService;
 
-    public void init(FilterConfig cfg) throws ServletException {
-        this.config = cfg;
+    public void destroy() {
+        // do nothing
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -116,9 +117,8 @@ public class UrlRewriteFilter implements Filter {
         }
 
         if ("/cms".equals(hsRequest.getServletPath())) {
-            String path = uri.substring(hsRequest.getContextPath().length() + hsRequest.getServletPath().length());
-            ApplicationContext cmsContext = (ApplicationContext) config.getServletContext().getAttribute(CMS_APPLICATION_CONTEXT);
-            SimpleUrlHandlerMapping mapping = (SimpleUrlHandlerMapping) cmsContext.getBean("rendererMapping");
+            String path = hsRequest.getPathInfo() != null ? hsRequest.getPathInfo() : "";
+            SimpleUrlHandlerMapping mapping = getRenderMapping();
             for (String registeredPattern : mapping.getUrlMap().keySet()) {
                 if (mapping.getPathMatcher().match(registeredPattern, path)) {
                     chain.doFilter(request, response);
@@ -163,6 +163,36 @@ public class UrlRewriteFilter implements Filter {
         }
     }
 
+    protected SimpleUrlHandlerMapping getRenderMapping() {
+        if (renderMapping == null) {
+            renderMapping = (SimpleUrlHandlerMapping) ((ApplicationContext) config
+                    .getServletContext().getAttribute(CMS_APPLICATION_CONTEXT))
+                    .getBean("rendererMapping");
+        }
+
+        return renderMapping;
+    }
+
+    public void init(FilterConfig cfg) throws ServletException {
+        this.config = cfg;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setOutboundRulesEnabled(boolean outboundRulesEnabled) {
+        this.outboundRulesEnabled = outboundRulesEnabled;
+    }
+
+    public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
+        this.urlRewriteService = urlRewriteService;
+    }
+
+    public void setVanityUrlService(VanityUrlService vanityUrlService) {
+        this.vanityUrlService = vanityUrlService;
+    }
+
     /**
      * Show the status of the conf and the filter to the user.
      * 
@@ -182,25 +212,5 @@ public class UrlRewriteFilter implements Filter {
         final PrintWriter out = response.getWriter();
         out.write(status.getBuffer().toString());
         out.close();
-    }
-
-    public void destroy() {
-        // do nothing
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
-        this.urlRewriteService = urlRewriteService;
-    }
-
-    public void setOutboundRulesEnabled(boolean outboundRulesEnabled) {
-        this.outboundRulesEnabled = outboundRulesEnabled;
-    }
-
-    public void setVanityUrlService(VanityUrlService vanityUrlService) {
-        this.vanityUrlService = vanityUrlService;
     }
 }

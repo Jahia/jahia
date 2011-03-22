@@ -34,6 +34,7 @@ package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.jahia.bin.Login;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
@@ -56,21 +57,28 @@ import java.util.Set;
  * @author Thomas Draier
  */
 public class LoginEngineAuthValveImpl extends BaseAuthValve {
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(LoginEngineAuthValveImpl.class);
-    public static final String VALVE_RESULT = "login_valve_result";
-    public static final String BAD_PASSWORD = "bad_password";
-    public static final String UNKNOWN_USER = "unknown_user";
     public static final String ACCOUNT_LOCKED = "account_locked";
-    public static final String OK = "ok";
-    public static final String USE_COOKIE = "useCookie";
+    public static final String BAD_PASSWORD = "bad_password";
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(LoginEngineAuthValveImpl.class);
     public static final String LOGIN_TAG_PARAMETER = "doLogin";
-    public static final String LOGIN_CHOICE_PARAMETER = "loginChoice";
-    public static final String DO_REDIRECT = "loginDoRedirect";
-
-    public static final String STAY_AT_CURRENT_PAGE = "1";
-    public static final String GO_TO_HOMEPAGE = "2";
+    public static final String OK = "ok";
+    public static final String UNKNOWN_USER = "unknown_user";
+    public static final String USE_COOKIE = "useCookie";
+    public static final String VALVE_RESULT = "login_valve_result";
 
     private CookieAuthConfig cookieAuthConfig;
+
+    private void enforcePasswordPolicy(JahiaUser theUser) {
+//        PolicyEnforcementResult evalResult = ServicesRegistry.getInstance().getJahiaPasswordPolicyService().
+//                enforcePolicyOnLogin(theUser);
+//        if (!evalResult.isSuccess()) {
+//            EngineMessages policyMsgs = evalResult.getEngineMessages();
+//            EngineMessages resultMessages = new EngineMessages();
+//            for (Object o : policyMsgs.getMessages()) {
+//                resultMessages.add((EngineMessage) o);
+//            }
+//        }
+    }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         final AuthValveContext authContext = (AuthValveContext) context;
@@ -79,8 +87,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         JahiaUser theUser = null;
         boolean ok = false;
 
-        String doLogin = httpServletRequest.getParameter(LOGIN_TAG_PARAMETER);
-        if (Boolean.valueOf(doLogin) || "1".equals(doLogin) || "/cms/login".equals(httpServletRequest.getRequestURI())) {
+        if (isLoginRequested(httpServletRequest)) {
 
             final String username = httpServletRequest.getParameter("username");
             final String password = httpServletRequest.getParameter("password");
@@ -173,16 +180,15 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         }
     }
 
-    private void enforcePasswordPolicy(JahiaUser theUser) {
-//        PolicyEnforcementResult evalResult = ServicesRegistry.getInstance().getJahiaPasswordPolicyService().
-//                enforcePolicyOnLogin(theUser);
-//        if (!evalResult.isSuccess()) {
-//            EngineMessages policyMsgs = evalResult.getEngineMessages();
-//            EngineMessages resultMessages = new EngineMessages();
-//            for (Object o : policyMsgs.getMessages()) {
-//                resultMessages.add((EngineMessage) o);
-//            }
-//        }
+    protected boolean isLoginRequested(HttpServletRequest request) {
+        String doLogin = request.getParameter(LOGIN_TAG_PARAMETER);
+        if (doLogin != null) {
+            return Boolean.valueOf(doLogin) || "1".equals(doLogin);
+        } else if ("/cms".equals(request.getServletPath())) {
+            return Login.getMapping().equals(request.getPathInfo());
+        }
+
+        return false;
     }
 
     public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {

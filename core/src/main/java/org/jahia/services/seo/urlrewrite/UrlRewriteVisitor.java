@@ -45,59 +45,59 @@ import org.slf4j.LoggerFactory;
  * @author Sergiy Shyrkov
  */
 public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
-	private static Logger logger = LoggerFactory.getLogger(UrlRewriteVisitor.class);
+    private static Logger logger = LoggerFactory.getLogger(UrlRewriteVisitor.class);
 
-	private String[] applyOnModes;
+    private String[] applyOnModes;
 
-	private UrlRewriteService urlRewriteService;
+    private UrlRewriteService urlRewriteService;
 
-	private boolean preconditionsMatch(String attrValue, RenderContext context, Resource resource) {
-		if (StringUtils.isEmpty(attrValue)) {
-			return false;
-		}
+    private boolean preconditionsMatch(String attrValue, RenderContext context, Resource resource) {
+        if (StringUtils.isEmpty(attrValue)) {
+            return false;
+        }
 
-		if (applyOnModes != null && applyOnModes.length > 0) {
-			for (String mode : applyOnModes) {
-				if (ModeCondition.matches(context, mode)) {
-					return true;
-				}
-			}
-			return false;
-		}
+        if (applyOnModes != null && applyOnModes.length > 0) {
+            for (String mode : applyOnModes) {
+                if (ModeCondition.matches(context, mode)) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public void setApplyOnModes(String[] applyOnModes) {
-		this.applyOnModes = applyOnModes;
-	}
+    public void setApplyOnModes(String[] applyOnModes) {
+        this.applyOnModes = applyOnModes;
+    }
 
-	/**
-	 * Applies the configured URL rewriting rules to the URL value.
-	 * 
-	 * @see org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor#visit(java.lang.String,
-	 *      org.jahia.services.render.RenderContext,
-	 *      org.jahia.services.render.Resource)
-	 */
-	public String visit(final String attrValue, RenderContext context, Resource resource) {
-		String value = attrValue;
-		if (preconditionsMatch(attrValue, context, resource)) {
-			long timer = System.currentTimeMillis();
-			try {
-	            String rewritten = urlRewriteService.rewriteOutbound(attrValue, context.getRequest(), context.getResponse());
-	            value = rewritten;
+    /**
+     * Applies the configured URL rewriting rules to the URL value.
+     * 
+     * @see org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor#visit(java.lang.String,
+     *      org.jahia.services.render.RenderContext, org.jahia.services.render.Resource)
+     */
+    public String visit(final String attrValue, RenderContext context, Resource resource) {
+        String value = attrValue;
+        if (preconditionsMatch(attrValue, context, resource)) {
+            long timer = System.currentTimeMillis();
+            try {
+                String rewritten = urlRewriteService.rewriteOutbound(attrValue,
+                        context.getRequest(), context.getResponse());
+                value = rewritten;
             } catch (Exception e) {
-            	logger.error("Error rewriting URL value " + attrValue + " Skipped rewriting.", e);
+                logger.error("Error rewriting URL value " + attrValue + " Skipped rewriting.", e);
             }
             if (logger.isDebugEnabled()) {
-				logger.debug("Rewriting URL {} into {} took {} ms", new Object[] { attrValue,
-				        value, System.currentTimeMillis() - timer });
+                logger.debug("Rewriting URL {} into {} took {} ms", new Object[] { attrValue,
+                        value, System.currentTimeMillis() - timer });
             }
-		}
-		return value;
-	}
+        }
+        return value;
+    }
 
-	public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
-    	this.urlRewriteService = urlRewriteService;
+    public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
+        this.urlRewriteService = urlRewriteService;
     }
 }

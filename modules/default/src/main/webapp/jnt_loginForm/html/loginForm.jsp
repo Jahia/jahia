@@ -17,18 +17,10 @@
 <template:addResources type="css" resources="loginForm.css"/>
 
 <c:if test="${!renderContext.loggedIn || currentAliasUser.username eq 'guest'}">
-
     <script type="text/javascript">
-        function keyDown(e) {
-            if (!e) e = window.event;
-            var ieKey = e.keyCode;
-            if (ieKey == 13) {
-                document.loginForm.submit();
-            }
-        }
+    	document.onkeydown = function (e) { if ((e || window.event).keyCode == 13) document.loginForm.submit(); };
     </script>
-    <c:url value="${url.login}" var="loginUrl"/>
-    <ui:loginArea class="loginForm" action="${loginUrl}">
+    <ui:loginArea class="loginForm">
         <h3 class="loginicon">${fn:escapeXml(currentNode.displayableName)}</h3>
         <ui:isLoginError var="loginResult">
             <span class="error"><fmt:message bundle="JahiaInternalResources" key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
@@ -52,7 +44,7 @@
 
         <div class="divButton">
             <input type="submit" onclick="document.forms.loginForm.submit(); return false;" name="search" class="button"
-                   value="<fmt:message key="loginForm.loginbutton.label"/>"/>
+                   value="<fmt:message key='loginForm.loginbutton.label"/>'/>
         </div>
     </ui:loginArea>
 </c:if>

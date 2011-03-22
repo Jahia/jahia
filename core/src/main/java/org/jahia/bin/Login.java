@@ -32,15 +32,14 @@
 
 package org.jahia.bin;
 
-import java.util.Iterator;
-
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.settings.SettingsBean;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -51,14 +50,24 @@ import org.springframework.web.servlet.mvc.Controller;
  * Time: 1:47:38 PM
  */
 public class Login implements Controller {
-	
-    private JahiaSitesBaseService sitesService;
-
-    public static String getServletPath() {
-        // TODO move this into configuration
-        return "/cms/login";
+    
+    // TODO move this into configuration
+    private static final String CONTROLLER_MAPPING = "/login";
+    
+    public static String getMapping() {
+        return CONTROLLER_MAPPING;
     }
     
+    public static String getServletPath() {
+        // TODO move this into configuration
+        return "/cms" + CONTROLLER_MAPPING;
+    }
+    
+    protected String getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
+        return StringUtils.defaultIfEmpty(request.getParameter("redirect"),
+                request.getContextPath() + "/welcome");
+    }
+
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet
      * will render. A <code>null</code> return value is not an error: It indicates that
@@ -82,46 +91,27 @@ public class Login implements Controller {
             }
         }
 
-        String redirect = null;
-        if (redirectActive) {
-            redirect = request.getParameter("redirect");
-            if (redirect == null || redirect.length() == 0) {
-                JahiaSite site = sitesService.getDefaultSite();
-                if (site == null) {
-                	Iterator<JahiaSite> sites = sitesService.getSites();
-                	site = sites.hasNext() ? sites.next() : null;
-                }
-				redirect = site != null ? request.getContextPath()
-						+ "/cms/render/default/" + site.getDefaultLanguage()
-						+ "/sites/" + site.getSiteKey() + "/home.html"
-						: request.getContextPath() + "/welcome";
-            }
-        }
-
         String result = (String) request.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
         if (LoginEngineAuthValveImpl.OK.equals(result)) {
-
             // Create one session at login to initialize external user
             JCRSessionFactory.getInstance().getCurrentUserSession();
 
             if (redirectActive) {
-                response.sendRedirect(response.encodeRedirectURL(redirect));
+                response.sendRedirect(getRedirectUrl(request, response));
             } else {
                 response.getWriter().append("OK");
             }
         } else {
             if (!restMode) {
-                request.setAttribute("javax.servlet.error.request_uri", redirect);
+                if (request.getParameter("redirect") != null) {
+                    request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));
+                }
                 request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);
             } else {
                 response.getWriter().append("unauthorized");
             }
         }
         return null;
-    }
-
-    public void setSitesService(JahiaSitesBaseService sitesService) {
-        this.sitesService = sitesService;
     }
 
 }

@@ -169,6 +169,7 @@
        <url-pattern>/*</url-pattern>
        <dispatcher>REQUEST</dispatcher>
        <dispatcher>FORWARD</dispatcher>
+       <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
     <filter-mapping>

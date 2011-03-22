@@ -13,7 +13,7 @@ Logging service
 
 [images/logging/logging_architecture.png]
 
- As you can see, the default implementation uses the {{{http://www.slf4j.org/}SLF4J Java library}} to perform the actual logging, but this could
+ As you can see, the default implementation uses the {{{http://www.slf4j.org/}SLF4J Java library}} to perform the logging, but this could
  be modified by provided another implementation if the need be. SLF4J by default is configured to use the {{{http://logging.apache.org/log4j}Log4J logging
  library}} that has been integrated in Jahia since its inception.
 

@@ -312,80 +312,6 @@
                 <hashTree/>
               </hashTree>
             </hashTree>
-            <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="get live sitemap" enabled="true">
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
-                <collectionProp name="Arguments.arguments"/>
-              </elementProp>
-              <stringProp name="HTTPSampler.domain"></stringProp>
-              <stringProp name="HTTPSampler.port"></stringProp>
-              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-              <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
-              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/live/en/sites/ACME${COUNTER_SITES}/home.sitemap.txt</stringProp>
-              <stringProp name="HTTPSampler.method">GET</stringProp>
-              <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
-              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-              <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
-              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-              <boolProp name="HTTPSampler.monitor">false</boolProp>
-              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-            </HTTPSampler>
-            <hashTree>
-              <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Conteur de temps aléatoire uniforme" enabled="true">
-                <stringProp name="ConstantTimer.delay">${maxOffsetWaitTime}</stringProp>
-                <stringProp name="RandomTimer.range">${maxWaitTime}</stringProp>
-              </UniformRandomTimer>
-              <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extracteur Expression régulière" enabled="true">
-                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-                <stringProp name="RegexExtractor.refname">LIVE_SITEMAP</stringProp>
-                <stringProp name="RegexExtractor.regex">(?s)(.+)</stringProp>
-                <stringProp name="RegexExtractor.template">$1$</stringProp>
-                <stringProp name="RegexExtractor.default">LIVE_SITEMAPFAILED</stringProp>
-                <stringProp name="RegexExtractor.match_number">1</stringProp>
-              </RegexExtractor>
-              <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assertion Réponse" enabled="true">
-                <collectionProp name="Asserion.test_strings">
-                  <stringProp name="1642953988">${LIVE_SITEMAP}</stringProp>
-                </collectionProp>
-                <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
-                <boolProp name="Assertion.assume_success">false</boolProp>
-                <intProp name="Assertion.test_type">16</intProp>
-              </ResponseAssertion>
-              <hashTree/>
-              <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Post-Processeur BeanShell" enabled="true">
-                <boolProp name="resetInterpreter">false</boolProp>
-                <stringProp name="parameters"></stringProp>
-                <stringProp name="filename"></stringProp>
-                <stringProp name="script">import org.apache.jmeter.services.FileServer;
-
-if (prev.isSuccessful()) {
-    String baseDir = FileServer.getFileServer().getBaseDir();
-    log.info(&quot;Base dir = &quot; + baseDir);
-    String live = vars.get(&quot;LIVE_SITEMAP&quot;);
-    live = live.replaceAll(&quot;    &quot;, &quot;&quot;);
-    live = live.replaceAll(&quot;\n\n\n\n&quot;, &quot;\n&quot;);
-    live = live.replaceAll(&quot;\n\n\n&quot;, &quot;\n&quot;);
-    live = live.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
-    String path = vars.get(&quot;PATH&quot;);
-    try {
-        File p = new File(baseDir, path);
-        if (!p.exists()) {
-            p.mkdirs();
-        }
-        File f = new File(baseDir, path + &quot;/liveSitemaps.txt&quot;);
-        BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
-        out.write(live+&quot;\n&quot;);
-        out.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}</stringProp>
-              </BeanShellPostProcessor>
-              <hashTree/>
-            </hashTree>
             <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="get edit sitemap" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
@@ -452,6 +378,80 @@ if (prev.isSuccessful()) {
         File f = new File(baseDir, path + &quot;/editSitemaps.txt&quot;);
         BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
         out.write(edit+&quot;\n&quot;);
+        out.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}</stringProp>
+              </BeanShellPostProcessor>
+              <hashTree/>
+            </hashTree>
+            <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="get live sitemap" enabled="true">
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
+                <collectionProp name="Arguments.arguments"/>
+              </elementProp>
+              <stringProp name="HTTPSampler.domain"></stringProp>
+              <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
+              <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
+              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/live/en/sites/ACME${COUNTER_SITES}/home.sitemap.txt</stringProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
+              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <boolProp name="HTTPSampler.monitor">false</boolProp>
+              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            </HTTPSampler>
+            <hashTree>
+              <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Conteur de temps aléatoire uniforme" enabled="true">
+                <stringProp name="ConstantTimer.delay">${maxOffsetWaitTime}</stringProp>
+                <stringProp name="RandomTimer.range">${maxWaitTime}</stringProp>
+              </UniformRandomTimer>
+              <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extracteur Expression régulière" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">LIVE_SITEMAP</stringProp>
+                <stringProp name="RegexExtractor.regex">(?s)(.+)</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">LIVE_SITEMAPFAILED</stringProp>
+                <stringProp name="RegexExtractor.match_number">1</stringProp>
+              </RegexExtractor>
+              <hashTree/>
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assertion Réponse" enabled="true">
+                <collectionProp name="Asserion.test_strings">
+                  <stringProp name="1642953988">${LIVE_SITEMAP}</stringProp>
+                </collectionProp>
+                <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                <boolProp name="Assertion.assume_success">false</boolProp>
+                <intProp name="Assertion.test_type">16</intProp>
+              </ResponseAssertion>
+              <hashTree/>
+              <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Post-Processeur BeanShell" enabled="true">
+                <boolProp name="resetInterpreter">false</boolProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="script">import org.apache.jmeter.services.FileServer;
+
+if (prev.isSuccessful()) {
+    String baseDir = FileServer.getFileServer().getBaseDir();
+    log.info(&quot;Base dir = &quot; + baseDir);
+    String live = vars.get(&quot;LIVE_SITEMAP&quot;);
+    live = live.replaceAll(&quot;    &quot;, &quot;&quot;);
+    live = live.replaceAll(&quot;\n\n\n\n&quot;, &quot;\n&quot;);
+    live = live.replaceAll(&quot;\n\n\n&quot;, &quot;\n&quot;);
+    live = live.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
+    String path = vars.get(&quot;PATH&quot;);
+    try {
+        File p = new File(baseDir, path);
+        if (!p.exists()) {
+            p.mkdirs();
+        }
+        File f = new File(baseDir, path + &quot;/liveSitemaps.txt&quot;);
+        BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
+        out.write(live+&quot;\n&quot;);
         out.close();
     } catch (IOException e) {
         e.printStackTrace();

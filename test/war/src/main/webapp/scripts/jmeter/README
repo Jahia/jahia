@@ -16,6 +16,9 @@ installed with the package installer.
 Steps
 -----
 
+0. If you are doing this from the source code, make sure you have deployed the test project (not deployed by default),
+you can do this by going into the test/ directory and typing : mvn clean install jahia:deploy
+
 1. Startup your Jahia server.
 
 2. Make sure you have put JMeter in your path, so you can launch it from anywhere. Here is an exemple for UNIX-based

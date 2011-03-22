@@ -174,10 +174,10 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 if (latestTimeProcessed > date.getTime()) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Skipping content history entry since it's date "+date+"is older than last processed date");
-                        ignoredCount++;
-                        whatDidWeDo = "skipped";
-                        shouldSkipInsertion = true;
                     }
+                    ignoredCount++;
+                    whatDidWeDo = "skipped";
+                    shouldSkipInsertion = true;
                 } else {
                     // if the time is the same, we have to check for existing entries (or maybe it would be faster to
                     // delete and re-create them ?)

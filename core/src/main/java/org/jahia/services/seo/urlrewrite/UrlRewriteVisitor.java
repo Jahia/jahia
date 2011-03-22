@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A Jahia HTML Tag attribute visitor for applying URL rewriting rules (using .
+ * A Jahia HTML Tag attribute visitor for applying URL rewriting rules (using {@link UrlRewriteService}).
  * 
  * @author Sergiy Shyrkov
  */

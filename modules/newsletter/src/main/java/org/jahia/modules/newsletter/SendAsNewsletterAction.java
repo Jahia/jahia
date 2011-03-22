@@ -33,6 +33,7 @@
 package org.jahia.modules.newsletter;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Jahia;
@@ -72,13 +73,13 @@ import java.util.*;
  */
 public class SendAsNewsletterAction extends Action implements BackgroundAction {
 
-	private static final int READ_CHUNK_SIZE = 1000;
+    private static final int READ_CHUNK_SIZE = 1000;
 
-	private static final String J_LAST_SENT = "j:lastSent";
+    private static final String J_LAST_SENT = "j:lastSent";
 
-	private static final String J_SCHEDULED = "j:scheduled";
+    private static final String J_SCHEDULED = "j:scheduled";
 
-	private static final Logger logger = LoggerFactory.getLogger(SendAsNewsletterAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(SendAsNewsletterAction.class);
 
     private HtmlExternalizationService htmlExternalizationService;
     private HttpClientService httpClientService;
@@ -110,7 +111,7 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
 
                 JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live", new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    	boolean saveSession = false;
+                        boolean saveSession = false;
                         PaginatedList<Subscription> l = null;
                         int total = 0;
                         int offset = 0;
@@ -120,10 +121,10 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
                             total = l.getTotalSize();
                             for (Subscription subscription : l.getData()) {
                                 if (StringUtils.isEmpty(subscription.getEmail())) {
-                                	logger.warn("Empty e-mail found for the subscription {}. Skipping.", subscription.getSubscriber());
-                                	continue;
+                                    logger.warn("Empty e-mail found for the subscription {}. Skipping.", subscription.getSubscriber());
+                                    continue;
                                 }
-                            	
+                                
                                 String username = "guest";
 
                                 JahiaSite site = null;
@@ -139,26 +140,26 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
                                 JahiaUser user = subscription.isRegisteredUser() ? userService.lookupUserByKey(subscription.getSubscriber()) : userService.lookupUser("guest");
                                 RenderContext letterContext = new RenderContext(renderContext.getRequest(), renderContext.getResponse(), user);
                                 Locale language = subscription.isRegisteredUser() ? 
-                                		UserPreferencesHelper.getPreferredLocale(user , site) : 
-                                			LanguageCodeConverters.languageCodeToLocale(subscription.getProperties().get("j:preferredLanguage"));
+                                        UserPreferencesHelper.getPreferredLocale(user , site) : 
+                                            LanguageCodeConverters.languageCodeToLocale(subscription.getProperties().get("j:preferredLanguage"));
                                 if (language == null) {
-                                	language = LanguageCodeConverters.languageCodeToLocale(site != null ? site.getDefaultLanguage() : SettingsBean.getInstance().getDefaultLanguageCode());
+                                    language = LanguageCodeConverters.languageCodeToLocale(site != null ? site.getDefaultLanguage() : SettingsBean.getInstance().getDefaultLanguageCode());
                                 }
                                 String confirmationKey = subscription.getConfirmationKey();
                                 if (confirmationKey == null) {
-                                	try {
-	                                	JCRNodeWrapper subscriptionNode = session.getNodeByUUID(subscription.getId());
-	                                	confirmationKey = subscriptionService.generateConfirmationKey(subscriptionNode);
-	                                	letterContext.getRequest().setAttribute("org.jahia.modules.newsletter.unsubscribeLink", UnsubscribeAction.generateUnsubscribeLink(target, confirmationKey, req));
-	                                	subscriptionNode.setProperty(SubscriptionService.J_CONFIRMATION_KEY, confirmationKey);
-	                                	saveSession = true;
-                                	} catch (RepositoryException e) {
-										        logger.warn(
-										                "Unable to store the confirmation key for the subscription "
-										                        + subscription.getSubscriber(), e);
-                                	}
+                                    try {
+                                        JCRNodeWrapper subscriptionNode = session.getNodeByUUID(subscription.getId());
+                                        confirmationKey = subscriptionService.generateConfirmationKey(subscriptionNode);
+                                        letterContext.getRequest().setAttribute("org.jahia.modules.newsletter.unsubscribeLink", UnsubscribeAction.generateUnsubscribeLink(target, confirmationKey, req));
+                                        subscriptionNode.setProperty(SubscriptionService.J_CONFIRMATION_KEY, confirmationKey);
+                                        saveSession = true;
+                                    } catch (RepositoryException e) {
+                                                logger.warn(
+                                                        "Unable to store the confirmation key for the subscription "
+                                                                + subscription.getSubscriber(), e);
+                                    }
                                 } else {
-                                	letterContext.getRequest().setAttribute("org.jahia.modules.newsletter.unsubscribeLink", UnsubscribeAction.generateUnsubscribeLink(target, confirmationKey, req));
+                                    letterContext.getRequest().setAttribute("org.jahia.modules.newsletter.unsubscribeLink", UnsubscribeAction.generateUnsubscribeLink(target, confirmationKey, req));
                                 }
                                 sendNewsletter(letterContext, node, subscription.getEmail(), username, "html",
                                             language, "live",
@@ -169,7 +170,7 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
                         } while (offset < total);
                         
                         if (saveSession) {
-                        	session.save();
+                            session.save();
                         }
                         
                         return Boolean.TRUE;
@@ -188,7 +189,7 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
         logger.info("The content of the node {} was sent as a newsletter in {} ms", node.getPath(),
                 System.currentTimeMillis() - timer);
 
-	    return ActionResult.OK;
+        return ActionResult.OK;
     }
 
     private void sendNewsletter(final RenderContext renderContext, final JCRNodeWrapper node, final String email,
@@ -201,7 +202,13 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
         if (!newsletterVersions.containsKey(key)) {
             JCRTemplate.getInstance().doExecute(false, user, workspace, locale, new JCRCallback<String>() {
                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    boolean isEdit = renderContext.isEditMode();
+                    boolean isLive = renderContext.isLiveMode();
+                    
                     try {
+                        renderContext.setEditMode(Constants.EDIT_WORKSPACE.equals(workspace));
+                        renderContext.setLiveMode(Constants.LIVE_WORKSPACE.equals(workspace));
+                        
                         JCRNodeWrapper node = session.getNodeByIdentifier(id);
                         Resource resource = new Resource(node, "html", null, "page");
                         renderContext.setMainResource(resource);
@@ -211,10 +218,10 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
                         @SuppressWarnings("rawtypes")
                         Enumeration attributeNames = renderContext.getRequest().getAttributeNames();
                         while (attributeNames.hasMoreElements()) {
-                        	String attr = (String) attributeNames.nextElement();
-                        	if (!attr.startsWith("org.jahia.modules.newsletter.")) {
-                        		renderContext.getRequest().removeAttribute(attr);
-                        	}
+                            String attr = (String) attributeNames.nextElement();
+                            if (!attr.startsWith("org.jahia.modules.newsletter.")) {
+                                renderContext.getRequest().removeAttribute(attr);
+                            }
                         }
 
                         String out = renderService.render(resource, renderContext);
@@ -228,6 +235,9 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
                         newsletterVersions.put(key + ".title", title);
                     } catch (RenderException e) {
                         throw new RepositoryException(e);
+                    } finally {
+                        renderContext.setEditMode(isEdit);
+                        renderContext.setLiveMode(isLive);
                     }
                     return null;
                 }
@@ -244,16 +254,16 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
 
     public void executeBackgroundAction(JCRNodeWrapper node) {
         // do local post on node.getPath/sendAsNewsletter.do
-    	try {
+        try {
             Map<String,String> headers = new HashMap<String,String>();
             headers.put("jahiatoken",TokenAuthValveImpl.addToken(node.getSession().getUser()));
-			String out = httpClientService.executePost("http://localhost:8080"+
-			        Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
-			                + node.getResolveSite().getDefaultLanguage() + node.getPath()
-			                + ".sendAsNewsletter.do", null, headers);
-			logger.info(out);
+            String out = httpClientService.executePost("http://localhost:8080"+
+                    Jahia.getContextPath() + Render.getRenderServletPath() + "/live/"
+                            + node.getResolveSite().getDefaultLanguage() + node.getPath()
+                            + ".sendAsNewsletter.do", null, headers);
+            logger.info(out);
         } catch (Exception e) {
-        	logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -262,7 +272,7 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
     }
 
     public void setHttpClientService(HttpClientService httpClientService) {
-    	this.httpClientService = httpClientService;
+        this.httpClientService = httpClientService;
     }
 
     public void setMailService(MailService mailService) {
@@ -273,16 +283,16 @@ public class SendAsNewsletterAction extends Action implements BackgroundAction {
         this.renderService = renderService;
     }
 
-	public void setSubscriptionService(SubscriptionService subscriptionService) {
+    public void setSubscriptionService(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
     }
 
-	public void setUserService(JahiaUserManagerService userService) {
-    	this.userService = userService;
+    public void setUserService(JahiaUserManagerService userService) {
+        this.userService = userService;
     }
 
-	public void setSiteService(JahiaSitesService siteService) {
-    	this.siteService = siteService;
+    public void setSiteService(JahiaSitesService siteService) {
+        this.siteService = siteService;
     }
 
 }

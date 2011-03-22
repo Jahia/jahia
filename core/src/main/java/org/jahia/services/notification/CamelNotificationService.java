@@ -135,10 +135,13 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
         try {
             while (queueProcessorRunning.get()) {
 
-                while (queue.peek() != null) {
+                int size = queue.size();
+                for (int i=0; i < size; i++) {
                     CamelMessage message = queue.poll();
                     if (message != null) {
                         sendMessagesWithBodyAndHeaders(message.getTarget(), message.getBody(), message.getHeaders());
+                    } else {
+                        break;
                     }
                 }
                 Thread.sleep(queueProcessorFrequency);

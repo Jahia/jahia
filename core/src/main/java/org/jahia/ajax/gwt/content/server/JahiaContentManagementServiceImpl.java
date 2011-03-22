@@ -87,7 +87,6 @@ import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -102,8 +101,6 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.Collator;
 import java.text.ParseException;
@@ -897,8 +894,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException {
         try {
-            List<GWTJahiaNodeVersion> versions = navigation.getVersions(
-                    JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path),true);
+            JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(path);
+            List<GWTJahiaNodeVersion> versions = navigation.getVersions(node,!node.isNodeType("nt:file"));
             sortVersions(versions);
             return versions;
         } catch (RepositoryException e) {
@@ -963,10 +960,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 allSubTree, retrieveCurrentSession());
     }
 
-    public void restoreNodeByIdentifierAndDate(String identifier,Date versionDate, boolean allSubTree)
+    public void restoreNodeByIdentifierAndDate(String identifier, Date versionDate, String versionLabel, boolean allSubTree)
             throws GWTJahiaServiceException {
         // restore by label
-        versioning.restoreVersionLabel(identifier, versionDate, null, allSubTree, retrieveCurrentSession());
+        versioning.restoreVersionLabel(identifier, versionDate, versionLabel, allSubTree, retrieveCurrentSession());
     }
 
     public void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException {
@@ -1869,8 +1866,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale(), false);
         try {
             JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(identifier);
+            if(nodeByIdentifier.isFile()) {
+                String url = nodeByIdentifier.getUrl();
+                if (versionDate != null) {
+                    url += "?v=" + (versionDate.getTime());
+                    if (versionLabel != null) {
+                        url += "&l=" + versionLabel;
+                    }
+                }
+
+                return url;
+            } else {
             return getResponse().encodeURL(this.navigation.getNodeURL(servlet, nodeByIdentifier.getPath(), versionDate, versionLabel, session.getWorkspace().getName(),
                     session.getLocale()));
+            }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);
         }

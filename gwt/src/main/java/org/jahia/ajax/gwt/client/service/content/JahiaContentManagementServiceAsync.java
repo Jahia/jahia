@@ -309,6 +309,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings, AsyncCallback<Boolean> async);
 
-    void restoreNodeByIdentifierAndDate(String identifier, Date versionDate, boolean allSubTree,
+    void restoreNodeByIdentifierAndDate(String identifier, Date versionDate, String versionLabel, boolean allSubTree,
                                         AsyncCallback<Void> async);
 }

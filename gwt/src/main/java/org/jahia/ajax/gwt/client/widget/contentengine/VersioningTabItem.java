@@ -133,7 +133,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
                                     // add 30s to the date to be sure to display the right version
-                                    new CompareEngine(version.getNode().getUUID(),locale,false,version.getNode().getPath(),new Date(version.getDate().getTime()+(30l*1000l)),engine).show();
+                                    new CompareEngine(version.getNode().getUUID(),locale,false,version.getNode().getPath(),new Date(version.getDate().getTime()+(30l*1000l)),engine,version.getWorkspace(),version.getLabel()).show();
                                 }
                             });
                             buttonBar.add(button);

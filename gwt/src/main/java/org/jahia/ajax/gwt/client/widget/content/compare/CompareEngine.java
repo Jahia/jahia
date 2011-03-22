@@ -70,6 +70,8 @@ public class CompareEngine extends Window {
     private String path;
     private Date versionDate = null;
     private NodeHolder engine = null;
+    private String workspace = null;
+    private String versionLabel = null;
     private boolean refreshOpener = false;
 
     /**
@@ -94,12 +96,14 @@ public class CompareEngine extends Window {
     }
 
     public CompareEngine(String uuid, String locale, boolean displayVersionSelector, String path, Date versionDate,
-                         NodeHolder engine) {
+                         NodeHolder engine, String workspace, String versionLabel) {
         this.locale = locale;
         this.uuid = uuid;
         this.path = path;
         this.versionDate = versionDate;
         this.engine = engine;
+        this.workspace = workspace;
+        this.versionLabel = versionLabel;
         init(displayVersionSelector);
     }
 
@@ -129,7 +133,7 @@ public class CompareEngine extends Window {
             leftPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
                     linker, "live", false, displayVersionSelector, this);
         } else {
-            leftPanel = new VersionViewer(uuid, locale, "live", false, displayVersionSelector, versionDate, this);
+            leftPanel = new VersionViewer(uuid, locale, workspace!=null?workspace:"live", false, displayVersionSelector, versionDate, this, versionLabel);
         }
         leftPanel.setSize(650, 750);
         BorderLayoutData liveLayoutData = new BorderLayoutData(Style.LayoutRegion.WEST, 650);
@@ -147,7 +151,7 @@ public class CompareEngine extends Window {
                 }
             };
         } else {
-            rightPanel = new VersionViewer(uuid, locale, "default", true, displayVersionSelector, null, this) {
+            rightPanel = new VersionViewer(uuid, locale, "default", true, displayVersionSelector, null, this, null) {
                 @Override
                 public String getCompareWith() {
                     return leftPanel.getInnerHTML();

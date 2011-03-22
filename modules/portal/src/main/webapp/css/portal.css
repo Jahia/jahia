@@ -64,7 +64,7 @@
     -webkit-border-bottom-right-radius: 2px;
     overflow: hidden;
 }
-#columns .widget .widget-content p {
+/*#columns .widget .widget-content p {
     padding: 0.8em 0;
     border-bottom: 1px solid #666;
 }
@@ -97,7 +97,7 @@
     display: inline;
     float: left;
     margin: 0 0 7px 7px;
-}
+}*/
 /* End Columns section */
 
 /* JS-Enabled CSS */

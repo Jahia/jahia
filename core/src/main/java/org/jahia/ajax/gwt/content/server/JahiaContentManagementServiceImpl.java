@@ -33,10 +33,6 @@
 package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.sun.tools.javac.resources.version;
-import ij.ImagePlus;
-import ij.io.Opener;
-import ij.process.ImageProcessor;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;

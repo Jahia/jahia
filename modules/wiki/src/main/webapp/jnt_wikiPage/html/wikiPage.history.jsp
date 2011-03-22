@@ -62,9 +62,9 @@
 
                 <td class="center" headers="Selection">
                     <input type="radio" value="${version.parent.name}" name="oldid"
-                           id="w-oldid-${version.parent.name}" <c:if test="${status.last}">disabled="true"</c:if>/>
+                           id="w-oldid-${version.parent.name}" <c:if test="${status.last}">disabled="true"</c:if> <c:if test="${param.oldid eq version.parent.name}">checked="true"</c:if>/>
                     &nbsp;<input type="radio" value="${version.parent.name}" name="diff"
-                           id="w-diff-${version.parent.name}" <c:if test="${status.first}">disabled="true"</c:if>/>
+                           id="w-diff-${version.parent.name}" <c:if test="${status.first}">disabled="true"</c:if> <c:if test="${param.diff eq version.parent.name}">checked="true"</c:if>/>
                 </td>
                 <td headers="Title"><a href="#">${version.properties['lastComment'].string} </a></td>
                 <td headers="Author">${version.properties['jcr:lastModifiedBy'].string}</td>

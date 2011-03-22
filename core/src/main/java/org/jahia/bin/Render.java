@@ -854,8 +854,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
+        JCRSessionWrapper session = null;
+        if (resource != null) {
+            session = resource.getNode().getSession();
+        } else {
+            session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
                 urlResolver.getLocale());
+        }
         ActionResult result = action.doExecute(req, renderContext, resource, session, parameters, urlResolver);
         if (result != null) {
             if (result.getResultCode() < 300) {

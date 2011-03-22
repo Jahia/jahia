@@ -466,13 +466,11 @@ public class JahiaAdministration extends HttpServlet {
                               HttpSession session)
             throws IOException, ServletException {
         if (!response.isCommitted()) {
-            request.getRequestDispatcher(
-                    request.getContextPath() + Login.getServletPath() + "?redirect="
-                            + URLEncoder.encode(servletPath, "UTF-8")).forward(request, response);
+            request.getRequestDispatcher(Login.getServletPath() + "?redirect="
+                            + URLEncoder.encode((request.getContextPath()+servletPath).replaceAll("//","/"), "UTF-8")).forward(request, response);
         } else {
-            response.sendRedirect(response.encodeRedirectURL(request.getContextPath()
-                    + Login.getServletPath() + "?redirect="
-                    + URLEncoder.encode(servletPath, "UTF-8")));
+            response.sendRedirect(response.encodeRedirectURL(Login.getServletPath() + "?redirect="
+                    + URLEncoder.encode((request.getContextPath()+servletPath).replaceAll("//","/"), "UTF-8")));
         }
     }
 

@@ -362,6 +362,10 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
         if (JahiaGroupManagerService.USERS_GROUPNAME.equals(name)) {
             return !JahiaUserManagerService.GUEST_USERNAME.equals(getName());
         }
+        if (isRoot() && JahiaGroupManagerService.POWERFUL_GROUPS.contains(name)) {
+            return true;
+        }
+        
         // Get the services registry
         ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
         if (servicesRegistry != null) {
@@ -386,7 +390,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      *         false on any error.
      */
     public boolean isAdminMember(int siteID) {
-        return isMemberOfGroup(siteID, siteID == 0 ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
+        return isRoot() || isMemberOfGroup(siteID, siteID == 0 ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
     }
 
     /**

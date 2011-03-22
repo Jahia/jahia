@@ -550,10 +550,10 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
                     JCRNodeWrapper siteNode = getSite(site.getID(), session);
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
-                        siteNode.grantRoles("g:site-privileged", Collections.singleton("privileged"));
-                        siteNode.denyRoles("g:privileged", Collections.singleton("privileged"));
+                        siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
+                        siteNode.denyRoles("g:" + JahiaGroupManagerService.PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
                     }
-                    siteNode.grantRoles("g:site-administrators", Collections.singleton("site-administrator"));
+                    siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, Collections.singleton("site-administrator"));
                     session.save();
                 }
                 File initialZip = null;

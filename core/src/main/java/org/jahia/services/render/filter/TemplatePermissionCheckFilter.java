@@ -37,6 +37,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.RepositoryException;
@@ -108,7 +109,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 }
             }
             if (node.hasProperty("j:requirePrivilegedUser") && node.getProperty("j:requirePrivilegedUser").getBoolean()) {
-                if (!renderContext.getUser().isMemberOfGroup(0,"privileged")) {
+                if (!renderContext.getUser().isMemberOfGroup(0,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                     return "";
                 }
             }

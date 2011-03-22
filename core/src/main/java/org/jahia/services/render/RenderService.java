@@ -43,6 +43,7 @@ import org.jahia.services.render.filter.RenderServiceAware;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -423,7 +424,7 @@ public class RenderService {
             }
         }
         if (templateNode.hasProperty("j:requirePrivilegedUser") && templateNode.getProperty("j:requirePrivilegedUser").getBoolean()) {
-            if (!renderContext.getUser().isMemberOfGroup(0,"privileged")) {
+            if (!renderContext.getUser().isMemberOfGroup(0,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                 return false;
             }
         }

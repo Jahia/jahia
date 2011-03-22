@@ -35,6 +35,8 @@
 
 package org.jahia.services.usermanager;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -52,13 +54,16 @@ public abstract class JahiaGroupManagerService extends JahiaService {
     public static final String SITE_PRIVILEGED_GROUPNAME = "site-privileged";
     public static final String SITE_ADMINISTRATORS_GROUPNAME = "site-administrators";
     public static final String GUEST_GROUPNAME = "guest";
-
+    
+    public static final Set<String> POWERFUL_GROUPS = new HashSet<String>(Arrays.asList(
+            ADMINISTRATORS_GROUPNAME, SITE_ADMINISTRATORS_GROUPNAME, PRIVILEGED_GROUPNAME,
+            SITE_PRIVILEGED_GROUPNAME));
 
     /**
      * Create a new group in the system.
      *
      * @param hidden
-     * @return Retrun a reference on a group object on success, or if the groupname
+     * @return a reference on a group object on success, or if the groupname
      *         already exists or another error occured, null is returned.
      */
     public abstract JahiaGroup createGroup(int siteID, String name, Properties properties, boolean hidden);

@@ -34,6 +34,7 @@ package org.jahia.services.seo.urlrewrite;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -64,7 +65,7 @@ import org.tuckey.web.filters.urlrewrite.utils.ServerNameMatcher;
  */
 public class UrlRewriteFilter implements Filter {
 
-    public static final String CMS_APPLICATION_CONTEXT = "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet";
+    private String cmsApplicationContextAttribute;
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteFilter.class);
 
     private FilterConfig config;
@@ -72,7 +73,7 @@ public class UrlRewriteFilter implements Filter {
     private boolean enabled = true;
 
     private boolean outboundRulesEnabled = true;
-    private SimpleUrlHandlerMapping renderMapping;
+    private List<SimpleUrlHandlerMapping> renderMapping;
 
     private boolean statusEnabled = true;
 
@@ -118,11 +119,13 @@ public class UrlRewriteFilter implements Filter {
 
         if ("/cms".equals(hsRequest.getServletPath())) {
             String path = hsRequest.getPathInfo() != null ? hsRequest.getPathInfo() : "";
-            SimpleUrlHandlerMapping mapping = getRenderMapping();
-            for (String registeredPattern : mapping.getUrlMap().keySet()) {
-                if (mapping.getPathMatcher().match(registeredPattern, path)) {
-                    chain.doFilter(request, response);
-                    return;
+            List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
+            for (SimpleUrlHandlerMapping mapping : mappings) {
+                for (String registeredPattern : mapping.getUrlMap().keySet()) {
+                    if (mapping.getPathMatcher().match(registeredPattern, path)) {
+                        chain.doFilter(request, response);
+                        return;
+                    }
                 }
             }
             String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(hsRequest);
@@ -163,11 +166,14 @@ public class UrlRewriteFilter implements Filter {
         }
     }
 
-    protected SimpleUrlHandlerMapping getRenderMapping() {
+    protected List<SimpleUrlHandlerMapping> getRenderMapping() {
         if (renderMapping == null) {
-            renderMapping = (SimpleUrlHandlerMapping) ((ApplicationContext) config
-                    .getServletContext().getAttribute(CMS_APPLICATION_CONTEXT))
-                    .getBean("rendererMapping");
+            renderMapping = new LinkedList<SimpleUrlHandlerMapping>();
+            ApplicationContext ctx = (ApplicationContext) config.getServletContext().getAttribute(
+                    cmsApplicationContextAttribute);
+            renderMapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
+            renderMapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
+                    .values());
         }
 
         return renderMapping;
@@ -175,6 +181,7 @@ public class UrlRewriteFilter implements Filter {
 
     public void init(FilterConfig cfg) throws ServletException {
         this.config = cfg;
+        cmsApplicationContextAttribute = StringUtils.defaultIfEmpty(cfg.getInitParameter("renderApplicationContextAttribute"), "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
     }
 
     public void setEnabled(boolean enabled) {

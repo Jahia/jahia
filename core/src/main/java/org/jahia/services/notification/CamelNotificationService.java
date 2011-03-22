@@ -81,7 +81,7 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
     private Thread queueProcessor;
     private String queueProcessorThreadName = "notificationQueueProcessor";
     private long queueProcessorFrequency = 5000;
-    private ConcurrentLinkedQueue queue = new ConcurrentLinkedQueue<CamelMessage>();
+    private ConcurrentLinkedQueue<CamelMessage> queue = new ConcurrentLinkedQueue<CamelMessage>();
     private AtomicBoolean queueProcessorRunning = new AtomicBoolean(true);
 
     public void setQueueProcessorThreadName(String queueProcessorThreadName) {
@@ -134,10 +134,12 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
     public void run() {
         try {
             while (queueProcessorRunning.get()) {
-                Iterator<CamelMessage> queueIterator = queue.iterator();
-                while (queueIterator.hasNext()) {
-                    CamelMessage message = queueIterator.next();
-                    sendMessagesWithBodyAndHeaders(message.getTarget(), message.getBody(), message.getHeaders());
+
+                while (queue.peek() != null) {
+                    CamelMessage message = queue.poll();
+                    if (message != null) {
+                        sendMessagesWithBodyAndHeaders(message.getTarget(), message.getBody(), message.getHeaders());
+                    }
                 }
                 Thread.sleep(queueProcessorFrequency);
             }

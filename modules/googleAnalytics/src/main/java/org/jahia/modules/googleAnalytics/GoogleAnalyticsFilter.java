@@ -6,13 +6,12 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.utils.ScriptEngineUtils;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.*;
+import org.slf4j.Logger;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -25,20 +24,16 @@ import java.io.Writer;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: david
  * Date: 2/25/11
  * Time: 11:28 AM
- * To change this template use File | Settings | File Templates.
  */
 public class GoogleAnalyticsFilter extends AbstractFilter{
 
-    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GoogleAnalyticsFilter.class);
+    private static Logger logger = LoggerFactory.getLogger(GoogleAnalyticsFilter.class);
 
     private ScriptEngineUtils scriptEngineUtils;
     private String template;
-    private String scriptMap;
-
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         Source source = new Source(previousOut);
@@ -84,10 +79,6 @@ public class GoogleAnalyticsFilter extends AbstractFilter{
     }
     public void setTemplate(String template) {
         this.template = template;
-    }
-
-    public void setScriptMap(String scriptMap) {
-        this.scriptMap = scriptMap;
     }
 
     class GoogleScriptContext extends SimpleScriptContext {

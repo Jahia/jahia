@@ -1,13 +1,13 @@
 Google Analytics module
 
 * {How it works ?}
-  two things :
+  two things:
 
-  - a filter that render the javascript.
+  - a filter that render the JavaScript.
   when Google analytics is activated and set, a filter add in each page (page template, or content template) the
-  google analytics javascript.
+  Google analytics JavaScript.
   - a binded component.
-  with a binded component you can select on wich content or content type a google analytics information will be store.
+  with a binded component you can select on which content or content type a Google analytics information will be store.
 
 * {Activate Google Analytics}
 
@@ -18,7 +18,7 @@ Google Analytics module
 
 * {How to customize}
 
-  The filter can be configured with a spring configuration file located in META-INF/spring/googleAnalytics.xml
+  The filter can be configured with a Spring configuration file located in <<<META-INF/spring/googleAnalytics.xml>>>
 
 +----------
     <bean class="org.jahia.modules.googleAnalytics.GoogleAnalyticsFilter">
@@ -28,13 +28,12 @@ Google Analytics module
         <property name="priority" value="3" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="template" value="modules/googleAnalytics/scripts/googleAnalytics.groovy"/>
-        <property name="scriptMap" value="gaMap"/>
     </bean>
 +----------
 
-  specific properties of the filter :
-  - scriptMap : name of the map that contains all contents assigned with the binded component
+  specific properties of the filter:
+  - scriptMap: name of the map that contains all contents assigned with the binded component
 
-  - template :  script that will be executed to render the javascript. the variables available in the context are :
-    - webPropertyID : the google web ID set in the website
-    - scriptMap (gaMap in the example) : a map that contains all references to the binded component meet in context
+  - template:  script that will be executed to render the JavaScript. the variables available in the context are:
+    - webPropertyID: the Google Web ID set in the website
+    - scriptMap (gaMap in the example): a map that contains all references to the binded component meet in context

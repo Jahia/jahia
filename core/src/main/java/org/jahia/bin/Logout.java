@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.registries.ServicesRegistry;
@@ -105,14 +106,15 @@ public class Logout implements Controller {
         url = url.startsWith("/cms")?url.substring(url.indexOf("/cms") + 4):url;
         URLResolver r = new URLResolver (url,request.getServerName(),request);
         boolean redirectToStart = false;
-        try {
-            RenderContext context = new RenderContext(request,response, ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(JahiaUserManagerService.GUEST_USERNAME));
-            JCRNodeWrapper n = JCRContentUtils.findDisplayableNode(r.getNode(), context);
-            redirect = request.getContextPath() + Render.getRenderServletPath() + "/" + r.getWorkspace() + "/" + r.getLocale() + n.getPath() + ".html";
-            if (r.getNode().getResolveSite() == null) {
+        if (r.getPath().startsWith("/sites/")) {
+            try {
+                RenderContext context = new RenderContext(request,response, ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(JahiaUserManagerService.GUEST_USERNAME));
+                JCRNodeWrapper n = JCRContentUtils.findDisplayableNode(r.getNode(), context);
+                redirect = request.getContextPath() + Render.getRenderServletPath() + "/" +  Constants.LIVE_WORKSPACE + "/" + r.getLocale() + n.getPath() + ".html";
+            } catch (Exception e) {
                 redirectToStart = true;
             }
-        } catch (Exception e) {
+        } else if (!r.getUrlPathInfo().equals("/administration")) {
             redirectToStart = true;
         }
         if (redirectToStart) {

@@ -888,6 +888,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 };
 
                 translator.setProperty("j:permissions", values);
+                translator.setProperty("j:privilegedAccess", true);
             }
         }
 

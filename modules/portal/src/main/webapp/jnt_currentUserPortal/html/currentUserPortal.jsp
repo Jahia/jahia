@@ -35,7 +35,7 @@
             </c:forEach>
 
             <input type="hidden" name="newNodeOutputFormat" value="html${ps}"/>
-            Create my portal : <input type="submit" name="submit">
+            <h4>Create my portal :</h4> <input class="button" type="submit" name="submit">
         </form>
     </c:if>
     <c:if test="${not empty portal}">

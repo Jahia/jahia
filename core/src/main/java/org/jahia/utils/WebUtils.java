@@ -32,7 +32,13 @@
 
 package org.jahia.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 
 /**
  * Miscellaneous request/response handling methods.
@@ -41,37 +47,60 @@ import javax.servlet.http.HttpServletResponse;
  */
 public final class WebUtils {
 
-	/**
-	 * Sets proper response headers to cache current response for the specified
-	 * number of seconds.
-	 * 
-	 * @param expiresSeconds
-	 * @param response
-	 *            current response object
-	 */
-	public static void setCacheHeaders(long expiresSeconds, HttpServletResponse response) {
-		response.setHeader("Cache-Control", "public, max-age=" + expiresSeconds);
-		response.setDateHeader("Expires", System.currentTimeMillis() + expiresSeconds * 1000L);
-	}
+    /**
+     * Loads the content of the specified servlet context resource as text.
+     * 
+     * @param path
+     *            the resource path (context relative)
+     * @return the text of the specified resource content or <code>null</code> if the corresponding resource does not exist
+     * @throws IOException
+     *             in case of a problem reading resource content
+     */
+    public static String getResourceAsString(String path) throws IOException {
+        String content = null;
+        InputStream is = null;
+        try {
+            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
+            if (is != null) {
+                content = IOUtils.toString(is);
+            }
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
 
-	/**
-	 * Sets proper response headers to prevent caching of this response.
-	 * 
-	 * @param response
-	 *            current response object
-	 */
-	public static void setNoCacheHeaders(HttpServletResponse response) {
-		response.setHeader("Cache-Control",
-		        "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");
-		response.setHeader("Pragma", "no-cache");
-		response.setDateHeader("Expires", 295075800000L);
-	}
+        return content;
+    }
 
-	/**
-	 * Initializes an instance of this class.
-	 */
-	private WebUtils() {
-		super();
-	}
+    /**
+     * Sets proper response headers to cache current response for the specified number of seconds.
+     * 
+     * @param expiresSeconds
+     * @param response
+     *            current response object
+     */
+    public static void setCacheHeaders(long expiresSeconds, HttpServletResponse response) {
+        response.setHeader("Cache-Control", "public, max-age=" + expiresSeconds);
+        response.setDateHeader("Expires", System.currentTimeMillis() + expiresSeconds * 1000L);
+    }
+
+    /**
+     * Sets proper response headers to prevent caching of this response.
+     * 
+     * @param response
+     *            current response object
+     */
+    public static void setNoCacheHeaders(HttpServletResponse response) {
+        response.setHeader("Cache-Control",
+                "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 295075800000L);
+    }
+
+    /**
+     * Initializes an instance of this class.
+     */
+    private WebUtils() {
+        super();
+    }
 
 }

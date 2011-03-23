@@ -33,9 +33,7 @@
 package org.jahia.services.render.filter;
 
 import net.htmlparser.jericho.*;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -43,6 +41,7 @@ import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.ScriptEngineUtils;
+import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -53,7 +52,6 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.SimpleScriptContext;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -84,22 +82,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     
     private static Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
     
-    private static String getTemplateContent(String path) throws IOException {
-        String content = null;
-        InputStream is = null;
-        try {
-            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
-            if (is != null) {
-                content = IOUtils.toString(is);
-            } else {
-                logger.warn("Unable to lookup template at {}", path);
-            }
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-
-        return content;
-    }
     private String ajaxResolvedTemplate;
 
     private String ajaxTemplate;
@@ -203,16 +185,22 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return out.trim();
     }
 
-    private String getAjaxResolvedTemplate() throws IOException {
+    protected String getAjaxResolvedTemplate() throws IOException {
         if (ajaxResolvedTemplate == null) {
-            ajaxResolvedTemplate = getTemplateContent(ajaxTemplate);
+            ajaxResolvedTemplate = WebUtils.getResourceAsString(ajaxTemplate);
+            if (ajaxResolvedTemplate == null) {
+                logger.warn("Unable to lookup template at {}", ajaxTemplate);
+            }
         }
         return ajaxResolvedTemplate;
     }
 
-    private String getResolvedTemplate() throws IOException {
+    protected String getResolvedTemplate() throws IOException {
         if (resolvedTemplate == null) {
-            resolvedTemplate = getTemplateContent(template);
+            resolvedTemplate = WebUtils.getResourceAsString(template);
+            if (resolvedTemplate == null) {
+                logger.warn("Unable to lookup template at {}", template);
+            }
         }
         return resolvedTemplate;
     }

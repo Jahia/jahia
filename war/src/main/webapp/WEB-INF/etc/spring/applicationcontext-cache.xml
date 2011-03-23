@@ -38,17 +38,17 @@ when we flush this entry we will flush the whole cache
 		</property>
     </bean>
 
-	<bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
-        <property name="cacheProvider" ref="ehCacheProvider"/>
-        <!-- Time to wait before going to render generation if someone is already asking for the same key put 0 for waiting forever-->
-        <property name="blockingTimeout" value="30000"/>
-        <property name="keyGenerator">
-        	<bean class="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator">
+    <bean id="cacheKeyGenerator" class="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator">
                 <property name="groupManagerService" ref="JahiaGroupManagerService"/>
                 <property name="cacheProvider" ref="ehCacheProvider"/>
                 <property name="template" ref="jcrTemplate"/>
         	</bean>
-        </property>
+
+	<bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
+        <property name="cacheProvider" ref="ehCacheProvider"/>
+        <!-- Time to wait before going to render generation if someone is already asking for the same key put 0 for waiting forever-->
+        <property name="blockingTimeout" value="30000"/>
+        <property name="keyGenerator" ref="cacheKeyGenerator"/>
 	</bean>
 
     <!--<bean id="cacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">

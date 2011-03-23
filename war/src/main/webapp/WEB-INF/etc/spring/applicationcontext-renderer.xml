@@ -24,6 +24,8 @@
 				</bean>
 			</list>
 		</property>
+        <property name="cacheKeyGenerator" ref="cacheKeyGenerator"/>
+        <property name="cacheProvider" ref="ehCacheProvider"/>
 	</bean>
 
 	<bean

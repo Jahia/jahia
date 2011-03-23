@@ -58,7 +58,7 @@
 
 .bodywrapper .sitemap li {
 	list-style: none;
-	float:left;
+/*	float:left;*/
 	margin-top: 20px;
 }
 .bodywrapper .sitemap li a {

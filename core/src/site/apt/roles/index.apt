@@ -23,3 +23,7 @@ Jahia Authorization system
   * Privileged users
 
     Overview of the {{{./privileged.html} privileged users}}.
+    
+  * Using rules
+
+    Short {{{./rules.html} summary of business rules}}, provided for role/permission management     

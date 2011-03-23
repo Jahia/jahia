@@ -73,7 +73,7 @@ public class FormFieldCreator {
      * @return
      */
     public static Field<?> createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
-                                    List<GWTJahiaValueDisplayBean> initializerValues) {
+                                       List<GWTJahiaValueDisplayBean> initializerValues) {
         Field<?> field = null;
         if (definition.isHidden()) {
             return null;
@@ -181,11 +181,7 @@ public class FormFieldCreator {
                         combo.setTypeAhead(true);
                         combo.setTriggerAction(TriggerAction.ALL);
                         combo.setForceSelection(true);
-                        if (propDefinition.getSelectorOptions() != null &&
-                                (propDefinition.getSelectorOptions().containsKey("image") ||
-                                        propDefinition.getSelectorOptions().containsKey("moduleImage"))) {
-                            combo.setTemplate(getComboTemplate());
-                        }
+                        combo.setTemplate(getComboTemplate());
                         field = combo;
                     }
 
@@ -273,19 +269,19 @@ public class FormFieldCreator {
                         String regex = propDefinition.getValueConstraints().get(0);
                         ((TextField<?>) field).setRegex(regex);
                         ((TextField<?>) field).getMessages().setRegexText(
-                            propDefinition.getConstraintErrorMessage() != null
-                            && propDefinition.getConstraintErrorMessage().length() > 0 ? 
-                                    propDefinition.getConstraintErrorMessage(): 
-                                    Messages.getWithArgs("failure.invalid.regexp.constraint.label",
-                                        "The field does not match the following regular expression: {0}",
-                                        new Object[] { regex }));
+                                propDefinition.getConstraintErrorMessage() != null
+                                        && propDefinition.getConstraintErrorMessage().length() > 0 ?
+                                        propDefinition.getConstraintErrorMessage():
+                                        Messages.getWithArgs("failure.invalid.regexp.constraint.label",
+                                                "The field does not match the following regular expression: {0}",
+                                                new Object[] { regex }));
 
                     }
                     break;
-                    
+
                 case GWTJahiaNodePropertyType.LONG:
-                case GWTJahiaNodePropertyType.DOUBLE: 
-                case GWTJahiaNodePropertyType.DECIMAL:                    
+                case GWTJahiaNodePropertyType.DOUBLE:
+                case GWTJahiaNodePropertyType.DECIMAL:
                     if (propDefinition.getMaxValue() != null) {
                         ((NumberField) field).setMaxValue(Double.parseDouble(propDefinition.getMaxValue()));
                     }
@@ -293,7 +289,7 @@ public class FormFieldCreator {
                         ((NumberField) field).setMinValue(Double.parseDouble(propDefinition.getMinValue()));
                     }
                     break;
-                    
+
                 case GWTJahiaNodePropertyType.DATE:
                     if (propDefinition.getMaxValue() != null) {
                         ((DateField) field).setMaxValue(new Date(Long.parseLong(propDefinition.getMaxValue())));
@@ -428,12 +424,16 @@ public class FormFieldCreator {
 
 
     private static native String getComboTemplate()  /*-{
-    return  [
-    '<tpl for=".">',
-    '<div class="x-combo-list-item"><img src="{image}"/> {display}</div>',
-    '</tpl>'
-    ].join("");
-  }-*/;
+        return  [
+            '<tpl for=".">',
+            '<div class="x-combo-list-item">',
+            '<tpl if="image != &quot;&quot;">',
+                '<img src="{image}"/> ',
+            '</tpl>',
+            '{display}</div>',
+            '</tpl>'
+        ].join("");
+    }-*/;
 
     private static class CustomDualListField<D extends ModelData> extends DualListField<D> {
         private List<D> originalValue = new ArrayList<D>();

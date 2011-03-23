@@ -33,11 +33,14 @@
 package org.jahia.services.render;
 
 import org.apache.commons.io.IOUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.templates.TemplateUtils;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.util.Properties;
 import java.util.Map;
 import java.util.HashMap;
@@ -60,6 +63,7 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
     private JahiaTemplatesPackage ownerPackage;
     private String displayName;    
     private Properties properties;
+    public static String THUMBNAIL = "image";
 
     private static Map<String,Properties> propCache = new HashMap<String, Properties>();
     
@@ -78,7 +82,7 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
         }
 
         String propName = StringUtils.substringBeforeLast(path, "." + fileExtension) + ".properties";
-
+        String thumbnail = StringUtils.substringBeforeLast(path, "." + fileExtension) + ".png";
         if (!propCache.containsKey(propName)) {
             properties = new Properties();            
             propCache.put(propName, properties);
@@ -91,6 +95,12 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
                 } finally {
                     IOUtils.closeQuietly(is);
                 }
+            }
+            // add thumbnail to properties
+
+            if (TemplateUtils.isResourceAvailable(thumbnail)) {
+                properties.put(THUMBNAIL, Jahia.getContextPath() + thumbnail);
+
             }
         } else {
             properties = propCache.get(propName);

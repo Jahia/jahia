@@ -192,8 +192,6 @@
           class="org.jahia.services.content.nodetypes.initializers.CountryChoiceListInitializerAndRendererImpl"/>
     <bean id="countryFlagInitializer"
           class="org.jahia.services.content.nodetypes.initializers.CountryFlagChoiceListInitializerAndRendererImpl"/>
-    <bean id="imageInitializer"
-          class="org.jahia.services.content.nodetypes.initializers.ImageChoiceListInitializerImpl"/>
     <bean id="templatesInitializer"
           class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl"/>
     <bean id="templatesNodeInitializer"
@@ -249,7 +247,6 @@
             <map>
                 <entry key="resourceBundle" value-ref="rbInitializer"/>
                 <entry key="country" value-ref="countryInitializerRenderer"/>
-                <entry key="image" value-ref="imageInitializer"/>
                 <entry key="templates" value-ref="templatesInitializer"/>
                 <entry key="templatesNode" value-ref="templatesNodeInitializer"/>
 

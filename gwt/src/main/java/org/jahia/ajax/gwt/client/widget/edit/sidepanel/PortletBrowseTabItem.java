@@ -212,7 +212,8 @@ class PortletBrowseTabItem extends BrowseTabItem {
         '</div>',
         '</div>',
         '<div style="padding-left: 10px; padding-top: 10px; clear: left">{description}</div></div></tpl>',
-        '<div class="x-clear"></div>'].join("");
+        '<div class="x-clear"></div>','</tpl>'
+    ].join("");
     }-*/;
 
 

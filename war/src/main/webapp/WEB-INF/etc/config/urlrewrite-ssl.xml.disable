@@ -4,7 +4,7 @@
 
 <urlrewrite>
 
-    <outbound-rule enabled="false">
+    <outbound-rule enabled="true">
         <name>Use HTTPS for login</name>
         <from>^(/[\p{Alnum}\-_]*)?/cms/login(.*)$</from>
         <to last="true">https://%{server-name}$1/cms/login$2</to>

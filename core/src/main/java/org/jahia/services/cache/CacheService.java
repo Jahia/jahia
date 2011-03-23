@@ -47,7 +47,7 @@ import java.util.Map;
 public abstract class CacheService extends JahiaService {
 
     /** 
-     * <p>Returns the requested cache and creates it if does not exist and <code>forceCreation</code>  is set to <code>true</code>.</p>
+     * <p>Returns the requested cache or creates it if it does not exist yet and <code>forceCreation</code> is set to <code>true</code>.</p>
      * <p>When the name is <code>null</code> the cache creation is canceled and a
      * <code>null</code> instance will be returned.</p>
      *

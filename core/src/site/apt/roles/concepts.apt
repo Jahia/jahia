@@ -21,7 +21,7 @@ Jahia Authorization system concepts
 
     In order to handle distinct permission per language, the <<<jcr:modifyProperties>>> is split in multiple sub-permissions, one
     for every language. The <<<jcr:modifyProperties_default>>> will allow to change any property, but the
-    <<<jcr:modifyProperties_default_en>>> will allow only modification of internationalized properties in english.
+    <<<jcr:modifyProperties_default_en>>> will allow only modification of internationalized properties in English.
 
 ** Applicative permissions
 

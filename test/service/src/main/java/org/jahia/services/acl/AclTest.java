@@ -135,7 +135,7 @@ public class AclTest {
 
     @Test
     public void testDefaultReadRight() throws Exception {
-        assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(HOMEPATH, "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(HOMEPATH, "jcr:read"))));
     }
 
     @Test
@@ -174,7 +174,7 @@ public class AclTest {
 
         content11.grantRoles("u:user1", Collections.singleton("owner"));
         session.save();
-        assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(home.getPath(), "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(home.getPath(), "jcr:read"))));
         assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content1.getPath(), "jcr:read"))));
         assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content11.getPath(), "jcr:read"))));
         assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content12.getPath(), "jcr:read"))));

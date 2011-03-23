@@ -60,11 +60,7 @@
   <!--stop bottomheader-->
   <div id="content">
     <!--start content-->
-    <div class="container container_16">
-      <div class="grid_16">
         <template:area path="pagecontent"/>
-      </div>
-    </div>
     <div class="clear"></div>
   </div>
   <!--stop content-->

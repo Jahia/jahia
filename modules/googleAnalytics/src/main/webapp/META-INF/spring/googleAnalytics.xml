@@ -8,6 +8,6 @@
         <property name="applyOnModes" value="live" />
         <property name="priority" value="3" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
-        <property name="template" value="modules/googleAnalytics/scripts/googleAnalytics.groovy"/>
+        <property name="template" value="modules/googleAnalytics/WEB-INF/scripts/googleAnalytics.groovy"/>
     </bean>
 </beans>

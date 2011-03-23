@@ -102,6 +102,10 @@ public class LinkerSelectionContext {
                         singleSelection = selectedNodes.get(0);
                     } else if (selectedNodes.size() == 0) {
                         singleSelection = mainNode;
+                        if (mainNode != null) {
+                            multipleSelection = new ArrayList<GWTJahiaNode>();                            
+                            multipleSelection.add(mainNode);
+                        }                        
                     } else {
                         singleSelection = null;
                     }

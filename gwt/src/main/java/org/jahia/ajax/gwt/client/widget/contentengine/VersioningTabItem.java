@@ -122,12 +122,12 @@ public class VersioningTabItem extends EditEngineTabItem {
                     column = new ColumnConfig();
                     column.setSortable(false);
                     column.setHeader("Action");
-                    column.setWidth(100);
+                    column.setWidth(200);
                     column.setRenderer(new GridCellRenderer() {
                         public Object render(ModelData model, String property, ColumnData config, int rowIndex,
                                              int colIndex, ListStore listStore, Grid grid) {
                             ButtonBar buttonBar = new ButtonBar();
-                            Button button = new Button(Messages.get("label.compare", "Compare"));
+                            Button button = new Button(Messages.get("label.compare.with.staging.engine", "Compare With Staging"));
                             final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) model;
                             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override

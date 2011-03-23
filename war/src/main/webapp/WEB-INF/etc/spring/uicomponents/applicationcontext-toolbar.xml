@@ -164,7 +164,7 @@
 
     <!-- show compare mode-->
     <bean id="Toolbar.Item.ShowCompareEngine" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="titleKey" value="label.compare"/>
+        <property name="titleKey" value="label.compare.with.published.engine"/>
         <property name="icon" value="showCompareEngine"/>
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowCompareEngine"/>
@@ -177,6 +177,15 @@
         <property name="icon" value="showCompareEngine"/>
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowVersionEngine"/>
+        </property>
+    </bean>
+
+    <!-- show version mode-->
+    <bean id="Toolbar.Item.ShowConsultPreviousVersionEngine" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="titleKey" value="label.version.previous"/>
+        <property name="icon" value="showCompareEngine"/>
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowConsultPreviousVersionEngine"/>
         </property>
     </bean>
 

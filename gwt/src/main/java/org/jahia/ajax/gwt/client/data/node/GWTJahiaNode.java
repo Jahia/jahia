@@ -565,4 +565,17 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public void setWCAGComplianceCheckEnabled(boolean wcagComplianceCheckEnabled) {
         wcagCompliance = wcagComplianceCheckEnabled;
     }
+
+    public boolean isNodeType(String nodeType) {
+        return getNodeTypes().contains(nodeType) || getInheritedNodeTypes().contains(nodeType);
+    }
+
+    public boolean isNodeType(List<String> nodeTypes) {
+        for (String nodeType : nodeTypes) {
+            if(isNodeType(nodeType)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

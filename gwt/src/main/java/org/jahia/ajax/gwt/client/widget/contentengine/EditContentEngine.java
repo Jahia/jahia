@@ -105,8 +105,8 @@ public class EditContentEngine extends AbstractContentEngine {
         for (GWTEngineTab tabConfig : config) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
             if (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), node)) {
-                if ((tabItem.getHideForTypes().isEmpty() || !tabItem.getHideForTypes().contains(node.getNodeTypes().get(0))) &&
-                        (tabItem.getShowForTypes().isEmpty() || tabItem.getShowForTypes().contains(node.getNodeTypes().get(0)))) {
+                if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
+                        (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))) {
                     tabs.add(tabItem.create(tabConfig, this));
                 }
             }

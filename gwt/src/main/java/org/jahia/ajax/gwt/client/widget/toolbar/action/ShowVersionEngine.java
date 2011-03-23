@@ -58,7 +58,7 @@ public class ShowVersionEngine extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         if (lh.getSingleSelection() != null) {
             String locale = JahiaGWTParameters.getUILanguage();
-            new CompareEngine(lh.getSingleSelection(), locale, linker,true).show();
+            new CompareEngine(lh.getSingleSelection(), locale, linker,true,true).show();
         }
 
     }

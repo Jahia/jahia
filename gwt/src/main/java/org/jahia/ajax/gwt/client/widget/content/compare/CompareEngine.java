@@ -81,18 +81,18 @@ public class CompareEngine extends Window {
      * @param linker the edit linker for refresh purpose
      * @param b
      */
-    public CompareEngine(GWTJahiaNode node, String locale, Linker linker, boolean displayVersionSelector) {
+    public CompareEngine(GWTJahiaNode node, String locale, Linker linker, boolean displayVersionSelector, boolean displayTwoPanels) {
         this.linker = linker;
         this.node = node;
         this.locale = locale;
-        init(displayVersionSelector);
+        init(displayVersionSelector, displayTwoPanels);
     }
 
     public CompareEngine(String uuid, String locale, boolean displayVersionSelector, String path) {
         this.locale = locale;
         this.uuid = uuid;
         this.path = path;
-        init(displayVersionSelector);
+        init(displayVersionSelector, true);
     }
 
     public CompareEngine(String uuid, String locale, boolean displayVersionSelector, String path, Date versionDate,
@@ -104,10 +104,10 @@ public class CompareEngine extends Window {
         this.engine = engine;
         this.workspace = workspace;
         this.versionLabel = versionLabel;
-        init(displayVersionSelector);
+        init(displayVersionSelector, true);
     }
 
-    protected void init(boolean displayVersionSelector) {
+    protected void init(boolean displayVersionSelector, boolean displayTwoPanels) {
         setLayout(new BorderLayout());
         setBodyBorder(false);
         setSize(1300, 750);
@@ -135,11 +135,11 @@ public class CompareEngine extends Window {
         } else {
             leftPanel = new VersionViewer(uuid, locale, workspace!=null?workspace:"live", false, displayVersionSelector, versionDate, this, versionLabel);
         }
-        leftPanel.setSize(650, 750);
-        BorderLayoutData liveLayoutData = new BorderLayoutData(Style.LayoutRegion.WEST, 650);
+        leftPanel.setSize(displayTwoPanels?650:1300, 750);
+        BorderLayoutData liveLayoutData = new BorderLayoutData(displayTwoPanels?Style.LayoutRegion.WEST:Style.LayoutRegion.CENTER, displayTwoPanels?650:1300);
         liveLayoutData.setCollapsible(true);
         add(leftPanel, liveLayoutData);
-
+        if(displayTwoPanels) {
         // staging version
         VersionViewer rightPanel;
         if (node != null) {
@@ -161,7 +161,7 @@ public class CompareEngine extends Window {
         rightPanel.setSize(650, 750);
         BorderLayoutData stagingLayoutData = new BorderLayoutData(Style.LayoutRegion.CENTER, 650);
         add(rightPanel, stagingLayoutData);
-
+        }
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);
 

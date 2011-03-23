@@ -73,11 +73,11 @@
 </c:choose>
 <div class="container_16">
 <c:if test="${editableModule}">
-    <div class="grid_16 alpha omega">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
+    <div class="grid_16">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
 </c:if>
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <!--start grid_${col.value}-->
-    <div class='grid_${col.value} <c:if test="${count.first}"> alpha</c:if> <c:if test="${count.last}"> omega</c:if>'>
+    <div class='grid_${col.value}'>
         <template:area path="${currentNode.name}-${col.key}"/>
         <div class='clear'></div>
     </div>

@@ -529,8 +529,8 @@ body {
 }
 .bodywrapper .button:hover, .bodywrapper button:hover {
 	cursor: pointer;
-	background:#ccc url(img/bg-button-on.png) repeat-x top left;
-	color:#0099ff;
+	color:#fff;
+	background-color:#0099ff;
 }
 
 /******************************************************************************

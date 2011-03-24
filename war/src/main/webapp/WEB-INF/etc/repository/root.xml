@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <content jcr:primaryType="jnt:systemFolder"
          jcr:mixinTypes="jmix:accessControlled jmix:worklfowRulesable"
          xmlns:jcr="http://www.jcp.org/jcr/1.0"

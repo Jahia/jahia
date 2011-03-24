@@ -55,15 +55,13 @@ function requestConnection(userURL, toUserKey) {
 }
 
 
-function submitStatusUpdate(base, modulePath, userPath, userId, updateText) {
+function submitStatusUpdate(base, modulePath, userPath, updateText) {
     $.ajax({
-        url: base + userPath + '/activities/*',
+        url: base + userPath + '.addActivity.do',
         type : 'post',
         dataType : 'json',
         data : {
-	    	nodeType: 'jnt:socialActivity',
-	    	'j:message': updateText,
-	    	'j:from': userId
+	    	'text': updateText
     	},
         success : function (data) {
             loadActivities(base, modulePath, userPath);

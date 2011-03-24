@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.Action;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
@@ -54,17 +53,7 @@ import org.json.JSONObject;
  *         Date: Jun 22, 2010
  *         Time: 9:53:53 AM
  */
-public class SendMessageAction extends Action {
-
-    private SocialService socialService;
-
-    public SocialService getSocialService() {
-        return socialService;
-    }
-
-    public void setSocialService(SocialService socialService) {
-        this.socialService = socialService;
-    }
+public class SendMessageAction extends BaseSocialAction {
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 

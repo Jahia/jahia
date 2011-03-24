@@ -31,32 +31,18 @@
  */
 package org.jahia.modules.social;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.jahia.bin.ActionResult;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLResolver;
+import org.jahia.bin.Action;
 
 /**
- * Action to request the social connection between users.
+ * Base class for social actions.
  * 
  * @author Sergiy Shyrkov
  */
-public class RequestSocialConnectionAction extends BaseSocialAction {
+public abstract class BaseSocialAction extends Action {
 
-    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+    protected SocialService socialService;
 
-        final String toUser = req.getParameter("to");
-        final String connectionType = req.getParameter("connectionType");
-
-        socialService.requestSocialConnection(renderContext.getUser().getUserKey(), toUser, connectionType);
-
-        return ActionResult.OK_JSON;
+    public void setSocialService(SocialService socialService) {
+        this.socialService = socialService;
     }
 }

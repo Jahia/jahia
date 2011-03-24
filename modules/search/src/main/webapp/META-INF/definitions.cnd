@@ -2,14 +2,14 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:simpleSearchForm] > jnt:content, mix:title, jmix_queryContent
+[jnt:simpleSearchForm] > jnt:content, mix:title, jmix:queryContent
 - result (weakreference) < jnt:page
 
-[jnt:advancedSearchForm] > jnt:content, mix:title, jmix_queryContent
+[jnt:advancedSearchForm] > jnt:content, mix:title, jmix:queryContent
 
-[jnt:searchResults] > jnt:content, mix:title, jmix_queryContent, jmix:list
+[jnt:searchResults] > jnt:content, mix:title, jmix:queryContent, jmix:list
  - autoSuggest (boolean)=true indexed=no
  - autoSuggestMinimumHitCount (long)=2 indexed=no
  - autoSuggestHitCount (long)=2 indexed=no
 
-[jnt:openSearchDescriptor] > jnt:content, mix:title, jmix_queryContent
+[jnt:openSearchDescriptor] > jnt:content, mix:title, jmix:queryContent

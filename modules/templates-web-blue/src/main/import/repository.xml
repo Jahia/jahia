@@ -48,7 +48,7 @@
             </content-col1>
           </simple>
           <pagecontent jcr:primaryType="jnt:contentList">
-            <header customColumn="6,10" divID="header" jcr:primaryType="jnt:customRow" colNames="header-col1"/>
+            <header customColumn="6,10" divID="header" jcr:primaryType="jnt:customRow" colNames="header-col1,header-col2"/>
             <headerBottom customColumn="16" divID="headerBottom" jcr:primaryType="jnt:customRow" colNames="headerBottom-colContent"/>
             <illustration customColumn="16" divID="illustration" jcr:primaryType="jnt:customRow" colNames="illustration-colContent"/>
             <content-1 j:id="content" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">

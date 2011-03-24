@@ -18,6 +18,11 @@
     <c:set var="nbCols" value="${nbCols + col}"/>
     <c:set var="nbAreas" value="${nbAreas + 1}"/>
 </c:forTokens>
+<c:set var="nbNames" value="0"/>
+<c:forTokens items="${currentNode.properties.colNames.string}" delims="," varStatus="vs">
+
+    <c:set var="nbNames" value="${nbNames + 1}"/>
+</c:forTokens>
 
 <c:if test="${!empty currentNode.properties.divID}"> <div id="${currentNode.properties.divID.string}"></c:if>
 <div class="container_16">
@@ -33,11 +38,6 @@
         <div class='clear'></div>
     </c:if>
     <c:set var="colNames" value="${fn:split(currentNode.properties.colNames.string, ',')}"/>
-    <c:set var="nbNames" value="0"/>
-    <c:forTokens items="${currentNode.properties.colNames.string}" delims="," varStatus="vs">
-
-        <c:set var="nbNames" value="${nbNames + 1}"/>
-    </c:forTokens>
 
     <c:forEach items="${colMap}" var="col" varStatus="count">
         <c:set var="column" value="${col.value}"/>

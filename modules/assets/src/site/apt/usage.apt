@@ -98,8 +98,4 @@ or
   
 * Including declared dependencies
 
-  {{{Declaring} Declared}} dependencies are included automatically by the default
-  asset template  <<</modules/default/nt_base/html/base.html.statics.assets.jsp>>>.
-  
-  The <<<<template:includeResources/>>>> tag is used to perform the inclusion of all
-  assets declared in the templates into the HTML document's <<<head>>> section.
+  {{{Declaring} Declared}} dependencies are included automatically by the Static Assets Filter

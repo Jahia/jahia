@@ -31,8 +31,6 @@ Asset Mapping
 
   The key of the map entry is the original resolved asset. Under resolved, we mean the full context
   related path of the resource (context path is not included).
-  The value of the map entry is the target resource, i.e. the replacement that will be included
-  by the <<<<template:includeResources/>>>> tag instead of the original resource.
 
   Next sections show several common use cases for using mappings.
 

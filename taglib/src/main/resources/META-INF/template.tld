@@ -458,11 +458,6 @@
         <tag-class>org.jahia.taglibs.template.CaptchaTag</tag-class>
         <body-content>JSP</body-content>
     </tag>
-
-    <tag-file>
-    	<name>includeResources</name>
-    	<path>/META-INF/tags/includeResources.tag</path>
-    </tag-file>
     <tag-file>
     	<name>displayPagination</name>
     	<path>/META-INF/tags/displayPagination.tag</path>

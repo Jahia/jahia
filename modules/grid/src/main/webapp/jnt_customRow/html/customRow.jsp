@@ -36,7 +36,7 @@
     <c:set var="nbNames" value="0"/>
     <c:forTokens items="${currentNode.properties.colNames.string}" delims="," varStatus="vs">
 
-        <c:set var="nbNames" value="${nbNames + 1}"/>  ${nbNames}
+        <c:set var="nbNames" value="${nbNames + 1}"/>
     </c:forTokens>
 
     <c:forEach items="${colMap}" var="col" varStatus="count">

@@ -329,7 +329,7 @@ public class ManageSites extends AbstractAdministrationModule {
         Boolean defaultSite = (Boolean) session.getAttribute(CLASS_NAME + "defaultSite");
         if (defaultSite == null) {
             try {
-                if (ServicesRegistry.getInstance().getJahiaSitesService().getNbSites() > 0) {
+                if (ServicesRegistry.getInstance().getJahiaSitesService().getNbSites() > 1) {
                     defaultSite = Boolean.FALSE;
                 } else {
                     defaultSite = Boolean.TRUE;

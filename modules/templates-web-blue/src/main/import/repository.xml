@@ -49,8 +49,8 @@
           </simple>
           <pagecontent jcr:primaryType="jnt:contentList">
             <header customColumn="6,10" divID="header" jcr:primaryType="jnt:customRow" />
-            <headerBottom customColumn="16" divID="headerBottom" jcr:primaryType="jnt:customRow" principalColumn="1" />
-            <illustration customColumn="16" divID="illustration" jcr:primaryType="jnt:customRow" principalColumn="1" />
+            <headerBottom customColumn="16" divID="headerBottom" jcr:primaryType="jnt:customRow"/>
+            <illustration customColumn="16" divID="illustration" jcr:primaryType="jnt:customRow"/>
             <content-1 j:id="content" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="content" />
               <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area" />

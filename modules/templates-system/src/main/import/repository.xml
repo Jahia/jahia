@@ -16,12 +16,12 @@
             </logo-jahia-xcm.png>
           </header-col2>
           <page jcr:primaryType="jnt:contentList">
-            <header customColumn="4, 12 " divID="header" jcr:primaryType="jnt:customRow" principalColumn="2" />
+            <header customColumn="4, 12 " divID="header" jcr:primaryType="jnt:customRow"/>
             <content j:id="content" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
               <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area" />
             </content>
-            <footer customColumn="16" divID="footer" jcr:primaryType="jnt:customRow" principalColumn="1" />
+            <footer customColumn="16" divID="footer" jcr:primaryType="jnt:customRow"/>
           </page>
           <content-colContent jcr:primaryType="jnt:contentList" />
           <footer-colContent jcr:primaryType="jnt:contentList">

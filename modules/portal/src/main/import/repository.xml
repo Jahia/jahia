@@ -52,7 +52,7 @@
         <contents jcr:primaryType="jnt:contentFolder" />
         <user-portal j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="50" j:requiredPermissions="/permissions/repository-permissions/jcr:all_live/jcr:write_live" jcr:primaryType="jnt:contentTemplate">
           <pagecontent jcr:primaryType="jnt:contentList">
-            <custom-rows-960gs customColumn="16" divID="content" jcr:primaryType="jnt:customRow" principalColumn="1" />
+            <custom-rows-960gs customColumn="16" divID="content" jcr:primaryType="jnt:customRow"/>
           </pagecontent>
           <custom-rows-960gs-colContent jcr:primaryType="jnt:contentList">
             <back-to-my-profile jcr:primaryType="jnt:componentLink" targetTemplate="user-content">

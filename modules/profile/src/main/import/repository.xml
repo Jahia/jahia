@@ -27,7 +27,7 @@
                 <contents jcr:primaryType="jnt:contentFolder" />
                 <user-base j:hiddenTemplate="false" jcr:primaryType="jnt:template">
                     <pagecontent jcr:primaryType="jnt:contentList">
-                        <user-base-layout customColumn="3, 10, 3" jcr:primaryType="jnt:customRow" principalColumn="2" />
+                        <user-base-layout customColumn="3, 10, 3" jcr:primaryType="jnt:customRow"/>
                     </pagecontent>
                     <row-col2 jcr:primaryType="jnt:contentList" />
                     <user-edit-details j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="15" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">

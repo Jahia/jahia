@@ -329,7 +329,7 @@
 [jmix:renderable] mixin
  extends = jnt:content, jnt:query
  itemtype = layout
- - j:view (string, choicelist[templates,resourceBundle,image]) nofulltext mandatory
+ - j:view (string, choicelist[templates,resourceBundle]) nofulltext mandatory
 
 [jmix:hasTemplateNode] mixin
  itemtype = layout
@@ -338,7 +338,7 @@
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden
- - j:view (string, choicelist[templates,resourceBundle,image]) nofulltext
+ - j:view (string, choicelist[templates,resourceBundle]) nofulltext
  + * (jnt:template)
  + * (jnt:content)
 
@@ -388,20 +388,20 @@
  - j:mainResourceView (string, choicelist[templates=mainresource,resourceBundle,image]) nofulltext
 
 [jmix:renderableUser] mixin
- - j:userView (string, choicelist[templates=jnt:user,resourceBundle,image]) nofulltext
+ - j:userView (string, choicelist[templates=jnt:user,resourceBundle]) nofulltext
 
 [jmix:renderableList] mixin
  itemtype = layout
- - j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,image,dependentProperties='j:allowedTypes']) nofulltext
+ - j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,dependentProperties='j:allowedTypes']) nofulltext
 
 [jmix:renderableArea] > jmix:renderableList mixin
  - j:areaView (string, choicelist[templates=jnt:contentList,resourceBundle,image]) nofulltext
- - j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,image,dependentProperties='j:allowedTypes']) nofulltext
+ - j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,dependentProperties='j:allowedTypes']) nofulltext
 
 [jmix:renderableReference] mixin
  extends = jmix:nodeReference
  itemtype = layout
- - j:referenceView (string, choicelist[templates=reference,resourceBundle,image,dependentProperties='j:node']) nofulltext
+ - j:referenceView (string, choicelist[templates=reference,resourceBundle,dependentProperties='j:node']) nofulltext
 
 [jmix:theme] mixin
  extends = jnt:page, jnt:template

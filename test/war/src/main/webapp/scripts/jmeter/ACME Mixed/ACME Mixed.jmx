@@ -792,6 +792,18 @@
           <stringProp name="shareMode">Groupe d&apos;unités courant</stringProp>
         </CSVDataSet>
         <hashTree/>
+        <AuthManager guiclass="AuthPanel" testclass="AuthManager" testname="Jahia HTTP Authorization Manager" enabled="true">
+          <collectionProp name="AuthManager.auth_list">
+            <elementProp name="" elementType="Authorization">
+              <stringProp name="Authorization.url">http://${serverHost}:${serverPort}${CONTEXT}/cms/render</stringProp>
+              <stringProp name="Authorization.username">jahia</stringProp>
+              <stringProp name="Authorization.password">password</stringProp>
+              <stringProp name="Authorization.domain"></stringProp>
+              <stringProp name="Authorization.realm"></stringProp>
+            </elementProp>
+          </collectionProp>
+        </AuthManager>
+        <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Gestionnaire de cookies HTTP" enabled="true">
           <collectionProp name="CookieManager.cookies"/>
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
@@ -902,18 +914,6 @@
             <boolProp name="IfController.evaluateAll">false</boolProp>
           </IfController>
           <hashTree>
-            <AuthManager guiclass="AuthPanel" testclass="AuthManager" testname="HTTP Authorization Manager" enabled="true">
-              <collectionProp name="AuthManager.auth_list">
-                <elementProp name="" elementType="Authorization">
-                  <stringProp name="Authorization.url">http://localhost:8080${CONTEXT}/cms/render</stringProp>
-                  <stringProp name="Authorization.username">jahia</stringProp>
-                  <stringProp name="Authorization.password">password</stringProp>
-                  <stringProp name="Authorization.domain"></stringProp>
-                  <stringProp name="Authorization.realm"></stringProp>
-                </elementProp>
-              </collectionProp>
-            </AuthManager>
-            <hashTree/>
             <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Get raw output of simple template" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
@@ -927,7 +927,7 @@
               <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/${SITE_KEY}/templates/base/simple.raw</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
-              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
               <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
               <boolProp name="HTTPSampler.monitor">false</boolProp>
@@ -1073,6 +1073,13 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">withSubTree</stringProp>
                   </elementProp>
+                  <elementProp name="immediate" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">false</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    <stringProp name="Argument.name">immediate</stringProp>
+                  </elementProp>
                 </collectionProp>
               </elementProp>
               <stringProp name="HTTPSampler.domain"></stringProp>
@@ -1151,18 +1158,6 @@
               <boolProp name="IfController.evaluateAll">false</boolProp>
             </IfController>
             <hashTree>
-              <AuthManager guiclass="AuthPanel" testclass="AuthManager" testname="HTTP Authorization Manager" enabled="true">
-                <collectionProp name="AuthManager.auth_list">
-                  <elementProp name="" elementType="Authorization">
-                    <stringProp name="Authorization.url">http://localhost:8080${CONTEXT}/cms/render</stringProp>
-                    <stringProp name="Authorization.username">jahia</stringProp>
-                    <stringProp name="Authorization.password">password</stringProp>
-                    <stringProp name="Authorization.domain"></stringProp>
-                    <stringProp name="Authorization.realm"></stringProp>
-                  </elementProp>
-                </collectionProp>
-              </AuthManager>
-              <hashTree/>
               <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Get raw output of simple template" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                   <collectionProp name="Arguments.arguments"/>
@@ -1322,6 +1317,13 @@
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       <stringProp name="Argument.name">withSubTree</stringProp>
                     </elementProp>
+                    <elementProp name="immediate" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">false</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">immediate</stringProp>
+                    </elementProp>
                   </collectionProp>
                 </elementProp>
                 <stringProp name="HTTPSampler.domain"></stringProp>
@@ -1395,18 +1397,6 @@
                 <boolProp name="IfController.evaluateAll">false</boolProp>
               </IfController>
               <hashTree>
-                <AuthManager guiclass="AuthPanel" testclass="AuthManager" testname="HTTP Authorization Manager" enabled="true">
-                  <collectionProp name="AuthManager.auth_list">
-                    <elementProp name="" elementType="Authorization">
-                      <stringProp name="Authorization.url">http://localhost:8080${CONTEXT}/cms/render</stringProp>
-                      <stringProp name="Authorization.username">jahia</stringProp>
-                      <stringProp name="Authorization.password">password</stringProp>
-                      <stringProp name="Authorization.domain"></stringProp>
-                      <stringProp name="Authorization.realm"></stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </AuthManager>
-                <hashTree/>
                 <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Get raw output of simple template" enabled="true">
                   <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                     <collectionProp name="Arguments.arguments"/>
@@ -1566,6 +1556,13 @@
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                         <stringProp name="Argument.name">withSubTree</stringProp>
                       </elementProp>
+                      <elementProp name="immediate" elementType="HTTPArgument">
+                        <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                        <stringProp name="Argument.value">false</stringProp>
+                        <stringProp name="Argument.metadata">=</stringProp>
+                        <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                        <stringProp name="Argument.name">immediate</stringProp>
+                      </elementProp>
                     </collectionProp>
                   </elementProp>
                   <stringProp name="HTTPSampler.domain"></stringProp>
@@ -1639,18 +1636,6 @@
                   <boolProp name="IfController.evaluateAll">false</boolProp>
                 </IfController>
                 <hashTree>
-                  <AuthManager guiclass="AuthPanel" testclass="AuthManager" testname="HTTP Authorization Manager" enabled="true">
-                    <collectionProp name="AuthManager.auth_list">
-                      <elementProp name="" elementType="Authorization">
-                        <stringProp name="Authorization.url">http://localhost:8080${CONTEXT}/cms/render</stringProp>
-                        <stringProp name="Authorization.username">jahia</stringProp>
-                        <stringProp name="Authorization.password">password</stringProp>
-                        <stringProp name="Authorization.domain"></stringProp>
-                        <stringProp name="Authorization.realm"></stringProp>
-                      </elementProp>
-                    </collectionProp>
-                  </AuthManager>
-                  <hashTree/>
                   <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Get raw output of simple template" enabled="true">
                     <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                       <collectionProp name="Arguments.arguments"/>
@@ -1809,6 +1794,13 @@
                           <stringProp name="Argument.metadata">=</stringProp>
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
                           <stringProp name="Argument.name">withSubTree</stringProp>
+                        </elementProp>
+                        <elementProp name="immediate" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                          <stringProp name="Argument.value">false</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">immediate</stringProp>
                         </elementProp>
                       </collectionProp>
                     </elementProp>

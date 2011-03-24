@@ -201,6 +201,7 @@ class TemplatePackageRegistry {
     private Map<String,Action> actions;
     private Map<String, BackgroundAction> backgroundActions;
     private SettingsBean settingsBean;
+    private JCRStoreService jcrStoreService;
 
     private List<JahiaTemplatesPackage> templatePackages;
 
@@ -352,7 +353,7 @@ class TemplatePackageRegistry {
                             new File(rootFolder, name),
                             templatePackage.getName());
                 }
-                JCRStoreService.getInstance().deployDefinitions(templatePackage.getName());
+                jcrStoreService.deployDefinitions(templatePackage.getName());
             } catch (Exception e) {
                 logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
             }
@@ -443,6 +444,10 @@ class TemplatePackageRegistry {
 
     public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
+    }
+
+    public void setJcrStoreService(JCRStoreService jcrStoreService) {
+        this.jcrStoreService = jcrStoreService;
     }
 
     /**

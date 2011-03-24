@@ -277,4 +277,35 @@ public class JahiaSearchIndex extends SearchIndex {
         query.setRespectDocumentOrder(getRespectDocumentOrder());
         return query;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Iterable<NodeId> getWeaklyReferringNodes(NodeId id)
+            throws RepositoryException, IOException {
+        final List<Integer> docs = new ArrayList<Integer>();
+        final List<NodeId> ids = new ArrayList<NodeId>();
+        final IndexReader reader = getIndexReader(false);
+        try {
+            IndexSearcher searcher = new IndexSearcher(reader);
+            try {
+                Query q = new TermQuery(new Term(
+                        FieldNames.WEAK_REFS, id.toString()));
+                searcher.search(q, new HitCollector() {
+                    public void collect(int doc, float score) {
+                        docs.add(doc);
+                    }
+                });
+            } finally {
+                searcher.close();
+            }
+            for (Integer doc : docs) {
+                Document d = reader.document(doc, FieldSelectors.UUID);
+                ids.add(new NodeId(d.get(FieldNames.UUID)));
+            }
+        } finally {
+            Util.closeOrRelease(reader);
+        }
+        return ids;
+    }    
 }

@@ -52,7 +52,7 @@
  - j:read (boolean)=false
  + mediaItems (jnt:socialMediaItemCollection)
 
-[jnt:socialActivitiesDisplay] > jnt:content, jmix:bindedComponent, jmix:socialComponent
+[jnt:socialActivitiesDisplay] > jnt:content, jmix:bindedComponent, jmix:userProfileComponents
  - j:activitiesLimit (long)
 
 [jmix:socialContent] > jmix:droppableContent

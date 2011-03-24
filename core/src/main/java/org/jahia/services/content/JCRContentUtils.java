@@ -55,7 +55,6 @@ import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -147,7 +146,7 @@ public final class JCRContentUtils {
      */
     public static void registerNamespace(Session session, String prefix, String uri) throws RepositoryException {
         NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
-        Set<String> prefixes = ImmutableSet.of(namespaceRegistry.getPrefixes());
+        Set<String> prefixes = ImmutableSet.copyOf(namespaceRegistry.getPrefixes());
         if (!prefixes.contains(prefix)) {
             namespaceRegistry.registerNamespace(prefix, uri);
             session.setNamespacePrefix(prefix, uri);
@@ -927,7 +926,7 @@ public final class JCRContentUtils {
             RepositoryException {
         for (Resource resource : SpringContextSingleton.getInstance().getResources(
                 skeletonLocations)) {
-            logger.info("Importing data using skeleton {}", resource);
+            logger.info("Importing data using skeleton [{}]", resource);
             InputStream is = null;
             try {
                 is = resource.getInputStream();

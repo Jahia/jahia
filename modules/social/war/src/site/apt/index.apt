@@ -11,27 +11,29 @@ Jahia Social Module
 
 * My connections
 
-  This tab is a place for inter-user communication and connections.
-  Status updates can be posted on this page and the list of activities of "friends"
-  can be seen here. 
-
-[./images/my-connections.png] My connections tab in user profile
-
-  One can search for users to be able to add them as friends:
+  This component allows user to search for other users and follow them (or become friend, it's just a matter of wording).
+  The list of friends / followed people is also displayed.
   
 [./images/user-search.png] Search users
 
-  And also send direct messages to users in the friends list:
-  
-[./images/send-message.png] Sending a message
-
 * My messages
 
-  Personal messages appear in user's <My messages> tab, where the can be read completely
+  Personal messages appear in user's <My messages> tab, where they can be read completely
   and replied:
 
+ [./images/send-message.png] Sending a message
+
 [./images/my-messages.png] My messages
-   
+
+* My microblogging feed
+
+ This component displays both
+   - a microblogging form to broadcast a message to all people following the user (=friends with him)
+   - a feed of activities broadcasted by people the user is following (=friend with them)
+
+   [./images/my-connections.png] My connections tab in user profile
+
+     This feed can also be used to display messages triggered by events (a page has been published for instance).
   
 
   

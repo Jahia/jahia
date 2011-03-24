@@ -502,10 +502,10 @@
 
 [jmix:nodeReference] mixin
 
-[jnt:fileReference] > jnt:content, jmix:nodeReference, mix:title, jmix:basicContent, jmix:editorialContent
+[jnt:fileReference] > jnt:content, jmix:nodeReference, mix:title, jmix:multimediaContent, jmix:editorialContent
  - j:node (weakreference,picker[type='file']) < jnt:file
 
-[jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:basicContent, jmix:editorialContent
+[jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:multimediaContent, jmix:editorialContent
  - j:node (weakreference,picker[type='image']) < jmix:image
  - j:alternateText (string) i18n
 

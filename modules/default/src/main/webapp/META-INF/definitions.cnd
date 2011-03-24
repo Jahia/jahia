@@ -34,10 +34,10 @@
  - pageSize (long) = 10 autocreated
  - displayPager (boolean) = true autocreated
 
-[jnt:fileList] > jnt:content, jmix:structuredContent, jmix:editorialContent, jmix:bindedComponent
+[jnt:fileList] > jnt:content, jmix:siteComponent, jmix:editorialContent, jmix:bindedComponent
  - folder (weakreference, picker[type='folder'])
 
-[jnt:frame] > jnt:content, mix:title, jmix:structuredContent, jmix:editorialContent
+[jnt:frame] > jnt:content, mix:title, jmix:structuredContent, jmix:siteComponent
  - source (string) indexed=no
  - name (string) indexed=no
  - width (long) indexed=no
@@ -86,7 +86,7 @@
  - image (weakreference, picker[type='image']) i18n
  - align (string,choicelist[resourceBundle]) = left indexed=no < left,right,default
 
-[jnt:loginForm] > jnt:content, mix:title, jmix:siteComponent
+[jnt:loginForm] > jnt:content, mix:title, jmix:formContent
  - j:displayRememberMeButton (boolean)
  - j:displayLoginButton (boolean)
 
@@ -113,7 +113,7 @@
  - nodeType (string, choicelist[subnodetypes = 'jnt:page,jnt:contentList,jnt:folder',resourceBundle]) mandatory
  - templateForLink (string, choicelist[templates,resourceBundle]) mandatory
 
-[jnt:pageFormCreation] > jnt:content, jmix:siteComponent, mix:title
+[jnt:pageFormCreation] > jnt:content, jmix:formContent, mix:title
  - templateNode (weakreference,choicelist[templatesNode='pageTemplate']) mandatory < jnt:template
  - buttonLabel (string)
  - useDescription (boolean) = false

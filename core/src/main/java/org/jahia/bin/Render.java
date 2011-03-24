@@ -457,18 +457,26 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 String path = urlResolver.getPath();
                                 path = (path.endsWith("*")?StringUtils.substringBeforeLast(path,"/"):path);
                                 JCRNodeWrapper sessionNode = session.getNode(path);
-                                String s = sessionNode.getResolveSite().getPath() + "/files/contributed/";
-                                String name =
-                                        sessionNode.getPrimaryNodeTypeName().replaceAll(
-                                                ":", "_") + "_" + sessionNode.getName();
-                                target = s + name;
-                                try {
-                                    session.getNode(target);
-                                } catch (RepositoryException e) {
-                                    JCRNodeWrapper node = session.getNode(s);
-                                    session.checkout(node);
-                                    node.addNode(name,"jnt:folder");
-                                    session.save();
+                                JCRSiteNode siteNode = sessionNode.getResolveSite();
+                                if (siteNode != null) {
+                                    String s = sessionNode.getResolveSite().getPath() + "/files/contributed/";
+                                    String name = sessionNode.getPrimaryNodeTypeName().replaceAll(":", "_") + "_" + sessionNode.getName();
+                                    target = s + name;
+                                    try {
+                                        session.getNode(target);
+                                    } catch (RepositoryException e) {
+                                        JCRNodeWrapper node = session.getNode(s);
+                                        session.checkout(node);
+                                        node.addNode(name,"jnt:folder");
+                                        session.save();
+                                    }
+                                } else {
+                                    target = sessionNode.getPath() + "/files";
+                                    if (!sessionNode.hasNode("files")) {
+                                        session.checkout(sessionNode);
+                                        sessionNode.addNode("files","jnt:folder");
+                                        session.save();
+                                    }
                                 }
                             }
                             final JCRNodeWrapper targetDirectory = session.getNode(target);

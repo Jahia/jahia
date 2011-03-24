@@ -36,13 +36,15 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import java.io.Serializable;
+
 /**
  * Vanity Url mapped to content
  * 
  * @author Benjamin Papez
  * 
  */
-public class VanityUrl {
+public class VanityUrl implements Serializable {
 
     private String url;
 

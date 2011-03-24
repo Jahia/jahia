@@ -38,11 +38,15 @@ import java.util.Set;
 import javax.jcr.RepositoryException;
 import javax.validation.ConstraintViolationException;
 
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.cache.Cache;
+import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.seo.VanityUrl;
+import org.slf4j.Logger;
 
 /**
  * Service to manage vanity urls in Jahia
@@ -51,7 +55,14 @@ import org.jahia.services.seo.VanityUrl;
  */
 public class VanityUrlService {
 
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(VanityUrlService.class);
+
     private VanityUrlManager vanityUrlManager;
+    private CacheService cacheService;
+    private Cache cacheByUrl;
+
+    public static final String CACHE_BY_URL = "vanityUrlByUrlCache";
+    private static final String KEY_SEPARATOR = "___";
 
     /**
      * Gets a node's default vanity URL for the given locale and workspace. If none is default then take the first mapping for the locale.
@@ -124,6 +135,7 @@ public class VanityUrlService {
      */
     public boolean removeVanityUrlMapping(final JCRNodeWrapper contentNode,
             final VanityUrl vanityUrl) throws RepositoryException {
+        cacheByUrl.flush();
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper currentContentNode = session.getNodeByUUID(contentNode.getIdentifier());                
@@ -145,6 +157,7 @@ public class VanityUrlService {
      */
     public boolean removeVanityUrlMappings(final JCRNodeWrapper contentNode,
             final String languageCode) throws RepositoryException {
+        cacheByUrl.flush();
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper currentContentNode = session.getNodeByUUID(contentNode.getIdentifier());                
@@ -177,6 +190,7 @@ public class VanityUrlService {
      */
     public boolean saveVanityUrlMapping(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl)
             throws RepositoryException {
+        cacheByUrl.flush();
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper currentContentNode = session.getNodeByUUID(contentNode.getIdentifier());
@@ -214,6 +228,7 @@ public class VanityUrlService {
     public boolean saveVanityUrlMappings(final JCRNodeWrapper contentNode,
             final List<VanityUrl> vanityUrls, final Set<String> updatedLocales)
             throws RepositoryException {
+        cacheByUrl.flush();
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper currentContentNode = session.getNodeByUUID(contentNode.getIdentifier());                
@@ -240,11 +255,17 @@ public class VanityUrlService {
      */
     public List<VanityUrl> findExistingVanityUrls(final String url, final String site,
             final String workspace) throws RepositoryException {
+        final String cacheKey = getCacheByUrlKey(url, site, workspace);
+        if (cacheByUrl.containsKey(cacheKey)) {
+            return (List<VanityUrl>) cacheByUrl.get(cacheKey);
+        }
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace,
                 new JCRCallback<List<VanityUrl>>() {
                     public List<VanityUrl> doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
-                        return vanityUrlManager.findExistingVanityUrls(url, site, session);
+                        List<VanityUrl> vanityUrls = vanityUrlManager.findExistingVanityUrls(url, site, session);
+                        cacheByUrl.put(cacheKey, vanityUrls);
+                        return vanityUrls;
                     }
                 });
     }
@@ -259,4 +280,21 @@ public class VanityUrlService {
         this.vanityUrlManager = vanityUrlManager;
     }
 
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+        try {
+            cacheByUrl = cacheService.getCache(CACHE_BY_URL, true);
+        } catch (JahiaInitializationException e) {
+            logger.error("Error while creating cache: " + CACHE_BY_URL);
+        }
+    }
+
+    public String getCacheByUrlKey(final String url, final String site, final String workspace) {
+        StringBuilder builder = new StringBuilder(url);
+        builder.append(KEY_SEPARATOR);
+        builder.append(site);
+        builder.append(KEY_SEPARATOR);
+        builder.append(workspace);
+        return builder.toString();
+    }
 }

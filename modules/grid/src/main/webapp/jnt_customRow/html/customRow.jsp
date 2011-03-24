@@ -23,7 +23,7 @@
 </c:forTokens>
 
 <c:if test="${!empty currentNode.properties.divID}"> <div id="${currentNode.properties.divID.string}"></c:if>
-<div class="container_${nbCols}">
+<div class="container_16">
 <c:if test="${!empty currentNode.properties.divClass}"><div class="${currentNode.properties.divClass.string}"></c:if>
 
 <c:if test="${editableModule}">

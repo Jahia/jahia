@@ -40,6 +40,7 @@
 package org.jahia.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,8 +52,8 @@ import java.util.Set;
 
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
 import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
@@ -63,11 +64,46 @@ import org.jahia.services.SpringContextSingleton;
 
 public final class FileUtils {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FileUtils.class);
-
     private static Map<String, String> fileExtensionIcons;
+    
     private static String[] fileExtensionIconsMapping;
+    
     private static DocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
+    
+    /**
+     * Returns the content of the specified {@link Resource} as a string.
+     * 
+     * @param resource
+     *            the resource to be read
+     * @return the content of the specified {@link Resource} as a string
+     * @throws IOException
+     *             in case of an I/O error
+     */
+    public static String getContent(Resource resource) throws IOException {
+        String content = null;
+        InputStream is = null;
+        try {
+            is = resource.getInputStream();
+            content = IOUtils.toString(is);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
+        return content;
+    }
+
+    public static String getExtension(String fileName) {
+        return FilenameUtils.getExtension(fileName);
+    }
+
+    public static String getExtensionFromMimeType(String mimeType) {
+        DocumentFormat df = formatRegistry.getFormatByMediaType(mimeType);
+        if (df == null) {
+            return null;
+        }
+        return df.getExtension();
+    }
+    
     @SuppressWarnings("unchecked")
     private static Map<String, String> getFileExtensionIcons() {
         if (fileExtensionIcons == null) {
@@ -101,6 +137,14 @@ public final class FileUtils {
         return fileExtensionIcons;
     }
 
+    public static String[] getFileExtensionIconsMapping() {
+        if (null == fileExtensionIconsMapping) {
+            // initialize it
+            getFileExtensionIcons();
+        }
+        return fileExtensionIconsMapping;
+    }
+
     public static String getFileIcon(String fileName) {
         String ext = "unknown";
         if (StringUtils.isNotEmpty(fileName)) {
@@ -122,23 +166,6 @@ public final class FileUtils {
         return icon != null ? icon : mappings.get("unknown");
     }
 
-    public static String[] getFileExtensionIconsMapping() {
-        if (null == fileExtensionIconsMapping) {
-            // initialize it
-            getFileExtensionIcons();
-        }
-        return fileExtensionIconsMapping;
-    }
-    
-    /***
-     * constructor
-     * EV    19.12.2000
-     *
-     */
-    private FileUtils () {
-        logger.debug("Starting fileUtils");
-    }
-
     public static String getFileIconFromMimetype(String mimeType) {
         DocumentFormat df = formatRegistry.getFormatByMediaType(mimeType);
         if (df == null) {
@@ -154,18 +181,22 @@ public final class FileUtils {
         return icon != null ? icon : mappings.get("unknown");
     }
 
-    public static String getExtensionFromMimeType(String mimeType) {
-        DocumentFormat df = formatRegistry.getFormatByMediaType(mimeType);
-        if (df == null) {
-            return null;
-        }
-        return df.getExtension();
+    /**
+     * Returns the last modified date of the specified resource.
+     * 
+     * @param resource
+     *            resource to check the last modified date on
+     * @return the last modified date of the specified resource
+     * @throws IOException
+     *             in case of an I/O error
+     */
+    public static long getLastModified(Resource resource) throws IOException {
+        URL resourceUrl = resource.getURL();
+        return ResourceUtils.isJarURL(resourceUrl) ? ResourceUtils.getFile(
+                ResourceUtils.extractJarFileURL(resourceUrl)).lastModified() : resource.getFile()
+                .lastModified();
     }
-
-    public static String getExtension(String fileName) {
-        return FilenameUtils.getExtension(fileName);
-    }
-
+    
     public static List<DocumentFormat> getPossibleFormats() {
         Set<DocumentFormat> map = new LinkedHashSet<DocumentFormat>();
         Set<DocumentFormat> formatSet = formatRegistry.getOutputFormats(DocumentFamily.TEXT);
@@ -185,19 +216,7 @@ public final class FileUtils {
         return list;
     }
     
-	/**
-	 * Returns the last modified date of the specified resource.
-	 * 
-	 * @param resource
-	 *            resource to check the last modified date on
-	 * @return the last modified date of the specified resource
-	 * @throws IOException
-	 *             in case of an I/O error
-	 */
-	public static long getLastModified(Resource resource) throws IOException {
-		URL resourceUrl = resource.getURL();
-		return ResourceUtils.isJarURL(resourceUrl) ? ResourceUtils.getFile(
-		        ResourceUtils.extractJarFileURL(resourceUrl)).lastModified() : resource.getFile()
-		        .lastModified();
-	}
+    private FileUtils () {
+        super();
+    }
 }

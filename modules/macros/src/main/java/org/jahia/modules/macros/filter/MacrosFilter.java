@@ -1,7 +1,6 @@
 /**
- *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,113 +19,106 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
+ * http://www.jahia.com/license
  *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Limited. If you are unsure which license is appropriate
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
+
 package org.jahia.modules.macros.filter;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLGenerator;
-import org.jahia.services.render.filter.AbstractFilter;
-import org.jahia.services.render.filter.RenderChain;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.utils.ScriptEngineUtils;
-import org.springframework.beans.factory.InitializingBean;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.jcr.RepositoryException;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.SimpleBindings;
-import java.io.File;
-import java.io.FileReader;
-import java.io.StringWriter;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLGenerator;
+import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.RenderChain;
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.utils.FileUtils;
+import org.jahia.utils.ScriptEngineUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
 /**
- * Created by IntelliJ IDEA.
+ * Render filter that searches for known macros in the generated HTML output and evaluates them.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 21/12/10
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 21/12/10
  */
-public class MacrosFilter extends AbstractFilter implements InitializingBean {
-    private transient static Logger logger = Logger.getLogger(MacrosFilter.class);
+public class MacrosFilter extends AbstractFilter implements InitializingBean, ApplicationListener<ApplicationEvent> {
 
+    private transient static Logger logger = LoggerFactory.getLogger(MacrosFilter.class);
+
+    private String macroLookupPath;
     private Pattern macrosPattern;
-    private String macrosRegexp;
-    private JahiaTemplateManagerService templateManagerService;
-    private String macrosDirectoryName;
-    private Map<String, String> scriptCache;
+    private Map<String, String[]> scriptCache;
     private ScriptEngineUtils scriptEngineUtils;
-
-    public void setMacrosRegexp(String macrosRegexp) {
-        this.macrosRegexp = macrosRegexp;
-        this.macrosPattern = Pattern.compile(macrosRegexp);
-    }
-
-    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
-        this.templateManagerService = templateManagerService;
+    public void afterPropertiesSet() throws Exception {
+        scriptCache = new LinkedHashMap<String, String[]>();
+        if (macroLookupPath == null || !macroLookupPath.contains("{macro}")) {
+            throw new IllegalArgumentException("Invalid macroLookupPath value \"" + macroLookupPath
+                    + "\". It should contain a path lookup"
+                    + " and a placeholder, e.g. \"/modules/**/WEB-INF/macros/**/{macro}.*\".");
+        }
     }
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        if (!"".equals(previousOut.trim())) {
-            Matcher matcher = macrosPattern.matcher(previousOut);
-            while (matcher.find()) {
-                String macroName = matcher.group(1);
-                //  Check if macros already in the cache of resolved script
-                String macroPath = scriptCache.get(macroName);
-                if (macroPath == null) {
-                    //  find the macros script matching this name scan all modules macros directory
-                    List<JahiaTemplatesPackage> availableTemplatePackages = templateManagerService.getAvailableTemplatePackages();
-                    for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
-                        File file = new File(
-                                availableTemplatePackage.getFilePath() + File.separator + macrosDirectoryName);
-                        if (file.exists()) {
-                            // Modules have macros
-                            String[] files = file.list(new WildcardFileFilter(macroName + ".*"));
-                            if (files.length == 1) {
-                                //  Store it in a cache
-                                macroPath = file.getAbsolutePath() + File.separator + files[0];
-                                scriptCache.put(macroName, macroPath);
-                            }
-                        }
-                    }
-                }
-                if (macroPath != null) {
-                    //  execute macro
-                    String extension = FilenameUtils.getExtension(macroPath);
-                    ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
-                    ScriptContext scriptContext = scriptEngine.getContext();
-                    scriptContext.setWriter(new StringWriter());
-                    scriptContext.setErrorWriter(new StringWriter());
-                    scriptEngine.eval(new FileReader(macroPath), getBindings(renderContext, resource, scriptContext, matcher));
-                    String scriptResult = scriptContext.getWriter().toString().trim();
-                    previousOut = matcher.replaceFirst(scriptResult);
-                } else {
-                    previousOut = matcher.replaceFirst("macro " + macroName + " not found");
-                }
-                matcher = macrosPattern.matcher(previousOut);
+        if (StringUtils.isEmpty(previousOut)) {
+            return previousOut;
+        }
+        long timer = System.currentTimeMillis();
+        boolean evaluated = false;
+
+        Matcher matcher = macrosPattern.matcher(previousOut);
+        while (matcher.find()) {
+            evaluated = true;
+            String macroName = matcher.group(1);
+            String[] macro = getMarco(macroName);
+            if (macro != null) {
+                // execute macro
+                ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(macro[1]);
+                ScriptContext scriptContext = scriptEngine.getContext();
+                scriptContext.setWriter(new StringWriter());
+                scriptContext.setErrorWriter(new StringWriter());
+                scriptEngine.eval(macro[0],
+                        getBindings(renderContext, resource, scriptContext, matcher));
+                String scriptResult = scriptContext.getWriter().toString().trim();
+                previousOut = matcher.replaceFirst(scriptResult);
+            } else {
+                previousOut = matcher.replaceFirst("macro " + macroName + " not found");
+                logger.warn("Unknonwn macro '{}'", macroName);
             }
+            matcher = macrosPattern.matcher(previousOut);
+        }
+
+        if (evaluated && logger.isDebugEnabled()) {
+            logger.debug("Evaluation of macros took {} ms", (System.currentTimeMillis() - timer));
         }
         return previousOut;
     }
@@ -153,25 +145,70 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean {
         return bindings;
     }
 
-    /**
-     * Invoked by a BeanFactory after it has set all bean properties supplied
-     * (and satisfied BeanFactoryAware and ApplicationContextAware).
-     * <p>This method allows the bean instance to perform initialization only
-     * possible when all bean properties have been set and to throw an
-     * exception in the event of misconfiguration.
-     *
-     * @throws Exception in the event of misconfiguration (such
-     *                   as failure to set an essential property) or if initialization fails.
-     */
-    public void afterPropertiesSet() throws Exception {
-        scriptCache = new LinkedHashMap<String, String>();
+    protected String[] getMarco(String macroName) {
+        String[] macro = scriptCache.get(macroName);
+
+        if (macro != null) {
+            return macro;
+        }
+
+        String lookup = macroLookupPath.replace("{macro}", macroName);
+        try {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Looking up macro using path {}", lookup);
+            }
+            org.springframework.core.io.Resource[] resources = SpringContextSingleton.getInstance()
+                    .getResources(lookup);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Found {} resources", resources.length);
+            }
+            org.springframework.core.io.Resource script = resources.length > 0 ? resources[0]
+                    : null;
+            if (resources.length > 1) {
+                logger.warn("Found multiple matches for macro \"{}\"."
+                        + " Taking the first script \"{}\".", macroName, script);
+            }
+
+            if (script == null) {
+                logger.warn("No macro script found for macro \"{}\" using lookup \"{}\".",
+                        macroName, lookup);
+                return null;
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Using script {}", script);
+            }
+            macro = new String[] { FileUtils.getContent(script),
+                    FilenameUtils.getExtension(script.getFilename()) };
+
+            scriptCache.put(macroName, macro);
+
+            if (logger.isTraceEnabled()) {
+                logger.trace("Script of type {}, content:\n{}", macro[1], macro[0]);
+            }
+        } catch (IOException e) {
+            logger.warn("Error looking up macros", e);
+        }
+
+        return macro;
     }
 
-    public void setMacrosDirectoryName(String macrosDirectoryName) {
-        this.macrosDirectoryName = macrosDirectoryName;
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof TemplatePackageRedeployedEvent) {
+            scriptCache.clear();
+        }
+    }
+
+    public void setMacroLookupPath(String macroLookupPath) {
+        this.macroLookupPath = macroLookupPath;
+    }
+
+    public void setMacrosRegexp(String macrosRegexp) {
+        this.macrosPattern = Pattern.compile(macrosRegexp);
     }
 
     public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
         this.scriptEngineUtils = scriptEngineUtils;
     }
+    
 }

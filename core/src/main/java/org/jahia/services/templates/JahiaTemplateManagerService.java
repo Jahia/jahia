@@ -321,7 +321,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         templatePackageRegistry.validate();
 
         // start template package watcher
-		templatePackageDeployer.startWatchdog();
+	templatePackageDeployer.startWatchdog();
 
         logger.info("JahiaTemplateManagerService started successfully."
                 + " Total number of found template packages: "

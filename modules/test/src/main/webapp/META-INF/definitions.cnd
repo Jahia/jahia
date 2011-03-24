@@ -32,7 +32,7 @@
 
 
 
-[jnt:test] > jnt:content, mix:title, jmix:sandboxContent
+[jnt:test] > jnt:content, mix:title, jmix:siteComponent
 + * (jnt:choiceListTest)
 + * (jnt:dateTest)
 + * (jnt:simpleFieldsTest)

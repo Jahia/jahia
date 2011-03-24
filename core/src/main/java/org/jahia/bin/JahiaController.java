@@ -82,6 +82,8 @@ public abstract class JahiaController implements Controller {
         return JahiaControllerUtils.getParameter(request, name, defaultValue);
     }
 
+    private boolean requireAuthenticatedUser;
+
     private String requiredPermission;
 
     protected void checkUserAuthorized() throws JahiaForbiddenAccessException {
@@ -93,7 +95,9 @@ public abstract class JahiaController implements Controller {
     }
 
     protected void checkUserLoggedIn() throws JahiaForbiddenAccessException {
-        JahiaControllerUtils.checkUserLoggedIn(getCurrentUser());
+        if (isRequireAuthenticatedUser()) {
+            JahiaControllerUtils.checkUserLoggedIn(getCurrentUser());
+        }
     }
 
     /**
@@ -114,6 +118,10 @@ public abstract class JahiaController implements Controller {
         return requiredPermission;
     }
 
+    protected boolean isRequireAuthenticatedUser() {
+        return requireAuthenticatedUser;
+    }
+
     /**
      * Returns <code>true</code> if the current user is a non-authenticated user.
      * 
@@ -121,6 +129,10 @@ public abstract class JahiaController implements Controller {
      */
     protected boolean isUserGuest() {
         return JahiaUserManagerService.isGuest(getCurrentUser());
+    }
+
+    public void setRequireAuthenticatedUser(boolean requireAuthenticatedUser) {
+        this.requireAuthenticatedUser = requireAuthenticatedUser;
     }
 
     /**

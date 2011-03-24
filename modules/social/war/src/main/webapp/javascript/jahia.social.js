@@ -1,46 +1,8 @@
-
-/**
- * As any property can match the query, we try to intelligently display properties that either matched or make
- * sense to display.
- * @param node
- */
 function getText(node) {
-	var props = node.properties;
-	if (props) {
-		var result = "";
-		if (props['jcr:primaryType'] == 'jnt:user') {
-			if (props['j:firstName'] && props['j:firstName'].length > 0) {
-				result += props['j:firstName'];
-			}
-			if (props['j:lastName'] && props['j:lastName'].length > 0) {
-				if (result.length > 0) {
-					result += " ";
-				}
-				result += props['j:lastName'];
-			}
-			return result.length > 0 ? result + " (" + props['j:nodename'] + ")" : props['j:nodename']; 
-		}
-		
-	    if (node.matchingProperties && node.matchingProperties.length > 0) {
-	        var firstMatchingProperty = node.matchingProperties[0];
-	        return props[firstMatchingProperty];
-	    }
-	    if (props["jcr:title"] != null) {
-	        return props["jcr:title"];
-	    } else if (props["text"] != null) {
-	        return props["text"];
-	    } else if (props["j:nodename"] != null) {
-	        return props["j:nodename"];
-	    }
-	} else {
-		return node['username'];
-	}
+	var title = getUserDisplayName(node);
+	var username = node['username'];
+	return username != title ? title + " (" + username + ")" : username; 
 }
-
-function format(result) {
-    return getText(result);
-}
-
 
 function searchUsers(findPrincipalURL, userURL, term, i18nAdd) {
 	$.ajax({
@@ -48,21 +10,14 @@ function searchUsers(findPrincipalURL, userURL, term, i18nAdd) {
         type: 'post',
         dataType : 'json',
         data : {
-			q: term,
-	        principalType: "users",
-	        propertyMatchRegexp: "{$q}.*",
-	        includeCriteriaNames: "username,j:nodename,j:firstName,j:lastName",
-	        username: "{$q}*",
-	        "j:nodename": "{$q}*",
-	        "j:firstName": "{$q}*",
-	        "j:lastName": "{$q}*",
-	        removeDuplicatePropValues: "true"                
+			q: term
 		},
         success: function(data) {
             $("#searchUsersResult").html("");
             $.each(data, function(i, item) {
                 $("#searchUsersResult").append(
-                        $("<tr/>").append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
+                        $("<tr/>")
+                        		//.append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
                                 .append($("<td/>").attr("title", item['username']).text(getUserDisplayName(item)))
                                 .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "#add")
                                 .attr("class", "social-add").attr("title", i18nAdd ? i18nAdd : '').click(function () {
@@ -77,17 +32,12 @@ function searchUsers(findPrincipalURL, userURL, term, i18nAdd) {
 }
 
 function getUserDisplayName(node) {
-	var props = node.properties;
-	if (props) {
-		var value =  props['j:firstName'] || '';
-		if (value.length != 0) {
-			value += ' ';
-		}
-		value += props['j:lastName'] || '';
-		return value.length > 0 ? value : props['j:nodename'];
-	} else {
-		return node['username'];
+	var value =  node['j:firstName'] || '';
+	if (value.length != 0) {
+		value += ' ';
 	}
+	value += node['j:lastName'] || '';
+	return value.length > 0 ? value : node['username'];
 }
 
 function requestConnection(userURL, toUserKey) {

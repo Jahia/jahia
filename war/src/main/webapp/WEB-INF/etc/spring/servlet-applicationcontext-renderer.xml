@@ -53,11 +53,19 @@
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find"/>
                 </entry>
-                <entry key="/findPrincipal/**">
+                <entry key="/findPrincipal">
                     <bean class="org.jahia.bin.FindPrincipal">
                         <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
                         <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService" />
                         <property name="jahiaSitesService" ref="JahiaSitesService" /> 
+                        <property name="requiredPermission" value="adminUsers"/>
+                    </bean>
+                </entry>
+                <entry key="/findUser">
+                    <bean class="org.jahia.bin.FindUser">
+                        <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
+                        <property name="requireAuthenticatedUser" value="true"/>
+                        <property name="hardLimit" value="20"/>
                     </bean>
                 </entry>
                 <entry key="/login">
@@ -79,7 +87,7 @@
                 <entry key="/export/**">
                     <bean name="org.jahia.bin.Export" class="org.jahia.bin.Export">
                         <property name="importExportService" ref="ImportExportService"/>
-                        <property name="requiredPermission" value="jcr:write_default|jcr:write_live"/>
+                        <property name="requireAuthenticatedUser" value="true"/>
                     </bean>
                 </entry>
                 <entry key="/wcag/**">

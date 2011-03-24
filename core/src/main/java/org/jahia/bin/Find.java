@@ -45,7 +45,6 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -65,7 +64,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 /**
  * A small servlet to allow us to perform queries on the JCR.
@@ -73,7 +71,7 @@ import org.springframework.web.servlet.mvc.Controller;
  * Date: Jan 26, 2010
  * Time: 5:55:17 PM
  */
-public class Find extends HttpServlet implements Controller {
+public class Find extends BaseFindController {
 
     /** The serialVersionUID. */
     private static final long serialVersionUID = -3537001082179204764L;
@@ -84,10 +82,8 @@ public class Find extends HttpServlet implements Controller {
 
     private boolean defaultEscapeColon = false;
 
-    private int defaultLimit = 0;
-
     private boolean defaultRemoveDuplicatePropertyValues = false;
-
+    
     private int getInt(String paramName, int defaultValue, HttpServletRequest req) throws IllegalArgumentException {
         int param = defaultValue;
         String valueStr = req.getParameter(paramName);
@@ -124,11 +120,15 @@ public class Find extends HttpServlet implements Controller {
         // the actual value.
 
         query = expandRequestMarkers(request, query, true, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2), false);
-        logger.debug("Using expanded query=[" + query + "]");
+        logger.debug("Using expanded query=[{}]", query);
 
         Query q = qm.createQuery(query, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2));
 
         int limit = getInt("limit", defaultLimit, request);
+        if (limit <= 0 || limit > hardLimit) {
+            limit = hardLimit;
+        }
+        
         int offset = getInt("offset", 0, request);
 
         if (limit > 0) {
@@ -234,6 +234,9 @@ public class Find extends HttpServlet implements Controller {
             JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
             final int type = propertyWrapper.getType();
             final String name = escapeColon ? propertyWrapper.getName().replace(":", "_") : propertyWrapper.getName();
+            if (type == PropertyType.BINARY) {
+                continue;
+            }
             if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
                 if (!propertyWrapper.isMultiple()) {
                     jsonObject.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getUrl());
@@ -373,13 +376,6 @@ public class Find extends HttpServlet implements Controller {
         this.defaultEscapeColon = defaultEscapeColon;
     }
 
-    /**
-     * @param defaultLimit the defaultLimit to set
-     */
-    public void setDefaultLimit(int defaultLimit) {
-        this.defaultLimit = defaultLimit;
-    }
-
     public boolean isDefaultRemoveDuplicatePropertyValues() {
         return defaultRemoveDuplicatePropertyValues;
     }
@@ -420,7 +416,9 @@ public class Find extends HttpServlet implements Controller {
                 RowIterator rows = result.getRows();
                 int resultCount = 0;
                 while (rows.hasNext()) {
-                    JSONObject serializedRow = serializeRow(rows.nextRow(), columns, depth, escape, alreadyIncludedIdentifiers, propertyMatchRegexp, alreadyIncludedPropertyValues);
+                    Row row = rows.nextRow();
+                    String path = row.getPath();
+                    JSONObject serializedRow = serializeRow(row, columns, depth, escape, alreadyIncludedIdentifiers, propertyMatchRegexp, alreadyIncludedPropertyValues);
                     if (serializedRow != null) {
                         results.put(serializedRow);
                         resultCount++;
@@ -432,7 +430,9 @@ public class Find extends HttpServlet implements Controller {
                 NodeIterator nodes = result.getNodes();
                 int resultCount = 0;
                 while (nodes.hasNext()) {
-                    JSONObject serializedNode = serializeNode(nodes.nextNode(), depth, escape, propertyMatchRegexp, alreadyIncludedPropertyValues);
+                    Node nextNode = nodes.nextNode();
+                    String path = nextNode.getPath();
+                    JSONObject serializedNode = serializeNode(nextNode, depth, escape, propertyMatchRegexp, alreadyIncludedPropertyValues);
                     if (serializedNode != null) {
                         results.put(serializedNode);
                         resultCount++;

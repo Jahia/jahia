@@ -51,6 +51,7 @@ import org.jahia.bin.DocumentConverter;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Find;
 import org.jahia.bin.FindPrincipal;
+import org.jahia.bin.FindUser;
 import org.jahia.bin.Initializers;
 import org.jahia.bin.Login;
 import org.jahia.bin.Logout;
@@ -84,11 +85,7 @@ public class URLGenerator {
     private String contribute;
     private String studio;
     private String find;
-    private String findPrincipal;
-    private String logout;
     private String initializers;
-    private String captcha;
-
     private Resource resource;
     private RenderContext context;
 
@@ -106,8 +103,6 @@ public class URLGenerator {
     private String basePreview;
     private String convert;
     private String myProfile;
-
-    private String login;
 
     public URLGenerator(RenderContext context, Resource resource) {
         this.context = context;
@@ -157,12 +152,8 @@ public class URLGenerator {
             studio += ".html";
         }
         find = Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
-        findPrincipal = FindPrincipal.getFindPrincipalServletPath();
-        logout = Logout.getLogoutServletPath();
-        login = Login.getServletPath();
         initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
-        captcha = Captcha.getCaptchaServletPath();
         templatesPath = "/modules";
         if (!context.getUser().getUsername().equals("guest")) {
             myProfile = "/users/" + context.getUser().getUsername() + ".html";
@@ -206,11 +197,11 @@ public class URLGenerator {
     }
 
     public String getFindPrincipal() {
-        return findPrincipal;
+        return FindPrincipal.getFindPrincipalServletPath();
     }
 
     public String getLogout() {
-        return logout;
+        return Logout.getLogoutServletPath();
     }
 
     public String getCurrentModule() {
@@ -300,7 +291,7 @@ public class URLGenerator {
     }
 
     public String getCaptcha() {
-        return captcha;
+        return Captcha.getCaptchaServletPath();
     }
 
     public String getBaseContribute() {
@@ -385,7 +376,11 @@ public class URLGenerator {
     }
 
     public String getLogin() {
-        return login;
+        return Login.getServletPath();
+    }
+
+    public String getFindUser() {
+        return FindUser.getFindUserServletPath();
     }
 
 }

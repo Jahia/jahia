@@ -93,39 +93,30 @@
             }
         });
 
-        $("#searchUsersTerm").autocomplete("<c:url value='${url.findPrincipal}'/>", {
+        $("#searchUsersTerm").autocomplete("<c:url value='${url.findUser}'/>", {
             dataType: "json",
             cacheLength: 1,
-            parse: function parse(data) {
+            parse: function (data) {
                 return $.map(data, function(row) {
                     return {
                         data: row,
-                        value: getText(row),
+                        value: row['username'],
                         result: getText(row)
                     }
                 });
             },
             formatItem: function(item) {
-                return format(item);
-            },
-            extraParams: {
-                principalType : "users",
-                propertyMatchRegexp : "{$q}.*",
-                includeCriteriaNames : "username,j:nodename,j:firstName,j:lastName",
-                "username": "{$q}*",
-                "j:nodename": "{$q}*",
-                "j:firstName": "{$q}*",
-                "j:lastName": "{$q}*",
-                removeDuplicatePropValues : "true"
+                return getText(item);
             }
         }).result(function(event, item, formatted) {
-			if (!item || !item.properties) {
+			if (!item) {
         		return;
         	}
             $("#searchUsersResult")
             	.html("")
             	.append(
-                    $("<tr/>").append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
+                    $("<tr/>")
+                    		//.append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
                             .append($("<td/>").attr("title", item['username']).text(getUserDisplayName(item)))
                             .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "#add")
                             .attr("class", "social-add").attr("title", "<fmt:message key='addAsFriend'/>").click(function () {
@@ -139,7 +130,7 @@
         $("#searchUsersSubmit").click(function() {
             // validate and process form here
             var term = $("input#searchUsersTerm").val();
-            searchUsers('${url.findPrincipal}', '<c:url value="${url.base}${user.path}"/>', term, "<fmt:message key='addAsFriend'/>");
+            searchUsers('${url.findUser}', '<c:url value="${url.base}${user.path}"/>', term, "<fmt:message key='addAsFriend'/>");
             return false;
         });
 

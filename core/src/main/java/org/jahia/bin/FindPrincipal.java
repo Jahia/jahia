@@ -34,11 +34,12 @@ package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderException;
-import org.jahia.services.render.URLResolver;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
@@ -46,10 +47,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import javax.jcr.*;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -67,9 +66,9 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
  *         Date: Jun 16, 2010
  *         Time: 10:38:40 AM
  */
-public class FindPrincipal extends HttpServlet implements Controller {
+public class FindPrincipal extends BaseFindController {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindPrincipal.class);
+    private static Logger logger = LoggerFactory.getLogger(FindPrincipal.class);
 
     private static final String PRINCIPALTYPE_PARAMNAME = "principalType";
     private static final String WILDCARDTERM_PARAMNAME = "wildcardTerm";
@@ -94,12 +93,6 @@ public class FindPrincipal extends HttpServlet implements Controller {
     private JahiaUserManagerService jahiaUserManagerService;
     private JahiaGroupManagerService jahiaGroupManagerService;
     private JahiaSitesService jahiaSitesService;
-
-    private boolean defaultEscapeColon = false;
-
-    public void setDefaultEscapeColon(boolean defaultEscapeColon) {
-        this.defaultEscapeColon = defaultEscapeColon;
-    }
 
     public void setJahiaUserManagerService(JahiaUserManagerService jahiaUserManagerService) {
         this.jahiaUserManagerService = jahiaUserManagerService;
@@ -203,10 +196,10 @@ public class FindPrincipal extends HttpServlet implements Controller {
             alreadyIncludedPropertyValues = new HashMap<String, String>();
         }
 
+        Pattern pattern = propertyMatchRegexp != null ? Pattern.compile(propertyMatchRegexp, Pattern.CASE_INSENSITIVE) : null;
         for (Principal principal : users) {
             JSONObject jsonPrincipal = new JSONObject(principal);
-            if (principal instanceof JahiaUser && propertyMatchRegexp != null) {
-                Pattern pattern = Pattern.compile(propertyMatchRegexp, Pattern.CASE_INSENSITIVE);
+            if (principal instanceof JahiaUser && pattern != null) {
                 JahiaUser jahiaUser = (JahiaUser) principal;
                 Properties userProperties = jahiaUser.getProperties();
                 Set<String> matchingProperties = new HashSet<String>();
@@ -294,14 +287,17 @@ public class FindPrincipal extends HttpServlet implements Controller {
 
 
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
-            IOException, RepositoryException {
+            IOException, RepositoryException, JahiaForbiddenAccessException {
+        
+        checkUserLoggedIn();
+        checkUserAuthorized();
+        
         try {
             String principalType = retrieveParameter(request, response, PRINCIPALTYPE_PARAMNAME, true);
             if (principalType == null) {
                 return;
             }
             String wildcardTerm = retrieveParameter(request, response, WILDCARDTERM_PARAMNAME, false);
-            String escapeColonStr = retrieveParameter(request, response, ESCAPECOLON_PARAMNAME, false);
             String propertyMatchRegExp = retrieveParameter(request, response, PROPERTYMATCHREGEXP_PARAMNAME, false);
             String removeDuplicatePropValuesStr = retrieveParameter(request, response, REMOVEDUPLICATEPROPVALUES_PARAMNAME, false);
             boolean removeDuplicatePropValues = false;

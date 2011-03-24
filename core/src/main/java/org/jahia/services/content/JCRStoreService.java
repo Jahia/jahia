@@ -41,6 +41,8 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.interceptor.PropertyInterceptor;
 import org.jahia.services.content.interceptor.InterceptorChain;
 import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -62,8 +64,8 @@ import java.util.Set;
  * @author toto
  */
 public class JCRStoreService extends JahiaService implements JahiaAfterInitializationService {
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(JCRStoreService.class);
+    
+    private static Logger logger = LoggerFactory.getLogger(JCRStoreService.class);
 
     private Map<String, String> decorators = new HashMap<String, String>();
 
@@ -77,9 +79,13 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     protected JCRStoreService() {
     }
 
-    public synchronized static JCRStoreService getInstance() {
+    public static JCRStoreService getInstance() {
         if (instance == null) {
-            instance = new JCRStoreService();
+            synchronized (JCRStoreService.class) {
+                if (instance == null) {
+                    instance = new JCRStoreService();
+                }
+            }
         }
         return instance;
     }
@@ -96,7 +102,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         try {
             NamespaceRegistry nsRegistry = sessionFactory.getNamespaceRegistry();
             NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
-            Set<String> prefixes = ImmutableSet.of(nsRegistry.getPrefixes());
+            Set<String> prefixes = ImmutableSet.copyOf(nsRegistry.getPrefixes());
             for (Map.Entry<String, String> namespaceEntry : ntRegistry.getNamespaces().entrySet()) {
                 if (!prefixes.contains(namespaceEntry.getKey())) {
                     nsRegistry

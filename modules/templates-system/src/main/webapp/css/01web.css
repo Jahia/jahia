@@ -626,7 +626,7 @@ body {
 }
 .bodywrapper .table, .bodywrapper .table th, .bodywrapper .table td
 {
-border: 1px solid #ccc;
+border: 1px solid #eaeaea;
 }
 .bodywrapper .table caption
 {
@@ -637,9 +637,9 @@ border: 1px solid #ccc;
 }
 
 .bodywrapper .table th {
-    color: #fff;
+    color: #333;
 	white-space:nowrap;
-	background-color:#333;
+	background-color:#99ccff;
 	padding:2px;
 }
 .bodywrapper .table td

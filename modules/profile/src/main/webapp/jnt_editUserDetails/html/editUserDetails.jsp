@@ -17,7 +17,7 @@
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="timepicker.js,jquery.jeditable.datepicker.js"/>
-<template:addResources type="javascript" resources="i18n/jquery.ui.min.js"/>
+<template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${currentResource.locale}.js"/>
 
 <template:addResources type="css" resources="timepicker.css"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>

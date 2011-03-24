@@ -26,7 +26,7 @@
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
-<template:addResources type="javascript" resources="i18n/jquery.ui.min.js"/>
+<template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="timepicker.js"/>
 <template:addResources type="css" resources="timepicker.css"/>
 <c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>

@@ -1148,8 +1148,8 @@
               </ResponseAssertion>
               <hashTree/>
               <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Compteur de temps aléatoire uniforme" enabled="true">
-                <stringProp name="ConstantTimer.delay">5000</stringProp>
-                <stringProp name="RandomTimer.range">2000.0</stringProp>
+                <stringProp name="ConstantTimer.delay">${maxOffsetWaitTime}</stringProp>
+                <stringProp name="RandomTimer.range">${maxWaitTime}</stringProp>
               </UniformRandomTimer>
               <hashTree/>
             </hashTree>
@@ -1387,8 +1387,8 @@
                 </ResponseAssertion>
                 <hashTree/>
                 <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Compteur de temps aléatoire uniforme" enabled="true">
-                  <stringProp name="ConstantTimer.delay">5000</stringProp>
-                  <stringProp name="RandomTimer.range">2000.0</stringProp>
+                  <stringProp name="ConstantTimer.delay">${maxOffsetWaitTime}</stringProp>
+                  <stringProp name="RandomTimer.range">${maxWaitTime}</stringProp>
                 </UniformRandomTimer>
                 <hashTree/>
               </hashTree>
@@ -1626,8 +1626,8 @@
                   </ResponseAssertion>
                   <hashTree/>
                   <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Compteur de temps aléatoire uniforme" enabled="true">
-                    <stringProp name="ConstantTimer.delay">5000</stringProp>
-                    <stringProp name="RandomTimer.range">2000.0</stringProp>
+                    <stringProp name="ConstantTimer.delay">${maxOffsetWaitTime}</stringProp>
+                    <stringProp name="RandomTimer.range">${maxWaitTime}</stringProp>
                   </UniformRandomTimer>
                   <hashTree/>
                 </hashTree>

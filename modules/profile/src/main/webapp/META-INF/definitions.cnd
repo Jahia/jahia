@@ -1,11 +1,10 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jmix:profileComponentContent] > jmix:droppableContent mixin
 
-[jnt:userDetails] > jnt:content, jmix:profileComponentContent, jmix:bindedComponent
+[jnt:userDetails] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent
 
-[jnt:editUserDetails] > jnt:content, jmix:profileComponentContent, jmix:bindedComponent
+[jnt:editUserDetails] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent
  - j:firstName (boolean)
  - j:lastName (boolean)
  - j:gender (boolean)
@@ -24,5 +23,5 @@
  - age (boolean)
  - password (boolean)
 
-[jnt:userContentRetrieval] > jnt:contentRetrieval, jmix:profileComponentContent, jmix:bindedComponent
+[jnt:userContentRetrieval] > jnt:contentRetrieval, jmix:userProfileComponents, jmix:bindedComponent
 

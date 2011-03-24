@@ -57,8 +57,8 @@
 
 [jmix:socialContent] > jmix:droppableContent
 
-[jnt:currentUserConnections] > jnt:content, jmix:socialComponent, jmix:bindedComponent
+[jnt:currentUserConnections] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent
 
-[jnt:currentUserMessages] > jnt:content, jmix:socialComponent, jmix:bindedComponent
+[jnt:currentUserMessages] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent
 
-[jnt:currentUserNewsFeed] > jnt:content, jmix:socialComponent, jmix:bindedComponent
+[jnt:currentUserNewsFeed] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent

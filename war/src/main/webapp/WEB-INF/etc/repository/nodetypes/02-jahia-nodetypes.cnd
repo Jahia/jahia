@@ -482,6 +482,9 @@
 
 [jmix:formContent] > jmix:droppableContent mixin
 
+[jmix:userProfileComponents] > jmix:droppableContent mixin
+
+
 //---------------------------------------------------------
 // Other mixins
 //---------------------------------------------------------

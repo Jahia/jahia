@@ -3,7 +3,7 @@
 <test_templates = 'http://www.jahia.org/jahia/test_templates/nt/1.0'>
 
 /*
-[jnt:someFieldsTest] > jnt:content, mix:title , jmix:sandboxContent
+[jnt:someFieldsTest] > jnt:content, mix:title , jmix:siteComponent
 - boolean (boolean)
 - long (long) = '150' indexed=no
 - string (string)

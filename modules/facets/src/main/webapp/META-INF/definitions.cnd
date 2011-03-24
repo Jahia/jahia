@@ -1,7 +1,7 @@
 <j = 'http://www.jahia.org/jahia/1.0'>
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:facets] > jnt:content, jmix:siteComponent, jmix:bindedComponent
+[jnt:facets] > jnt:content, jmix_queryContent, jmix:bindedComponent
 orderable
 + * (jnt:facet)
 

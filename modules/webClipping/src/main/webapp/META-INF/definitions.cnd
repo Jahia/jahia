@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:webClipping] > jnt:content, jmix:sandboxContent, mix:title
+[jnt:webClipping] > jnt:content, jmix:siteComponent, mix:title
 - url (string) mandatory
 //- cacheDelay (long) = '0'
 - connectionTimeout (long) = '0'

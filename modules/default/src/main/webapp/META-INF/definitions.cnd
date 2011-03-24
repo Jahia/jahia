@@ -10,8 +10,6 @@
  itemtype = layout
  - field (string, choicelist[sortableFieldnames]) indexed=no
 
-[jmix:sandboxContent] > jmix:droppableContent mixin
-
 [jmix:sendAsNewsletter] mixin
  extends = jnt:page
 
@@ -34,7 +32,7 @@
  - pageSize (long) = 10 autocreated
  - displayPager (boolean) = true autocreated
 
-[jnt:fileList] > jnt:content, jmix:siteComponent, jmix:editorialContent, jmix:bindedComponent
+[jnt:fileList] > jnt:content, jmix:list, jmix:editorialContent, jmix:bindedComponent
  - folder (weakreference, picker[type='folder'])
 
 [jnt:frame] > jnt:content, mix:title, jmix:structuredContent, jmix:siteComponent

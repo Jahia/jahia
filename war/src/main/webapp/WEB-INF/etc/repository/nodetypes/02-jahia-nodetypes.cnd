@@ -518,7 +518,7 @@
 [jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:basicContent, jmix:editorialContent
  - j:node (weakreference) < jmix:droppableContent
 
-[jnt:contentFolderReference] > jnt:content, jmix:nodeReference, jmix:siteComponent, jmix:editorialContent
+[jnt:contentFolderReference] > jnt:content, jmix:nodeReference, jmix:list, jmix:editorialContent
  - j:node (weakreference) < jnt:contentFolder
 
 [jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:navMenuItem

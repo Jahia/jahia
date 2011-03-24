@@ -123,7 +123,6 @@
                         <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
                             <property name="cacheKeyGenerator" ref="cacheKeyGenerator"/>
-                            <property name="renderService" ref="RenderService"/>
                         </bean>
                     </list>
                 </entry>
@@ -156,7 +155,6 @@
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
                             <property name="availableDuringPublish" value="true"/>
                             <property name="cacheKeyGenerator" ref="cacheKeyGenerator"/>
-                            <property name="renderService" ref="RenderService"/>
                         </bean>
                         <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                     </list>

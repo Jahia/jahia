@@ -32,6 +32,7 @@
 
 package org.jahia.services.render.filter.cache;
 
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.render.RenderService;
 import org.slf4j.Logger;
@@ -84,21 +85,26 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
                 if (!path.startsWith("/jcr:system")) {
                     boolean flushRoles = false;
                     final int type = event.getType();
-                    if (path.contains("/templates") || path.startsWith("/templateSets")) {
-                        renderService.flushCache();
+                    if (renderService == null) {
+                        renderService = (RenderService) SpringContextSingleton.getBean("RenderService");
                     }
-                    if (path.contains("j:templateNode")) {
-                        renderService.flushCache();
-                    }
-                    if (path.endsWith("j:roles")) {
-                        flushRoles = true;
-                    }
-                    if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles ||
-                        type == Event.NODE_MOVED) {
-                        // Flushing cache of acl key for users as a group or an acl has been updated
-                        if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
-                            DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
-                            generator.flushUsersGroupsKey();
+                    if (renderService != null) {
+                        if (path.contains("/templates") || path.startsWith("/templateSets")) {
+                            renderService.flushCache();
+                        }
+                        if (path.contains("j:templateNode")) {
+                            renderService.flushCache();
+                        }
+                        if (path.endsWith("j:roles")) {
+                            flushRoles = true;
+                        }
+                        if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles ||
+                            type == Event.NODE_MOVED) {
+                            // Flushing cache of acl key for users as a group or an acl has been updated
+                            if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
+                                DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
+                                generator.flushUsersGroupsKey();
+                            }
                         }
                     }
                 }

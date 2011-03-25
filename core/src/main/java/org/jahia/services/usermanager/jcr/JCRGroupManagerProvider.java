@@ -33,6 +33,7 @@
 package org.jahia.services.usermanager.jcr;
 
 import org.slf4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -445,10 +446,12 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             if (property.getPath().contains("j:members")) {
                                 Node group = property.getParent().getParent().getParent();
                                 if (group.isNodeType("jnt:group")) {
-                                    int siteID;
+                                    int siteID = 0;
                                     try {
-                                        siteID = sitesService.getSiteByKey(group.getParent().getParent().getName())
-                                                .getID();
+                                        String siteKey = group.getParent().getParent().getName();
+                                        if (!StringUtils.isEmpty(siteKey)) {
+                                            siteID = sitesService.getSiteByKey(siteKey).getID();
+                                        }
                                     } catch (NullPointerException e) {
                                         siteID = 0;
                                     }

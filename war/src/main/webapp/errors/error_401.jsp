@@ -39,7 +39,7 @@
             </tr>
             </tbody>
         </table>
-        <c:if test="${not fn:startsWith(param.redirect, '/administration')}">
+        <c:if test="${not fn:contains(param.redirect, '/administration')}">
         <br/>
         <table align="center" width="100%" cellspacing="5">
           <tr>

@@ -10,15 +10,14 @@
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jahia65.css" type="text/css"/>
     <title><fmt:message key="label.error.maintenance.title"/></title>
-
 </head>
 <body class="login">
     <div id="adminLogin">
     <h2 class="loginlogo_beta"></h2>
-            <br class="clearFloat" />
-            <h3 class="loginIcon"><fmt:message key="label.error.maintenance.title"/></h3>
+        <br class="clearFloat" />
+        <h3 class="loginIcon"><fmt:message key="label.error.maintenance.title"/></h3>
         <p><fmt:message key="label.error.maintenance.description"/></p>
-            <br class="clearFloat" />
+        <br class="clearFloat" />
     </div>
 </body>
 </html>

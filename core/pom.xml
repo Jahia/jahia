@@ -23,6 +23,9 @@
         <repository>
         	<id>jboss-public</id>
         	<url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         	<snapshots>
         		<enabled>false</enabled>
         	</snapshots>

@@ -193,7 +193,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 heading = heading.substring(0, heading.length() - 1);
             }
             m_component.setHeading(heading);
-
             if (selectedNodes.size() == 1) {
                 service.initializeEditEngine(selectedNodes.get(0).getPath(),false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
                     public void onSuccess(GWTJahiaEditEngineInitBean result) {
@@ -209,6 +208,14 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         referencesWarnings = result.getReferencesWarnings();
                         for (TabItem item : tabs.getItems()) {
                             item.setEnabled(true);
+                            if (!tabs.getSelectedItem().equals(item)) {
+                                EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
+                                if (editItem instanceof ContentTabItem) {
+                                    if (((ContentTabItem) editItem).isNodeNameFieldDisplayed()) {
+                                        ((ContentTabItem) editItem).getName().setValue(getNodeName());
+                                    }
+                                }
+                            }
                         }
                         fillCurrentTab();
                     }
@@ -230,6 +237,14 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         for (TabItem item : tabs.getItems()) {
                             if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection()) {
                                 item.setEnabled(true);
+                            }
+                            if (!tabs.getSelectedItem().equals(item)) {
+                                EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
+                                if (editItem instanceof ContentTabItem) {
+                                    if (((ContentTabItem) editItem).isNodeNameFieldDisplayed()) {
+                                        ((ContentTabItem) editItem).getName().setValue(getNodeName());
+                                    }
+                                }
                             }
                         }
                         fillCurrentTab();
@@ -382,7 +397,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             }
             // Ajax call to update values
             AsyncCallback callback = new BaseAsyncCallback() {
-                public void onApplicationFailure(Throwable throwable) {                    
+                public void onApplicationFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window
                             .alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") +
                                     throwable.getLocalizedMessage());
@@ -391,7 +406,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                 public void onSuccess(Object o) {
                     Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
-                    linker.refreshTable();                    
+                    linker.refreshTable();
                 }
             };
 

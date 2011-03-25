@@ -34,6 +34,9 @@ package org.jahia.services.render.filter.cache;
 
 import junit.framework.TestCase;
 import net.sf.ehcache.Element;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -55,7 +58,7 @@ import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
 
 import java.util.*;
-
+import static org.junit.Assert.*;
 /**
  * Created by IntelliJ IDEA.
  *
@@ -63,7 +66,7 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 12 janv. 2010
  */
-public class CacheFilterTest extends TestCase {
+public class CacheFilterTest {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
 
     private static class TestFilter extends AbstractFilter {
@@ -79,18 +82,13 @@ public class CacheFilterTest extends TestCase {
     private JCRSessionWrapper session;
     protected JCRSiteNode site;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         try {
             JahiaSite site = TestHelper.createSite("test");
             paramBean = (ParamBean) Jahia.getThreadParamBean();
 
             paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
-
-            /*
-            JahiaData jData = new JahiaData(paramBean, false);
-            paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
-            */
 
             session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
             this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
@@ -116,17 +114,17 @@ public class CacheFilterTest extends TestCase {
         }
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         try {
-            session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
             TestHelper.deleteSite("test");
-            session.save();
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
         }
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
+    @Test
     public void testCacheFilter() throws Exception {
 
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -167,6 +165,7 @@ public class CacheFilterTest extends TestCase {
         assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry)element.getValue()).getObject()).contains(result));
     }
 
+    @Test
     public void testDependencies() throws Exception {
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
 

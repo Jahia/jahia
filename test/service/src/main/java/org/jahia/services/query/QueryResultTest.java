@@ -106,7 +106,7 @@ public class QueryResultTest {
 
     @After
     public void tearDown() {
-
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     @Test
@@ -299,7 +299,7 @@ public class QueryResultTest {
 
         // check one descendantnode
         res = doQuery(session, XPATH_SITECONTENT_ROOT_NODE
-                + "/contents/news//element(*, jnt:news) order by @jcr:title", Query.XPATH);        
+                + "/contents/news//element(*, jnt:news) order by @jcr:title", Query.XPATH);
         checkResultSize(res, 23);
 
         // check two descendantnodes with or
@@ -355,7 +355,7 @@ public class QueryResultTest {
         int i = 0;
         Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
 
-        JCRNodeWrapper cats = session.getNode("/categories");
+        JCRNodeWrapper cats = session.getNode("/sites/systemsite/categories");
         session.getWorkspace().getVersionManager().checkout(cats.getPath());
         if (!cats.hasNode("cat1"))
             cats.addNode("cat1", "jnt:category");

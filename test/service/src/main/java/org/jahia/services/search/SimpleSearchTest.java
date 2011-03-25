@@ -110,7 +110,7 @@ public class SimpleSearchTest {
                                                 TestHelper.WEB_TEMPLATES,
                                                 SettingsBean.getInstance()
                                                         .getJahiaVarDiskPath()
-                                                        + "/prepackagedSites/webtempaltes.zip",
+                                                        + "/prepackagedSites/webtemplates.zip",
                                                 "ACME.zip");
                                 jcrService.publishByMainId(session.getNode(
                                         SECOND_SITECONTENT_ROOT_NODE + "/home")
@@ -138,7 +138,7 @@ public class SimpleSearchTest {
 
     @After
     public void tearDown() {
-
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     @Test

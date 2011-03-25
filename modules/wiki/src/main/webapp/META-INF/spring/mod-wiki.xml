@@ -14,5 +14,7 @@
 
     <bean id="defaultSyntaxFactory" class="org.xwiki.rendering.internal.parser.DefaultSyntaxFactory"/>
 
-    <bean name="NewWikiPageHandler" class="org.jahia.modules.wiki.errors.NewWikiPageHandler"/>
+    <bean name="NewWikiPageHandler" class="org.jahia.modules.wiki.errors.NewWikiPageHandler">
+        <property name="urlResolverFactory" ref="urlResolverFactory" />
+    </bean>
 </beans>

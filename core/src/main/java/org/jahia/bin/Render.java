@@ -137,6 +137,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private SettingsBean settingsBean;
     private RenderService renderService;
     private JCRSessionFactory jcrSessionFactory;
+    private URLResolverFactory urlResolverFactory;
 
     private Integer sessionExpiryTime = null;
     private Integer cookieExpirationInDays = 1;
@@ -661,7 +662,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             final HttpSession session = req.getSession();
             Date date = getVersionDate(req);
             String versionLabel = getVersionLabel(req);
-            URLResolver urlResolver = new URLResolver(req.getPathInfo(), req.getServerName(), req);
+            URLResolver urlResolver = urlResolverFactory.createURLResolver(req.getPathInfo(), req.getServerName(), req);
             urlResolver.setVersionDate(date);
             urlResolver.setVersionLabel(versionLabel);
             // check permission
@@ -960,6 +961,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     public void setCookieExpirationInDays(Integer cookieExpirationInDays) {
         this.cookieExpirationInDays = cookieExpirationInDays;
+    }
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
     }
 
     /**

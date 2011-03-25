@@ -107,6 +107,7 @@
 				<bean class="org.jahia.services.seo.filter.VanityUrlSetter">
 					<property name="vanityUrlService"
 						ref="org.jahia.services.seo.jcr.VanityUrlService" />
+                    <property name="urlResolverFactory" ref="urlResolverFactory" />
 				</bean>
                 <bean class="org.jahia.services.render.filter.SiteParameterAdder" />
 			</list>
@@ -174,5 +175,10 @@
             </list>
             -->
         </property>
+    </bean>
+
+    <bean id="urlResolverFactory" class="org.jahia.services.render.URLResolverFactory">
+        <property name="cacheService" ref="JahiaCacheService" />
+        <property name="urlResolverListener" ref="urlResolverListener" />
     </bean>
 </beans>

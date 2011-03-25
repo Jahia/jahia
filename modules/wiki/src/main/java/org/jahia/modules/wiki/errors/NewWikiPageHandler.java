@@ -33,6 +33,7 @@
 package org.jahia.modules.wiki.errors;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.URLResolverFactory;
 import org.slf4j.Logger;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.services.content.JCRContentUtils;
@@ -60,13 +61,19 @@ import java.util.List;
 public class NewWikiPageHandler implements ErrorHandler {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(NewWikiPageHandler.class);
 
+    private URLResolverFactory urlResolverFactory;
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
+    }
+
     public boolean handle(Throwable e, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         try {
             if (!(e instanceof PathNotFoundException)) {
                 return false;
             }
-            URLResolver urlResolver = new URLResolver(request.getPathInfo(), request.getServerName(), request);
+            URLResolver urlResolver = urlResolverFactory.createURLResolver(request.getPathInfo(), request.getServerName(), request);
             JCRNodeWrapper pageNode;
             String parentPath = StringUtils.substringBeforeLast(urlResolver.getPath(), "/");
             String newName = StringUtils.substringAfterLast(urlResolver.getPath(), "/");

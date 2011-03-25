@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.URLResolverFactory;
 import org.slf4j.Logger;
 import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.api.Constants;
@@ -83,7 +84,13 @@ public class Find extends BaseFindController {
     private boolean defaultEscapeColon = false;
 
     private boolean defaultRemoveDuplicatePropertyValues = false;
-    
+
+    private URLResolverFactory urlResolverFactory;
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
+    }
+
     private int getInt(String paramName, int defaultValue, HttpServletRequest req) throws IllegalArgumentException {
         int param = defaultValue;
         String valueStr = req.getParameter(paramName);
@@ -175,7 +182,7 @@ public class Find extends BaseFindController {
 
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
             IOException, RepositoryException {
-        URLResolver urlResolver = new URLResolver(request.getPathInfo(), request.getServerName(), request);
+        URLResolver urlResolver = urlResolverFactory.createURLResolver(request.getPathInfo(), request.getServerName(), request);
         try {
             Query query = getQuery(request, response, urlResolver.getWorkspace(), urlResolver.getLocale());
             if (query == null) {

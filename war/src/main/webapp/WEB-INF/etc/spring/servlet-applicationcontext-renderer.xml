@@ -27,6 +27,7 @@
         <property name="renderService" ref="RenderService" />
         <property name="jcrSessionFactory" ref="jcrSessionFactory" />
         <property name="cookieExpirationInDays" value="1"/>
+        <property name="urlResolverFactory" ref="urlResolverFactory" />
     </bean>
 
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -51,7 +52,9 @@
                     </bean>
                 </entry>
                 <entry key="/find/**">
-                    <bean class="org.jahia.bin.Find"/>
+                    <bean class="org.jahia.bin.Find">
+                        <property name="urlResolverFactory" ref="urlResolverFactory" />
+                    </bean>
                 </entry>
                 <entry key="/findPrincipal">
                     <bean class="org.jahia.bin.FindPrincipal">
@@ -77,6 +80,7 @@
                 <entry key="/logout">
                     <bean name="org.jahia.bin.Logout" class="org.jahia.bin.Logout">
                         <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
+                        <property name="urlResolverFactory" ref="urlResolverFactory" />
                     </bean>
                 </entry>
                 <entry key="/captcha">

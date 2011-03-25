@@ -48,6 +48,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSite;
@@ -336,7 +337,7 @@ public class URLFilterTest {
                 { "/edit/default/fr", Constants.EDIT_WORKSPACE, Locale.FRENCH, "/", PathNotFoundException.class, "" },
                 { "/edit/default/fr/sites/test/home.html", Constants.EDIT_WORKSPACE, Locale.FRENCH, "/sites/test/home.html", JCRNodeWrapper.class, "/sites/test/home" }, };
         for (Object[] testPath : testPathes) {
-            URLResolver urlResolver = new URLResolver((String) testPath[0], "", (HttpServletRequest) new MockHttpServletRequest("GET",(String) testPath[0]));
+            URLResolver urlResolver = getUrlResolverFactory().createURLResolver((String) testPath[0], "", (HttpServletRequest) new MockHttpServletRequest("GET",(String) testPath[0]));
             urlResolver.setSiteKey(TESTSITE_NAME);
 
             assertTrue("Path " + testPath[0] + " not resolved correctly",
@@ -407,7 +408,7 @@ public class URLFilterTest {
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
                         Constants.EDIT_WORKSPACE, Locale.FRENCH).getUrl()
                 .equals("/testpage/french2"));
-        URLResolver urlResolver = new URLResolver("/edit/default/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/edit/default/testpage"));
+        URLResolver urlResolver = getUrlResolverFactory().createURLResolver("/edit/default/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/edit/default/testpage"));
         JCRNodeWrapper resolvedNode = null;
         try {
             resolvedNode = urlResolver.getNode();
@@ -415,7 +416,7 @@ public class URLFilterTest {
         } catch (PathNotFoundException e) {
         }
 
-        urlResolver = new URLResolver("/render/live/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
         try {
             resolvedNode = urlResolver.getNode();
             assertNull(
@@ -430,13 +431,13 @@ public class URLFilterTest {
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true, null);
         
-        urlResolver = new URLResolver("/render/live/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
         
-        urlResolver = new URLResolver("/render/live/testpage2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage2"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage2"));
         try {
             resolvedNode = urlResolver.getNode();
             assertNull("Node should not be returned as mapping is not active",
@@ -444,14 +445,14 @@ public class URLFilterTest {
         } catch (PathNotFoundException e) {
         }        
 
-        urlResolver = new URLResolver("/render/live/testpage/page3", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/page3"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/page3", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/page3"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
         
         
-        urlResolver = new URLResolver("/render/live/testpage/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
         try {
             resolvedNode = urlResolver.getNode();
             assertNull(
@@ -466,13 +467,13 @@ public class URLFilterTest {
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true, null);
         
-        urlResolver = new URLResolver("/render/live/testpage/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "fr".equals(resolvedNode.getLanguage()));        
         
-        urlResolver = new URLResolver("/render/live/testpage/french", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french"));
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/french", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
@@ -482,6 +483,10 @@ public class URLFilterTest {
     private VanityUrlService getVanityUrlService() {
         return (VanityUrlService) SpringContextSingleton
                 .getBean(VanityUrlService.class.getName());
+    }
+
+    private URLResolverFactory getUrlResolverFactory() {
+        return (URLResolverFactory) SpringContextSingleton.getBean("urlResolverFactory");
     }
 
 }

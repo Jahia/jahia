@@ -54,6 +54,8 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 
+    <bean id="urlResolverListener" class="org.jahia.services.render.URLResolverListener" />
+
     <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true" depends-on="springContextSingleton">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
@@ -124,6 +126,7 @@
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
                             <property name="cacheKeyGenerator" ref="cacheKeyGenerator"/>
                         </bean>
+                        <ref bean="urlResolverListener" />
                     </list>
                 </entry>
                 <entry key="live">
@@ -157,6 +160,7 @@
                             <property name="cacheKeyGenerator" ref="cacheKeyGenerator"/>
                         </bean>
                         <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
+                        <ref bean="urlResolverListener" />
                     </list>
                 </entry>
             </map>

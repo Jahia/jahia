@@ -62,9 +62,14 @@ import org.springframework.web.servlet.mvc.Controller;
 public class Logout implements Controller {
 
     private CookieAuthConfig cookieAuthConfig;
+    private URLResolverFactory urlResolverFactory;
 
     public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
         this.cookieAuthConfig = cookieAuthConfig;
+    }
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
     }
 
     /**
@@ -106,7 +111,7 @@ public class Logout implements Controller {
             // Remove servlet Dispatcher (hardcoded "/cms")
             url = url.substring(url.indexOf(request.getContextPath()) + request.getContextPath().length());
             url = url.startsWith("/cms") ? url.substring(url.indexOf("/cms") + 4) : url;
-            URLResolver r = new URLResolver(url, request.getServerName(), request);
+            URLResolver r = urlResolverFactory.createURLResolver(url, request.getServerName(), request);
             boolean redirectToStart = false;
             if (r.getPath().startsWith("/sites/")) {
                 try {

@@ -37,6 +37,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -56,6 +57,8 @@ public class ChainAction extends Action implements InitializingBean {
 
     private JahiaTemplateManagerService templateService;
     private DefaultPostAction defaultPostAction;
+    private URLResolverFactory urlResolverFactory;
+
     public static final String ACTION_NAME = "chain";
     public static final String CHAIN_OF_ACTION = "chainOfAction";
 
@@ -65,6 +68,10 @@ public class ChainAction extends Action implements InitializingBean {
 
     public void setTemplateService(JahiaTemplateManagerService templateService) {
         this.templateService = templateService;
+    }
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
     }
 
     public void setDefaultPostAction(DefaultPostAction defaultPostAction) {
@@ -82,7 +89,7 @@ public class ChainAction extends Action implements InitializingBean {
             for (String actionToDo : actions) {
                 if (DefaultPostAction.ACTION_NAME.equals(actionToDo)) {
                     String s = urlResolver.getUrlPathInfo().replace(".chain.do", "/*");
-                    URLResolver resolver = new URLResolver(s,req.getServerName(), req);
+                    URLResolver resolver = urlResolverFactory.createURLResolver(s,req.getServerName(), req);
                     resolver.setSiteKey(urlResolver.getSiteKey());
                     result = defaultPostAction.doExecute(req, renderContext, resource, session, parameters, resolver);
                 } else {

@@ -37,13 +37,17 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.cache.Cache;
 import org.slf4j.Logger;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
@@ -103,12 +107,47 @@ public class URLResolver {
     private String method;
     private Date versionDate;
     private String versionLabel;
+    private static final String CACHE_KEY_SEPARATOR = "___";
 
     public void setRenderContext(RenderContext renderContext) {
         this.renderContext = renderContext;
     }
 
     private RenderContext renderContext;
+    private Map<String, JCRNodeWrapper> resolvedNodes = new ConcurrentHashMap<String, JCRNodeWrapper>();
+    private Cache nodePathCache;
+    private Cache siteInfoCache;
+
+    public class SiteInfo {
+
+        private boolean htmlMarkupFilterEnabled;
+        private boolean mixLanguagesActive;
+        private boolean WCAGComplianceCheckEnabled;
+        private String defaultLanguage;
+
+        public SiteInfo(JCRSiteNode siteNode) {
+            this.htmlMarkupFilterEnabled = siteNode.isHtmlMarkupFilteringEnabled();
+            this.mixLanguagesActive = siteNode.isMixLanguagesActive();
+            this.WCAGComplianceCheckEnabled = siteNode.isWCAGComplianceCheckEnabled();
+            this.defaultLanguage = siteNode.getDefaultLanguage();
+        }
+
+        public boolean isHtmlMarkupFilterEnabled() {
+            return htmlMarkupFilterEnabled;
+        }
+
+        public boolean isMixLanguagesActive() {
+            return mixLanguagesActive;
+        }
+
+        public boolean isWCAGComplianceCheckEnabled() {
+            return WCAGComplianceCheckEnabled;
+        }
+
+        public String getDefaultLanguage() {
+            return defaultLanguage;
+        }
+    }
 
     /**
      * Initializes an instance of this class. This constructor is mainly used when
@@ -118,8 +157,10 @@ public class URLResolver {
      * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
      * @param request  the current HTTP servlet request object 
      */
-    public URLResolver(String urlPathInfo, String serverName, HttpServletRequest request) {
+    protected URLResolver(String urlPathInfo, String serverName, HttpServletRequest request, Cache nodePathCache, Cache siteInfoCache) {
         super();
+        this.nodePathCache = nodePathCache;
+        this.siteInfoCache = siteInfoCache;
         this.method = request.getMethod();
         this.urlPathInfo = urlPathInfo;
         servletPart = StringUtils.substring(getUrlPathInfo(), 1,
@@ -159,7 +200,9 @@ public class URLResolver {
      * @param url   URL in HTML links of outgoing requests
      * @param context  The current request in order to obtain the context path
      */
-    public URLResolver(String url, RenderContext context) {
+    protected URLResolver(String url, RenderContext context, Cache nodePathCache, Cache siteInfoCache) {
+        this.nodePathCache = nodePathCache;
+        this.siteInfoCache = siteInfoCache;
         method = context.getRequest().getMethod();
         renderContext = context;
         String contextPath = context.getRequest().getContextPath();
@@ -357,51 +400,76 @@ public class URLResolver {
             logger.debug("Resolving node for workspace '" + workspace
                     + "' locale '" + locale + "' and path '" + path + "'");
         }
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                workspace, new JCRCallback<JCRNodeWrapper>() {
-                    public JCRNodeWrapper doInJCR(JCRSessionWrapper session)
-                            throws RepositoryException {
-                        String nodePath = path.endsWith("/*")?path.substring(0,path.lastIndexOf("/*")):path;
-                        JCRNodeWrapper node = null;
-                        while (true) {
-                            try {
-                                node = session.getNode(nodePath);
-                                break;
-                            } catch (PathNotFoundException ex) {
-                                if (nodePath.lastIndexOf("/") < nodePath.lastIndexOf(".")) {
-                                    nodePath = nodePath.substring(0,nodePath.lastIndexOf("."));
-                                } else {
-                                    throw new PathNotFoundException("'" + nodePath + "'not found");
+        final String cacheKey = getCacheKey(workspace, locale, path);
+        if (resolvedNodes.containsKey(cacheKey)) {
+            return resolvedNodes.get(cacheKey);
+        }
+        JCRNodeWrapper node = null;
+        String nodePath = path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path;
+        SiteInfo siteInfo = null;
+        if (nodePathCache.containsKey(cacheKey) && siteInfoCache.containsKey(cacheKey)) {
+            nodePath = (String) nodePathCache.get(cacheKey);
+            siteInfo = (SiteInfo) siteInfoCache.get(cacheKey);
+        } else {
+            nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null,
+                    workspace, new JCRCallback<String>() {
+                        public String doInJCR(JCRSessionWrapper session)
+                                throws RepositoryException {
+                            String nodePath = path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path;
+                            JCRNodeWrapper node = null;
+                            while (true) {
+                                try {
+                                    node = session.getNode(nodePath);
+                                    break;
+                                } catch (PathNotFoundException ex) {
+                                    if (nodePath.lastIndexOf("/") < nodePath.lastIndexOf(".")) {
+                                        nodePath = nodePath.substring(0, nodePath.lastIndexOf("."));
+                                    } else {
+                                        throw new PathNotFoundException("'" + nodePath + "'not found");
+                                    }
                                 }
                             }
+                            nodePathCache.put(cacheKey, nodePath);
+                            SiteInfo siteInfo = new SiteInfo(node.getResolveSite());
+                            siteInfoCache.put(cacheKey, siteInfo);
+                            return nodePath;
                         }
+                    });
+            siteInfo = (SiteInfo) siteInfoCache.get(cacheKey);
+        }
 
-                        JCRSiteNode site = node.getResolveSite();
+        JCRSessionWrapper userSession = siteInfo != null
+                && siteInfo.getDefaultLanguage() != null
+                && siteInfo.isMixLanguagesActive() ? JCRSessionFactory
+                .getInstance().getCurrentUserSession(workspace,
+                        locale)
+                : JCRSessionFactory
+                .getInstance()
+                .getCurrentUserSession(
+                        workspace,
+                        locale,
+                        null);
+        if (userSession.getVersionDate() == null)
+            userSession.setVersionDate(versionDate);
+        if (userSession.getVersionLabel() == null)
+            userSession.setVersionLabel(versionLabel);
+        try {
+            node = userSession.getNode(nodePath);
+        } catch (PathNotFoundException e) {
+            throw new AccessDeniedException(path);
+        }
+        resolvedNodes.put(cacheKey, node);
+        return node;
 
-                        JCRSessionWrapper userSession = site != null
-                                && site.getDefaultLanguage() != null
-                                && site.isMixLanguagesActive() ? JCRSessionFactory
-                                .getInstance().getCurrentUserSession(workspace,
-                                        locale)
-                                : JCRSessionFactory
-                                .getInstance()
-                                .getCurrentUserSession(
-                                        workspace,
-                                        locale,
-                                        null);
-                        if(userSession.getVersionDate()==null)
-                            userSession.setVersionDate(versionDate);
-                        if(userSession.getVersionLabel()==null)
-                            userSession.setVersionLabel(versionLabel);
-                        try {
-                            node = userSession.getNode(nodePath);
-                        } catch (PathNotFoundException e) {
-                            throw new AccessDeniedException(path);
-                        }
+    }
 
-                        return node;
-                    }
-                });
+    private String getCacheKey(final String workspace, final Locale locale, final String path) {
+        StringBuilder builder = new StringBuilder(workspace);
+        builder.append(CACHE_KEY_SEPARATOR);
+        builder.append(locale.toString());
+        builder.append(CACHE_KEY_SEPARATOR);
+        builder.append(path);
+        return builder.toString();
     }
 
     /**
@@ -415,9 +483,6 @@ public class URLResolver {
      *            current locale
      * @param path
      *            The path of the node, in the specified workspace
-     * @param versionDate
-     *            The version date to get the resource of a versioned node, or the closest before this date
-     * @param versionLabel
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved

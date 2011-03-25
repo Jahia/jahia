@@ -55,6 +55,7 @@
 
     <bean class="org.jahia.modules.defaultmodule.actions.ChainAction">
         <property name="templateService" ref="JahiaTemplateManagerService"/>
+        <property name="urlResolverFactory" ref="urlResolverFactory" />
         <property name="defaultPostAction" >
             <bean class="org.jahia.bin.DefaultPostAction">
                 <property name="loggingService" ref="loggingService"/>

@@ -34,12 +34,9 @@ package org.jahia.services.seo.filter;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLGenerator;
-import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
@@ -54,6 +51,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
     private transient static Logger logger = LoggerFactory
             .getLogger(VanityUrlSetter.class);
     private VanityUrlService vanityUrlService;
+    private URLResolverFactory urlResolverFactory;
 
     /**
      * Checks whether the URL in the HTML attribute represents a Jahia content node and if
@@ -65,7 +63,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
     public String visit(final String attrValue, RenderContext context, Resource resource) {
         String value = attrValue;
         if (StringUtils.isNotEmpty(attrValue) && !URLGenerator.isLocalhost(context.getRequest().getServerName())) {
-            URLResolver urlResolver = new URLResolver(attrValue, context);
+            URLResolver urlResolver = urlResolverFactory.createURLResolver(attrValue, context);
             if (urlResolver.isMapped()) {
                 try {
                     VanityUrl vanityUrl = vanityUrlService
@@ -93,5 +91,9 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
      */
     public void setVanityUrlService(VanityUrlService vanityUrlService) {
         this.vanityUrlService = vanityUrlService;
+    }
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
     }
 }

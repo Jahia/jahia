@@ -2,18 +2,15 @@
     <inherits name="com.google.gwt.user.User"/>
     <inherits name="com.google.gwt.http.HTTP"/>
     <inherits name="com.google.gwt.i18n.I18N"/>
-    <inherits name="com.allen_sauer.gwt.log.gwt-log"/>
     <inherits name="com.extjs.gxt.ui.GXT"/>
 
-    <!-- Override the default value `OFF` -->
-    <extend-property name="log_level" values="DEBUG,OFF"/>
-    <set-property name="log_level" value="DEBUG"/>
-
-    <!-- Turn off `DivLogger` -->
+    <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
+    <!--
+    <inherits name="com.allen_sauer.gwt.log.gwt-log-ERROR" />
+    <extend-property name="log_level" values="DEBUG"/>
     <set-property name="log_DivLogger" value="DISABLED"/>
-
-    <!-- Turn on `fireLogger` -->
     <set-property name="log_FirebugLogger" value="ENABLED"/>
+    -->
 
     <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />
 

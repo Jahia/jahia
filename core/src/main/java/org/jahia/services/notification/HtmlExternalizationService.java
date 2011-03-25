@@ -165,7 +165,7 @@ public class HtmlExternalizationService {
                 }
 
                 sb.append(">\n");
-                if (Boolean.valueOf(request.getParameter("debug"))) {
+                if (request!=null && Boolean.valueOf(request.getParameter("debug"))) {
                 	sb.append("/* ").append(href).append(" */\n");
                 }
                 sb.append(styleSheetContent)

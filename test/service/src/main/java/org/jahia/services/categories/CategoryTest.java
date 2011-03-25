@@ -32,14 +32,17 @@
 
 package org.jahia.services.categories;
 
-import junit.framework.TestCase;
 import org.jahia.exceptions.JahiaException;
-
-import java.util.List;
-import java.util.Iterator;
-import java.util.Locale;
+import org.jahia.services.content.JCRSessionFactory;
+import org.junit.After;
+import org.junit.Test;
 
 import javax.jcr.Node;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for category service.
@@ -48,30 +51,34 @@ import javax.jcr.Node;
  *         Date: Aug 11, 2009
  *         Time: 3:24:43 PM
  */
-public class CategoryTest extends TestCase {
+public class CategoryTest {
 
+    @Test
     public void testCategoriesRoot() throws Exception {
         Node rootCategory = Category.getCategoriesRoot(); // root category is created at service start so it should already exist at this point.
         assertNotNull(rootCategory);
     }
 
+    @Test
     public void testCreateRootCategory() throws Exception {
         Category newRootCategory = Category.createCategory("firstRoot", null);
-        assertNotNull(newRootCategory);        
-        deleteCategoryWithChildren(newRootCategory);        
+        assertNotNull(newRootCategory);
+        deleteCategoryWithChildren(newRootCategory);
     }
-    
+
+    @Test
     public void testCreateCategory() throws Exception {
         Category rootCategory = Category.createCategory("firstRoot", null);
-        assertNotNull(rootCategory);        
-        Category newCategory = Category.createCategory("firstChild", rootCategory);        
+        assertNotNull(rootCategory);
+        Category newCategory = Category.createCategory("firstChild", rootCategory);
         List<Category> rootChilds = rootCategory.getChildCategories();
         assertTrue(rootChilds.size() == 1);
         deleteCategoryWithChildren(newCategory);
-    }    
+    }
 
+    @Test
     public void testCategoryKeyUnicity() throws Exception {
-        Category rootCategory = Category.createCategory("firstRoot", null);        
+        Category rootCategory = Category.createCategory("firstRoot", null);
         Category.createCategory("firstChild", rootCategory);
         List<Category> rootChilds = rootCategory.getChildCategories();
         assertTrue(rootChilds.size() == 1);
@@ -83,11 +90,12 @@ public class CategoryTest extends TestCase {
             duplicateDetected = true;
         }
         assertTrue(duplicateDetected);
-        
+
         deleteCategoryWithChildren(rootCategory);
 
     }
 
+    @Test
     public void testUpdateCategoryTitle() throws Exception {
         Category rootCategory = Category.createCategory("firstRoot", null);
         Category newCategory = Category.createCategory("firstChild", rootCategory);
@@ -115,11 +123,12 @@ public class CategoryTest extends TestCase {
         deleteCategoryWithChildren(rootCategory);
     }
 
+    @Test
     public void testCategoryProperties() throws Exception {
         // commented for now as category properties are no longer supported
         // but there will be category relationships, which could be tested
         // in a similar way
-        
+
         /*Category rootCategory = Category.createCategory("firstRoot", null);
         Category newCategory = Category.createCategory("firstChild", rootCategory);
         List<Category> rootChilds = rootCategory.getChildCategories();
@@ -144,10 +153,10 @@ public class CategoryTest extends TestCase {
         newCategory.removeProperty("NullProperty");
 
         deleteCategoryWithChildren(newCategory);*/
-        
+
     }
 
-
+    @Test
     public void testCategoryDelete() throws Exception {
         Category rootCategory = Category.createCategory("firstRoot", null);
         Category.createCategory("firstChild", rootCategory);
@@ -164,19 +173,21 @@ public class CategoryTest extends TestCase {
         assertTrue(aclWasDeleted);*/
     }
 
+    @Test
     public void testBuildCategoryTree() throws Exception {
         Category rootCategory = Category.createCategory("firstRoot", null);
         Category newCategory = Category.createCategory("rootChild", rootCategory);
         buildCategoryTree(newCategory, 4, 3);
-        int sizeOfTree=0;
-        for(int i =1; i <=4;i++) {
-            sizeOfTree += Math.pow(3,i);
+        int sizeOfTree = 0;
+        for (int i = 1; i <= 4; i++) {
+            sizeOfTree += Math.pow(3, i);
         }
         final List<Category> childCategories = newCategory.getChildCategories(true);
-        assertTrue(childCategories.size()==sizeOfTree);
-        deleteCategoryWithChildren(rootCategory);       
+        assertTrue(childCategories.size() == sizeOfTree);
+        deleteCategoryWithChildren(rootCategory);
     }
 
+    @Test
     public void testCategoryPath() throws Exception {
         Category rootCategory = Category.createCategory("firstRoot", null);
         Category newCategory = Category.createCategory("rootChild", rootCategory);
@@ -186,6 +197,7 @@ public class CategoryTest extends TestCase {
         deleteCategoryWithChildren(rootCategory);
     }
 
+    @Test
     public void testCategoryChilds() throws Exception {
         Category rootCategory = Category.createCategory("firstRoot", null);
         Category.createCategory("rootChild", rootCategory);
@@ -199,8 +211,9 @@ public class CategoryTest extends TestCase {
         if (depth == 0) {
             return;
         }
-        for (int i=0; i < nbChildren; i++) {
-            Category newCategory = Category.createCategory(parentCategory.getKey() + "_child_" + Integer.toString(i), parentCategory);
+        for (int i = 0; i < nbChildren; i++) {
+            Category newCategory = Category.createCategory(parentCategory.getKey() + "_child_" + Integer.toString(i),
+                    parentCategory);
             buildCategoryTree(newCategory, depth - 1, nbChildren);
         }
     }
@@ -214,10 +227,12 @@ public class CategoryTest extends TestCase {
         currentCategory.delete();
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         for (Category rootCategory : Category.getRootCategories(null)) {
             deleteCategoryWithChildren(rootCategory);
         }
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
 }

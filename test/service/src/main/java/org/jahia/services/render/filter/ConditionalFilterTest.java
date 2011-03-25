@@ -32,8 +32,6 @@
 
 package org.jahia.services.render.filter;
 
-import junit.framework.TestCase;
-
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -47,13 +45,18 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for the conditional execution of the rendering filters.
- * 
+ *
  * @author Sergiy Shyrkov
  */
-public class ConditionalFilterTest extends TestCase {
+public class ConditionalFilterTest {
 
     private static class TestFilter extends AbstractFilter {
         @Override
@@ -68,23 +71,18 @@ public class ConditionalFilterTest extends TestCase {
     private JCRSessionWrapper session;
     private JCRSiteNode site;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         JahiaSite site = TestHelper.createSite("test");
 
         paramBean = (ParamBean) Jahia.getThreadParamBean();
 
         paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
 
-        /*
-        JahiaData jData = new JahiaData(paramBean, false);
-        paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
-        */
-        
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
+        this.site = (JCRSiteNode) session.getNode("/sites/" + site.getSiteKey());
 
-        JCRNodeWrapper shared = session.getNode("/sites/"+site.getSiteKey()+"/contents");
+        JCRNodeWrapper shared = session.getNode("/sites/" + site.getSiteKey() + "/contents");
         if (shared.hasNode("testContent")) {
             shared.getNode("testContent").remove();
         }
@@ -96,12 +94,14 @@ public class ConditionalFilterTest extends TestCase {
         session.save();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         TestHelper.deleteSite("test");
         session.save();
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
+    @Test
     public void testModules() throws Exception {
 
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -120,8 +120,7 @@ public class ConditionalFilterTest extends TestCase {
         context.setSite(site);
         Resource resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
-        context.getRequest().setAttribute("script",
-                RenderService.getInstance().resolveScript(resource, context));
+        context.getRequest().setAttribute("script", RenderService.getInstance().resolveScript(resource, context));
 
         // test on a resource from the default Jahia module
         BaseAttributesFilter baseAttributesFilter = new BaseAttributesFilter();
@@ -137,8 +136,8 @@ public class ConditionalFilterTest extends TestCase {
 
         String result = chain.doFilter(context, resource);
 
-        assertTrue("TestFilter is not applied for resource from the 'Default Jahia Templates' module", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for resource from the 'Default Jahia Templates' module", result.contains(
+                "TestFilter"));
 
         // test on a resource from the default Jahia module
         resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
@@ -161,8 +160,8 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is not applied for resource from the 'Default Jahia Templates' module", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for resource from the 'Default Jahia Templates' module", result.contains(
+                "TestFilter"));
 
         // test NOT condition
         conditionalFilter = new TestFilter();
@@ -171,8 +170,8 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is applied for resource from the 'Default Jahia Templates' module", !result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is applied for resource from the 'Default Jahia Templates' module", !result.contains(
+                "TestFilter"));
 
         // test NOT condition (inverted)
         conditionalFilter = new TestFilter();
@@ -181,10 +180,11 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is not applied for resource from the 'Default Jahia Templates' module", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for resource from the 'Default Jahia Templates' module", result.contains(
+                "TestFilter"));
     }
 
+    @Test
     public void testNodeTypes() throws Exception {
 
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -225,8 +225,8 @@ public class ConditionalFilterTest extends TestCase {
         context.setMainResource(resource);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is applied for node that does not have jnt:contentList type", !result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is applied for node that does not have jnt:contentList type", !result.contains(
+                "TestFilter"));
 
         // test multiple node types condition
         resource = new Resource(node.getNode("testType2"), "html", null, Resource.CONFIGURATION_PAGE);
@@ -248,8 +248,7 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is not applied for node, having jmix:tagged mixin type", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for node, having jmix:tagged mixin type", result.contains("TestFilter"));
 
         // test NOT condition
         conditionalFilter = new TestFilter();
@@ -258,8 +257,7 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is applied for node, having jmix:tagged mixin type", !result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is applied for node, having jmix:tagged mixin type", !result.contains("TestFilter"));
 
         // test NOT condition (inverted)
         conditionalFilter = new TestFilter();
@@ -268,10 +266,10 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is not applied for node, not having jmix:my mixin type", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for node, not having jmix:my mixin type", result.contains("TestFilter"));
     }
 
+    @Test
     public void testTemplates() throws Exception {
 
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -305,16 +303,15 @@ public class ConditionalFilterTest extends TestCase {
 
         String result = chain.doFilter(context, resource);
 
-        assertTrue("TestFilter is not applied for resource, having 'mine' template", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for resource, having 'mine' template", result.contains("TestFilter"));
 
         // test on a resource with 'others' template
         resource = new Resource(node.getNode("testType"), "html", "others", Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is applied for resource that does not have 'mine' template", !result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is applied for resource that does not have 'mine' template", !result.contains(
+                "TestFilter"));
 
         // test multiple templates condition
         resource = new Resource(node.getNode("testType"), "html", "mine", Resource.CONFIGURATION_PAGE);
@@ -325,8 +322,7 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is not applied for resource, having 'mine' template", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for resource, having 'mine' template", result.contains("TestFilter"));
 
         // test NOT condition
         conditionalFilter = new TestFilter();
@@ -335,8 +331,7 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is applied for resource, having 'mine' template", !result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is applied for resource, having 'mine' template", !result.contains("TestFilter"));
 
         // test NOT condition (inverted)
         conditionalFilter = new TestFilter();
@@ -345,10 +340,11 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is not applied for resource, not having 'unknown' template", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for resource, not having 'unknown' template", result.contains(
+                "TestFilter"));
     }
 
+    @Test
     public void testTemplateTypes() throws Exception {
 
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -382,8 +378,8 @@ public class ConditionalFilterTest extends TestCase {
 
         String result = chain.doFilter(context, resource);
 
-        assertTrue("TestFilter is not applied for resource, having 'html' template type", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for resource, having 'html' template type", result.contains(
+                "TestFilter"));
 
         // test on a resource with 'xml' template type
         resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
@@ -394,8 +390,8 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is applied for resource that does not have 'rss' template", !result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is applied for resource that does not have 'rss' template", !result.contains(
+                "TestFilter"));
 
         // test multiple template types condition
         resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
@@ -406,8 +402,8 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is not applied for resource, having 'html' template type", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for resource, having 'html' template type", result.contains(
+                "TestFilter"));
 
         // test NOT condition
         resource = new Resource(node.getNode("testType"), "html", null, Resource.CONFIGURATION_PAGE);
@@ -418,8 +414,7 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is applied for resource, having 'html' template type", !result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is applied for resource, having 'html' template type", !result.contains("TestFilter"));
 
         // test NOT condition (inverted)
         conditionalFilter = new TestFilter();
@@ -428,8 +423,8 @@ public class ConditionalFilterTest extends TestCase {
         conditionalFilter.setPriority(10);
         chain = new RenderChain(baseAttributesFilter, conditionalFilter, outFilter);
         result = chain.doFilter(context, resource);
-        assertTrue("TestFilter is not applied for resource, not having 'rss' template type", result
-                .contains("TestFilter"));
+        assertTrue("TestFilter is not applied for resource, not having 'rss' template type", result.contains(
+                "TestFilter"));
     }
 
 }

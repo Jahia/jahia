@@ -32,12 +32,10 @@
 
 package org.jahia.bin;
 
-import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
@@ -47,6 +45,10 @@ import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -57,14 +59,15 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import static org.junit.Assert.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: loom
  * Date: Mar 14, 2010
  * Time: 1:40:10 PM
- * 
  */
-public class RenderTest extends TestCase {
+public class RenderTest {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(RenderTest.class);
     private JahiaSite site;
@@ -76,12 +79,11 @@ public class RenderTest extends TestCase {
 
     HttpClient client;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
-
+    @Before
+    public void setUp() throws Exception {
         try {
-            site = TestHelper.createSite(TESTSITE_NAME, "localhost"+System.currentTimeMillis(), TestHelper.INTRANET_TEMPLATES);
+            site = TestHelper.createSite(TESTSITE_NAME, "localhost" + System.currentTimeMillis(),
+                    TestHelper.INTRANET_TEMPLATES);
             assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
@@ -92,7 +94,7 @@ public class RenderTest extends TestCase {
 
         // todo we should really insert content to test the find.
 
-        PostMethod loginMethod = new PostMethod("http://localhost:8080"+Jahia.getContextPath()+"/cms/login");
+        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/login");
         loginMethod.addParameter("username", "root");
         loginMethod.addParameter("password", "root1234");
         loginMethod.addParameter("redirectActive", "false");
@@ -105,11 +107,10 @@ public class RenderTest extends TestCase {
         }
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
+    @After
+    public void tearDown() throws Exception {
 
-        PostMethod logoutMethod = new PostMethod("http://localhost:8080"+Jahia.getContextPath()+"/cms/logout");
+        PostMethod logoutMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
@@ -124,20 +125,25 @@ public class RenderTest extends TestCase {
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
+    @Test
     public void testVersionRender() throws RepositoryException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
         JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
-        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                Locale.ENGLISH);
+        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                Locale.ENGLISH);
 
         JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
 
         Node versioningTestActivity = editSession.getWorkspace().getVersionManager().createActivity("versioningTest");
         Node previousActivity = editSession.getWorkspace().getVersionManager().setActivity(versioningTestActivity);
         if (previousActivity != null) {
-            logger.debug("Previous activity=" + previousActivity.getName() + " new activity=" + versioningTestActivity.getName());
+            logger.debug("Previous activity=" + previousActivity.getName() + " new activity=" +
+                         versioningTestActivity.getName());
         } else {
             logger.debug("New activity=" + versioningTestActivity.getName());
         }
@@ -151,7 +157,8 @@ public class RenderTest extends TestCase {
         editSession.save();
 
         // publish it
-        jcrService.publishByMainId(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true,Collections.<String>emptyList());
+        jcrService.publishByMainId(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                true, Collections.<String>emptyList());
         String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
                 GregorianCalendar.getInstance().getTime());
         jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stageNode.getIdentifier()), label);
@@ -161,10 +168,10 @@ public class RenderTest extends TestCase {
             editSession.save();
 
             // each time the node i published, a new version should be created
-            jcrService.publishByMainId(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                    Collections.<String>emptyList());
+            jcrService.publishByMainId(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE,
+                    Constants.LIVE_WORKSPACE, null, false, Collections.<String>emptyList());
             label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
-                GregorianCalendar.getInstance().getTime());
+                    GregorianCalendar.getInstance().getTime());
             jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stagedSubPage.getIdentifier()), label);
             try {
                 Thread.sleep(1000);
@@ -186,17 +193,21 @@ public class RenderTest extends TestCase {
         int index = 0;
         for (VersionInfo curVersionInfo : liveVersionInfos) {
             if (curVersionInfo.getVersion().getCreated() != null) {
-            GetMethod versionGet = new GetMethod("http://localhost:8080"+Jahia.getContextPath()+"/cms/render/live/en" + subPagePublishedNode.getPath() + ".html?v=" + curVersionInfo.getVersion().getCreated().getTime().getTime());
-            try {
-                int responseCode = client.executeMethod(versionGet);
-                assertEquals("Response code " + responseCode, 200, responseCode);
-                String responseBody = versionGet.getResponseBodyAsString();
-                logger.debug("Response body=[" + responseBody + "]");
-                assertFalse("Couldn't find expected value (title" + Integer.toString(index)+") in response body", responseBody.indexOf("title" + Integer.toString(index)) < 0);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-            index++;
+                GetMethod versionGet = new GetMethod(
+                        "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
+                        subPagePublishedNode.getPath() + ".html?v=" +
+                        curVersionInfo.getVersion().getCreated().getTime().getTime());
+                try {
+                    int responseCode = client.executeMethod(versionGet);
+                    assertEquals("Response code " + responseCode, 200, responseCode);
+                    String responseBody = versionGet.getResponseBodyAsString();
+                    logger.debug("Response body=[" + responseBody + "]");
+                    assertFalse("Couldn't find expected value (title" + Integer.toString(index) + ") in response body",
+                            responseBody.indexOf("title" + Integer.toString(index)) < 0);
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                index++;
             }
         }
         index++;
@@ -205,13 +216,15 @@ public class RenderTest extends TestCase {
 
     }
 
+    @Test
     public void testRestAPI() throws RepositoryException, IOException, JSONException {
 
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
         Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
 
-        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale);
+        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                englishLocale);
         jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale);
 
         JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
@@ -230,7 +243,9 @@ public class RenderTest extends TestCase {
         mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + "0");
         mainContent.setProperty("body", MAIN_CONTENT_BODY + "0");
 
-        PostMethod createPost = new PostMethod("http://localhost:8080"+Jahia.getContextPath()+"/cms/render/default/en" + SITECONTENT_ROOT_NODE + "/home/pagecontent/row1/col1/*");
+        PostMethod createPost = new PostMethod(
+                "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + SITECONTENT_ROOT_NODE +
+                "/home/pagecontent/row1/col1/*");
         createPost.addRequestHeader("x-requested-with", "XMLHttpRequest");
         createPost.addRequestHeader("accept", "application/json");
         // here we voluntarily don't set the node name to test automatic name creation.

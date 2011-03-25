@@ -43,7 +43,11 @@ import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
 import java.util.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
+import static org.junit.Assert.*;
 /**
  * Unit test for publish / unpublish using JCR
  * - tests publish / unpublish of pages, container lists, containers
@@ -74,7 +78,7 @@ import java.util.*;
  * TestF - concurrent modifications (especially moves) in both workspaces.
  *
  */
-public class PublicationTest extends TestCase {
+public class PublicationTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PublicationTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrPublicationTest";
@@ -82,7 +86,8 @@ public class PublicationTest extends TestCase {
     private final static String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
 //    private static final String INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE = "English shared text";
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         try {
             site = TestHelper.createSite(TESTSITE_NAME);
             assertNotNull(site);
@@ -777,6 +782,7 @@ public class PublicationTest extends TestCase {
 //
 //    }
 
+    @Test
     public void testCPagesWithSubPages() throws RepositoryException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
@@ -948,7 +954,7 @@ public class PublicationTest extends TestCase {
         
     }
 */
-
+    @Test
     public void testAddMixinAndPublish() throws RepositoryException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
@@ -1137,13 +1143,14 @@ public class PublicationTest extends TestCase {
         assertTrue("Move inside the same list has not been properly " + (workspace.equals(Constants.EDIT_WORKSPACE) ? "done in staging mode" : "propagated to live mode") + " ! Expected value=" + expectedValue + " but found value=" + foundValue, orderIsValid && index == 2);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
 }

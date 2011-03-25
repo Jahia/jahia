@@ -47,6 +47,7 @@ import net.htmlparser.jericho.StartTag;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -63,7 +64,8 @@ public class HtmlExternalizationServiceTest {
 
     private static HtmlExternalizationService service;
     
-    private String source; 
+    private String source;
+    private String serverUrl;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -85,6 +87,7 @@ public class HtmlExternalizationServiceTest {
         IOUtils.closeQuietly(is);
         source = writer.toString();
         assertTrue("Resource cannot be read or is empty", StringUtils.isNotEmpty(source));
+        serverUrl = "http://www.jahia-test.org:8080"+ Jahia.getContextPath();
     }
 
     @After
@@ -95,7 +98,7 @@ public class HtmlExternalizationServiceTest {
     @Test
     public void testUrls() throws Exception {
         
-        String output = service.externalize(source, "http://www.jahia-test.org");
+        String output = service.externalize(source, serverUrl);
         
         assertTrue("Output is empty", StringUtils.isNotEmpty(output));
         
@@ -111,8 +114,8 @@ public class HtmlExternalizationServiceTest {
 
     @Test
     public void testCss() throws Exception {
-        
-        String output = service.externalize(source, "http://www.jahia-test.org");
+
+        String output = service.externalize(source, serverUrl);
         
         assertTrue("Output is empty", StringUtils.isNotEmpty(output));
         
@@ -122,18 +125,14 @@ public class HtmlExternalizationServiceTest {
         List<StartTag> cssStartTags = src.getAllStartTags(HTMLElementName.LINK);
         for (StartTag startTag : cssStartTags) {
             String rel = startTag.getAttributeValue("rel");
-            assertTrue("CSS was inlined correctly " + startTag.getAttributeValue("href"), rel == null || !"stylesheet".equalsIgnoreCase(rel));
+            assertTrue("CSS was not inlined correctly " + startTag.getAttributeValue("href"), rel == null || !"stylesheet".equalsIgnoreCase(rel));
         }
-        
-        // check JavaScript
-        List<Element> scriptTags = src.getAllElements(HTMLElementName.SCRIPT);
-        assertTrue("Not all script tags were removed. " + scriptTags.size() + " tags remain.", scriptTags.isEmpty());
     }
 
     @Test
     public void testJavaScript() throws Exception {
         
-        String output = service.externalize(source, "http://www.jahia-test.org");
+        String output = service.externalize(source, serverUrl);
         
         assertTrue("Output is empty", StringUtils.isNotEmpty(output));
         
@@ -148,11 +147,11 @@ public class HtmlExternalizationServiceTest {
     @Test
     public void testCssUrls() throws Exception {
         
-        String output = service.externalize(source, "http://www.jahia-test.org");
+        String output = service.externalize(source, serverUrl);
         
         assertTrue("Output is empty", StringUtils.isNotEmpty(output));
         
         // check CSS URLs
-        assertTrue("CSS URLs were not rewritten correctly", output.contains("background: url(\"http://www.jahia-test.org/css/images"));
+        assertTrue("CSS URLs were not rewritten correctly", output.contains("background: url(\""+serverUrl+"/css/images"));
     }
 }

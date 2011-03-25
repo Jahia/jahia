@@ -76,41 +76,41 @@ public class URLInterceptorTest {
         JahiaData jData = new JahiaData(paramBean, false);
         paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
         */
-        
-        session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        localizedSession = JCRSessionFactory.getInstance().getCurrentUserSession(null, Locale.ENGLISH);
     }
 
     @Before
     public void setUp() throws RepositoryException {
-
+        session = JCRSessionFactory.getInstance().getCurrentUserSession();
         JCRNodeWrapper shared = session.getNode("/sites/"+site.getSiteKey()+"/contents");
+        if (!shared.isCheckedOut()) {
+            session.checkout(shared);
+        }
         if (shared.hasNode("testContent")) {
             shared.getNode("testContent").remove();
         }
         if (shared.hasNode("refContent")) {
             shared.getNode("refContent").remove();
         }
-        if (!shared.isCheckedOut()) {
-            session.checkout(shared);
-        }
+        session.save();
 
         node = shared.addNode("testContent", "jnt:mainContent");
         node = shared.addNode("refContent", "jnt:mainContent");
 
         session.save();
+        localizedSession = JCRSessionFactory.getInstance().getCurrentUserSession(null, Locale.ENGLISH);
     }
     
     @After
     public void tearDown() throws Exception {
-        node.remove();
         session.save();
+        localizedSession.save();
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
     
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         TestHelper.deleteSite("test");
-        session.save();
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     @Test

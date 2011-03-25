@@ -8,10 +8,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 
 import javax.jcr.PathNotFoundException;
@@ -119,6 +116,13 @@ public class AclTest {
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }
+        JCRSessionFactory.getInstance().closeAllSessions();
+    }
+
+    @Before
+    public void setUp() throws RepositoryException {
+        session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        session.save();
     }
 
     @After
@@ -131,6 +135,7 @@ public class AclTest {
         content21.revokeAllRoles();
         content21.revokeAllRoles();
         session.save();
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     @Test

@@ -800,4 +800,24 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             workflowDefByKey.flush();
         }
     }
+
+    public ExecutionService getExecutionService() {
+        return executionService;
+    }
+
+    public HistoryService getHistoryService() {
+        return historyService;
+    }
+
+    public ManagementService getManagementService() {
+        return managementService;
+    }
+
+    public RepositoryService getRepositoryService() {
+        return repositoryService;
+    }
+
+    public TaskService getTaskService() {
+        return taskService;
+    }
 }

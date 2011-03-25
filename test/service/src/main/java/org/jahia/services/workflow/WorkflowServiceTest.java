@@ -33,7 +33,9 @@
 package org.jahia.services.workflow;
 
 import com.google.common.collect.Sets;
+import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
@@ -43,6 +45,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.workflow.jbpm.JBPMProvider;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
 import org.jbpm.api.JbpmException;
@@ -68,6 +71,7 @@ public class WorkflowServiceTest {
     private static JahiaUser johndoe;
     private static JahiaUser johnsmoe;
     private static JahiaGroup group;
+    private static final long MILLIS = 1000l;
     private HashMap<String, Object> emptyMap;
     private static final String PROVIDER = "jBPM";
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowServiceTest.class);
@@ -85,6 +89,8 @@ public class WorkflowServiceTest {
         JCRSessionFactory.getInstance().getCurrentUserSession().save();
         service = WorkflowService.getInstance();
         publicationService = JCRPublicationService.getInstance();
+        JBPMProvider jBPMProvider = (JBPMProvider) SpringContextSingleton.getBean("jBPMProvider");
+        jBPMProvider.registerListeners();
     }
 
     @AfterClass
@@ -101,17 +107,23 @@ public class WorkflowServiceTest {
         userManagerService.deleteUser(userManagerService.lookupUser("johnsmoe"));
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         session.save();
-        session.logout();
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
     
     @Before
     public void setUp() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(null, Locale.ENGLISH);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         JCRNodeWrapper root = session.getNode(SITECONTENT_ROOT_NODE);
         session.checkout(root);
         stageNode = root.addNode("child-" + ++nodeCounter, "jnt:text");
         session.save();
         emptyMap = new HashMap<String, Object>();
+    }
+
+    private void getCleanStageNode() throws Exception {
+        JCRSessionFactory.getInstance().closeAllSessions();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        stageNode = session.getNode(SITECONTENT_ROOT_NODE+"/child-" + nodeCounter);
     }
 
     @Test
@@ -135,6 +147,8 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
+        Thread.sleep(MILLIS);
+        getCleanStageNode();
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         assertTrue("There should be some active activities for the first workflow in jBPM", activeWorkflows.get(0)
@@ -162,6 +176,8 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
+        Thread.sleep(MILLIS);
+        getCleanStageNode();
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         final Set<WorkflowAction> availableActions = activeWorkflows.get(0).getAvailableActions();
@@ -199,6 +215,8 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
+        Thread.sleep(MILLIS);
+        getCleanStageNode();
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
@@ -234,6 +252,8 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
+        Thread.sleep(MILLIS);
+        getCleanStageNode();
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
@@ -274,6 +294,8 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,map);
         assertNotNull("The startup of a process should have return an id", processId);
+        Thread.sleep(MILLIS);
+        getCleanStageNode();
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
@@ -329,6 +351,7 @@ public class WorkflowServiceTest {
         		// ignore it
         	}
         }
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     private static void initUsersGroup() {
@@ -385,6 +408,8 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
+        Thread.sleep(MILLIS);
+        getCleanStageNode();
         List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
@@ -436,6 +461,8 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
+        Thread.sleep(MILLIS);
+        getCleanStageNode();
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
@@ -473,6 +500,8 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
+        Thread.sleep(MILLIS);
+        getCleanStageNode();
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
@@ -506,43 +535,5 @@ public class WorkflowServiceTest {
         List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getProcessId(), historyItem
                 .getProvider(), null);
         assertEquals("The workflow process should have two history task records", 2, tasks.size());
-    }
-
-    @Test
-    public void testTimerStatus() throws Exception {
-        final HashMap<String, Object> map = new HashMap<String, Object>();
-        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
-        map.put("endDate",values);
-        long scheduleTime = System.currentTimeMillis() + 1000 * 60 * 5;
-        values.add(new WorkflowVariable(String.valueOf(scheduleTime), PropertyType.STRING));
-        map.put("startDate",values);
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH).values();
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final WorkflowDefinition workflow = workflowList.iterator().next();
-        assertNotNull("Workflow should not be null", workflow);
-        map.put("publicationInfos", publicationService.getPublicationInfos(
-                Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));        
-        processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
-        assertNotNull("The startup of a process should have return an id", processId);
-        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
-        assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
-        Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
-        assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
-        WorkflowAction action = actionSet.iterator().next();
-        assertTrue(action instanceof WorkflowTask);
-        WorkflowTask task = (WorkflowTask) action;
-        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root");
-        assertNotNull(user);
-        service.assignTask(task.getId(), PROVIDER, user);
-        List<WorkflowTask> forUser = service.getTasksForUser(user, Locale.ENGLISH);
-        assertTrue(forUser.size() > 0);
-        WorkflowTask workflowTask = forUser.get(0);
-        service.completeTask(workflowTask.getId(), PROVIDER, workflowTask.getOutcomes().contains(
-                "accept") ? "accept" : "reject", map, johndoe);
-        assertTrue(service.getTasksForUser(user, Locale.ENGLISH).size() < forUser.size());
-        List<Workflow> list = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
-        assertTrue(list.size()>0);
-        assertNotNull(list.get(0).getDuedate().getTime());
     }
 }

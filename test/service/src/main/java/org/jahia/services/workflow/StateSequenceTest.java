@@ -32,43 +32,53 @@
 
 package org.jahia.services.workflow;
 
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.workflow.jbpm.JBPMProvider;
 import org.jbpm.api.Execution;
+import org.jbpm.api.ExecutionService;
 import org.jbpm.api.ProcessInstance;
-import org.jbpm.test.JbpmTestCase;
+import org.jbpm.api.RepositoryService;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-
+import static org.junit.Assert.*;
 /**
  * @author Tom Baeyens
  */
-public class StateSequenceTest extends JbpmTestCase {
+public class StateSequenceTest {
 
-  String deploymentId;
+    static String deploymentId;
+    private static RepositoryService repositoryService;
+    private static ExecutionService executionService;
 
-  protected void setUp() throws Exception {
-    super.setUp();
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
+        JBPMProvider jBPMProvider = (JBPMProvider) SpringContextSingleton.getBean("jBPMProvider");
+        repositoryService = jBPMProvider.getRepositoryService();
+        executionService = jBPMProvider.getExecutionService();
+        deploymentId = repositoryService.createDeployment().addResourceFromClasspath(
+                "org/jahia/services/workflow/sequence_process.jpdl.xml").deploy();
+    }
 
-    deploymentId = repositoryService.createDeployment()
-        .addResourceFromClasspath("org/jahia/services/workflow/sequence_process.jpdl.xml")
-        .deploy();
-  }
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        repositoryService.deleteDeploymentCascade(deploymentId);
 
-  protected void tearDown() throws Exception {
-    repositoryService.deleteDeploymentCascade(deploymentId);
+    }
 
-    super.tearDown();
-  }
+    @Test
+    public void testWaitStatesSequence() {
+        ProcessInstance processInstance = executionService.startProcessInstanceByKey("StateSequence");
+        Execution executionInA = processInstance.findActiveExecutionIn("a");
+        assertNotNull(executionInA);
 
-  public void testWaitStatesSequence() {
-    ProcessInstance processInstance = executionService.startProcessInstanceByKey("StateSequence");
-    Execution executionInA = processInstance.findActiveExecutionIn("a");
-    assertNotNull(executionInA);
+        processInstance = executionService.signalExecutionById(executionInA.getId());
+        Execution executionInB = processInstance.findActiveExecutionIn("b");
+        assertNotNull(executionInB);
 
-    processInstance = executionService.signalExecutionById(executionInA.getId());
-    Execution executionInB = processInstance.findActiveExecutionIn("b");
-    assertNotNull(executionInB);
-
-    processInstance = executionService.signalExecutionById(executionInB.getId());
-    Execution executionInC = processInstance.findActiveExecutionIn("c");
-    assertNotNull(executionInC);
-  }
+        processInstance = executionService.signalExecutionById(executionInB.getId());
+        Execution executionInC = processInstance.findActiveExecutionIn("c");
+        assertNotNull(executionInC);
+    }
 }

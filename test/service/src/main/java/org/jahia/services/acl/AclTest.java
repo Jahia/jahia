@@ -44,7 +44,14 @@ public class AclTest {
     private static JCRNodeWrapper content2;
     private static JCRNodeWrapper content21;
     private static JCRNodeWrapper content22;
-    private static JCRSessionWrapper session;
+    private static String homeIdentifier;
+    private JCRSessionWrapper session;
+    static String content1Identifier;
+    private static String content11Identifier;
+    private static String content12Identifier;
+    private static String content2Identifier;
+    private static String content21Identifier;
+    private static String content22Identifier;
 
     public AclTest() {
     }
@@ -55,20 +62,24 @@ public class AclTest {
 
         jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
-        session = jcrService.getSessionFactory().getCurrentUserSession();
+        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
 
         Set<String> languages = null;
 
-        home = session
-                .getNode(HOMEPATH);
-
+        home = session.getNode(HOMEPATH);
+        homeIdentifier = home.getIdentifier();
         content1 = home.addNode("content1", "jnt:contentList");
+        content1Identifier = content1.getIdentifier();
         content11 = content1.addNode("content1.1", "jnt:contentList");
+        content11Identifier = content11.getIdentifier();
         content12 = content1.addNode("content1.2", "jnt:contentList");
+        content12Identifier = content12.getIdentifier();
         content2 = home.addNode("content2", "jnt:contentList");
+        content2Identifier = content2.getIdentifier();
         content21 = content2.addNode("content2.1", "jnt:contentList");
+        content21Identifier = content21.getIdentifier();
         content22 = content2.addNode("content2.2", "jnt:contentList");
-
+        content22Identifier = content22.getIdentifier();
         session.save();
 
         final JahiaUserManagerService userMgr = ServicesRegistry
@@ -122,6 +133,13 @@ public class AclTest {
     @Before
     public void setUp() throws RepositoryException {
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        home = session.getNodeByIdentifier(homeIdentifier);
+        content1 = session.getNodeByIdentifier(content1Identifier);
+        content11 = session.getNodeByIdentifier(content11Identifier);
+        content12 = session.getNodeByIdentifier(content12Identifier);
+        content2 = session.getNodeByIdentifier(content2Identifier);
+        content21 = session.getNodeByIdentifier(content21Identifier);
+        content22 = session.getNodeByIdentifier(content22Identifier);
         session.save();
     }
 

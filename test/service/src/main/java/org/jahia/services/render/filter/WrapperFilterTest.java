@@ -79,16 +79,14 @@ public class WrapperFilterTest extends TestCase {
         session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
 
-        JCRNodeWrapper shared = session.getNode("/shared");
-
-        if (!shared.isCheckedOut()) {
-            session.checkout(shared);
+        if (!this.site.isCheckedOut()) {
+            session.checkout(this.site);
         }
 
-        if (shared.hasNode("testContent")) {
-            shared.getNode("testContent").remove();
+        if (this.site.hasNode("testContent")) {
+            this.site.getNode("testContent").remove();
         }
-        node = shared.addNode("testContent", "jnt:mainContent");
+        node = this.site.addNode("testContent", "jnt:mainContent");
 
         session.save();
     }

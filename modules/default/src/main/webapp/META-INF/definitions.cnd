@@ -36,7 +36,7 @@
  - folder (weakreference, picker[type='folder'])
 
 [jnt:frame] > jnt:content, mix:title, jmix:structuredContent, jmix:siteComponent
- - source (string) indexed=no
+ - source (string) i18n indexed=no
  - name (string) indexed=no
  - width (long) indexed=no
  - height (long) indexed=no

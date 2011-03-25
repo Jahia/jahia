@@ -36,6 +36,8 @@ public class ImageJImage implements Image {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        ip.close();
+        if (ip != null) {
+            ip.close();
+        }
     }
 }

@@ -46,6 +46,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.search.SearchCriteria.CommaSeparatedMultipleValue;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.settings.SettingsBean;
@@ -156,6 +157,8 @@ public class SimpleSearchTest {
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
+            context.setSite(homeNode.getResolveSite());
+            new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
 
@@ -194,6 +197,8 @@ public class SimpleSearchTest {
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
+            context.setSite(homeNode.getResolveSite());
+            new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
 
@@ -233,6 +238,8 @@ public class SimpleSearchTest {
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
+            context.setSite(homeNode.getResolveSite());
+            new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
 
@@ -280,6 +287,8 @@ public class SimpleSearchTest {
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
+            context.setSite(homeNode.getResolveSite());
+            new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
 
@@ -345,6 +354,8 @@ public class SimpleSearchTest {
                     .getNode(SECOND_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
+            context.setSite(homeNode.getResolveSite());
+            new URLGenerator(context, resource);
 
             SearchCriteria criteria = new SearchCriteria();
 

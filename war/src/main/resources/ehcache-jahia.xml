@@ -184,4 +184,14 @@
             maxElementsInMemory="500"
             diskPersistent="true"
             eternal="true"/>
+
+    <cache
+            name="FileLastModifiedCache"
+            maxElementsInMemory="10000"
+            diskPersistent="true"
+            eternal="true"/>
+    <cache
+            name="FileContentCache"
+            maxElementsInMemory="2000"
+            overflowToDisk="false"/>
 </ehcache>

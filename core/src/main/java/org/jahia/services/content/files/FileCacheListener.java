@@ -30,12 +30,18 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.content;
+package org.jahia.services.content.files;
 
-import org.jahia.bin.FilesServlet;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
+import org.jahia.services.content.DefaultEventListener;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -50,17 +56,19 @@ import java.util.Set;
  * Date: 25 févr. 2008
  * Time: 14:36:14
  */
-public class FilesCacheListener extends DefaultEventListener {
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(FilesCacheListener.class);
+public class FileCacheListener extends DefaultEventListener {
+    private static Logger logger = LoggerFactory.getLogger(FileCacheListener.class);
 
-    private Cache<String, ?> cache;
+    private Cache<String, FileLastModifiedCacheEntry> lastModifiedCache;
 
-    public FilesCacheListener() {
+    private Cache<String, FileCacheEntry> contentCache;
+
+    public FileCacheListener() {
         try {
-            cache = CacheFactory.getInstance().getCache(FilesServlet.WEBDAV_CACHE_NAME, true);
+            lastModifiedCache = CacheFactory.getInstance().getCache(FileServlet.LAST_MODIFIED_CACHE_NAME, true);
+            contentCache = CacheFactory.getInstance().getCache(FileServlet.CONTENT_CACHE_NAME, true);
         } catch (JahiaInitializationException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -118,9 +126,11 @@ public class FilesCacheListener extends DefaultEventListener {
                         try {
                             for (String s : nodes) {
                                 JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(s);
-                                cache.remove(session.getWorkspace().getName()+ ":" + n.getPath() + ":0:");
+                                String key = new FileKey(workspace, n.getPath()).getCacheKey();
+                                lastModifiedCache.remove(key);
+                                contentCache.remove(key);
                             }
-                        } catch (Throwable e) {
+                        } catch (Exception e) {
                             logger.error(e.getMessage(), e);
                         }
                         return null;
@@ -132,7 +142,6 @@ public class FilesCacheListener extends DefaultEventListener {
                 logger.error("Error while accessing repository", e);
             }
         }
-//        System.out.println("----------------> "+nodes);
     }
 
 }

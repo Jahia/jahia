@@ -387,7 +387,7 @@
 
     <servlet>
         <servlet-name>Files</servlet-name>
-        <servlet-class>org.jahia.bin.FilesServlet</servlet-class>
+        <servlet-class>org.jahia.services.content.files.FileServlet</servlet-class>
         <load-on-startup>99</load-on-startup>
     </servlet>
 

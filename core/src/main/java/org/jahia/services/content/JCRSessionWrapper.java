@@ -71,6 +71,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessControlException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Jahia specific wrapper around <code>javax.jcr.Session</code> to be able to inject
@@ -111,6 +112,8 @@ public class JCRSessionWrapper implements Session {
     private Locale fallbackLocale;
     private String versionLabel;
 
+    private static AtomicLong activeSessions = new AtomicLong(0L);
+
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
                              JCRSessionFactory sessionFactory, Locale fallbackLocale) {
         this.user = user;
@@ -126,6 +129,7 @@ public class JCRSessionWrapper implements Session {
         this.locale = locale;
         this.fallbackLocale = fallbackLocale;
         this.sessionFactory = sessionFactory;
+        activeSessions.incrementAndGet();
     }
 
 
@@ -482,6 +486,7 @@ public class JCRSessionWrapper implements Session {
             JahiaLoginModule.removeToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
         }
         isLive = false;
+        activeSessions.decrementAndGet();
     }
 
     public boolean isLive() {
@@ -881,4 +886,7 @@ public class JCRSessionWrapper implements Session {
         return null;
     }
 
+    public static AtomicLong getActiveSessions() {
+        return activeSessions;
+    }
 }

@@ -4,11 +4,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.slf4j.Logger;
 
 /**
- * Created by IntelliJ IDEA.
- * User: loom
- * Date: 20.02.11
- * Time: 18:00
- * To change this template use File | Settings | File Templates.
+ * Tomcat request load average tool.
  */
 public class RequestLoadAverage extends LoadAverage {
 

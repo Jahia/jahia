@@ -267,7 +267,7 @@ public class ContentActions {
         if (parent != null && !parent.isFile()) {
             JahiaContentDefinitionService.App.getInstance().getSubNodetypes(nodeTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                         public void onApplicationFailure(Throwable caught) {
-                            MessageBox.alert("Alert",
+                            MessageBox.alert(Messages.get("label.error", "Error"),
                                     "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),
                                     null);
                         }
@@ -300,7 +300,7 @@ public class ContentActions {
                 linker.loading(lock ? Messages.get("statusbar.locking.label") : Messages.get("statusbar.unlocking.label"));
                 JahiaContentManagementService.App.getInstance().setLock(selectedPaths, lock, new BaseAsyncCallback() {
                     public void onApplicationFailure(Throwable throwable) {
-                        MessageBox.alert("Error", throwable.getLocalizedMessage(), null);
+                        MessageBox.alert(Messages.get("label.error", "Error"), throwable.getLocalizedMessage(), null);
                         linker.loaded();
                         linker.refresh(Linker.REFRESH_MAIN);
                     }

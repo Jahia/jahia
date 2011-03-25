@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -125,7 +126,7 @@ public class FileUploadField extends AdapterField {
             form.setEncoding(FormPanel.ENCODING_MULTIPART);
             form.setMethod(FormPanel.METHOD_POST);
 
-            clear = new Button("Stop", new SelectionListener<ButtonEvent>() {
+            clear = new Button(Messages.get("label.stop", "Stop"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                     setValue(null,"clear");
                 }
@@ -154,7 +155,7 @@ public class FileUploadField extends AdapterField {
                 clear.setVisible(false);
             } else {
                 status.setText(name);
-                clear.setText("Clear");
+                clear.setText(Messages.get("label.clear", "Clear"));
                 clear.setVisible(true);
                 form.setVisible(false);
             }
@@ -179,10 +180,10 @@ public class FileUploadField extends AdapterField {
         private void initForm() {
             final FileUpload upload = new FileUpload() {
                 public final void onBrowserEvent(Event event) {
-                    status.setText("Uploading ...");
+                    status.setText(Messages.get("message.uploading", "Uploading..."));
                     form.submit();
                     form.setVisible(false);
-                    clear.setText("Stop");
+                    clear.setText(Messages.get("label.stop", "Stop"));
                     clear.setVisible(true);
                     super.onBrowserEvent(event);
                 }

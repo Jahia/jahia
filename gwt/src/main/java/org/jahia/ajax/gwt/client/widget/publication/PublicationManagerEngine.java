@@ -154,7 +154,7 @@ public class PublicationManagerEngine extends Window {
         add(m_tree);
         ButtonBar buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
-        Button button = new Button("Start Workflow");
+        Button button = new Button(Messages.get("label.customWorkflowsMenu", "Start workflow"));
         buttonBar.add(button);
         setBottomComponent(buttonBar);
 

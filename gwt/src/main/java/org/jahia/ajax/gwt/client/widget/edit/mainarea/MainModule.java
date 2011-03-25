@@ -99,7 +99,7 @@ public class MainModule extends Module {
         this.depth = 0;
 
         head = new ToolbarHeader();
-        head.setText("Page : " + path);
+        head.setText(Messages.get("label.page", "Page") + ": " + path);
         head.addStyleName("x-panel-header");
         head.setStyleAttribute("z-index", "999");
         head.setStyleAttribute("position", "relative");

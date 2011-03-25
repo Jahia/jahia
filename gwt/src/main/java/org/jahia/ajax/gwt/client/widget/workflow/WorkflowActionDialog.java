@@ -382,12 +382,12 @@ public class WorkflowActionDialog extends LayoutContainer {
                 WorkInProgressActionItem.setStatus(status);
                 contentManagement.startWorkflow(nodePath, wf, nodeProperties, comments, new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
-                        Info.display("Workflow executed", "Workflow executed");
+                        Info.display(status, Messages.get("message.workflow.task.success", "Workflow task executed successfully"));
                         WorkInProgressActionItem.removeStatus(status);
                     }
 
                     public void onApplicationFailure(Throwable caught) {
-                        Info.display("Workflow failed", "Workflow failed");
+                        Info.display(status, Messages.get("message.workflow.task.failure", "Workflow task failed to execute"));
                         WorkInProgressActionItem.removeStatus(status);
                     }
                 });

@@ -83,7 +83,7 @@ public class DeleteActionItem extends BaseActionItem {
                         async.deletePaths(l, new BaseAsyncCallback<Object>() {
                             public void onApplicationFailure(Throwable throwable) {
                                 Log.error(throwable.getMessage(), throwable);
-                                MessageBox.alert("", throwable.getMessage(), null);
+                                MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
                             }
 
                             public void onSuccess(Object o) {
@@ -150,13 +150,13 @@ public class DeleteActionItem extends BaseActionItem {
                                     message+="<br/>.<br/>.<br/>.";
                                 }
                                 message+=Messages.get("message.remove.warning","<br/><span style=\"font-style:bold;color:red;\">Warning: this will erase the content definitively from the repository<br/>So it will not be displayed anymore anywere</span>");
-                                MessageBox.confirm("", message, new Listener<MessageBoxEvent>() {
+                                MessageBox.confirm(Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
                                     public void handleEvent(MessageBoxEvent be) {
                                         if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
                                             async.deletePaths(l, new BaseAsyncCallback<Object>() {
                                                 public void onApplicationFailure(Throwable throwable) {
                                                     Log.error(throwable.getMessage(), throwable);
-                                                    MessageBox.alert("", throwable.getMessage(), null);
+                                                    MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
                                                 }
 
                                                 public void onSuccess(Object o) {

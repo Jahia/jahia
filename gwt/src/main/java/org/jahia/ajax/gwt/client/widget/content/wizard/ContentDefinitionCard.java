@@ -118,7 +118,7 @@ public class ContentDefinitionCard extends ContentWizardCard {
                 baseType, parentNode,
                 new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onFailure(Throwable caught) {
-                        MessageBox.alert("Alert","Unable to load content definitions for base type '"
+                        MessageBox.alert(Messages.get("label.error", "Error"),"Unable to load content definitions for base type '"
                                         + baseType
                                         + "' and parent node '"
                                         + parentNode.getPath()

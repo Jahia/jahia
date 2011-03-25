@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -68,7 +69,7 @@ class CreateContentTabItem extends SidePanelTabItem {
         JahiaContentDefinitionService.App.getInstance()
                 .getSubNodetypes(baseType,displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                     public void onApplicationFailure(Throwable caught) {
-                        MessageBox.alert("Alert",
+                        MessageBox.alert(Messages.get("label.error", "Error"),
                                 "Unable to load content definitions. Cause: " + caught.getLocalizedMessage(), null);
                     }
 

@@ -96,31 +96,36 @@ public class Logout implements Controller {
         if (redirectActiveStr != null) {
             redirectActive = Boolean.parseBoolean(redirectActiveStr);
         }
-        String redirect = request.getParameter("redirect");
-        if (redirect == null) {
-            redirect = request.getHeader("referer");
-        }
-        String url = request.getServerName().startsWith(request.getContextPath())?redirect.substring(redirect.indexOf(request.getContextPath())):redirect;
-        // Remove servlet Dispatcher (hardcoded "/cms")
-        url = url.substring(url.indexOf(request.getContextPath()) + request.getContextPath().length());
-        url = url.startsWith("/cms")?url.substring(url.indexOf("/cms") + 4):url;
-        URLResolver r = new URLResolver (url,request.getServerName(),request);
-        boolean redirectToStart = false;
-        if (r.getPath().startsWith("/sites/")) {
-            try {
-                RenderContext context = new RenderContext(request,response, ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(JahiaUserManagerService.GUEST_USERNAME));
-                JCRNodeWrapper n = JCRContentUtils.findDisplayableNode(r.getNode(), context);
-                redirect = request.getContextPath() + Render.getRenderServletPath() + "/" +  Constants.LIVE_WORKSPACE + "/" + r.getLocale() + n.getPath() + ".html";
-            } catch (Exception e) {
+        if (redirectActive) {
+            String redirect = request.getParameter("redirect");
+            if (redirect == null) {
+                redirect = request.getHeader("referer");
+            }
+            String url = request.getServerName().startsWith(request.getContextPath()) ? redirect.substring(
+                    redirect.indexOf(request.getContextPath())) : redirect;
+            // Remove servlet Dispatcher (hardcoded "/cms")
+            url = url.substring(url.indexOf(request.getContextPath()) + request.getContextPath().length());
+            url = url.startsWith("/cms") ? url.substring(url.indexOf("/cms") + 4) : url;
+            URLResolver r = new URLResolver(url, request.getServerName(), request);
+            boolean redirectToStart = false;
+            if (r.getPath().startsWith("/sites/")) {
+                try {
+                    RenderContext context = new RenderContext(request, response,
+                            ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
+                                    JahiaUserManagerService.GUEST_USERNAME));
+                    JCRNodeWrapper n = JCRContentUtils.findDisplayableNode(r.getNode(), context);
+                    redirect =
+                            request.getContextPath() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE +
+                            "/" + r.getLocale() + n.getPath() + ".html";
+                } catch (Exception e) {
+                    redirectToStart = true;
+                }
+            } else if (!r.getUrlPathInfo().equals("/administration")) {
                 redirectToStart = true;
             }
-        } else if (!r.getUrlPathInfo().equals("/administration")) {
-            redirectToStart = true;
-        }
-        if (redirectToStart) {
-            redirect = request.getContextPath() + "/start";
-        }
-        if (redirectActive) {
+            if (redirectToStart) {
+                redirect = request.getContextPath() + "/start";
+            }
             response.sendRedirect(StringUtils.isEmpty(redirect) ? "/" : redirect);
         }
         return null;

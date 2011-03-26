@@ -32,7 +32,7 @@
 <c:forEach items="${result.nodes}" var="node">
     <jcr:node var="home" path="${node.path}/home"/>
     <c:if test="${jcr:hasPermission(home,'jcr:addChildNodes')}">
-    <li class="listsiteicon">${node.properties['jcr:title'].string}
+    <li class="listsiteicon">${node.displayableName}
         <c:if test="${currentNode.properties.edit.boolean}"><br />
 
          <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"><fmt:message key="label.editMode"/></a>

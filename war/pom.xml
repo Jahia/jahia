@@ -141,7 +141,7 @@
                             <force>true</force>
                             <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
-                            <skip>${jahia.gwt.skip}</skip>
+                            <skip>true</skip>
                             <module>${singleModuleName}</module>
 							<style>DETAILED</style>
                         </configuration>

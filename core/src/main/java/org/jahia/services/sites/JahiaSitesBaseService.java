@@ -193,7 +193,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
         Properties props = new Properties();
 
-        JahiaSite site = new JahiaSite(siteId, node.getProperty("jcr:title").getString(), node.getProperty("j:serverName").getString(),
+        JahiaSite site = new JahiaSite(siteId, node.getProperty("j:title").getString(), node.getProperty("j:serverName").getString(),
                 node.getName(), node.getProperty("j:description").getString(), props, node.getPath());
         Value s = node.getProperty("j:templatesSet").getValue();
         final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
@@ -465,7 +465,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 }
 
                                 Node siteNode = f.getNode(siteKey1);
-                                siteNode.setProperty("jcr:title", finalSite.getTitle());
+                                siteNode.setProperty("j:title", finalSite.getTitle());
                                 siteNode.setProperty("j:description", finalSite.getDescr());
                                 siteNode.setProperty("j:serverName", finalSite.getServerName());
                                 siteNode.setProperty("j:siteId", siteId);

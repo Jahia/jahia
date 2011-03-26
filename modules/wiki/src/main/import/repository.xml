@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
-        <wiki changefreq="monthly" j:installedModules="wiki" j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
+        <wiki changefreq="monthly" j:installedModules="wiki" j:siteType="module" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5" j:title="JahiApp - Wiki">
             <home changefreq="monthly" j:templateNode="/templateSets/wiki/templates/wiki" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" priority="0.5" />
             <contents jcr:primaryType="jnt:contentFolder" />
             <files jcr:primaryType="jnt:folder">

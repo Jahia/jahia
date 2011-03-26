@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
     <templateSets jcr:primaryType="jnt:templateSets">
-        <templates-intranet jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-intranet" priority="0.5"  j:siteType="templatesSet">
+        <templates-intranet jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-intranet" priority="0.5"  j:siteType="templatesSet" j:title="Template - Intranet">
             <home jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base/home" priority="0.5">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Home" jcr:primaryType="jnt:translation" />
                 <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:title="Start" jcr:primaryType="jnt:translation" />

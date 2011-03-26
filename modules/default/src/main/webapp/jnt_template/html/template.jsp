@@ -17,7 +17,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>${fn:escapeXml(renderContext.mainResource.node.displayableName) renderContext.site}</title>
+    <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
 </head>
 
 <body>

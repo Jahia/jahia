@@ -152,7 +152,22 @@
                         <ref bean="Toolbar.Item.Crop"/>
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
-                        <!--
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
+                            </property>
+                            <property name="titleKey" value="label.publish"/>
+                            <property name="icon" value="publish"/>
+                            <!--<property name="workflowAction" value="publish"/>-->
+                        </bean>
+
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem"/>
+                            </property>
+                            <property name="titleKey" value="label.publishall"/>
+                            <property name="icon" value="publishAll"/>
+                        </bean>                        <!--
                         <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
                         -->
                     </list>
@@ -211,6 +226,7 @@
                 <value>locked,60,label.lock</value>
                 <value>size,140,label.size</value>
                 <value>mix:lastModified.jcr:lastModified,10</value>
+                <value>publicationInfo,40</value>
             </list>
         </property>
     </bean>

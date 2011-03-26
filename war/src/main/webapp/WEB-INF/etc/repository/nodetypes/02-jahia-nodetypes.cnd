@@ -418,7 +418,7 @@
  + * (jnt:virtualsite)
 
 [jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:htmlSettings, mix:title
- - j:title (string) protected nofulltext
+ - j:title (string) protected nofulltext primary
  - j:serverName (string) protected nofulltext
  - j:description (string) protected
  - j:siteId (long) protected

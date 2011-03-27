@@ -14,6 +14,7 @@
 <form name="formWiki" class="formWiki" action="${currentNode.name}" method="post">
     <input type="hidden" name="autoCheckin" value="true">
     <input type="hidden" name="nodeType" value="jnt:wikiPage">
+    <label><fmt:message key="label.title"/></label><input type="text" name="jcr:title" value="${currentNode.properties['jcr:title'].string}"/>
     <script type="text/javascript">
             $(document).ready(function() {
                 // Add markItUp! to your textarea in one line

@@ -739,11 +739,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.allen_sauer.gwt.log</groupId>
-            <artifactId>gwt-log</artifactId>
-            <version>2.6.2</version>
-        </dependency>
-        <dependency>
             <groupId>net.htmlparser.jericho</groupId>
             <artifactId>jericho-html</artifactId>
             <version>3.1</version>

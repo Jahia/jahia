@@ -48,7 +48,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 /**
  * User: toto
@@ -206,19 +205,19 @@ public class ContentTabItem extends PropertiesTabItem {
 
 
                 final HBoxLayout hBoxLayout = new HBoxLayout();
-                hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
+                hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.TOP);
                 final LayoutContainer panel = new LayoutContainer(hBoxLayout);
 
                 panel.add(this.nameText, new HBoxLayoutData());
-
-                autoUpdateLabel = new Label("");
-                panel.add(autoUpdateLabel, new HBoxLayoutData());
-
                 if (titleField != null) {
                     autoUpdateName = new CheckBox();
                     autoUpdateName.setHideLabel(true);
                     panel.add(autoUpdateName, new HBoxLayoutData());
                 }
+
+                autoUpdateLabel = new Label("");
+                panel.add(autoUpdateLabel, new HBoxLayoutData());
+
 
                 name = new AdapterField(panel);
                 name.setFieldLabel(Messages.get("label.systemName", "System name"));

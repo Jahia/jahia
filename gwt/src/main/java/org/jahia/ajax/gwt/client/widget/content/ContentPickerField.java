@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -50,6 +51,10 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -61,7 +66,7 @@ import java.util.Map;
  * User: toto
  * Date: Dec 1, 2008
  * Time: 6:37:07 PM
- * 
+ *
  */
 public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
 //    protected El clear;
@@ -127,9 +132,11 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                                 new ContentPicker(selectorOptions, getValue(), types, filters, mimeTypes,
                                         config, multiple);
 
-                        w.setHeading(Messages.get("label."+config.getName(), config.getName()));
+                        w.setHeading(Messages.get("label." + config.getName(), config.getName()));
+                        int windowHeight=com.google.gwt.user.client.Window.getClientHeight()-10;
+
                         w.setModal(true);
-                        w.setSize(900, 700);
+                        w.setSize(900, windowHeight);
                         w.setResizable(true);
                         w.setMaximizable(true);
                         w.setBodyBorder(false);

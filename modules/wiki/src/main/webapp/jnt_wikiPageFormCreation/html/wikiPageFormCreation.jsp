@@ -28,12 +28,14 @@
     <c:set var="pageNode" value="${renderContext.mainResource.node}"/>
 </c:if>
 <template:tokenizedForm>
-    <form name="formWiki" class="formWiki" method="post" action="<c:url value='${url.base}${pageNode.path}/${pageName}'/>">
+    <form name="formWiki" class="formWiki" method="post" action="<c:url value='${url.base}${pageNode.path}/*'/>">
         <input type="hidden" name="autoCheckin" value="true">
         <input type="hidden" name="nodeType" value="jnt:wikiPage">
+        <input type="hidden" name="JCRnodeName" value="${pageName}">
         <c:choose>
             <c:when test="${not empty param.newPageName}">
                 <input type="hidden" name="jcr:title" value="${param['wikiTitle']}">
+                <h2>${param['wikiTitle']}</h2>
             </c:when>
             <c:otherwise>
                 <label for="title-${currentNode.identifier}"><fmt:message key="label.title"/>: </label>

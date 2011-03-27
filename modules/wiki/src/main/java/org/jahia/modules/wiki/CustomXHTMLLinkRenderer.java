@@ -196,10 +196,10 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
     public void beginLink(Link link, boolean isFreeStandingURI, Map<String, String> parameters) {
         linkref = link.getReference();
         // For files or reference, we don't create new node
-        if (!link.getReference().startsWith("/")) {
+        if (!link.getReference().startsWith("/") && !link.getReference().startsWith("http://")) {
             link.setReference(JCRContentUtils.generateNodeName(link.getReference(), 32));
         }
-        if (this.wikiModel == null || link.isExternalLink()) {
+        if (link.getReference().startsWith("http://")) {
             beginExternalLink(link, isFreeStandingURI, parameters);
         } else {
             beginInternalLink(link, isFreeStandingURI, parameters);
@@ -213,7 +213,8 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
      * @param isFreeStandingURI if true then the link is a free standing URI directly in the text
      * @param parameters        a generic list of parameters. Example: style="background-color: blue"
      */
-    private void beginExternalLink(Link link, boolean isFreeStandingURI, Map<String, String> parameters) {
+    private void beginExternalLink(Link link, boolean isFreeStandingURI, Map<String, String> parameters)
+    {
         Map<String, String> spanAttributes = new LinkedHashMap<String, String>();
         Map<String, String> aAttributes = new LinkedHashMap<String, String>();
 
@@ -235,24 +236,9 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
                 // use the default attachment syntax parser to extract document name and attachment name
                 Attachment attachment = this.attachmentParser.parse(link.getReference().substring(ATTACH.length()));
                 aAttributes.put(HREF, this.wikiModel.getAttachmentURL(attachment.getDocumentName(),
-                        attachment.getAttachmentName()));
+                    attachment.getAttachmentName()));
             } else {
-
-                // modified in order to be compatible with jahia
-                String s = link.getReference().startsWith("/")?"":".html";
-                if(pageExist(link)){
-                    aAttributes.put(CLASS, "wikidef");
-                }else{
-                    if (!linkref.equals("")) {
-                        try {
-                            s += "?wikiTitle=" + URLEncoder.encode(linkref,"UTF-8");
-                        } catch (UnsupportedEncodingException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                   aAttributes.put(CLASS, "wikidef-new");
-                }
-                aAttributes.put(HREF, link.getReference() + s);
+                aAttributes.put(HREF, link.getReference());
             }
         }
 
@@ -276,15 +262,27 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
 
         if (StringUtils.isEmpty(link.getReference())) {
             renderAutoLink(link, spanAttributes, aAttributes);
-        } else if (this.wikiModel.isDocumentAvailable(link.getReference())) {
+        } else if (this.wikiModel != null && this.wikiModel.isDocumentAvailable(link.getReference())) {
             spanAttributes.put(CLASS, WIKILINK);
             aAttributes.put(HREF, this.wikiModel.getDocumentViewURL(link.getReference(), link.getAnchor(),
                     link.getQueryString()));
         } else {
             // The wiki document doesn't exist
-            spanAttributes.put(CLASS, "wikicreatelink");
-            aAttributes.put(HREF, this.wikiModel.getDocumentEditURL(link.getReference(), link.getAnchor(),
-                    link.getQueryString()));
+                // modified in order to be compatible with jahia
+                String s = link.getReference().startsWith("/")?"":".html";
+                if(pageExist(link)){
+                    aAttributes.put(CLASS, "wikidef");
+                }else{
+                    if (!linkref.equals("")) {
+                        try {
+                            s += "?wikiTitle=" + URLEncoder.encode(linkref,"UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                   aAttributes.put(CLASS, "wikidef-new");
+                }
+                aAttributes.put(HREF, link.getReference() + s);
         }
 
         getXHTMLWikiPrinter().printXMLStartElement(SPAN, spanAttributes);

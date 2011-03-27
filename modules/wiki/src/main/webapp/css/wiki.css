@@ -214,3 +214,11 @@ display:block
 .bodywrapper ul#menuwiki .menuwikitop a:hover{
 	color:#333;
 }
+
+.bodywrapper a.wikipagedelete {
+	background:url(img/wikipage-delete.png) no-repeat scroll 0 50% transparent;
+	clear:both;
+	display:inline;
+	margin-right:8px;
+	padding-left:20px;
+}

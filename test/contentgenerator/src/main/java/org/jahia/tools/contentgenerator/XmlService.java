@@ -79,8 +79,7 @@ public class XmlService {
 							export.getMaxArticleIndex()));
 			logger.debug("XML code of top level page #" + i + " written in output file");
 			outService.appendPageToFile(export.getOutputFile(), pageTopLevel);
-
-			outService.appendStringToFile(export.getOutputFile(), newSite.getFooter());
 		}
+		outService.appendStringToFile(export.getOutputFile(), newSite.getFooter());
 	}
 }

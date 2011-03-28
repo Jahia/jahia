@@ -31,9 +31,9 @@
     <form name="formWiki" class="formWiki" method="post" action="<c:url value='${url.base}${pageNode.path}/*'/>">
         <input type="hidden" name="autoCheckin" value="true">
         <input type="hidden" name="nodeType" value="jnt:wikiPage">
-        <input type="hidden" name="JCRnodeName" value="${pageName}">
         <c:choose>
             <c:when test="${not empty param.newPageName}">
+                <input type="hidden" name="JCRnodeName" value="${pageName}">
                 <input type="hidden" name="jcr:title" value="${param['wikiTitle']}">
                 <h2>${param['wikiTitle']}</h2>
             </c:when>

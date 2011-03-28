@@ -10,6 +10,7 @@ import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
 import org.jahia.tools.contentgenerator.bo.SiteBO;
+import org.springframework.util.StringUtils;
 
 public class XmlService {
 	private static final Logger logger = Logger.getLogger(XmlService.class.getName());
@@ -22,7 +23,7 @@ public class XmlService {
 
 	private PageBO createNewPage(ArticleBO article, int level, List<PageBO> subPages) {
 		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex);
-		PageBO page = new PageBO(currentPageIndex, article.getTitle(), article.getContent(), level, subPages);
+		PageBO page = new PageBO(currentPageIndex, formatForXml(article.getTitle()), formatForXml(article.getContent()), level, subPages);
 		currentPageIndex = currentPageIndex + 1;
 		return page;
 	}
@@ -49,6 +50,15 @@ public class XmlService {
 			}
 		}
 		return listePages;
+	}
+
+	private String formatForXml(final String s) {
+		String formattedString = StringUtils.replace(s, "&", "&amp;");
+		formattedString = StringUtils.replace(formattedString, "\"", " &quot;");
+		formattedString = StringUtils.replace(formattedString, "<", "&lt;");
+		formattedString = StringUtils.replace(formattedString, ">", "&gt;");
+		formattedString = StringUtils.replace(formattedString, "'", "&#39;");
+		return formattedString;
 	}
 
 	public void createTopPages(ExportBO export, List<ArticleBO> articles) throws IOException {

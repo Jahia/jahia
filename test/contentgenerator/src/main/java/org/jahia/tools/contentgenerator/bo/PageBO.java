@@ -62,7 +62,7 @@ public class PageBO {
 	}
 
 	public PageBO(final Integer pId, final String pTitleEn, final String pContentEn, final int pLevel,
-			final List pSubPages) {
+			final List<PageBO> pSubPages) {
 		this.idPage = pId;
 		this.titleEn = pTitleEn;
 		this.contentEn = pContentEn;
@@ -77,12 +77,12 @@ public class PageBO {
 				+ this.getIdPage()
 				+ " j:templateNode=\"/sites/mySite/templates/base/full-page\" jcr:created=\"2011-03-23T17:32:27.747-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-23T17:33:13.308-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:page\">\n"
 				+ "		<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-23T17:32:28.054-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
-				+ this.formatForXml(this.getTitleEn())
+				+ this.getTitleEn()
 				+ "\"/>\n"
 				+ "		<maincontent jcr:created=\"2011-03-23T17:33:13.107-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-23T17:33:29.856-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">\n"
 				+ "			<rich-text jcr:created=\"2011-03-23T17:33:29.797-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-23T17:33:29.856-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:bigText\">\n"
 				+ "				<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-23T17:33:29.917-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\"&lt;p&gt;  "
-				+ this.formatForXml(this.getContentEn()) + "&lt;/p&gt; \"/>\n" 
+				+ this.getContentEn() + "&lt;/p&gt; \"/>\n" 
 				+ "			</rich-text>\n"
 				+ "		</maincontent>\n");
 
@@ -95,14 +95,5 @@ public class PageBO {
 		sb.append("		</page" + this.getIdPage().toString() + ">\n");
 
 		return sb.toString();
-	}
-
-	private String formatForXml(final String s) {
-		String formattedString = StringUtils.replace(s, "&", "&amp;");
-		formattedString = StringUtils.replace(formattedString, "\"", " &quot;");
-		formattedString = StringUtils.replace(formattedString, "<", "&lt;");
-		formattedString = StringUtils.replace(formattedString, ">", "&gt;");
-		formattedString = StringUtils.replace(formattedString, "'", "&#39;");
-		return formattedString;
 	}
 }

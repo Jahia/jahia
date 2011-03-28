@@ -198,6 +198,8 @@
         </jobs>
 
         <actions jcr:primaryType="jnt:permission"/>
+
+        <templates jcr:primaryType="jnt:permission"/>
     </permissions>
     
     <roles jcr:primaryType="jnt:roles" >
@@ -214,7 +216,7 @@
                  j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/editMode/editSelector/sitemapSelector" j:hidden="true"/>
 
         <editor jcr:primaryType="jnt:role"
-                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/wysiwyg-editor-toolbar/full"
+                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/templates /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/wysiwyg-editor-toolbar/full"
                 j:privilegedAccess="true"
                 />
 

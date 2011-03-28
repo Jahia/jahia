@@ -306,7 +306,7 @@
 [jnt:members]  > nt:base
  + * (jnt:member)
 
-[jnt:group] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:observable, jmix:autoPublish
+[jnt:group] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:autoPublish
  - j:hidden (boolean)
  - j:external (boolean)=false autocreated
  - j:externalSource (string) nofulltext
@@ -335,7 +335,7 @@
  itemtype = layout
  - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
 
-[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable
+[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden
  - j:view (string, choicelist[templates,resourceBundle]) nofulltext

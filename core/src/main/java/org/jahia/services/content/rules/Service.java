@@ -707,6 +707,19 @@ public class Service extends JahiaService {
         });
     }
 
+    public void createPermission(final String path, final String name, final KnowledgeHelper drools) throws RepositoryException {
+        String id = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper node = session.getNode(path);
+                if (!node.hasNode(name)) {
+                    JCRNodeWrapper n = node.addNode(name, "jnt:permission");
+                }
+                session.save();
+                return null;
+            }
+        });
+    }
+
     public void updatePrivileges(NodeFact node) throws RepositoryException {
         final JCRSiteNode site = node.getParent().getNode().getResolveSite();
         String principal = StringUtils.substringAfter(StringUtils.substringAfterLast(node.getPath(), "/"), "_").replaceFirst("_", ":");

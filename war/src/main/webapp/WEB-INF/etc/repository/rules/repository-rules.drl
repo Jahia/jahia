@@ -199,3 +199,11 @@ rule "New permission created"
 	then
 		Refresh permissions
 end
+
+rule "Create permission for template"
+    when
+        A new node is created
+            - the node has the type jnt:pageTemplate
+    then
+        Create a permission in /permissions/templates named "template-" + node.getName()
+end

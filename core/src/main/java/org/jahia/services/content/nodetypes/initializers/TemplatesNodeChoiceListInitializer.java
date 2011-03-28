@@ -112,6 +112,9 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 if (ok && templateNode.hasProperty("j:hiddenTemplate")) {
                     ok = !templateNode.getProperty("j:hiddenTemplate").getBoolean();
                 }
+
+                ok &= node.hasPermission("template-"+templateNode.getName());
+
                 if (ok) {
                     vs.add(new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getIdentifier(),
                             PropertyType.WEAKREFERENCE)));

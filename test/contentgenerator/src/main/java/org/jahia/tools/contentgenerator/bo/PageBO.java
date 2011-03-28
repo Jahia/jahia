@@ -72,19 +72,29 @@ public class PageBO {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("	<!-- generated page -->\n");
+		sb.append("	<!-- generated page (level " + this.getLevel() + ") -->\n");
+	
 		sb.append("	<page"
 				+ this.getIdPage()
-				+ " j:templateNode=\"/sites/mySite/templates/base/full-page\" jcr:created=\"2011-03-23T17:32:27.747-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-23T17:33:13.308-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:page\">\n"
-				+ "		<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-23T17:32:28.054-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
-				+ this.getTitleEn()
-				+ "\"/>\n"
-				+ "		<maincontent jcr:created=\"2011-03-23T17:33:13.107-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-23T17:33:29.856-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">\n"
-				+ "			<rich-text jcr:created=\"2011-03-23T17:33:29.797-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-23T17:33:29.856-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:bigText\">\n"
-				+ "				<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-23T17:33:29.917-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\"&lt;p&gt;  "
-				+ this.getContentEn() + "&lt;/p&gt; \"/>\n" 
-				+ "			</rich-text>\n"
-				+ "		</maincontent>\n");
+				+ " j:templateNode=\"/sites/ACME/templates/base/publications\" jcr:created=\"2011-03-28T13:00:41.414-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:sitemap\" jcr:primaryType=\"jnt:page\" priority=\"0.5\">"
+				+ "		<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""+ this.getTitleEn() + "\" />"
+				+ "		<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""+ this.getTitleEn() + "\" />"
+				+ "		<listA jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">"
+				+ "			<bigText_17 j:view=\"introduction\" jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">"
+				+ "				<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\"" + this.getContentEn() + " \" />"
+				+ "				<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\"" + this.getContentEn() + " \" />"
+				+ "			</bigText_17>"
+				+ "		</listA>"
+				+ "		<publications jcr:created=\"2011-03-28T13:00:41.416-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">"
+				+ "			<publication_18 j:defaultCategory=\"/sites/systemsite/categories/Marketing /sites/systemsite/categories/us /sites/systemsite/categories/project\" jcr:created=\"2011-03-28T13:00:41.416-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:categorized\" jcr:primaryType=\"jnt:publication\">"
+				+ "				<j:translation_fr author=\"Département marketing\" body=\"FRENCH TEXT\" date=\"02/01/2009\" jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\"Comment le groupe ACME construit des hotels prestigieux aux Etats Unis\" source=\"ACME\" />"
+				+ "				<j:translation_en author=\"Marketing Department\" body=\"ENGLISH TEXT\" date=\"02/01/2010\" file=\"/sites/ACME/files/PDF/Publications/ACME_WP_BuildingFirstClassHotelUS.pdf\" jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\"How ACME is building First Class Hotel US\" preview=\"/sites/ACME/files/images/generic-pictures/ACME_WP_Cover.jpg\" source=\"ACME\" />"
+				+ "			</publication_18>"
+				+ "		</publications>"
+				+ "		<illustration jcr:created=\"2011-03-28T13:00:41.420-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">"
+				+ "			<imageReference j:node=\"/sites/ACME/files/images/banner-sections/publications.jpg\" jcr:created=\"2011-03-28T13:00:41.420-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:imageReference\" />"
+				+ "		</illustration>");
+
 
 		if (null != this.subPages) {
 			for (Iterator<PageBO> iterator = subPages.iterator(); iterator.hasNext();) {

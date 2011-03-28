@@ -135,9 +135,7 @@ public class JCRCategoryProvider {
                     .getCurrentUserSession();
             JCRNodeWrapper parentNodeWrapper = getParentNode(parentCategory,
                     jcrSessionWrapper);
-            if (!parentNodeWrapper.isCheckedOut()) {
-                parentNodeWrapper.checkout();
-            }
+            jcrSessionWrapper.checkout(parentNodeWrapper);
             final JCRNodeWrapper wrapper = parentNodeWrapper.addNode(key,
                     Constants.JAHIANT_CATEGORY);
             jcrSessionWrapper.save();
@@ -327,7 +325,7 @@ public class JCRCategoryProvider {
         Map<String, String> result = new HashMap<String, String>();
         try {
             Session session = sessionFactory.getCurrentUserSession();
-            Node categoryNode = session.getNodeByUUID(category
+            Node categoryNode = session.getNodeByIdentifier(category
                     .getJahiaCategory().getId());
             for (NodeIterator it = categoryNode
                     .getNodes("j:translation*"); it.hasNext();) {
@@ -362,7 +360,7 @@ public class JCRCategoryProvider {
         String title = null;
         try {
             Session session = sessionFactory.getCurrentUserSession(null, locale);
-            Node categoryNode = session.getNodeByUUID(category
+            Node categoryNode = session.getNodeByIdentifier(category
                     .getJahiaCategory().getId());
             Property titleProperty = categoryNode
                     .getProperty(Constants.JCR_TITLE);
@@ -387,12 +385,10 @@ public class JCRCategoryProvider {
     public void setTitleForCategory(Category category, Locale locale,
             String title) throws JahiaException {
         try {
-            Session session = sessionFactory.getCurrentUserSession(null, locale);
-            Node categoryNode = session.getNodeByUUID(category
+            JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, locale);
+            Node categoryNode = session.getNodeByIdentifier(category
                     .getJahiaCategory().getId());
-            if (!categoryNode.isCheckedOut()) {
-                categoryNode.checkout();
-            }
+            session.checkout(categoryNode);
             categoryNode.setProperty(Constants.JCR_TITLE, title);
             session.save();
         } catch (RepositoryException e) {
@@ -409,9 +405,10 @@ public class JCRCategoryProvider {
     public void removeTitleForCategory(Category category, Locale locale)
             throws JahiaException {
         try {
-            Session session = sessionFactory.getCurrentUserSession(null, locale);
-            Node categoryNode = session.getNodeByUUID(category
+            JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, locale);
+            Node categoryNode = session.getNodeByIdentifier(category
                     .getJahiaCategory().getId());
+            session.checkout(categoryNode);
             categoryNode.getProperty(Constants.JCR_TITLE).remove();
             session.save();
         } catch (PathNotFoundException e) {

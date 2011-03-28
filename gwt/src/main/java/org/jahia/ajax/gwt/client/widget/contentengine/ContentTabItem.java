@@ -306,4 +306,12 @@ public class ContentTabItem extends PropertiesTabItem {
         return nodeName;
     }
 
+    @Override
+    public void setProcessed(boolean processed) {
+        if (!processed) {
+            isNodeNameFieldDisplayed = false;
+            nameEditable = true;
+        }
+        super.setProcessed(processed);
+    }
 }

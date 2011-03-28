@@ -208,14 +208,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         referencesWarnings = result.getReferencesWarnings();
                         for (TabItem item : tabs.getItems()) {
                             item.setEnabled(true);
-                            if (!tabs.getSelectedItem().equals(item)) {
-                                EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
-                                if (editItem instanceof ContentTabItem) {
-                                    if (((ContentTabItem) editItem).isNodeNameFieldDisplayed()) {
-                                        ((ContentTabItem) editItem).getName().setValue(getNodeName());
-                                    }
-                                }
-                            }
                         }
                         fillCurrentTab();
                     }

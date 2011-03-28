@@ -310,6 +310,14 @@ public class CreateContentEngine extends AbstractContentEngine {
 					                "Content node created successfully:")
 					                + " " + node.getName());
                     CreateContentEngine.this.container.closeEngine();
+
+                    if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
+                            || node.getNodeTypes().contains("jnt:nodeLink")
+                            || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
+                        linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+                    } else {
+                        linker.refresh(Linker.REFRESH_MAIN);
+                    }
                 } else {
                     CreateContentEngine.this.tabs.removeAll();
                     CreateContentEngine.this.initTabs();
@@ -318,15 +326,6 @@ public class CreateContentEngine extends AbstractContentEngine {
                     unmask();
                     setButtonsEnabled(true);
                 }
-
-
-				if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
-				        || node.getNodeTypes().contains("jnt:nodeLink")
-				        || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
-					linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
-				} else {
-					linker.refresh(Linker.REFRESH_MAIN);
-				}
             }
         };
         if (createInParentAndMoveBefore) {

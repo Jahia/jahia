@@ -340,13 +340,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
             final int type = propertyWrapper.getType();
             final String name = propertyWrapper.getName().replace(":", "_");
-            if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
-                if (!propertyWrapper.isMultiple()) {
-                    map.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getUrl());
-                }
-            } else {
-                if (!propertyWrapper.isMultiple()) {
-                    map.put(name, propertyWrapper.getValue().getString());
+            if (!Constants.forbiddenPropertiesToSerialize.contains(propertyWrapper.getDefinition().getName())) {
+                if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
+                    if (!propertyWrapper.isMultiple()) {
+                        map.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getUrl());
+                    }
+                } else {
+                    if (!propertyWrapper.isMultiple()) {
+                        map.put(name, propertyWrapper.getValue().getString());
+                    }
                 }
             }
         }

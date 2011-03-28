@@ -247,4 +247,8 @@ public class Constants {
     public static final String JAHIANT_PERMISSION = "jnt:permission";
     public static final String JAHIANT_ROLE = "jnt:role";
     public static final String JAHIANT_ROLES = "jnt:roles";
+
+    public static final List<String> forbiddenPropertiesToSerialize = Arrays.asList(PROCESSID,JCR_FROZENUUID,
+            JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_BASEVERSION,
+            JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT);
 }

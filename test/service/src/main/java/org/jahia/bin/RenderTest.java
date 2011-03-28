@@ -43,6 +43,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.comparator.NumericStringComparator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -52,12 +53,11 @@ import org.slf4j.Logger;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -78,6 +78,7 @@ public class RenderTest {
     private static int NUMBER_OF_VERSIONS = 5;
 
     HttpClient client;
+    private SimpleDateFormat yyyy_mm_dd_hh_mm_ss = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 
     @Before
     public void setUp() throws Exception {
@@ -110,6 +111,13 @@ public class RenderTest {
     @After
     public void tearDown() throws Exception {
 
+        try {
+            TestHelper.deleteSite(TESTSITE_NAME);
+        } catch (Exception ex) {
+            logger.warn("Exception during test tearDown", ex);
+        }
+        JCRSessionFactory.getInstance().closeAllSessions();
+
         PostMethod logoutMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
 
@@ -119,17 +127,18 @@ public class RenderTest {
         }
 
         logoutMethod.releaseConnection();
+    }
 
-        try {
-            TestHelper.deleteSite(TESTSITE_NAME);
-        } catch (Exception ex) {
-            logger.warn("Exception during test tearDown", ex);
+    private List<String> getUuids(List<PublicationInfo> publicationInfo) {
+        List<String> uuids = new LinkedList<String>();
+        for (PublicationInfo info : publicationInfo) {
+            uuids.addAll(info.getAllPublishableUuids());
         }
-        JCRSessionFactory.getInstance().closeAllSessions();
+        return uuids;
     }
 
     @Test
-    public void testVersionRender() throws RepositoryException {
+    public void testVersionRender() throws RepositoryException, ParseException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
         JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
         JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
@@ -153,28 +162,36 @@ public class RenderTest {
 
         editSession.checkout(stageNode);
         JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
+        stagedSubPage.setProperty("j:templateNode", editSession.getNode(
+                    SITECONTENT_ROOT_NODE + "/templates/base/simple"));
         stagedSubPage.setProperty("jcr:title", "title0");
         editSession.save();
-
+        Set<String> languagesStringSet = new LinkedHashSet<String>();
+        languagesStringSet.add(Locale.ENGLISH.toString());
         // publish it
-        jcrService.publishByMainId(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                true, Collections.<String>emptyList());
-        String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
-                GregorianCalendar.getInstance().getTime());
-        jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stageNode.getIdentifier()), label);
+        List<PublicationInfo> publicationInfo = jcrService.getPublicationInfo(stageNode.getIdentifier(),
+                languagesStringSet, true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+        jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+                Collections.<String>emptyList());
+        String label = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar.getInstance().getTime());
+        List<String> uuids = getUuids(publicationInfo);
+        jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
             editSession.checkout(stagedSubPage);
             stagedSubPage.setProperty("jcr:title", "title" + i);
             editSession.save();
 
             // each time the node i published, a new version should be created
-            jcrService.publishByMainId(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE,
-                    Constants.LIVE_WORKSPACE, null, false, Collections.<String>emptyList());
-            label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
-                    GregorianCalendar.getInstance().getTime());
-            jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stagedSubPage.getIdentifier()), label);
+
+            publicationInfo = jcrService.getPublicationInfo(stagedSubPage.getIdentifier(), languagesStringSet, true,
+                    true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+            jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+                    Collections.<String>emptyList());
+            label = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar.getInstance().getTime());
+            uuids = getUuids(publicationInfo);
+            jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -190,13 +207,21 @@ public class RenderTest {
         JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
 
         List<VersionInfo> liveVersionInfos = jcrVersionService.getVersionInfos(liveSession, subPagePublishedNode);
-        int index = 0;
+        Collections.sort(liveVersionInfos,new Comparator<VersionInfo>() {
+            public int compare(VersionInfo o1, VersionInfo o2) {
+                NumericStringComparator<String> numericStringComparator = new NumericStringComparator<String>();
+                return numericStringComparator.compare(o1.getLabel(), o2.getLabel());
+            }
+        });
+        // As we get information for version only from stagedSubPage we have only 4 version starting from 1
+        int index = 1;
         for (VersionInfo curVersionInfo : liveVersionInfos) {
-            if (curVersionInfo.getVersion().getCreated() != null) {
+            Version version = curVersionInfo.getVersion();
+            if (version.getCreated() != null && curVersionInfo.getLabel()!=null) {
                 GetMethod versionGet = new GetMethod(
                         "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
                         subPagePublishedNode.getPath() + ".html?v=" +
-                        curVersionInfo.getVersion().getCreated().getTime().getTime());
+                        ((yyyy_mm_dd_hh_mm_ss.parse(curVersionInfo.getLabel().split("_at_")[1]).getTime()+1000l)));
                 try {
                     int responseCode = client.executeMethod(versionGet);
                     assertEquals("Response code " + responseCode, 200, responseCode);
@@ -210,10 +235,8 @@ public class RenderTest {
                 index++;
             }
         }
-        index++;
         logger.debug("number of version: " + index);
         assertEquals(NUMBER_OF_VERSIONS, index);
-
     }
 
     @Test
@@ -231,21 +254,15 @@ public class RenderTest {
 
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
 
-        editSession.checkout(stageNode);
-        JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
-        stagedSubPage.setProperty("jcr:title", "title0");
-
-        JCRNodeWrapper stagedPageContent = stagedSubPage.addNode("pagecontent", "jnt:contentList");
-        JCRNodeWrapper stagedRow1 = stagedPageContent.addNode("row1", "jnt:row");
-        stagedRow1.setProperty("column", "2col106");
-        JCRNodeWrapper stagedCol1 = stagedRow1.addNode("col1", "jnt:contentList");
-        JCRNodeWrapper mainContent = stagedCol1.addNode("mainContent", "jnt:mainContent");
+        JCRNodeWrapper stagedPageContent = stageNode.getNode("listA");
+        JCRNodeWrapper mainContent = stagedPageContent.addNode("mainContent", "jnt:mainContent");
         mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + "0");
         mainContent.setProperty("body", MAIN_CONTENT_BODY + "0");
+        editSession.save();
 
         PostMethod createPost = new PostMethod(
                 "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en" + SITECONTENT_ROOT_NODE +
-                "/home/pagecontent/row1/col1/*");
+                "/home/listA/*");
         createPost.addRequestHeader("x-requested-with", "XMLHttpRequest");
         createPost.addRequestHeader("accept", "application/json");
         // here we voluntarily don't set the node name to test automatic name creation.
@@ -260,7 +277,7 @@ public class RenderTest {
         JSONObject jsonResults = new JSONObject(responseBody);
 
         assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+        assertTrue("body property should be "+MAIN_CONTENT_BODY + "1",jsonResults.get("body").equals(MAIN_CONTENT_BODY + "1"));
 
     }
-
 }

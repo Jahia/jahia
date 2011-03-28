@@ -10,8 +10,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
+import org.jahia.tools.contentgenerator.bo.ExportBO;
+import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
+import org.jahia.tools.contentgenerator.properties.DatabaseProperties;
 
-public class DatabaseService {
+public final class DatabaseService {
 	private static DatabaseService instance;
 
 	private static Connection dbConnection;
@@ -34,13 +37,13 @@ public class DatabaseService {
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
 
 				StringBuffer sbConnection = new StringBuffer("jdbc:mysql://");
-				sbConnection.append(ContentGenerator.getProperty(ContentGeneratorCst.DB_HOST_PROPERTY));
+				sbConnection.append(DatabaseProperties.HOSTNAME);
 				sbConnection.append("/");
-				sbConnection.append(ContentGenerator.getProperty(ContentGeneratorCst.DB_DATABASE_PROPERTY));
+				sbConnection.append(DatabaseProperties.DATABASE);
 				sbConnection.append("?user=");
-				sbConnection.append(ContentGenerator.getProperty(ContentGeneratorCst.DB_LOGIN_PROPERTY));
+				sbConnection.append(DatabaseProperties.USER);
 				sbConnection.append("&password=");
-				sbConnection.append(ContentGenerator.getProperty(ContentGeneratorCst.DB_PASSWORD_PROPERTY));
+				sbConnection.append(DatabaseProperties.PASSWORD);
 
 				dbConnection = java.sql.DriverManager.getConnection(sbConnection.toString());
 
@@ -68,23 +71,17 @@ public class DatabaseService {
 		}
 	}
 
-	public List getArticles(final Integer nbRecords) {
-		// diviser nbRecords / pas
-		List<Integer> recordSetSizes = getRecordSetsSize(nbRecords);
+	public List<ArticleBO> getArticles(ExportBO export) {
+		Integer querySize = getRecordSetsSize(export);
 		List<Integer> articlesId;
 		List<ArticleBO> articlesContent = new ArrayList<ArticleBO>();
-		for (Iterator<Integer> iterator = recordSetSizes.iterator(); iterator.hasNext();) {
-			Integer recordSetSize = (Integer) iterator.next();
-			// pour chaque + 1 : faire une requete ID
-			articlesId = getArticlesIds(recordSetSize);
 
-			// envoyer ces ID au contenu (liste)
-			try {
-				// ajouter resultats a la liste
-				articlesContent.addAll(getArticlesContent(articlesId));
-			} catch (SQLException e) {
-				logger.error("Error during articles content selection", e);
-			}
+		articlesId = getArticlesIds(querySize);
+
+		try {
+			articlesContent.addAll(getArticlesContent(articlesId));
+		} catch (SQLException e) {
+			logger.error("Error during articles content selection", e);
 		}
 		closeConnection();
 
@@ -92,7 +89,7 @@ public class DatabaseService {
 	}
 
 	public List<Integer> getArticlesIds(Integer recordSetSize) {
-		logger.info("Selecting " + recordSetSize + " ID's from database");
+		logger.debug("Selecting " + recordSetSize + " ID's from database");
 		Statement stmt = null;
 		List<Integer> idList = new ArrayList<Integer>();
 
@@ -100,7 +97,7 @@ public class DatabaseService {
 			stmt = this.getConnection().createStatement();
 
 			StringBuffer sbQuery = new StringBuffer("SELECT a.id_article FROM ");
-			sbQuery.append(ContentGenerator.getProperty(ContentGeneratorCst.DB_TABLE_PROPERTY) + " a ");
+			sbQuery.append(DatabaseProperties.TABLE + " a ");
 			sbQuery.append(" ORDER BY RAND() ");
 			sbQuery.append(" LIMIT 0," + recordSetSize);
 
@@ -137,7 +134,7 @@ public class DatabaseService {
 		String idCommaSeparated = sbIdCommaSeparated.substring(0, sbIdCommaSeparated.length() - 1);
 
 		StringBuffer sbQuery = new StringBuffer("SELECT a.id_article, a.title,a.content FROM ");
-		sbQuery.append(ContentGenerator.getProperty(ContentGeneratorCst.DB_TABLE_PROPERTY) + " a ");
+		sbQuery.append(DatabaseProperties.TABLE + " a ");
 		sbQuery.append(" WHERE ");
 		sbQuery.append(" a.id_article IN (" + idCommaSeparated + ")");
 
@@ -153,17 +150,15 @@ public class DatabaseService {
 		return articlesList;
 	}
 
-	private List<Integer> getRecordSetsSize(Integer nbRecords) {
-		List<Integer> sizes = new ArrayList<Integer>();
-		int nbQueries = (nbRecords.intValue() / ContentGeneratorCst.SQL_RECORDSET_SIZE);
-		int remaining = (nbRecords.intValue() % ContentGeneratorCst.SQL_RECORDSET_SIZE);
-		for (int i = 1; i <= nbQueries; i++) {
-			sizes.add(ContentGeneratorCst.SQL_RECORDSET_SIZE);
+	private Integer getRecordSetsSize(ExportBO export) {
+		Integer totalRecords = null;
+		if (export.getTotalPages().compareTo(ContentGeneratorCst.SQL_RECORDSET_SIZE) < 0) {
+			totalRecords = export.getTotalPages();
+		} else {
+			totalRecords = ContentGeneratorCst.SQL_RECORDSET_SIZE;
 		}
-		if (remaining > 0) {
-			sizes.add(new Integer(remaining));
-		}
-		return sizes;
+		export.setMaxArticleIndex(totalRecords-1);
+		return totalRecords;
 	}
 
 	private List<ArticleBO> getArticleCollectionFromResultSet(final ResultSet articles) throws SQLException {

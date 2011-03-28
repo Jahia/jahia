@@ -1,4 +1,4 @@
-package org.jahia.tools.contentgenerator;
+package org.jahia.tools.contentgenerator.properties;
 
 import java.io.InputStream;
 import java.util.Enumeration;

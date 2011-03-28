@@ -37,10 +37,11 @@ public class XmlService {
 	private List<PageBO> createSubPages(List<ArticleBO> articles, Integer articleIndex, Integer nbPagesPerLevel,
 			Integer level, Integer maxArticleIndex) {
 		List<PageBO> listePages = new ArrayList<PageBO>();
+		ArticleBO article;
 		listePages.clear();
-		ArticleBO article = getArticle(articles, maxArticleIndex);
 		if (level.intValue() > 0) {
 			for (int i = 0; i < nbPagesPerLevel; i++) {
+				article = getArticle(articles, maxArticleIndex);
 				PageBO page = createNewPage(
 						article,
 						level,

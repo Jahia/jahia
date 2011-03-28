@@ -205,19 +205,18 @@ public class ContentTabItem extends PropertiesTabItem {
 
 
                 final HBoxLayout hBoxLayout = new HBoxLayout();
-                hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.TOP);
+                hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
                 final LayoutContainer panel = new LayoutContainer(hBoxLayout);
 
-                panel.add(this.nameText, new HBoxLayoutData());
-                if (titleField != null) {
-                    autoUpdateName = new CheckBox();
-                    autoUpdateName.setHideLabel(true);
-                    panel.add(autoUpdateName, new HBoxLayoutData());
-                }
+                panel.add(this.nameText, new HBoxLayoutData(0,5,0,5));
 
                 autoUpdateLabel = new Label("");
-                panel.add(autoUpdateLabel, new HBoxLayoutData());
-
+                panel.add(autoUpdateLabel, new HBoxLayoutData(0,5,0,5));
+                if (titleField != null) {
+                    autoUpdateName = new CheckBox();
+                    autoUpdateName.setWidth(10);
+                    panel.add(autoUpdateName, new HBoxLayoutData(0,5,5,5));
+                }
 
                 name = new AdapterField(panel);
                 name.setFieldLabel(Messages.get("label.systemName", "System name"));

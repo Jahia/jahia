@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.InvalidQueryException;
@@ -112,6 +113,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         List<Hit<?>> results = new LinkedList<Hit<?>>();
         Set<String> addedHits = new HashSet<String>();
+        Set<String> addedNodes = new HashSet<String>();
         try {
             JCRSessionWrapper session = ServicesRegistry
                     .getInstance()
@@ -123,21 +125,38 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             if (query != null) {
                 QueryResult queryResult = query.execute();
                 RowIterator it = queryResult.getRows();
+                Set<String> languages = new HashSet<String>();
+                if (it.hasNext()) {
+                    if (!criteria.getLanguages().isEmpty()) {
+                        for (String languageCode : criteria.getLanguages().getValues()) {
+                            if (!StringUtils.isEmpty(languageCode)) {
+                                languages.add(languageCode);
+                            }
+                    }
+                        } else {
+                    if (session.getLocale() != null) {
+                            languages.add(session.getLocale().toString());
+                    }
+                        }
+                 
+                }
 
                 while (it.hasNext()) {
                     try {
                         Row row = it.nextRow();
                         JCRNodeWrapper node = (JCRNodeWrapper) row.getNode();
-                        if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                        if (node.isNodeType(Constants.JAHIANT_TRANSLATION)
+                                || Constants.JCR_CONTENT.equals(node.getName())) {
                             node = node.getParent();
                         }
+                        if (addedNodes.add(node.getIdentifier()) && !isNodeToSkip(node, criteria, languages)) {
+                            Hit<?> hit = buildHit(row, node, context);
 
-                        Hit<?> hit = buildHit(row, node, context);
-                        
-                        SearchServiceImpl.executeURLModificationRules(hit, context);
-                        
-                        if (addedHits.add(hit.getLink())) {
-                            results.add(hit);
+                            SearchServiceImpl.executeURLModificationRules(hit, context);
+
+                            if (addedHits.add(hit.getLink())) {
+                                results.add(hit);
+                            }
                         }
                     } catch (Exception e) {
                         logger.warn("Error resolving search hit", e);
@@ -152,6 +171,28 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         return response;
     }
 
+    private boolean isNodeToSkip(JCRNodeWrapper node, SearchCriteria criteria, Set<String> languages) {
+        boolean skipNode = false;
+        try {
+            if (!languages.isEmpty() && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {
+                skipNode = true;
+                for (PropertyIterator it = node.getWeakReferences(); it.hasNext();) {
+                    try {
+                        JCRNodeWrapper refNode = (JCRNodeWrapper) it.nextProperty().getParent();
+                        if (languages.contains(refNode.getLanguage())) {
+                            skipNode = false;
+                            break;
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+                
+            }
+        } catch (RepositoryException e) {
+        }
+        return skipNode;
+    }
+    
     private Hit<?> buildHit(Row row, JCRNodeWrapper node, RenderContext context) throws RepositoryException {
         AbstractHit<?> searchHit = null;
         if (node.isFile() || node.isNodeType(Constants.NT_FOLDER)) {

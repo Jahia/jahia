@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
@@ -40,6 +41,7 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRVersionService;
+import org.jahia.services.content.files.FileCacheManager;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.VersionIterator;
@@ -53,17 +55,17 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Feb 2, 2009
  * Time: 7:03:31 PM
  * 
  */
-public class VersioningHelper {
+public class VersioningHelper implements InitializingBean {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(VersioningHelper.class);
 
     private CacheService cacheService;
     private JCRVersionService versionService;
+    private FileCacheManager cacheManager;
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -114,7 +116,7 @@ public class VersioningHelper {
                 }
                 VersionIterator allVersions = versionManager.getVersionHistory(node.getPath()).getAllVersions();
                 if(allVersions.getSize()==1) {
-                    // Frist version ever apart root version
+                    // First version ever apart root version
                     versionManager.checkin(node.getPath());
                     String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(node.getProperty("jcr:created").getDate().getTime());
                     versionService.addVersionLabel(node,label);
@@ -136,7 +138,7 @@ public class VersioningHelper {
                 versionManager.checkin(node.getPath());
                 String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
                 versionService.addVersionLabel(node,label);
-                cacheService.getCache("WebdavCache").flush(true);
+                cacheManager.invalidate(session.getWorkspace().getName(), node.getPath());
                 if (logger.isDebugEnabled()) {
                     logger.debug("Number of version: " + node.getVersions().size());
                 }
@@ -163,5 +165,9 @@ public class VersioningHelper {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        cacheManager = FileCacheManager.getInstance();
     }
 }

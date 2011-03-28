@@ -55,9 +55,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.cache.Cache;
-import org.jahia.services.cache.CacheFactory;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -70,13 +69,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Serves resources from the JCR repository.
  * 
- * @author Thomas Draier Date: Oct 13, 2008 Time: 2:08:59 PM
+ * @author Thomas Draier
+ * Date: Oct 13, 2008
+ * Time: 2:08:59 PM
  */
 public class FileServlet extends HttpServlet {
-
-    public static final String CONTENT_CACHE_NAME = "FileContentCache";
-
-    public static final String LAST_MODIFIED_CACHE_NAME = "FileLastModifiedCache";
 
     private static Logger logger = LoggerFactory.getLogger(FileServlet.class);
 
@@ -88,9 +85,7 @@ public class FileServlet extends HttpServlet {
 
     protected String characterEncoding = null;
 
-    private Cache<String, Map<String, FileCacheEntry>> contentCache;
-
-    private Cache<String, FileLastModifiedCacheEntry> lastModifiedCache;
+    private FileCacheManager cacheManager;
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,
             IOException {
@@ -102,6 +97,8 @@ public class FileServlet extends HttpServlet {
             if (fileKey != null && fileKey.getWorkspace() != null
                     && StringUtils.isNotEmpty(fileKey.getPath())) {
 
+                Cache<String, FileLastModifiedCacheEntry> lastModifiedCache = cacheManager.getLastModifiedCache();
+                
                 FileLastModifiedCacheEntry lastModifiedEntry = lastModifiedCache.get(fileKey
                         .getCacheKey());
                 if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
@@ -111,6 +108,8 @@ public class FileServlet extends HttpServlet {
                     return;
                 }
 
+                Cache<String, Map<String, FileCacheEntry>> contentCache = cacheManager.getContentCache();
+                
                 Map<String, FileCacheEntry> entries = contentCache.get(fileKey.getCacheKey());
                 FileCacheEntry fileEntry = entries != null ? entries.get(fileKey.getThumbnail())
                         : null;
@@ -318,14 +317,11 @@ public class FileServlet extends HttpServlet {
         if (value != null) {
             cacheThreshold = new Integer(value);
         }
+        
         try {
-            lastModifiedCache = CacheFactory.getInstance().getCache(
-                    FileServlet.LAST_MODIFIED_CACHE_NAME, true);
-            contentCache = CacheFactory.getInstance()
-                    .getCache(FileServlet.CONTENT_CACHE_NAME, true);
-        } catch (JahiaInitializationException e) {
-            logger.error(e.getMessage(), e);
-            throw new ServletException(e);
+            cacheManager = FileCacheManager.getInstance();
+        } catch (JahiaRuntimeException e) {
+            throw new ServletException(e.getCause());
         }
     }
 

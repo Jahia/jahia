@@ -32,9 +32,6 @@
 
 package org.jahia.services.content.files;
 
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.cache.Cache;
-import org.jahia.services.cache.CacheFactory;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -52,24 +49,15 @@ import java.util.Set;
 
 /**
  * Listener for flushing file content cache
- * User: toto
- * Date: 25 févr. 2008
- * Time: 14:36:14
+ * @author toto
  */
 public class FileCacheListener extends DefaultEventListener {
     private static Logger logger = LoggerFactory.getLogger(FileCacheListener.class);
 
-    private Cache<String, FileLastModifiedCacheEntry> lastModifiedCache;
-
-    private Cache<String, FileCacheEntry> contentCache;
+    private FileCacheManager cacheManager;
 
     public FileCacheListener() {
-        try {
-            lastModifiedCache = CacheFactory.getInstance().getCache(FileServlet.LAST_MODIFIED_CACHE_NAME, true);
-            contentCache = CacheFactory.getInstance().getCache(FileServlet.CONTENT_CACHE_NAME, true);
-        } catch (JahiaInitializationException e) {
-            logger.error(e.getMessage(), e);
-        }
+        cacheManager = FileCacheManager.getInstance();
     }
 
     public int getEventTypes() {
@@ -126,9 +114,7 @@ public class FileCacheListener extends DefaultEventListener {
                         try {
                             for (String s : nodes) {
                                 JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(s);
-                                String key = new FileKey(workspace, n.getPath()).getCacheKey();
-                                lastModifiedCache.remove(key);
-                                contentCache.remove(key);
+                                cacheManager.invalidate(workspace, n.getPath());
                             }
                         } catch (Exception e) {
                             logger.error(e.getMessage(), e);

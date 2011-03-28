@@ -33,8 +33,8 @@ public final class ContentGeneratorCst {
 	 * Configuration
 	 */
 	public static final String PROPERTIES_FILE_NAME = "jahiaContentGenerator.properties";
-	public static final Integer SQL_RECORDSET_SIZE = Integer.valueOf(5000);
-	public static final Integer MAX_TOTAL_PAGES = Integer.valueOf(100000);
+	public static final Integer SQL_RECORDSET_SIZE = Integer.valueOf(10000);
+	public static final Integer MAX_TOTAL_PAGES = Integer.valueOf(200000);
 
 	private ContentGeneratorCst() {
 

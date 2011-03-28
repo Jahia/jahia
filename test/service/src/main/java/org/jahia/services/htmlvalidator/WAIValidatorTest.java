@@ -32,6 +32,7 @@
 
 package org.jahia.services.htmlvalidator;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -84,8 +85,7 @@ public class WAIValidatorTest {
         File scriptsDirectory = new File(scriptsUrl.toURI());
         WAIValidator validator = new WAIValidator(Locale.ENGLISH);
         for (File file : scriptsDirectory.listFiles()) {
-            Scanner scanner = new Scanner(file).useDelimiter("\\Z");
-            String content = scanner.next();
+            String content = FileUtils.readFileToString(file);
             ValidatorResults results = validator.validate(content);
             if (shouldFail) {
                 assertFalse("WAI validation for file " + file.getPath() + " should fail with errors or warnings", results

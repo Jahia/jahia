@@ -131,7 +131,10 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             }
                         }
                         session.save();
-                        return new JCRGroup(nodeWrapper, jcrTemplate, siteID);
+                        JCRGroup jcrGroup = new JCRGroup(nodeWrapper, jcrTemplate, siteID);
+                        final String trueGroupKey = name + ":" + siteID;
+                        getCache().put(trueGroupKey,jcrGroup);
+                        return jcrGroup;
                     } catch (JahiaException e) {
                         logger.error("Error while creating group", e);
                     }

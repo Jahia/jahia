@@ -272,14 +272,14 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
             // For each member check if it's the member we are looking for,
             // otherwise, if the member is a group, check recursively in this group
             // for the requested member.
+            String pname = JahiaUserManagerService.getKey(principal);
+            boolean principalIsGuest = pname.startsWith(JahiaUserManagerService.GUEST_USERNAME + ":");
             for (Principal member : mMembers) {
                 if (member != null) {
                     // check if the member is the one we are looking for
                     String mname = JahiaUserManagerService.getKey(member);
-                    String pname = JahiaUserManagerService.getKey(principal);
-                    if (mname .equals (pname)
-                        || (mname.startsWith(JahiaUserManagerService.GUEST_USERNAME+":")
-                            && pname.startsWith(JahiaUserManagerService.GUEST_USERNAME+":"))) {
+                    if (mname .equals (pname) ||
+                        (principalIsGuest && mname.startsWith(JahiaUserManagerService.GUEST_USERNAME+":"))) {
                         result = true;
                     } else {
     

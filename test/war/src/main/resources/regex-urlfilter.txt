@@ -34,6 +34,9 @@
 # skip URLs with slash-delimited segment that repeats 3+ times, to break loops
 -.*(/[^/]+)/[^/]+\1/[^/]+\1/
 
+# skip URLs using curly braces
+-.*\{
+
 # limit the crawl to localhost:
 #+^http://localhost
 

@@ -476,8 +476,6 @@
                             <property name="folderTypes">
                                 <list>
                                     <value>jmix:navMenuItem</value>
-                                    <value>jnt:contentFolder</value>
-                                    <value>jnt:folder</value>
                                     <value>jmix:visibleInPagesTree</value>
                                 </list>
                             </property>
@@ -783,9 +781,6 @@
                             <property name="folderTypes">
                                 <list>
                                     <value>jmix:navMenuItem</value>
-                                    <value>jnt:folder</value>
-                                    <value>jnt:contentFolder</value>
-                                    <!--<value>jnt:portletFolder</value>-->
                                     <value>jmix:visibleInPagesTree</value>
                                 </list>
                             </property>

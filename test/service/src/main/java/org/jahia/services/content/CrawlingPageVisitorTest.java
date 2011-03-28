@@ -119,24 +119,15 @@ public class CrawlingPageVisitorTest {
             crawldbPath = new Path(testdir, "crawldb");
             segmentsPath = new Path(testdir, "segments");
 
-            final JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
-            JCRNodeWrapper homeNode = null;
-            if (defaultSite != null) {
-                try {
-                    JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
-                            LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));                    
-                    homeNode = session.getRootNode().getNode("sites/" + defaultSite.getSiteKey() + "/home");
-                } catch (PathNotFoundException e) {
-                }
-            }
-            if (homeNode == null) {
+            final JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(ACMESITE_NAME);
+            if (defaultSite == null) {
                 final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.WEB_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
-                                            + "/prepackagedSites/webtemplates65.zip", "ACME.zip");
+                                            + "/prepackagedSites/acme.zip", "ACME.zip");
                             jcrService.publishByMainId(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home")
                                     .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                             session.save();
@@ -278,7 +269,7 @@ public class CrawlingPageVisitorTest {
             renderCtx.setMainResource(resource);
             renderCtx.setSite(homeNode.getResolveSite());
             URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
-            urls.add(urlgenerator.getServer()
+            urls.add(urlgenerator.getServer() + urlgenerator.getContext()
                     + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));
         } catch (Exception e) {
             logger.error("Exception during test", e);

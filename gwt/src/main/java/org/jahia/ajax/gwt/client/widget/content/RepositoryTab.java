@@ -157,7 +157,7 @@ public class RepositoryTab extends ContentPanel {
                 final List<GWTJahiaNode> list = (List<GWTJahiaNode>) event.getData();
                 for (GWTJahiaNode source : list) {
                     final GWTJahiaNode target = (GWTJahiaNode) activeItem.getModel();
-                    if (target.getPath().startsWith(source.getPath())) {
+                    if (target.getPath().startsWith(source.getPath()) || source.getPath().equals(target.getPath()+"/"+source.getName())) {
                         event.getStatus().setStatus(false);
                     } else {
                         final Set<String> constraints = new HashSet(source.getInheritedNodeTypes());

@@ -40,6 +40,8 @@ package org.jahia.exceptions;
  */
 public class JahiaUnauthorizedException extends JahiaRuntimeException {
 
+    private static final long serialVersionUID = 6365920182443042380L;
+
     /**
      * Initializes an instance of this class.
      */

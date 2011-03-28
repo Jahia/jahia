@@ -45,6 +45,8 @@ package org.jahia.exceptions;
 public class JahiaArchiveFileException extends JahiaException{
 	
 
+    private static final long serialVersionUID = 5781352624516421299L;
+
     //-------------------------------------------------------------------------
     /** Default constructor
      *

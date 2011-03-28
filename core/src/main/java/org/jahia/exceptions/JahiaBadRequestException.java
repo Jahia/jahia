@@ -39,6 +39,8 @@ package org.jahia.exceptions;
  */
 public class JahiaBadRequestException extends JahiaRuntimeException {
 
+    private static final long serialVersionUID = -7958078736828433383L;
+
     /**
      * Initializes an instance of this class.
      * 

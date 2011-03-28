@@ -86,7 +86,7 @@ public class ContentTest {
         final Map<String, JCRStoreProvider> mountPoints = JCRSessionFactory.getInstance().getMountPoints();
         for (String providerRoot : mountPoints.keySet()) {
             if (providerRoot.equals("/")) {
-                providerRoot = "/shared";
+                providerRoot = "/sites/systemsite";
             }
             Object[] parameter = new Object[1];
             parameter[0] = providerRoot;
@@ -153,7 +153,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
-
+            session.checkout(rootNode);
             final String name = "test" + System.currentTimeMillis();
 
             assertTrue("Root node should be writeable !", rootNode.hasPermission("jcr:addChildNodes"));
@@ -194,7 +194,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
-
+            session.checkout(rootNode);
             assertTrue("Root node should be writeable !", rootNode.hasPermission("jcr:addChildNodes"));
 
             String value = "This is a test";
@@ -248,6 +248,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
+            session.checkout(rootNode);
             assertTrue("Root node should be writeable !", rootNode.hasPermission("jcr:addChildNodes"));
 
             final String name = "test" + System.currentTimeMillis();
@@ -306,6 +307,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
+            session.checkout(rootNode);
             assertTrue("Root node should be writeable !", rootNode.hasPermission("jcr:addChildNodes"));
 
             String value = "This is a test";
@@ -356,7 +358,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
-
+            session.checkout(rootNode);
             String value = "This is a test";
             String mimeType = "text/plain";
 
@@ -413,7 +415,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
-
+            session.checkout(rootNode);
             String value = "This is a test";
             String mimeType = "text/plain";
 
@@ -468,7 +470,7 @@ public class ContentTest {
         JCRNodeWrapper testFile = null;
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
-
+            session.checkout(rootNode);
             String value = "123456789abcd 123abc 456bcd 789def 123456789abcd";
             String mimeType = "text/plain";
 
@@ -606,6 +608,7 @@ public class ContentTest {
             }
 
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
+            session.checkout(rootNode);
             String value = "This is a test";
             String mimeType = "text/plain";
 
@@ -689,7 +692,12 @@ public class ContentTest {
 
             Value[] resultingMultipleRefValues = refNode.getProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME).getValues();
             assertEquals(providerRoot + " : Read count of multiple reference values is not equal to set values", multipleRefValues.length, resultingMultipleRefValues.length);
-            assertArrayEquals(providerRoot + " : Read multiple reference values not equal to set values", multipleRefValues, resultingMultipleRefValues);
+            for (int i = 0; i < resultingMultipleRefValues.length; i++) {
+                Value resultingMultipleRefValue = resultingMultipleRefValues[i];
+                Value multipleRefValue = multipleRefValues[i];
+                assertTrue(providerRoot + " : Read multiple reference values not equal to set values",
+                        multipleRefValue.getString().equals(resultingMultipleRefValue.getString()));
+            }
 
             // now we remove one of the two references.
             Value[] singleRefValues = new Value[]{valueFactory.createValue(testFile2)};
@@ -698,7 +706,11 @@ public class ContentTest {
 
             Value[] resultingSingleRefValues = refNode.getProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME).getValues();
             assertEquals(providerRoot + " : Read count of single reference values is not equal to set values", singleRefValues.length, resultingSingleRefValues.length);
-            assertArrayEquals(providerRoot + " : Read single reference values not equal to set values", singleRefValues, resultingSingleRefValues);
+            for (int i = 0; i < resultingSingleRefValues.length; i++) {
+                Value resultingSingleRefValue = resultingSingleRefValues[i];
+                Value singleRefValue = singleRefValues[i];
+                assertTrue(providerRoot + " : Read single reference values not equal to set values", singleRefValue.getString().equals(resultingSingleRefValue.getString()));
+            }
 
             // now let's remove everything and make sure that it looks ok.
             Property singleRefProperty = refNode.getProperty(SIMPLE_REFERENCE_PROPERTY_NAME);

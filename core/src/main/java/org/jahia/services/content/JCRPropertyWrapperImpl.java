@@ -406,6 +406,8 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         } else {
             property.remove();
         }
+        if(node instanceof JCRNodeWrapperImpl)
+        ((JCRNodeWrapperImpl) node).flushLocalCaches();
     }
 
     public boolean isMultiple() throws RepositoryException {

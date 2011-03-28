@@ -3186,4 +3186,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         return title != null ? title : getName();
     }
+
+    public void flushLocalCaches() {
+        hasPropertyCache.clear();
+    }
 }

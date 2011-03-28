@@ -7,10 +7,11 @@
 %><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
 %><c:set var="exclude" value=",${fn:replace(exclude, ' ', '')},"/>
 <c:set var="urlBase" value="${pageContext.request.requestURI}"/>
+<c:set var="urlContext" value="/"/>
 <c:if test="${not empty url}">
     <c:set var="urlBase" value="${url.mainResource}"/>
 </c:if>
-<c:url value="${urlBase}">
+<c:url value="${urlBase}" context="${urlContext}">
 <c:forEach var="aParam" items="${paramValues}">
 	<c:set var="paramToCheck" value=",${aParam.key},"/>
 	<c:if test="${fn:startsWith(aParam.key, 'src_') && !fn:contains(exclude, paramToCheck)}">

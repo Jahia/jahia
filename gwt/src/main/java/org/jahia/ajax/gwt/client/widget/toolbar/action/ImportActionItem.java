@@ -50,6 +50,6 @@ public class ImportActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions()));
+        setEnabled(lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions()) && !lh.getSingleSelection().isNodeType("jnt:virtualsite"));
     }
 }

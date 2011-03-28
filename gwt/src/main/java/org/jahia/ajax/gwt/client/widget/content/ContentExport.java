@@ -80,7 +80,9 @@ public class ContentExport extends Window {
                 com.google.gwt.user.client.Window.open(result + ".xml?cleanup=simple", "","");
             }
         });
-        addButton(b);
+        if (!n.getNodeTypes().contains("jnt:page")) {
+            addButton(b);
+        }
 
         b = new Button(Messages.get("label.exportZip", "ZIP"));
         b.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -91,6 +93,7 @@ public class ContentExport extends Window {
         });
         addButton(b);
 
+/*
         if (n.getNodeTypes().contains("jnt:virtualsite")) {
             b = new Button(Messages.get("label.exportSite", "Full virtual site"));
             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -101,6 +104,7 @@ public class ContentExport extends Window {
             });
             addButton(b);
         }
+*/
 
         b = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {

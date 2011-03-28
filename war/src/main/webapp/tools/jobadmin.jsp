@@ -33,62 +33,20 @@
 	   	  If you flush not finished jobs you will loose this jobs (e.g. activated autoexport job)
 	   </p>
 	  <%
-	  List<JobDetail> allJobs = ServicesRegistry.getInstance().getSchedulerService().getAllJobsDetails();
+	  List<JobDetail> allJobs = ServicesRegistry.getInstance().getSchedulerService().getAllJobs();
 	  
     if(request.getParameter("flushfinish") != null) {
-      
-      int jobsflushed = 0;
-      for(JobDetail job : allJobs) {
-        //remove sucessful and failed jobs
-         if(BackgroundJob.STATUS_SUCCESSFUL.equals(job.getJobDataMap().getString(BackgroundJob.JOB_STATUS)) ||
-            BackgroundJob.STATUS_FAILED.equals(job.getJobDataMap().getString(BackgroundJob.JOB_STATUS)) ||
-            BackgroundJob.STATUS_ABORTED.equals(job.getJobDataMap().getString(BackgroundJob.JOB_STATUS)) ) {
-                 ServicesRegistry.getInstance().getSchedulerService().deleteJob(job.getName(), job.getGroup());
-                 jobsflushed++;
-         }
-      }
-      allJobs = ServicesRegistry.getInstance().getSchedulerService().getAllJobsDetails();
+
+      int jobsflushed = ServicesRegistry.getInstance().getSchedulerService().deleteAllCompletedJobs();
+
+      allJobs = ServicesRegistry.getInstance().getSchedulerService().getAllJobs();
       %>
          <b><%=jobsflushed%> finished Jobs</b> from Job history removed<br/><br/>
       <%
   
-    } else if(request.getParameter("flushwait") != null) {
-      
-      int jobsflushed = 0;
-      for(JobDetail job : allJobs) {
-         System.out.println("stat: " + job.getJobDataMap().getString(BackgroundJob.JOB_STATUS));
-         //remove waiting jobs
-         if(BackgroundJob.STATUS_WAITING.equals(job.getJobDataMap().getString(BackgroundJob.JOB_STATUS))) {
-                 ServicesRegistry.getInstance().getSchedulerService().deleteJob(job.getName(), job.getGroup());
-                 jobsflushed++;
-         }
-      }
-      allJobs = ServicesRegistry.getInstance().getSchedulerService().getAllJobsDetails();
-      %>
-         <b><%=jobsflushed%> waited Jobs</b> removed<br/><br/>
-      <%
-  
-    }  else if(request.getParameter("flushpool") != null) {
-      
-      int jobsflushed = 0;
-      for(JobDetail job : allJobs) {
-         System.out.println("stat: " + job.getJobDataMap().getString(BackgroundJob.JOB_STATUS));
-         //remove waiting jobs
-         if(BackgroundJob.STATUS_POOLED.equals(job.getJobDataMap().getString(BackgroundJob.JOB_STATUS))) {
-                 ServicesRegistry.getInstance().getSchedulerService().deleteJob(job.getName(), job.getGroup());
-                 jobsflushed++;
-         }
-      }
-      allJobs = ServicesRegistry.getInstance().getSchedulerService().getAllJobsDetails();
-      %>
-         <b><%=jobsflushed%> pooled Jobs</b> removed<br/><br/>
-      <%
-  
     }
   %> 
-	
-	
-	
+
    <h2>Currently database contains <b><%=allJobs.size()%> Jobs</b> </h2>
    
    <form action="" method="post">

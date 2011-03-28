@@ -182,7 +182,7 @@ public class CrawlingPageVisitorTest {
 
 
     private String getPrecompileServletURL() {
-        return getBaseServerURL()+ Jahia.getContextPath() + "/precompileServlet";
+        return getBaseServerURL()+ Jahia.getContextPath() + "/tools/precompileServlet";
     }    
 
     @Test

@@ -80,7 +80,7 @@
                                            onclick="if (window.confirm('${functions:escapeJavaScript(confirmMsg)}')) {document.getElementById('jahia-forum-room-delete-${room.identifier}').submit();} return false;"><span><fmt:message
                                                 key='delete.room'/></span></a></li>
                                 </c:if>
-                                <c:if test="${jcr:hasPermission(room, 'moderatePost')}">
+                                <c:if test="${jcr:hasPermission(room, 'moderatePost') && jcr:hasPermission(room, 'jcr:write')}">
                                     <c:choose>
                                         <c:when test="${not jcr:isNodeType(room, 'jmix:moderated')}">
                                             <li class="delete-post-icon">

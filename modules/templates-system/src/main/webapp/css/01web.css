@@ -3,6 +3,25 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,bloc
 img,body,html{border:0;}
 
 /******************************************************************************
+* Shortcuts list
+******************************************************************************/
+
+#Shortcutsadmin a:link,
+#Shortcutsadmin a:visited
+{
+	display:block; 
+	padding:5px;
+	border-bottom:1px solid #eaeaea;
+	font-weight:bold;
+}
+#Shortcutsadmin a:hover,
+#Shortcutsadmin a:active {
+	text-decoration:none;
+	color:#fff;
+	background-color:#0099FF
+}
+
+/******************************************************************************
 * Body
 ******************************************************************************/
 .gwt-body-edit {
@@ -130,9 +149,9 @@ body {
 *  header
 ******************************************************************************/
 .bodywrapper #header{
-	background-color:#000;
+	background-color:#99bbe8;
 	padding-top:4px;
-	padding-bottom:6px;
+	padding-bottom:4px;
 	position:relative;
 	z-index:900;
 	width:100%;
@@ -148,11 +167,12 @@ body {
 *  content
 ******************************************************************************/
 .bodywrapper #content{
-	padding-top:5px;
-	padding-bottom:5px;
+	padding-top:15px;
+	padding-bottom:15px;
 	position:relative;
 	z-index:700;
-	width:100%
+	width:100%;
+	background: url(img/bg-content.png) repeat-x top left;
 }
 /******************************************************************************
 *  footer
@@ -252,10 +272,8 @@ body {
 
 .bodywrapper h4 {
 	font-size:1.182em;
-	padding:0.2em;
-	background-color:#000;
-	border-top:2px solid #0099FF;
-	color:#fff;
+	padding-bottom:0.5em;
+	color:#333;
 }
 .bodywrapper h5 {
 	font-size:1.091em;
@@ -412,10 +430,10 @@ body {
 	height:1%;
 	overflow:hidden;
 	text-transform:uppercase;
-	border: 1px solid #ccc;
+	border: 1px solid #eaeaea;
 	padding:0.5em 0.5em;
 	margin:0.5em 0;
-	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
+	background-color:#f3f3f3;
 }
 .bodywrapper .paginationPosition {
 	float:left;
@@ -529,6 +547,7 @@ body {
 
 }
 .bodywrapper .button:hover, .bodywrapper button:hover {
+
 	cursor: pointer;
 	color:#fff;
 	background-color:#0099ff;
@@ -640,7 +659,7 @@ border: 1px solid #eaeaea;
 .bodywrapper .table th {
     color: #333;
 	white-space:nowrap;
-	background-color:#99ccff;
+	background-color:#99BBE8;
 	padding:2px;
 }
 .bodywrapper .table td

@@ -76,12 +76,6 @@ public class TableView extends AbstractView {
         }
 
         m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns)) {
-            @Override protected void onMouseDown(GridEvent<GWTJahiaNode> e) {
-                super.onMouseDown(e);
-                if (e.getRowIndex() == -1) {
-                    getSelectionModel().select((GWTJahiaNode) null, false);
-                }
-            }
         };
         m_grid.setBorders(true);
         if (columns.getAutoExpand() != null) {

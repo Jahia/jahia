@@ -84,6 +84,8 @@ public class PageBO {
 		this.idPage = pId;
 		this.titleEn = pTitleEn;
 		this.contentEn = pContentEn;
+		this.titleFr = pTitleFr;
+		this.contentFr = pContentFr;
 		this.level = pLevel;
 		this.subPages = pSubPages;
 	}
@@ -94,7 +96,7 @@ public class PageBO {
 
 		sb.append("	<page"
 				+ this.getIdPage()
-				+ " j:templateNode=\"/sites/ACME/templates/base/publications\" jcr:created=\"2011-03-28T13:00:41.414-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:sitemap\" jcr:primaryType=\"jnt:page\" priority=\"0.5\">\n"
+				+ " xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:jnt=\"http://www.jahia.org/jahia/nt/1.0\" xmlns:test=\"http://www.apache.org/jackrabbit/test\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:jmix=\"http://www.jahia.org/jahia/mix/1.0\" xmlns:j=\"http://www.jahia.org/jahia/1.0\" xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:rep=\"internal\" changefreq=\"monthly\" j:templateNode=\"/sites/ACME/templates/base/events\" jcr:created=\"2011-03-29T22:51:16.184+02:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-29T22:51:35.896+02:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:sitemap\" jcr:primaryType=\"jnt:page\" priority=\"0.5\">\n"
 				+ "		<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
 				+ this.getTitleFr()
 				+ "\" />\n"

@@ -32,16 +32,21 @@
 
 package org.jahia.services.applications;
 
-import junit.framework.TestCase;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.applications.ApplicationBean;
-import org.jahia.data.applications.WebAppContext;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
+import org.jahia.data.applications.WebAppContext;
+import org.jahia.registries.ServicesRegistry;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import java.util.List;
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test class for the application manager service.
@@ -50,31 +55,46 @@ import javax.portlet.WindowState;
  *         Date: Aug 12, 2009
  *         Time: 11:17:51 AM
  */
-public class ApplicationsManagerServiceTest extends TestCase {
+public class ApplicationsManagerServiceTest {
 
-    private ApplicationsManagerService applicationsManagerService;
+    private static ApplicationsManagerService applicationsManagerService;
+    static ApplicationBean applicationBean;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
         applicationsManagerService = ServicesRegistry.getInstance().getApplicationsManagerService();
+        applicationBean = new ApplicationBean("", // id
+                "fake-portlet", "fake-portlet", true, "", "portlet");
+        applicationsManagerService.addDefinition(applicationBean);
+        List<EntryPointDefinition> appEntryPointDefinitions = applicationsManagerService.getAppEntryPointDefinitions(
+                applicationBean);
     }
 
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        applicationsManagerService.deleteApplicationGroups(applicationBean);
+    }
+
+    @Test
     public void testRetrievingApplicationDefinitions() throws Exception {
         List<ApplicationBean> applicationBeans = applicationsManagerService.getApplications();
-        assertTrue("We do not find at least the three default portlet of jahia",applicationBeans.size()>=3);
+        assertFalse("Applications should not be empty", applicationBeans.isEmpty());
         for (ApplicationBean applicationBean : applicationBeans) {
             WebAppContext webAppContext = applicationsManagerService.getApplicationContext(applicationBean);
-            ApplicationBean appFoundByContext = applicationsManagerService.getApplicationByContext(webAppContext.getContext());
+            ApplicationBean appFoundByContext = applicationsManagerService.getApplicationByContext(
+                    webAppContext.getContext());
             assertEquals(appFoundByContext.getID(), applicationBean.getID());
         }
     }
 
+    @Test
     public void testEntryPointDefinitions() throws Exception {
         List<ApplicationBean> applicationBeans = applicationsManagerService.getApplications();
+        assertFalse("Applications should not be empty", applicationBeans.isEmpty());
         for (ApplicationBean applicationBean : applicationBeans) {
-            List<EntryPointDefinition> entryPointDefinitions = applicationsManagerService.getAppEntryPointDefinitions(applicationBean);
+            List<EntryPointDefinition> entryPointDefinitions = applicationsManagerService.getAppEntryPointDefinitions(
+                    applicationBean);
+            assertFalse(entryPointDefinitions.isEmpty());
             assertTrue(applicationBean.getEntryPointDefinitions().containsAll(entryPointDefinitions));
             for (EntryPointDefinition entryPointDefinition : entryPointDefinitions) {
                 List<PortletMode> portletModes = entryPointDefinition.getPortletModes();
@@ -85,13 +105,19 @@ public class ApplicationsManagerServiceTest extends TestCase {
         }
     }
 
+    @Test
     public void testEntryPointInstance() throws Exception {
-        ApplicationBean applicationBean = applicationsManagerService.getApplications().get(0);
-        EntryPointDefinition definition = applicationBean.getEntryPointDefinitions().get(0);
-        final EntryPointInstance instance = applicationsManagerService.createEntryPointInstance(definition,"/shared/portlets");
+        List<ApplicationBean> applicationBeans = applicationsManagerService.getApplications();
+        assertFalse("Applications should not be empty", applicationBeans.isEmpty());
+        ApplicationBean applicationBean = applicationBeans.get(0);
+        List<EntryPointDefinition> entryPointDefinitions = applicationBean.getEntryPointDefinitions();
+        assertFalse(entryPointDefinitions.isEmpty());
+        EntryPointDefinition definition = entryPointDefinitions.get(0);
+        final EntryPointInstance instance = applicationsManagerService.createEntryPointInstance(definition,
+                "/sites/systemsite/contents");
         assertNotNull(instance);
-        assertEquals(definition.getContext()+"."+definition.getName(),instance.getDefName());
-        assertEquals(instance,applicationsManagerService.getEntryPointInstance(instance.getID()));
+        assertEquals(definition.getContext() + "." + definition.getName(), instance.getDefName());
+        assertEquals(instance, applicationsManagerService.getEntryPointInstance(instance.getID()));
         applicationsManagerService.removeEntryPointInstance(instance.getID());
         assertNull(applicationsManagerService.getEntryPointInstance(instance.getID()));
     }

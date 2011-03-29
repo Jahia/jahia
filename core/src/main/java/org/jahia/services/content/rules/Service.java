@@ -780,4 +780,9 @@ public class Service extends JahiaService {
             }
         }
     }
+
+    public void flushGroupCaches() {
+        JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        groupService.flushCache();
+    }
 }

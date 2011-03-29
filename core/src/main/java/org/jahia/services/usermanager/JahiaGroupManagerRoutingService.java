@@ -531,7 +531,17 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
 	    }
     }
 
-	public void setDefaultProvider(JahiaGroupManagerProvider defaultProvider) {
+    @Override
+    public void flushCache() {
+        routeCallAll(new Command() {
+            public Object execute(JahiaGroupManagerProvider p) {
+                p.flushCache();
+                return null;
+            }
+        }, getProviderList());
+    }
+
+    public void setDefaultProvider(JahiaGroupManagerProvider defaultProvider) {
 		defaultProvider.setDefaultProvider(true);
 		defaultProvider.setGroupManagerService(this);
 		registerProvider(defaultProvider);

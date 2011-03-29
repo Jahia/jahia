@@ -207,3 +207,11 @@ rule "Create permission for template"
     then
         Create a permission in /permissions/templates named "template-" + node.getName()
 end
+
+rule "Flush group cache"
+    when
+        A node is deleted
+            - the node has the type jnt:virtualsite
+    then
+        Flush group cache
+end

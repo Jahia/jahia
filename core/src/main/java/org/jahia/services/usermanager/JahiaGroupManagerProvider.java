@@ -311,4 +311,8 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
 	public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
     	this.groupManagerService = groupManagerService;
     }
+
+    public void flushCache(){
+
+    };
 }

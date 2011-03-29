@@ -289,4 +289,6 @@ public abstract class JahiaGroupManagerService extends JahiaService {
 	 *            an instance of the group provider to register
 	 */
 	public abstract void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider);
+
+    public abstract void flushCache();
 }

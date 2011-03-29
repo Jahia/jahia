@@ -822,4 +822,11 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             logger.error(e.getMessage(), e);
         }
     }
+
+    @Override
+    public void flushCache() {
+        super.flushCache();
+        cache.flush();
+        membershipCache.flush();
+    }
 }

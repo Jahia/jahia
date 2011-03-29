@@ -96,3 +96,4 @@
 [consequence][]Create a permission in {path} named {name}=service.createPermission("{path}",{name}, drools);
 [consequence][]Refresh permissions=service.refreshPermissions();
 [consequence][]Update the privileged users=service.updatePrivileges(node);
+[consequence][]Flush group cache=service.flushGroupCaches();

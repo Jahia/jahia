@@ -397,7 +397,7 @@ public class JCRStoreProvider {
                 if (!rootNode.hasNode("sites")) {
                     rootNode.addMixin("mix:referenceable");
                     
-                    JCRContentUtils.importSkeletons("WEB-INF/etc/repository/root.xml,WEB-INF/etc/repository/root-*.xml", "/", session, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
+                    JCRContentUtils.importSkeletons("WEB-INF/etc/repository/root.xml,WEB-INF/etc/repository/root-*.xml", "/", session, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, new HashMap<String,String>());
 
                     JahiaPrivilegeRegistry.init(session);
 
@@ -762,7 +762,7 @@ public class JCRStoreProvider {
                                         if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
                                         	String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
                                         	try {
-                                        		JCRContentUtils.importSkeletons(skeletons, f.getPath() + "/" + username, session);
+                                        		JCRContentUtils.importSkeletons(skeletons, f.getPath() + "/" + username, session, new HashMap<String,String>());
                                         	} catch (Exception importEx) {
                                         		logger.error("Unable to import data using user skeletons " + skeletons, importEx);
                                         	}

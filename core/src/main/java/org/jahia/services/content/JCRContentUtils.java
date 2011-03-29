@@ -883,6 +883,7 @@ public final class JCRContentUtils {
     /**
      * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
      * 
+     *
      * @param skeletonLocations
      *            the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
      *            delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
@@ -890,6 +891,7 @@ public final class JCRContentUtils {
      *            target JCR path to perform import into
      * @param session
      *            the current JCR session
+     * @param replacements
      * @throws IOException
      *             in case of skeleton lookup error
      * @throws InvalidSerializedDataException
@@ -898,14 +900,40 @@ public final class JCRContentUtils {
      *             general JCR exception
      */
     public static void importSkeletons(String skeletonLocations, String targetPath,
-            JCRSessionWrapper session) throws IOException, InvalidSerializedDataException,
+                                       JCRSessionWrapper session) throws IOException, InvalidSerializedDataException,
             RepositoryException {
-        importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+        importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, new HashMap<String,String>());
+    }
+
+    /**
+     * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
+     *
+     *
+     * @param skeletonLocations
+     *            the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
+     *            delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
+     * @param targetPath
+     *            target JCR path to perform import into
+     * @param session
+     *            the current JCR session
+     * @param replacements
+     * @throws IOException
+     *             in case of skeleton lookup error
+     * @throws InvalidSerializedDataException
+     *             import related exception
+     * @throws RepositoryException
+     *             general JCR exception
+     */
+    public static void importSkeletons(String skeletonLocations, String targetPath,
+                                       JCRSessionWrapper session, Map<String, String> replacements) throws IOException, InvalidSerializedDataException,
+            RepositoryException {
+        importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, replacements);
     }
 
     /**
      * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
      * 
+     *
      * @param skeletonLocations
      *            the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
      *            delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
@@ -913,7 +941,8 @@ public final class JCRContentUtils {
      *            target JCR path to perform import into
      * @param session
      *            the current JCR session
-     * @param importUUIDBehavior the {@link ImportUUIDBehavior} to use during import
+     * @param importUUIDBehavior the {@link javax.jcr.ImportUUIDBehavior} to use during import
+     * @param replacements
      * @throws IOException
      *             in case of skeleton lookup error
      * @throws InvalidSerializedDataException
@@ -922,7 +951,7 @@ public final class JCRContentUtils {
      *             general JCR exception
      */
     public static void importSkeletons(String skeletonLocations, String targetPath,
-            JCRSessionWrapper session, int importUUIDBehavior) throws IOException, InvalidSerializedDataException,
+                                       JCRSessionWrapper session, int importUUIDBehavior, Map<String, String> replacements) throws IOException, InvalidSerializedDataException,
             RepositoryException {
         for (Resource resource : SpringContextSingleton.getInstance().getResources(
                 skeletonLocations)) {
@@ -930,7 +959,7 @@ public final class JCRContentUtils {
             InputStream is = null;
             try {
                 is = resource.getInputStream();
-                session.importXML(targetPath, is, importUUIDBehavior, true);
+                session.importXML(targetPath, is, importUUIDBehavior, true, replacements);
             } finally {
                 IOUtils.closeQuietly(is);
             }

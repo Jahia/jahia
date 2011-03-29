@@ -939,10 +939,12 @@ public class ContentManagerHelper {
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
 
                 String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
-                JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
-                if (isTemplatesSet) {
-                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
-                }
+                HashMap<String, String> replacements = new HashMap<String, String>();
+                replacements.put("SITEKEY_PLACEHOLDER", shortName);
+                JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session, replacements);
+//                if (isTemplatesSet) {
+//                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
+//                }
                 session.save();
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, isTemplatesSet);
 

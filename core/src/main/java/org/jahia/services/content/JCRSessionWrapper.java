@@ -399,6 +399,11 @@ public class JCRSessionWrapper implements Session {
 
     public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot)
             throws IOException, InvalidSerializedDataException, RepositoryException {
+        importXML(path, inputStream, uuidBehavior, noRoot, new HashMap<String,String>());
+    }
+
+    public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot, Map<String,String> replacements)
+            throws IOException, InvalidSerializedDataException, RepositoryException {
         JCRNodeWrapper node = getNode(path);
         try {
             if (!node.isCheckedOut()) {
@@ -411,6 +416,7 @@ public class JCRSessionWrapper implements Session {
         DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(this, path, null);
         documentViewImportHandler.setNoRoot(noRoot);
         documentViewImportHandler.setUuidBehavior(uuidBehavior);
+        documentViewImportHandler.setReplacements(replacements);
         try {
             SAXParserFactory factory;
 

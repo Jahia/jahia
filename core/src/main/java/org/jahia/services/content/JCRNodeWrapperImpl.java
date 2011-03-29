@@ -3178,7 +3178,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 String itemName = getPrimaryNodeType().getPrimaryItemName();
                 if (itemName != null) {
                     String s = getPropertyAsString(itemName);
-                    title = new TextExtractor(new Source(s != null ? s : itemName)).toString();
+                    title = new TextExtractor(new Source(s != null ? s : getName())).toString();
                 }
             } catch (RepositoryException e) {
                 title = null;

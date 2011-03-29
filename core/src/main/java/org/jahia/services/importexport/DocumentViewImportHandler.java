@@ -55,6 +55,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -78,6 +79,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private Map<String, String> uuidMapping;
     private Map<String, String> pathMapping;
     private Map<String, List<String>> references = new HashMap<String, List<String>>();
+
+    private Map<String, String> replacements = new HashMap<String,String>();
 
     private String currentFilePath = null;
 
@@ -363,6 +366,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else if (attrName.equals("j:password") && child.hasProperty("j:password")) {
             } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
             } else {
+                for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                    Pattern p = Pattern.compile(entry.getKey());
+                    attrValue = p.matcher(attrValue).replaceAll(entry.getValue());
+                }
 
                 if (attrName.equals("j:privileges") && child.isNodeType("jnt:ace")) {
                     attrName = "j:roles";
@@ -544,5 +551,13 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     public void setNoUpdateTypes(List<String> noUpdateTypes) {
         this.noUpdateTypes = noUpdateTypes;
+    }
+
+    public Map<String, String> getReplacements() {
+        return replacements;
+    }
+
+    public void setReplacements(Map<String, String> replacements) {
+        this.replacements = replacements;
     }
 }

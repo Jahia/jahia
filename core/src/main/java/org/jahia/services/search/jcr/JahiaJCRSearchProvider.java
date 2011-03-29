@@ -132,13 +132,12 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             if (!StringUtils.isEmpty(languageCode)) {
                                 languages.add(languageCode);
                             }
-                    }
-                        } else {
-                    if (session.getLocale() != null) {
-                            languages.add(session.getLocale().toString());
-                    }
                         }
-                 
+                    } else {
+                        if (session.getLocale() != null) {
+                            languages.add(session.getLocale().toString());
+                        }
+                    }
                 }
 
                 while (it.hasNext()) {
@@ -174,7 +173,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private boolean isNodeToSkip(JCRNodeWrapper node, SearchCriteria criteria, Set<String> languages) {
         boolean skipNode = false;
         try {
-            if (!languages.isEmpty() && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {
+            if (!languages.isEmpty() && !isFileSearch(criteria)
+                    && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {
                 skipNode = true;
                 for (PropertyIterator it = node.getWeakReferences(); it.hasNext();) {
                     try {
@@ -184,11 +184,13 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             break;
                         }
                     } catch (Exception e) {
+                        logger.debug("Error while trying to check for node language", e);
                     }
                 }
                 
             }
         } catch (RepositoryException e) {
+            logger.debug("Error while trying to check for node language", e);
         }
         return skipNode;
     }

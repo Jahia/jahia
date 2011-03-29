@@ -63,7 +63,7 @@ public class XmlService {
 	}
 
 	public void createTopPages(ExportBO export, List<ArticleBO> articles) throws IOException {
-
+		logger.info("Creating top pages");
 		SiteBO newSite = new SiteBO(null);
 		OutputService outService = new OutputService();
 		outService.initOutputFile(export.getOutputFile());
@@ -78,8 +78,9 @@ public class XmlService {
 					export.getNbSubLevels() + 1,
 					createSubPages(articles, currentPageIndex, export.getNbSubPagesPerPage(), export.getNbSubLevels(),
 							export.getMaxArticleIndex()));
-			logger.debug("XML code of top level page #" + i + " written in output file");
 			outService.appendPageToFile(export.getOutputFile(), pageTopLevel);
+			logger.debug("XML code of top level page #" + i + " written in output file");
+			logger.info("Top page #"+i+" with subpages created and written to file");
 		}
 		outService.appendStringToFile(export.getOutputFile(), newSite.getFooter());
 	}

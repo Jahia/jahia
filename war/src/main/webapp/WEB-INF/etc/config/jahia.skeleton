@@ -25,6 +25,8 @@ jahia.contextPath                                      =
 server                                                 =
 serverVersion                                          =
 serverHome                                             =
+# This setting can be used to activate/deactivate the development mode
+developmentMode                                        = true
 # Set this to true to enable maintenance mode, i.e. no requests will be
 # served except to /tools/
 maintenanceMode                                        = false
@@ -177,6 +179,11 @@ considerDefaultJVMLocale                               =   false
 considerPreferredLanguageAfterLogin                    =   false
 
 ######################################################################
+### Container Authentication ########################################
+######################################################################
+# Enable the container authentication valve
+auth.container.enabled                                 = false
+######################################################################
 ### Cookie authentication valve config #############################
 ######################################################################
 #
@@ -184,26 +191,8 @@ considerPreferredLanguageAfterLogin                    =   false
 # an identifier corresponding to a specific Jahia user, when he selects the
 # "remember me" option in the login engine.
 #
-# Should we use cookie authentication for login ?
-cookieAuthActivated                                    =   true
-
-######################################################################
-### Logoff Redirect ##################################################
-######################################################################
-# uncomment this to bypass the usual Jahia logout process and instead redirected the user after logout
-# to a URL of your choice
-#logoutRedirectUrl                                      =   http://www.acme.com/logoff.php
-
-# Uncomment this to perform a forward to the internal page or JSP (the URL is context related) after user logout.
-# This parameter is mutually exclusive with the previous one (logoutRedirectUrl).
-# It will be considered only if the previous one is not set.
-#logoutForwardUrl                                      =   /jsp/afterLogout.jsp
-
-# Jahia was always forwarding the new page URL after logout, but this
-# way the frontend HTML Container cache was not used. So the following
-# setting does a client side redirect on logout to make use of the caches
-# and save resources with not having to render the page after logout.
-doRedirectOnLogout                                     = true
+# Should we use cookie authentication for login?
+auth.cookie.enabled                                    =   true
 
 ######################################################################
 ### URL generator settings ###########################################
@@ -217,12 +206,6 @@ doRedirectOnLogout                                     = true
 # issues with cookies, or if you plan to access Jahia through multiple
 # front-end machines.
 siteURLPortOverride                                    = 0
-
-######################################################################
-### Development Mode #################################################
-######################################################################
-# This setting can be used to activate/deactivate the development mode
-developmentMode                                         = true
 
 ######################################################################
 ### custom errorDocument site property  ##############################

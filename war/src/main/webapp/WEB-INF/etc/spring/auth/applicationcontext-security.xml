@@ -53,4 +53,6 @@
         <property name="rememberMeManager"><null/></property>
     </bean>
     <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    
+    <bean id="jahiaLoginConfig" class="org.jahia.params.valves.LoginConfig" factory-method="getInstance"/>
 </beans>

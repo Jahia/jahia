@@ -38,68 +38,69 @@ import java.io.Serializable;
  * Cookie authentication valve configuration.
  * 
  * @author Sergiy Shyrkov
- * 
  */
 public class CookieAuthConfig implements Serializable {
 
-	private boolean activated;
+    private static final long serialVersionUID = 1575999842721969622L;
 
-	private int idLength = 40;
+    private boolean activated;
 
-	private String userPropertyName = "org.jahia.user.cookieauth.id";
+    private String cookieName = "jid";
 
-	private String cookieName = "jid";
+    private int idLength = 40;
 
-	private int maxAgeInSeconds = 2592000;
+    private int maxAgeInSeconds = 2592000;
 
-	private boolean renewalActivated;
+    private boolean renewalActivated;
 
-	public boolean isActivated() {
-		return activated;
-	}
+    private String userPropertyName = "org.jahia.user.cookieauth.id";
 
-	public void setActivated(boolean activted) {
-		this.activated = activted;
-	}
+    public String getCookieName() {
+        return cookieName;
+    }
 
-	public int getIdLength() {
-		return idLength;
-	}
+    public int getIdLength() {
+        return idLength;
+    }
 
-	public void setIdLength(int idLength) {
-		this.idLength = idLength;
-	}
+    public int getMaxAgeInSeconds() {
+        return maxAgeInSeconds;
+    }
 
-	public String getUserPropertyName() {
-		return userPropertyName;
-	}
+    public String getUserPropertyName() {
+        return userPropertyName;
+    }
 
-	public void setUserPropertyName(String userPropertyName) {
-		this.userPropertyName = userPropertyName;
-	}
+    public boolean isActivated() {
+        return activated;
+    }
 
-	public String getCookieName() {
-		return cookieName;
-	}
+    public boolean isRenewalActivated() {
+        return renewalActivated;
+    }
 
-	public void setCookieName(String cookieName) {
-		this.cookieName = cookieName;
-	}
+    public void setActivated(boolean activted) {
+        this.activated = activted;
+    }
 
-	public int getMaxAgeInSeconds() {
-		return maxAgeInSeconds;
-	}
+    public void setCookieName(String cookieName) {
+        this.cookieName = cookieName;
+    }
 
-	public void setMaxAgeInSeconds(int maxAgeInSeconds) {
-		this.maxAgeInSeconds = maxAgeInSeconds;
-	}
+    public void setIdLength(int idLength) {
+        this.idLength = idLength;
+    }
 
-	public boolean isRenewalActivated() {
-		return renewalActivated;
-	}
+    public void setMaxAgeInSeconds(int maxAgeInSeconds) {
+        this.maxAgeInSeconds = maxAgeInSeconds;
+    }
 
-	public void setRenewalActivated(boolean renewalActivated) {
-		this.renewalActivated = renewalActivated;
-	}
+    public void setRenewalActivated(boolean renewalActivated) {
+        this.renewalActivated = renewalActivated;
+    }
+
+    public void setUserPropertyName(String userPropertyName) {
+        this.userPropertyName = userPropertyName;
+    }
 
 }

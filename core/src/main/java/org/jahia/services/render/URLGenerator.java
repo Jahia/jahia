@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
@@ -57,8 +58,10 @@ import org.jahia.bin.Login;
 import org.jahia.bin.Logout;
 import org.jahia.bin.Render;
 import org.jahia.bin.Studio;
+import org.jahia.params.valves.LoginConfig;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 
 /**
@@ -75,6 +78,34 @@ public class URLGenerator {
     
     public static boolean isLocalhost(String host) {
     	return host != null && LOCALHOSTS.contains(host);
+    }
+
+    /**
+     * Returns the server URL, including scheme, host and port.
+     * The URL is in the form <code><scheme><host>:<port></code>,
+     * e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case
+     * of standard HTTP (80) and HTTPS (443) ports.
+     * 
+     * @return the server URL, including scheme, host and port
+     */
+    public static String getServer(HttpServletRequest request) {
+        StringBuilder url = new StringBuilder();
+        String scheme = request.getScheme();
+        String host = request.getServerName();
+        
+        int port = SettingsBean.getInstance().getSiteURLPortOverride();
+        
+        if (port == 0) {
+            port = request.getServerPort();
+        }
+        
+        url.append(scheme).append("://").append(host);
+        
+        if (port != 80 && port != 443) {
+            url.append(":").append(port);
+        }
+        
+        return url.toString();
     }
 
     private String base;
@@ -103,6 +134,10 @@ public class URLGenerator {
     private String basePreview;
     private String convert;
     private String myProfile;
+    
+    private String server;
+    
+    private String login;
 
     public URLGenerator(RenderContext context, Resource resource) {
         this.context = context;
@@ -129,35 +164,10 @@ public class URLGenerator {
         preview = basePreview + resourcePath;
         baseContribute = Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         contribute = baseContribute + resourcePath;
-        studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
-        if (context.getSite() != null) {
-            try {
-                if (context.getSite().hasProperty("j:templatesSet")) {
-                    studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
-                    if (resource.getNode().hasProperty("j:templateNode")) {
-                        try {
-                            studio += StringUtils.substringAfter(resource.getNode().getProperty("j:templateNode").getNode().getPath(), context.getSite().getPath());
-                            studio += ".html";
-                        } catch (RepositoryException e) {
-                            studio += ".html";
-                        }
-                    } else {
-                        studio += ".html";
-                    }
-                }
-            } catch (RepositoryException e) {
-                logger.error("Cannot get studio url", e);
-            }
-        } else {
-            studio += ".html";
-        }
         find = Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
         templatesPath = "/modules";
-        if (!context.getUser().getUsername().equals("guest")) {
-            myProfile = "/users/" + context.getUser().getUsername() + ".html";
-        }
     }
 
     public String getContext() {
@@ -189,6 +199,30 @@ public class URLGenerator {
     }
 
     public String getStudio() {
+        if (studio == null) {
+            studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
+            if (context.getSite() != null) {
+                try {
+                    if (context.getSite().hasProperty("j:templatesSet")) {
+                        studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
+                        if (resource.getNode().hasProperty("j:templateNode")) {
+                            try {
+                                studio += StringUtils.substringAfter(resource.getNode().getProperty("j:templateNode").getNode().getPath(), context.getSite().getPath());
+                                studio += ".html";
+                            } catch (RepositoryException e) {
+                                studio += ".html";
+                            }
+                        } else {
+                            studio += ".html";
+                        }
+                    }
+                } catch (RepositoryException e) {
+                    logger.error("Cannot get studio url", e);
+                }
+            } else {
+                studio += ".html";
+            }
+        }
         return studio;
     }
 
@@ -349,34 +383,47 @@ public class URLGenerator {
      *         current site
      */
     public String getServer() {
-        StringBuilder url = new StringBuilder();
-        String scheme = context.getRequest().getScheme();
-        String host = context.getSite().getServerName();
-        if (isLocalhost(host)) {
-            host = context.getRequest().getServerName();
+        if (server == null) {
+            StringBuilder url = new StringBuilder();
+            String scheme = context.getRequest().getScheme();
+            String host = context.getSite().getServerName();
+            if (isLocalhost(host)) {
+                host = context.getRequest().getServerName();
+            }
+            
+            int port = SettingsBean.getInstance().getSiteURLPortOverride();
+            
+            if (port == 0) {
+                port = context.getRequest().getServerPort();
+            }
+            
+            url.append(scheme).append("://").append(host);
+            
+            if (port != 80 && port != 443) {
+                url.append(":").append(port);
+            }
+            
+            server = url.toString();
         }
         
-        int port = SettingsBean.getInstance().getSiteURLPortOverride();
-        
-        if (port == 0) {
-            port = context.getRequest().getServerPort();
-        }
-        
-        url.append(scheme).append("://").append(host);
-        
-        if (port != 80 && port != 443) {
-            url.append(":").append(port);
-        }
-        
-        return url.toString();
+        return server;
     }
 
     public String getMyProfile() {
+        if (myProfile == null) {
+            myProfile = JahiaUserManagerService.isNotGuest(context.getUser()) ? "/users/" + context.getUser().getUsername() + ".html" : "";
+        }
         return myProfile;
     }
 
     public String getLogin() {
-        return Login.getServletPath();
+        if (login == null) {
+            login = StringUtils.defaultIfEmpty(
+                    LoginConfig.getInstance().getCustomLoginUrl(context.getRequest()),
+                    Login.getServletPath());
+        }
+        
+        return login;
     }
 
     public String getFindUser() {

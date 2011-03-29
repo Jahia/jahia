@@ -81,6 +81,11 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+        if (!isEnabled()) {
+            valveContext.invokeNext(context);
+            return;
+        }
+        
         final AuthValveContext authContext = (AuthValveContext) context;
         final HttpServletRequest httpServletRequest = authContext.getRequest();
 

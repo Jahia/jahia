@@ -32,14 +32,12 @@
 
 package org.jahia.bin;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.settings.SettingsBean;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -113,5 +111,5 @@ public class Login implements Controller {
         }
         return null;
     }
-
+    
 }

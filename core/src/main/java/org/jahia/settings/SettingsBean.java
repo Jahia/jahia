@@ -114,13 +114,6 @@ public class SettingsBean implements ServletContextAware {
     // Default language code for multi-language system
     private String defaultLanguageCode;
 
-    // the (optional) url the user will be redirected after logout
-    public String logoutRedirectUrl;
-    // The (optional) URL the user will be forwarded to after logout
-    public String logoutForwardUrl;
-    // Generally do a client side redirect instead of forward after logout 
-    private boolean doRedirectOnLogout = true;    
-
     // this is the list of jahia.properties mail settings values...
     private boolean mail_service_activated;
     private String mail_server;
@@ -298,12 +291,6 @@ public class SettingsBean implements ServletContextAware {
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
 
-            // the (optional) url the user will be redirected after logout
-            logoutRedirectUrl = getString("logoutRedirectUrl", null);
-            // the (optional) url the user will be forwarded to after logout
-            logoutForwardUrl = getString("logoutForwardUrl", null);
-            doRedirectOnLogout = getBoolean("doRedirectOnLogout", true);
-            
             isSiteErrorEnabled = getBoolean("site.error.enabled",false);
 
             cacheMaxGroups = getInt("cacheMaxGroups", 10000);
@@ -678,29 +665,6 @@ public class SettingsBean implements ServletContextAware {
     public void setMail_maxRegroupingOfPreviousException(int mail_maxRegroupingOfPreviousException) {
         this.mail_maxRegroupingOfPreviousException = mail_maxRegroupingOfPreviousException;
     }
-
-    /**
-     * the (optional) url the user will be redirected after logout
-     */
-    public String getLogoutRedirectUrl() {
-        return logoutRedirectUrl;
-    }
-
-    /**
-     * Returns the (optional) URL user will be forwarded to after logout.
-     * @return the (optional) URL user will be forwarded to after logout
-     */
-    public String getLogoutForwardUrl() {
-        return logoutForwardUrl;
-    }
-
-    public void setLogoutRedirectUrl(String logoutRedirectUrl) {
-        this.logoutRedirectUrl = logoutRedirectUrl;
-    }
-
-    public boolean isDoRedirectOnLogout() {
-        return doRedirectOnLogout;
-    }    
 
     public boolean isDevelopmentMode() {
         return developmentMode;

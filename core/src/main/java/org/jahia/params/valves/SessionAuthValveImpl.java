@@ -34,7 +34,6 @@ package org.jahia.params.valves;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -52,11 +51,14 @@ import javax.servlet.http.HttpSession;
  * @version 1.0
  */
 
-public class SessionAuthValveImpl implements Valve {
-    public SessionAuthValveImpl() {
-    }
+public class SessionAuthValveImpl extends BaseAuthValve {
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+        if (!isEnabled()) {
+            valveContext.invokeNext(context);
+            return;
+        }
+        
         AuthValveContext authContext = (AuthValveContext) context;
         JahiaUser jahiaUser = null;
         HttpSession session = authContext.getRequest().getSession(false);
@@ -72,9 +74,6 @@ public class SessionAuthValveImpl implements Valve {
         } else {
             authContext.getSessionFactory().setCurrentUser(jahiaUser);
         }
-    }
-
-    public void initialize() {
     }
 
 }

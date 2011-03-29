@@ -21,33 +21,28 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.httpclient.Header;
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: 15 d�c. 2004
- * Time: 13:03:08
- * To change this template use File | Settings | File Templates.
+ * Valve that uses tokens to authenticate the user.
+ * @author toto
  */
-public class TokenAuthValveImpl implements Valve {
+public class TokenAuthValveImpl extends BaseAuthValve {
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
 
     private static Map<String, JahiaUser> map = new HashMap<String, JahiaUser>();
 
-    public TokenAuthValveImpl() {
-    }
-
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+        if (!isEnabled()) {
+            valveContext.invokeNext(context);
+            return;
+        }
+        
         AuthValveContext authContext = (AuthValveContext) context;
         HttpServletRequest request = authContext.getRequest();
 
@@ -59,9 +54,6 @@ public class TokenAuthValveImpl implements Valve {
             }
         }
         valveContext.invokeNext(context);
-    }
-
-    public void initialize() {
     }
 
     public static String addToken(JahiaUser user) {

@@ -38,11 +38,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: May 14, 2010
  * Time: 11:18:26 AM
- * 
  */
 public class AuthValveContext {
     private HttpServletRequest request;

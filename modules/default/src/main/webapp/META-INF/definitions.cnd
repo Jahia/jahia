@@ -88,6 +88,10 @@
  - j:displayRememberMeButton (boolean)
  - j:displayLoginButton (boolean)
 
+[jnt:logout] > jnt:content, jmix:siteComponent, jmix:studioOnly, mix:title
+
+[jnt:login] > jnt:content, jmix:siteComponent, jmix:studioOnly, mix:title
+
 [jnt:shortcuts] > jnt:content, jmix:siteComponent
 
 [jnt:banner] > jnt:content, mix:title, jmix:structuredContent, jmix:editorialContent
@@ -183,5 +187,3 @@
 
 [jnt:fileUpload] > jnt:content, jmix:siteComponent, jmix:bindedComponent
  - target (weakreference)
-
-[jnt:logout] > jnt:content, jmix:siteComponent, jmix:studioOnly, mix:title

@@ -30,35 +30,32 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.bin.filters;
+package org.jahia.params.valves;
 
-import javax.servlet.Filter;
-import javax.servlet.ServletException;
-
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.DelegatingFilterProxy;
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * Extends the behaviour of standard Spring's {@link DelegatingFilterProxy} by
- * falling back to a {@link PassThroughFilter} (pass through) filter if the
- * target filter cannot be found.
+ * Is implemented by an authentication provider that implies custom login form URL.
  * 
  * @author Sergiy Shyrkov
  */
-public class FallbackDelegatingFilterProxy extends DelegatingFilterProxy {
+public interface LoginUrlProvider {
 
-    @Override
-    protected Filter initDelegate(WebApplicationContext wac) throws ServletException {
-        Filter delegate = null;
+    /**
+     * Returns the custom login URL, used to redirect the user in case of an unauthorized access. If the provider is not activated, returns
+     * <code>null</code>.
+     * 
+     * @return the custom login URL, used to redirect the user in case of an unauthorized access. If the provider is not activated, returns
+     *         <code>null</code>.
+     */
+    String getLoginUrl(HttpServletRequest request);
 
-        try {
-            delegate = super.initDelegate(wac);
-        } catch (NoSuchBeanDefinitionException e) {
-            delegate = PassThroughFilter.INSTANCE;
-        }
-
-        return delegate;
-    }
-
+    /**
+     * Returns <code>true</code> if an only if the provider is activated (the corresponding authentication valve) and the valve requires
+     * custom login URL. Otherwise returns <code>false</code>.
+     * 
+     * @return <code>true</code> if an only if the provider is activated (the corresponding authentication valve) and the valve requires
+     *         custom login URL. Otherwise returns <code>false</code>.
+     */
+    boolean hasCustomLoginUrl();
 }

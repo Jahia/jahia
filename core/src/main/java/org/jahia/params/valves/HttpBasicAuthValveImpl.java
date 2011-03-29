@@ -43,10 +43,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: 15 d�c. 2004
- * Time: 13:03:08
+ * Valve that uses Basic authentication to authenticate the user.
+ * @author toto
  */
 public class HttpBasicAuthValveImpl extends BaseAuthValve {
     private static final transient Logger logger = LoggerFactory
@@ -56,6 +54,11 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
     }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+        if (!isEnabled()) {
+            valveContext.invokeNext(context);
+            return;
+        }
+        
         AuthValveContext authContext = (AuthValveContext) context;
         HttpServletRequest request = authContext.getRequest();
         String auth = request.getHeader("Authorization");
@@ -98,6 +101,4 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
         valveContext.invokeNext(context);
     }
 
-    public void initialize() {
-    }
 }

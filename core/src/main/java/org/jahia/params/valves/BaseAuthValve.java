@@ -42,11 +42,21 @@ import org.jahia.services.usermanager.JahiaUser;
  */
 public abstract class BaseAuthValve implements Valve {
 
+    private boolean enabled = true;
+
     public void initialize() {
         // do nothing
     }
 
     protected boolean isAccounteLocked(JahiaUser user) {
         return !user.isRoot() && Boolean.valueOf(user.getProperty("j:accountLocked"));
+    }
+
+    protected boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

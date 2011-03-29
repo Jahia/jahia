@@ -36,6 +36,8 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -49,13 +51,14 @@ import java.security.Principal;
  */
 public class ContainerAuthValveImpl extends BaseAuthValve {
 
-    private static final org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(ContainerAuthValveImpl.class);
-
-    public ContainerAuthValveImpl() {
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ContainerAuthValveImpl.class);
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+        if (!isEnabled()) {
+            valveContext.invokeNext(context);
+            return;
+        }
+        
         AuthValveContext authContext = (AuthValveContext) context;
         HttpServletRequest request = authContext.getRequest();
         Principal principal = request.getUserPrincipal();
@@ -81,6 +84,4 @@ public class ContainerAuthValveImpl extends BaseAuthValve {
         valveContext.invokeNext(context);
     }
 
-    public void initialize() {
-    }
 }

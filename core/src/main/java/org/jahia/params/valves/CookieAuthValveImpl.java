@@ -33,7 +33,6 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
@@ -60,11 +59,15 @@ import java.util.Set;
  */
 
 public class CookieAuthValveImpl extends BaseAuthValve {
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(CookieAuthValveImpl.class);
 
     private CookieAuthConfig cookieAuthConfig;
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+        if (!isEnabled()) {
+            valveContext.invokeNext(context);
+            return;
+        }
+        
         AuthValveContext authContext = (AuthValveContext) context;
         JahiaUser jahiaUser = null;
         // now lets look for a cookie in case we are using cookie-based
@@ -151,9 +154,6 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         }
     }
 
-    public void initialize() {
-    }
-
     private void enforcePasswordPolicy(JahiaUser theUser, AuthValveContext authContext) {
 //        PolicyEnforcementResult evalResult =
 //                ServicesRegistry.getInstance().getJahiaPasswordPolicyService().enforcePolicyOnLogin(theUser);
@@ -200,5 +200,11 @@ public class CookieAuthValveImpl extends BaseAuthValve {
             count++;
         }
         return result.toString();
+    }
+    
+    @Override
+    public void initialize() {
+        super.initialize();
+        setEnabled(cookieAuthConfig.isActivated());
     }
 }

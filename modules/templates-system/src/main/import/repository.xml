@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:test_templates="http://www.jahia.org/jahia/test_templates/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:test_templates="http://www.jahia.org/jahia/test_templates/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <templateSets jcr:primaryType="jnt:templateSets">
-    <templates-system changefreq="monthly" j:installedModules="templates-system" j:siteType="templatesSet" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5" j:title="Template - System">
+    <templates-system changefreq="monthly" j:installedModules="templates-system" j:siteType="templatesSet" j:title="Template - System" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
       <templates jcr:primaryType="jnt:templatesFolder">
         <base j:view="system" jcr:mixinTypes="jmix:theme" jcr:primaryType="jnt:template">
           <home jcr:primaryType="jnt:pageTemplate" />
@@ -16,17 +16,17 @@
             </logo-jahia-xcm.png>
           </header-col2>
           <page jcr:primaryType="jnt:contentList">
-            <header customColumn="4, 12 " divID="header" jcr:primaryType="jnt:customRow" colNames="header-col1,header-colContent"/>
-            <content j:id="content" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
+            <header colNames="header-col1,header-colContent" customColumn="4, 12 " divID="header" jcr:primaryType="jnt:customRow" />
+            <content j:id="content" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content" />
               <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area" />
             </content>
-            <footer customColumn="16" divID="footer" jcr:primaryType="jnt:customRow" colNames="footer-colContent"/>
+            <footer colNames="footer-colContent" customColumn="16" divID="footer" jcr:primaryType="jnt:customRow" />
           </page>
           <content-colContent jcr:primaryType="jnt:contentList" />
           <footer-colContent jcr:primaryType="jnt:contentList">
             <copyright jcr:primaryType="jnt:bigText">
-              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  &amp;copy; 2002-2011 Jahia Solutions Group - All rights reserved.&lt;/p&gt; " />
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p style=&quot;text-align: center;&quot;&gt;  &amp;copy; 2002-2011 Jahia Solutions Group - All rights reserved.&lt;/p&gt; " />
             </copyright>
           </footer-colContent>
           <header-col1 jcr:primaryType="jnt:contentList">
@@ -35,7 +35,7 @@
             </logo-jahia>
           </header-col1>
           <user j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="10" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+            <pagecontent j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
               <userDetails j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails" />
             </pagecontent>
           </user>

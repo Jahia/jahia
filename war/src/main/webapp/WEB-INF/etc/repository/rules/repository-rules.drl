@@ -211,7 +211,8 @@ end
 rule "Flush group cache"
     when
         A node is deleted
-            - the node has the type jnt:virtualsite
+        The node has a parent
+            - the parent has the type jnt:virtualsitesFolder
     then
         Flush group cache
 end

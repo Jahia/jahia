@@ -21,9 +21,11 @@ public class XmlService {
 
 	}
 
-	private PageBO createNewPage(ArticleBO article, int level, List<PageBO> subPages) {
-		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex);
-		PageBO page = new PageBO(currentPageIndex, formatForXml(article.getTitle()), formatForXml(article.getContent()), level, subPages);
+	private PageBO createNewPage(ArticleBO articleEn, ArticleBO articleFr, int level, List<PageBO> subPages) {
+		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR " + articleFr.getId() + " - Article EN "+articleEn.getId());
+		PageBO page = new PageBO(currentPageIndex, formatForXml(articleEn.getTitle()),
+				formatForXml(articleEn.getContent()), formatForXml(articleFr.getTitle()),
+				formatForXml(articleFr.getContent()), level, subPages);
 		currentPageIndex = currentPageIndex + 1;
 		return page;
 	}
@@ -37,13 +39,16 @@ public class XmlService {
 	private List<PageBO> createSubPages(List<ArticleBO> articles, Integer articleIndex, Integer nbPagesPerLevel,
 			Integer level, Integer maxArticleIndex) {
 		List<PageBO> listePages = new ArrayList<PageBO>();
-		ArticleBO article;
+		ArticleBO articleEn;
+		ArticleBO articleFr;
 		listePages.clear();
 		if (level.intValue() > 0) {
 			for (int i = 0; i < nbPagesPerLevel; i++) {
-				article = getArticle(articles, maxArticleIndex);
+				articleEn = getArticle(articles, maxArticleIndex);
+				articleFr = getArticle(articles, maxArticleIndex);
 				PageBO page = createNewPage(
-						article,
+						articleEn,
+						articleFr,
 						level,
 						createSubPages(articles, articleIndex.intValue() + 1, nbPagesPerLevel, level.intValue() - 1,
 								maxArticleIndex));
@@ -70,17 +75,20 @@ public class XmlService {
 		outService.appendStringToFile(export.getOutputFile(), newSite.getHeader());
 
 		PageBO pageTopLevel = null;
-		ArticleBO article = null;
+		ArticleBO articleEn = null;
+		ArticleBO articleFr = null;
 		for (int i = 1; i <= export.getNbPagesTopLevel().intValue(); i++) {
-			article = getArticle(articles, export.getMaxArticleIndex());
+			articleEn = getArticle(articles, export.getMaxArticleIndex());
+			articleFr = getArticle(articles, export.getMaxArticleIndex());
 			pageTopLevel = createNewPage(
-					article,
+					articleEn,
+					articleFr,
 					export.getNbSubLevels() + 1,
 					createSubPages(articles, currentPageIndex, export.getNbSubPagesPerPage(), export.getNbSubLevels(),
 							export.getMaxArticleIndex()));
 			outService.appendPageToFile(export.getOutputFile(), pageTopLevel);
 			logger.debug("XML code of top level page #" + i + " written in output file");
-			logger.info("Top page #"+i+" with subpages created and written to file");
+			logger.info("Top page #" + i + " with subpages created and written to file");
 		}
 		outService.appendStringToFile(export.getOutputFile(), newSite.getFooter());
 	}

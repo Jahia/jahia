@@ -17,37 +17,6 @@ global RulesNotificationService notificationService
 global Logger logger
 global JCRStoreProvider provider
 
-rule "auto publish node (create)"
-    when
-       A new node is created
-		- the node has the type jmix:autoPublish
-    then
-        Publish the node
-end
-
-rule "auto publish node (modify)"
-    when
-        A property has been set on a node
-		 - the node has the type jmix:autoPublish
-    then
-        Publish the node
-end
-
-rule "auto publish node (remove property)"
-    when
-       A property has been removed from a node
-		- the node has the type jmix:autoPublish
-    then
-        Publish the node
-end
-
-#rule "auto publish node (delete)"
-#    when
-#        A node is deleted
-#    then
-#        Log "node removed"
-#end
-
 rule "Remove user from cache when updated"
     when
 		A property j:accountLocked has been set on a node

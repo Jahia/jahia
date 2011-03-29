@@ -70,10 +70,19 @@ public class LastModifiedListener extends DefaultEventListener {
                 userId = userId.substring(" system ".length());
             }
             final String finalUserId = userId;
+
+            final Set<String> nodes = new HashSet<String>();
+            final Set<String> addedNodes = new HashSet<String>();
+            final List<String> autoPublishedIds;
+
+            if (workspace.equals("default")) {
+                autoPublishedIds = new ArrayList<String>();
+            } else {
+                autoPublishedIds = null;
+            }
+
             JCRTemplate.getInstance().doExecuteWithSystemSession(finalUserId, workspace, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Set<String> nodes = new HashSet<String>();
-                    Set<String> addedNodes = new HashSet<String>();
                     Calendar c = GregorianCalendar.getInstance();
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();
@@ -115,7 +124,7 @@ public class LastModifiedListener extends DefaultEventListener {
                         for (String node : nodes) {
                             try {
                                 JCRNodeWrapper n = session.getNode(node);
-                                updateProperty(n, c, finalUserId);
+                                updateProperty(n, c, finalUserId, autoPublishedIds);
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }
@@ -126,7 +135,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
                                     n.setProperty("j:originWS", workspace);
                                 }
-                                updateProperty(n, c, finalUserId);
+                                updateProperty(n, c, finalUserId, autoPublishedIds);
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }
@@ -136,25 +145,43 @@ public class LastModifiedListener extends DefaultEventListener {
                     return null;
                 }
             });
+
+            if (autoPublishedIds != null && !autoPublishedIds.isEmpty()) {
+                JCRPublicationService.getInstance().publish(autoPublishedIds, "default", "live", null);
+            }
+
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
 
     }
 
-    private void updateProperty(JCRNodeWrapper n, Calendar c, String userId) throws RepositoryException {
+    private void updateProperty(JCRNodeWrapper n, Calendar c, String userId, List<String> autoPublished) throws RepositoryException {
         while (!n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
+            addAutoPublish(n, autoPublished);
             try {
                 n = n.getParent();
             } catch (ItemNotFoundException e) {
                 return;
             }
         }
+
+        addAutoPublish(n, autoPublished);
+
         if (!n.isCheckedOut()) {
             n.checkout();
         }
         n.setProperty("jcr:lastModified",c);
-        n.setProperty("jcr:lastModifiedBy",userId);
+        n.setProperty("jcr:lastModifiedBy", userId);
+    }
+
+    private void addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
+        if (autoPublished != null) {
+            if (n.isNodeType("jmix:autoPublish") && !autoPublished.contains(n.getIdentifier())) {
+                System.out.println("autoPublished "+n.getPath());
+                autoPublished.add(n.getIdentifier());
+            }
+        }
     }
 
     private void handleTranslationNodes(final JCRNodeWrapper node, final Calendar c,

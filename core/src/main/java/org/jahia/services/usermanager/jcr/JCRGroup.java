@@ -399,6 +399,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             NodeIterator nodes = qr.getNodes();
             while (nodes.hasNext()) {
                 Node memberNode = nodes.nextNode();
+                memberNode.checkout();
                 memberNode.remove();
             }
             session.save();

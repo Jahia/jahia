@@ -148,28 +148,24 @@ public class RulesListener extends DefaultEventListener {
         this.serverId = serverId;
     }
 
-    public void start() {
+    public void start() throws Exception {
         initRules();
     }
 
-    private void initRules() {
-        try {
-            RuleBaseConfiguration conf = new RuleBaseConfiguration();
-            //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
-            //conf.setRemoveIdentities( true );
-            ruleBase = RuleBaseFactory.newRuleBase(conf);
+    private void initRules() throws Exception {
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
+        //conf.setRemoveIdentities( true );
+        ruleBase = RuleBaseFactory.newRuleBase(conf);
 
-            dslFiles.add(
-                    new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
+        dslFiles.add(
+                new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
 
-            for (String s : ruleFiles) {
-                addRules(new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
-            }
-
-            lastRead = System.currentTimeMillis();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        for (String s : ruleFiles) {
+            addRules(new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
         }
+
+        lastRead = System.currentTimeMillis();
     }
 
     private String getDslFiles() throws IOException {
@@ -270,7 +266,11 @@ public class RulesListener extends DefaultEventListener {
         }
 
         if (ruleBase == null || SettingsBean.getInstance().isDevelopmentMode() && lastModified() > lastRead) {
-            initRules();
+            try {
+                initRules();
+            } catch (Exception e) {
+                logger.error("Cannot compile rules",e);
+            }
             if (ruleBase == null) {
                 return;
             }

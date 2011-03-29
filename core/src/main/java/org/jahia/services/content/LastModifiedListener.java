@@ -178,7 +178,6 @@ public class LastModifiedListener extends DefaultEventListener {
     private void addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
         if (autoPublished != null) {
             if (n.isNodeType("jmix:autoPublish") && !autoPublished.contains(n.getIdentifier())) {
-                System.out.println("autoPublished "+n.getPath());
                 autoPublished.add(n.getIdentifier());
             }
         }

@@ -45,6 +45,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -131,11 +132,14 @@ public class ManagerLinker implements Linker {
      * Called when the left tree selection changes.
      */
     public void onTreeItemSelected() {
-        if (m_bottomRightComponent != null) {
-            m_bottomRightComponent.clear();
-        }
         if (m_topRightComponent != null && m_leftComponent != null) {
             m_topRightComponent.setContent(m_leftComponent.getSelectedItem());
+        }
+        if (m_topRightComponent != null) {
+            m_topRightComponent.clearSelection();
+        }
+        if (m_bottomRightComponent != null) {
+            m_bottomRightComponent.fillData(m_leftComponent.getSelectedItem());
         }
         handleNewSelection();
     }
@@ -145,7 +149,7 @@ public class ManagerLinker implements Linker {
      */
     public void onTableItemSelected() {
         handleNewSelection();
-        if (m_bottomRightComponent != null && m_topRightComponent != null) {
+        if (m_bottomRightComponent != null && m_topRightComponent.getSelection() != null) {
             m_bottomRightComponent.fillData(m_topRightComponent.getSelection());
         }
     }
@@ -356,10 +360,11 @@ public class ManagerLinker implements Linker {
     }
 
     public void syncSelectionContext() {
+        List<GWTJahiaNode> list = null;
         if (getTreeSelection() instanceof GWTJahiaNode) {
             selectionContext.setMainNode((GWTJahiaNode) getTreeSelection());
+            list = Arrays.asList((GWTJahiaNode) getTreeSelection());
         }
-        List<GWTJahiaNode> list = null;
         if ( getTableSelection() != null) {
             list = (List<GWTJahiaNode>) getTableSelection();
         }

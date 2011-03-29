@@ -92,10 +92,7 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -1354,9 +1351,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             allTypes.addAll(Arrays.asList(nodeWrapper.getMixinNodeTypes()));
             allTypes.addAll(availableMixins);
 
+            JCRNodeWrapper parent = null;
+            try {
+                nodeWrapper.getParent();
+            } catch (ItemNotFoundException ignored) {
+
+            }
             result.setInitializersValues(
                     contentDefinition.getAllInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper,
-                            nodeWrapper.getParent(), getUILocale()));
+                            parent, getUILocale()));
             final GWTJahiaNodeACL gwtJahiaNodeACL = contentManager.getACL(nodepath, false, sessionWrapper, getUILocale());
             result.setAcl(gwtJahiaNodeACL);
             Map<String,Set<String>> referencesWarnings = new HashMap<String, Set<String>>();

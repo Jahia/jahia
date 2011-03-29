@@ -160,6 +160,7 @@
                             <property name="icon" value="publish"/>
                             <!--<property name="workflowAction" value="publish"/>-->
                         </bean>
+                        <ref bean="Toolbar.Item.Unpublish"/>
                    </list>
                 </property>
             </bean>

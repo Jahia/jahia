@@ -1,0 +1,142 @@
+<rep='internal'>
+<jcr='http://www.jcp.org/jcr/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+
+ //------------------------------------------------------------------------------
+// J A C K R A B B I T   I N T E R N A L S
+//------------------------------------------------------------------------------
+
+[rep:root] > nt:unstructured
+  + jcr:system (rep:system) = rep:system mandatory IGNORE
+
+[rep:system]
+  orderable
+  + jcr:versionStorage (rep:versionStorage) = rep:versionStorage mandatory protected ABORT
+  + jcr:nodeTypes (rep:nodeTypes) = rep:nodeTypes mandatory protected ABORT
+  // @since 2.0
+  + jcr:activities (rep:Activities) = rep:Activities mandatory protected ABORT
+  // @since 2.0
+  + jcr:configurations (rep:Configurations) = rep:Configurations protected ABORT
+  + * (nt:base) = nt:base IGNORE
+
+
+/**
+ * Node Types (virtual) storage
+ */
+[rep:nodeTypes]
+  + * (nt:nodeType) = nt:nodeType protected ABORT
+
+/**
+ * Version storage
+ */
+[rep:versionStorage]
+  + * (nt:versionHistory) = nt:versionHistory protected ABORT
+  + * (rep:versionStorage) = rep:versionStorage protected ABORT
+
+/**
+ * Activities storage
+ * @since 2.0
+ */
+[rep:Activities]
+  + * (nt:activity) = nt:activity protected ABORT
+  + * (rep:Activities) = rep:Activities protected ABORT
+
+/**
+ * the intermediate nodes for the configurations storage.
+ * Note: since the versionable node points to the configuration and vice versa,
+ * a configuration could never be removed because no such API exists. therefore
+ * the child node definitions are not protected.
+ * @since 2.0
+ */
+[rep:Configurations]
+  + * (nt:configuration) = nt:configuration ABORT
+  + * (rep:Configurations) = rep:Configurations ABORT
+
+/**
+ * mixin that provides a multi value property for referencing versions.
+ * This is used for recording the baseline versions in the nt:configuration
+ * node, and to setup a bidirectional relationship between activities and
+ * the respective versions
+ * @since 2.0
+ */
+[rep:VersionReference] mix
+  - rep:versions (REFERENCE) protected multiple
+
+// -----------------------------------------------------------------------------
+// J A C K R A B B I T  S E C U R I T Y
+// -----------------------------------------------------------------------------
+
+[rep:AccessControllable]
+  mixin
+  + rep:policy (rep:Policy) protected IGNORE
+
+[rep:Policy]
+  abstract
+
+[rep:ACL] > rep:Policy
+  orderable
+  + * (rep:ACE) = rep:GrantACE protected IGNORE
+
+[rep:ACE]
+  - rep:principalName (STRING) protected mandatory
+  - rep:privileges (NAME) protected mandatory multiple
+  - rep:nodePath (PATH) protected
+  - rep:glob (STRING) protected
+  - * (UNDEFINED) protected
+
+[rep:GrantACE] > rep:ACE
+
+[rep:DenyACE] > rep:ACE
+
+// -----------------------------------------------------------------------------
+// Principal based AC
+// -----------------------------------------------------------------------------
+
+[rep:AccessControl]
+  + * (rep:AccessControl) protected IGNORE
+  + * (rep:PrincipalAccessControl) protected IGNORE
+
+[rep:PrincipalAccessControl] > rep:AccessControl
+  + rep:policy (rep:Policy) protected IGNORE
+
+// -----------------------------------------------------------------------------
+// User Management
+// -----------------------------------------------------------------------------
+
+[rep:Authorizable] > mix:referenceable, nt:hierarchyNode
+  abstract
+  + * (nt:base) = nt:unstructured VERSION
+  - rep:principalName (STRING) protected mandatory
+  - * (UNDEFINED)
+  - * (UNDEFINED) multiple
+
+[rep:Impersonatable]
+  mixin
+  - rep:impersonators (STRING) protected multiple
+
+[rep:User] > rep:Authorizable, rep:Impersonatable
+  - rep:password (STRING) protected mandatory
+  - rep:disabled (STRING) protected
+
+[rep:Group] > rep:Authorizable
+  + rep:members (rep:Members) = rep:Members multiple protected VERSION
+  - rep:members (WEAKREFERENCE) protected multiple < 'rep:Authorizable'
+
+[rep:AuthorizableFolder] > nt:hierarchyNode
+  + * (rep:Authorizable) = rep:User VERSION
+  + * (rep:AuthorizableFolder) = rep:AuthorizableFolder VERSION
+
+[rep:Members]
+  orderable
+  + * (rep:Members) = rep:Members protected multiple
+  - * (WEAKREFERENCE) protected < 'rep:Authorizable'
+
+// -----------------------------------------------------------------------------
+// J A C K R A B B I T  R E T E N T I O N  M A N A G E M E N T
+// -----------------------------------------------------------------------------
+
+[rep:RetentionManageable]
+  mixin
+  - rep:hold (UNDEFINED) protected  multiple IGNORE
+  - rep:retentionPolicy (UNDEFINED) protected IGNORE

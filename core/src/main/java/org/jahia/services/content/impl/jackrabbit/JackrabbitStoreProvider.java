@@ -142,11 +142,12 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         List<NodeTypeDefinition> nts = new ArrayList<NodeTypeDefinition>();
         while (nti.hasNext()) {
             ExtendedNodeType nodeType = (ExtendedNodeType) nti.next();
-            if (!Name.NS_NT_URI.equals(nodeType.getNameObject().getUri()) && !Name.NS_MIX_URI.equals(nodeType.getNameObject().getUri())) {
+            String uri = nodeType.getNameObject().getUri();
+            if (!Name.NS_NT_URI.equals(uri) && !Name.NS_MIX_URI.equals(uri) && Name.NS_REP_URI.equals(uri)) {
                 try {
                     namespaceRegistry.getURI(nodeType.getNameObject().getPrefix());
                 } catch (NamespaceException e) {
-                    namespaceRegistry.registerNamespace(nodeType.getNameObject().getPrefix(), nodeType.getNameObject().getUri());
+                    namespaceRegistry.registerNamespace(nodeType.getNameObject().getPrefix(), uri);
                 }
                 nts.add(nodeType.getNodeTypeDefinition());
             }

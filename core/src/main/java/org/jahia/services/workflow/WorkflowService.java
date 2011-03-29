@@ -244,12 +244,16 @@ public class WorkflowService {
                                     Set<String> s = new HashSet<String>();
 
                                     try {
-                                        JCRNodeWrapper permissionNode = session.getNode("/permissions"+permName);
-                                        for (PropertyIterator iterator = permissionNode.getWeakReferences("j:permissions"); iterator
-                                                .hasNext();) {
-                                            Property prop = iterator.nextProperty();
-                                            Node roleNode = prop.getParent();
-                                            s.add(roleNode.getName());
+                                        String path = "/permissions" + permName;
+                                        while (path.length() >= "/permissions".length()) {
+                                            JCRNodeWrapper permissionNode = session.getNode(path);
+                                            for (PropertyIterator iterator = permissionNode.getWeakReferences(
+                                                    "j:permissions"); iterator.hasNext();) {
+                                                Property prop = iterator.nextProperty();
+                                                Node roleNode = prop.getParent();
+                                                s.add(roleNode.getName());
+                                            }
+                                            path = StringUtils.substringBeforeLast(path,"/");
                                         }
                                     } catch (PathNotFoundException e) {
                                         logger.warn("Unable to find the node for the permission " + permName);
@@ -273,9 +277,9 @@ public class WorkflowService {
                                         }
                                     }
                                 } catch (RepositoryException e) {
-                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                    logger.error(e.getMessage(),e);
                                 } catch (BeansException e) {
-                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                    logger.error(e.getMessage(),e);
                                 }
                             }
                         }

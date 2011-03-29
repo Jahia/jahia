@@ -5,12 +5,15 @@
          xmlns:j="http://www.jahia.org/jahia/1.0"
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <users jcr:primaryType="jnt:usersFolder" j:usersFolderSkeleton="WEB-INF/etc/repository/user.xml,WEB-INF/etc/repository/user-*.xml,modules/**/META-INF/user-skeleton.xml,modules/**/META-INF/user-skeleton-*.xml">
-        <ROOT_NAME_PLACEHOLDER jcr:primaryType="jnt:user" j:password="@ROOT_PASSWORD@" j:external="false" jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b">
+    <users jcr:primaryType="jnt:usersFolder"
+           j:usersFolderSkeleton="WEB-INF/etc/repository/user.xml,WEB-INF/etc/repository/user-*.xml,modules/**/META-INF/user-skeleton.xml,modules/**/META-INF/user-skeleton-*.xml">
+        <ROOT_NAME_PLACEHOLDER jcr:primaryType="jnt:user" j:password="@ROOT_PASSWORD@" j:external="false"
+                               jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b">
             <files jcr:primaryType="jnt:folder">
-                <private jcr:primaryType="jnt:folder" >
+                <private jcr:primaryType="jnt:folder">
                     <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-                      <GRANT_u_root j:protected="false" j:principal="" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+                        <GRANT_u_root j:protected="false" j:principal="" j:roles="owner" j:aceType="GRANT"
+                                      jcr:primaryType="jnt:ace"/>
                     </j:acl>
                     <imports jcr:primaryType="jnt:importDropBox"/>
                 </private>
@@ -20,7 +23,7 @@
 
             <contents jcr:primaryType="jnt:contentList"/>
 
-            <preferences jcr:primaryType="jnt:preferences" >
+            <preferences jcr:primaryType="jnt:preferences">
             </preferences>
         </ROOT_NAME_PLACEHOLDER>
         <guest jcr:primaryType="jnt:user" jcr:mixinTypes="jmix:systemNode" j:password="" j:external="false"/>
@@ -44,43 +47,52 @@
             </j:members>
         </privileged>
     </groups>
-    
+
     <sites jcr:primaryType="jnt:virtualsitesFolder"
            j:virtualsitesFolderSkeleton="WEB-INF/etc/repository/site.xml,WEB-INF/etc/repository/site-*.xml,modules/**/META-INF/site-skeleton.xml,modules/**/META-INF/site-skeleton-*.xml"/>
 
     <imports jcr:primaryType="jnt:importDropBox"/>
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper"/>
 
-    <mounts jcr:primaryType="jnt:mounts" />
+    <mounts jcr:primaryType="jnt:mounts"/>
 
     <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>
 
     <templateSets jcr:primaryType="jnt:templateSets"/>
 
     <j:acl jcr:primaryType="jnt:acl">
-      <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-      <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-      <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="privileged" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="GRANT"
+                       jcr:primaryType="jnt:ace"/>
+        <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="GRANT"
+                       jcr:primaryType="jnt:ace"/>
+        <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="privileged" j:aceType="GRANT"
+                            jcr:primaryType="jnt:ace"/>
     </j:acl>
 
     <j:workflowRules jcr:primaryType="jnt:workflowRules">
-      <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule" />
+        <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule"/>
     </j:workflowRules>
 
     <permissions jcr:primaryType="jnt:permission">
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-          <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor privileged" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+            <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor privileged"
+                                j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
         </j:acl>
         <repository-permissions jcr:primaryType="jnt:permission">
             <jcr:all_default jcr:primaryType="jnt:permission">
 
                 <jcr:read_default jcr:primaryType="jnt:permission"/>
 
-                <jcr:write_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default">
-                    <jcr:modifyProperties_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
-                    <jcr:addChildNodes_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
-                    <jcr:removeNode_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
-                    <jcr:removeChildNodes_default jcr:primaryType="jnt:permission" j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                <jcr:write_default jcr:primaryType="jnt:permission"
+                                   j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default">
+                    <jcr:modifyProperties_default jcr:primaryType="jnt:permission"
+                                                  j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                    <jcr:addChildNodes_default jcr:primaryType="jnt:permission"
+                                               j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                    <jcr:removeNode_default jcr:primaryType="jnt:permission"
+                                            j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                    <jcr:removeChildNodes_default jcr:primaryType="jnt:permission"
+                                                  j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
                 </jcr:write_default>
                 <jcr:readAccessControl_default jcr:primaryType="jnt:permission"/>
                 <jcr:modifyAccessControl_default jcr:primaryType="jnt:permission"/>
@@ -201,28 +213,30 @@
 
         <templates jcr:primaryType="jnt:permission"/>
     </permissions>
-    
-    <roles jcr:primaryType="jnt:roles" >
+
+    <roles jcr:primaryType="jnt:roles">
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-          <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor privileged" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+            <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor privileged"
+                                j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
         </j:acl>
 
         <visitor jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live" />
+                 j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live"/>
 
-        <author jcr:primaryType="jnt:role" />
+        <author jcr:primaryType="jnt:role"/>
 
         <privileged jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
-                 j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/editMode/editSelector/sitemapSelector" j:hidden="true"/>
+                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/editMode/editSelector/sitemapSelector"
+                    j:hidden="true"/>
 
         <editor jcr:primaryType="jnt:role"
                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/templates /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/wysiwyg-editor-toolbar/full"
                 j:privilegedAccess="true"
                 />
 
-        <contributor     jcr:primaryType="jnt:role"
-                         j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/contributeMode"
-                         j:privilegedAccess="true"                />
+        <contributor jcr:primaryType="jnt:role"
+                     j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/contributeMode"
+                     j:privilegedAccess="true"/>
 
         <publisher jcr:primaryType="jnt:role"
                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/contributeMode/contributeModeAccess /permissions/workflow-tasks/final-review"
@@ -232,10 +246,10 @@
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
                             j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers /permissions/wysiwyg-editor-toolbar"
                             j:privilegedAccess="true"
-                            />
+                />
 
         <owner jcr:primaryType="jnt:role"
-                 j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live /permissions/actions" />
+               j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live /permissions/actions"/>
 
     </roles>
 </content>

@@ -40,8 +40,17 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
  */
 public abstract class BottomRightComponent extends LinkableComponent {
 
+    private String componentType;
+
     public abstract void clear() ;
 
     public abstract void fillData(Object selectedItem) ;
 
+    public String getComponentType() {
+        return componentType;
+    }
+
+    public void setComponentType(String componentType) {
+        this.componentType = componentType;
+    }
 }

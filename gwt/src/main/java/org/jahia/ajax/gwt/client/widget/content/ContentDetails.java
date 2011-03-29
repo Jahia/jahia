@@ -91,9 +91,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
     private Button ok;
 
-
     public ContentDetails(GWTManagerConfiguration config, ManagerLinker linker) {
         super();
+        setComponentType(ManagerLinker.MANAGER);
         this.config = config;
         this.linker = linker;
         m_component = new ContentPanel(new FitLayout());

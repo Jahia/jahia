@@ -74,6 +74,7 @@ public class PickedContentView extends BottomRightComponent {
         this.config = config;
         this.selectedNodes = selectedNodes;
         this.multiple = multiple;
+        setComponentType(ManagerLinker.PICKER);
         createUI();
     }
 

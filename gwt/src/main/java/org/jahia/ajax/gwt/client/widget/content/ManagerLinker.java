@@ -66,6 +66,8 @@ public class ManagerLinker implements Linker {
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private GWTJahiaNode leftPanelSelectionWhenHidden;
     private GWTManagerConfiguration config;
+    protected static final String PICKER = "picker";
+    protected static final String MANAGER = "manager";
 
     public ManagerLinker(GWTManagerConfiguration configuration) {
         this.config = configuration;
@@ -132,13 +134,13 @@ public class ManagerLinker implements Linker {
      * Called when the left tree selection changes.
      */
     public void onTreeItemSelected() {
-        if (m_topRightComponent != null && m_leftComponent != null) {
-            m_topRightComponent.setContent(m_leftComponent.getSelectedItem());
-        }
         if (m_topRightComponent != null) {
             m_topRightComponent.clearSelection();
         }
-        if (m_bottomRightComponent != null) {
+        if (m_topRightComponent != null && m_leftComponent != null) {
+            m_topRightComponent.setContent(m_leftComponent.getSelectedItem());
+        }
+        if (m_bottomRightComponent != null && !(m_bottomRightComponent.getComponentType().equals(PICKER))) {
             m_bottomRightComponent.fillData(m_leftComponent.getSelectedItem());
         }
         handleNewSelection();
@@ -149,7 +151,7 @@ public class ManagerLinker implements Linker {
      */
     public void onTableItemSelected() {
         handleNewSelection();
-        if (m_bottomRightComponent != null && m_topRightComponent.getSelection() != null) {
+        if (m_bottomRightComponent != null && m_topRightComponent != null) {
             m_bottomRightComponent.fillData(m_topRightComponent.getSelection());
         }
     }
@@ -360,11 +362,10 @@ public class ManagerLinker implements Linker {
     }
 
     public void syncSelectionContext() {
-        List<GWTJahiaNode> list = null;
         if (getTreeSelection() instanceof GWTJahiaNode) {
             selectionContext.setMainNode((GWTJahiaNode) getTreeSelection());
-            list = Arrays.asList((GWTJahiaNode) getTreeSelection());
         }
+        List<GWTJahiaNode> list = null;
         if ( getTableSelection() != null) {
             list = (List<GWTJahiaNode>) getTableSelection();
         }

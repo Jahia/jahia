@@ -135,7 +135,6 @@ public class LastModifiedListener extends DefaultEventListener {
                             try {
                                 JCRNodeWrapper n = session.getNode(addedNode);
                                 sessions.add(n.getRealNode().getSession());
-                                System.out.println("added node : "+addedNode);
                                 if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
                                     n.setProperty("j:originWS", workspace);
                                 }
@@ -184,7 +183,6 @@ public class LastModifiedListener extends DefaultEventListener {
     private void addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
         if (autoPublished != null) {
             if (n.isNodeType("jmix:autoPublish") && !autoPublished.contains(n.getIdentifier())) {
-                System.out.println("--publish------>" +n.getPath());
                 autoPublished.add(n.getIdentifier());
             }
         }

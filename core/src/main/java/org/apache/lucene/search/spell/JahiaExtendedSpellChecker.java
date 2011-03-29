@@ -339,8 +339,11 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
      * @throws IOException
      * @return true iff the word exists in the index
      */
-    public boolean exist(String word, String langCode) throws IOException {
-        return searcher.docFreq(new Term(F_WORD + (langCode != null ? "-" + langCode : ""), word)) > 0;
+    public boolean exist(String word, String langCode, String site) throws IOException {
+        BooleanQuery query = new BooleanQuery();
+        add(query, F_WORD + (langCode != null ? "-" + langCode : ""), word, BooleanClause.Occur.MUST);
+        add(query, F_SITE, site, BooleanClause.Occur.MUST);
+        return searcher.search(query).length() > 0;
     }
 
     /**
@@ -369,7 +372,7 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
                 continue; // too short we bail but "too long" is fine...
             }
 
-            if (this.exist(word, langCode)) { // if the word already exist in
+            if (this.exist(word, langCode, site)) { // if the word already exist in
                 // the gramindex
                 continue;
             }

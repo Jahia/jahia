@@ -5,6 +5,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@page import="java.lang.System"%>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -19,12 +20,13 @@
 	<fieldset>
 		<legend>${fn:escapeXml(jcr:label(currentNode.primaryNodeType,currentResource.locale))}</legend>
 </c:if>
+<%long startTime = System.currentTimeMillis(); %>
 <s:results var="resultsHits">
 	<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 	<jcr:nodeProperty name="autoSuggest" node="${currentNode}" var="autoSuggest"/>
 	<div id="${currentNode.UUID}">
 	<div class="resultsList">
-        <c:if test="${moduleMap.begin == 0 && autoSuggest.boolean}">
+        <c:if test="${autoSuggest.boolean && (empty moduleMap || moduleMap.begin == 0)}">
         	<%-- spelling auto suggestions are enabled --%>
         	<jcr:nodeProperty name="autoSuggestMinimumHitCount" node="${currentNode}" var="autoSuggestMinimumHitCount"/>
         	<jcr:nodeProperty name="autoSuggestHitCount" node="${currentNode}" var="autoSuggestHitCount"/>
@@ -74,6 +76,7 @@
     </div>
     </div>
 </s:results>
+<%System.out.println("Search render time: " + (System.currentTimeMillis() - startTime) + "ms"); %>
 <c:if test="${renderContext.editMode}">
 	</fieldset>
 </c:if>

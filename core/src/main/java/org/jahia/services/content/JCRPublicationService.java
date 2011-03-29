@@ -403,7 +403,12 @@ public class JCRPublicationService extends JahiaService {
                     versionManager.checkout(node.getPath());
                 }
                 node.setProperty("j:lastPublished", calendar);
-                node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
+
+                String userId = destinationSession.getUserID();
+                if (userId.startsWith(" system ")) {
+                    userId = userId.substring(" system ".length());
+                }
+                node.setProperty("j:lastPublishedBy", userId);
             }
 //            }
         }

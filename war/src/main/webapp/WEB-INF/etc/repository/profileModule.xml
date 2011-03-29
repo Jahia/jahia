@@ -7,8 +7,17 @@
               j:siteType="profileModule" j:dependencies="profile">
     <portlets jcr:primaryType="jnt:portletFolder"/>
     <files jcr:primaryType="jnt:folder"/>
-    <contents jcr:primaryType="jnt:contentFolder"/>
-    <templates jcr:primaryType="jnt:templatesFolder"  j:rootTemplatePath="/base/user-base">
+    <contents jcr:primaryType="jnt:contentFolder">
+        <profile-page-items jcr:primaryType="jnt:contentFolder">
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                              jcr:title="Profile Page Items"/>
+            <SITEKEY_PLACEHOLDER divClass="user-SITEKEY_PLACEHOLDER" jcr:primaryType="jnt:componentLink"
+                                 targetTemplate="user-SITEKEY_PLACEHOLDER">
+                <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="SITEKEY_PLACEHOLDER"/>
+            </SITEKEY_PLACEHOLDER>
+        </profile-page-items>
+    </contents>
+    <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base/user-base">
         <files jcr:primaryType="jnt:folder">
             <themes jcr:primaryType="jnt:folder">
                 <default jcr:primaryType="jnt:folder">
@@ -17,6 +26,11 @@
             </themes>
         </files>
         <contents jcr:primaryType="jnt:contentFolder"/>
+        <user-SITEKEY_PLACEHOLDER j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
+                                  jcr:primaryType="jnt:contentTemplate" j:priority="10">
+            <pagecontent jcr:primaryType="jnt:contentList">
+            </pagecontent>
+        </user-SITEKEY_PLACEHOLDER>
     </templates>
 
 </templatesSet>

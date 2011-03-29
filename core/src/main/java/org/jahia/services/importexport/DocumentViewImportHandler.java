@@ -150,7 +150,14 @@ public class DocumentViewImportHandler extends DefaultHandler {
         }
 
         String decodedLocalName = ISO9075.decode(localName);
+
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            Pattern p = Pattern.compile(entry.getKey());
+            decodedLocalName = p.matcher(decodedLocalName).replaceAll(entry.getValue());
+        }
+
         String decodedQName = qName.replace(localName, decodedLocalName);
+
         pathes.push(pathes.peek() + "/" + decodedQName);
 
         if (noRoot && pathes.size() <= 2) {

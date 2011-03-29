@@ -20,11 +20,9 @@
 	margin: 0 auto;
 	display: block;
 	font: bold 120%/100% Arial, Helvetica, sans-serif;
-	color: #99BBE8;
 	text-decoration: none;
 }
 .bodywrapper a.btn-slide, .bodywrapper a.btn-slide:link, .bodywrapper a.btn-slide:visited{
-	color: #99BBE8;
 	text-decoration:none
 }
 
@@ -104,11 +102,11 @@
 	width: 280px;
 	float: left;
 	padding: 0 15px;
-	border-left: 1px solid #99BBE8;
+
 }
 
 #panel .content .right {
-	border-right: 1px solid #99BBE8;
+
 }
 
 #panel .content form {
@@ -130,4 +128,9 @@
 	margin-top: 4px;
 	width: 200px;
 	height: 16px;
+}
+#feedUrl, #scriptGadget{
+
+	width: 98%;
+
 }

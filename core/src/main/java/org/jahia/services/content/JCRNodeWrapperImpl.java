@@ -542,6 +542,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         } catch (PathNotFoundException e) {
             logger.debug("file " + name + " does not exist, creating...");
+            if (!isCheckedOut()) {
+                getSession().checkout(this);
+            }
             file = addNode(name, Constants.JAHIANT_FILE);
         }
         if (file != null) {

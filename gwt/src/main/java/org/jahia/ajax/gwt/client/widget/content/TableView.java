@@ -75,8 +75,7 @@ public class TableView extends AbstractView {
             columns.add(0, checkboxSelectionModel.getColumn());
         }
 
-        m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns)) {
-        };
+        m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
         m_grid.setBorders(true);
         if (columns.getAutoExpand() != null) {
             m_grid.setAutoExpandColumn(columns.getAutoExpand());

@@ -2,14 +2,14 @@
 	outline: none;
 }
 .bodywrapper #panel {
-	background: #DAD0C7;
+	background: #dfe8f6;
 	display: none;
 }
 .bodywrapper .slide {
 	margin: 0;
 	padding: 0;
-	border-top: solid 4px #ccc;
-	background: url(img/btn-slide.gif) no-repeat center top;
+	border-top: solid 4px #99BBE8;
+	background: url(img/btn-slide.png) no-repeat center top;
 }
 .bodywrapper .btn-slide {
 	background: url(img/white-arrow.gif) no-repeat right -50px;
@@ -20,11 +20,11 @@
 	margin: 0 auto;
 	display: block;
 	font: bold 120%/100% Arial, Helvetica, sans-serif;
-	color: #fff;
+	color: #99BBE8;
 	text-decoration: none;
 }
 .bodywrapper a.btn-slide, .bodywrapper a.btn-slide:link, .bodywrapper a.btn-slide:visited{
-	color: #fff;
+	color: #99BBE8;
 	text-decoration:none
 }
 
@@ -40,7 +40,7 @@
 .bodywrapper #panel ul.panellist {
 	padding:0;
 	height:180px;
-	border:1px solid #b9a99b;
+	border:1px solid #99BBE8;
 	display: block;
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -104,11 +104,11 @@
 	width: 280px;
 	float: left;
 	padding: 0 15px;
-	border-left: 1px solid #b9a99b;
+	border-left: 1px solid #99BBE8;
 }
 
 #panel .content .right {
-	border-right: 1px solid #b9a99b;
+	border-right: 1px solid #99BBE8;
 }
 
 #panel .content form {

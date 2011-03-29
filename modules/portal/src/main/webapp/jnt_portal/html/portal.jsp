@@ -12,7 +12,7 @@
     <template:addResources type="css" resources="portal.css,slide.css"/>
     <template:addResources>
         <script type="text/javascript">
-            var baseUrl = '${url.base}';
+            var baseUrl = '<c:url value="${url.base}"/>';
         </script>
     </template:addResources>
     <template:addResources type="javascript"

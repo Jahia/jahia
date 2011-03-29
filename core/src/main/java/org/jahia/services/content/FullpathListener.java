@@ -38,10 +38,13 @@ import static org.jahia.api.Constants.*;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Listener implementation used to update field references when a node is moved/renamed.
@@ -69,6 +72,8 @@ public class FullpathListener extends DefaultEventListener {
             final String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
             JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    final Set<Session> sessions = new HashSet<Session>();
+
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();
 
@@ -78,10 +83,15 @@ public class FullpathListener extends DefaultEventListener {
 
                         String path = event.getPath();
                         if (event.getType() == Event.NODE_ADDED) {
-                            nodeAdded((Node) session.getItem(path));
-                        } else if (event.getType() == Event.NODE_REMOVED) {
-                            nodeRemoved(session, path);
+                            JCRNodeWrapper item = (JCRNodeWrapper) session.getItem(path);
+                            nodeAdded(item);
+                            sessions.add(item.getRealNode().getSession());
+//                        } else if (event.getType() == Event.NODE_REMOVED) {
+//                            nodeRemoved(session, path);
                         }
+                    }
+                    for (Session jcrsession : sessions) {
+                        jcrsession.save();
                     }
                     return null;  //To change body of implemented methods use File | Settings | File Templates.
                 }
@@ -92,7 +102,7 @@ public class FullpathListener extends DefaultEventListener {
 
     }
 
-    private void nodeAdded(Node node) throws RepositoryException {
+    private void nodeAdded(JCRNodeWrapper node) throws RepositoryException {
         if (node.isNodeType(JAHIAMIX_SHAREABLE) && node.hasProperty(FULLPATH)) {
             String oldPath = node.getProperty(FULLPATH).getString();
 
@@ -110,11 +120,10 @@ public class FullpathListener extends DefaultEventListener {
             }
             node.setProperty(FULLPATH, node.getPath());
             node.setProperty(NODENAME, node.getName());
-            node.save();
         }
         if (node.isNodeType(NT_FOLDER)) {
             for (NodeIterator ni = node.getNodes(); ni.hasNext();) {
-                nodeAdded(ni.nextNode());
+                nodeAdded((JCRNodeWrapper) ni.nextNode());
             }
         }
     }

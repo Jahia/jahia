@@ -40,10 +40,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -79,25 +76,27 @@ public class DefaultValueListener extends DefaultEventListener {
             JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                     Iterator<Event> it = eventIterator;
+                    final Set<Session> sessions = new HashSet<Session>();
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();
                         if (isExternal(event)) {
                             continue;
                         }
                         try {
-                            Node n = null;
+                            JCRNodeWrapper n = null;
                             if (event.getType() == Event.NODE_ADDED) {
                                 try {
-                                    n = (Node) s.getItem(event.getPath());
+                                    n = (JCRNodeWrapper) s.getItem(event.getPath());
                                 } catch (PathNotFoundException e) {
                                     continue;
                                 }
                             }
                             if (event.getPath().endsWith(Constants.JCR_MIXINTYPES)) {
                                 String path = event.getPath().substring(0, event.getPath().lastIndexOf('/'));
-                                n = (Node) s.getItem(path.length() == 0 ? "/" : path);
+                                n = (JCRNodeWrapper) s.getItem(path.length() == 0 ? "/" : path);
                             }
                             if (n != null) {
+                                sessions.add(n.getRealNode().getSession());
                                 List<NodeType> l = new ArrayList<NodeType>();
                                 NodeType nt = n.getPrimaryNodeType();
                                 l.add(nt);
@@ -128,14 +127,15 @@ public class DefaultValueListener extends DefaultEventListener {
                                         }
                                     }
                                 }
+                                n.getRealNode().getSession().save();
                             }
                         } catch (NoSuchNodeTypeException e) {
                         } catch (Exception e) {
                             logger.error("Error when executing event", e);
                         }
                     }
-                    if (s.hasPendingChanges()) {
-                        s.save();
+                    for (Session jcrsession : sessions) {
+                        jcrsession.save();
                     }
                     return null;  //To change body of implemented methods use File | Settings | File Templates.
                 }

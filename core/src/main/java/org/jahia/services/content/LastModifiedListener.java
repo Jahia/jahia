@@ -71,6 +71,7 @@ public class LastModifiedListener extends DefaultEventListener {
             }
             final String finalUserId = userId;
 
+            final Set<Session> sessions = new HashSet<Session>();
             final Set<String> nodes = new HashSet<String>();
             final Set<String> addedNodes = new HashSet<String>();
             final List<String> autoPublishedIds;
@@ -124,6 +125,7 @@ public class LastModifiedListener extends DefaultEventListener {
                         for (String node : nodes) {
                             try {
                                 JCRNodeWrapper n = session.getNode(node);
+                                sessions.add(n.getRealNode().getSession());
                                 updateProperty(n, c, finalUserId, autoPublishedIds);
                             } catch (PathNotFoundException e) {
                                 // node has been removed
@@ -132,6 +134,8 @@ public class LastModifiedListener extends DefaultEventListener {
                         for (String addedNode : addedNodes) {
                             try {
                                 JCRNodeWrapper n = session.getNode(addedNode);
+                                sessions.add(n.getRealNode().getSession());
+                                System.out.println("added node : "+addedNode);
                                 if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
                                     n.setProperty("j:originWS", workspace);
                                 }
@@ -140,7 +144,9 @@ public class LastModifiedListener extends DefaultEventListener {
                                 // node has been removed
                             }
                         }
-                        session.save();
+                        for (Session jcrsession : sessions) {
+                            jcrsession.save();
+                        }
                     }
                     return null;
                 }
@@ -158,7 +164,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
     private void updateProperty(JCRNodeWrapper n, Calendar c, String userId, List<String> autoPublished) throws RepositoryException {
         while (!n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
-            addAutoPublish(n, autoPublished);
+//            addAutoPublish(n, autoPublished);
             try {
                 n = n.getParent();
             } catch (ItemNotFoundException e) {
@@ -178,6 +184,7 @@ public class LastModifiedListener extends DefaultEventListener {
     private void addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
         if (autoPublished != null) {
             if (n.isNodeType("jmix:autoPublish") && !autoPublished.contains(n.getIdentifier())) {
+                System.out.println("--publish------>" +n.getPath());
                 autoPublished.add(n.getIdentifier());
             }
         }

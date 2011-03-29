@@ -651,7 +651,7 @@ public class JCRPublicationService extends JahiaService {
                         found = true;
                     } else if (found) {
                         try {
-                            destinationSession.getNode(destinationParentPath + "/" + currentNode.getName());
+                            destinationSession.getNode( (destinationParentPath.equals("/") ? "" : destinationParentPath ) + "/" + currentNode.getName());
                             destinationParent.orderBefore(sourceNode.getName(), currentNode.getName());
                             destinationParent.getSession().save();
                             break;

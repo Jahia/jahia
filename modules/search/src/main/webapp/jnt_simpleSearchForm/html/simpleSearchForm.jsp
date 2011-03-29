@@ -14,6 +14,7 @@
 <template:addResources type="javascript" resources="jquery.bgiframe.min.js" />
 <template:addResources type="javascript" resources="thickbox-compressed.js" />
 <template:addResources>
+<c:url var="findUrl" value="${url.find}"/>
 <script type="text/javascript">
     $(document).ready(function() {
 
@@ -40,7 +41,7 @@
             return getText(result["node"]);
         }
 
-        $("#searchTerm").autocomplete("${url.find}", {
+        $("#searchTerm").autocomplete("${findUrl}", {
             dataType: "json",
             selectFirst: false,
             cacheLength: 1,

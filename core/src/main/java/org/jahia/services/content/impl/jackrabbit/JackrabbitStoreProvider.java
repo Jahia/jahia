@@ -143,7 +143,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         while (nti.hasNext()) {
             ExtendedNodeType nodeType = (ExtendedNodeType) nti.next();
             String uri = nodeType.getNameObject().getUri();
-            if (!Name.NS_NT_URI.equals(uri) && !Name.NS_MIX_URI.equals(uri) && Name.NS_REP_URI.equals(uri)) {
+            if (!Name.NS_NT_URI.equals(uri) && !Name.NS_MIX_URI.equals(uri) && !Name.NS_REP_URI.equals(uri)) {
                 try {
                     namespaceRegistry.getURI(nodeType.getNameObject().getPrefix());
                 } catch (NamespaceException e) {

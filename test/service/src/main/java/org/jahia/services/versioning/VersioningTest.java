@@ -443,10 +443,10 @@ public class VersioningTest {
             subPageEditNode = editSession.getNodeByUUID(subPageEditNodeIdentifier);
             editSession.checkout(subPageEditNode);
             JCRNodeWrapper listAEditNode = subPageEditNode.addNode("listA","jnt:contentList");
-            JCRNodeWrapper mainContentEditMode = listAEditNode.addNode("maincontent", "jnt:mainContent");
-            String mainContentEditNodeIdentifier = mainContentEditMode.getIdentifier();
-            mainContentEditMode.setProperty("jcr:title", "maincontent");
-            mainContentEditMode.setProperty("body", "maincontent");
+            JCRNodeWrapper mainContentEditNode = listAEditNode.addNode("maincontent", "jnt:mainContent");
+            String mainContentEditNodeIdentifier = mainContentEditNode.getIdentifier();
+            mainContentEditNode.setProperty("jcr:title", "maincontent");
+            mainContentEditNode.setProperty("body", "maincontent");
             editSession.save();
             String labelForFourthPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
             JCRNodeWrapper mainContentLiveNode = liveSession.getNodeByIdentifier(mainContentEditNodeIdentifier);
@@ -515,10 +515,11 @@ public class VersioningTest {
             jcrVersionService.restoreVersionLabel(stageNode, yyyy_mm_dd_hh_mm_ss.parse(labelForFourthPublication.split(
                                                 "_at_")[1]),
                     labelForFourthPublication, true);
-            mainContentEditMode = editSession.getNodeByUUID(mainContentEditNodeIdentifier);
-            editSession.checkout(mainContentEditMode);
-            mainContentEditMode.setProperty("jcr:title", "my updated maincontent");
-            mainContentEditMode.setProperty("body", "my updated maincontent");
+            reopenSession();
+            mainContentEditNode = editSession.getNodeByUUID(mainContentEditNodeIdentifier);
+            editSession.checkout(mainContentEditNode);
+            mainContentEditNode.setProperty("jcr:title", "my updated maincontent");
+            mainContentEditNode.setProperty("body", "my updated maincontent");
             editSession.save();
 
             publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);

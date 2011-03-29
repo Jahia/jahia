@@ -225,7 +225,7 @@ public class RenderService {
         return set;
     }
     
-    public org.jahia.services.render.Template resolveTemplate(Resource resource, RenderContext renderContext) throws Exception{
+    public org.jahia.services.render.Template resolveTemplate(Resource resource, RenderContext renderContext) throws AccessDeniedException, TemplateNotFoundException {
         final JCRNodeWrapper node = resource.getNode();
         String templateName = resource.getTemplate();
         if ("default".equals(templateName)) {
@@ -237,7 +237,10 @@ public class RenderService {
         org.jahia.services.render.Template template = null;
         try {
             JCRNodeWrapper site;
-            String jsite = renderContext.getRequest().getParameter("jsite");
+            String jsite = null;
+            if (renderContext.getRequest() != null) {
+                jsite = renderContext.getRequest().getParameter("jsite");
+            }
             if (jsite == null && renderContext.getMainResource() != null) {
                 jsite = (String) renderContext.getMainResource().getModuleParams().get("jsite");
             }

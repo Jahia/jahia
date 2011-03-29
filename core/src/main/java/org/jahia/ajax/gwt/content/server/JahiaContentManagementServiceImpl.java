@@ -930,18 +930,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public BasePagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, int limit, int offset)
             throws GWTJahiaServiceException {
         try {
+            JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale()).getNode(
+                    node.getPath());
             List<GWTJahiaNodeVersion> result = navigation.getVersions(
-                    JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale()).getNode(
-                            node.getPath()), true);
+                    nodeWrapper, true);
             sortVersions(result);
             // add current workspace version
             final GWTJahiaNodeVersion liveVersion = new GWTJahiaNodeVersion("live", node);
             result.add(0, liveVersion);
-            liveVersion.setUrl(navigation.getNodeURL(null, node.getPath(), null, null, "live", getLocale()));
+            liveVersion.setUrl(navigation.getNodeURL(null, nodeWrapper, null, null, "live", getLocale()));
 
             final GWTJahiaNodeVersion defaultVersion = new GWTJahiaNodeVersion("default", node);
             result.add(0, defaultVersion);
-            defaultVersion.setUrl(navigation.getNodeURL(null, node.getPath(), null, null, "default", getLocale()));
+            defaultVersion.setUrl(navigation.getNodeURL(null, nodeWrapper, null, null, "default", getLocale()));
 
             // get sublist: Todo Find a better way
             int size = result.size();
@@ -992,8 +993,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                              String locale) throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
                 locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale(), false);
-        return getResponse().encodeURL(this.navigation.getNodeURL(servlet, path, versionDate, versionLabel, session.getWorkspace().getName(),
-                session.getLocale()));
+        try {
+            JCRNodeWrapper node = session.getNode(path);
+
+            return getResponse().encodeURL(this.navigation.getNodeURL(servlet, node, versionDate, versionLabel, session.getWorkspace().getName(),
+                    session.getLocale()));
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e);
+        }
     }
 
     public void importContent(String parentPath, String fileKey, Boolean asynchronously)
@@ -1877,8 +1884,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
                 return url;
             } else {
-            return getResponse().encodeURL(this.navigation.getNodeURL(servlet, nodeByIdentifier.getPath(), versionDate, versionLabel, session.getWorkspace().getName(),
-                    session.getLocale()));
+                return getResponse().encodeURL(this.navigation.getNodeURL(servlet, nodeByIdentifier, versionDate, versionLabel, session.getWorkspace().getName(),
+                        session.getLocale()));
             }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);

@@ -39,16 +39,15 @@
               <userDetails j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails" />
             </pagecontent>
           </user>
-          <content-template j:applyOn="jnt:content" j:defaultTemplate="true" j:hiddenTemplate="true" j:priority="1" j:view="default" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-              <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-            </pagecontent>
-          </content-template>
           <header-colContent jcr:primaryType="jnt:contentList">
             <current-user j:userView="welcome" jcr:primaryType="jnt:currentUserDisplay" />
           </header-colContent>
         </base>
-
+        <content-template j:applyOn="jnt:content" j:hiddenTemplate="true" j:priority="1" j:view="system" jcr:primaryType="jnt:contentTemplate">
+          <pagecontent jcr:primaryType="jnt:contentList">
+            <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
+          </pagecontent>
+        </content-template>
         <files jcr:primaryType="jnt:folder">
           <themes jcr:primaryType="jnt:folder">
             <default jcr:primaryType="jnt:folder">

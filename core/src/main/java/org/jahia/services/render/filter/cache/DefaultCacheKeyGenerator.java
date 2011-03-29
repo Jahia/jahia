@@ -167,7 +167,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     public String appendAcls(Resource resource, RenderContext renderContext) {
         try {
-            if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
+            if (renderContext.getRequest() != null && Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
                 return PER_USER;
             }
 

@@ -37,6 +37,7 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
+import org.jahia.services.render.*;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
@@ -47,17 +48,13 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Contribute;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
-import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.SitesSettings;
-import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.springframework.util.CollectionUtils;
@@ -67,7 +64,6 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 import javax.servlet.http.HttpServletRequest;
-import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -1141,7 +1137,7 @@ public class NavigationHelper {
                 GWTJahiaNodeVersion jahiaNodeVersion =
                         new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), versionInfo.getLabel(),
                                 workspace, n);
-                String url = getNodeURL(null, node.getPath(), versionInfo.getVersion().getCreated().getTime(), versionInfo.getLabel(),
+                String url = getNodeURL(null, node, versionInfo.getVersion().getCreated().getTime(), versionInfo.getLabel(),
                         workspace, node.getSession().getLocale());
                 jahiaNodeVersion.setUrl(url);
                 versions.add(jahiaNodeVersion);
@@ -1253,12 +1249,12 @@ public class NavigationHelper {
     /**
      * Get node url depending
      *
+     *
      * @param workspace
      * @param locale
-     * @return
      */
-    public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, final String workspace,
-                             final Locale locale) {
+    public String getNodeURL(String servlet, JCRNodeWrapper node, Date versionDate, String versionLabel, final String workspace,
+                             final Locale locale) throws RepositoryException {
         String url = Jahia.getContextPath();
         if ("contribute".equals(servlet)) {
             url += Contribute.getContributeServletPath();
@@ -1266,7 +1262,18 @@ public class NavigationHelper {
             url += Render.getRenderServletPath();
         }
         url +=  "/" + workspace + "/" + locale;
-        url += path + ".html";
+
+        try {
+            Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
+            RenderContext renderContext = new RenderContext(null, null, node.getSession().getUser());
+            renderContext.setMainResource(resource);
+            RenderService.getInstance().resolveTemplate(resource, renderContext);
+
+            url += node.getPath() + ".html";
+        } catch (TemplateNotFoundException e) {
+            url += node.getPath() + ".content-template.html";
+        }
+
         if (versionDate != null) {
             url += "?v=" + (versionDate.getTime()) ;
             if (versionLabel != null) {

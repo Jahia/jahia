@@ -35,7 +35,7 @@
       </constructor-arg>
       <constructor-arg index="2" type="org.springframework.core.io.Resource[]">
           <list>
-              <!-- fill take the first found license file -->
+              <!-- we will take the first found license file -->
               <value>classpath:org/jahia/config/license*.xml</value>
               <value>WEB-INF/etc/config/license*.xml</value>
           </list>

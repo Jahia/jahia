@@ -86,8 +86,6 @@
 
     </Workspace>
 
-
-<!--
     <Cluster id="${cluster.node.serverId}">
    		<Journal class="@JOURNAL_CLASS@">
                <param name="dataSourceName" value="jahiaDS" />
@@ -97,7 +95,6 @@
                <param name="schemaCheckEnabled" value="false"/>
     	</Journal>
  	</Cluster>
--->
 
     <!--
         Configures the versioning

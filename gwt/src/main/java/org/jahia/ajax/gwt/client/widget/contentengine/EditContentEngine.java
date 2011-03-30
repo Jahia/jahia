@@ -60,6 +60,8 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 /**
  * Content editing widget.
@@ -359,8 +361,19 @@ public class EditContentEngine extends AbstractContentEngine {
 
                     public void onSuccess(Object o) {
                         Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
+                        int refresh = Linker.REFRESH_MAIN;
+                        EditLinker l = null;
+                        if (linker instanceof SidePanelTabItem.SidePanelLinker) {
+                            l = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
+                        } else if (linker instanceof EditLinker) {
+                            l = (EditLinker) linker;
+                        }
+                        if (l != null && node.equals(l.getMainModule().getNode()) && !node.getName().equals(l.getMainModule().getNode().getName())) {
+                            l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/")+1)+node.getName(), l.getMainModule().getTemplate(), null);
+                            refresh += Linker.REFRESH_PAGES;
+                        }
                         EditContentEngine.this.container.closeEngine();
-                        linker.refresh(Linker.REFRESH_MAIN);
+                        linker.refresh(refresh);
                     }
                 });
         

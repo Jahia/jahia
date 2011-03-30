@@ -66,7 +66,10 @@ public class User {
         if (username != null) {
             return username;
         }
-        return user.getUsername();
+        if (user != null) {
+            return user.getUsername();
+        }
+        return null;
     }
 
     public List<UserProperty> getProperties() {

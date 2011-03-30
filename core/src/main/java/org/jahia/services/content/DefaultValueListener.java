@@ -32,6 +32,7 @@
 
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.*;
 
@@ -71,7 +72,10 @@ public class DefaultValueListener extends DefaultEventListener {
     public void onEvent(final EventIterator eventIterator) {
         try {
             // todo : may need to move the dynamic default values generation to JahiaNodeTypeInstanceHandler
-            final String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
+            String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
+            if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
+                userId = userId.substring(JahiaLoginModule.SYSTEM.length());
+            }
             final List<Event> events = new ArrayList<Event>();
             JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {

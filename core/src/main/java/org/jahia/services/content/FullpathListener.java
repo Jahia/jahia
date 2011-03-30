@@ -32,6 +32,8 @@
 
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.slf4j.Logger;
 import static org.jahia.api.Constants.*;
 
@@ -69,7 +71,10 @@ public class FullpathListener extends DefaultEventListener {
 
     public void onEvent(final EventIterator eventIterator) {
         try {
-            final String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
+            String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
+            if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
+                userId = userId.substring(JahiaLoginModule.SYSTEM.length());
+            }
             JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     final Set<Session> sessions = new HashSet<Session>();

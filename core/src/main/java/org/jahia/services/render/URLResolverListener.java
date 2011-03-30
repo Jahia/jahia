@@ -1,5 +1,6 @@
 package org.jahia.services.render;
 
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.services.content.*;
 import org.slf4j.Logger;
 
@@ -37,7 +38,11 @@ public class URLResolverListener extends DefaultEventListener {
             return;
         }
         try {
-            final String userId = ((JCREventIterator)events).getSession().getUserID();
+            String userId = ((JCREventIterator)events).getSession().getUserID();
+            if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
+                userId = userId.substring(JahiaLoginModule.SYSTEM.length());
+            }
+
             JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     while (events.hasNext()) {

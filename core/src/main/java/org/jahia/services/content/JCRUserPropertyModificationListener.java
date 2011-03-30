@@ -33,6 +33,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
@@ -73,7 +74,10 @@ public class JCRUserPropertyModificationListener extends DefaultEventListener {
      * @param events The event set received.
      */
     public void onEvent(final EventIterator events) {
-        final String userId = ((JCREventIterator)events).getSession().getUserID();
+        String userId = ((JCREventIterator)events).getSession().getUserID();
+        if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
+            userId = userId.substring(JahiaLoginModule.SYSTEM.length());
+        }
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

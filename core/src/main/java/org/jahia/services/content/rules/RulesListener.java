@@ -460,11 +460,7 @@ public class RulesListener extends DefaultEventListener {
         Map<String, Object> globals = new HashMap<String, Object>();
 
         globals.put("logger", logger);
-        if (username != null) {
-            globals.put("user", new User(username));
-        } else {
-            globals.put("user", new User(JahiaLoginModule.SYSTEM));
-        }
+        globals.put("user", new User(username));
         globals.put("workspace", workspace);
         globals.put("delayedUpdates", delayedUpdates);
         for (Map.Entry<String, Object> entry : globalObjects.entrySet()) {

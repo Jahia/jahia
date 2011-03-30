@@ -74,7 +74,7 @@ public class FindTest {
 
     private static JahiaSite site;
     private final static String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
-    private static final String COMPLEX_QUERY_VALUE = "a:+-*\"&()[]{}$/\\%\'";
+    private static final String COMPLEX_QUERY_VALUE = "b:+-*\"&()[]{}$/\\%\'";
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {

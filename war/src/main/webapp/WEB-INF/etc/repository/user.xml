@@ -11,6 +11,7 @@
             </j:acl>
             <imports jcr:primaryType="jnt:importDropBox" />
         </private>
+        <profile jcr:primaryType="jnt:folder"/>
     </files>
 
     <portlets jcr:primaryType="jnt:portletFolder"/>

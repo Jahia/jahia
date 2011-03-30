@@ -124,6 +124,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String COOKIE_VALUE = "cookieValue";
     public static final String COOKIE_NAME = "cookieName";
     public static final String COOKIE_PATH = "cookiePath";
+    public static final String CONTRIBUTE_POST = "contributePost";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
@@ -166,6 +167,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(COOKIE_NAME);
         reservedParameters.add(COOKIE_VALUE);
         reservedParameters.add(COOKIE_PATH);
+        reservedParameters.add(CONTRIBUTE_POST);
     }
 
     private transient ServletConfig servletConfig;
@@ -441,6 +443,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     req.setAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE, fileUpload);
                     if (fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
                         boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
+                        boolean isContributePost = fileUpload.getParameterNames().contains(CONTRIBUTE_POST);
                         final String requestWith = req.getHeader("x-requested-with");
                         boolean isAjaxRequest =
                                 req.getHeader("accept").contains("application/json") && requestWith != null &&
@@ -450,13 +453,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         List<String> urls =  new LinkedList<String>();
                         // If target directory is defined or if it is an ajax request then save the file now
                         // otherwise we delay the save of the file to the node creation
-                        if (isTargetDirectoryDefined || isAjaxRequest) {
+                        if (isContributePost || isTargetDirectoryDefined || isAjaxRequest) {
                             JCRSessionWrapper session =
                                 jcrSessionFactory.getCurrentUserSession(workspace, locale);
-                            String target = null;
+                            String target;
                             if (isTargetDirectoryDefined) {
                                 target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
-                            } else {
+                            } else if (isContributePost) {
                                 String path = urlResolver.getPath();
                                 path = (path.endsWith("*")?StringUtils.substringBeforeLast(path,"/"):path);
                                 JCRNodeWrapper sessionNode = session.getNode(path);
@@ -481,6 +484,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                         session.save();
                                     }
                                 }
+                            } else {
+                                String path = urlResolver.getPath();
+                                target = (path.endsWith("*")?StringUtils.substringBeforeLast(path,"/"):path);
                             }
                             final JCRNodeWrapper targetDirectory = session.getNode(target);
                             
@@ -522,7 +528,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             session.save();
                         }
 
-                        if (!isAjaxRequest) {
+                        if (!isAjaxRequest && !isContributePost) {
                             parameters.putAll(fileUpload.getParameterMap());
                             if (isTargetDirectoryDefined) {
                                 parameters.put(NODE_NAME, files);

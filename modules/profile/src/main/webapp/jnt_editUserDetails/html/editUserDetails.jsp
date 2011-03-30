@@ -59,6 +59,23 @@
 <script type="text/javascript">
     $(document).ready(function() {
         initEditFields("${currentNode.identifier}");
+        $(".userPicture${currentNode.identifier}").editable('', {
+            type : 'ajaxupload',
+            onblur : 'ignore',
+            submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
+            cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+            tooltip : contributionI18n['edit'],
+            target:$(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'),
+            callback : function (data, status,original) {
+                var datas = {'methodToCall':'put'};
+                var callableUrl = $(original).attr('jcr:url');
+                datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
+                $.post($(original).attr('jcr:url'), datas, function(result) {
+                    jreplace(".image", callableUrl+".html.ajax",null, null);
+                }, "json");
+            }
+        });
+
     });
 </script>
 </template:addResources>
@@ -94,15 +111,15 @@
         </div><div class="clear"></div>
             </c:if>
 
-            <div class="file${currentNode.identifier}" jcr:id="j:picture"
-                 jcr:url="<c:url value='${url.basePreview}${user.path}'/>">
+            <div class="userPicture${currentNode.identifier}" jcr:id="j:picture"
+                 jcr:url="<c:url value='${url.basePreview}${user.path}'/>" jcr:fileUrl="<c:url value='${url.basePreview}${user.path}/files/profile/*'/>">
                 <span class="small colorlight"><fmt:message key="add.file"/></span>
             </div>
         </li>
     </c:if>
     <c:if test="${currentNode.properties['j:gender'].boolean}">
         <li>
-            <span class="label"><fmt:message key="jnt_user.profile.sexe"/> : </span>
+            <span class="label"><fmt:message key="jnt_user.profile.gender"/> : </span>
 
             <span jcr:id="j:gender" class="choicelistEdit${currentNode.identifier}"
                   jcr:url="<c:url value='${url.basePreview}${user.path}'/>"

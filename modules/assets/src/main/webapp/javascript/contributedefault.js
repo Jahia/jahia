@@ -103,10 +103,11 @@ function initEditFields(id) {
     $(".file" + id).editable('', {
         type : 'ajaxupload',
         onblur : 'ignore',
+        submitdata : {'contributePost':'true'},
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
-        target:$(".file" + id).attr('jcr:url'),
+        target:$(".file" + id).attr('jcr:url')+"?contributePost=true",
         callback : function (data, status,original) {
             var datas = {'methodToCall':'put'};
             var callableUrl = $(original).attr('jcr:url');

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:test_templates="http://www.jahia.org/jahia/test_templates/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <templateSets jcr:primaryType="jnt:templateSets">
     <portal changefreq="monthly" j:dependencies="profile" j:installedModules="profile" j:siteType="profileModule" j:title="Profile - Portal" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
       <portlets jcr:primaryType="jnt:portletFolder"/>
@@ -10,7 +10,7 @@
           <websites-list-in-edit-mode jcr:primaryType="jnt:listSites">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode"/>
           </websites-list-in-edit-mode>
-          <my-pages j:classname="userMyContentList" j:criteria="jcr:created" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:page" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:userContentRetrieval" maxItems="10">
+          <my-pages j:classname="userMyContentList" j:criteria="jcr:created" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:page" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:userContentRetrieval" maxItems="10">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My pages"/>
           </my-pages>
           <websites-list-in-contribute-mode jcr:primaryType="jnt:listSites">
@@ -55,7 +55,7 @@
             <custom-rows-960gs colNames="custom-rows-960gs-colContent" customColumn="16" jcr:primaryType="jnt:customRow"/>
           </pagecontent>
           <custom-rows-960gs-colContent jcr:primaryType="jnt:contentList">
-            <back-to-my-profile jcr:primaryType="jnt:componentLink" targetTemplate="user-content">
+            <back-to-my-profile aClass="returnLink" divClass="divReturnLink" jcr:primaryType="jnt:componentLink" targetTemplate="user-home">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="back to my profile"/>
             </back-to-my-profile>
             <currentUserPortal defaultPortal="/templateSets/portal/contents/defaultPortal" j:bindedComponent="/templateSets/portal/templates/user-portal" jcr:primaryType="jnt:currentUserPortal"/>

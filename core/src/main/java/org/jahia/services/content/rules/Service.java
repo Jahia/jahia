@@ -764,10 +764,10 @@ public class Service extends JahiaService {
 
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final JahiaGroup priv = groupService.lookupGroup(site.getID(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
-        Principal p;
+        Principal p = null;
         if (principal.startsWith("u:")) {
             p = userManagerService.lookupUser(principal.substring(2));
-        } else {
+        } else if (principal.length() > 2) {
             p = groupService.lookupGroup(site.getID(), principal.substring(2));
         }
         if (p != null) {

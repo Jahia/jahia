@@ -59,7 +59,6 @@ import java.util.*;
 public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroup.class);
     private String nodeUuid;
-    private final JCRTemplate jcrTemplate;
     private boolean external;
     static final String J_HIDDEN = "j:hidden";
     public static final String J_EXTERNAL = "j:external";
@@ -67,13 +66,12 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     private static final String PROVIDER_NAME = "jcr";
     private Properties properties = null;
 
-    public JCRGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
-        this(nodeWrapper, jcrTemplate, siteID, false);
+    public JCRGroup(Node nodeWrapper, int siteID) {
+        this(nodeWrapper, siteID, false);
     }
 
-    public JCRGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID, boolean isExternal) {
+    public JCRGroup(Node nodeWrapper, int siteID, boolean isExternal) {
         super();
-        this.jcrTemplate = jcrTemplate;
         this.mSiteID = siteID;
         try {
             this.nodeUuid = nodeWrapper.getIdentifier();
@@ -96,18 +94,18 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     public Properties getProperties() {
         if (properties == null) {
             try {
-                properties = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Properties>() {
-                     public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                         Properties properties = new Properties();
-                         PropertyIterator iterator = getNode(session).getProperties();
-                         for (; iterator.hasNext();) {
-                             Property property = iterator.nextProperty();
-                             if (!property.isMultiple()) {
-                                 properties.put(property.getName(), property.getString());
-                             }
-                         }
-                         return properties;
-                     }
+                properties = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Properties>() {
+                    public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        Properties properties = new Properties();
+                        PropertyIterator iterator = getNode(session).getProperties();
+                        for (; iterator.hasNext();) {
+                            Property property = iterator.nextProperty();
+                            if (!property.isMultiple()) {
+                                properties.put(property.getName(), property.getString());
+                            }
+                        }
+                        return properties;
+                    }
                 });
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving group properties", e);
@@ -130,10 +128,10 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             return (String) properties.get(key);
         }
         try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<String>() {
-                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+                public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     return getNode(session).getProperty(key).getString();
-                 }
+                }
             });
         } catch (PathNotFoundException pnfe) {
             // This is expected in the case the property doesn't exist in the repository. We will simply return null.
@@ -151,7 +149,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      */
     public boolean removeProperty(final String key) {
         try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
                     Property property = node.getProperty(key);
@@ -186,7 +184,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                 external = Boolean.valueOf(value);
             }
             
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
                     session.checkout(node);
@@ -213,17 +211,17 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      */
     public boolean addMember(final Principal principal) {
         try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRPrincipal jcrUser = null;
                     String name = principal.getName();
                     if (principal instanceof JCRUser) {
                         jcrUser = (JCRPrincipal) principal;
                     } else if (principal instanceof JCRGroup) {
-                        name = name + "___" + ((JCRGroup)principal).getSiteID();
+                        name = name + "___" + ((JCRGroup) principal).getSiteID();
                         jcrUser = (JCRPrincipal) principal;
                     } else if (principal instanceof JahiaUser) {
-                        jcrTemplate.getProvider("/").deployExternalUser(name,
+                        JCRTemplate.getInstance().getProvider("/").deployExternalUser(name,
                                 ((JahiaUser) principal).getProviderName());
                         jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser(name);
                     }
@@ -288,7 +286,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      */
     protected Set<Principal> getMembersMap() {
         try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Set<Principal>>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Set<Principal>>() {
                 public Set<Principal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     final Node node = getNode(session);
                     return getMembersMap(node);
@@ -352,7 +350,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      */
     public boolean removeMember(final Principal principal) {
         try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node group = getNode(session);
                     Node members = group.getNode("j:members");
@@ -371,7 +369,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                         }
                     } else if (principal instanceof JahiaGroup) {
                         // external user
-                        JCRGroup externalGroup = JCRGroupManagerProvider.getInstance().lookupExternalGroup(((JahiaGroup)principal).getGroupname());
+                        JCRGroup externalGroup = JCRGroupManagerProvider.getInstance().lookupExternalGroup(((JahiaGroup) principal).getGroupname());
                         if (externalGroup != null) {
                             memberUuid = externalGroup.getIdentifier();
                         } else {

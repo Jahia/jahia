@@ -131,9 +131,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             }
                         }
                         session.save();
-                        JCRGroup jcrGroup = new JCRGroup(nodeWrapper, jcrTemplate, siteID);
+                        JCRGroup jcrGroup = new JCRGroup(nodeWrapper, siteID);
                         final String trueGroupKey = name + ":" + siteID;
-                        getCache().put(trueGroupKey,jcrGroup);
+                        getCache().put(trueGroupKey, jcrGroup);
                         return jcrGroup;
                     } catch (JahiaException e) {
                         logger.error("Error while creating group", e);
@@ -643,7 +643,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         } else if (JahiaGroupManagerService.USERS_GROUPNAME.equals(name)) {
             group = new UsersGroup(usersFolderNode, jcrTemplate, siteID1);
         } else {
-            group = new JCRGroup(usersFolderNode, jcrTemplate, siteID1, external);
+            group = new JCRGroup(usersFolderNode, siteID1, external);
         }
         return group;
     }

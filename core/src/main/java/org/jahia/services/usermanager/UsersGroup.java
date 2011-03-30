@@ -53,7 +53,7 @@ public class UsersGroup extends JCRGroup {
             org.slf4j.LoggerFactory.getLogger(UsersGroup.class);
 
     public UsersGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
-        super(nodeWrapper, jcrTemplate, siteID);
+        super(nodeWrapper, siteID);
     }
 
     public Enumeration<Principal> members() {

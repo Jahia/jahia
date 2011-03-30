@@ -157,7 +157,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     // Use rules instead to publish the user
                     /* publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                     true);*/
-                    return new JCRUser(userNode.getIdentifier(), jcrTemplate);
+                    return new JCRUser(userNode.getIdentifier());
                 }
             });
         } catch (RepositoryException e) {
@@ -335,7 +335,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node userNode = session.getNode("/users/" + JCRContentUtils.escapeJCRLocalName(name));
                     if (!userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        JCRUser user = new JCRUser(userNode.getIdentifier(), jcrTemplate);
+                        JCRUser user = new JCRUser(userNode.getIdentifier());
                         cache.put(name, user);
                         return user;
                     }
@@ -360,7 +360,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node userNode = session.getNode("/users/" + name.trim());
                     if (userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        JCRUser user = new JCRUser(userNode.getIdentifier(), jcrTemplate, true);
+                        JCRUser user = new JCRUser(userNode.getIdentifier(), true);
                         cache.put(name, user);
                         return user;
                     }
@@ -444,7 +444,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                         NodeIterator ni = qr.getNodes();
                         while (ni.hasNext()) {
                             Node usersFolderNode = ni.nextNode();
-                            users.add(new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate));
+                            users.add(new JCRUser(usersFolderNode.getIdentifier()));
                         }
                     }
 
@@ -556,6 +556,6 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * @return the system root user (not cached)
      */
     public JCRUser lookupRootUser() {
-        return new JCRUser(JCRUser.ROOT_USER_UUID, jcrTemplate);
+        return new JCRUser(JCRUser.ROOT_USER_UUID);
     }
 }

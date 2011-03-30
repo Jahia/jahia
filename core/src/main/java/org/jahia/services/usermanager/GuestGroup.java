@@ -39,7 +39,6 @@ import org.jahia.services.usermanager.jcr.JCRGroup;
 
 import javax.jcr.Node;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.security.Principal;
 
 /**
@@ -54,7 +53,7 @@ public class GuestGroup extends JCRGroup {
             org.slf4j.LoggerFactory.getLogger(GuestGroup.class);
 
     public GuestGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
-        super(nodeWrapper, jcrTemplate, siteID);
+        super(nodeWrapper, siteID);
     }
 
     public Enumeration<Principal> members() {

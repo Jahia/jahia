@@ -68,7 +68,6 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
     protected static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
     private final String nodeUuid;
-    private final JCRTemplate jcrTemplate;
     static final String J_PASSWORD = "j:password";
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
@@ -78,14 +77,13 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
     private boolean external;
 	private List<PasswordHistoryEntry> passwordHistory;
 
-    public JCRUser(String nodeUuid, JCRTemplate jcrTemplate) {
-        this(nodeUuid, jcrTemplate, false);
+    public JCRUser(String nodeUuid) {
+        this(nodeUuid, false);
     }
 
-    public JCRUser(String nodeUuid, JCRTemplate jcrTemplate, boolean isExternal) {
+    public JCRUser(String nodeUuid, boolean isExternal) {
         super();
         this.nodeUuid = nodeUuid;
-        this.jcrTemplate = jcrTemplate;
         this.external = isExternal;
     }
 
@@ -99,7 +97,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
     public String getName() {
         if (name == null) {
             try {
-                return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<String>() {
+                return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
                     public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         name = getNode(session).getName();
                         return name;
@@ -170,7 +168,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
         if (properties == null) {
             properties = new Properties();
             try {
-                return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Properties>() {
+                return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Properties>() {
                     public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         PropertyIterator iterator = getNode(session).getProperties();
                         for (; iterator.hasNext();) {
@@ -183,7 +181,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                                     vals = property.getValues();
                                 } catch (ValueFormatException e) {
                                     try {
-                                        vals = new Value[] { property.getValue() };
+                                        vals = new Value[]{property.getValue()};
                                     } catch (ValueFormatException e1) {
                                         // ignore
                                     }
@@ -216,20 +214,19 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
         if (userProperties == null) {
             userProperties = new UserProperties();
             try {
-                return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<UserProperties>() {
+                return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<UserProperties>() {
                     public UserProperties doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         PropertyIterator iterator = getNode(session).getProperties();
                         for (; iterator.hasNext();) {
                             Property property = iterator.nextProperty();
-                            if(property instanceof JCRUserNode.JCRUserProperty) {
+                            if (property instanceof JCRUserNode.JCRUserProperty) {
                                 userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
-                                                                                                    property.getString(),
-                                                                                                    true));
-                            }
-                            else if (property.getDefinition()!=null && !property.getDefinition().isMultiple()) {
+                                        property.getString(),
+                                        true));
+                            } else if (property.getDefinition() != null && !property.getDefinition().isMultiple()) {
                                 userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
-                                                                                                    property.getString(),
-                                                                                                    false));
+                                        property.getString(),
+                                        false));
                             }
                         }
                         return userProperties;
@@ -274,7 +271,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      */
     public boolean removeProperty(final String key) {
         try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
                     Property property = node.getProperty(key);
@@ -310,7 +307,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
             if (J_EXTERNAL.equals(key)) {
                 external = Boolean.valueOf(value);
             }
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
                     session.checkout(node);

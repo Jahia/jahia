@@ -183,7 +183,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
                         Node userNode = getUsersNode(session, id);
                         // now let's retrieve the activities for the user.
-                        Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from ["+ SocialService.JNT_SOCIAL_ACTIVITY+"] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
+                        Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [" + SocialService.JNT_SOCIAL_ACTIVITY + "] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
                         myConnectionActivitiesQuery.setLimit(100);
                         QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
 
@@ -218,7 +218,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
                     Node userNode = getUsersNode(session, userKey);
                     // now let's retrieve the activities for the user.
-                    Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from ["+SocialService.JNT_SOCIAL_ACTIVITY+"] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
+                    Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [" + SocialService.JNT_SOCIAL_ACTIVITY + "] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
                     myConnectionActivitiesQuery.setLimit(100);
                     QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
 
@@ -362,7 +362,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
                 Node usersFolderNode = session.getNode("/users/" + name);
                 JCRUser jcrUser = null;
                 if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                    jcrUser = new JCRUser(usersFolderNode.getUUID(), jcrTemplate);
+                    jcrUser = new JCRUser(usersFolderNode.getUUID());
                 } else {
                     return null;
                 }

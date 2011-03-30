@@ -148,6 +148,9 @@
     people = base/simple
     press = base/simple
     job = base/simple
+    Blog = base/simple
+    formBuilder = base/simple
+    layout = base/simple
 
 [web_templates:home] = jnt:page
  + logo = logo

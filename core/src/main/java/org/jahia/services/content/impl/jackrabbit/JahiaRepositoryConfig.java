@@ -14,6 +14,7 @@ import org.apache.jackrabbit.core.util.db.ConnectionFactory;
 import org.jahia.services.uicomponents.bean.contentmanager.Repository;
 import org.jahia.settings.SettingsBean;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 import javax.jcr.RepositoryException;
 import java.util.Collection;
@@ -125,5 +126,15 @@ public class JahiaRepositoryConfig extends RepositoryConfig {
     @Override
     public RepositoryLockMechanism getRepositoryLockMechanism() throws RepositoryException {
         return config.getRepositoryLockMechanism();
+    }
+
+    @Override
+    public WorkspaceConfig createWorkspaceConfig(String name, StringBuffer configContent) throws ConfigurationException {
+        return config.createWorkspaceConfig(name, configContent);
+    }
+
+    @Override
+    public WorkspaceConfig createWorkspaceConfig(String name, InputSource template) throws ConfigurationException {
+        return config.createWorkspaceConfig(name, template);
     }
 }

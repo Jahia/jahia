@@ -1,64 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
-         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test"
-         xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
-         xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
-    <templateSets jcr:primaryType="jnt:templateSets">
-        <social changefreq="monthly" j:installedModules="profileModule" j:siteType="module" j:wcagCompliance="true"
-                jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5" j:dependencies="profile" j:title="Profile - Social">
-            <portlets jcr:primaryType="jnt:portletFolder"/>
-            <files jcr:primaryType="jnt:folder"/>
-            <contents jcr:primaryType="jnt:contentFolder">
-                <portal-components jcr:primaryType="jnt:contentFolder">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
-                                      jcr:title="Portal components"/>
-                    <!--<currentUserMessages jcr:primaryType="jnt:currentUserMessages"/>-->
-                    <!--<currentUserConnections jcr:primaryType="jnt:currentUserConnections"/>-->
-                    <!--<currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed"/>-->
-                </portal-components>
-                <profile-page-items jcr:primaryType="jnt:contentFolder">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
-                                      jcr:title="Profile Page Items"/>
-                    <user-messages divClass="user-messages" jcr:primaryType="jnt:componentLink"
-                                   targetTemplate="user-messages">
-                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
-                                          jcr:title="My messages"/>
-                    </user-messages>
-                    <user-connections divClass="user-connections" jcr:primaryType="jnt:componentLink"
-                                      targetTemplate="user-connections">
-                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
-                                          jcr:title="My connections"/>
-                    </user-connections>
-                </profile-page-items>
-            </contents>
-            <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base/user-base">
-                <files jcr:primaryType="jnt:folder">
-                    <themes jcr:primaryType="jnt:folder">
-                        <default jcr:primaryType="jnt:folder"/>
-                    </themes>
-                </files>
-                <contents jcr:primaryType="jnt:contentFolder"/>
-
-                <user-connections j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
-                                  j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default"
-                                  jcr:primaryType="jnt:contentTemplate">
-                    <pagecontent jcr:primaryType="jnt:contentList">
-                        <currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed"/>
-                    </pagecontent>
-                    <user-profile-aside-right jcr:primaryType="jnt:contentList">
-                        <currentUserTasks j:view="simple" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:currentUserTasks" viewWorkflowTasks="true" workflowTypes="jBPM:user-connection" />
-                        <currentUserConnections jcr:primaryType="jnt:currentUserConnections"/>
-                    </user-profile-aside-right>
-                </user-connections>
-                <user-messages j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
-                               j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default"
-                               jcr:primaryType="jnt:contentTemplate">
-                    <pagecontent jcr:primaryType="jnt:contentList">
-                        <currentUserMessages jcr:primaryType="jnt:currentUserMessages"/>
-                    </pagecontent>
-                </user-messages>
-            </templates>
-        </social>
-    </templateSets>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+  <templateSets jcr:primaryType="jnt:templateSets">
+    <social changefreq="monthly" j:dependencies="profile" j:installedModules="profileModule" j:siteType="module" j:title="Profile - Social" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
+      <portlets jcr:primaryType="jnt:portletFolder"/>
+      <files jcr:primaryType="jnt:folder"/>
+      <contents jcr:primaryType="jnt:contentFolder">
+        <portal-components jcr:primaryType="jnt:contentFolder">
+          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Portal components"/>
+        </portal-components>
+        <profile-page-items jcr:primaryType="jnt:contentFolder">
+          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
+          <user-messages divClass="user-messages" jcr:primaryType="jnt:componentLink" targetTemplate="user-messages">
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My messages"/>
+          </user-messages>
+          <user-connections divClass="user-connections" jcr:primaryType="jnt:componentLink" targetTemplate="user-connections">
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My connections"/>
+          </user-connections>
+        </profile-page-items>
+      </contents>
+      <templates j:rootTemplatePath="/base/user-base" jcr:primaryType="jnt:templatesFolder">
+        <files jcr:primaryType="jnt:folder">
+          <themes jcr:primaryType="jnt:folder">
+            <default jcr:primaryType="jnt:folder"/>
+          </themes>
+        </files>
+        <contents jcr:primaryType="jnt:contentFolder"/>
+        <user-connections j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
+          <pagecontent jcr:primaryType="jnt:contentList">
+            <currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed"/>
+          </pagecontent>
+          <user-profile-aside-right jcr:primaryType="jnt:contentList">
+            <currentUserTasks j:view="simple" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:currentUserTasks" viewWorkflowTasks="true" workflowTypes="jBPM:user-connection"/>
+            <currentUserConnections jcr:primaryType="jnt:currentUserConnections"/>
+          </user-profile-aside-right>
+        </user-connections>
+        <user-messages j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
+          <pagecontent jcr:primaryType="jnt:contentList">
+            <received-messages j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Received messages"/>
+              <my-private-messages j:view="message" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:currentUserMessages"/>
+              <currentUserMessages jcr:primaryType="jnt:currentUserMessages"/>
+            </received-messages>
+          </pagecontent>
+        </user-messages>
+      </templates>
+    </social>
+  </templateSets>
 </content>
-

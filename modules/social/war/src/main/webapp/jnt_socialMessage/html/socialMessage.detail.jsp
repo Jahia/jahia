@@ -6,10 +6,8 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <c:set var="fromUser" value="${currentNode.properties['j:from'].node}"/>
-<div class="boxsocial userMessagesDetail" id="social-message-detail-${currentNode.identifier}"><!--start boxsocial -->
-    <div class="boxsocialpadding16 boxsocialmarginbottom16">
-        <div class="boxsocial-inner">
-            <div class="boxsocial-inner-border">
+<div class="userMessagesDetail" id="social-message-detail-${currentNode.identifier}"><!--start boxsocial -->
+<h4>Message Detail</h4>
                 <ul class="messageActionList">
                    <li><a class="messageActionDelete" title="<fmt:message key='deleteMessage'/>" href="#delete" info="${currentNode.identifier}"><span><fmt:message
                         key="deleteMessage"/></span></a></li>
@@ -38,7 +36,3 @@ value="${lastModified.time}" pattern="yyyy/MM/dd HH:mm"/></span>
 
             <div class='clear'></div>
 			</div>
-		</div>
-	</div>
-	<div class='clear'></div>
-</div>

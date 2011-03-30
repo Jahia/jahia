@@ -121,13 +121,7 @@
     <jcr:sql var="receivedMessages"
              sql="select * from [jnt:socialMessage] where isdescendantnode(['${user.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
     <template:addCacheDependency path="${user.path}/messages/inbox"/>
-    <h3 class="social-title-icon titleIcon"><fmt:message key="receivedMessages"/><img title="" alt=""
-                                                                                      src="<c:url value='${url.currentModule}/images/mailbox.png'/>"/>
-    </h3>
-    <div class="boxsocial"><!--start boxsocial -->
-        <div class=" boxsocialmarginbottom16">
-            <div class="boxsocial-inner">
-                <div class="boxsocial-inner-border">
+    
                     <ul class="userMessagesList">
                         <c:forEach items="${receivedMessages.nodes}" var="userMessage">
                             <li id="social-message-${userMessage.identifier}">
@@ -135,11 +129,7 @@
                             </li>
                         </c:forEach>
                     </ul>
-                </div>
-            </div>
-        </div>
-        <div class='clear'></div>
-    </div>
+
 
 <div class='clear'></div>
 <div class="jahiaFancyboxForm">

@@ -142,9 +142,7 @@ public class ManagerLinker implements Linker {
         }
         // if in content manager (not in picker ..) refresh bottom right panel and empty hiddenSelection
         if (m_bottomRightComponent != null && !(m_bottomRightComponent.getComponentType().equals(PICKER))) {
-            if (m_topRightComponent instanceof AbstractView) {
-                ((AbstractView) m_topRightComponent).setHiddenSelection(null);
-            }
+            m_topRightComponent.selectNodes(null);
             m_bottomRightComponent.fillData(m_leftComponent.getSelectedItem());
         }
         handleNewSelection();

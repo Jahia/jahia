@@ -95,6 +95,7 @@ public class ContentTabItem extends PropertiesTabItem {
             }
 
             if (nameEditable && !engine.isMultipleSelection()) {
+                isNodeNameFieldDisplayed = true;
                 if (engine.getDefaultLanguageCode().equals(this.language)) {
                     boolean autoUpdate = true;
 
@@ -141,7 +142,7 @@ public class ContentTabItem extends PropertiesTabItem {
 
                             if (autoUpdateName.getValue()) {
                                 if (titleField.getValue() != null) {
-                                    nameText.setValue((String) titleField.getValue());
+                                    nameText.setValue(generateNodeName((String) titleField.getValue()));
                                 } else {
                                     nameText.setValue(engine.getNodeName());
                                 }
@@ -152,7 +153,7 @@ public class ContentTabItem extends PropertiesTabItem {
                         public void handleEvent(FieldEvent fe) {
                             if (autoUpdateName.getValue()) {
                                 if (titleField.getValue() != null) {
-                                    nameText.setValue((String) titleField.getValue());
+                                    nameText.setValue(generateNodeName((String) titleField.getValue()));
                                 } else {
                                     nameText.setValue(engine.getNodeName());
                                 }
@@ -161,10 +162,12 @@ public class ContentTabItem extends PropertiesTabItem {
                     });
                 }
             } else {
+                isNodeNameFieldDisplayed = false;
                 if (autoUpdateName != null) {
                     autoUpdateName.setVisible(false);
                 }
                 autoUpdateLabel.setText("");
+                nameText.setValue("");
                 nameText.setEnabled(false);
             }
 
@@ -193,13 +196,13 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameText.setStyleAttribute("padding-left", "0");
 //                nameText.setValue(engine.getNodeName());
                 nameText.setFireChangeEventOnSetValue(true);
-                nameText.addListener(Events.Change, new Listener<FieldEvent>() {
-                    public void handleEvent(FieldEvent fe) {
-                        nameText.setFireChangeEventOnSetValue(false);
-                        nameText.setValue(generateNodeName(nameText.getValue()));
-                        nameText.setFireChangeEventOnSetValue(true);
-                    }
-                });
+//                nameText.addListener(Events.Change, new Listener<FieldEvent>() {
+//                    public void handleEvent(FieldEvent fe) {
+//                        nameText.setFireChangeEventOnSetValue(false);
+//                        nameText.setValue(generateNodeName(nameText.getValue()));
+//                        nameText.setFireChangeEventOnSetValue(true);
+//                    }
+//                });
 
 //                tab.setData("NodeName", engine.getNodeName());
 
@@ -221,8 +224,6 @@ public class ContentTabItem extends PropertiesTabItem {
                 name = new AdapterField(panel);
                 name.setFieldLabel(Messages.get("label.systemName", "System name"));
 
-                isNodeNameFieldDisplayed = true;
-
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));
                 nameFieldSet.add(name, fd);
@@ -240,8 +241,6 @@ public class ContentTabItem extends PropertiesTabItem {
                     autoUpdateName.setData("realValue", null);
                 }
             }
-        } else {
-            isNodeNameFieldDisplayed = false;
         }
 
         // attach properties node

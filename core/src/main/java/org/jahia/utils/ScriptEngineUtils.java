@@ -32,8 +32,6 @@
  */
 package org.jahia.utils;
 
-import org.apache.log4j.Logger;
-import org.jahia.services.content.rules.RulesNotificationService;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.script.ScriptEngine;
@@ -43,15 +41,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * ScriptEngine provider class.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 27/01/11
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 27/01/11
  */
 public class ScriptEngineUtils implements InitializingBean {
-    private transient static Logger logger = Logger.getLogger(ScriptEngineUtils.class);
-
 
     private ScriptEngineManager scriptEngineManager;
     private Map<String, ScriptEngine> scriptEngineByExtensionCache;
@@ -70,8 +66,8 @@ public class ScriptEngineUtils implements InitializingBean {
      */
     public void afterPropertiesSet() throws Exception {
         scriptEngineManager = new ScriptEngineManager();
-        scriptEngineByExtensionCache = new LinkedHashMap<String, ScriptEngine>();
-        scriptEngineByNameCache = new LinkedHashMap<String, ScriptEngine>();
+        scriptEngineByExtensionCache = new LinkedHashMap<String, ScriptEngine>(3);
+        scriptEngineByNameCache = new LinkedHashMap<String, ScriptEngine>(3);
     }
 
     public ScriptEngine scriptEngine(String extension) throws ScriptException {
@@ -98,9 +94,13 @@ public class ScriptEngineUtils implements InitializingBean {
         return scriptEngine;
     }
 
-    public static synchronized ScriptEngineUtils getInstance() {
+    public static ScriptEngineUtils getInstance() {
         if (instance == null) {
-            instance = new ScriptEngineUtils();
+            synchronized (ScriptEngineUtils.class) {
+                if (instance == null) {
+                    instance = new ScriptEngineUtils();
+                }
+            }
         }
         return instance;
     }

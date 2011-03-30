@@ -67,14 +67,22 @@ public class ReferencesHelper {
             if (uuidMapping.containsKey(uuid)) {
                 String pName = refNode.getProperty("j:propertyName").getString();
                 String refuuid = refNode.getProperty("j:node").getString();
-                JCRNodeWrapper n = session.getNodeByUUID(refuuid);
-                updateProperty(session, n, pName,uuidMapping.get(uuid));
+                try {
+                    JCRNodeWrapper n = session.getNodeByUUID(refuuid);
+                    updateProperty(session, n, pName, uuidMapping.get(uuid));
+                } catch (ItemNotFoundException e) {
+                    logger.debug("Referred item not found:" + refuuid, e);
+                }
                 refNode.remove();
             } else if (uuid.startsWith("/") && session.itemExists(uuid)) {
                 String pName = refNode.getProperty("j:propertyName").getString();
                 String refuuid = refNode.getProperty("j:node").getString();
-                JCRNodeWrapper n = session.getNodeByUUID(refuuid);
-                updateProperty(session, n, pName,session.getNode(uuid).getIdentifier());
+                try {
+                    JCRNodeWrapper n = session.getNodeByUUID(refuuid);
+                    updateProperty(session, n, pName, session.getNode(uuid).getIdentifier());
+                } catch (ItemNotFoundException e) {
+                    logger.debug("Referred item not found:" + refuuid, e);
+                }
                 refNode.remove();
             }
         }

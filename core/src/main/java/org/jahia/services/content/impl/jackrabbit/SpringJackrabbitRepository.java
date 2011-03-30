@@ -102,7 +102,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     protected JackrabbitRepository createRepository()
             throws RepositoryException, IOException {
         RepositoryConfig config = RepositoryConfig.create(configFile.getFile().toString(), homeDir.getFile().toString());
-        return JahiaRepositoryImpl.create(config);
+        return JahiaRepositoryImpl.create(new JahiaRepositoryConfig(config));
     }
 
 

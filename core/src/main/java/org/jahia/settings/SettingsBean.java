@@ -317,6 +317,7 @@ public class SettingsBean implements ServletContextAware {
             settings.setFast(true);
             // If cluster is activated then try to expose some properties as system properties for JGroups
             boolean clusterActivated = getBoolean("cluster.activated",false);
+            System.setProperty("cluster.activated", Boolean.toString(clusterActivated));
             if (System.getProperty("cluster.node.serverId") == null) {
             	System.setProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
             }

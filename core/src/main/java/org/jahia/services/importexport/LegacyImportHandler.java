@@ -378,7 +378,7 @@ public class LegacyImportHandler extends DefaultHandler {
             currentCtx.pop();
             if (!currentCtx.isEmpty()) {
                 currentCtx.peek().pop();
-                System.out.println(StringUtils.repeat(" ", level) + "</" + localName + "> , popped full ctx , ctx = " + currentCtx.peek().ctx.peek());
+                System.out.println(StringUtils.repeat(" ", level) + "</" + localName + "> , popped full ctx , ctx = " + (currentCtx.peek().ctx.empty() ? "empty" : currentCtx.peek().ctx.peek()));
             }
         } else {
             level--;
@@ -442,6 +442,9 @@ public class LegacyImportHandler extends DefaultHandler {
         Node translation = subPage.getOrCreateI18N(locale);
 
         if (title != null && title.length() > 0) {
+            if (!translation.isCheckedOut()) {
+                session.checkout(translation);
+            }
             translation.setProperty("jcr:title", title);
         }
     }
@@ -483,9 +486,14 @@ public class LegacyImportHandler extends DefaultHandler {
 
         Node translation = sub.getOrCreateI18N(locale);
         if (title != null && title.length() > 0) {
+            if (!translation.isCheckedOut()) {
+                session.checkout(translation);
+            }
             translation.setProperty("jcr:title", title);
         }
-
+        if (!sub.isCheckedOut()) {
+            session.checkout(sub);
+        }
         sub.setProperty("jcr:title", title);
     }
 
@@ -903,6 +911,9 @@ public class LegacyImportHandler extends DefaultHandler {
         if (propertyDefinition.isInternationalized()) {
             n = parent.getOrCreateI18N(locale);
 //            propertyName = propertyName + "_" + locale.toString();
+        }
+        if (!n.isCheckedOut()) {
+            session.checkout(n);
         }
         //logger.debug("Setting " + propertyName + " of type " + propertyDefinition.getRequiredType());
 

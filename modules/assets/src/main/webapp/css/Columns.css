@@ -10,7 +10,7 @@
 
 .bodywrapper .columns2 .column-item {
     float: left;
-    width: 50%;
+    width: 49.9%;
     overflow: hidden;
     display: block;
 }
@@ -28,7 +28,7 @@
 
 .bodywrapper .columns3 .column-item {
     float: left;
-    width: 33.3%;
+    width: 33.2%;
     overflow: hidden;
     display: block;
 }

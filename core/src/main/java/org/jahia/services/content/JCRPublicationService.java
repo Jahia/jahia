@@ -404,11 +404,11 @@ public class JCRPublicationService extends JahiaService {
                 }
                 node.setProperty("j:lastPublished", calendar);
 
-                String userId = destinationSession.getUserID();
-                if (userId.startsWith(" system ")) {
-                    userId = userId.substring(" system ".length());
+                String userID = destinationSession.getUserID();
+                if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
+                    userID = userID.substring(JahiaLoginModule.SYSTEM.length());
                 }
-                node.setProperty("j:lastPublishedBy", userId);
+                node.setProperty("j:lastPublishedBy", userID);
             }
 //            }
         }

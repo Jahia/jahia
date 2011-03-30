@@ -89,7 +89,7 @@ public class SimpleSearchTest {
                                         .createSite(
                                                 FIRST_TESTSITE_NAME,
                                                 "localhost",
-                                                TestHelper.WEB_TEMPLATES,
+                                                TestHelper.WEB_BLUE_TEMPLATES,
                                                 SettingsBean.getInstance()
                                                         .getJahiaVarDiskPath()
                                                         + "/prepackagedSites/webtemplates.zip",
@@ -108,7 +108,7 @@ public class SimpleSearchTest {
                                         .createSite(
                                                 SECOND_TESTSITE_NAME,
                                                 "127.0.0.1",
-                                                TestHelper.WEB_TEMPLATES,
+                                                TestHelper.WEB_BLUE_TEMPLATES,
                                                 SettingsBean.getInstance()
                                                         .getJahiaVarDiskPath()
                                                         + "/prepackagedSites/webtemplates.zip",

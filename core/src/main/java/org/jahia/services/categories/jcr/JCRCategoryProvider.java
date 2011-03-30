@@ -446,6 +446,9 @@ public class JCRCategoryProvider {
                 node = jcrSessionWrapper.getNodeByUUID(categoryBean.getId());
             }
             if (node != null) {
+                if (!node.getParent().isCheckedOut()) {
+                    jcrSessionWrapper.checkout(node.getParent());
+                }
                 node.remove();
                 jcrSessionWrapper.save();
             }

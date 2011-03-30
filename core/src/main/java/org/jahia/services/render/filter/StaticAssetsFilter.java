@@ -37,7 +37,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.ScriptEngineUtils;
@@ -85,11 +84,13 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private String ajaxResolvedTemplate;
 
     private String ajaxTemplate;
+    private String ajaxTemplateExtension;
     private String resolvedTemplate;
 
     private ScriptEngineUtils scriptEngineUtils;
 
     private String template;
+    private String templateExtension;
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
@@ -102,13 +103,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             if (templateContent != null) {
                 Element element = source.getFirstElement();
                 final EndTag tag = element != null ? element.getEndTag() : null;
-                String extension = StringUtils.substringAfterLast(ajaxTemplate, ".");
-                ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
+                ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(ajaxTemplateExtension);
                 ScriptContext scriptContext = new AssetsScriptContext();
                 final Bindings bindings = scriptEngine.createBindings();
                 bindings.put("renderContext", renderContext);
                 bindings.put("resource", resource);
-                bindings.put("url", new URLGenerator(renderContext, resource));
                 scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
                 // The following binding is necessary for Javascript, which doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
@@ -159,13 +158,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 String templateContent = getResolvedTemplate(); 
                 if (templateContent != null) {
                     final EndTag headEndTag = element.getEndTag();
-                    String extension = StringUtils.substringAfterLast(template, ".");
-                    ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(extension);
+                    ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);
                     ScriptContext scriptContext = new AssetsScriptContext();
                     final Bindings bindings = scriptEngine.createBindings();
                     bindings.put("renderContext", renderContext);
                     bindings.put("resource", resource);
-                    bindings.put("url", new URLGenerator(renderContext, resource));
+                    bindings.put("contextPath", renderContext.getRequest().getContextPath());
                     scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
                     // The following binding is necessary for Javascript, which doesn't offer a console by default.
                     bindings.put("out", new PrintWriter(scriptContext.getWriter()));
@@ -207,6 +205,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     public void setAjaxTemplate(String ajaxTemplate) {
         this.ajaxTemplate = ajaxTemplate;
+        if (ajaxTemplate != null) {
+            ajaxTemplateExtension = StringUtils.substringAfterLast(ajaxTemplate, ".");
+        }
     }
 
     public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
@@ -215,6 +216,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     public void setTemplate(String template) {
         this.template = template;
+        if (template != null) {
+            templateExtension = StringUtils.substringAfterLast(template, "."); 
+        }
     }
 
     public void onApplicationEvent(ApplicationEvent event) {

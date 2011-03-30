@@ -32,6 +32,7 @@
 
 package org.jahia.services.render;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -39,13 +40,19 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.map.CaseInsensitiveMap;
+import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.NOPTransformer;
 import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.collections.map.LazySortedMap;
+import org.apache.commons.collections.map.TransformedSortedMap;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRSessionFactory;
@@ -61,6 +68,37 @@ import org.jahia.utils.LanguageCodeConverters;
  * @author toto
  */
 public class RenderContext {
+    
+    private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
+        public Object transform(Object input) {
+            return input != null ? input.toString().toLowerCase() : null;
+        }
+    };
+
+    private static final FastHashMap RANK;
+    static {
+        RANK = new FastHashMap();
+        RANK.put("css", Integer.valueOf(1));
+        RANK.put("inlinecss", Integer.valueOf(2));
+        RANK.put("javascript", Integer.valueOf(3));
+        RANK.put("inlinejavascript", Integer.valueOf(4));
+        RANK.put("inline", Integer.valueOf(5));
+        RANK.put("unknown", Integer.valueOf(6));
+        RANK.setFast(true);
+    }
+    @SuppressWarnings("unchecked")
+    private static final Comparator<String> ASSET_COMPARATOR = ComparatorUtils
+            .transformedComparator(null, new Transformer() {
+                public Object transform(Object input) {
+                    Integer rank = null;
+                    if (input != null) {
+                        rank = (Integer) RANK.get(input.toString());
+                    }
+
+                    return rank != null ? rank : RANK.get("unknown");
+                }
+            });
+
     private HttpServletRequest request;
     private HttpServletResponse response;
     private Resource mainResource;
@@ -81,7 +119,8 @@ public class RenderContext {
     private String redirect;
     
     @SuppressWarnings("unchecked")
-    private Map<String, Set<String>> staticAssets = LazyMap.decorate(new CaseInsensitiveMap(), new SetFactory());
+    private Map<String, Set<String>> staticAssets = LazySortedMap.decorate(
+            TransformedSortedMap.decorate(new TreeMap<String, Set<String>>(ASSET_COMPARATOR), LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new SetFactory());
 
     /** Static asset options (e.g. link title) keyed by asset resource (URL) */
     @SuppressWarnings("unchecked")

@@ -32,7 +32,10 @@
 
 package org.jahia.services.content;
 
+import org.jahia.exceptions.JahiaException;
+
 import javax.jcr.RepositoryException;
+import java.text.ParseException;
 import java.util.Locale;
 
 /**
@@ -163,13 +166,13 @@ public class JCRTemplate {
     public <X> X doExecuteWithSystemSession(String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
-            if (username != null) {
-                username = username.trim();
+            if (username != null && username.startsWith("system")) {
+                throw new IllegalArgumentException("the username cannot start by \"system\" it must be \" system\"");
             }
-            if ("system".equals(username)) {
+            if (" system ".equals(username)) {
                 username = null;
-            } else if (username != null && username.startsWith("system ")) {
-                username = username.substring("system ".length());
+            } else if (username != null && username.startsWith(" system ")) {
+                username = username.substring(" system ".length());
             }
             session = sessionFactory.getSystemSession(username, workspace, locale);
             return callback.doInJCR(session);

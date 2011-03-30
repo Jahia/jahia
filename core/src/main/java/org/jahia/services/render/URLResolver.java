@@ -131,10 +131,12 @@ public class URLResolver {
         this.siteInfoCache = siteInfoCache;
         this.method = request.getMethod();
         this.urlPathInfo = urlPathInfo;
-        servletPart = StringUtils.substring(getUrlPathInfo(), 1,
-                StringUtils.indexOf(getUrlPathInfo(), "/", 1));
-        path = StringUtils.substring(getUrlPathInfo(),
-                servletPart.length() + 2, getUrlPathInfo().length());
+        if (urlPathInfo != null) {
+            servletPart = StringUtils.substring(getUrlPathInfo(), 1,
+                    StringUtils.indexOf(getUrlPathInfo(), "/", 1));
+            path = StringUtils.substring(getUrlPathInfo(), servletPart.length() + 2,
+                    getUrlPathInfo().length());
+        }
         if (!resolveUrlMapping(serverName)) {
             init();
             if (!URLGenerator.isLocalhost(serverName) && isMappable()

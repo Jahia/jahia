@@ -121,7 +121,10 @@ public class PageBO {
 				+ "		</publications>\n"
 				+ "		<illustration jcr:created=\"2011-03-28T13:00:41.420-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">\n"
 				+ "			<imageReference j:node=\"/sites/ACME/files/images/banner-sections/publications.jpg\" jcr:created=\"2011-03-28T13:00:41.420-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:imageReference\" />\n"
-				+ "		</illustration>\n");
+				+ "		</illustration>\n"
+				+ " 	<vanityUrlMapping jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrls\">"
+				+ "			<_x0025_2Fpage" + this.getIdPage().toString() + " j:active=\"true\" j:default=\"true\" j:url=\"/page345\" jcr:created=\"2011-03-30T15:13:22.874+02:00\" jcr:createdBy=\" system \" jcr:language=\"en\" jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrl\" />"
+				+ "		</vanityUrlMapping>");
 
 		if (null != this.subPages) {
 			for (Iterator<PageBO> iterator = subPages.iterator(); iterator.hasNext();) {

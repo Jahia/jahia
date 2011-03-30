@@ -879,6 +879,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         }
         for (String s : site.getLanguages()) {
             if (!languages.contains(s)) {
+                n.checkout();
                 Node translator = n.addNode("translator-" + s, "jnt:role");
                 Value[] values = new Value[]{
                         session.getValueFactory().createValue(session.getNode("/permissions/editMode/editModeAccess"), true),

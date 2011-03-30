@@ -45,7 +45,6 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.Cache;
 import org.slf4j.Logger;
@@ -117,37 +116,6 @@ public class URLResolver {
     private Map<String, JCRNodeWrapper> resolvedNodes = new ConcurrentHashMap<String, JCRNodeWrapper>();
     private Cache nodePathCache;
     private Cache siteInfoCache;
-
-    public class SiteInfo {
-
-        private boolean htmlMarkupFilterEnabled;
-        private boolean mixLanguagesActive;
-        private boolean WCAGComplianceCheckEnabled;
-        private String defaultLanguage;
-
-        public SiteInfo(JCRSiteNode siteNode) {
-            this.htmlMarkupFilterEnabled = siteNode.isHtmlMarkupFilteringEnabled();
-            this.mixLanguagesActive = siteNode.isMixLanguagesActive();
-            this.WCAGComplianceCheckEnabled = siteNode.isWCAGComplianceCheckEnabled();
-            this.defaultLanguage = siteNode.getDefaultLanguage();
-        }
-
-        public boolean isHtmlMarkupFilterEnabled() {
-            return htmlMarkupFilterEnabled;
-        }
-
-        public boolean isMixLanguagesActive() {
-            return mixLanguagesActive;
-        }
-
-        public boolean isWCAGComplianceCheckEnabled() {
-            return WCAGComplianceCheckEnabled;
-        }
-
-        public String getDefaultLanguage() {
-            return defaultLanguage;
-        }
-    }
 
     /**
      * Initializes an instance of this class. This constructor is mainly used when

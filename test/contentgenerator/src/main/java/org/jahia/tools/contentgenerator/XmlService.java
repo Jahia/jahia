@@ -22,7 +22,8 @@ public class XmlService {
 	}
 
 	private PageBO createNewPage(ArticleBO articleEn, ArticleBO articleFr, int level, List<PageBO> subPages) {
-		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR " + articleFr.getId() + " - Article EN "+articleEn.getId());
+		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR "
+				+ articleFr.getId() + " - Article EN " + articleEn.getId());
 		PageBO page = new PageBO(currentPageIndex, formatForXml(articleEn.getTitle()),
 				formatForXml(articleEn.getContent()), formatForXml(articleFr.getTitle()),
 				formatForXml(articleFr.getContent()), level, subPages);
@@ -69,14 +70,18 @@ public class XmlService {
 
 	public void createTopPages(ExportBO export, List<ArticleBO> articles) throws IOException {
 		logger.info("Creating top pages");
-		SiteBO newSite = new SiteBO(null);
-		OutputService outService = new OutputService();
-		outService.initOutputFile(export.getOutputFile());
-		outService.appendStringToFile(export.getOutputFile(), newSite.getHeader());
-
 		PageBO pageTopLevel = null;
 		ArticleBO articleEn = null;
 		ArticleBO articleFr = null;
+
+		articleEn = getArticle(articles, export.getMaxArticleIndex());
+		articleFr = getArticle(articles, export.getMaxArticleIndex());
+		PageBO homePage = createNewPage(articleEn, articleFr, export.getNbSubLevels() + 1, null);
+
+		OutputService outService = new OutputService();
+		outService.initOutputFile(export.getOutputFile());
+		outService.appendStringToFile(export.getOutputFile(), homePage.getHeader());
+
 		for (int i = 1; i <= export.getNbPagesTopLevel().intValue(); i++) {
 			articleEn = getArticle(articles, export.getMaxArticleIndex());
 			articleFr = getArticle(articles, export.getMaxArticleIndex());
@@ -90,6 +95,6 @@ public class XmlService {
 			logger.debug("XML code of top level page #" + i + " written in output file");
 			logger.info("Top page #" + i + " with subpages created and written to file");
 		}
-		outService.appendStringToFile(export.getOutputFile(), newSite.getFooter());
+		outService.appendStringToFile(export.getOutputFile(), homePage.getFooter());
 	}
 }

@@ -89,8 +89,8 @@ public class PageBO {
 		this.level = pLevel;
 		this.subPages = pSubPages;
 	}
-
-	public String toString() {
+	
+	public String getHeader() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("	<!-- generated page (level " + this.getLevel() + ") -->\n");
 
@@ -125,6 +125,16 @@ public class PageBO {
 				+ " 	<vanityUrlMapping jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrls\">"
 				+ "			<_x0025_2Fpage" + this.getIdPage().toString() + " j:active=\"true\" j:default=\"true\" j:url=\"/page345\" jcr:created=\"2011-03-30T15:13:22.874+02:00\" jcr:createdBy=\" system \" jcr:language=\"en\" jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrl\" />"
 				+ "		</vanityUrlMapping>");
+		return sb.toString();
+	}
+	
+	public String getFooter() {
+		return new String("		</page" + this.getIdPage().toString() + ">\n");
+	}
+
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(this.getHeader());
 
 		if (null != this.subPages) {
 			for (Iterator<PageBO> iterator = subPages.iterator(); iterator.hasNext();) {
@@ -132,7 +142,8 @@ public class PageBO {
 				sb.append(subPage.toString());
 			}
 		}
-		sb.append("		</page" + this.getIdPage().toString() + ">\n");
+		
+		sb.append(this.getFooter());
 
 		return sb.toString();
 	}

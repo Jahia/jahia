@@ -43,9 +43,7 @@
 </c:if>
 
 <c:if test="${currentResource.workspace ne 'live'}">
-    <c:if test="${not empty currentNode.properties['jcr:title']}">
-        <h3>${currentNode.properties['jcr:title'].string}</h3>
-    </c:if>
+
     <script type="text/javascript">
         function deleteBookmark(source) {
             $.post('<c:url value="${url.base}"/>' + source, {"methodToCall":"delete"},
@@ -75,7 +73,7 @@
                 <jcr:nodeProperty node="${bookmark}" name="jcr:title" var="title"/>
                 <jcr:node var="myNode" path="${bookmark.path}"/>
                 <a class="userMyBookmarksListIcon" href="${bookmark.properties['url'].string}">${bookmark.properties['jcr:title'].string}</a>
-                &nbsp;<span>&nbsp;<fmt:formatDate
+                &nbsp;<span class="small">&nbsp;<fmt:formatDate
                     value="${bookmark.properties['date'].date.time}" dateStyle="short" type="both"/></span>
                <div class="floatright">
                &nbsp;<button onclick="deleteBookmark('${bookmark.path}')">

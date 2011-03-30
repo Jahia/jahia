@@ -166,7 +166,7 @@
 </c:if>
 
 
-    <h3><fmt:message key="userSearch"/></h3>
+    <h4><fmt:message key="userSearch"/></h4>
 
     <form method="get" class="simplesearchform" action="">
         <fmt:message key='userSearch' var="startSearching"/>
@@ -188,8 +188,7 @@
     <jcr:sql var="socialConnections"
              sql="select * from [jnt:socialConnection] as uC where isdescendantnode(uC,['${user.path}'])"/>
     <template:addCacheDependency path="${user.path}/connections"/>
-    <h3 class="social-title-icon titleIcon"><fmt:message key="friendsList"/><img title="" alt="" src="<c:url value='${url.currentModule}/images/friends.png'/>"/>
-    </h3>
+    <h4><fmt:message key="friendsList"/></h4>
     <ul class="social-list">
         <c:forEach items="${socialConnections.nodes}" var="socialConnection">
             <c:set var="connectedToUser" value="${socialConnection.properties['j:connectedTo'].node}"/>

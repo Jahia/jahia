@@ -27,11 +27,19 @@
         <contents jcr:primaryType="jnt:contentFolder"/>
         <user-connections j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
           <pagecontent jcr:primaryType="jnt:contentList">
-            <currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed"/>
+            <my-connexions j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="My connexions "/>
+              <currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed"/>
+            </my-connexions>
           </pagecontent>
           <user-profile-aside-right jcr:primaryType="jnt:contentList">
-            <currentUserTasks j:view="simple" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:currentUserTasks" viewWorkflowTasks="true" workflowTypes="jBPM:user-connection"/>
-            <currentUserConnections jcr:primaryType="jnt:currentUserConnections"/>
+            <my-friends j:skin="skins.box8" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="My friends"/>
+              <content-list j:className="simple" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:listOrdered" jcr:primaryType="jnt:contentList">
+                <currentUserTasks j:view="simple" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:currentUserTasks" viewWorkflowTasks="true" workflowTypes="jBPM:user-connection"/>
+              </content-list>
+              <currentUserConnections jcr:primaryType="jnt:currentUserConnections"/>
+            </my-friends>
           </user-profile-aside-right>
         </user-connections>
         <user-messages j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">

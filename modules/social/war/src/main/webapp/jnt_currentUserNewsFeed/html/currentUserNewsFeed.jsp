@@ -74,11 +74,8 @@
     </template:addResources>
 </c:if>
 
-    <div class="boxsocial"><!--start boxsocial -->
-        <div class="boxsocialpadding16 boxsocialmarginbottom16">
-            <div class="boxsocial-inner">
-                <div class="boxsocial-inner-border">
-                    <h3><fmt:message key="userActivities"/></h3>
+
+<h4><fmt:message key="userActivities"/></h4>
 
                     <form class="statusUpdateForm" name="statusUpdateForm" action="" method="post">
                         <textarea rows="2" cols="20" class="" onfocus="if(this.value==this.defaultValue)this.value='';"
@@ -91,24 +88,12 @@
                                    title="<fmt:message key='statusUpdateSubmit'/>"/>
                         </p>
                     </form>
-                </div>
-            </div>
-        </div>
-        <div class='clear'></div>
-    </div>
 
-    <h4 class="boxsocial-title"><fmt:message key="activitiesList"/></h4>
+<hr />
 
-    <div class="boxsocial">
-        <div class="boxsocialpadding10 boxsocialmarginbottom16">
-            <div class="boxsocial-inner">
-                <div class="boxsocial-inner-border"><!--start boxsocial -->
+<h4><fmt:message key="activitiesList"/></h4>
+
                     <ul class="activitiesList">
                         <li><fmt:message key="userLoadingStatus"/></li>
                     </ul>
-                </div>
-            </div>
-        </div>
-        <div class='clear'></div>
-    </div>
 

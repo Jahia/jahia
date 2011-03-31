@@ -30,6 +30,8 @@
 <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
     <jcr:node var="user" path="/users/${renderContext.user.username}"/>
 </c:if>
+
+
 <c:set var="ps" value=""/>
 <c:forEach items="${param}" var="p" varStatus="status">
         <c:if test="${status.first}"><c:set var="sep" value="?"/></c:if>
@@ -55,16 +57,12 @@
             }
     </script>
 
-    <jcr:sql var="result"
-             sql="select * from [jnt:bookmark] as b where isdescendantnode(b,['${user.path}'])"/>
-    <c:set var="currentList" value="${result.nodes}" scope="request"/>
-    <c:set var="totalResutlsSize" value="${fn:length(result.nodes)}" scope="request"/>
-    <c:if test="${totalResutlsSize eq 0}">
+    <c:if test="${moduleMap.end eq 0}">
         <fmt:message key="bookmark.emptyResults"/>
     </c:if>
     <c:if test="${totalResutlsSize ne 0}">
         <ul class="userMyBookmarksList" id="${currentNode.UUID}">
-        <c:forEach items="${currentList}" var="bookmark" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+        <c:forEach items="${moduleMap.currentList}" var="bookmark" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <li>
                 <jcr:nodeProperty node="${bookmark}" name="jcr:title" var="title"/>
                 <jcr:node var="myNode" path="${bookmark.path}"/>

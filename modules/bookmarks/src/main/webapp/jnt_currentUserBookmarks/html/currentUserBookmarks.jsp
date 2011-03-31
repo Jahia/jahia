@@ -18,6 +18,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:include view="hidden.header"/>
 <template:addResources type="css" resources="bookmarks.css"/>
 <template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
@@ -57,19 +58,13 @@
     <jcr:sql var="result"
              sql="select * from [jnt:bookmark] as b where isdescendantnode(b,['${user.path}'])"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
-    <c:set var="listTotalSize" value="${fn:length(result.nodes)}" scope="request"/>
-    <c:choose>
-        <c:when test="${empty param.pagesize}">
-            <c:set var="pageSize" value="40"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="pageSize" value="${param.pagesize}"/>
-        </c:otherwise>
-    </c:choose>
-    <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${user.identifier}"/>
-    <ul class="userMyBookmarksList" id="${currentNode.UUID}">
-        <c:forEach items="${currentList}" var="bookmark" varStatus="status">
-
+    <c:set var="totalResutlsSize" value="${fn:length(result.nodes)}" scope="request"/>
+    <c:if test="${totalResutlsSize eq 0}">
+        <fmt:message key="bookmark.emptyResults"/>
+    </c:if>
+    <c:if test="${totalResutlsSize ne 0}">
+        <ul class="userMyBookmarksList" id="${currentNode.UUID}">
+        <c:forEach items="${currentList}" var="bookmark" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <li>
                 <jcr:nodeProperty node="${bookmark}" name="jcr:title" var="title"/>
                 <jcr:node var="myNode" path="${bookmark.path}"/>
@@ -84,8 +79,7 @@
             </li>
         </c:forEach>
     </ul>
-    <template:displayPagination nbItemsList="5,10,20,40,60,80,100,200"/>
-    <template:removePager id="${user.identifier}"/>
+    </c:if>
 </c:if>
 
 </div>

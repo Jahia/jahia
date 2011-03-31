@@ -51,27 +51,29 @@
             <c:set var="listTotalSize" value="${functions:length(result)}" scope="request"/>
             <template:initPager totalSize="${listTotalSize}" pageSize="25" id="${currentNode.identifier}"/>
             <c:forEach items="${currentList}" var="version" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}" >
-                <c:choose>
-                    <c:when test="${status.count % 2 == 0}">
-                        <tr class="odd">
-                    </c:when>
-                    <c:otherwise>
-                        <tr class="even">
-                    </c:otherwise>
-                </c:choose>
+                <c:if test="${status.count != 1}">
+                    <c:choose>
+                        <c:when test="${status.count % 2 == 0}">
+                            <tr class="odd">
+                        </c:when>
+                        <c:otherwise>
+                            <tr class="even">
+                        </c:otherwise>
+                    </c:choose>
 
-                <td class="center" headers="Selection">
-                    <input type="radio" value="${version.parent.name}" name="oldid"
-                           id="w-oldid-${version.parent.name}" <c:if test="${status.last}">disabled="true"</c:if> <c:if test="${param.oldid eq version.parent.name}">checked="true"</c:if>/>
-                    &nbsp;<input type="radio" value="${version.parent.name}" name="diff"
-                           id="w-diff-${version.parent.name}" <c:if test="${status.first}">disabled="true"</c:if> <c:if test="${param.diff eq version.parent.name}">checked="true"</c:if>/>
-                </td>
-                <td headers="Title"><a href="#">${version.properties['lastComment'].string} </a></td>
-                <td headers="Author">${version.properties['jcr:lastModifiedBy'].string}</td>
-                <td headers="Date"><fmt:formatDate
-                        value="${version.properties['jcr:lastModified'].date.time}"
-                        dateStyle="short" type="both"/></td>
-                </tr>
+                    <td class="center" headers="Selection">
+                        <input type="radio" value="${version.parent.name}" name="oldid"
+                               id="w-oldid-${version.parent.name}" <c:if test="${status.last}">disabled="true"</c:if> <c:if test="${param.oldid eq version.parent.name}">checked="true"</c:if>/>
+                        &nbsp;<input type="radio" value="${version.parent.name}" name="diff"
+                               id="w-diff-${version.parent.name}" <c:if test="${status.first}">disabled="true"</c:if> <c:if test="${param.diff eq version.parent.name}">checked="true"</c:if>/>
+                    </td>
+                    <td headers="Title"><a href="#">${version.properties['lastComment'].string} </a></td>
+                    <td headers="Author">${version.properties['jcr:lastModifiedBy'].string}</td>
+                    <td headers="Date"><fmt:formatDate
+                            value="${version.properties['jcr:lastModified'].date.time}"
+                            dateStyle="short" type="both"/></td>
+                    </tr>
+                </c:if>
             </c:forEach>
             </tbody>
         </table>

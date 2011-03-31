@@ -83,6 +83,7 @@
               properties="${currentNode.properties.firstField.string},${currentNode.properties.firstDirection.string},${currentNode.properties.secondField.string},${currentNode.properties.secondDirection.string},${currentNode.properties.thirdField.string},${currentNode.properties.thirdDirection.string}"
               var="currentList"/>
     <c:set value="${currentList}" target="${moduleMap}" property="currentList"/>
+    <c:set value="true" target="${moduleMap}" property="orderedList"/>
 </c:if>
 
 

@@ -19,6 +19,10 @@
           <img class='user-profile-img' src="${picture.node.thumbnailUrls['avatar_60']}" alt="${title} ${firstname} ${lastname}" width="60"
                  height="60"/>
         </c:if>
+        <c:if test="${empty picture}">
+            <img class='user-profile-img' src="<c:url value='${url.currentModule}/images/userbig.png'/>" alt="" border="0" width="60"
+                 height="60"/>
+        </c:if>
           <h5>${empty firstname and empty lastname?currentNode.name:firstname} ${lastname}</h5>
           <p>${function}</p>
           <div class="clear"></div>

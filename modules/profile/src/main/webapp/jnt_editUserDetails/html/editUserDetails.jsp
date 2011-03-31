@@ -105,6 +105,12 @@
 
             <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
 
+            <c:if test="${empty picture}">
+            <div class='image'>
+                <div class='itemImage itemImageLeft'>
+                    <img src="<c:url value='${url.currentModule}/img/userbig.png'/>" alt="" border="0"/> </div>
+             </div><div class="clear"></div>
+            </c:if>
             <c:if test="${not empty picture}">
                 <div class='image'>
           <div class='itemImage itemImageLeft'> <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/> </div>

@@ -29,6 +29,7 @@
 <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
     <jcr:node var="user" path="/users/${renderContext.user.username}"/>
 </c:if>
+<c:set var="ps" value=""/>
 <c:forEach items="${param}" var="p" varStatus="status">
         <c:if test="${status.first}"><c:set var="sep" value="?"/></c:if>
         <c:if test="${not status.first}"><c:set var="sep" value="&"/></c:if>

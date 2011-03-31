@@ -45,11 +45,15 @@ import javax.jcr.query.Query;
 import org.slf4j.Logger;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -66,32 +70,47 @@ public class TaggingTest {
 
     private final static String TESTSITE_NAME = "taggingTest";
 
-    private int counter = 0;
+    private static int counter = 0;
 
-    private TaggingService service;
+    private TaggingService service = (TaggingService) SpringContextSingleton
+    .getBean("org.jahia.services.tags.TaggingService");
 
-    private String tagPrefix;
+    private static String tagPrefix = "test-" + System.currentTimeMillis() + "-";
 
     private String generateTagName() {
         return tagPrefix + counter++;
     }
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
         try {
             TestHelper.createSite(TESTSITE_NAME);
-            tagPrefix = "test-" + System.currentTimeMillis() + "-";
-            service = (TaggingService) SpringContextSingleton
-                    .getBean("org.jahia.services.tags.TaggingService");
-            // create the first tag
-            testCreateTag();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node siteNode = session.getNode("/sites/" + TESTSITE_NAME);
+                    session.checkout(siteNode);
+                    siteNode.addNode("tags-content", "jnt:contentList");
+                    session.save();
+                    return null;
+                }
+            });
         } catch (Exception e) {
             logger.error("Error setting up TaggingTest environment", e);
         }
     }
+    
+    @Before
+    public void setUp() {
+
+    }
 
     @After
     public void tearDown() {
+        JCRSessionFactory.getInstance().closeAllSessions();
+    }
+
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -134,7 +153,6 @@ public class TaggingTest {
         }   
         tagPrefix = null;
         counter = 0;
-        service = null;
     }
 
     @Test    
@@ -166,10 +184,9 @@ public class TaggingTest {
     public void testTagContentObject() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                Node siteNode = session.getNode("/sites/" + TESTSITE_NAME);
-                session.checkout(siteNode);
-                Node contentFolder = siteNode.addNode("tags-content", "jnt:contentList");
-                Node contentNode = contentFolder.addNode("content-1", "jnt:text");
+                Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
+                session.checkout(contentFolder);
+                Node contentNode = contentFolder.addNode("content-0", "jnt:text");
                 contentNode.addMixin("jmix:tagged");
                 session.save();
                 return null;
@@ -181,7 +198,7 @@ public class TaggingTest {
         for (int i = 0; i < 10; i++) {
             tag = generateTagName();
             tags.add(tag);
-            service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-1", tag, TESTSITE_NAME,
+            service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-0", tag, TESTSITE_NAME,
                     true);
         }
 
@@ -190,7 +207,7 @@ public class TaggingTest {
                     public List<String> doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
                         Node node = session.getNode("/sites/" + TESTSITE_NAME
-                                + "/tags-content/content-1");
+                                + "/tags-content/content-0");
                         Value[] values = node.getProperty("j:tags").getValues();
                         List<String> nodeTags = new LinkedList<String>();
                         for (Value val : values) {
@@ -208,9 +225,8 @@ public class TaggingTest {
         // create 10 content nodes
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                Node siteNode = session.getNode("/sites/" + TESTSITE_NAME);
-                session.checkout(siteNode);
-                Node contentFolder = siteNode.addNode("tags-content", "jnt:contentList");
+                Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
+                session.checkout(contentFolder);
                 for (int i = 1; i <= 10; i++) {
                     Node contentNode = contentFolder.addNode("content-" + i, "jnt:text");
                     contentNode.addMixin("jmix:tagged");

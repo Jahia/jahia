@@ -38,7 +38,7 @@
                 <h2>${param['wikiTitle']}</h2>
             </c:when>
             <c:otherwise>
-                <label for="title-${currentNode.identifier}"><fmt:message key="label.title"/>: </label>
+                <label for="title-${currentNode.identifier}"><fmt:message key="label.title"/> </label>
                 <input type="text" name="jcr:title" id="title-${currentNode.identifier}"/>
             </c:otherwise>
         </c:choose>

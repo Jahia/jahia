@@ -60,6 +60,9 @@
         </c:choose>
         <div class="user-body">
             <h3><c:if test="${fn:contains(publicPropertiesAsString, 'j:firstName')}">${fn:escapeXml(person)}&nbsp;</c:if></h3>
+            <c:if test="${renderContext.user.username == user.name}">
+    <div class="divButtonRight"><a class="aButton" href="<c:url value='${url.base}${user.path}.user-edit-details.html'/>"><span><fmt:message key="label.editProfile"/></span></a></div>
+</c:if>
             <p class="small colorlight">
                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:birthDate')}">
                     <c:if test="${not empty birthDate}">
@@ -142,7 +145,5 @@
         </c:if>
     </div>
 </c:if>
-<c:if test="${renderContext.user.username == user.name}">
-    <div class="divButtonRight"><a class="aButton" href="<c:url value='${url.base}${user.path}.user-edit-details.html'/>"><span><fmt:message key="label.editProfile"/></span></a></div>
-</c:if>
+
 

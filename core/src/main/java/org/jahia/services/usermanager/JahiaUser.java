@@ -61,22 +61,6 @@ public interface JahiaUser extends JahiaPrincipal {
     public String getUserKey();
 
     /**
-     * Returns the group's home page id.
-     * -1 : undefined
-     *
-     * @return int The group homepage id.
-     */
-    public abstract int getHomepageID();
-
-    /**
-     * Set the home page id.
-     *
-     * @param id The group homepage id.
-     * @return false on error
-     */
-    public abstract boolean setHomepageID(int id);
-
-    /**
      * Get user's properties list.
      * The properties here should not be modified, as the modifications will
      * not be serialized. Use the setProperty() method to modify a user's

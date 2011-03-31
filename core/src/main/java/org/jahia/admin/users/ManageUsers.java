@@ -420,11 +420,6 @@ public class ManageUsers extends AbstractAdministrationModule {
             userMessage = getMessage("label.user") + " [" + username + "] " + getMessage("message.successfully.created");
             isError = false;
         }
-        // Lookup for home page settings and set it.
-        String homePageParam = request.getParameter("homePageID");
-        if (homePageParam != null && homePageParam.length() > 0) {
-            usr.setHomepageID(Integer.parseInt(homePageParam));
-        }
 
         return true;
     }
@@ -597,13 +592,6 @@ public class ManageUsers extends AbstractAdministrationModule {
                 }
             }
         }
-
-        // Lookup for home page settings and set it.
-        String homePageParam = request.getParameter("homePageID");
-        usr
-                .setHomepageID(homePageParam != null
-                        && homePageParam.length() > 0 ? Integer
-                        .parseInt(homePageParam) : -1);
 
         userMessage = getMessage("label.user");
         userMessage += " [" + username + "] ";

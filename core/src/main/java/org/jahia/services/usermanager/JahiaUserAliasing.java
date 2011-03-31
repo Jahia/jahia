@@ -45,6 +45,8 @@ import java.util.Properties;
  */
 public class JahiaUserAliasing implements JahiaUser {
 
+    private static final long serialVersionUID = -5602404144755780086L;
+    
     private JahiaUser user;
 
     public JahiaUserAliasing(JahiaUser user) {
@@ -61,14 +63,6 @@ public class JahiaUserAliasing implements JahiaUser {
 
     public String getUserKey() {
         return user.getUserKey();
-    }
-
-    public int getHomepageID() {
-        return user.getHomepageID();
-    }
-
-    public boolean setHomepageID(int id) {
-        return  user.setHomepageID(id);
     }
 
     public Properties getProperties() {

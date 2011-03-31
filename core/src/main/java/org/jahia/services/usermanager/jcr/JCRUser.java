@@ -135,27 +135,6 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
     }
 
     /**
-     * Returns the group's home page id.
-     * -1 : undefined
-     *
-     * @return int The group homepage id.
-     */
-    public int getHomepageID() {
-        return -1;
-    }
-
-    /**
-     * Set the home page id.
-     *
-     * @param id The group homepage id.
-     * @return false on error
-     */
-    public boolean setHomepageID(int id) {
-        // TODO home pages are not implemented.
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
      * Get user's properties list.
      * The properties here should not be modified, as the modifications will
      * not be serialized. Use the setProperty() method to modify a user's
@@ -181,7 +160,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                                     vals = property.getValues();
                                 } catch (ValueFormatException e) {
                                     try {
-                                        vals = new Value[]{property.getValue()};
+                                        vals = new Value[] { property.getValue() };
                                     } catch (ValueFormatException e1) {
                                         // ignore
                                     }
@@ -219,14 +198,14 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                         PropertyIterator iterator = getNode(session).getProperties();
                         for (; iterator.hasNext();) {
                             Property property = iterator.nextProperty();
-                            if (property instanceof JCRUserNode.JCRUserProperty) {
+                            if(property instanceof JCRUserNode.JCRUserProperty) {
                                 userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
-                                        property.getString(),
-                                        true));
+                                                                                                    property.getString(),
+                                                                                                    true));
                             } else if (property.getDefinition() != null && !property.getDefinition().isMultiple()) {
                                 userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
-                                        property.getString(),
-                                        false));
+                                                                                                    property.getString(),
+                                                                                                    false));
                             }
                         }
                         return userProperties;

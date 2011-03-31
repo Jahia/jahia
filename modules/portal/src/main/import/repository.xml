@@ -23,7 +23,7 @@
         <profile-page-items jcr:primaryType="jnt:contentFolder">
           <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
           <portal divClass="user-portal" jcr:primaryType="jnt:componentLink" targetTemplate="user-portal">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Portal"/>
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My portal"/>
           </portal>
         </profile-page-items>
         <defaultPortal columns="3" componentsFolder="/templateSets/portal/contents/portal-components" jcr:primaryType="jnt:portal">

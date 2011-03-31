@@ -100,6 +100,27 @@ public final class JCRContentUtils {
     public static String escapeJCRLocalName(final String originalLocalName) {
         return Text.escapeIllegalJcrChars(originalLocalName);
     }
+    
+    public static String escapeIllegalJcrCharsInPath(String path) {
+        StringBuilder buffer = new StringBuilder(path.length() * 2);
+        for (int i = 0; i < path.length(); i++) {
+            char ch = path.charAt(i);
+            if (ch == '%' || ch == ':' || ch == '[' || ch == ']'
+                || ch == '*' || ch == '|'
+                || (ch == '.' && path.length() < 3)
+                || (ch == ' ' && (i == 0 || i == path.length() - 1))
+                || ch == '\t' || ch == '\r' || ch == '\n') {
+                buffer.append('%');
+                buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
+                buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
+            } else {
+                buffer.append(ch);
+            }
+        }
+        return buffer.toString();
+    }
+
+    
 
     /**
      * Decode an encoded JCR local name encoded with the encodeJCRLocalName method

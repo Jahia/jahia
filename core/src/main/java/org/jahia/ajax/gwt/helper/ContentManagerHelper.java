@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.GWTJahiaContentHistoryEntry;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -76,7 +77,7 @@ public class ContentManagerHelper {
 
 // ------------------------------ FIELDS ------------------------------
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentManagerHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(ContentManagerHelper.class);
 
     private JahiaSitesService sitesService;
     private ContentHistoryService contentHistoryService;
@@ -158,7 +159,7 @@ public class ContentManagerHelper {
         } else {
             nodeName = findAvailableName(parentNode, nodeName);
         }
-        checkName(nodeName);
+
         if (checkExistence(parentPath + "/" + nodeName, currentUserSession)) {
             throw new GWTJahiaServiceException("A node already exists with name '" + nodeName + "'");
         }
@@ -213,22 +214,10 @@ public class ContentManagerHelper {
         return JCRContentUtils.findAvailableNodeName(dest, name);
     }
 
-    /**
-     * Check name
-     *
-     * @param name
-     * @throws GWTJahiaServiceException
-     */
-    public void checkName(String name) throws GWTJahiaServiceException {
-        if (name.indexOf("*") > 0 || name.indexOf("/") > 0 || name.indexOf(":") > 0 || name.indexOf("\"") > 0) {
-            throw new GWTJahiaServiceException("Invalid name : characters *,/,\",: cannot be used here");
-        }
-    }
-
     public boolean checkExistence(String path, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         boolean exists = false;
         try {
-            currentUserSession.getNode(path);
+            currentUserSession.getNode(JCRContentUtils.escapeIllegalJcrCharsInPath(path));
             exists = true;
         } catch (PathNotFoundException e) {
             exists = false;

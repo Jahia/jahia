@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.Text;
+import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.cache.Cache;
@@ -290,22 +290,19 @@ public class FileServlet extends HttpServlet {
                 session.setVersionLabel(fileKey.getVersionLabel());
             }
 
-            n = session.getNode(Text.escapePath(fileKey.getPath()));
+            n = session.getNode(JCRContentUtils.escapeIllegalJcrCharsInPath(fileKey.getPath()));
         } catch (RuntimeException e) {
             // throw by the session.setVersionLabel()
             logger.debug(e.getMessage(), e);
         } catch (PathNotFoundException e) {
-            try {
-                n = session.getNode(Text.escapePath(fileKey.getPath()));
-            } catch (PathNotFoundException e1) {
+            logger.debug(e.getMessage(), e);
+        } catch (RepositoryException e) {
+            if (e.getCause() != null && e.getCause() instanceof MalformedPathException) {
                 logger.debug(e.getMessage(), e);
-            } catch (RepositoryException e1) {
+            } else {
                 logger.error("Error accesing path: " + fileKey.getPath() + " for user "
                         + (session != null ? session.getUserID() : null), e);
             }
-        } catch (RepositoryException e) {
-            logger.error("Error accesing path: " + fileKey.getPath() + " for user "
-                    + (session != null ? session.getUserID() : null), e);
         }
         return n;
     }

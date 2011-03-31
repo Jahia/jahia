@@ -412,9 +412,8 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     }
 
     @Override
-    public boolean isNodeType(String path) {
+    public boolean isNodeType(String path)  throws RepositoryException {
         boolean result = false;
-        try {
             ExtendedNodeType primaryNodeType = getPrimaryNodeType();
             result = primaryNodeType.isNodeType(path);
             if (result) {
@@ -428,9 +427,6 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
                     return result;
                 }
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
         return result;
     }
 

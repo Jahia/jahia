@@ -661,14 +661,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getUrl() {
-        if (isNodeType(Constants.JAHIANT_FILE)) {
-            return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + getPath();
-        } else {
-            String path = JCRSessionFactory.getInstance().getCurrentServletPath();
-            if (path == null) {
-                path = "/cms/render";
+        try {
+            if (isNodeType(Constants.JAHIANT_FILE)) {
+                return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + getPath();
+            } else {
+                String path = JCRSessionFactory.getInstance().getCurrentServletPath();
+                if (path == null) {
+                    path = "/cms/render";
+                }
+                return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html";
             }
-            return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html";
+        } catch (RepositoryException e) {
+            logger.error("Cannot get type",e);
+            return null;
         }
     }
 
@@ -1060,13 +1065,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean isNodeType(String type) {
-        try {
-            return objectNode.isNodeType(type);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return false;
+    public boolean isNodeType(String type) throws RepositoryException {
+        return objectNode.isNodeType(type);
     }
 
     /**
@@ -1085,14 +1085,24 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean isFile() {
-        return isNodeType(Constants.NT_FILE);
+        try {
+            return isNodeType(Constants.NT_FILE);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get type",e);
+            return false;
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isPortlet() {
-        return isNodeType(Constants.JAHIANT_PORTLET);
+        try {
+            return isNodeType(Constants.JAHIANT_PORTLET);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get type",e);
+            return false;
+        }
     }
 
     /**

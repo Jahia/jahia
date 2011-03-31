@@ -33,7 +33,12 @@ public class XmlService {
 
 	private ArticleBO getArticle(List<ArticleBO> articles, Integer maxArticleIndex) {
 		Random generator = new Random();
-		int index = generator.nextInt(maxArticleIndex);
+		int index;
+		if (currentPageIndex <= maxArticleIndex) {
+			index = currentPageIndex;
+		} else {
+			index = generator.nextInt(maxArticleIndex);
+		}
 		return (ArticleBO) articles.get(index);
 	}
 
@@ -80,6 +85,7 @@ public class XmlService {
 
 		OutputService outService = new OutputService();
 		outService.initOutputFile(export.getOutputFile());
+		outService.appendStringToFile(export.getOutputFile(), export.toString());
 		outService.appendStringToFile(export.getOutputFile(), homePage.getHeader());
 
 		for (int i = 1; i <= export.getNbPagesTopLevel().intValue(); i++) {

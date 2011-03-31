@@ -87,4 +87,14 @@ public class ExportBO {
 	public ExportBO() {
 		
 	}
+	
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<!-- export information -->\n");
+		sb.append("<!-- top level pages: " + this.getNbPagesTopLevel() + " -->\n");
+		sb.append("<!-- sub levels: " + this.getNbSubLevels() + " -->\n");
+		sb.append("<!-- sub pages per page: " + this.getNbSubPagesPerPage() + " -->\n");
+		sb.append("<!-- total pages: " + this.getTotalPages() + " -->\n");
+		return sb.toString();
+	}
 }

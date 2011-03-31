@@ -62,7 +62,7 @@
                     'autoScale':false,
                     'autoDimensions':false,
                     'onComplete':function() {
-                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(function(){},{toolbar: 'User', filebrowserBrowseUrl: null, filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: '/jahia/engines/liveimagepicker.jsp?files=<c:url value="${url.files}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}', filebrowserLinkBrowseUrl: '/jahia/engines/liveimagepicker.jsp?files=<c:url value="${url.base}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}&type=pages'}); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; });
+                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(function(){},{toolbar: 'User', filebrowserBrowseUrl: '<c:url value="/engines/contentpicker.jsp?site=${renderContext.site.identifier}"/>', filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: '<c:url value="/engines/contentpicker.jsp?type=editorialpicker&site=${renderContext.site.identifier}"/>', filebrowserLinkBrowseUrl: '<c:url value="/engines/contentpicker.jsp?type=imagepicker&site=${renderContext.site.identifier}"/>'}); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; });
 
                     },
 

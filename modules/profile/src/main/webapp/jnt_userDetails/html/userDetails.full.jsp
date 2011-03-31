@@ -36,16 +36,28 @@
     </c:if>
     <fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
     <div class="user-profile">
-        <c:if test="${fn:contains(publicPropertiesAsString, 'j:picture')}">
-            <div class="user-photo">
+        <c:choose>
+            <c:when test="${fn:contains(publicPropertiesAsString, 'j:picture')}">
+                <div class="user-photo">
                 <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
                 <c:if test="${not empty picture}">
                     <div class='image'>
                         <div class='itemImage itemImageLeft floatright'> <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/> </div>
                     </div>
                 </c:if>
+                <c:if test="${empty picture}">
+                    <div class='image'>
+                        <div class='itemImage itemImageLeft floatright'> <img src="<c:url value='${url.currentModule}/img/userbig.png'/>" alt="" border="0"/> </div>
+                    </div>
+                 </c:if>
             </div>
-        </c:if>
+            </c:when>
+            <c:otherwise>
+                <div class='image'>
+                        <div class='itemImage itemImageLeft floatright'> <img src="<c:url value='${url.currentModule}/img/userbig.png'/>" alt="" border="0"/> </div>
+                    </div>
+            </c:otherwise>
+        </c:choose>
         <div class="user-body">
             <h3><c:if test="${fn:contains(publicPropertiesAsString, 'j:firstName')}">${fn:escapeXml(person)}&nbsp;</c:if></h3>
             <p class="small colorlight">

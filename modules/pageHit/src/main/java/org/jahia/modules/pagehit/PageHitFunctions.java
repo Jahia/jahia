@@ -5,8 +5,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 
 /**
  * User: Dorth
- * Date: 26 août 2010
- * Time: 17:32:58
  */
 public class PageHitFunctions {
 

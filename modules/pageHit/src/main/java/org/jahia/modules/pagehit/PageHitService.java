@@ -24,8 +24,6 @@ import java.util.regex.Pattern;
 
 /**
  * User: Dorth
- * Date: 26 août 2010
- * Time: 11:11:05
  */
 public class PageHitService implements Processor, CamelContextAware, InitializingBean {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PageHitService.class);

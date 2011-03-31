@@ -6,13 +6,12 @@ import java.io.Serializable;
 /**
  * Represents page hits entry.
  * User: Dorth
- * Date: 26 août 2010
- * Time: 13:28:57
  */
 @Entity
 @Table(name = "jahia_pagehit")
 public class PageHit implements Serializable{
 
+    private static final long serialVersionUID = 636269287295922913L;
     private Long hits;
     private String path;
     private String uuid;

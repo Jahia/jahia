@@ -19,6 +19,14 @@
         <c:url var="urlValue" value="${url.base}${currentNode.parent.path}.raw?${pageContext.request.queryString}"/>
         <a href="${urlValue}">[..]</a>
     </c:if>
+    <c:url var="mgrUrl" value="/engines/manager.jsp">
+        <c:param name="conf" value="editorialcontentmanager"/>
+        <c:param name="site" value="${renderContext.site.identifier}"/>
+        <c:param name="selectedPaths" value="${currentNode.path}"/>
+    </c:url>
+    <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+            key="label.contentmanager"/></a>
+
     <p>
         <strong>Path :&nbsp;</strong>${fn:escapeXml(currentNode.path)}<br/>
         <strong>ID :&nbsp;</strong>${fn:escapeXml(currentNode.identifier)}<br/>

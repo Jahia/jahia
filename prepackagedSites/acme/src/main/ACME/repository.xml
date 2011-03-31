@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <sites jcr:primaryType="jnt:virtualsitesFolder">
-    <ACME jcr:primaryType="jnt:virtualsite" j:title="ACME Demo site">
+    <ACME jcr:primaryType="jnt:virtualsite">
       <home jcr:mixinTypes="jmix:sitemap" j:published="true" jcr:created="2011-02-01T16:39:51.423+01:00" jcr:primaryType="jnt:page" changefreq="monthly" j:templateNode="/sites/ACME/templates/base/home" jcr:lastModifiedBy="root" j:lastPublished="2011-02-01T16:41:06.957+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00" priority="0.5">
         <header-col1 jcr:created="2011-02-01T16:39:51.425+01:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="" j:lastPublished="2010-12-14T15:36:58.407+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2010-12-13T12:03:36.304+01:00">
           <header-left jcr:created="2011-02-01T16:39:51.427+01:00" jcr:primaryType="jnt:absoluteArea" jcr:lastModifiedBy="root" j:lastPublished="2011-02-01T16:41:06.957+01:00" j:lastPublishedBy=" system root" j:allowedTypes="" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00" />

@@ -882,7 +882,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @return a lazy map for accessing node properties with string values
      */
     @SuppressWarnings("unchecked")
-    public Map<String, String> getPropertiesAsString() {
+/*    public Map<String, String> getPropertiesAsString() {
         if (propertiesAsString == null) {
             Map<String, String> res = Collections.emptyMap();
             res = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
@@ -903,38 +903,34 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         return propertiesAsString;
-    }
+    }*/
 
-    public Map<String, String> getAllPropertiesAsString() throws RepositoryException {
-        if (propertiesAsString == null) {
-            Map<String, String> res = new HashMap<String, String>();
-            PropertyIterator pi = getProperties();
-            if (pi != null) {
-                while (pi.hasNext()) {
-                    Property p = pi.nextProperty();
-                    if (p.getType() == PropertyType.BINARY) {
-                        continue;
-                    }
-                    if (!p.isMultiple()) {
-                        res.put(p.getName(), p.getString());
-                    } else {
-                        Value[] vs = p.getValues();
-                        StringBuffer b = new StringBuffer();
-                        for (int i = 0; i < vs.length; i++) {
-                            Value v = vs[i];
-                            b.append(v.getString());
-                            if (i + 1 < vs.length) {
-                                b.append(" ");
-                            }
+    public Map<String, String> getPropertiesAsString() throws RepositoryException {
+        Map<String, String> res = new HashMap<String, String>();
+        PropertyIterator pi = getProperties();
+        if (pi != null) {
+            while (pi.hasNext()) {
+                Property p = pi.nextProperty();
+                if (p.getType() == PropertyType.BINARY) {
+                    continue;
+                }
+                if (!p.isMultiple()) {
+                    res.put(p.getName(), p.getString());
+                } else {
+                    Value[] vs = p.getValues();
+                    StringBuffer b = new StringBuffer();
+                    for (int i = 0; i < vs.length; i++) {
+                        Value v = vs[i];
+                        b.append(v.getString());
+                        if (i + 1 < vs.length) {
+                            b.append(" ");
                         }
-                        res.put(p.getName(), b.toString());
                     }
+                    res.put(p.getName(), b.toString());
                 }
             }
-            propertiesAsString = res;
         }
-
-        return propertiesAsString;
+        return res;
     }
 
     /**
@@ -1234,7 +1230,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             final Locale fallbackLocale = getSession().getFallbackLocale();
             if (fallbackLocale != null && fallbackLocale != locale) {
                 b = (i18NobjectNodes != null && i18NobjectNodes.containsKey(fallbackLocale)) || objectNode.hasNode(
-                "j:translation_" + fallbackLocale);
+                        "j:translation_" + fallbackLocale);
             }
         }
         return b;
@@ -1368,7 +1364,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getPropertyAsString(String name) {
-        return getPropertiesAsString().get(name);
+        try {
+            return getPropertiesAsString().get(name);
+        } catch (RepositoryException e) {
+            return null;
+        }
     }
 
     /**

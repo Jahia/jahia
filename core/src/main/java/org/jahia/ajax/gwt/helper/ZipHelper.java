@@ -34,11 +34,10 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.NoCloseZipInputStream;
@@ -208,7 +207,7 @@ public class ZipHelper {
             logger.error("Error when unzipping file", e);
             result = false;
         } catch (InternalError err) {
-            logger.error("Error when unzipping file, " + err.getMessage(), err);
+            logger.error("Error when unzipping file, " + err.getMessage());
             result = false;
         } finally {
             if (zis != null) {
@@ -224,21 +223,17 @@ public class ZipHelper {
 
     private JCRNodeWrapper ensureDir(String path, JCRSessionWrapper currentUserSession) throws RepositoryException {
         try {
-            return currentUserSession.getNode(JCRContentUtils.escapeIllegalJcrCharsInPath(path));
-        } catch (RepositoryException e) {
-            if (e instanceof PathNotFoundException || e.getCause() != null && e.getCause() instanceof MalformedPathException) {
-                int endIndex = path.lastIndexOf('/');
-                if (endIndex == -1) {
-                    return null;
-                }
-                JCRNodeWrapper parentDir = ensureDir(path.substring(0, endIndex), currentUserSession);
-                if (parentDir == null) {
-                    return null;
-                }
-                return parentDir.createCollection(path.substring(path.lastIndexOf('/') + 1));
-            } else {
-                throw e;
+            return currentUserSession.getNode(path);
+        } catch (PathNotFoundException e) {
+            int endIndex = path.lastIndexOf('/');
+            if (endIndex == -1) {
+                return null;
             }
+            JCRNodeWrapper parentDir = ensureDir(path.substring(0, endIndex), currentUserSession);
+            if (parentDir == null) {
+                return null;
+            }
+            return parentDir.createCollection(path.substring(path.lastIndexOf('/') + 1));
         }
     }
 

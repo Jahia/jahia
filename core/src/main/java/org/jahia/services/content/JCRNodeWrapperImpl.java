@@ -42,7 +42,6 @@ import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
-import org.apache.jackrabbit.util.Text;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -580,8 +579,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         checkLock();
 
-        name = Text.escapeIllegalJcrChars(name);
-        
         Node n = objectNode.addNode(name, type);
         return provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
     }

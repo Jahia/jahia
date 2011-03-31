@@ -94,6 +94,7 @@ public class EditModeDNDListener extends DNDListener {
     public static final String TARGET_NEXT_NODE = "targetNextNode";
     public static final String TARGET_PARENT = "targetParent";
     public static final String TARGET_CALLBACK = "callback";
+    public static final String TYPE = "type";
 
     public static final String SOURCE_QUERY = "query";
 
@@ -294,7 +295,7 @@ public class EditModeDNDListener extends DNDListener {
                 status.setData(OPERATION_CALLED, "true");
                 final GWTJahiaNode source = ((List<GWTJahiaNode>) sourceNodes).get(0);
                 final GWTJahiaNode parent = status.getData(TARGET_PARENT);
-                final int type = status.getData("type");
+                final int type = Integer.getInteger((String) status.getData(TYPE));
                 callback = new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
                         String selectedPath = editLinker.getSelectionContext().getMainNode().getPath();

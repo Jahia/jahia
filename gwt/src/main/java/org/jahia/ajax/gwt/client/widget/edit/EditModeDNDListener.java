@@ -68,7 +68,7 @@ import java.util.Map;
  * User: toto
  * Date: Aug 19, 2009
  * Time: 7:02:42 PM
- * 
+ *
  */
 public class EditModeDNDListener extends DNDListener {
     private EditLinker editLinker;
@@ -294,11 +294,16 @@ public class EditModeDNDListener extends DNDListener {
                 status.setData(OPERATION_CALLED, "true");
                 final GWTJahiaNode source = ((List<GWTJahiaNode>) sourceNodes).get(0);
                 final GWTJahiaNode parent = status.getData(TARGET_PARENT);
-
+                final int type = status.getData("type");
                 callback = new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
                         String selectedPath = editLinker.getSelectionContext().getMainNode().getPath();
-                        String replacedPath = selectedPath.replace(source.getPath(), parent.getPath() + "/" + source.getName());
+                        String replacedPath;
+                        if (type < 0) {
+                            replacedPath = targetPath + "/" + source.getName();
+                        } else {
+                            replacedPath = selectedPath.replace(source.getPath(), parent.getPath() + "/" + source.getName());
+                        }
                         if (!replacedPath.equals(selectedPath)) {
                             editLinker.onMainSelection(replacedPath, null, null);
                             editLinker.refresh(Linker.REFRESH_PAGES);

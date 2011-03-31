@@ -698,15 +698,6 @@ public class Service extends JahiaService {
     	this.passwordPolicyService = passwordPolicyService;
     }
 
-    public void refreshPermissions() throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JahiaPrivilegeRegistry.init(session);
-                return null;
-            }
-        });
-    }
-
     public void createPermission(final String path, final String name, final KnowledgeHelper drools) throws RepositoryException {
         String id = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {

@@ -117,10 +117,6 @@ public class TextExtractionListener extends DefaultEventListener {
         return new String[]{Constants.JAHIANT_RESOURCE};
     }
 
-    public String getPath() {
-        return "/";
-    }
-
     public void onEvent(final EventIterator eventIterator) {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {

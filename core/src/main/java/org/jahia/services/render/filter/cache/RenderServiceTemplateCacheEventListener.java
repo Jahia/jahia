@@ -61,16 +61,6 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
                Event.NODE_MOVED + Event.NODE_REMOVED;
     }
 
-    @Override
-    public String getPath() {
-        return "/";
-    }
-
-    @Override
-    public String[] getNodeTypes() {
-        return null;
-    }
-
     /**
      * This method is called when a bundle of events is dispatched.
      *

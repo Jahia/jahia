@@ -98,9 +98,21 @@ public abstract class DefaultEventListener implements EventListener {
 
     public abstract int getEventTypes();
 
-    public abstract String getPath();
+    public String getPath() {
+        return "/";
+    }
 
-    public abstract String[] getNodeTypes();
+    public boolean isDeep() {
+        return true;
+    }
+
+    public String[] getNodeTypes() {
+        return null;
+    }
+
+    public String[] getUuids() {
+        return null;
+    }
 
     public boolean isAvailableDuringPublish() {
         return availableDuringPublish;

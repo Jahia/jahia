@@ -162,14 +162,6 @@ rule "Deploy initial modules for system site"
         Deploy module profile on site node
 end
 
-rule "New permission created"
-	when
-		A new node is created
-            - the node has the type jnt:permission
-	then
-		Refresh permissions
-end
-
 rule "Create permission for template"
     when
         A new node is created

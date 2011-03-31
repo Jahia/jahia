@@ -59,11 +59,6 @@ public class JCRUserPropertyModificationListener extends DefaultEventListener {
     }
 
     @Override
-    public String getPath() {
-        return "/";
-    }
-
-    @Override
     public String[] getNodeTypes() {
         return new String[] { "jnt:user" };
     }

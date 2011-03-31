@@ -104,14 +104,6 @@ public class RulesListener extends DefaultEventListener {
         return JCRObservationManager.SESSION_SAVE;
     }
 
-    public String getPath() {
-        return "/";
-    }
-
-    public String[] getNodeTypes() {
-        return null;
-    }
-
     public Set<String> getRuleFiles() {
         return ruleFiles;
     }

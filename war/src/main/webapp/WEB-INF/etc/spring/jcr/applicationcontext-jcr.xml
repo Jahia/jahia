@@ -89,6 +89,7 @@
                         <bean class="org.jahia.services.content.FullpathListener"/>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.LastModifiedListener"/>
+                        <bean class="org.apache.jackrabbit.core.security.PrivilegesListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles">
                                 <set>

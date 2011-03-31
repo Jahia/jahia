@@ -61,14 +61,6 @@ public class FullpathListener extends DefaultEventListener {
         return Event.NODE_ADDED + Event.NODE_REMOVED;
     }
 
-    public String getPath() {
-        return "/";
-    }
-
-    public String[] getNodeTypes() {
-        return null;
-    }
-
     public void onEvent(final EventIterator eventIterator) {
         try {
             String userId = ((JCREventIterator)eventIterator).getSession().getUserID();

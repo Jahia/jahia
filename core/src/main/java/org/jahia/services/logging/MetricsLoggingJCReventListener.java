@@ -68,10 +68,6 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
         return Event.NODE_ADDED + Event.NODE_MOVED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED;
     }
 
-    public String getPath() {
-        return "/";
-    }
-
     public String[] getNodeTypes() {
         return nodeTypesList == null ? null : nodeTypesList.toArray(new String[nodeTypesList.size()]);
     }

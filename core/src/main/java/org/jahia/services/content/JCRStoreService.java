@@ -154,7 +154,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 for (DefaultEventListener listener : l) {
                 	if (listener.getEventTypes() > 0) {
 	                    listener.setWorkspace(ws);
-	                    observationManager.addEventListener(listener, listener.getEventTypes(), listener.getPath(), true, null, listener.getNodeTypes(), false);
+	                    observationManager.addEventListener(listener, listener.getEventTypes(), listener.getPath(), listener.isDeep(), listener.getUuids(), listener.getNodeTypes(), false);
                 	} else {
 						logger.info("Skipping listener {} as it has no event types configured.",
 						        listener.getClass().getName());

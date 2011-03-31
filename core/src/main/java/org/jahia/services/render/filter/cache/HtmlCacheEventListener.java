@@ -65,16 +65,6 @@ public class HtmlCacheEventListener extends DefaultEventListener {
         return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED + Event.NODE_REMOVED;
     }
 
-    @Override
-    public String getPath() {
-        return "/";
-    }
-
-    @Override
-    public String[] getNodeTypes() {
-        return null;
-    }
-
     /**
      * This method is called when a bundle of events is dispatched.
      *

@@ -23,16 +23,6 @@ public class URLResolverListener extends DefaultEventListener {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.NODE_MOVED;
     }
 
-    @Override
-    public String getPath() {
-        return "/";
-    }
-
-    @Override
-    public String[] getNodeTypes() {
-        return null;
-    }
-
     public void onEvent(final EventIterator events) {
         if (urlResolverFactory == null) {
             return;

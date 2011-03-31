@@ -61,14 +61,6 @@ public class DefaultValueListener extends DefaultEventListener {
         return Event.NODE_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED;
     }
 
-    public String getPath() {
-        return "/";
-    }
-
-    public String[] getNodeTypes() {
-        return null;
-    }
-
     public void onEvent(final EventIterator eventIterator) {
         try {
             // todo : may need to move the dynamic default values generation to JahiaNodeTypeInstanceHandler

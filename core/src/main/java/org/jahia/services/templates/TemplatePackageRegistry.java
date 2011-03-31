@@ -135,7 +135,7 @@ class TemplatePackageRegistry {
 	                            final Workspace workspace = session.getWorkspace();
 	
 	                            ObservationManager observationManager = workspace.getObservationManager();
-	                            observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), true, null, eventListener.getNodeTypes(), false);
+	                            observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), eventListener.isDeep(), eventListener.getUuids(), eventListener.getNodeTypes(), false);
 	                            return null;
 	                        }
 	                    });

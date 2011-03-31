@@ -32,6 +32,7 @@
 
 package org.jahia.services.content;
 
+import javax.jcr.InvalidItemStateException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
@@ -58,6 +59,7 @@ public class JCRObservationManager implements ObservationManager {
     public static final int NODE_RESTORE = 1 << 10;
     public static final int NODE_UPDATE = 1 << 11;
     public static final int NODE_MERGE = 1 << 12;
+    public static final int EXTERNAL_SYNC = 1 << 13;
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
 
@@ -120,7 +122,7 @@ public class JCRObservationManager implements ObservationManager {
      */
     public void addEventListener(EventListener listener, int eventTypes, String absPath, boolean isDeep, String[] uuid,
                                  String[] nodeTypeName, boolean noLocal) throws RepositoryException {
-        listeners.add(new EventConsumer(ws.getSession(), listener, eventTypes));
+        listeners.add(new EventConsumer(ws.getSession(), listener, eventTypes, absPath, isDeep, nodeTypeName, uuid, listener instanceof ExternalEventListener));
     }
 
     /**
@@ -204,31 +206,83 @@ public class JCRObservationManager implements ObservationManager {
         currentSession.set(session);
     }
 
-    private static void consume(JCRSessionWrapper session, int operationType) {
+    private static void consume(JCRSessionWrapper session, int operationType) throws RepositoryException {
         Map<JCRSessionWrapper, List<Event>> map = events.get();
         events.set(null);
         currentSession.set(null);
         if (map != null && map.containsKey(session)) {
             List<Event> list = map.get(session);
-            for (EventConsumer consumer : listeners) {
-                if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName())) {
-                    if (!Boolean.TRUE.equals(eventsDisabled.get()) || ((DefaultEventListener) consumer.listener).isAvailableDuringPublish()) {
+            consume(list, session, operationType);
+        }
+    }
+
+    public static void consume(List<Event> list, JCRSessionWrapper session, int operationType) throws RepositoryException {
+        for (EventConsumer consumer : listeners) {
+            if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName())) {
+                if (!Boolean.TRUE.equals(eventsDisabled.get()) || ((DefaultEventListener) consumer.listener).isAvailableDuringPublish()) {
                     List<Event> filteredEvents = new ArrayList<Event>();
                     for (Event event : list) {
-                        if ((consumer.eventTypes & event.getType()) != 0) {
+                        if ((consumer.eventTypes & event.getType()) != 0 &&
+                                (consumer.useExternalEvents || (operationType & EXTERNAL_SYNC) == 0) &&
+                                (consumer.absPath == null || (consumer.isDeep && event.getPath().startsWith(consumer.absPath)) || consumer.isDeep && event.getPath().equals(consumer.absPath)) &&
+                                (consumer.nodeTypeName == null || checkNodeTypeNames(event.getPath(), session, consumer.nodeTypeName)) &&
+                                (consumer.uuid == null || checkUuids(event.getPath(), session, consumer.nodeTypeName))) {
                             filteredEvents.add(event);
                         }
                     }
                     try {
-                    consumer.listener.onEvent(new JCREventIterator(session, operationType, filteredEvents.iterator(),
-                            filteredEvents.size()));
+                        if (!filteredEvents.isEmpty()) {
+                            consumer.listener.onEvent(new JCREventIterator(session, operationType, filteredEvents.iterator(),
+                                    filteredEvents.size()));
+                        }
                     } catch (Exception e) {
                         logger.warn("Error processing event by listener. Cause: " + e.getMessage(), e);
-                    }
                     }
                 }
             }
         }
+    }
+
+    private static boolean checkNodeTypeNames(String path, JCRSessionWrapper s, String[] nodeTypes) throws RepositoryException {
+        if (s.itemExists(path)) {
+            JCRItemWrapper item = s.getItem(path);
+            JCRNodeWrapper node;
+            if (!item.isNode()) {
+                node = item.getParent();
+            } else {
+                node = (JCRNodeWrapper) item;
+            }
+            try {
+                for (int i = 0; i < nodeTypes.length; i++) {
+                    if (node.isNodeType(nodeTypes[i])) {
+                        return true;
+                    }
+                }
+            } catch (InvalidItemStateException e) {
+            }
+        }
+        return false;
+    }
+
+    private static boolean checkUuids(String path, JCRSessionWrapper s, String[] uuids) throws RepositoryException {
+        if (s.itemExists(path)) {
+            JCRItemWrapper item = s.getItem(path);
+            JCRNodeWrapper node;
+            if (!item.isNode()) {
+                node = item.getParent();
+            } else {
+                node = (JCRNodeWrapper) item;
+            }
+            try {
+                for (int i = 0; i < uuids.length; i++) {
+                    if (node.isNodeType("mix:referenceable") && node.getIdentifier().equals(uuids[i])) {
+                        return true;
+                    }
+                }
+            } catch (InvalidItemStateException e) {
+            }
+        }
+        return false;
     }
 
     public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback)
@@ -249,11 +303,21 @@ public class JCRObservationManager implements ObservationManager {
         private JCRSessionWrapper session;
         private EventListener listener;
         private int eventTypes;
+        private String absPath;
+        private boolean isDeep;
+        private String[] nodeTypeName;
+        private String[] uuid;
+        private boolean useExternalEvents;
 
-        EventConsumer(JCRSessionWrapper session, EventListener listener, int eventTypes) {
+        EventConsumer(JCRSessionWrapper session, EventListener listener, int eventTypes, String absPath, boolean isDeep, String[] nodeTypeName, String[] uuid, boolean useExternalEvents) {
             this.session = session;
             this.listener = listener;
             this.eventTypes = eventTypes;
+            this.absPath = absPath;
+            this.isDeep = isDeep;
+            this.nodeTypeName = nodeTypeName;
+            this.uuid = uuid;
+            this.useExternalEvents = useExternalEvents;
         }
     }
 

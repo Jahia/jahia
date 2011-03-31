@@ -32,10 +32,14 @@
 
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.core.observation.EventImpl;
 import org.apache.jackrabbit.core.observation.SynchronousEventListener;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.Event;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -48,22 +52,15 @@ import javax.jcr.observation.Event;
  */
 public class JCRObservationManagerDispatcher implements SynchronousEventListener {
 
-    protected JCRStoreProvider provider;
+    private JCRStoreProvider provider;
+    private String workspace;
 
     public void setProvider(JCRStoreProvider provider) {
         this.provider = provider;
     }
 
-    public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED;
-    }
-
-    public String getPath() {
-        return "/";
-    }
-
-    public String[] getNodeTypes() {
-        return null;
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 
     /**
@@ -84,10 +81,31 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
      * @param events The event set received.
      */
     public void onEvent(EventIterator events) {
+        List<Event> external = null;
         while (events.hasNext()) {
-            Event event = (Event) events.next();
-
-            JCRObservationManager.addEvent(event);
+            EventImpl event = (EventImpl) events.next();
+            if (!event.isExternal()) {
+                JCRObservationManager.addEvent(event);
+            } else {
+                if (external == null) {
+                    external = new ArrayList<Event>();
+                }
+                external.add(event);
+            }
         }
+        if (external != null) {
+            final List<Event> fexternal = external;
+
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRObservationManager.consume(fexternal, session, JCRObservationManager.EXTERNAL_SYNC);
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
+        };
     }
 }

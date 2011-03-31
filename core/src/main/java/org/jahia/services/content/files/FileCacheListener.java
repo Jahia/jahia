@@ -64,14 +64,6 @@ public class FileCacheListener extends DefaultEventListener {
         return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED;
     }
 
-    public String getPath() {
-        return "/";
-    }
-
-    public String[] getNodeTypes() {
-        return null;
-    }
-
     public void onEvent(EventIterator eventIterator) {
         final Set<String> nodes = new HashSet<String>();
         while (eventIterator.hasNext()) {

@@ -61,10 +61,10 @@
             }
         </script>
         
-        <c:if test="${fn:length(moduleMap.currentList) eq 0}">
+        <c:if test="${moduleMap.listTotalSize eq 0}">
             <fmt:message key="bookmark.emptyResults"/>
         </c:if>
-        <c:if test="${fn:length(moduleMap.currentList) ne 0}">
+        <c:if test="${moduleMap.listTotalSize ne 0}">
             <ul class="userMyBookmarksList" id="${currentNode.UUID}">
                 <c:forEach items="${moduleMap.currentList}" var="bookmark" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
                     <li>

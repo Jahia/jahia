@@ -137,15 +137,18 @@
                     <template:displayPagination/>
 
                     <template:addCacheDependency path="${user.path}/messages/inbox"/>
-                    <ul class="userMessagesList">
-                        <c:forEach items="${moduleMap.currentList}" var="userMessage" begin="${moduleMap.begin}" end="${moduleMap.end}">
-                            <li id="social-message-${userMessage.identifier}">
-                                <template:module path="${userMessage.path}" />
-                            </li>
-                        </c:forEach>
-                    </ul>
-
-
+                    <c:if test="${moduleMap.listTotalSize eq 0}">
+                        <p><fmt:message key="message.emptyResults"/></p>
+                    </c:if>
+                    <c:if test="${moduleMap.listTotalSize ne 0}">
+                        <ul class="userMessagesList">
+                            <c:forEach items="${moduleMap.currentList}" var="userMessage" begin="${moduleMap.begin}" end="${moduleMap.end}">
+                                <li id="social-message-${userMessage.identifier}">
+                                    <template:module path="${userMessage.path}" />
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </c:if>
 <div class='clear'></div>
 <div class="jahiaFancyboxForm">
 <div id="divSendMessage" >

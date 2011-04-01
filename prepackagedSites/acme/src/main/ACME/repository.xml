@@ -582,13 +582,13 @@
         <site-administrators j:hidden="false" j:published="true" jcr:created="2011-02-01T16:39:51.583+01:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy="root" j:external="false" j:lastPublished="2010-12-15T17:50:03.832+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00">
           <j:members jcr:primaryType="jnt:members">
             <root j:member="/users/root" jcr:primaryType="jnt:member" />
-            <siteadmin j:member="/users/siteadmin" jcr:primaryType="jnt:member" />
+            <max j:member="/users/siteadmin" jcr:primaryType="jnt:member" />
           </j:members>
         </site-administrators>
         <site-privileged j:hidden="true" j:published="true" jcr:created="2011-02-01T16:39:51.583+01:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy="root" j:external="false" j:lastPublished="2010-12-15T17:50:03.832+01:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2011-02-01T16:40:14.671+01:00">
           <j:members jcr:primaryType="jnt:members">
-            <author j:member="/users/author" jcr:primaryType="jnt:member" />
-            <publisher j:member="/users/publisher" jcr:primaryType="jnt:member" />
+            <john j:member="/users/john" jcr:primaryType="jnt:member" />
+            <jenifer j:member="/users/jenifer" jcr:primaryType="jnt:member" />
           </j:members>
         </site-privileged>
       </groups>
@@ -597,8 +597,8 @@
       </tags>
       <j:acl j:inherit="true" jcr:primaryType="jnt:acl">
         <GRANT_g_site-administrators j:principal="g:site-administrators" j:protected="false" j:roles="site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <GRANT_u_publisher j:principal="u:publisher" j:protected="false" j:roles="publisher visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <GRANT_u_author j:principal="u:author" j:protected="false" j:roles="visitor translator-fr translator-en contributor author editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_u_jenifer j:principal="u:jenifer" j:protected="false" j:roles="publisher visitor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_u_john j:principal="u:john" j:protected="false" j:roles="visitor translator-fr translator-en contributor author editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
       </j:acl>
     </ACME>
   </sites>

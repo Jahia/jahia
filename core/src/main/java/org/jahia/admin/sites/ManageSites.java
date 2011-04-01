@@ -64,6 +64,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -1984,9 +1985,9 @@ public class ManageSites extends AbstractAdministrationModule {
                 if (request.getParameter(file.getName() + "selected") != null) {
                     if (infos.get("type").equals("files")) {
                         try {
-                            ImportExportBaseService.getInstance()
-                                    .importSiteZip(file, jParams.getSite(), infos);
-                        } catch (RepositoryException e) {
+                            JahiaSite system = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                            ImportExportBaseService.getInstance().importSiteZip(file, system, infos);
+                        } catch (Exception e) {
                             logger.error("Error when getting templates", e);
                         } finally {
                             file.delete();

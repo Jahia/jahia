@@ -4,5 +4,5 @@
        xmlns:j="http://www.jahia.org/jahia/1.0"
        xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
     <visitor jcr:primaryType="jnt:role"
-             j:permissions="/permissions/actions/blog/createNewBlog"/>
+             j:permissions="/permissions/actions/blog"/>
 </roles>

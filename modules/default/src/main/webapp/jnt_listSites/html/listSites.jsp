@@ -26,9 +26,9 @@
 </c:if>
 <c:if test="${currentResource.workspace ne 'live'}">
 
-<jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
+<jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') order by site.[jcr:created] desc" limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
 <ul class="list-sites">
-<c:forEach items="${result.nodes}" var="node">
+<c:forEach items="${result.nodes}" var="node" begin="">
     <jcr:node var="home" path="${node.path}/home"/>
     <c:if test="${jcr:hasPermission(home,'jcr:addChildNodes')}">
     <li class="listsiteicon">${node.displayableName}

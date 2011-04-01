@@ -169,6 +169,7 @@
  - contribute (boolean)
  - live (boolean)
  - numberOfSitesPerPage (long) = 10 mandatory
+ - numberMaxOfSitesDisplayed (long);
 
 [jmix:gadget] mixin
 

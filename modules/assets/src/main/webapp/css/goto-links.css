@@ -1,15 +1,36 @@
+
 /******************************************************************************
 *  admin-links
 ******************************************************************************/
 
 .bodywrapper .admin-links ul {
 	position:relative;
-    margin: 0.5em 0 1em;
-    padding: 0;
+	margin:0;
+	margin:0.5em 0;
 	list-style:none;
+	padding:0
 }
 .bodywrapper .admin-links li {
-    list-style: none;
-    margin: 0;
-    padding: 2px 5px;
+    border-bottom: 1px solid #EAEAEA;
+    display: block;
+    font-weight: bold;
+    padding: 5px;
+}
+.bodywrapper .admin-links li p {
+	padding:0;
+}
+.bodywrapper .admin-links li:last-child {
+	border-bottom-color:none;
+}
+.bodywrapper .admin-links li:hover{
+	background-color:#eaeaea
+}
+.bodywrapper .admin-links ul a,
+.bodywrapper .admin-links ul a:link,
+.bodywrapper .admin-links ul a:visited {
+	text-decoration: none;
+}
+.bodywrapper .admin-links ul a:hover,
+.bodywrapper .admin-links ul a:active {
+	text-decoration:underline;
 }

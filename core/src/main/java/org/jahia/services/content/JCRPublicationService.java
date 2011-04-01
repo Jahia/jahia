@@ -353,6 +353,12 @@ public class JCRPublicationService extends JahiaService {
         } catch (ItemNotFoundException e) {
             cloneParents(node.getParent(), sourceSession, destinationSession);
             path = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+            try {
+                // Check if node still does not exist in target space - if it has been cloned with parent, return
+                node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                return;
+            } catch (ItemNotFoundException ee) {
+            }
         }
         JCRNodeWrapper destinationNode = doClone(node, null, sourceSession, destinationSession);
         if (node.getParent().isNodeType("mix:versionable")) {

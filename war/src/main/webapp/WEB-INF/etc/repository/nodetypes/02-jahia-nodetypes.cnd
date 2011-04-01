@@ -111,7 +111,7 @@
  - j:privilegedAccess (boolean)
  - j:hidden (boolean) protected hidden
 
-[jnt:roles] > nt:base, mix:versionable
+[jnt:roles] > nt:base, mix:versionable, jmix:autoPublish, jmix:observable
  + * (jnt:role)
 
 [jnt:permission] > nt:base, mix:referenceable, mix:title, jmix:autoPublish, jmix:observable

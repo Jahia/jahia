@@ -155,7 +155,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
     private void updateProperty(JCRNodeWrapper n, Calendar c, String userId, List<String> autoPublished) throws RepositoryException {
         while (!n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
-//            addAutoPublish(n, autoPublished);
+            addAutoPublish(n, autoPublished);
             try {
                 n = n.getParent();
             } catch (ItemNotFoundException e) {

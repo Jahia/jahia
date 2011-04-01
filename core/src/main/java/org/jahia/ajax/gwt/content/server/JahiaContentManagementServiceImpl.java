@@ -263,15 +263,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public GWTEditConfiguration getEditConfiguration(String path, String name) throws GWTJahiaServiceException {
         GWTEditConfiguration config = null;
         try {
-            config = uiConfig.getGWTEditConfiguration(retrieveCurrentSession().getNode(path), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
+            JCRSessionWrapper session = retrieveCurrentSession();
+            config = uiConfig.getGWTEditConfiguration(session.getNode(path), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), name);
             config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
 
             List<GWTJahiaNode> sites = getRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, false);
-
+            String permission = name.equals("editmode") ? "editModeAccess" : "studioModeAccess";
             Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
             for (GWTJahiaNode site : sites) {
-                sitesMap.put(site.getSiteUUID(), site);
+                if (session.getNodeByUUID(site.getUUID()).hasPermission(permission)) {
+                    sitesMap.put(site.getSiteUUID(), site);
+                }
             }
             config.setSitesMap(sitesMap);
 

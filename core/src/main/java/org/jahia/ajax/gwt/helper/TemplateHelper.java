@@ -94,12 +94,21 @@ public class TemplateHelper {
             renderContext.setEditMode(editMode);
             renderContext.setEditModeConfigName(configName);
             renderContext.setMainResource(r);
+            String permission = null;
             if (Edit.EDIT_MODE.equals(configName)) {
                 renderContext.setServletPath(Edit.getEditServletPath());
+                permission = "editModeAccess";
             } else if (Studio.STUDIO_MODE.equals(configName)) {
                 renderContext.setServletPath(Studio.getStudioServletPath());
+                permission = "studioModeAccess";
             } else {
                 renderContext.setServletPath(Render.getRenderServletPath());
+            }
+
+            if (permission != null) {
+                if (!node.hasPermission(permission)) {
+                    throw new GWTJahiaServiceException("Access denied");
+                }
             }
 
             if (contextParams != null) {

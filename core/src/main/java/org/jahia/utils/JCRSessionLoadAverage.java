@@ -27,7 +27,7 @@ public class JCRSessionLoadAverage extends LoadAverage {
 
     @Override
     public void tickCallback() {
-        if (oneMinuteLoad > 8.0) {
+        if (oneMinuteLoad > 15.0) {
             logger.info("Jahia JCR Session Load = " + oneMinuteLoad + " " + fiveMinuteLoad + " " + fifteenMinuteLoad);
         }
     }

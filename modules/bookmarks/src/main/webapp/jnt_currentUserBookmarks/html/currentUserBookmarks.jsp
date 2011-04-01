@@ -52,7 +52,6 @@
     </c:if>
 
     <c:if test="${currentResource.workspace ne 'live'}">
-
         <script type="text/javascript">
             function deleteBookmark(source) {
                 $.post('<c:url value="${url.base}"/>' + source, {"methodToCall":"delete"},
@@ -61,11 +60,11 @@
                         },'json');
             }
         </script>
-
-        <c:if test="${moduleMap.end eq 0}">
+        
+        <c:if test="${fn:length(moduleMap.currentList) eq 0}">
             <fmt:message key="bookmark.emptyResults"/>
         </c:if>
-        <c:if test="${moduleMap.end ne 0}">
+        <c:if test="${fn:length(moduleMap.currentList) ne 0}">
             <ul class="userMyBookmarksList" id="${currentNode.UUID}">
                 <c:forEach items="${moduleMap.currentList}" var="bookmark" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
                     <li>

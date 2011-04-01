@@ -1,0 +1,74 @@
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%@ taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:include view="hidden.header"/>
+<template:addResources type="javascript" resources="jquery.js"/>
+<template:addResources type="css" resources="listsites.css"/>
+
+
+<c:set var="ps" value="?pagerUrl=${url.mainResource}"/>
+<c:if test="${!empty param.pageUrl}">
+    <c:set var="ps" value="?pagerUrl=${param.pageUrl}"/>
+</c:if>
+<c:forEach items="${param}" var="p" varStatus="status">
+    <c:if test="${p.key != 'pagerUrl' && p.key != 'jsite'}">
+        <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
+    </c:if>
+</c:forEach>
+<c:set target="${moduleMap}" property="pagerUrl" value="${param.pagerUrl}"/>
+
+<div id="listsites${currentNode.identifier}">
+    <template:initPager totalSize="${moduleMap.end}" pageSize="${currentNode.properties['numberOfSitesPerPage'].string}" id="${renderContext.mainResource.node.identifier}"/>
+    <template:displayPagination/>
+
+    <c:if test="${currentResource.workspace eq 'live'}">
+        <script type="text/javascript">
+            $('#listsites${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax${ps}"/>');
+        </script>
+    </c:if>
+
+    <c:if test="${currentResource.workspace ne 'live'}">
+        <ul class="list-sites">
+            <c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}">
+                <jcr:node var="home" path="${node.path}/home"/>
+                <c:if test="${jcr:hasPermission(home,'jcr:addChildNodes')}">
+                    <li class="listsiteicon">${node.displayableName}
+                        <c:if test="${currentNode.properties.edit.boolean}"><br/>
+
+                            <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "
+                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
+                                    href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"><fmt:message
+                                    key="label.editMode"/></a>
+                        </c:if>
+                        <c:if test="${currentNode.properties.contribute.boolean}">
+                            <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" "
+                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
+                                href="<c:url value='${url.baseContribute}${node.path}/home.html'/>"><fmt:message
+                                key="label.contribute"/></a>
+                        </c:if>
+                        <c:if test="${currentNode.properties.live.boolean && home.properties['j:published'].boolean}">
+                            <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative; top: 4px; margin-right:2px; "><a
+                                href="<c:url value='${url.baseLive}${node.path}/home.html'/>"><fmt:message
+                                key="label.live"/></a>
+                        </c:if>
+                    </li>
+                </c:if>
+            </c:forEach>
+        </ul>
+    </c:if>
+</div>

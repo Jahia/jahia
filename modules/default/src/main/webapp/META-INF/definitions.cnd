@@ -164,10 +164,11 @@
 [jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent
  - type (string, choicelist) = content < content,document,"united content",roles
 
-[jnt:listSites] > jnt:content, mix:title, jmix:siteComponent
+[jnt:listSites] > jnt:content, mix:title, jmix:siteComponent, jmix:list
  - edit (boolean)
  - contribute (boolean)
  - live (boolean)
+ - numberOfSitesPerPage (long) = 10 mandatory
 
 [jmix:gadget] mixin
 

@@ -26,9 +26,9 @@
         </files>
         <contents jcr:primaryType="jnt:contentFolder"/>
         <user-bookmarks j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:priority="10" jcr:primaryType="jnt:contentTemplate">
-          <pagecontent jcr:primaryType="jnt:contentList">
-            <my-bookmarks j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-              <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="My bookmarks"/>
+          <pagecontent j:id="user-bookmarks" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <my-bookmarks j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+              <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My bookmarks"/>
               <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks" numberOfBookmarksPerPage="10">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My bookmarks"/>
               </currentUserBookmarks>

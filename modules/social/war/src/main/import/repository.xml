@@ -27,10 +27,10 @@
         <contents jcr:primaryType="jnt:contentFolder"/>
         <user-connections j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
           <pagecontent j:id="user-connections" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">
-            <my-connexions j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
-              <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My connexions "/>
+            <my-connections j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+              <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My connections"/>
               <currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed"/>
-            </my-connexions>
+            </my-connections>
           </pagecontent>
           <user-profile-aside-right jcr:primaryType="jnt:contentList">
             <my-friends j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">

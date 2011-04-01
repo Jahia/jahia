@@ -25,12 +25,15 @@
 <c:if test="${not empty moduleMap.paginationActive and moduleMap.totalSize > 0 and moduleMap.nbPages > 1}">
     <c:set target="${moduleMap}" property="usePagination" value="true"/>
     <c:choose>
-    <c:when test="${not empty moduleMap.displaySearchParams}">
-        <c:set var="searchUrl"><search:searchUrl/>&</c:set>
-    </c:when>
-    <c:otherwise>
-        <c:set var="searchUrl" value="${url.mainResource}?"/>
-    </c:otherwise>
+        <c:when test="${not empty moduleMap.displaySearchParams}">
+            <c:set var="searchUrl"><search:searchUrl/>&</c:set>
+        </c:when>
+        <c:when test="${not empty moduleMap.pagerUrl}">
+            <c:set var="searchUrl" value="${moduleMap.pagerUrl}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="searchUrl" value="${url.mainResource}?"/>
+        </c:otherwise>
     </c:choose>
     <c:url value="${searchUrl}" var="basePaginationUrl">
         <c:if test="${not empty param}">
@@ -59,11 +62,11 @@
             </select>
             &nbsp;
             <c:if test="${moduleMap.currentPage>1}">
-                <a class="previousLink" href="${basePaginationUrl}begin=${ (moduleMap.currentPage-2) * moduleMap.pageSize }&end=${ (moduleMap.currentPage-1)*moduleMap.pageSize-1}&pagesize=${moduleMap.pageSize}"><fmt:message key="pagination.previous"/></a>
+                <a class="previousLink" href="${basePaginationUrl}&begin=${ (moduleMap.currentPage-2) * moduleMap.pageSize }&end=${ (moduleMap.currentPage-1)*moduleMap.pageSize-1}&pagesize=${moduleMap.pageSize}"><fmt:message key="pagination.previous"/></a>
             </c:if>
             <c:forEach begin="1" end="${moduleMap.nbPages}" var="i">
                 <c:if test="${i != moduleMap.currentPage}">
-                    <span><a class="paginationPageUrl" href="${basePaginationUrl}begin=${ (i-1) * moduleMap.pageSize }&end=${ i*moduleMap.pageSize-1}&pagesize=${moduleMap.pageSize}"> ${ i }</a></span>
+                    <span><a class="paginationPageUrl" href="${basePaginationUrl}&begin=${ (i-1) * moduleMap.pageSize }&end=${ i*moduleMap.pageSize-1}&pagesize=${moduleMap.pageSize}"> ${ i }</a></span>
                 </c:if>
                 <c:if test="${i == moduleMap.currentPage}">
                     <span class="currentPage">${ i }</span>
@@ -71,7 +74,7 @@
             </c:forEach>
 
             <c:if test="${moduleMap.currentPage<moduleMap.nbPages}">
-                <a class="nextLink" href="${basePaginationUrl}begin=${ moduleMap.currentPage * moduleMap.pageSize }&end=${ (moduleMap.currentPage+1)*moduleMap.pageSize-1}&pagesize=${moduleMap.pageSize}"><fmt:message key="pagination.next"/></a>
+                <a class="nextLink" href="${basePaginationUrl}&begin=${ moduleMap.currentPage * moduleMap.pageSize }&end=${ (moduleMap.currentPage+1)*moduleMap.pageSize-1}&pagesize=${moduleMap.pageSize}"><fmt:message key="pagination.next"/></a>
             </c:if>
         </div>
 

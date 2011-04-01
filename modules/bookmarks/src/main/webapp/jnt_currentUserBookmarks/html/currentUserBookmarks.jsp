@@ -30,18 +30,20 @@
 <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
     <jcr:node var="user" path="/users/${renderContext.user.username}"/>
 </c:if>
-
-
-<c:set var="ps" value=""/>
+<c:set var="ps" value="?pagerUrl=${url.mainResource}"/>
+<c:if test="${!empty param.pageUrl}">
+    <c:set var="ps" value="?pagerUrl=${param.pageUrl}"/>
+</c:if>
 <c:forEach items="${param}" var="p" varStatus="status">
-    <c:if test="${status.first}"><c:set var="sep" value="?"/></c:if>
-    <c:if test="${not status.first}"><c:set var="sep" value="&"/></c:if>
-    <c:set var="ps" value="${ps}${sep}${p.key}=${p.value}" />
+    <c:if test="${p.key != 'pagerUrl' && p.key != 'jsite'}">
+        <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
+    </c:if>
 </c:forEach>
-<template:initPager totalSize="${moduleMap.end}" pageSize="3" id="bookmarkList${currentNode.identifier}"/>
-<template:displayPagination/>
+<c:set target="${moduleMap}" property="pagerUrl" value="${param.pagerUrl}"/>
 
 <div id="bookmarkList${user.identifier}">
+    <template:initPager totalSize="${moduleMap.end}" pageSize="3" id="${renderContext.mainResource.node.identifier}"/>
+    <template:displayPagination/>
 
     <c:if test="${currentResource.workspace eq 'live'}">
         <script type="text/javascript">

@@ -242,7 +242,7 @@ body {
 *  header
 ******************************************************************************/
 .bodywrapper #header{
-	background-color:#99bbe8;
+	background:#03389c url(img/bg-header.png) repeat-x top left;
 	padding-top:4px;
 	padding-bottom:4px;
 	position:relative;

@@ -3,10 +3,11 @@
 ******************************************************************************/
 
 .bodywrapper ul.list-sites  {
+	position:relative;
 	margin:0;
-	margin:0.5em 0 1em 0;
+	margin:0.5em 0;
 	list-style:none;
-	padding:0;
+	padding:0
 }
 
 .bodywrapper ul.list-sites li {
@@ -15,8 +16,18 @@
 	list-style:none
 }
 .bodywrapper ul.list-sites li.listsiteicon {
-	background:transparent url(../icons/jnt_virtualsite.png) no-repeat scroll top left;
+	border-bottom:1px dotted #ccc ;
+	padding:5px;
+	margin:0;
+	list-style:none;
+	background:transparent url(../icons/jnt_virtualsite.png) no-repeat scroll 2px 5px ;
 	padding-left:24px;
 	line-height:1.375em;
 	display:block
+}
+.bodywrapper ul.list-sites li:last-child {
+	border-bottom-color:none;
+}
+.bodywrapper ul.list-sites li:hover{
+	background-color:#eaeaea
 }

@@ -55,10 +55,6 @@ public class LastModifiedListener extends DefaultEventListener {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED + Event.NODE_MOVED;
     }
 
-    public String[] getNodeTypes() {
-        return new String[] { Constants.MIX_LAST_MODIFIED };
-    }
-
     public void onEvent(final EventIterator eventIterator) {
         try {
             String userId = ((JCREventIterator)eventIterator).getSession().getUserID();

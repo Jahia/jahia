@@ -1,15 +1,13 @@
 <%@ page import="org.jahia.services.content.nodetypes.NodeTypeRegistry" %>
 <%@ page import="javax.jcr.nodetype.NodeTypeIterator" %>
-<%@ page import="org.jahia.services.templates.JahiaTemplateManagerService" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
-<%@ page import="org.jahia.services.content.JCRContentUtils" %>
-<%@ page import="org.jahia.services.content.nodetypes.ExtendedNodeType" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <c:if test="${currentNode.parent.name eq 'sites'}">
     <h1>Site: ${currentNode.name}</h1>
@@ -91,7 +89,7 @@
             <c:forEach items="${nodeTypes}" var="nodeType">
                 <li>
                     <jcr:icon var="icon" type="${nodeType}"/>
-                    <img src="${url.templatesPath}/${icon}.png"/>
+                    <img src="<:url value='${url.templatesPath}/${icon}.png'/>"/>
                         ${jcr:label(nodeType,currentResource.locale)}
                 </li>
             </c:forEach>

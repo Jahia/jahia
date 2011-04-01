@@ -267,6 +267,7 @@ public class PublicationManagerEngine extends Window {
                 }
                 if (info.isLocked()) {
                     p.add(StandardIconsProvider.STANDARD_ICONS.lock().createImage());
+                    ctn.addStyleName("x-grid3-check-col-disabled");
                 }
                 return p;
             } else {

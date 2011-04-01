@@ -34,8 +34,6 @@ package org.jahia.services.content;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
@@ -672,7 +670,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html";
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get type",e);
+            logger.error("Cannot get type", e);
             return null;
         }
     }
@@ -1100,7 +1098,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             return isNodeType(Constants.JAHIANT_PORTLET);
         } catch (RepositoryException e) {
-            logger.error("Cannot get type",e);
+            logger.error("Cannot get type", e);
             return false;
         }
     }
@@ -2045,16 +2043,30 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @param type
      */
     public boolean lockAndStoreToken(String type) throws RepositoryException {
-        String l = (getSession().isSystem() ? " system " : getSession().getUserID()) + ":" + type;
+        String l = getSession().isSystem() ? " system " : getSession().getUserID();
 
+        return lockAndStoreToken(type, l);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param type
+     */
+    public boolean lockAndStoreToken(String type, String userID) throws RepositoryException {
         if (!isNodeType("jmix:lockable")) {
             return false;
         }
         if (!objectNode.isLocked()) {
             lockNode(objectNode);
+        } else {
+            Property property = objectNode.getProperty("j:locktoken");
+            String token = property.getString();
+
+            objectNode.getSession().addLockToken(token);
         }
 
-        addLockTypeValue(objectNode, l);
+        addLockTypeValue(objectNode, userID + ":" + type);
 
         if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION)) {
             Node trans = null;
@@ -2063,7 +2075,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 if (!trans.isLocked()) {
                     lockNode(trans);
                 }
-                addLockTypeValue(trans, l);
+                addLockTypeValue(trans, userID + ":" + type);
             } catch (ItemNotFoundException e) {
             }
         }
@@ -2072,10 +2084,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private void lockNode(final Node objectNode) throws RepositoryException {
+        getSession().checkout(objectNode);
         Lock lock = objectNode.lock(false, false);
         if (lock.getLockToken() != null) {
             try {
-                getSession().checkout(objectNode);
                 objectNode.setProperty("j:locktoken", lock.getLockToken());
 //                objectNode.getSession().removeLockToken(lock.getLockToken());
             } catch (RepositoryException e) {
@@ -2142,7 +2154,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return r;
     }
 
-    public List<Locale> getLockedLocales(String type) throws RepositoryException {
+    public List<Locale> getLockedLocalesForUserAndType(String type) throws RepositoryException {
         List<Locale> r = new ArrayList<Locale>();
         NodeIterator ni = objectNode.getNodes("j:translation*");
         while (ni.hasNext()) {
@@ -2152,7 +2164,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 Value[] v = n.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
                 for (Value value : v) {
                     if (value.getString().equals(l)) {
-                        r.add(new Locale(n.getProperty("jcr:language").getString()));
+                        r.add(LanguageCodeConverters.getLocaleFromCode(n.getProperty("jcr:language").getString()));
                         break;
                     }
                 }
@@ -2225,6 +2237,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public void unlock(String type)
             throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException,
             InvalidItemStateException, RepositoryException {
+        unlock(type,getSession().getUserID());
+    }
+
+    public void unlock(String type, String userID)
+            throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException,
+            InvalidItemStateException, RepositoryException {
         if (!isLocked()) {
             throw new LockException("Node not locked");
         }
@@ -2233,18 +2251,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 false)) {
             Node trans = getI18N(session.getLocale(), false);
             if (trans.isLocked()) {
-                unlock(trans, type);
+                unlock(trans, type, userID);
             }
         }
 
-        if (isNodeType(Constants.JAHIANT_TRANSLATION) && !getLockedLocales(type).isEmpty()) {
+        if (isNodeType(Constants.JAHIANT_TRANSLATION) && !getLockedLocalesForUserAndType(type).isEmpty()) {
             return;
         }
 
-        unlock(objectNode, type);
+        unlock(objectNode, type, userID);
     }
 
-    private void unlock(final Node objectNode, String type) throws RepositoryException {
+    private void unlock(final Node objectNode, String type, String userID) throws RepositoryException {
         if (objectNode.hasProperty("j:locktoken")) {
             Property property = objectNode.getProperty("j:locktoken");
             String token = property.getString();
@@ -2253,7 +2271,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 String owner = StringUtils.substringBefore(value.getString(), ":");
                 String currentType = StringUtils.substringAfter(value.getString(), ":");
                 if (currentType.equals(type)) {
-                    if (getSession().isSystem() || getSession().getUserID().equals(owner)) {
+                    if (userID.equals(owner)) {
                         objectNode.getSession().addLockToken(token);
                         final Map<String, Value> valueList = new HashMap<String, Value>();
                         for (Value v : types) {
@@ -2270,9 +2288,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             objectNode.setProperty(Constants.JAHIA_LOCKTYPES, valueList.values().toArray(new Value[valueList.size()]));
                         }
                         getSession().save();
-
-                    } else {
-                        throw new LockException("Not owner of lock");
                     }
                 }
             }
@@ -2308,7 +2323,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             objectNode.getSession().addLockToken(token);
 
-            objectNode.checkout();
+            getSession().checkout(objectNode);
             objectNode.unlock();
             property.remove();
             objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
@@ -2319,7 +2334,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected void checkLock() throws RepositoryException {
         if (isLocked() && !session.isSystem()) {
-            List<String> owners = getLockOwners();
+            List<String> owners = getLockOwners(objectNode);
             if (owners.size() == 1 && owners.contains(session.getUserID())) {
                 session.addLockToken(objectNode.getProperty("j:locktoken").getString());
             } else {
@@ -2349,29 +2364,62 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public String getLockOwner() {
+    public String getLockOwner() throws RepositoryException {
         if (getLock() == null) {
             return null;
         }
         if (!"shared".equals(provider.getAuthenticationType())) {
-            return getLock().getLockOwner();
+            StringBuffer owners = new StringBuffer();
+            List<String> lockOwners = getLockOwners(objectNode);
+            if (lockOwners.isEmpty()) {
+                return null;
+            }
+            for (String s : lockOwners) {
+                owners.append(s).append(" ");
+            }
+            return owners.toString().trim();
         } else {
             return getSession().getUserID();
         }
     }
 
-    public List<String> getLockOwners() throws RepositoryException {
-        return getLockOwners(objectNode);
+    public Map<String, List<String>> getLockInfos() throws RepositoryException {
+        Map<String,List<String>> locks = new HashMap<String, List<String>>();
+        List<String> lockInfos = getLockInfos(objectNode);
+        if (!lockInfos.isEmpty()) {
+            locks.put(null, lockInfos);
+        }
+        NodeIterator ni = objectNode.getNodes("j:translation*");
+        while (ni.hasNext()) {
+            Node n = ni.nextNode();
+            lockInfos = getLockInfos(n);
+            if (!lockInfos.isEmpty()) {
+                locks.put(n.getProperty("jcr:language").getString(), lockInfos);
+            }
+        }
+        return locks;
     }
 
     private List<String> getLockOwners(Node node) throws RepositoryException {
+        List<String> types= getLockInfos(node);
+
+        List<String> r = new ArrayList<String>();
+        for (String type : types) {
+            String owner = StringUtils.substringBefore(type, ":");
+            if (!r.contains(owner)) {
+                r.add(owner);
+            }
+        }
+        return r;
+    }
+
+    private List<String> getLockInfos(Node node) throws RepositoryException {
         List<String> r = new ArrayList<String>();
         if (node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
             Value[] values = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
             for (Value value : values) {
-                String owner = StringUtils.substringBefore(value.getString(), ":");
-                if (!r.contains(owner)) {
-                    r.add(owner);
+                if (!r.contains(value.getString())) {
+                    r.add(value.getString());
                 }
             }
         }
@@ -2687,7 +2735,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return result;
         }
 
-        if (isNodeType(Constants.JAHIANT_TRANSLATION) && !propertyName.equals("jcr:language")) {
+        if (session.getLocale() != null && isNodeType(Constants.JAHIANT_TRANSLATION) && !propertyName.equals("jcr:language")) {
             result = getParent().getApplicablePropertyDefinition(propertyName);
             applicablePropertyDefinition.put(propertyName, result);
             return result;

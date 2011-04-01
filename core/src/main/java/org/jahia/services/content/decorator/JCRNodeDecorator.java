@@ -271,16 +271,20 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
 
+    public boolean lockAndStoreToken(String type, String userID) throws RepositoryException {
+        return node.lockAndStoreToken(type, userID);
+    }
+
     public boolean lockAndStoreToken(String type) throws RepositoryException {
         return node.lockAndStoreToken(type);
     }
 
-    public String getLockOwner() {
+    public String getLockOwner() throws RepositoryException {
         return node.getLockOwner();
     }
 
-    public List<String> getLockOwners()  throws RepositoryException {
-        return node.getLockOwners();
+    public Map<String, List<String>> getLockInfos()  throws RepositoryException {
+        return node.getLockInfos();
     }
 
     public void versionFile() {
@@ -610,6 +614,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public void unlock(String type) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
         node.unlock(type);
+    }
+
+    public void unlock(String type, String userID) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+        node.unlock(type, userID);
     }
 
     public void clearAllLocks() throws RepositoryException  {

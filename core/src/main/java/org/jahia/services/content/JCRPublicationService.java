@@ -137,7 +137,7 @@ public class JCRPublicationService extends JahiaService {
 //            session.save();
 //        }
         if (node.isLockable()) {
-            node.lockAndStoreToken(key);
+            node.lockAndStoreToken("validation"," " +key+" ");
         }
     }
 
@@ -160,7 +160,7 @@ public class JCRPublicationService extends JahiaService {
         JCRNodeWrapper node = session.getNodeByUUID(id);
         if (node.isLocked()) {
             try {
-                node.unlock(key);
+                node.unlock("validation"," " +key+" ");
             } catch (LockException e) {
             }
         }
@@ -964,7 +964,7 @@ public class JCRPublicationService extends JahiaService {
         if (node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
             Value[] lockTypes = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
             for (Value lockType : lockTypes) {
-                if (StringUtils.substringAfter(lockType.getString(), ":").startsWith("publication-")) {
+                if (lockType.getString().endsWith(":validation")) {
                     info.setLocked(true);
                 }
             }

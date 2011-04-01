@@ -65,6 +65,9 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("lock.png")
     public AbstractImagePrototype lock();
 
+    @Resource("lock-language.png")
+    public AbstractImagePrototype lockLanguage();
+
     @Resource("minus.png")
     public AbstractImagePrototype minusRound();
 

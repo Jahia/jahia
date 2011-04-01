@@ -291,7 +291,7 @@ public class ContentActions {
         if (selectedItems != null && selectedItems.size() > 0) {
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
             for (GWTJahiaNode node : selectedItems) {
-                if ((lock && !node.isLocked() && node.getLockOwner() == null) || (!lock && node.getLockOwner() != null && node.getLockOwner().equals(JahiaGWTParameters.getCurrentUser()))) {
+                if ((lock && node.canLock()) || (!lock && node.canUnlock())) {
                     selectedPaths.add(node.getPath());
                 }
             }

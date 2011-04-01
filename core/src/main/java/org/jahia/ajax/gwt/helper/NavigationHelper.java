@@ -748,22 +748,35 @@ public class NavigationHelper {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         try {
-            boolean isLocked = node.isLocked() && !node.getLockOwner().equals(
-                    node.getSession().getUser().getUsername());
+            String username = node.getSession().getUser().getUsername();
+            boolean isLocked = node.isLocked() && (node.getLockOwner() == null || !node.getLockOwner().equals(
+                    username));
             if(!isLocked && node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
                 Value[] values = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
                 for (Value value : values) {
-                    if(!value.getString().startsWith(node.getSession().getUser().getUsername())) {
+                    if(!value.getString().startsWith(username)) {
                         isLocked = true;
                         break;
                     }
                 }
             }
             n.setLocked(isLocked);
+            Map<String, List<String>> infos = node.getLockInfos();
+            n.setLockInfos(infos);
+//            if (!infos.isEmpty()) {
+//                System.out.println(node.getPath() + "-------> "+infos);
+//            }
+            if (node.getSession().getLocale() != null) {
+                String l = node.getSession().getLocale().toString();
+                n.setCanLock(infos.isEmpty() || !infos.containsKey(l));
+                n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user") && (infos.size() == 1 || infos.containsKey(l) && infos.get(l).contains(username+":user")));
+            } else {
+                n.setCanLock(infos.isEmpty());
+                n.setCanUnlock(infos.containsKey(null) && infos.get(null).contains(username+":user"));
+            }
         } catch (RepositoryException e) {
             logger.error("Error when getting lock", e);
         }
-        n.setLockOwner(node.getLockOwner());
         n.setThumbnailsMap(new HashMap<String, String>());
         n.setVersioned(node.isVersioned());
         n.setLanguageCode(node.getLanguage());
@@ -798,15 +811,6 @@ public class NavigationHelper {
             n.setReference(node.isNodeType("jmix:nodeReference"));
         } catch (RepositoryException e1) {
             logger.error("Error checking node type", e1);
-        }
-
-        try {
-            List<Locale> locales = node.getLockedLocales();
-            for (Locale locale : locales) {
-                n.setLanguageLocked(locale.toString(), true);
-            }
-        } catch (RepositoryException e) {
-            logger.error("Error when getting locks", e);
         }
 
         if (fields.contains(GWTJahiaNode.CHILDREN_INFO)) {

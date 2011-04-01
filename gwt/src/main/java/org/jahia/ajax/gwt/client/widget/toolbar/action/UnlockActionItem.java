@@ -53,7 +53,8 @@ public class UnlockActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection!=null && singleSelection.isLockable() && PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions()) && singleSelection.getLockOwner() != null && singleSelection.getLockOwner().equals(
-                JahiaGWTParameters.getCurrentUser()) && !lh.isSecondarySelection());
+        setEnabled(singleSelection!=null && singleSelection.isLockable() &&
+                PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions()) && singleSelection.getLockInfos() != null &&
+                singleSelection.canUnlock() && !lh.isSecondarySelection());
     }
 }

@@ -202,7 +202,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
 
     public static boolean canPublish(GWTJahiaNode node, GWTJahiaPublicationInfo info, final String language) {
 
-        return !node.isLanguageLocked(language) && info.isCanPublish() &&
+        return  !info.isLocked() && info.isCanPublish() &&
                 info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
                 info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
                 info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID;

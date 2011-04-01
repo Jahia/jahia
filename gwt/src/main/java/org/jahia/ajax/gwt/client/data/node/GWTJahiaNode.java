@@ -166,12 +166,40 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return get(LOCKED);
     }
 
-    public void setLanguageLocked(String language, Boolean locked) {
-        languageLocked.put(language, locked);
+//    public void setLanguageLocked(String language, Boolean locked) {
+//        languageLocked.put(language, locked);
+//    }
+//
+//    public Map<String, Boolean> getLanguageLocked() {
+//        return languageLocked;
+//    }
+//
+//    public Boolean isLanguageLocked(String language) {
+//        return languageLocked.containsKey(language) && languageLocked.get(language);
+//    }
+//
+    public Map<String, List<String>> getLockInfos() {
+        return get("lockInfos");
     }
 
-    public Boolean isLanguageLocked(String language) {
-        return languageLocked.containsKey(language) && languageLocked.get(language);
+    public void setLockInfos(Map<String, List<String>> lockInfos) {
+        set("lockInfos", lockInfos);
+    }
+
+    public Boolean canUnlock() {
+        return get("canUnlock");
+    }
+
+    public void setCanUnlock(Boolean canUnlock) {
+        set("canUnlock", canUnlock);
+    }
+
+    public Boolean canLock() {
+        return get("canLock");
+    }
+
+    public void setCanLock(Boolean canLock) {
+        set("canLock", canLock);
     }
 
     public void setPermissions(GWTBitSet permissions) {
@@ -362,14 +390,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         }
     }
 
-
-    public String getLockOwner() {
-        return get("lockOwner");
-    }
-
-    public void setLockOwner(String lockOwner) {
-        set("lockOwner", lockOwner);
-    }
 
     public Style.SortDir getSortDir() {
         return sortInfo.getSortDir();

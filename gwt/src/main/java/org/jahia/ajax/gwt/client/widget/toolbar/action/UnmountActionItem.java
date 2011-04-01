@@ -55,7 +55,7 @@ public class UnmountActionItem extends BaseActionItem  {
         GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
         if (selection != null) {
             if (selection.isLocked()) {
-                Window.alert(Messages.get("failure.unmountLock1.label") + " " + selection.getName() + Messages.get("failure.unmountLock2.label") + " " + selection.getLockOwner());
+                Window.alert(Messages.get("failure.unmountLock1.label") + " " + selection.getName() + Messages.get("failure.unmountLock2.label") + " " + selection.getLockInfos());
             } else if (Window.confirm(Messages.get("confirm.unmount.label") + " " + selection.getName() + " ?")) {
                 linker.loading(Messages.get("statusbar.unmounting.label"));
                 List<String> selectedPaths = new ArrayList<String>(1);

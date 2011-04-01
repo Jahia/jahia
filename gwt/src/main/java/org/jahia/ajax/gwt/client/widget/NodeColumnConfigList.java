@@ -82,10 +82,10 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     private transient final GridCellRenderer<GWTJahiaNode> LOCKED_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-            String lockOwner = modelData.getLockOwner();
-            if (modelData.isLocked() || lockOwner != null) {
-                return lockOwner != null && lockOwner.equals(
-                        JahiaGWTParameters.SYSTEM_USER) ? "<img src='../images/icons/gwt/lock_information.png'>" : StandardIconsProvider.STANDARD_ICONS.lock().getHTML();
+            if (modelData.getLockInfos().containsKey(null) && (modelData.getLockInfos().size() == 1 || modelData.getLockInfos().containsKey(JahiaGWTParameters.getLanguage()))) {
+                return StandardIconsProvider.STANDARD_ICONS.lock().getHTML();
+            } else if (modelData.getLockInfos().size() > 1) {
+                return StandardIconsProvider.STANDARD_ICONS.lockLanguage().getHTML();
             } else {
                 return "";
             }
@@ -125,9 +125,6 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             Object res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
             if (res instanceof Widget) {
                 p.add((Widget) res);
-            }
-            if (info.isLocked()) {
-                p.add(StandardIconsProvider.STANDARD_ICONS.lock().createImage());
             }
             return p;
         }

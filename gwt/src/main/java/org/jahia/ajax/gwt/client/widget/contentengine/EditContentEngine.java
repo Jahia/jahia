@@ -206,9 +206,27 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
                 container.getPanel().setHeading(heading);
                 if (node.isLocked()) {
-                    heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by","[ locked by {0} ]",new String[]{node.getLockOwner()});
+                    String infos = "";
+                    if (node.getLockInfos().containsKey(null) && node.getLockInfos().size() == 1) {
+                        for (String s : node.getLockInfos().get(null)) {
+                            infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
+                        }
+                    } else {
+                        for (Map.Entry<String, List<String>> entry : node.getLockInfos().entrySet()) {
+                            if (entry.getKey() != null) {
+                                if (infos.length()>0) {
+                                    infos += ", ";
+                                }
+                                infos += entry.getKey() + " : ";
+                                for (String s : entry.getValue()) {
+                                    infos += s.substring(0,s.indexOf(":")) + " (" + s.substring(s.indexOf(":")+1) + ") ";
+                                }
+                            }
+                        }
+                    }
+                    heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by","[ locked by {0} ]",new String[]{infos});
                     container.getPanel().setHeading(heading);
-                } else if (node.getLockOwner() != null) {
+                } else if (node.getLockInfos() != null) {
                     heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you","[ locked by you ]");
                     container.getPanel().setHeading(heading);                    
                 }

@@ -603,14 +603,16 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     boolean lockAndStoreToken(String type) throws RepositoryException;
 
+    boolean lockAndStoreToken(String type, String userID) throws RepositoryException;
+
     /**
      * Get the name of the user who locked the node
      *
      * @return the name of the user who locked the node
      */
-    String getLockOwner();
+    String getLockOwner() throws RepositoryException;
 
-    List<String> getLockOwners() throws RepositoryException;
+    Map<String, List<String>> getLockInfos() throws RepositoryException;
 
     /**
      * {@inheritDoc}
@@ -620,6 +622,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
 
     void unlock(String type) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
+
+    void unlock(String type, String userID) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
 
     void clearAllLocks() throws RepositoryException;
 

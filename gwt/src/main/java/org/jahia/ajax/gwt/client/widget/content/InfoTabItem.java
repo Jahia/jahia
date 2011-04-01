@@ -98,9 +98,9 @@ public class InfoTabItem extends EditEngineTabItem {
                     flowPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
                             org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
                 }
-                if (selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
+                if (selectedNode.isLocked() && selectedNode.getLockInfos() != null) {
                     flowPanel.add(new HTML(
-                            "<b>" + Messages.get("info.lock.label") + ":</b> " + selectedNode.getLockOwner()));
+                            "<b>" + Messages.get("info.lock.label") + ":</b> " + selectedNode.getLockInfos()));
                 }
 
                 flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));

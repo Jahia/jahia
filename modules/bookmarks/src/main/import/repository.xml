@@ -29,7 +29,7 @@
           <pagecontent jcr:primaryType="jnt:contentList">
             <my-bookmarks j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="My bookmarks"/>
-              <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks">
+              <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks" numberOfBookmarksPerPage="10">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My bookmarks"/>
               </currentUserBookmarks>
             </my-bookmarks>

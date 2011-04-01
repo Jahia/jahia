@@ -59,6 +59,7 @@
 
 [jnt:currentUserConnections] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent
 
-[jnt:currentUserMessages] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent
+[jnt:currentUserMessages] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:list
+- numberOfMessagesPerPage (long) = "10" mandatory
 
 [jnt:currentUserNewsFeed] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent

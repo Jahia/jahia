@@ -5,6 +5,17 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
+<%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:include view="hidden.header"/>
 <template:addResources type="css" resources="jahia.fancybox-form.css"/>
 <template:addResources type="css" resources="social.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
@@ -117,13 +128,17 @@
         </script>
     </template:addResources>
 </c:if>
+                    <c:set var="ps" value="?pagerUrl=${url.mainResource}"/>
+                    <c:if test="${!empty param.pageUrl}">
+                        <c:set var="ps" value="?pagerUrl=${param.pageUrl}"/>
+                    </c:if>
+                    <c:set target="${moduleMap}" property="pagerUrl" value="${param.pagerUrl}"/>
+                    <template:initPager totalSize="${moduleMap.end}" pageSize="${currentNode.properties['numberOfMessagesPerPage'].string}" id="${renderContext.mainResource.node.identifier}"/>
+                    <template:displayPagination/>
 
-    <jcr:sql var="receivedMessages"
-             sql="select * from [jnt:socialMessage] where isdescendantnode(['${user.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
-    <template:addCacheDependency path="${user.path}/messages/inbox"/>
-    
+                    <template:addCacheDependency path="${user.path}/messages/inbox"/>
                     <ul class="userMessagesList">
-                        <c:forEach items="${receivedMessages.nodes}" var="userMessage">
+                        <c:forEach items="${moduleMap.currentList}" var="userMessage" begin="${moduleMap.begin}" end="${moduleMap.end}">
                             <li id="social-message-${userMessage.identifier}">
                                 <template:module path="${userMessage.path}" />
                             </li>

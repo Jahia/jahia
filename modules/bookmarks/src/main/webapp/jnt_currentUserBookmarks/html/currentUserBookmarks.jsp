@@ -42,7 +42,7 @@
 <c:set target="${moduleMap}" property="pagerUrl" value="${param.pagerUrl}"/>
 
 <div id="bookmarkList${user.identifier}">
-    <template:initPager totalSize="${moduleMap.end}" pageSize="3" id="${renderContext.mainResource.node.identifier}"/>
+    <template:initPager totalSize="${moduleMap.end}" pageSize="${currentNode.properties['numberOfBookmarksPerPage'].string}" id="${renderContext.mainResource.node.identifier}"/>
     <template:displayPagination/>
 
     <c:if test="${currentResource.workspace eq 'live'}">

@@ -11,3 +11,4 @@
  + * (jnt:bookmark)
 
 [jnt:currentUserBookmarks] > jnt:content, mix:title, jmix:userProfileComponents, jmix:bindedComponent, jmix:list
+- numberOfBookmarksPerPage (long) = "10" mandatory

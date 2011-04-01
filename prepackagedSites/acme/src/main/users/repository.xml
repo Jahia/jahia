@@ -20,6 +20,7 @@
                       <GRANT_u_root j:protected="false" j:principal="u:root" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                     </j:acl>
                 </private>
+                <profile jcr:primaryType="jnt:folder"/>
             </files>
             <portlets jcr:created="2010-12-17T15:26:41.680+01:00" jcr:primaryType="jnt:portletFolder"
                       jcr:lastModifiedBy="" jcr:createdBy=" system " jcr:lastModified="2010-12-17T15:26:43.332+01:00"/>
@@ -63,6 +64,7 @@
                     <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
                       <GRANT_u_author j:protected="false" j:principal="u:author" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                     </j:acl>
+                    <profile jcr:primaryType="jnt:folder"/>
                 </private>
             </files>
             <portlets j:published="true" jcr:created="2010-12-17T15:30:26.722+01:00" jcr:primaryType="jnt:portletFolder"
@@ -110,6 +112,7 @@
                     <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
                       <GRANT_u_publisher j:protected="false" j:principal="u:publisher" j:roles="owner" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                     </j:acl>
+                    <profile jcr:primaryType="jnt:folder"/>
                 </private>
             </files>
             <portlets j:published="true" jcr:created="2010-12-17T15:30:26.874+01:00" jcr:primaryType="jnt:portletFolder"

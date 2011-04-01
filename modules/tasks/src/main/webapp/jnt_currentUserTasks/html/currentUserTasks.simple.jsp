@@ -23,7 +23,7 @@
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
-<template:addResources type="javascript" resources="animatedcollapse.js"/>
+
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
 <template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${currentResource.locale}.js"/>
@@ -127,11 +127,8 @@
                     <div class="listEditToolbar">
                             <c:choose>
                                 <c:when test="${not empty task.formResourceName}">
-                                    <script type="text/javascript">
-                                        animatedcollapse.addDiv('task${node.identifier}-${task.id}', 'fade=1,speed=100');
-                                    </script>
                                     <input class="workflowaction" type="button" value="${task.name}"
-                                           onclick="animatedcollapse.toggle('task${node.identifier}-${task.id}');$('#taskrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
+                                           onclick="$.toggle('task${node.identifier}-${task.id}');$('#taskrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach items="${task.outcomes}" var="outcome">
@@ -163,7 +160,7 @@
                                 <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
                                 <template:param name="workflowTaskFormCallbackURL" value="${myUrl}"/>
                                 <template:param name="workflowTaskFormCallbackJS"
-                                                value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();"/>
+                                                value=""/>
                             </template:module>
                         </div>
                     </div>
@@ -173,11 +170,6 @@
     </c:if>
 
 </ul>
-
-
-<script type="text/javascript">
-    animatedcollapse.init();
-</script>
 </div>
 <div class="clear"></div>
 </div>

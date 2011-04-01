@@ -34,50 +34,53 @@
 
 <c:set var="ps" value=""/>
 <c:forEach items="${param}" var="p" varStatus="status">
-        <c:if test="${status.first}"><c:set var="sep" value="?"/></c:if>
-        <c:if test="${not status.first}"><c:set var="sep" value="&"/></c:if>
+    <c:if test="${status.first}"><c:set var="sep" value="?"/></c:if>
+    <c:if test="${not status.first}"><c:set var="sep" value="&"/></c:if>
     <c:set var="ps" value="${ps}${sep}${p.key}=${p.value}" />
 </c:forEach>
+<template:initPager totalSize="${moduleMap.end}" pageSize="3" id="bookmarkList${currentNode.identifier}"/>
+<template:displayPagination/>
+
 <div id="bookmarkList${user.identifier}">
 
-<c:if test="${currentResource.workspace eq 'live'}">
-    <script type="text/javascript">
-        $('#bookmarkList${user.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax${ps}"/>');
-    </script>
-</c:if>
+    <c:if test="${currentResource.workspace eq 'live'}">
+        <script type="text/javascript">
+            $('#bookmarkList${user.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax${ps}"/>');
+        </script>
+    </c:if>
 
-<c:if test="${currentResource.workspace ne 'live'}">
+    <c:if test="${currentResource.workspace ne 'live'}">
 
-    <script type="text/javascript">
-        function deleteBookmark(source) {
-            $.post('<c:url value="${url.base}"/>' + source, {"methodToCall":"delete"},
-                  function(result) {
-                      $('#bookmarkList${user.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax${ps}"/>');
-                  },'json');
+        <script type="text/javascript">
+            function deleteBookmark(source) {
+                $.post('<c:url value="${url.base}"/>' + source, {"methodToCall":"delete"},
+                        function(result) {
+                            $('#bookmarkList${user.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax${ps}"/>');
+                        },'json');
             }
-    </script>
+        </script>
 
-    <c:if test="${moduleMap.end eq 0}">
-        <fmt:message key="bookmark.emptyResults"/>
+        <c:if test="${moduleMap.end eq 0}">
+            <fmt:message key="bookmark.emptyResults"/>
+        </c:if>
+        <c:if test="${moduleMap.end ne 0}">
+            <ul class="userMyBookmarksList" id="${currentNode.UUID}">
+                <c:forEach items="${moduleMap.currentList}" var="bookmark" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+                    <li>
+                        <jcr:nodeProperty node="${bookmark}" name="jcr:title" var="title"/>
+                        <jcr:node var="myNode" path="${bookmark.path}"/>
+                        <a class="userMyBookmarksListIcon" href="${bookmark.properties['url'].string}">${bookmark.properties['jcr:title'].string}</a>
+                        &nbsp;<span class="small">&nbsp;<fmt:formatDate
+                            value="${bookmark.properties['date'].date.time}" dateStyle="short" type="both"/></span>
+                        <div class="floatright">
+                            &nbsp;<button onclick="deleteBookmark('${bookmark.path}')">
+                            <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
+                        </div>
+                        <div class="clear"></div>
+                    </li>
+                </c:forEach>
+            </ul>
+        </c:if>
     </c:if>
-    <c:if test="${moduleMap.end ne 0}">
-        <ul class="userMyBookmarksList" id="${currentNode.UUID}">
-        <c:forEach items="${moduleMap.currentList}" var="bookmark" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
-            <li>
-                <jcr:nodeProperty node="${bookmark}" name="jcr:title" var="title"/>
-                <jcr:node var="myNode" path="${bookmark.path}"/>
-                <a class="userMyBookmarksListIcon" href="${bookmark.properties['url'].string}">${bookmark.properties['jcr:title'].string}</a>
-                &nbsp;<span class="small">&nbsp;<fmt:formatDate
-                    value="${bookmark.properties['date'].date.time}" dateStyle="short" type="both"/></span>
-               <div class="floatright">
-               &nbsp;<button onclick="deleteBookmark('${bookmark.path}')">
-                    <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
-               </div>
-               <div class="clear"></div>
-            </li>
-        </c:forEach>
-    </ul>
-    </c:if>
-</c:if>
 
 </div>

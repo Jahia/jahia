@@ -29,7 +29,6 @@
           <pagecontent jcr:primaryType="jnt:contentList">
             <my-bookmarks j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="My bookmarks"/>
-              <pager displayPager="true" j:bindedComponent="/templateSets/bookmarks/templates/user-bookmarks/pagecontent/my-bookmarks/currentUserBookmarks" jcr:primaryType="jnt:pager" pageSize="10"/>
               <currentUserBookmarks jcr:primaryType="jnt:currentUserBookmarks">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My bookmarks"/>
               </currentUserBookmarks>

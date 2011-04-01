@@ -36,16 +36,21 @@ import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: ktlili
+ * Represent edit mode configuration, including side panel and side panel toolbar,
+ * top toolbar, main module toolbar and context menu.
+ * 
+ * @author ktlili
  * Date: Apr 14, 2010
  * Time: 12:26:47 PM
- * 
  */
 public class EditConfiguration implements Serializable, BeanNameAware {
+    
+    private static final long serialVersionUID = -5469841056796249203L;
+
     private String name;
     
     private Toolbar topToolbar;
@@ -59,6 +64,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private String sitesLocation;
 
+    public void addTab(SidePanelTab tab) {
+        tabs.add(tab);
+    }
+    
+    public void addTab(int index, SidePanelTab tab) {
+        tabs.add(index, tab);
+    }
+    
     public void setBeanName(String name) {
         this.name = name;
     }
@@ -125,5 +138,16 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setSitesLocation(String sitesLocation) {
         this.sitesLocation = sitesLocation;
+    }
+
+    public void removeTab(String tabKey) {
+        if (tabKey != null && tabKey.length() > 0) {
+            for (Iterator<SidePanelTab> iterator = getTabs().iterator(); iterator.hasNext();) {
+                SidePanelTab tab = iterator.next();
+                if (tab.getKey() != null && tab.getKey().equals(tabKey)) {
+                    iterator.remove();
+                }
+            }
+        }
     }
 }

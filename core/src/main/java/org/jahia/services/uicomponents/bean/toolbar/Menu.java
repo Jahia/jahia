@@ -45,6 +45,9 @@ import java.util.List;
  * Time: 09:05:11
  */
 public class Menu extends Item implements Serializable, BeanNameAware {
+    
+    private static final long serialVersionUID = -1930810757483344305L;
+    
     private List<Item> items = new ArrayList<Item>();
 
     public List<Item> getItems() {
@@ -64,13 +67,13 @@ public class Menu extends Item implements Serializable, BeanNameAware {
     }
     
     public void removeItem(String itemId) {
-    	if (itemId != null && itemId.length() > 0) {
-    		for (Iterator<Item> iterator = getItems().iterator(); iterator.hasNext();) {
-	            Item item = iterator.next();
-	            if (item.getId() != null && item.getId().equals(itemId)) {
-	            	iterator.remove();
-	            }
+        if (itemId != null && itemId.length() > 0) {
+            for (Iterator<Item> iterator = getItems().iterator(); iterator.hasNext();) {
+                Item item = iterator.next();
+                if (item.getId() != null && item.getId().equals(itemId)) {
+                    iterator.remove();
+                }
             }
-    	}
+        }
     }
 }

@@ -33,10 +33,12 @@
 package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,13 +46,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represents a single tab in the edit mode side panel.
  * User: ktlili
  * Date: Apr 14, 2010
  * Time: 12:30:01 PM
- * 
  */
-public class SidePanelTab implements Serializable, BeanNameAware {
+public class SidePanelTab implements Serializable, BeanNameAware, InitializingBean {
+    
+    private static final long serialVersionUID = -4170052202882342097L;
+    
     private String name;
     private String key;
     private Toolbar treeContextMenu;
@@ -63,9 +67,20 @@ public class SidePanelTab implements Serializable, BeanNameAware {
     private SidePanelTabItem tabItem;
     private String requiredPermission;
 
+    private Object parent;
+    private int position = -1;
+    private String positionAfter;
+    private String positionBefore;
+    
     public SidePanelTab() {
+        super();
         tableColumns = new ArrayList<Column>();
         treeColumns = new ArrayList<Column>();
+    }
+
+    public SidePanelTab(String key) {
+        this();
+        setKey(key);
     }
 
     public String getKey() {
@@ -158,6 +173,74 @@ public class SidePanelTab implements Serializable, BeanNameAware {
 
     public void setTabItem(SidePanelTabItem tabItem) {
         this.tabItem = tabItem;
+    }
+
+    public void setParent(Object parent) {
+        this.parent = parent;
+    }
+    
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public void setPositionAfter(String positionAfter) {
+        this.positionAfter = positionAfter;
+    }
+
+    public void setPositionBefore(String positionBefore) {
+        this.positionBefore = positionBefore;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (obj instanceof SidePanelTab && obj != null) {
+            SidePanelTab other = (SidePanelTab) obj;
+            return getKey() != null ? other.getKey() != null && getKey().equals(other.getKey())
+                    : other.getKey() == null;
+        }
+
+        return false;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        if (parent != null) {
+            if (parent instanceof String) {
+                parent = SpringContextSingleton.getBean((String) parent);
+            }
+            if (parent instanceof EditConfiguration) {
+                EditConfiguration cfg = (EditConfiguration) parent;
+                cfg.removeTab(getKey());
+                int index = -1;
+                if (position >= 0) {
+                    index = position;
+                } else if (positionBefore != null) {
+                    index = cfg.getTabs().indexOf(new SidePanelTab(positionBefore));
+                } else if (positionAfter != null) {
+                    index = cfg.getTabs().indexOf(new SidePanelTab(positionAfter));
+                    if (index != -1) {
+                        index++;
+                    }
+                    if (index >= cfg.getTabs().size()) {
+                        index = -1;
+                    }
+                }
+                if (index != -1) {
+                    cfg.addTab(index, this);
+                } else {
+                    cfg.addTab(this);
+                }
+            } else {
+                throw new IllegalArgumentException("Unknown parent type '"
+                        + parent.getClass().getName() + "'. Can accept EditConfiguration or"
+                        + " a String value with a beanId of the EditConfiguration bean");
+            }
+
+            // clean the reference
+            parent = null;
+        }
     }
 }
 

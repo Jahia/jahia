@@ -47,6 +47,8 @@ import java.util.List;
  */
 public class Toolbar implements Serializable, BeanNameAware {
 
+    private static final long serialVersionUID = 5058259229049097109L;
+    
     private String name;
     private String titleKey;
     private String type;
@@ -127,13 +129,13 @@ public class Toolbar implements Serializable, BeanNameAware {
     }
     
     public void removeItem(String itemId) {
-    	if (itemId != null && itemId.length() > 0) {
-    		for (Iterator<Item> iterator = getItems().iterator(); iterator.hasNext();) {
-	            Item item = iterator.next();
-	            if (item.getId() != null && item.getId().equals(itemId)) {
-	            	iterator.remove();
-	            }
+        if (itemId != null && itemId.length() > 0) {
+            for (Iterator<Item> iterator = getItems().iterator(); iterator.hasNext();) {
+                Item item = iterator.next();
+                if (item.getId() != null && item.getId().equals(itemId)) {
+                    iterator.remove();
+                }
             }
-    	}
+        }
     }
 }

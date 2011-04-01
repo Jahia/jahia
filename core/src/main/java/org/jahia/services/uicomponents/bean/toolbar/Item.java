@@ -62,18 +62,18 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
     private String layout;
     private List<Property> properties = new ArrayList<Property>();
     private ActionItem actionItem;
-	private Object parent;
-	private int position = -1;
-	private String positionAfter;
-	private String positionBefore;
+    private Object parent;
+    private int position = -1;
+    private String positionAfter;
+    private String positionBefore;
 
-	public Item() {
-	    super();
+    public Item() {
+        super();
     }
-	
-	private Item(String id) {
-	    this();
-	    setId(id);
+
+    private Item(String id) {
+        this();
+        setId(id);
     }
 	
     public String getId() {
@@ -184,106 +184,107 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
     	setParent(toolbar);
     }
 
-	public void afterPropertiesSet() throws Exception {
-		if (parent != null) {
-			if (parent instanceof String) {
-				String parentPath = (String) parent;
-				String beanId = StringUtils.substringBefore(parentPath, ".");
-				Object bean = SpringContextSingleton.getBean(beanId);
-				String propertyPath = StringUtils.substringAfter(parentPath, ".");
-				if (propertyPath.length() > 0) {
-					bean = PropertyUtils.getNestedProperty(bean, propertyPath);
-				}
-				if (bean == null) {
-					throw new IllegalArgumentException("Unable to find target for parent path: "
-					        + parentPath);
-				}
-				if (!(bean instanceof Menu || bean instanceof Toolbar)) {
-					throw new IllegalArgumentException("Target bean for path '" + parentPath
-					        + "' is not of type Menu or Toolbar. Unable to handle beans of type '"
-					        + bean.getClass().getName() + "'");
-				}
-				parent = bean;
-			}
-			if (parent instanceof Menu) {
-				Menu parentMenu = (Menu) parent;
-				parentMenu.removeItem(getId());
-				int index = -1;
-				if (position >= 0) {
-					index = position;
-				} else if (positionBefore != null) {
-					index = parentMenu.getItems().indexOf(new Item(positionBefore));
-				} else if (positionAfter != null) {
-					index = parentMenu.getItems().indexOf(new Item(positionAfter));
-					if (index != -1) {
-						index++;
-					}
-					if (index >= parentMenu.getItems().size()) {
-						index = -1;
-					}
-				}
-				if (index != -1) {
-					parentMenu.addItem(index, this);					
-				} else {
-					parentMenu.addItem(this);					
-				}
-			} else if (parent instanceof Toolbar) {
-				Toolbar parentToolbar = (Toolbar) parent;
-				parentToolbar.removeItem(getId());
-				int index = -1;
-				if (position >= 0) {
-					index = position;
-				} else if (positionBefore != null) {
-					index = parentToolbar.getItems().indexOf(new Item(positionBefore));
-				} else if (positionAfter != null) {
-					index = parentToolbar.getItems().indexOf(new Item(positionAfter));
-					if (index != -1) {
-						index++;
-					}
-					if (index >= parentToolbar.getItems().size()) {
-						index = -1;
-					}
-				}
-				if (index != -1) {
-					parentToolbar.addItem(index, this);					
-				} else {
-					parentToolbar.addItem(this);					
-				}
-			} else {
-				throw new IllegalArgumentException(
-				        "Unknown parent type '"
-				                + parent.getClass().getName()
-				                + "'. Can accept Menu, Toolbar or"
-				                + " a String value with a bean-compliant path to the corresponding menu/toobar bean");
-			}
+    public void afterPropertiesSet() throws Exception {
+        if (parent != null) {
+            if (parent instanceof String) {
+                String parentPath = (String) parent;
+                String beanId = StringUtils.substringBefore(parentPath, ".");
+                Object bean = SpringContextSingleton.getBean(beanId);
+                String propertyPath = StringUtils.substringAfter(parentPath, ".");
+                if (propertyPath.length() > 0) {
+                    bean = PropertyUtils.getNestedProperty(bean, propertyPath);
+                }
+                if (bean == null) {
+                    throw new IllegalArgumentException("Unable to find target for parent path: "
+                            + parentPath);
+                }
+                if (!(bean instanceof Menu || bean instanceof Toolbar)) {
+                    throw new IllegalArgumentException("Target bean for path '" + parentPath
+                            + "' is not of type Menu or Toolbar. Unable to handle beans of type '"
+                            + bean.getClass().getName() + "'");
+                }
+                parent = bean;
+            }
+            if (parent instanceof Menu) {
+                Menu parentMenu = (Menu) parent;
+                parentMenu.removeItem(getId());
+                int index = -1;
+                if (position >= 0) {
+                    index = position;
+                } else if (positionBefore != null) {
+                    index = parentMenu.getItems().indexOf(new Item(positionBefore));
+                } else if (positionAfter != null) {
+                    index = parentMenu.getItems().indexOf(new Item(positionAfter));
+                    if (index != -1) {
+                        index++;
+                    }
+                    if (index >= parentMenu.getItems().size()) {
+                        index = -1;
+                    }
+                }
+                if (index != -1) {
+                    parentMenu.addItem(index, this);
+                } else {
+                    parentMenu.addItem(this);
+                }
+            } else if (parent instanceof Toolbar) {
+                Toolbar parentToolbar = (Toolbar) parent;
+                parentToolbar.removeItem(getId());
+                int index = -1;
+                if (position >= 0) {
+                    index = position;
+                } else if (positionBefore != null) {
+                    index = parentToolbar.getItems().indexOf(new Item(positionBefore));
+                } else if (positionAfter != null) {
+                    index = parentToolbar.getItems().indexOf(new Item(positionAfter));
+                    if (index != -1) {
+                        index++;
+                    }
+                    if (index >= parentToolbar.getItems().size()) {
+                        index = -1;
+                    }
+                }
+                if (index != -1) {
+                    parentToolbar.addItem(index, this);
+                } else {
+                    parentToolbar.addItem(this);
+                }
+            } else {
+                throw new IllegalArgumentException(
+                        "Unknown parent type '"
+                                + parent.getClass().getName()
+                                + "'. Can accept Menu, Toolbar or"
+                                + " a String value with a bean-compliant path to the corresponding menu/toobar bean");
+            }
 
-			// clean the reference
-			parent = null;
-		}
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (super.equals(obj)) {
-			return true;
-		}
-		if (obj instanceof Item && obj != null) {
-			Item other = (Item) obj;
-			return getId() != null ? other.getId() != null && getId().equals(other.getId()) : other.getId() == null; 
-		}
-		
-	    return false;
-	}
-
-	public void setPosition(int position) {
-    	this.position = position;
+            // clean the reference
+            parent = null;
+        }
     }
 
-	public void setPositionAfter(String positionAfter) {
-    	this.positionAfter = positionAfter;
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (obj instanceof Item && obj != null) {
+            Item other = (Item) obj;
+            return getId() != null ? other.getId() != null && getId().equals(other.getId()) : other
+                    .getId() == null;
+        }
+
+        return false;
     }
 
-	public void setPositionBefore(String positionBefore) {
-    	this.positionBefore = positionBefore;
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public void setPositionAfter(String positionAfter) {
+        this.positionAfter = positionAfter;
+    }
+
+    public void setPositionBefore(String positionBefore) {
+        this.positionBefore = positionBefore;
     }
 }

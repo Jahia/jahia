@@ -462,9 +462,9 @@
         <module>gwt</module>
         <module>modules</module>
         <!--module>bundles</module-->
-        <module>package</module>
         <module>prepackagedSites</module>
         <module>war</module>
+        <module>package</module>
     </modules>
 
     <distributionManagement>

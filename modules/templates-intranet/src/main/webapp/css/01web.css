@@ -726,7 +726,7 @@ body {
 		line-height:28px;
 		border:1px solid #b9ddfa;
 		background:#eaeaea;
-		padding:6px 10px;
+    	padding: 2px 4px;
 		text-decoration:none;
 }
 .bodywrapper .alphabeticalNavigation a:hover {
@@ -739,7 +739,7 @@ body {
 		border:1px solid #b9ddfa;
 		background:#333;
 		color:#fff;
-		padding:6px 10px;
+		padding: 2px 4px;
 		text-decoration:none;
 }
 .bodywrapper .alphabeticalNavigation span {

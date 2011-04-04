@@ -58,11 +58,10 @@
 
 <table width="100%" class="table tableTasks" summary="Tasks">
     <colgroup>
-        <col span="1" width="10%" class="col1"/>
+        <col span="1" width="15%" class="col1"/>
         <col span="1" width="50%" class="col2"/>
-        <col span="1" width="10%" class="col3"/>
-        <col span="1" width="25%" class="col4"/>
-        <col span="1" width="15%" class="col5"/>
+        <col span="1" width="15%" class="col3"/>
+        <col span="1" width="20%" class="col4"/>
     </colgroup>
     <thead>
     <tr>

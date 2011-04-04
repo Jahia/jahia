@@ -204,8 +204,10 @@
         </managers>
 
         <workflow-tasks jcr:primaryType="jnt:permission">
-            <first-review jcr:primaryType="jnt:permission"/>
-            <final-review jcr:primaryType="jnt:permission"/>
+            <one-step-review jcr:primaryType="jnt:permission"/>
+
+            <two-steps-first-review jcr:primaryType="jnt:permission"/>
+            <two-steps-final-review jcr:primaryType="jnt:permission"/>
         </workflow-tasks>
 
         <wysiwyg-editor-toolbar jcr:primaryType="jnt:permission">
@@ -248,7 +250,7 @@
                      j:privilegedAccess="true"/>
 
         <publisher jcr:primaryType="jnt:role"
-                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/contributeMode/contributeModeAccess /permissions/workflow-tasks/final-review"
+                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/contributeMode/contributeModeAccess /permissions/workflow-tasks/one-step-review /permissions/workflow-tasks/two-steps-final-review"
                    j:privilegedAccess="true"
                 />
 

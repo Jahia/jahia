@@ -2735,7 +2735,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return result;
         }
 
-        if (session.getLocale() != null && isNodeType(Constants.JAHIANT_TRANSLATION) && !propertyName.equals("jcr:language")) {
+        if (isNodeType(Constants.JAHIANT_TRANSLATION) && !propertyName.equals("jcr:language")) {
             result = getParent().getApplicablePropertyDefinition(propertyName);
             applicablePropertyDefinition.put(propertyName, result);
             return result;

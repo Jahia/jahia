@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:test_templates="http://www.jahia.org/jahia/test_templates/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <templateSets jcr:primaryType="jnt:templateSets">
     <profile changefreq="monthly" j:installedModules="profile" j:siteType="module" j:title="Profile" j:wcagCompliance="true" jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:virtualsite" priority="0.5">
       <portlets jcr:primaryType="jnt:portletFolder"/>
@@ -16,9 +16,6 @@
           <my-tasks divClass="user-tasks" j:requireLoggedUser="false" j:requirePrivilegedUser="true" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:componentLink" targetTemplate="user-tasks">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Tasks"/>
           </my-tasks>
-          <my-content divClass="user-content" jcr:primaryType="jnt:componentLink" targetTemplate="user-content">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Content"/>
-          </my-content>
           <my-pages divClass="user-content" jcr:primaryType="jnt:componentLink" targetTemplate="user-content">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My pages"/>
           </my-pages>
@@ -62,58 +59,58 @@
           </pagecontent>
           <row-col2 jcr:primaryType="jnt:contentList"/>
           <user-edit-details j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:priority="15" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent j:columns="2" j:id="user-edit-details" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:columns jmix:skinnable" jcr:primaryType="jnt:contentList">
-              <pagecontent j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <pagecontent j:columns="2" j:id="user-edit-details" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:columns jmix:customSkin" jcr:primaryType="jnt:contentList">
+              <pagecontent j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Profile "/>
                 <editUserDetails-1 age="true" j:about="true" j:birthDate="true" j:email="true" j:facebookID="true" j:firstName="true" j:function="true" j:gender="true" j:lastName="true" j:linkedinID="true" j:organization="true" j:picture="true" j:skypeID="true" j:title="true" j:twitterID="true" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true"/>
               </pagecontent>
             </pagecontent>
             <row-col3 j:skin="skins.box2style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList"/>
-            <row-col1 j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <row-col1 j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
               <editUserDetails-1 age="true" j:about="false" j:birthDate="false" j:email="false" j:facebookID="false" j:firstName="false" j:function="false" j:gender="true" j:lastName="false" j:linkedinID="false" j:organization="false" j:picture="true" j:skypeID="false" j:title="false" j:twitterID="false" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true"/>
             </row-col1>
-            <row-col2 j:skin="skins.box7" j:style="green" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <row-col2 j:skin="skins.box7" j:style="green" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Public fields"/>
               <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Champs public"/>
             </row-col2>
             <user-profile-aside-right jcr:primaryType="jnt:contentList">
-              <content-list j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+              <content-list j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Making public element"/>
                 <edituserdetails age="true" j:about="true" j:birthDate="true" j:email="true" j:facebookID="true" j:firstName="true" j:function="true" j:gender="true" j:lastName="true" j:linkedinID="true" j:organization="true" j:picture="true" j:skypeID="true" j:title="true" j:twitterID="true" j:view="visibility" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:editUserDetails" password="true" preferredLanguage="true"/>
               </content-list>
             </user-profile-aside-right>
           </user-edit-details>
           <user-tasks j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="20" j:requireLoggedUser="false" j:requirePrivilegedUser="true" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent j:id="user-tasks" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">
-              <my-tasks j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <pagecontent j:id="user-tasks" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
+              <my-tasks j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My tasks"/>
                 <currentUserTasks jcr:primaryType="jnt:currentUserTasks" viewUserTasks="true" viewWorkflowTasks="true"/>
               </my-tasks>
             </pagecontent>
           </user-tasks>
           <user-content j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:priority="25" j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent j:id="user-content" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">
-              <my-pages-1 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <pagecontent j:id="user-content" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
+              <my-pages-1 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My pages"/>
                 <pager displayPager="true" j:bindedComponent="/templateSets/profile/templates/user-base/user-content/pagecontent/my-pages-1/my-pages" jcr:primaryType="jnt:pager" pageSize="10"/>
-                <my-pages j:classname="userMyContentList" j:criteria="jcr:created" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:page" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:userContentRetrieval" maxItems="10">
+                <my-pages j:classname="userMyContentList" j:criteria="jcr:created" j:skin="skins.custom" j:sortDirection="asc" j:type="jnt:page" j:view="linkList" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:userContentRetrieval" maxItems="10">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"/>
                 </my-pages>
               </my-pages-1>
             </pagecontent>
           </user-content>
-          <row-col1 j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList"/>
+          <row-col1 j:skin="skins.box6" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList"/>
           <user-content-row-col1 j:style="blue" jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList"/>
           <user-base-layout-colContent jcr:primaryType="jnt:contentList">
             <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area"/>
           </user-base-layout-colContent>
           <user-base-layout-col1 jcr:primaryType="jnt:contentList">
-            <content-list j:skin="skins.box9" j:style="grey" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <content-list j:skin="skins.box9" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
               <current-user j:userView="profile" jcr:primaryType="jnt:currentUserDisplay"/>
             </content-list>
-            <shortcuts j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <shortcuts j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Shortcuts"/>
-              <shortcutslist j:id="Shortcutsadmin" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">
+              <shortcutslist j:id="Shortcutsadmin" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="ShortcutsList"/>
                 <profile-page-items j:node="/templateSets/profile/contents/profile-page-items" jcr:primaryType="jnt:contentFolderReference"/>
               </shortcutslist>
@@ -121,9 +118,9 @@
             <user-profile-aside-left j:allowedTypes="" jcr:primaryType="jnt:area"/>
           </user-base-layout-col1>
           <user-base-layout-col3 jcr:primaryType="jnt:contentList">
-            <work-with-jahia j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <work-with-jahia j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Work with Jahia"/>
-              <admin-links j:classname="admin-links" j:skin="skins.custom" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">
+              <admin-links j:classname="admin-links" j:skin="skins.custom" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:listOrdered jmix:customSkin" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="admin-links"/>
                 <gotoAdmin j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/admin/administrationAccess" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoAdmin"/>
                 <gotoStudio j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/studioMode/studioModeAccess" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoStudio"/>
@@ -136,22 +133,22 @@
                 </logout>
               </admin-links>
             </work-with-jahia>
-            <sites j:skin="skins.box8" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+            <sites j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Last sites"/>
-              <websites-list-in-edit-mode contribute="true" edit="true" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10" numberMaxOfSitesDisplayed="5">
+              <websites-list-in-edit-mode contribute="true" edit="true" jcr:primaryType="jnt:listSites" live="true" numberMaxOfSitesDisplayed="5" numberOfSitesPerPage="10">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode"/>
               </websites-list-in-edit-mode>
             </sites>
             <user-profile-aside-right j:allowedTypes="" jcr:primaryType="jnt:area"/>
           </user-base-layout-col3>
-          <user-home j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="40" jcr:primaryType="jnt:contentTemplate" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" >
+          <user-home j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="50" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
             <pagecontent jcr:primaryType="jnt:contentList">
               <rich-text jcr:primaryType="jnt:bigText">
                 <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;h2&gt;  What do you want to do with Jahia today ?&lt;/h2&gt; "/>
               </rich-text>
               <shortcuts-list j:columns="2" j:view="columns" jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Shortcuts List"/>
-                <my-settings j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                <my-settings j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My settings"/>
                   <image-reference j:node="/templateSets/profile/templates/files/icons/my-settings.png" jcr:primaryType="jnt:imageReference">
                     <j:translation_en j:alternateText="my settings icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
@@ -163,7 +160,7 @@
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Change my settings"/>
                   </change-my-settings>
                 </my-settings>
-                <my-settings-1 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                <my-settings-1 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My tasks"/>
                   <image-reference j:node="/templateSets/profile/templates/files/icons/my-tasks.png" jcr:primaryType="jnt:imageReference">
                     <j:translation_en j:alternateText="my tasks icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
@@ -175,7 +172,7 @@
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Acces to my tasks"/>
                   </acces-to-my-tasks>
                 </my-settings-1>
-                <my-settings-2 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                <my-settings-2 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My pages"/>
                   <image-reference j:node="/templateSets/profile/templates/files/icons/my-pages.png" jcr:primaryType="jnt:imageReference">
                     <j:translation_en j:alternateText="my pages icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
@@ -187,7 +184,7 @@
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Acces to my pages"/>
                   </acces-to-my-pages>
                 </my-settings-2>
-                <my-settings-3 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+                <my-settings-3 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Sites"/>
                   <image-reference j:node="/templateSets/profile/templates/files/icons/my-sites.png" jcr:primaryType="jnt:imageReference">
                     <j:translation_en j:alternateText="my sites icon" jcr:language="en" jcr:primaryType="jnt:translation"/>
@@ -202,9 +199,9 @@
               </shortcuts-list>
             </pagecontent>
           </user-home>
-          <user-sites j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:priority="30" jcr:primaryType="jnt:contentTemplate" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default">
-            <pagecontent j:id="user-sites" j:skin="skins.custom" jcr:mixinTypes="jmix:customSkin jmix:skinnable" jcr:primaryType="jnt:contentList">
-              <my-sites j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
+          <user-sites j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false" j:priority="30" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
+            <pagecontent j:id="user-sites" j:skin="skins.custom" jcr:mixinTypes="jmix:skinnable jmix:customSkin" jcr:primaryType="jnt:contentList">
+              <my-sites j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Sites"/>
                 <websites-list-in-edit-mode contribute="true" edit="true" j:view="paginated" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:listSites" live="true" numberOfSitesPerPage="10">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="websites list in edit mode"/>

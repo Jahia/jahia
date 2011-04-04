@@ -13,7 +13,7 @@
  + * (jnt:task)
 
 
-[jnt:currentUserTasks] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent
+[jnt:currentUserTasks] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
  - viewUserTasks (boolean)
  - viewWorkflowTasks (boolean)
  - workflowTypes (string, choicelist[workflow]) multiple

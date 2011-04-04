@@ -84,7 +84,7 @@
  - j:displayRememberMeButton (boolean)
  - j:displayLoginButton (boolean)
 
-[jnt:logout] > jnt:content, jmix:siteComponent, jmix:studioOnly, mix:title
+[jnt:logout] > jnt:content, jmix:siteComponent, jmix:studioOnly, mix:title, jmix:studioOnly
 
 [jnt:login] > jnt:content, jmix:siteComponent, jmix:studioOnly, mix:title
 
@@ -104,7 +104,7 @@
  - displayLinkOnCurrentPage (boolean) = false indexed=no
  - displayOnFirstLevel (boolean) = false indexed=no
 
-[jnt:languageSwitcher] > jnt:content, jmix:siteComponent
+[jnt:languageSwitcher] > jnt:content, jmix:siteComponent, jmix:studioOnly
  - typeOfDisplay (string,choicelist[resourceBundle]) = isoLocaleCountryCode mandatory indexed=no < isoLocaleCountryCode,languageCode,doubleLetter,letter,nameInLocale,nameCurrentLocale,flag,flagPlain,flagShadow
 
 [jnt:tree] > jnt:content, jmix:siteComponent
@@ -124,7 +124,7 @@
 
 [jnt:backToParentPage] > jnt:content, jmix:siteComponent, mix:title
 
-[jnt:addContent] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent
+[jnt:addContent] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
  - j:type (string, choicelist[nodetypes=nt:base,resourceBundle]) multiple 
 
 [jnt:introduction] > jnt:bigText, jmix:structuredContent, jmix:editorialContent
@@ -151,16 +151,16 @@
 
 [jnt:addComment] > jnt:content, jmix:bindedComponent, jmix:socialComponent
 
-[jnt:gotoStudio] > jnt:content, mix:title, jmix:siteComponent
+[jnt:gotoStudio] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
-[jnt:gotoEdit] > jnt:content, mix:title, jmix:siteComponent
+[jnt:gotoEdit] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
-[jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent
+[jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
-[jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent
+[jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
  - type (string, choicelist) = content < content,document,"united content",roles
 
-[jnt:listSites] > jnt:content, mix:title, jmix:siteComponent, jmix:list
+[jnt:listSites] > jnt:content, mix:title, jmix:siteComponent, jmix:list, jmix:studioOnly
  - edit (boolean)
  - contribute (boolean)
  - live (boolean)
@@ -183,7 +183,7 @@
  - aClass (string)
  - divClass (string)
 
-[jnt:fileUpload] > jnt:content, jmix:siteComponent, jmix:bindedComponent
+[jnt:fileUpload] > jnt:content, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
  - target (weakreference)
 
  [jnt:glossary] >   jnt:content, jmix:siteComponent, jmix:bindedComponent

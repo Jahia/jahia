@@ -7,4 +7,4 @@
  - webPropertyID (string) nofulltext
 
 
-[jnt:googleAnalyticsBind] > jnt:content, jmix:bindedComponent, jmix:siteComponent
+[jnt:googleAnalyticsBind] > jnt:content, jmix:bindedComponent, jmix:siteComponent, jmix:studioOnly

@@ -614,7 +614,7 @@ Search form top
 		line-height:28px;
 		border:1px solid #ccc;
 		background:#eaeaea;
-		padding:6px 10px;
+    	padding: 2px 4px;
 		text-decoration:none;
 }
 
@@ -628,7 +628,7 @@ Search form top
 		border:1px solid #ccc;
 		background:#333;
 		color:#fff;
-		padding:6px 10px;
+    	padding: 2px 4px;
 		text-decoration:none;
 }
 

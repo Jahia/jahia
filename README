@@ -336,6 +336,9 @@ checkout the project like this :
 
 svn checkout https://username@svnserver/svn/jahia/trunk
 
+You will probably want to also test a commit to make sure you have setup everything
+properly before running the Maven release plugin
+
 6. You can perform all this with the following command line :
 
 mvn -Prelease release:prepare

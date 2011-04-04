@@ -463,7 +463,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         JCRNodeWrapper destinationNode = session.getNode(sitePath);
 
                         String moduleName = null;
-                        if (originalNode.hasProperty("j:siteType") && originalNode.getProperty("j:siteType").getString().equals("module")) {
+                        if (originalNode.hasProperty("j:siteType") && !originalNode.getProperty("j:siteType").getString().equals("templatesSet")) {
                             moduleName = originalNode.getName();
                         }
                         List<String> newNodes = new ArrayList<String>();

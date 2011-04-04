@@ -36,7 +36,7 @@
         <dependency>
             <artifactId>jahia-ee-gwt</artifactId>
             <groupId>org.jahia.server</groupId>
-            <version>${jahia.package.version}</version>
+            <version>6.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

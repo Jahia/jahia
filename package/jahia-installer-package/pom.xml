@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-package</artifactId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.5-BETA2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-installer-package</artifactId>
@@ -26,7 +23,7 @@
         <dependency>
             <groupId>org.codehaus.izpack</groupId>
             <artifactId>izpack-standalone-compiler</artifactId>
-            <version>${izpack.version}</version>
+            <version>4.3.3.jahia-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jahia.configuration</groupId>
@@ -173,27 +170,27 @@
                                 <configuration>
                                     <tasks>
                                         <java classname="org.jahia.izpack.ResourcesConverter">
-                                            <arg value="izpack.i18n.packsLang"/>
-                                            <arg value="en,fr,de,it,pt,es"/>
-                                            <arg value="${project.build.directory}/izpack/i18n"/>
+                                            <arg value="izpack.i18n.packsLang" />
+                                            <arg value="en,fr,de,it,pt,es" />
+                                            <arg value="${project.build.directory}/izpack/i18n" />
                                             <classpath>
-                                                <path refid="maven.dependency.classpath"/>
+                                                <path refid="maven.dependency.classpath" />
                                             </classpath>
                                         </java>
                                         <java classname="org.jahia.izpack.ResourcesConverter">
-                                            <arg value="izpack.i18n.userInputLang"/>
-                                            <arg value="en,fr,de,it,pt,es"/>
-                                            <arg value="${project.build.directory}/izpack/i18n"/>
+                                            <arg value="izpack.i18n.userInputLang" />
+                                            <arg value="en,fr,de,it,pt,es" />
+                                            <arg value="${project.build.directory}/izpack/i18n" />
                                             <classpath>
-                                                <path refid="maven.dependency.classpath"/>
+                                                <path refid="maven.dependency.classpath" />
                                             </classpath>
                                         </java>
                                         <java classname="org.jahia.izpack.ResourcesConverter">
-                                            <arg value="izpack.i18n.customLang"/>
-                                            <arg value="en,fr,de,it,pt,es"/>
-                                            <arg value="${project.build.directory}/izpack/i18n"/>
+                                            <arg value="izpack.i18n.customLang" />
+                                            <arg value="en,fr,de,it,pt,es" />
+                                            <arg value="${project.build.directory}/izpack/i18n" />
                                             <classpath>
-                                                <path refid="maven.dependency.classpath"/>
+                                                <path refid="maven.dependency.classpath" />
                                             </classpath>
                                         </java>
                                     </tasks>

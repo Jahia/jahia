@@ -12,6 +12,6 @@
 <c:if test="${not empty target.string}"><c:set var="target"> target="${target.string}"</c:set></c:if>
 <c:set var="linknode" value="${linkreference.node}"/>
 <c:if test="${not empty linknode}">
-    <c:url var="linkurl" value="${linknode.path}.html" context="${url.base}"/>
+    <c:url var="linkurl" value="${url.base}${linknode.path}.html"/>
 </c:if>
 <a href="${linkurl}" ${target}><img src="${urlNode}" alt="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}" /></a>

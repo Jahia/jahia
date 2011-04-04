@@ -168,9 +168,9 @@
                   <rich-text jcr:primaryType="jnt:bigText">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis tellus nibh. Maecenas tortor arcu, bibendum nec dapibus ut, convallis condimentum metus.&lt;/p&gt; "/>
                   </rich-text>
-                  <acces-to-my-tasks divClass="user-edit-details" jcr:primaryType="jnt:componentLink" targetTemplate="user-tasks">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Acces to my tasks"/>
-                  </acces-to-my-tasks>
+                  <go-to-my-tasks divClass="user-edit-details" jcr:primaryType="jnt:componentLink" targetTemplate="user-tasks">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Go to my tasks"/>
+                  </go-to-my-tasks>
                 </my-settings-1>
                 <my-settings-2 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My pages"/>
@@ -180,9 +180,9 @@
                   <rich-text jcr:primaryType="jnt:bigText">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis tellus nibh. Maecenas tortor arcu, bibendum nec dapibus ut, convallis condimentum metus.&lt;/p&gt; "/>
                   </rich-text>
-                  <acces-to-my-pages divClass="user-edit-details" jcr:primaryType="jnt:componentLink" targetTemplate="user-content">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Acces to my pages"/>
-                  </acces-to-my-pages>
+                  <go-to-my-pages divClass="user-edit-details" jcr:primaryType="jnt:componentLink" targetTemplate="user-content">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Go to my pages"/>
+                  </go-to-my-pages>
                 </my-settings-2>
                 <my-settings-3 j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Sites"/>
@@ -192,9 +192,9 @@
                   <rich-text jcr:primaryType="jnt:bigText">
                     <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" text="&lt;p&gt;  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis tellus nibh. Maecenas tortor arcu, bibendum nec dapibus ut, convallis condimentum metus.&lt;/p&gt; "/>
                   </rich-text>
-                  <acces-to-my-sites divClass="user-edit-details" jcr:primaryType="jnt:componentLink" targetTemplate="user-sites">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Acces to my sites"/>
-                  </acces-to-my-sites>
+                  <go-to-my-sites divClass="user-edit-details" jcr:primaryType="jnt:componentLink" targetTemplate="user-sites">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Go to my sites"/>
+                  </go-to-my-sites>
                 </my-settings-3>
               </shortcuts-list>
             </pagecontent>

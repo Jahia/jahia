@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-root</artifactId>
     <name>Jahia Project Root</name>
     <groupId>org.jahia.server</groupId>
-    <version>6.5-BETA2-RC1</version>
+    <version>6.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--
@@ -101,9 +101,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:${jahia.svn.base.url}/tags/JAHIA_6_5_BETA2_RC1</connection>
-        <developerConnection>scm:svn:${jahia.svn.base.url}/tags/JAHIA_6_5_BETA2_RC1</developerConnection>
-        <url>${jahia.svn.base.url}/tags/JAHIA_6_5_BETA2_RC1</url>
+        <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk</connection>
+        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk</developerConnection>
+        <url>http://10.8.37.111/svn/jahia/trunk</url>
     </scm>
     <developers>
         <developer>

@@ -519,6 +519,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     private void grantPermissionToRole(JCRNodeWrapper permission, String jahiaRolePath, JCRSessionWrapper session) throws RepositoryException {
         try {
             Node n = session.getNode(jahiaRolePath);
+            session.checkout(n);
 
             Value newValue = session.getValueFactory().createValue(permission, true);
 

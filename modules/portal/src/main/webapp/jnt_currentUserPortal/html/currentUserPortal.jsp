@@ -34,7 +34,7 @@
                 </c:if>
             </c:forEach>
 
-            <input type="hidden" name="newNodeOutputFormat" value="html${ps}"/>
+            <input type="hidden" name="newNodeOutputFormat" value="user-portal.html${ps}"/>
             <h4>Create my portal :</h4> <input class="button" type="submit" name="submit">
         </form>
     </c:if>

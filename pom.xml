@@ -30,6 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
               
+        <jahia.package.version>${project.version}</jahia.package.version>
         <jahia.project.structure.version>2</jahia.project.structure.version>
 
         <jahia.archivers.version>2.2</jahia.archivers.version>
@@ -460,7 +461,7 @@
         <module>core</module>
         <module>gwt</module>
         <module>modules</module>
-        <!--module>bundles</module-->
+        <module>bundles</module>
         <module>package</module>
         <module>prepackagedSites</module>
         <module>war</module>

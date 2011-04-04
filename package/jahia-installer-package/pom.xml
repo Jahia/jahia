@@ -102,7 +102,7 @@
                                         <artifactItem>
                                             <groupId>org.jahia.server</groupId>
                                             <artifactId>jahia-war</artifactId>
-                                            <version>6.5-SNAPSHOT</version>
+                                            <version>${project.version}</version>
                                             <classifier>${jahia.war.classifier}</classifier>
                                             <type>war</type>
                                             <overWrite>false</overWrite>
@@ -122,7 +122,7 @@
                                         <artifactItem>
                                             <groupId>org.jahia.server</groupId>
                                             <artifactId>shared-libraries</artifactId>
-                                            <version>6.5-SNAPSHOT</version>
+                                            <version>${project.version}</version>
                                             <classifier>all</classifier>
                                             <type>zip</type>
                                             <overWrite>false</overWrite>

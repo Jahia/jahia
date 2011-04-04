@@ -30,15 +30,12 @@
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.5-BETA2-RC1</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>shindig</artifactId>
@@ -52,7 +49,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -88,7 +85,7 @@
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>social-service</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <scope>provided</scope>
         </dependency>
         

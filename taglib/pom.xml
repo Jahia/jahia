@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.5-BETA2-RC1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-taglib</artifactId>
@@ -14,9 +11,9 @@
     <packaging>jar</packaging>
 
     <scm>
-        <connection>scm:svn:${jahia.svn.base.url}/taglib</connection>
-        <developerConnection>scm:svn:${jahia.svn.base.url}/taglib</developerConnection>
-        <url>${jahia.svn.base.url}/taglib</url>
+        <connection>scm:svn:${jahia.svn.base.url}/taglib/tags/JAHIA_6_5_BETA2_RC1/taglib</connection>
+        <developerConnection>scm:svn:${jahia.svn.base.url}/taglib/tags/JAHIA_6_5_BETA2_RC1/taglib</developerConnection>
+        <url>${jahia.svn.base.url}/taglib/tags/JAHIA_6_5_BETA2_RC1/taglib</url>
     </scm>
     
     <dependencies>
@@ -24,7 +21,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -94,11 +91,11 @@
                     <additionalBuildcommands>
                         <buildCommand>
                             <name>org.eclipse.wst.common.project.facet.core.builder</name>
-                            <arguments></arguments>
+                            <arguments />
                         </buildCommand>
                         <buildCommand>
                             <name>org.eclipse.wst.validation.validationbuilder</name>
-                            <arguments></arguments>
+                            <arguments />
                         </buildCommand>
                     </additionalBuildcommands>
                 </configuration>

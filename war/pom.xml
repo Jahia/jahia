@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.5-BETA2-RC1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-war</artifactId>
@@ -67,11 +64,11 @@
                             <additionalBuildcommands>
                                 <buildCommand>
                                     <name>org.eclipse.wst.common.project.facet.core.builder</name>
-                                    <arguments></arguments>
+                                    <arguments />
                                 </buildCommand>
                                 <buildCommand>
                                     <name>org.eclipse.wst.validation.validationbuilder</name>
-                                    <arguments></arguments>
+                                    <arguments />
                                 </buildCommand>
                             </additionalBuildcommands>
                         </configuration>
@@ -250,26 +247,25 @@
 		                        </goals>
 		                        <configuration>
 		                            <tasks if="jahia.generate.ddl">
-		                                <echo message="Generating DDL schemata..."/>
+		                                <echo message="Generating DDL schemata..." />
 		
-		                                <taskdef name="hibernatetool"
-		                                         classname="org.hibernate.tool.ant.HibernateToolTask">
+		                                <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask">
 		                                    <classpath>
-		                                        <path refid="maven.dependency.classpath"/>
-		                                        <pathelement path="${maven.build.dest}"/>
-		                                        <pathelement path="${maven.test.dest}"/>
+		                                        <path refid="maven.dependency.classpath" />
+		                                        <pathelement path="${maven.build.dest}" />
+		                                        <pathelement path="${maven.test.dest}" />
 		                                    </classpath>
 		                                </taskdef>
 										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
-											<annotationconfiguration configurationfile="${basedir}/tools/derby.hibernate.cfg.xml"/>
+											<annotationconfiguration configurationfile="${basedir}/tools/derby.hibernate.cfg.xml" />
 											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
 										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
-											<annotationconfiguration configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml"/>
+											<annotationconfiguration configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml" />
 											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
 										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
-											<annotationconfiguration configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml"/>
+											<annotationconfiguration configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml" />
 											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
 		                            </tasks>
@@ -325,25 +321,23 @@
 		                        </goals>
 		                        <configuration>
 		                            <tasks if="jahia.generate.jbpm.ddl">
-		                                <echo message="Generating DDL schemata for jBPM..."/>
-		                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jbpm-pvm-${jbpm.version}.jar"
-		                                       dest="${project.build.directory}/jbpm">
+		                                <echo message="Generating DDL schemata for jBPM..." />
+		                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jbpm-pvm-${jbpm.version}.jar" dest="${project.build.directory}/jbpm">
 		                                    <patternset>
-		                                        <include name="*.hbm.xml"/>
+		                                        <include name="*.hbm.xml" />
 		                                    </patternset>
 		                                </unzip>
-		                                <taskdef name="hibernatetool"
-		                                         classname="org.hibernate.tool.ant.HibernateToolTask">
+		                                <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask">
 		                                    <classpath>
-		                                        <path refid="maven.dependency.classpath"/>
-		                                        <pathelement path="${maven.build.dest}"/>
-		                                        <pathelement path="${maven.test.dest}"/>
+		                                        <path refid="maven.dependency.classpath" />
+		                                        <pathelement path="${maven.build.dest}" />
+		                                        <pathelement path="${maven.test.dest}" />
 		                                    </classpath>
 		                                </taskdef>
 										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
 											<configuration propertyfile="${basedir}/tools/derby.hibernate.properties">
 			                                    <fileset dir="${project.build.directory}/jbpm">
-			                                        <include name="*.hbm.xml"/>
+			                                        <include name="*.hbm.xml" />
 			                                    </fileset>
 											</configuration>
 											<hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false" drop="true" />
@@ -351,7 +345,7 @@
 										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
 											<configuration propertyfile="${basedir}/tools/mysql.hibernate.properties">
 			                                    <fileset dir="${project.build.directory}/jbpm">
-			                                        <include name="*.hbm.xml"/>
+			                                        <include name="*.hbm.xml" />
 			                                    </fileset>
 											</configuration>
 											<hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false" drop="true" />
@@ -359,12 +353,12 @@
 										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
 											<configuration propertyfile="${basedir}/tools/postgresql.hibernate.properties">
 			                                    <fileset dir="${project.build.directory}/jbpm">
-			                                        <include name="*.hbm.xml"/>
+			                                        <include name="*.hbm.xml" />
 			                                    </fileset>
 											</configuration>
 											<hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
-		                                <delete dir="${project.build.directory}/jbpm"/>
+		                                <delete dir="${project.build.directory}/jbpm" />
 		                            </tasks>
 		                        </configuration>
 		                    </execution>
@@ -470,27 +464,25 @@
                                 <phase>pre-integration-test</phase>
                                 <configuration>
                                     <tasks>
-                                        <echo message="Starting Tomcat"/>
+                                        <echo message="Starting Tomcat" />
                                         <delete>
-                                            <fileset dir="${jahia.deploy.targetServerDirectory}/logs" includes="**/*"/>
+                                            <fileset dir="${jahia.deploy.targetServerDirectory}/logs" includes="**/*" />
                                         </delete>
-                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh"
-                                              dir="${jahia.deploy.targetServerDirectory}/bin" osfamily="unix">
-                                            <arg value="start"/>
+                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh" dir="${jahia.deploy.targetServerDirectory}/bin" osfamily="unix">
+                                            <arg value="start" />
                                         </exec>
-                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh"
-                                              dir="${jahia.deploy.targetServerDirectory}/bin" osfamily="mac">
-                                            <arg value="start"/>
+                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh" dir="${jahia.deploy.targetServerDirectory}/bin" osfamily="mac">
+                                            <arg value="start" />
                                         </exec>
                                         <exec executable="cmd" dir="${jahia.deploy.targetServerDirectory}/bin" spawn="true" osfamily="windows">
-                                        	<arg value="/c"/>
-                                        	<arg value="${jahia.deploy.targetServerDirectory}/bin/startup.bat"/>
+                                        	<arg value="/c" />
+                                        	<arg value="${jahia.deploy.targetServerDirectory}/bin/startup.bat" />
                                         </exec>
-                                        <echo message="Waiting for Tomcat to start..."/>
+                                        <echo message="Waiting for Tomcat to start..." />
 										<waitfor maxwait="5" maxwaitunit="minute" checkevery="1000">
 											<and>
-												<socket server="localhost" port="8080"/>
-												<http url="http://localhost:8080/administration"/>
+												<socket server="localhost" port="8080" />
+												<http url="http://localhost:8080/administration" />
 											</and>
 										</waitfor>
                                     </tasks>
@@ -504,32 +496,29 @@
                                 <phase>post-integration-test</phase>
                                 <configuration>
                                     <tasks>
-                                        <echo message="Stopping Tomcat"/>
-                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh"
-                                              dir="${jahia.deploy.targetServerDirectory}/bin" osfamily="unix">
-                                            <arg value="stop"/>
-                                            <arg value="-force"/>
+                                        <echo message="Stopping Tomcat" />
+                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh" dir="${jahia.deploy.targetServerDirectory}/bin" osfamily="unix">
+                                            <arg value="stop" />
+                                            <arg value="-force" />
                                         </exec>
-                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh"
-                                              dir="${jahia.deploy.targetServerDirectory}/bin" osfamily="mac">
-                                            <arg value="stop"/>
-                                            <arg value="-force"/>
+                                        <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh" dir="${jahia.deploy.targetServerDirectory}/bin" osfamily="mac">
+                                            <arg value="stop" />
+                                            <arg value="-force" />
                                         </exec>
                                         <exec executable="cmd" dir="${jahia.deploy.targetServerDirectory}/bin" spawn="true" osfamily="windows">
-                                        	<arg value="/c"/>
-                                        	<arg value="${jahia.deploy.targetServerDirectory}/bin/shutdown.bat"/>
+                                        	<arg value="/c" />
+                                        	<arg value="${jahia.deploy.targetServerDirectory}/bin/shutdown.bat" />
                                         </exec>
-                                        <echo message="Waiting while Tomcat is stopping..."/>
+                                        <echo message="Waiting while Tomcat is stopping..." />
 										<waitfor maxwait="1" maxwaitunit="minute" checkevery="1000">
 											<not>
-												<http url="http://localhost:8080/administration"/>
+												<http url="http://localhost:8080/administration" />
 											</not>
 										</waitfor>
-                                        <echo message="Undeploying jahia"/>
-                                        <delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}"/>
-                                        <mkdir dir="${project.build.directory}/tomcatLogs"/>
-                                        <copy file="${jahia.deploy.targetServerDirectory}/logs/catalina.out"
-                                              toDir="${project.build.directory}/tomcatLogs" failonerror="false"/>
+                                        <echo message="Undeploying jahia" />
+                                        <delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}" />
+                                        <mkdir dir="${project.build.directory}/tomcatLogs" />
+                                        <copy file="${jahia.deploy.targetServerDirectory}/logs/catalina.out" toDir="${project.build.directory}/tomcatLogs" failonerror="false" />
                                     </tasks>
                                 </configuration>
                                 <goals>
@@ -619,30 +608,21 @@
                                 <phase>integration-test</phase>
                                 <configuration>
                                     <tasks>
-                                        <echo message="Deploy ACME Demo Web Site"/>
-                                        <copy file="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/prepackagedSites/webtemplates65.zip"
-                                                     toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/imports"/>
-                                        <sleep seconds="90"/>
-                                        <echo message="Get the sitemap"/>
-                                        <get src="${jahia.test.url}/cms/render/default/en/sites/ACME/home.sitemap.txt" verbose="on"
-                                             dest="${project.build.directory}/rawpageurls.txt" ignoreerrors="true" username="${jahia.test.jmeter.username}" password="${jahia.test.jmeter.password}"/>
-                                        <available file="${project.build.directory}/rawpageurls.txt"
-                                                   property="sitemap.present"/>
-                                        <exec executable="sort" dir="${project.build.directory}"
-                                              output="${project.build.directory}/sortpageurls.txt"
-                                              input="${project.build.directory}/rawpageurls.txt"/>
-                                        <exec executable="uniq" dir="${project.build.directory}"
-                                              output="${project.build.directory}/uniqpageurls.txt"
-                                              input="${project.build.directory}/sortpageurls.txt"/>
-                                        <exec executable="grep" dir="${project.build.directory}"
-                                              output="${project.build.directory}/pageurls.txt"
-                                              input="${project.build.directory}/uniqpageurls.txt">
-                                            <arg line="-v '^$'"/>
+                                        <echo message="Deploy ACME Demo Web Site" />
+                                        <copy file="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/prepackagedSites/webtemplates65.zip" toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/var/imports" />
+                                        <sleep seconds="90" />
+                                        <echo message="Get the sitemap" />
+                                        <get src="${jahia.test.url}/cms/render/default/en/sites/ACME/home.sitemap.txt" verbose="on" dest="${project.build.directory}/rawpageurls.txt" ignoreerrors="true" username="${jahia.test.jmeter.username}" password="${jahia.test.jmeter.password}" />
+                                        <available file="${project.build.directory}/rawpageurls.txt" property="sitemap.present" />
+                                        <exec executable="sort" dir="${project.build.directory}" output="${project.build.directory}/sortpageurls.txt" input="${project.build.directory}/rawpageurls.txt" />
+                                        <exec executable="uniq" dir="${project.build.directory}" output="${project.build.directory}/uniqpageurls.txt" input="${project.build.directory}/sortpageurls.txt" />
+                                        <exec executable="grep" dir="${project.build.directory}" output="${project.build.directory}/pageurls.txt" input="${project.build.directory}/uniqpageurls.txt">
+                                            <arg line="-v '^$'" />
                                         </exec>
                                         <copy toDir="${jahia.test.jmeter.path}/bin/testPlan">
-                                            <fileset dir="${pom.basedir}/src/main/scripts/jmeter/"/>
+                                            <fileset dir="${pom.basedir}/src/main/scripts/jmeter/" />
                                         </copy>
-                                        <copy file="${project.build.directory}/pageurls.txt" toDir="${jahia.test.jmeter.path}/bin/testPlan"/>                                       
+                                        <copy file="${project.build.directory}/pageurls.txt" toDir="${jahia.test.jmeter.path}/bin/testPlan" />                                       
                                     </tasks>
                                 </configuration>
                                 <goals>
@@ -657,13 +637,13 @@
                                 <configuration>
                                     <tasks>
                                         <copy toDir="${pom.basedir}/target/jmeterResults/">
-                                            <fileset dir="${jahia.test.jmeter.path}/bin/results" erroronmissingdir="false"/>
+                                            <fileset dir="${jahia.test.jmeter.path}/bin/results" erroronmissingdir="false" />
                                         </copy>
                                         <copy toDir="${pom.basedir}/target/jmeterResults/">
-                                            <fileset dir="${pom.basedir}/../results" erroronmissingdir="false"/>
+                                            <fileset dir="${pom.basedir}/../results" erroronmissingdir="false" />
                                         </copy>
                                         <copy toDir="${pom.basedir}/target/jmeterResults/">
-                                            <fileset dir="${pom.basedir}/results" erroronmissingdir="false"/>
+                                            <fileset dir="${pom.basedir}/results" erroronmissingdir="false" />
                                         </copy>
                                     </tasks>
                                 </configuration>
@@ -802,25 +782,25 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <scope>compile</scope>
         </dependency>
         
@@ -828,406 +808,406 @@
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>article</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>assets</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>blog</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>bookmarks</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>calendar</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>contributeToolbar</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>contact</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>default</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>docConverter</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>event</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>facets</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>faq</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>formbuilder</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>forum</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>grid</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>job</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>contentRetrieval</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>content-browser</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>googleAnalytics</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>location</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>macros</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>news</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>newsletter</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>pageHit</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>person</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>poll</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>portal</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>press</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>publication</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>profile</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>twitter</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>rating</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>summary</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>rss</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>search</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>seo</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>shindig</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>sitemap</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>skins</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>social</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>socialsharing</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>staticHTML</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>tabularList</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>tags</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>tasks</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>templates-intranet</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>templates-web</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>templates-web-blue</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>templates-apps</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>templates-system</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>test</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>teasers</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>topstories</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>translateworkflow</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>userregistration</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>videostreaming</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>webClipping</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>wiki</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
@@ -1236,14 +1216,14 @@
         <dependency>
             <groupId>org.jahia.prepackagedsites</groupId>
             <artifactId>acme</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>zip</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.prepackagedsites</groupId>
             <artifactId>webtemplates</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <type>zip</type>
             <scope>runtime</scope>
         </dependency>
@@ -1570,13 +1550,13 @@
                         <configuration>
                             <tasks>
                                 <java classname="org.jahia.ajax.gwt.utils.GWTDictionaryBuilder">
-                                    <arg value="JahiaInternalResources"/>
-                                    <arg value="de,en,es,fr,it,pt"/>
-                                    <arg value="${project.build.directory}/${project.build.finalName}/gwt/resources/i18n"/>
-                                    <arg value="messages"/>
-                                    <arg value="true"/><!-- minified -->
+                                    <arg value="JahiaInternalResources" />
+                                    <arg value="de,en,es,fr,it,pt" />
+                                    <arg value="${project.build.directory}/${project.build.finalName}/gwt/resources/i18n" />
+                                    <arg value="messages" />
+                                    <arg value="true" /><!-- minified -->
                                     <classpath>
-                                        <path refid="maven.runtime.classpath"/>
+                                        <path refid="maven.runtime.classpath" />
                                     </classpath>
                                 </java>
                             </tasks>
@@ -1593,19 +1573,16 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo message="Deleting unused/duplicate resources..."/>
+                                <echo message="Deleting unused/duplicate resources..." />
                                  in resources folder, delete GWT specific files (*.cache.*, *.nocache.*, *.rpc)
                                 <delete includeemptydirs="true" failonerror="false">
-                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/resources/"
-                                             includes="**/*.cache.*,**/*.nocache.*,**/*.rpc"/>
+                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/resources/" includes="**/*.cache.*,**/*.nocache.*,**/*.rpc" />
                                 </delete>
                                  delete duplicated resources , DO NOT delete GWT specific files (*.cache.*, *.nocache.*, *.rpc) and resources folder
                                 <delete includeemptydirs="true" failonerror="false">
-                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/"
-                                             includes="**/*"
-                                             excludes="**/*.cache.*,**/*.nocache.*,**/*.rpc,resources/**,**/hosted.html"/>
+                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/" includes="**/*" excludes="**/*.cache.*,**/*.nocache.*,**/*.rpc,resources/**,**/hosted.html" />
                                 </delete>
-                                <echo message="...done"/>
+                                <echo message="...done" />
                             </tasks>
                         </configuration>
                     </execution>
@@ -1615,11 +1592,11 @@
                         <configuration>
                             <tasks>
                                 <concat destfile="${project.build.directory}/${project.build.finalName}/gwt/resources/css/gwt.css" fixlastline="yes">
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-ext-all.css" erroronmissingdir="false"/>
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/xtheme-jahia.css" erroronmissingdir="false"/>
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/edit.css" erroronmissingdir="false"/>
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-gwt-engines.css" erroronmissingdir="false"/>
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/diff.css" erroronmissingdir="false"/>
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-ext-all.css" erroronmissingdir="false" />
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/xtheme-jahia.css" erroronmissingdir="false" />
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/edit.css" erroronmissingdir="false" />
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-gwt-engines.css" erroronmissingdir="false" />
+                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/diff.css" erroronmissingdir="false" />
                                 </concat>
                             </tasks>
                         </configuration>

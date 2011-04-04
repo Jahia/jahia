@@ -33,15 +33,12 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.5-BETA2-RC1</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>pageHit</artifactId>
@@ -96,44 +93,43 @@
 		                        </goals>
 		                        <configuration>
 		                            <tasks if="jahia.generate.ddl">
-		                                <echo message="Generating DDL schemata..."/>
-                						<property name="runtime_classpath" refid="maven.runtime.classpath"/>
-		                                <taskdef name="hibernatetool"
-		                                         classname="org.hibernate.tool.ant.HibernateToolTask">
+		                                <echo message="Generating DDL schemata..." />
+                						<property name="runtime_classpath" refid="maven.runtime.classpath" />
+		                                <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask">
 		                                    <classpath>
-		                                        <path refid="maven.dependency.classpath"/>
-		                                        <pathelement path="${maven.build.dest}"/>
-		                                        <pathelement path="${maven.test.dest}"/>
+		                                        <path refid="maven.dependency.classpath" />
+		                                        <pathelement path="${maven.build.dest}" />
+		                                        <pathelement path="${maven.test.dest}" />
 		                                    </classpath>
 		                                </taskdef>
-		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/derby"/>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/derby" />
 										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/derby/">
-											<classpath path="${runtime_classpath}"/>
-											<annotationconfiguration configurationfile="${basedir}/tools/derby.hibernate.cfg.xml"/>
+											<classpath path="${runtime_classpath}" />
+											<annotationconfiguration configurationfile="${basedir}/tools/derby.hibernate.cfg.xml" />
 											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
-		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/mssql"/>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/mssql" />
 										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/mssql/">
-											<classpath path="${runtime_classpath}"/>
-											<annotationconfiguration configurationfile="${basedir}/tools/mssql.hibernate.cfg.xml"/>
+											<classpath path="${runtime_classpath}" />
+											<annotationconfiguration configurationfile="${basedir}/tools/mssql.hibernate.cfg.xml" />
 											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
-		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/mysql"/>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/mysql" />
 										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/mysql/">
-											<classpath path="${runtime_classpath}"/>
-											<annotationconfiguration configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml"/>
+											<classpath path="${runtime_classpath}" />
+											<annotationconfiguration configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml" />
 											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
-		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/oracle"/>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/oracle" />
 										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/oracle/">
-											<classpath path="${runtime_classpath}"/>
-											<annotationconfiguration configurationfile="${basedir}/tools/oracle.hibernate.cfg.xml"/>
+											<classpath path="${runtime_classpath}" />
+											<annotationconfiguration configurationfile="${basedir}/tools/oracle.hibernate.cfg.xml" />
 											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
-		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/postgresql"/>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/postgresql" />
 										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/postgresql/">
-											<classpath path="${runtime_classpath}"/>
-											<annotationconfiguration configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml"/>
+											<classpath path="${runtime_classpath}" />
+											<annotationconfiguration configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml" />
 											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
 		                            </tasks>
@@ -149,13 +145,13 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5-BETA2-RC1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

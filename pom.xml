@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-root</artifactId>
     <name>Jahia Project Root</name>
     <groupId>org.jahia.server</groupId>
-    <version>6.5-SNAPSHOT</version>
+    <version>6.5-BETA2-RC1</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--
@@ -40,7 +37,7 @@
         <jahia.configurators.version>2.13</jahia.configurators.version>
         <jahia.deployers.version>2.1</jahia.deployers.version>
 
-        <jahia.war.classifier></jahia.war.classifier>
+        <jahia.war.classifier />
 
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.0.5.RELEASE</spring.version>
@@ -90,13 +87,13 @@
 		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
         <jahia.deploy.processingServer>true</jahia.deploy.processingServer>
         <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
-        <jahia.deploy.war.contextPath></jahia.deploy.war.contextPath>
+        <jahia.deploy.war.contextPath />
         <jahia.test.url>http://localhost:8080/cms</jahia.test.url>
         <!-- DBMS -->
         <jahia.configure.databaseType>derby_embedded</jahia.configure.databaseType>
         <jahia.configure.databaseUrl>jdbc:derby:directory:jahia;create=true</jahia.configure.databaseUrl>
-        <jahia.configure.databaseUsername></jahia.configure.databaseUsername>
-        <jahia.configure.databasePassword></jahia.configure.databasePassword>
+        <jahia.configure.databaseUsername />
+        <jahia.configure.databasePassword />
         <!-- Application server -->
         <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
         <jahia.deploy.targetServerVersion>6</jahia.deploy.targetServerVersion>
@@ -104,9 +101,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:${jahia.svn.base.url}</connection>
-        <developerConnection>scm:svn:${jahia.svn.base.url}</developerConnection>
-        <url>${jahia.svn.base.url}</url>
+        <connection>scm:svn:${jahia.svn.base.url}/tags/JAHIA_6_5_BETA2_RC1</connection>
+        <developerConnection>scm:svn:${jahia.svn.base.url}/tags/JAHIA_6_5_BETA2_RC1</developerConnection>
+        <url>${jahia.svn.base.url}/tags/JAHIA_6_5_BETA2_RC1</url>
     </scm>
     <developers>
         <developer>

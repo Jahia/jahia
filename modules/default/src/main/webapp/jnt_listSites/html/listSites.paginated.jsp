@@ -45,26 +45,16 @@
         <ul class="list-sites">
             <c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}">
                 <jcr:node var="home" path="${node.path}/home"/>
-                <c:if test="${jcr:hasPermission(home,'jcr:addChildNodes')}">
+                <c:if test="${jcr:hasPermission(home,'editModeAccess') || jcr:hasPermission(home,'contributeModeAccess') || home.properties['j:published'].boolean}">
                     <li class="listsiteicon">${node.displayableName}
-                        <c:if test="${currentNode.properties.edit.boolean}"><br/>
-
-                            <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "
-                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
-                                    href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"><fmt:message
-                                    key="label.editMode"/></a>
+                        <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(home,'editModeAccess')}">
+                            <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"><fmt:message key="label.editMode"/></a>
                         </c:if>
-                        <c:if test="${currentNode.properties.contribute.boolean}">
-                            <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" "
-                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
-                                href="<c:url value='${url.baseContribute}${node.path}/home.html'/>"><fmt:message
-                                key="label.contribute"/></a>
+                        <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(home,'contributeModeAccess')}">
+                            <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseContribute}${node.path}/home.html'/>"><fmt:message key="label.contribute"/></a>
                         </c:if>
                         <c:if test="${currentNode.properties.live.boolean && home.properties['j:published'].boolean}">
-                            <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation"
-                                 style="position:relative; top: 4px; margin-right:2px; "><a
-                                href="<c:url value='${url.baseLive}${node.path}/home.html'/>"><fmt:message
-                                key="label.live"/></a>
+                            <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseLive}${node.path}/home.html'/>"><fmt:message key="label.live"/></a>
                         </c:if>
                     </li>
                 </c:if>

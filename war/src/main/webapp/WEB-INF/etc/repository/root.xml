@@ -17,7 +17,15 @@
                     </j:acl>
                     <imports jcr:primaryType="jnt:importDropBox"/>
                 </private>
-                <profile jcr:primaryType="jnt:folder"/>
+                <profile jcr:created="2011-04-01T17:24:07.649+02:00" jcr:createdBy=" system " jcr:lastModified="2011-04-01T17:46:22.456+02:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:folder">
+                  <root.png j:height="64" j:lastPublished="2011-04-01T17:46:22.881+02:00" j:lastPublishedBy="root" j:published="true" j:width="64" jcr:created="2011-04-01T17:46:22.422+02:00" jcr:createdBy="root" jcr:lastModified="2011-04-01T17:46:22.822+02:00" jcr:lastModifiedBy="root" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
+                    <jcr:content jcr:lastModified="2011-04-01T17:46:22.456+02:00" jcr:lastModifiedBy="root" jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                    <thumbnail jcr:lastModified="2011-04-01T17:46:22.569+02:00" jcr:lastModifiedBy="root" jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                    <thumbnail2 jcr:lastModified="2011-04-01T17:46:22.569+02:00" jcr:lastModifiedBy="root" jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                    <avatar_120 jcr:lastModified="2011-04-01T17:46:22.822+02:00" jcr:lastModifiedBy="root" jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                    <avatar_60 jcr:lastModified="2011-04-01T17:46:22.822+02:00" jcr:lastModifiedBy="root" jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                  </root.png>
+                </profile>
             </files>
 
             <portlets jcr:primaryType="jnt:portletFolder"/>

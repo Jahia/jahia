@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>6.5-BETA2</version>
+        <version>6.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-taglib</artifactId>
@@ -11,9 +11,9 @@
     <packaging>jar</packaging>
 
     <scm>
-        <connection>scm:svn:http://10.8.37.111/svn/jahia/tags/JAHIA_6_5_BETA2/taglib</connection>
-        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/tags/JAHIA_6_5_BETA2/taglib</developerConnection>
-        <url>http://10.8.37.111/svn/jahia/tags/JAHIA_6_5_BETA2/taglib</url>
+        <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/taglib</connection>
+        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/taglib</developerConnection>
+        <url>http://10.8.37.111/svn/jahia/trunk/taglib</url>
     </scm>
     
     <dependencies>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.5-BETA2</version>
+            <version>6.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

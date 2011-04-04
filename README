@@ -341,7 +341,7 @@ properly before running the Maven release plugin
 
 6. You can perform all this with the following command line :
 
-mvn -Prelease release:prepare
+mvn -Prelease,installer,java-installer,windows-installer,qa-build,test -Dmaven.repo.local=/home/bamboo/.m2/repository-for-package release:prepare
 
 7. Now go back into \core\src\main\java\org\jahia\bin\Jahia.java and change the
  release number to the next release number you want.
@@ -350,7 +350,7 @@ mvn -Prelease release:prepare
 
 9. Checkout the new tag that was created by the plugin in step 6 and run :
 
-mvn -Prelease clean install deploy
+mvn -Prelease,installer,java-installer,windows-installer,qa-build,test -Dmaven.repo.local=/home/bamboo/.m2/repository-for-package clean install deploy
 
    This step requires that you have correctly setup deployment to the Maven repository
 as described in this README in the section called "Deploying new JARs to maven.jahia.org"
@@ -361,4 +361,4 @@ if something was already committed, prepare a rollback with release:rollback
 It's also a good idea if you're not familiar with the process to execute first
 a dry run (won't do any real changes). You can do this with the following line:
 
-mvn -Prelease -DdryRun=true release:prepare
+mvn -Prelease,installer,java-installer,windows-installer,qa-build,test -Dmaven.repo.local=/home/bamboo/.m2/repository-for-package -DdryRun=true release:prepare

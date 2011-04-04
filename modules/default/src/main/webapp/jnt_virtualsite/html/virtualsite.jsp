@@ -89,7 +89,7 @@
             <c:forEach items="${nodeTypes}" var="nodeType">
                 <li>
                     <jcr:icon var="icon" type="${nodeType}"/>
-                    <img src="<:url value='${url.templatesPath}/${icon}.png'/>"/>
+                    <img src="<c:url value='${url.templatesPath}/${icon}.png'/>"/>
                         ${jcr:label(nodeType,currentResource.locale)}
                 </li>
             </c:forEach>

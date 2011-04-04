@@ -23,47 +23,41 @@
 <c:if test="${!empty param.letter}">
     <c:set var="selectedLetter" value="${param.letter}"/>
 </c:if>
+<c:set var="glossaryPath" value="${renderContext.mainResource.node.path}"/>
+<c:if test="${!empty param.glossaryPath}">
+    <c:set var="glossaryPath" value="${param.glossaryPath}"/>
+</c:if>
 
 <div id="${currentNode.UUID}">
+    <template:addResources type="javascript" resources="ajaxreplace.js" />
     <div class="alphabeticalMenu"><!--start alphabeticalMenu-->
-        <template:addResources type="javascript" resources="ajaxreplace.js" />
-        <div class="alphabeticalMenu"><!--start alphabeticalMenu-->
-            <div class="alphabeticalNavigation">
-                <c:forTokens items="A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z" var="letter" delims=",">
-                    <c:url var="myUrl" value="${url.current}.ajax">
-                        <c:param name="letter" value="${letter}"/>
-                    </c:url>
-                    <span><a class="alphabeticalLetter <c:if test='${letter eq selectedLetter}'>current</c:if>" href="javascript:replace('${currentNode.UUID}','${myUrl}')" >${letter}</a></span>
-                </c:forTokens>
-            </div>
-            <div class='clear'></div></div>
-
-        <ul>
-            <c:choose>
-                <c:when test="${(renderContext.editModeConfigName eq 'studiomode') || !(renderContext.editModeConfigName eq 'editmode')}">
-                    <c:forEach items="${currentNode.nodes}" var="subchild">
-                        <p>
-                            <template:module node="${subchild}" view="${moduleMap.subNodesTemplate}"  editable="${moduleMap.editable}" />
-                        </p>
-                    </c:forEach>
-                </c:when>
-                <c:otherwise>
-
-                    <jcr:sql var="list"
-                             sql="select * from [jnt:content] as content  where
+        <div class="alphabeticalNavigation">
+            <c:forTokens items="A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z" var="letter" delims=",">
+                <c:url var="myUrl" value="${url.current}.ajax">
+                    <c:param name="letter" value="${letter}"/>
+                    <c:param name="glossaryPath" value="${glossaryPath}"/>
+                </c:url>
+                <span><a class="alphabeticalLetter <c:if test='${letter eq selectedLetter}'>current</c:if>" href="javascript:replace('${currentNode.UUID}','${myUrl}')" >${letter}</a></span>
+            </c:forTokens>
+        </div>
+        <div class='clear'></div>
+    </div>
+    <h3>${selectedLetter}</h3>
+    <ul>
+        <c:if test="${!empty currentNode.properties.field.string}">
+        <jcr:sql var="list"
+                 sql="select * from [jnt:content] as content  where
               (content.['${currentNode.properties.field.string}'] like '${fn:toLowerCase(selectedLetter)}%' or
               content.['${currentNode.properties.field.string}'] like '${fn:toUpperCase(selectedLetter)}%') and
-               isdescendantnode(content, ['${currentNode.path}'])
-               order by content.['${currentNode.properties.field}']"/>
+               isdescendantnode(content, ['${glossaryPath}'])
+               order by content.['${currentNode.properties.field.string}']"/>
 
-                    <c:forEach items="${list.nodes}" var="subchild">
-                        <p>
-                            <template:module node="${subchild}" view="${moduleMap.subNodesTemplate}"  editable="${moduleMap.editable}" />
-                        </p>
-                    </c:forEach>
-                </c:otherwise>
-            </c:choose>
-        </ul>
-    </div>
-    <div class='clear'></div>
+        <c:forEach items="${list.nodes}" var="subchild">
+            <li>
+                <template:module node="${subchild}" view="${currentNode.properties['j:subNodesView'].string}"  editable="${moduleMap.editable}" />
+            </li>
+        </c:forEach>
+        </c:if>
+    </ul>
 </div>
+<div class='clear'></div>

@@ -367,7 +367,7 @@
         </profile>
 
         <profile>
-            <id>qa-build</id>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>

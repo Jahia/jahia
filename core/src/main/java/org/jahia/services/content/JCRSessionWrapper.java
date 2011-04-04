@@ -574,7 +574,7 @@ public class JCRSessionWrapper implements Session {
                 for (String prefix : namespaceRegistryWrapper.getPrefixes()) {
                     try {
                         providerNamespaceRegistry.getURI(prefix);
-                    } catch (RepositoryException e) {
+                    } catch (NamespaceException ne) {
                         providerNamespaceRegistry.registerNamespace(prefix, namespaceRegistryWrapper.getURI(prefix));
                     }
                 }

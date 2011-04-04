@@ -461,7 +461,7 @@
         <module>core</module>
         <module>gwt</module>
         <module>modules</module>
-        <module>bundles</module>
+        <!--module>bundles</module-->
         <module>package</module>
         <module>prepackagedSites</module>
         <module>war</module>

@@ -2,7 +2,7 @@
 <installation version="1.0">
     <info>
         <appname>${product.name}</appname>
-        <appversion>${jahia.package.version}</appversion>
+        <appversion>${project.version}</appversion>
         <authors>
             <author email="${jahia.manifest.vendor.email}" name="${jahia.manifest.vendor.name}"/>
         </authors>

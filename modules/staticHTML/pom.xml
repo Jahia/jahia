@@ -38,7 +38,7 @@
   <parent>
     <artifactId>jahia-modules</artifactId>
     <groupId>org.jahia.modules</groupId>
-    <version>6.5-BETA2</version>
+    <version>6.5-SNAPSHOT</version>
   </parent>
   <groupId>org.jahia.modules</groupId>
   <artifactId>staticHTML</artifactId>
@@ -50,13 +50,13 @@
     <dependency>
       <groupId>org.jahia.server</groupId>
       <artifactId>jahia-impl</artifactId>
-      <version>6.5-BETA2</version>
+      <version>6.5-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jahia.server</groupId>
       <artifactId>jahia-taglib</artifactId>
-      <version>6.5-BETA2</version>
+      <version>6.5-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

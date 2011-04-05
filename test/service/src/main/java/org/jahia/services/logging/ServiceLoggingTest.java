@@ -141,30 +141,42 @@ public class ServiceLoggingTest {
     
     @Test
     public void testCreateMultipleTags() throws RepositoryException {
-        String tag;
+        for (int i = 0; i < 3; i++) {
+            service.createTag(generateTagName(), TESTSITE_NAME);
+        }
+        
         Logger metricsLogger = Logger.getLogger("loggingService");
         Logger profilerMetricsLogger = Logger.getLogger("profilerLoggingService");
         profilerMetricsLogger.setLevel(Level.OFF);
-        StopWatch stopWatch = new StopWatch();
-        metricsLogger.setLevel(Level.TRACE);
-        stopWatch.start("Create " + TAGS_TO_CREATE + " with logs");
-        for (int i = 0; i < TAGS_TO_CREATE; i++) {
-            tag = generateTagName();
-            service.createTag(tag, TESTSITE_NAME);
-        }
-        stopWatch.stop();
-        final long withLogs = stopWatch.getLastTaskTimeMillis();
-        deleteAllTags();
+        
         metricsLogger.setLevel(Level.OFF);
+        StopWatch stopWatch = new StopWatch();
         stopWatch.start("Create " + TAGS_TO_CREATE + " without logs");
         for (int i = 0; i < TAGS_TO_CREATE; i++) {
-            tag = generateTagName();
-            service.createTag(tag, TESTSITE_NAME);
+            service.createTag(generateTagName(), TESTSITE_NAME);
         }
         stopWatch.stop();
         final long withoutLogs = stopWatch.getLastTaskTimeMillis();
-        assertThat("Logs has more than 5% impact on peformance",
-                ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), (Matcher<Object>) lessThan((float)5));
-        logger.error(stopWatch.prettyPrint());
+        
+        deleteAllTags();
+        
+        for (int i = 0; i < 3; i++) {
+            service.createTag(generateTagName(), TESTSITE_NAME);
+        }
+        
+        metricsLogger.setLevel(Level.TRACE);
+        stopWatch.start("Create " + TAGS_TO_CREATE + " with logs");
+        for (int i = 0; i < TAGS_TO_CREATE; i++) {
+            service.createTag(generateTagName(), TESTSITE_NAME);
+        }
+        stopWatch.stop();
+        final long withLogs = stopWatch.getLastTaskTimeMillis();
+        
+        logger.info(stopWatch.prettyPrint());
+        
+        if (withLogs > withoutLogs) {
+            assertThat("Logs has more than 5% impact on peformance",
+                    ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), (Matcher<Object>) lessThan((float)5));
+        }
     }
 }

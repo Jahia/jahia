@@ -35,7 +35,6 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;

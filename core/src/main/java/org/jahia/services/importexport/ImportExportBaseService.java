@@ -82,8 +82,6 @@ import java.util.*;
 /**
  * Service used to perform all import/export operations for content and documents.
  * User: toto
- * Date: 9 dÔøΩc. 2004
- * Time: 15:01:31
  */
 public class ImportExportBaseService extends JahiaService implements ImportExportService {
 

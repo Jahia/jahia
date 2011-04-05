@@ -106,7 +106,7 @@ public class ServerNameToSiteMapper {
                 logger.error("Error resolving site by key '" + key + "'", e);
             }
         }
-        return site != null && !"localhost".equals(site.getServerName()) ? site.getServerName() : null;
+        return site != null && !URLGenerator.isLocalhost(site.getServerName()) ? site.getServerName() : null;
     }
 
     public void canResolveSiteByServerName(HttpServletRequest request, String ctx, String language,

@@ -35,21 +35,32 @@ package org.jahia.services.seo.urlrewrite;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.seo.VanityUrl;
+import org.jahia.services.seo.jcr.VanityUrlManager;
+import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 import org.tuckey.web.filters.urlrewrite.utils.Log;
 
@@ -63,7 +74,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteService.class);
 
     private Resource[] configurationResources;
-
+    
     /**
      * A user defined setting that says how often to check the configuration has changed. <b>0</b> means check on each call.
      */
@@ -73,13 +84,35 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private Map<Integer, Long> lastModified = new HashMap<Integer, Long>(1);
 
-    private ServletContext servletContext;
+    private List<SimpleUrlHandlerMapping> renderMapping;
+
+    private Resource[] seoConfigurationResources;
+
+    private boolean seoRulesEnabled;
+    
+    private ServletContext servletContext; 
 
     private UrlRewriteEngine urlRewriteEngine;
-
+    
+    private VanityUrlService vanityUrlService;
+    
     public void afterPropertiesSet() throws Exception {
         long timer = System.currentTimeMillis();
         Log.setLevel("SLF4J");
+        if (seoRulesEnabled && seoConfigurationResources != null
+                && seoConfigurationResources.length > 0) {
+            if (configurationResources != null) {
+                Resource[] cfg = new Resource[configurationResources.length
+                        + seoConfigurationResources.length];
+                System.arraycopy(configurationResources, 0, cfg, 0, configurationResources.length);
+                System.arraycopy(seoConfigurationResources, 0, cfg, configurationResources.length,
+                        seoConfigurationResources.length);
+                configurationResources = cfg;
+            } else {
+                configurationResources = seoConfigurationResources;
+            }
+        }
+
         if (configurationResources != null && configurationResources.length > 0
                 && SettingsBean.getInstance().isDevelopmentMode()
                 && (confReloadCheckIntervalSeconds < 0 || confReloadCheckIntervalSeconds > 5)) {
@@ -87,15 +120,13 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             logger.info("Development mode is activated."
                     + " Setting URL rewriter configuration check interval to 5 seconds.");
         }
-
         // do first call to load the configuration and initialize the engine
         getEngine();
 
-        logger.info("URL rewriting service started in {} ms using configurations {}."
+        logger.info("URL rewriting service started in {} ms using configurations [{}]."
                 + " Configuration check interval set to {} seconds.",
                 new Object[] { System.currentTimeMillis() - timer, configurationResources,
                         confReloadCheckIntervalSeconds });
-
     }
 
     public void destroy() throws Exception {
@@ -123,6 +154,19 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         }
 
         return urlRewriteEngine;
+    }
+
+    protected List<SimpleUrlHandlerMapping> getRenderMapping() {
+        if (renderMapping == null) {
+            renderMapping = new LinkedList<SimpleUrlHandlerMapping>();
+            ApplicationContext ctx = (ApplicationContext) servletContext.getAttribute(
+                    "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
+            renderMapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
+            renderMapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
+                    .values());
+        }
+
+        return renderMapping;
     }
 
     protected boolean needsReloading() throws IOException {
@@ -153,6 +197,52 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return false;
     }
 
+    public boolean prepareInbound(HttpServletRequest request, HttpServletResponse response) {
+        if ("/cms".equals(request.getServletPath())) {
+            String path = request.getPathInfo() != null ? request.getPathInfo() : "";
+            List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
+            for (SimpleUrlHandlerMapping mapping : mappings) {
+                for (String registeredPattern : mapping.getUrlMap().keySet()) {
+                    if (mapping.getPathMatcher().match(registeredPattern, path)) {
+                        return false;
+                    }
+                }
+            }
+            String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY, targetSiteKey);
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
+            if (!StringUtils.isEmpty(targetSiteKey)) {
+                try {
+                    List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path,
+                            targetSiteKey, "live");
+                    if (!vanityUrls.isEmpty()) {
+                        vanityUrls.get(0).getLanguage();
+                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG,
+                                vanityUrls.get(0).getLanguage());
+                        path = StringUtils.substringBefore(vanityUrls.get(0).getPath(), "/"
+                                + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/")
+                                + ".html";
+                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, path);
+                    }
+                } catch (RepositoryException e) {
+                    logger.error("Cannot get vanity Url", e);
+                }
+                try {
+                    String defaultLanguage = ServicesRegistry.getInstance().getJahiaSitesService()
+                            .getSiteByKey(targetSiteKey).getDefaultLanguage();
+                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG,
+                            defaultLanguage);
+                } catch (JahiaException e) {
+                    logger.error("Cannot get site", e);
+                }
+            }
+
+        }
+
+        return true;
+    }
+
     public RewrittenUrl rewriteInbound(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, InvocationTargetException {
         return getEngine().processRequest(request, response);
@@ -172,8 +262,20 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         this.confReloadCheckIntervalSeconds = confReloadCheckIntervalSeconds;
     }
 
+    public void setSeoConfigurationResources(Resource[] seoConfigurationResources) {
+        this.seoConfigurationResources = seoConfigurationResources;
+    }
+
+    public void setSeoRulesEnabled(boolean seoRulesEnabled) {
+        this.seoRulesEnabled = seoRulesEnabled;
+    }
+
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    public void setVanityUrlService(VanityUrlService vanityUrlService) {
+        this.vanityUrlService = vanityUrlService;
     }
 
 }

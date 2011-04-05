@@ -33,17 +33,19 @@
 package org.jahia.services.seo.urlrewrite;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 
-import org.apache.commons.io.IOUtils;
+import org.jahia.bin.Jahia;
+import org.jahia.params.ParamBean;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -52,7 +54,6 @@ import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
-import org.tuckey.web.filters.urlrewrite.utils.Log;
 
 /**
  * Test case for URL rewriting.
@@ -61,38 +62,28 @@ import org.tuckey.web.filters.urlrewrite.utils.Log;
  */
 public class UrlRewriteTest {
 
-    private static UrlRewriteEngine engine;
+    private static UrlRewriteService engine;
+
+    private static final String SERVER_NAME = "urlrewrite.jahia.org";
 
     private static final String SERVLET = "/cms";
 
+    private static final String SITE_KEY = "urlRewriteSite";
+
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        if (SpringContextSingleton.getInstance().isInitialized()) {
-            engine = ((UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService"))
-                    .getEngine();
-        } else {
-            String prop = System.getProperty("urlrewrite.resource");
-            if (prop == null) {
-                throw new IllegalArgumentException("Unable to find urlrewrite.xml configuration.");
-            }
-            Log.setLevel("SYSOUT:DEBUG");
-            FileInputStream is = null;
-            try {
-                is = new FileInputStream(prop);
-                engine = new UrlRewriteEngine(is, prop);
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
-            assertTrue("Configuration is not valid", engine.getConf().isOk());
-        }
+        engine = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
+        JahiaSite site = TestHelper.createSite(SITE_KEY, SERVER_NAME, TestHelper.WEB_TEMPLATES, null, null);
+
+        ((ParamBean) Jahia.getThreadParamBean()).getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
+        TestHelper.deleteSite(SITE_KEY);
+        JCRSessionFactory.getInstance().closeAllSessions();
         engine = null;
     }
-
-    private String context = "";
 
     private MockHttpServletRequest request;
 
@@ -100,9 +91,9 @@ public class UrlRewriteTest {
 
     protected void rewrite(String in, String expectedOut) throws IOException, ServletException,
             InvocationTargetException {
-        if (context.length() > 0) {
-            in = context + in;
-            expectedOut = context + expectedOut;
+        if (request.getContextPath().length() > 0) {
+            in = request.getContextPath() + in;
+            expectedOut = request.getContextPath() + expectedOut;
         }
 
         System.out.println(in);
@@ -112,8 +103,11 @@ public class UrlRewriteTest {
         assertEquals("Rewritte outbound URL is wrong", expectedOut, out);
 
         request.setRequestURI(out);
-        RewrittenUrl restored = engine.rewriteInbound(request, response);
-        assertEquals("Restored (inbound) URL is wrong", in, restored != null ? restored.getTarget()
+        RewrittenUrl restored = null;
+        if (engine.prepareInbound(request, response)) {
+            restored = engine.rewriteInbound(request, response);
+        }
+        assertEquals("Restored (inbound) URL is wrong", in, restored != null ? request.getContextPath() + restored.getTarget()
                 : null);
     }
 
@@ -121,8 +115,8 @@ public class UrlRewriteTest {
     public void setUp() throws RepositoryException {
         request = new MockHttpServletRequest();
         request.setCharacterEncoding("UTF-8");
-        context = "";
-        request.setContextPath(context);
+        request.setContextPath("");
+        request.setServletPath(SERVLET);
 
         response = new MockHttpServletResponse();
         response.setCharacterEncoding("UTF-8");
@@ -137,171 +131,134 @@ public class UrlRewriteTest {
     @Test
     public void testLiveSiteLocalhost() throws Exception {
         // home page
-        rewrite("/cms/render/live/en/sites/ACME/home.html", SERVLET + "/en/sites/ACME/home.html");
-        rewrite("/cms/render/live/en/sites/ACME/home.html?test=aaa", SERVLET
-                + "/en/sites/ACME/home.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/home.html?param1=aaa&param2=bbb", SERVLET
-                + "/en/sites/ACME/home.html?param1=aaa&param2=bbb");
-        rewrite("/cms/render/live/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html", SERVLET + "/en/sites/urlRewriteSite/home.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?test=aaa", SERVLET
+                + "/en/sites/urlRewriteSite/home.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb", SERVLET
+                + "/en/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
                 SERVLET
-                        + "/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
-        rewrite("/cms/render/live/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                        + "/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
                 SERVLET
-                        + "/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                        + "/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // page under home - 1st level
-        rewrite("/cms/render/live/en/sites/ACME/home/activities.html", SERVLET
-                + "/en/sites/ACME/home/activities.html");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities.html?test=aaa", SERVLET
-                + "/en/sites/ACME/home/activities.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities.html?param1=aaa&param2=bbb",
-                SERVLET + "/en/sites/ACME/home/activities.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html", SERVLET
+                + "/en/sites/urlRewriteSite/home/activities.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?test=aaa", SERVLET
+                + "/en/sites/urlRewriteSite/home/activities.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?param1=aaa&param2=bbb",
+                SERVLET + "/en/sites/urlRewriteSite/home/activities.html?param1=aaa&param2=bbb");
 
         // page under home - 2st level
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html", SERVLET
-                + "/en/sites/ACME/home/activities/last.html");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html?test=aaa", SERVLET
-                + "/en/sites/ACME/home/activities/last.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html?param1=aaa&param2=bbb",
-                SERVLET + "/en/sites/ACME/home/activities/last.html?param1=aaa&param2=bbb");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html", SERVLET
+                + "/en/sites/urlRewriteSite/home/activities/last.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?test=aaa", SERVLET
+                + "/en/sites/urlRewriteSite/home/activities/last.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?param1=aaa&param2=bbb",
+                SERVLET + "/en/sites/urlRewriteSite/home/activities/last.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
                 SERVLET
-                        + "/en/sites/ACME/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                        + "/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
                 SERVLET
-                        + "/en/sites/ACME/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                        + "/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // non-home page
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html", SERVLET
-                + "/en/sites/ACME/search-results.html");
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html?test=aaa", SERVLET
-                + "/en/sites/ACME/search-results.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html?param1=aaa&param2=bbb", SERVLET
-                + "/en/sites/ACME/search-results.html?param1=aaa&param2=bbb");
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html", SERVLET
+                + "/en/sites/urlRewriteSite/search-results.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?test=aaa", SERVLET
+                + "/en/sites/urlRewriteSite/search-results.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb", SERVLET
+                + "/en/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
                 SERVLET
-                        + "/en/sites/ACME/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                        + "/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
                 SERVLET
-                        + "/en/sites/ACME/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                        + "/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // non-home page
-        rewrite("/cms/render/live/en/sites/ACME/contents/aaa/my-text.viewContent.html", SERVLET
-                + "/en/sites/ACME/contents/aaa/my-text.viewContent.html");
-        rewrite("/cms/render/live/en/sites/ACME/contents/aaa/my-text.viewContent.html?test=aaa",
-                SERVLET + "/en/sites/ACME/contents/aaa/my-text.viewContent.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html", SERVLET
+                + "/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa",
+                SERVLET + "/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
                 SERVLET
-                        + "/en/sites/ACME/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
+                        + "/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
     }
 
     @Test
     public void testLiveSiteLocalhostWithContext() throws Exception {
-        context = "/jahia";
-        request.setContextPath(context);
+        request.setContextPath("/jahia");
         testLiveSiteLocalhost();
     }
 
     @Test
     public void testLiveSiteServername() throws Exception {
-        // test with the "mapped" server name
-        request.setServerName("servername");
-        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY, "ACME");
+        request.setServerName(SERVER_NAME);
 
         // home page
-        rewrite("/cms/render/live/en/sites/ACME/home.html", SERVLET + "/en/home.html");
-        rewrite("/cms/render/live/en/sites/ACME/home.html?test=aaa", SERVLET
-                + "/en/home.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/home.html?param1=aaa&param2=bbb", SERVLET
-                + "/en/home.html?param1=aaa&param2=bbb");
-        rewrite("/cms/render/live/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
-                SERVLET + "/en/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
-        rewrite("/cms/render/live/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html", SERVLET + "/home.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?test=aaa", SERVLET
+                + "/home.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html?param1=aaa&param2=bbb", SERVLET
+                + "/home.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+                SERVLET + "/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
                 SERVLET
-                        + "/en/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                        + "/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // page under home - 1st level
-        rewrite("/cms/render/live/en/sites/ACME/home/activities.html", SERVLET
-                + "/en/home/activities.html");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities.html?test=aaa", SERVLET
-                + "/en/home/activities.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities.html?param1=aaa&param2=bbb",
-                SERVLET + "/en/home/activities.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html", SERVLET
+                + "/home/activities.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?test=aaa", SERVLET
+                + "/home/activities.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities.html?param1=aaa&param2=bbb",
+                SERVLET + "/home/activities.html?param1=aaa&param2=bbb");
 
         // page under home - 2st level
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html", SERVLET
-                + "/en/home/activities/last.html");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html?test=aaa", SERVLET
-                + "/en/home/activities/last.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html?param1=aaa&param2=bbb",
-                SERVLET + "/en/home/activities/last.html?param1=aaa&param2=bbb");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html", SERVLET
+                + "/home/activities/last.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?test=aaa", SERVLET
+                + "/home/activities/last.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html?param1=aaa&param2=bbb",
+                SERVLET + "/home/activities/last.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
                 SERVLET
-                        + "/en/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
-        rewrite("/cms/render/live/en/sites/ACME/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                        + "/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
                 SERVLET
-                        + "/en/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                        + "/home/activities/last.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // non-home page
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html", SERVLET
-                + "/en/search-results.html");
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html?test=aaa", SERVLET
-                + "/en/search-results.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html?param1=aaa&param2=bbb", SERVLET
-                + "/en/search-results.html?param1=aaa&param2=bbb");
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html", SERVLET
+                + "/search-results.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?test=aaa", SERVLET
+                + "/search-results.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html?param1=aaa&param2=bbb", SERVLET
+                + "/search-results.html?param1=aaa&param2=bbb");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
                 SERVLET
-                        + "/en/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
-        rewrite("/cms/render/live/en/sites/ACME/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
+                        + "/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
                 SERVLET
-                        + "/en/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
+                        + "/search-results.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
 
         // non-home page
-        rewrite("/cms/render/live/en/sites/ACME/contents/aaa/my-text.viewContent.html", SERVLET
-                + "/en/contents/aaa/my-text.viewContent.html");
-        rewrite("/cms/render/live/en/sites/ACME/contents/aaa/my-text.viewContent.html?test=aaa",
-                SERVLET + "/en/contents/aaa/my-text.viewContent.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
-                SERVLET + "/en/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
-    }
-
-    @Test
-    public void testLiveSiteServernameNotMapped() throws Exception {
-        // test first with the server name which has no mapping to a site
-        request.setServerName("servername");
-        rewrite("/cms/render/live/en/sites/ACME/home.html", SERVLET + "/en/sites/ACME/home.html");
-        rewrite("/cms/render/live/en/sites/ACME/home.html?test=aaa", SERVLET
-                + "/en/sites/ACME/home.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/home.html?param1=aaa&param2=bbb", SERVLET
-                + "/en/sites/ACME/home.html?param1=aaa&param2=bbb");
-        rewrite("/cms/render/live/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4",
-                SERVLET
-                        + "/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4");
-        rewrite("/cms/render/live/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb",
-                SERVLET
-                        + "/en/sites/ACME/home.html;jsessionid=3731EB090078DDBFF24CC12F69AD2422.qa-j4?param1=aaa&param2=bbb");
-
-        // non-home page
-        rewrite("/cms/render/live/en/sites/ACME/contents/aaa/my-text.viewContent.html", SERVLET
-                + "/en/sites/ACME/contents/aaa/my-text.viewContent.html");
-        rewrite("/cms/render/live/en/sites/ACME/contents/aaa/my-text.viewContent.html?test=aaa",
-                SERVLET + "/en/sites/ACME/contents/aaa/my-text.viewContent.html?test=aaa");
-        rewrite("/cms/render/live/en/sites/ACME/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
-                SERVLET
-                        + "/en/sites/ACME/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
-    }
-
-    @Test
-    public void testLiveSiteServernameNotMappedWithContext() throws Exception {
-        context = "/jahia";
-        request.setContextPath(context);
-        testLiveSiteServernameNotMapped();
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html", SERVLET
+                + "/contents/aaa/my-text.viewContent.html");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?test=aaa",
+                SERVLET + "/contents/aaa/my-text.viewContent.html?test=aaa");
+        rewrite(SERVLET + "/render/live/en/sites/urlRewriteSite/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb",
+                SERVLET + "/contents/aaa/my-text.viewContent.html?param1=aaa&param2=bbb");
     }
 
     @Test
     public void testLiveSiteServernameWithContext() throws Exception {
-        context = "/jahia";
-        request.setContextPath(context);
+        request.setContextPath("/jahia");
         testLiveSiteServername();
     }
 }

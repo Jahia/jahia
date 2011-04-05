@@ -34,24 +34,18 @@ package org.jahia.services.seo.urlrewrite;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.LinkedList;
-import java.util.List;
 
-import javax.jcr.RepositoryException;
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.seo.VanityUrl;
-import org.jahia.services.seo.jcr.VanityUrlManager;
-import org.jahia.services.seo.jcr.VanityUrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.tuckey.web.filters.urlrewrite.Status;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteWrappedResponse;
 import org.tuckey.web.filters.urlrewrite.UrlRewriter;
@@ -65,15 +59,11 @@ import org.tuckey.web.filters.urlrewrite.utils.ServerNameMatcher;
  */
 public class UrlRewriteFilter implements Filter {
 
-    private String cmsApplicationContextAttribute;
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteFilter.class);
-
-    private FilterConfig config;
 
     private boolean enabled = true;
 
     private boolean outboundRulesEnabled = true;
-    private List<SimpleUrlHandlerMapping> renderMapping;
 
     private boolean statusEnabled = true;
 
@@ -82,7 +72,6 @@ public class UrlRewriteFilter implements Filter {
     private ServerNameMatcher statusServerNameMatcher;
 
     private UrlRewriteService urlRewriteService;
-    private VanityUrlService vanityUrlService;
 
     public void destroy() {
         // do nothing
@@ -117,46 +106,11 @@ public class UrlRewriteFilter implements Filter {
             return;
         }
 
-        if ("/cms".equals(hsRequest.getServletPath())) {
-            String path = hsRequest.getPathInfo() != null ? hsRequest.getPathInfo() : "";
-            List<SimpleUrlHandlerMapping> mappings = getRenderMapping();
-            for (SimpleUrlHandlerMapping mapping : mappings) {
-                for (String registeredPattern : mapping.getUrlMap().keySet()) {
-                    if (mapping.getPathMatcher().match(registeredPattern, path)) {
-                        chain.doFilter(request, response);
-                        return;
-                    }
-                }
-            }
-            String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(hsRequest);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY, targetSiteKey);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
-            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
-            if (!StringUtils.isEmpty(targetSiteKey)) {
-                try {
-                    List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path, targetSiteKey, "live");
-                    if (!vanityUrls.isEmpty()) {
-                        vanityUrls.get(0).getLanguage();
-                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, vanityUrls.get(0).getLanguage());
-                        path = StringUtils.substringBefore(vanityUrls.get(0)
-                                .getPath(), "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/")
-                                + ".html";
-                        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, path);
-                    }
-                } catch (RepositoryException e) {
-                    logger.error("Cannot get vanity Url",e);
-                }
-                try {
-                    String defaultLanguage = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(targetSiteKey).getDefaultLanguage();
-                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG, defaultLanguage);
-                } catch (JahiaException e) {
-                    logger.error("Cannot get site", e);
-                }
-            }
-
+        if (!urlRewriteService.prepareInbound(hsRequest, hsResponse)) {
+            chain.doFilter(hsRequest, hsResponse);
+            return;
         }
-
-
+        
         // if no rewrite has taken place continue as normal
         if (!urlRewriter.processRequest(hsRequest, hsResponse, chain)) {
             chain.doFilter(hsRequest, hsResponse);
@@ -166,22 +120,8 @@ public class UrlRewriteFilter implements Filter {
         }
     }
 
-    protected List<SimpleUrlHandlerMapping> getRenderMapping() {
-        if (renderMapping == null) {
-            renderMapping = new LinkedList<SimpleUrlHandlerMapping>();
-            ApplicationContext ctx = (ApplicationContext) config.getServletContext().getAttribute(
-                    cmsApplicationContextAttribute);
-            renderMapping.addAll(ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values());
-            renderMapping.addAll(ctx.getParent().getBeansOfType(SimpleUrlHandlerMapping.class)
-                    .values());
-        }
-
-        return renderMapping;
-    }
-
     public void init(FilterConfig cfg) throws ServletException {
-        this.config = cfg;
-        cmsApplicationContextAttribute = StringUtils.defaultIfEmpty(cfg.getInitParameter("renderApplicationContextAttribute"), "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
+        // do nothing
     }
 
     public void setEnabled(boolean enabled) {
@@ -194,10 +134,6 @@ public class UrlRewriteFilter implements Filter {
 
     public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
         this.urlRewriteService = urlRewriteService;
-    }
-
-    public void setVanityUrlService(VanityUrlService vanityUrlService) {
-        this.vanityUrlService = vanityUrlService;
     }
 
     /**

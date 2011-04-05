@@ -32,6 +32,7 @@
 
 package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.nodetype.InvalidConstraintException;
 import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
@@ -118,6 +119,19 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
                 for (Value value : v) {
                     res.add(value);
                 }
+            } else if (requiredType == PropertyType.REFERENCE
+                    || requiredType == PropertyType.WEAKREFERENCE) {
+                Value valueConstraint = valueConstraints[i];
+                try {
+                    String constraintValue = valueConstraint.getString();
+                    ExtendedNodeType nodeType = registry.getNodeType(constraintValue);
+                    Name name = nodeType.getNameObject();
+                    valueConstraint = new ValueImpl(
+                            "{" + name.getUri() + "}" + name.getLocalName(),
+                            valueConstraint.getType());
+                } catch (RepositoryException ex) {
+                }
+                res.add(valueConstraint);
             } else {
                 res.add(valueConstraints[i]);
             }
@@ -150,7 +164,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     public void setValueConstraints(Value[] valueConstraints) {
         if (requiredType != PropertyType.BOOLEAN) {
             this.valueConstraints = valueConstraints;
-        }
+        } 
     }
 
     public Value[] getDefaultValues() {

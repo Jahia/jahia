@@ -208,10 +208,9 @@ public class TaggingService {
 	 * @throws RepositoryException
 	 *             in case of errors
 	 */
-	public boolean tag(final Node node, final String tag, final String siteKey, final boolean createTagIfNotExists)
+	public boolean tag(final JCRNodeWrapper node, final String tag, final String siteKey, final boolean createTagIfNotExists)
 	        throws RepositoryException {
-
-		return JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUserID(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<Boolean>() {
+		return JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<Boolean>() {
 			public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
 				return tag(node.getPath(), tag, siteKey, createTagIfNotExists, session);
 			}

@@ -33,6 +33,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 
@@ -58,8 +59,8 @@ public class LastModifiedListener extends DefaultEventListener {
     public void onEvent(final EventIterator eventIterator) {
         try {
             String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
-            if (userId.startsWith(" system ")) {
-                userId = userId.substring(" system ".length());
+            if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
+                userId = userId.substring(JahiaLoginModule.SYSTEM.length());
             }
             final String finalUserId = userId;
 

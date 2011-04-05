@@ -61,7 +61,7 @@ public class AddActivityAction extends BaseSocialAction {
         final String text = req.getParameter("text");
 
         if (text != null) {
-            socialService.addActivity(jcrSession.getUserID(), text, jcrSession);
+            socialService.addActivity(jcrSession.getUser().getUsername(), text, jcrSession);
         } else {
             return ActionResult.BAD_REQUEST;
         }

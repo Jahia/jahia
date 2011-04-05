@@ -1203,10 +1203,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getLanguage() {
         String language = null;
-        final Locale locale = getSession().getLocale();
-        if (locale != null) {
+        try {
+            if (Constants.JAHIANT_TRANSLATION.equals(getPrimaryNodeTypeName())) {
+                language = getProperty("jcr:language").getString();
+            }
+        } catch (RepositoryException e1) {
+        } 
+        if (language == null && getSession().getLocale() != null) {
             try {
-                language = getI18N(locale).getProperty("jcr:language").getString();
+                language = getI18N(getSession().getLocale()).getProperty("jcr:language")
+                        .getString();
             } catch (Exception e) {
                 language = getSession().getLocale().toString();
             }

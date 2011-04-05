@@ -80,53 +80,45 @@ public class SimpleSearchTest {
         try {
             final JCRPublicationService jcrService = ServicesRegistry
                     .getInstance().getJCRPublicationService();
-            JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session)
-                                throws RepositoryException {
-                            try {
-                                TestHelper
-                                        .createSite(
-                                                FIRST_TESTSITE_NAME,
-                                                "localhost",
-                                                TestHelper.WEB_BLUE_TEMPLATES,
-                                                SettingsBean.getInstance()
-                                                        .getJahiaVarDiskPath()
-                                                        + "/prepackagedSites/webtemplates.zip",
-                                                "ACME.zip");
-                                jcrService.publishByMainId(session.getNode(
-                                        FIRST_SITECONTENT_ROOT_NODE + "/home")
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        TestHelper.createSite(FIRST_TESTSITE_NAME, "localhost",
+                                TestHelper.WEB_BLUE_TEMPLATES, SettingsBean.getInstance()
+                                        .getJahiaVarDiskPath()
+                                        + "/prepackagedSites/webtemplates.zip", "ACME.zip");
+                        jcrService.publishByMainId(
+                                session.getNode(FIRST_SITECONTENT_ROOT_NODE + "/home")
                                         .getIdentifier(), Constants.EDIT_WORKSPACE,
-                                        Constants.LIVE_WORKSPACE, null, true, null);
-                            } catch (Exception e) {
-                                logger
-                                        .error("Cannot create or publish site",
-                                                e);
-                            }
-                            try {
-                                TestHelper
-                                        .createSite(
-                                                SECOND_TESTSITE_NAME,
-                                                "127.0.0.1",
-                                                TestHelper.WEB_BLUE_TEMPLATES,
-                                                SettingsBean.getInstance()
-                                                        .getJahiaVarDiskPath()
-                                                        + "/prepackagedSites/webtemplates.zip",
-                                                "ACME.zip");
-                                jcrService.publishByMainId(session.getNode(
-                                        SECOND_SITECONTENT_ROOT_NODE + "/home")
+                                Constants.LIVE_WORKSPACE, null, true, null);
+                    } catch (Exception e) {
+                        logger.error("Cannot create or publish site", e);
+                    }
+                    session.save();
+                    return null;
+                }
+            });
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            session.getUuidMapping().clear();
+            session.getPathMapping().clear();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        TestHelper.createSite(SECOND_TESTSITE_NAME, "127.0.0.1",
+                                TestHelper.WEB_BLUE_TEMPLATES, SettingsBean.getInstance()
+                                        .getJahiaVarDiskPath()
+                                        + "/prepackagedSites/webtemplates.zip", "ACME.zip");
+                        jcrService.publishByMainId(
+                                session.getNode(SECOND_SITECONTENT_ROOT_NODE + "/home")
                                         .getIdentifier(), Constants.EDIT_WORKSPACE,
-                                        Constants.LIVE_WORKSPACE, null, true, null);
-                            } catch (Exception e) {
-                                logger
-                                        .error("Cannot create or publish site",
-                                                e);
-                            }
-                            session.save();
-                            return null;
-                        }
-                    });
-
+                                Constants.LIVE_WORKSPACE, null, true, null);
+                    } catch (Exception e) {
+                        logger.error("Cannot create or publish site", e);
+                    }
+                    session.save();
+                    return null;
+                }
+            });
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
         }
@@ -152,7 +144,7 @@ public class SimpleSearchTest {
                     .getRequest(), ((ParamBean) ctx).getResponse(), ctx
                     .getUser());
             JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                    .getCurrentUserSession();
+                    .getCurrentUserSession(null, Locale.ENGLISH);
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
@@ -176,7 +168,7 @@ public class SimpleSearchTest {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    49, hits.size());
+                    28, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -192,7 +184,7 @@ public class SimpleSearchTest {
                     .getRequest(), ((ParamBean) ctx).getResponse(), ctx
                     .getUser());
             JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                    .getCurrentUserSession();
+                    .getCurrentUserSession(null, Locale.FRENCH);
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
@@ -216,7 +208,7 @@ public class SimpleSearchTest {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    49, hits.size());
+                    26, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -233,7 +225,7 @@ public class SimpleSearchTest {
                     .getRequest(), ((ParamBean) ctx).getResponse(), ctx
                     .getUser());
             JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                    .getCurrentUserSession();
+                    .getCurrentUserSession(null, Locale.ENGLISH);
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
@@ -282,7 +274,7 @@ public class SimpleSearchTest {
                     .getRequest(), ((ParamBean) ctx).getResponse(), ctx
                     .getUser());
             JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                    .getCurrentUserSession();
+                    .getCurrentUserSession(null, Locale.ENGLISH);
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
@@ -373,7 +365,7 @@ public class SimpleSearchTest {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: "
-                            + criteria.toString(), 49 * 2, hits.size());
+                            + criteria.toString(), 28 * 2, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }

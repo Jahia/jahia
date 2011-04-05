@@ -393,6 +393,8 @@
                         <configuration>
                             <autoVersionSubmodules>true</autoVersionSubmodules>
                             <goals>deploy</goals>
+                            <preparationGoals>clean verify install</preparationGoals>
+                            <releaseProfiles>release,installer,java-installer,windows-installer,qa-build,test</releaseProfiles>
                         </configuration>
                     </plugin>
                 </plugins>

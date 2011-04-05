@@ -15,6 +15,22 @@ var contributionI18n = {
     'wcag.ok': 'WCAG Compliance: OK',
     'wcag.warning': 'Warning'
 }
+
+var lockedPath = {};
+
+$(window).unload( function() {
+    $.each(lockedPath, function(key, value) {
+        if (value = 'locked') {
+            $.ajax({
+                 type: 'POST',
+                 async: false,
+                 url: key+'.unlock.do',
+                 data: { type: 'contribute' }
+            });
+        }
+    });
+});
+
 function initEditFields(id) {
     $(".edit" + id).editable(function (value, settings) {
         var data = {'methodToCall':'put'};

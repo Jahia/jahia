@@ -102,17 +102,13 @@ public class TranslateContentEngine extends Window {
         setMaximizable(true);
         setHeading(Messages.get("cm_translate " + node.getName(), "Translate " + node.getName()));
         LayoutContainer panel = new LayoutContainer();
-        panel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
-        panel.setWidth("100%");
-        panel.setHeight("100%");
+        panel.setLayout(new BorderLayout());
 
         sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false, srcLanguage);
-        sourceLangPropertiesEditor.setSize(504, 530);
         targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage);
-        targetLangPropertiesEditor.setSize(504, 530);
 
-        panel.add(sourceLangPropertiesEditor, new RowData(504, 530, new Margins(5)));
-        panel.add(targetLangPropertiesEditor, new RowData(504, 530, new Margins(5)));
+        panel.add(sourceLangPropertiesEditor, new BorderLayoutData(Style.LayoutRegion.WEST, 506));
+        panel.add(targetLangPropertiesEditor, new BorderLayoutData(Style.LayoutRegion.EAST, 506));
 
         add(panel);
 
@@ -129,6 +125,7 @@ public class TranslateContentEngine extends Window {
         setBottomComponent(buttonsPanel);
 
         setFooter(true);
+        layout();
     }
 
 

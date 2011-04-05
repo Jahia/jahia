@@ -41,8 +41,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowData;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
@@ -61,6 +60,7 @@ import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -98,24 +98,24 @@ public class LangPropertiesEditor extends LayoutContainer {
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();
         this.editable = editable;
 
-        setScrollMode(Style.Scroll.AUTOY);
+        setScrollMode(Style.Scroll.NONE);
         setBorders(false);
-        setLayout(new FitLayout());
-        mainPanel = new LayoutContainer();
-        mainPanel.setBorders(true);
+        setLayout(new BorderLayout());
 
-        if(!editable) {
-            final Label label = new Label(Messages.getWithArgs("label.edit.engine.heading.read.only", "Read {0} ({1})",
-                    new String[]{node.getName(), node.getNodeTypes().get(0)}));
-            label.setStyleAttribute("font-weight","bold");
-            mainPanel.add(label,new FlowData(10));
-        }
+        LayoutContainer top = new LayoutContainer(new FlowLayout());
+
         // add switching form
         languageSwitcher = createLanguageSwitcher();
-        mainPanel.add(languageSwitcher,new FlowData(10));
+        top.add(languageSwitcher,new FlowData(5));
+
+        add(top, new BorderLayoutData(Style.LayoutRegion.NORTH, 25));
+
         // update node info
         loadEngine(displayedLanguage);
-        add(mainPanel);
+
+        mainPanel = new LayoutContainer();
+        mainPanel.setScrollMode(Style.Scroll.AUTOY);
+        add(mainPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
 

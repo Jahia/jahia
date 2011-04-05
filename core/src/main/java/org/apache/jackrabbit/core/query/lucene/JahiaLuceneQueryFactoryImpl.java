@@ -90,6 +90,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                             rows.add(row);
                             nodes.add(node); // <-- Added by jahia
                         }
+                    } catch (PathNotFoundException e) {
                     } catch (ItemNotFoundException e) {
                         // skip the node
                     }

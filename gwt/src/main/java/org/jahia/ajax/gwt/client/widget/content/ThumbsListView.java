@@ -40,10 +40,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
-import java.util.List;
-
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Dec 21, 2009
  * Time: 11:12:37 AM
@@ -67,7 +64,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
 
     @Override
     protected GWTJahiaNode prepareData(GWTJahiaNode model) {
-        String s = model.getName();
+        String s = model.getDisplayName();
         model.set("shortName", Format.ellipse(s, 14));
         model.set("nameLabel", Messages.get("label.name", "Name"));
         model.set("authorLabel", Messages.get("versioning_author", "Author"));
@@ -75,14 +72,14 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         String width = model.get("j:width");
         if (width != null) {
             if (Integer.parseInt(width) < 80) {
-                model.set("nodeImg", "<img src=\"" + model.getUrl() + "\" title=\"" + model.getName() + "\">");
+                model.set("nodeImg", "<img src=\"" + model.getUrl() + "\" title=\"" + model.getDisplayName() + "\">");
             } else {
-                model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
+                model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getDisplayName() + "\">");
             }
             model.set("widthHTML", "<div><b>" + Messages.get("width.label", "Width") + " </b>" + model.get("j:width") + " px</div>");
             model.set("heightHTML", "<div><b>" + Messages.get("height.label", "Height") + " </b>" + model.get("j:height") + " px</div>");
         } else if (model.getPreview() != null) {
-            model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
+            model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getDisplayName() + "\">");
         } else {
             model.set("nodeImg", ContentModelIconProvider.getInstance().getIcon(model, true).getHTML());
         }

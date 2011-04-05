@@ -116,12 +116,12 @@ public class ImageResize extends Window {
 
         final TextField<String> newname = new TextField<String>();
         newname.setName("newname");
-        int extIndex = n.getName().lastIndexOf(".") ;
+        int extIndex = n.getDisplayName().lastIndexOf(".") ;
         if (extIndex > 0) {
-            String dotExt = n.getName().substring(extIndex) ;
-            newname.setValue(n.getName().replaceAll(dotExt, "_resize" + dotExt));
+            String dotExt = n.getDisplayName().substring(extIndex) ;
+            newname.setValue(n.getDisplayName().replaceAll(dotExt, "_resize" + dotExt));
         } else {
-            newname.setValue(n.getName() + "_resize");
+            newname.setValue(n.getDisplayName() + "_resize");
         }
         newname.setFieldLabel(Messages.get("label.rename"));
         form.add(newname);

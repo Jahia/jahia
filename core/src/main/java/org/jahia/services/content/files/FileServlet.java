@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.Text;
+import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.cache.Cache;
@@ -158,6 +158,13 @@ public class FileServlet extends HttpServlet {
                     res.setContentType(fileEntry.getMimeType());
                     if (fileEntry.getContentLength() <= Integer.MAX_VALUE) {
                         res.setContentLength((int) fileEntry.getContentLength());
+                    }
+                    if (fileKey.getPath().indexOf('%', fileKey.getPath().lastIndexOf('/')) != -1) {
+                        res.setHeader(
+                                "Content-Disposition",
+                                "inline; filename=\""
+                                        + JCRContentUtils.unescapeLocalNodeName(StringUtils
+                                                .substringAfterLast(fileKey.getPath(), "/")) + "\"");
                     }
                     res.setDateHeader("Last-Modified", fileEntry.getLastModified());
                     res.setHeader("ETag", fileEntry.getETag());
@@ -290,22 +297,19 @@ public class FileServlet extends HttpServlet {
                 session.setVersionLabel(fileKey.getVersionLabel());
             }
 
-            n = session.getNode(Text.escapePath(fileKey.getPath()));
+            n = session.getNode(fileKey.getPath());
         } catch (RuntimeException e) {
             // throw by the session.setVersionLabel()
             logger.debug(e.getMessage(), e);
         } catch (PathNotFoundException e) {
-            try {
-                n = session.getNode(Text.escapePath(fileKey.getPath()));
-            } catch (PathNotFoundException e1) {
+            logger.debug(e.getMessage(), e);
+        } catch (RepositoryException e) {
+            if (e.getCause() != null && e.getCause() instanceof MalformedPathException) {
                 logger.debug(e.getMessage(), e);
-            } catch (RepositoryException e1) {
+            } else {
                 logger.error("Error accesing path: " + fileKey.getPath() + " for user "
                         + (session != null ? session.getUserID() : null), e);
             }
-        } catch (RepositoryException e) {
-            logger.error("Error accesing path: " + fileKey.getPath() + " for user "
-                    + (session != null ? session.getUserID() : null), e);
         }
         return n;
     }
@@ -369,7 +373,7 @@ public class FileServlet extends HttpServlet {
             }
         }
 
-        return workspace != null && path != null ? new FileKey(workspace, path,
+        return workspace != null && path != null ? new FileKey(workspace, JCRContentUtils.escapeNodePath(path),
                 req.getParameter("v"), req.getParameter("l"), StringUtils.defaultIfEmpty(
                         req.getParameter("t"), StringUtils.EMPTY)) : null;
     }

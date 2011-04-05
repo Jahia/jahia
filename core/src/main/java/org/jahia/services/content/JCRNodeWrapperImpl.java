@@ -40,6 +40,7 @@ import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
+import org.apache.jackrabbit.util.Text;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -531,6 +532,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException {
         checkLock();
+        
+        name = JCRContentUtils.escapeLocalNodeName(name);
 
         JCRNodeWrapper file = null;
         try {
@@ -660,17 +663,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getUrl() {
         try {
-            if (isNodeType(Constants.JAHIANT_FILE)) {
-                return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + getPath();
-            } else {
-                String path = JCRSessionFactory.getInstance().getCurrentServletPath();
-                if (path == null) {
-                    path = "/cms/render";
-                }
-                return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html";
+        if (isNodeType(Constants.JAHIANT_FILE)) {
+            return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + Text.escapePath(getPath());
+        } else {
+            String path = JCRSessionFactory.getInstance().getCurrentServletPath();
+            if (path == null) {
+                path = "/cms/render";
             }
+            return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + Text.escapePath(getPath()) + ".html";
+        }
         } catch (RepositoryException e) {
-            logger.error("Cannot get type", e);
+            logger.error("Cannot get type",e);
             return null;
         }
     }
@@ -909,32 +912,32 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }*/
 
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
-        Map<String, String> res = new HashMap<String, String>();
-        PropertyIterator pi = getProperties();
-        if (pi != null) {
-            while (pi.hasNext()) {
-                Property p = pi.nextProperty();
-                if (p.getType() == PropertyType.BINARY) {
-                    continue;
-                }
-                if (!p.isMultiple()) {
-                    res.put(p.getName(), p.getString());
-                } else {
-                    Value[] vs = p.getValues();
-                    StringBuffer b = new StringBuffer();
-                    for (int i = 0; i < vs.length; i++) {
-                        Value v = vs[i];
-                        b.append(v.getString());
-                        if (i + 1 < vs.length) {
-                            b.append(" ");
-                        }
+            Map<String, String> res = new HashMap<String, String>();
+            PropertyIterator pi = getProperties();
+            if (pi != null) {
+                while (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    if (p.getType() == PropertyType.BINARY) {
+                        continue;
                     }
-                    res.put(p.getName(), b.toString());
+                    if (!p.isMultiple()) {
+                        res.put(p.getName(), p.getString());
+                    } else {
+                        Value[] vs = p.getValues();
+                        StringBuffer b = new StringBuffer();
+                        for (int i = 0; i < vs.length; i++) {
+                            Value v = vs[i];
+                            b.append(v.getString());
+                            if (i + 1 < vs.length) {
+                                b.append(" ");
+                            }
+                        }
+                        res.put(p.getName(), b.toString());
+                    }
                 }
             }
-        }
         return res;
-    }
+        }
 
     /**
      * {@inheritDoc}
@@ -1064,7 +1067,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean isNodeType(String type) throws RepositoryException {
-        return objectNode.isNodeType(type);
+            return objectNode.isNodeType(type);
     }
 
     /**
@@ -1084,11 +1087,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean isFile() {
         try {
-            return isNodeType(Constants.NT_FILE);
+        return isNodeType(Constants.NT_FILE);
         } catch (RepositoryException e) {
             logger.error("Cannot get type",e);
             return false;
-        }
+    }
     }
 
     /**
@@ -1096,11 +1099,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean isPortlet() {
         try {
-            return isNodeType(Constants.JAHIANT_PORTLET);
+        return isNodeType(Constants.JAHIANT_PORTLET);
         } catch (RepositoryException e) {
-            logger.error("Cannot get type", e);
+            logger.error("Cannot get type",e);
             return false;
-        }
+    }
     }
 
     /**
@@ -1238,7 +1241,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             final Locale fallbackLocale = getSession().getFallbackLocale();
             if (fallbackLocale != null && fallbackLocale != locale) {
                 b = (i18NobjectNodes != null && i18NobjectNodes.containsKey(fallbackLocale)) || objectNode.hasNode(
-                        "j:translation_" + fallbackLocale);
+                "j:translation_" + fallbackLocale);
             }
         }
         return b;
@@ -1373,7 +1376,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getPropertyAsString(String name) {
         try {
-            return getPropertiesAsString().get(name);
+        return getPropertiesAsString().get(name);
         } catch (RepositoryException e) {
             return null;
         }

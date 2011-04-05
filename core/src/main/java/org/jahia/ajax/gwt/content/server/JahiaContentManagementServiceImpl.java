@@ -273,8 +273,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
             for (GWTJahiaNode site : sites) {
                 if (session.getNodeByUUID(site.getUUID()).hasPermission(permission)) {
-                    sitesMap.put(site.getSiteUUID(), site);
-                }
+                sitesMap.put(site.getSiteUUID(), site);
+            }
             }
             config.setSitesMap(sitesMap);
 
@@ -618,7 +618,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             JCRNodeWrapper nodeWrapper = jcrSessionWrapper.getNodeByUUID(node.getUUID());
             if (!nodeWrapper.getName().equals(node.getName())) {
-                contentManager.checkName(node.getName());
                 String name = contentManager.findAvailableName(nodeWrapper.getParent(), node.getName());
                 nodeWrapper.rename(name);
                 jcrSessionWrapper.save();

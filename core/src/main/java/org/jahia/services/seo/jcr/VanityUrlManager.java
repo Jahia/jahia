@@ -335,7 +335,7 @@ public class VanityUrlManager {
             // does not exist yet
             session.checkout(vanityUrlMappingsNode);
 
-            vanityUrlNode = vanityUrlMappingsNode.addNode(Text.escapeIllegalJcrChars(vanityUrl.getUrl()),
+            vanityUrlNode = vanityUrlMappingsNode.addNode(JCRContentUtils.escapeLocalNodeName(vanityUrl.getUrl()),
                     JAHIANT_VANITYURL);
         } else if (vanityUrlNode.getProperty(PROPERTY_ACTIVE).getBoolean() == vanityUrl
                 .isActive()
@@ -568,7 +568,7 @@ public class VanityUrlManager {
 
             for (VanityUrl vanityUrl : toAdd) {
                 JCRNodeWrapper vanityUrlNode = vanityUrlMappingsNode.addNode(
-                        Text.escapeIllegalJcrChars(vanityUrl.getUrl()), JAHIANT_VANITYURL);
+                        JCRContentUtils.escapeLocalNodeName(vanityUrl.getUrl()), JAHIANT_VANITYURL);
                 session.checkout(vanityUrlNode);
                 vanityUrlNode.setProperty(PROPERTY_URL, vanityUrl.getUrl());
                 vanityUrlNode

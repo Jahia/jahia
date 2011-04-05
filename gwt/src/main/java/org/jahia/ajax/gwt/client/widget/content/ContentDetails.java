@@ -182,8 +182,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 heading = "";
             }
             for (GWTJahiaNode node : selectedNodes) {
-                if (heading.length() + node.getName().length() < 100) {
-                    heading += node.getName() + ",";
+                if (heading.length() + node.getDisplayName().length() < 100) {
+                    heading += node.getDisplayName() + ",";
                 } else {
                     heading += "... ";
                     break;

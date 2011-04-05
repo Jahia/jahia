@@ -42,10 +42,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
-import java.util.List;
-
 /**
- * Created by IntelliJ IDEA.
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:56:52 PM
@@ -65,7 +62,7 @@ public class WebfolderActionItem extends BaseActionItem {
 
                 public void onSuccess(String url) {
                     if (url != null) {
-                        HTML link = new HTML(Messages.get("webFolderMessage.label") + "<br /><br /><a target=\"_new\" folder=\"" + url + "\" style=\"behavior:url(#default#AnchorClick)\">" + selection.getName() + "</a>");
+                        HTML link = new HTML(Messages.get("webFolderMessage.label") + "<br /><br /><a target=\"_new\" folder=\"" + url + "\" style=\"behavior:url(#default#AnchorClick)\">" + selection.getDisplayName() + "</a>");
                         final Dialog dl = new Dialog();
                         dl.setModal(true);
                         dl.setHeading(Messages.get("label.openIEFolder"));

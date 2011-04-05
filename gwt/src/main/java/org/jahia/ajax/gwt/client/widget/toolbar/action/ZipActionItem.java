@@ -61,7 +61,7 @@ public class ZipActionItem extends BaseActionItem  {
                 linker.loading(Messages.get("statusbar.zipping.label"));
                 String defaultArchName;
                 if (selectedItems.size() == 1) {
-                    defaultArchName = selection.getName() + ".zip";
+                    defaultArchName = selection.getDisplayName() + ".zip";
                 } else {
                     defaultArchName = "archive.zip";
                 }

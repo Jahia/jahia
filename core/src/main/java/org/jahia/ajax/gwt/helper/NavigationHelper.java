@@ -313,7 +313,7 @@ public class NavigationHelper {
                         while (ni.hasNext()) {
                             GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
                             if (displayName != "") {
-                                node.setDisplayName(displayName);
+                                node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
                             }
                             userNodes.add(node);
                         }
@@ -321,7 +321,7 @@ public class NavigationHelper {
                         GWTJahiaNode root = getNode(path, fields, currentUserSession);
                         if (root != null) {
                             if (displayName != "") {
-                                root.setDisplayName(displayName);
+                                root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
                             }
                             userNodes.add(root);
                         }
@@ -720,7 +720,7 @@ public class NavigationHelper {
         n = new GWTJahiaNode();
         n.setUUID(uuid);
         n.setName(node.getName());
-        n.setDisplayName(node.getName());
+        n.setDisplayName(JCRContentUtils.unescapeLocalNodeName(node.getName()));
         if (node.getPath().equals("/")) {
             n.setDisplayName("root");
             n.setName("root");
@@ -1038,7 +1038,7 @@ public class NavigationHelper {
             }
         }
         if (!node.getPath().equals("/")) {
-            n.setDisplayName(WordUtils.abbreviate(node.getDisplayableName(),70,90,"..."));
+            n.setDisplayName(WordUtils.abbreviate(JCRContentUtils.unescapeLocalNodeName(node.getDisplayableName()),70,90,"..."));
         }
         n.setNormalizedName(removeDiacritics(n.getName()));
 

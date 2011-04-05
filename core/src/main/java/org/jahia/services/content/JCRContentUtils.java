@@ -85,31 +85,114 @@ import java.util.*;
  */
 public final class JCRContentUtils {
     
+    private  static Map<String, Boolean> iconsPresence = new HashMap<String, Boolean>();
+
     private static JCRContentUtils instance;
 
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
+    
+    public static boolean check(String icon) {
+        try {
+            synchronized (iconsPresence) {
+                if (!iconsPresence.containsKey(icon)) {
+                    iconsPresence.put(icon,
+                            Jahia.getStaticServletConfig().getServletContext().getResource("/modules/" + icon + ".png") !=
+                                    null);
+                }
+            }
+            return iconsPresence.get(icon);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return false;
+    }
+    
+    /**
+     * Creates the JCR property value, depending on the type of the corresponding value.
+     * 
+     * @param objectValue
+     *            the object value to be converted
+     * @param factory
+     *            the {@link ValueFactory} instance
+     * @return the JCR property value
+     */
+    public static Value createValue(Object objectValue, ValueFactory factory) {
+        if (objectValue instanceof String) {
+            return factory.createValue((String) objectValue);
+        } else if (objectValue instanceof Boolean) {
+            return factory.createValue((Boolean) objectValue);
+        } else if (objectValue instanceof Long) {
+            return factory.createValue((Long) objectValue);
+        } else if (objectValue instanceof Integer) {
+            return factory.createValue(((Integer) objectValue).longValue());
+        } else if (objectValue instanceof Calendar) {
+            return factory.createValue((Calendar) objectValue);
+        } else if (objectValue instanceof Date) {
+            Calendar c = new GregorianCalendar();
+            c.setTime((Date) objectValue);
+            return factory.createValue(c);
+        } else if (objectValue instanceof byte[] || objectValue instanceof File) {
+            InputStream is = null;
+            try {
+                is = objectValue instanceof File ? new FileInputStream((File) objectValue)
+                        : new ByteArrayInputStream((byte[]) objectValue);
+                return factory.createValue(factory.createBinary(is));
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
+        } else {
+            logger.warn("Do not know, how to handle value of type {}", objectValue.getClass()
+                    .getName());
+        }
+        return null;
+    }
+
+    
 
     /**
-     * Encode a local name according to limitations in specification, section 3.2.2
-     * http://www.day.com/specs/jcr/2.0/3_Repository_Model.html#Names
-     * Note : this implementation is not yet complete as it does not handle the XML
-     * restrictions yet, only the JCR ones.
-     * @param originalLocalName
+     * Reverse operation of encodeJCRNamePrefix.
+     * Note : this is not yet complete as it depends on the restrictions imposed on XML namespaces as
+     * defined here http://www.w3.org/TR/REC-xml-names/
+     * @param encodedPrefix
      * @return
      */
-    public static String escapeJCRLocalName(final String originalLocalName) {
-        return Text.escapeIllegalJcrChars(originalLocalName);
+    public static String decodeJCRNamePrefix(final String encodedPrefix) {
+        String originalPrefix = encodedPrefix.replace("\\3A", ":");
+        return originalPrefix;
     }
 
     /**
-     * Decode an encoded JCR local name encoded with the encodeJCRLocalName method
-     * Note : this implementation is not yet complete as it does not handle the XML
-     * restrictions yet, only the JCR ones.
-     * @param encodedLocalName
-     * @return
+     * Downloads the JCR content to a temporary file. 
+     * @param node the JCR node with the file content 
+     * @return the target file descriptor
+     * @throws IOException in case of an error
      */
-    public static String unescapeJCRLocalName(final String encodedLocalName) {
-        return Text.unescapeIllegalJcrChars(encodedLocalName);
+    public static File downloadFileContent(JCRNodeWrapper node) throws IOException {
+        return downloadFileContent(node, File.createTempFile("data", null));
+    }
+
+    /**
+     * Downloads the JCR content to a specified file. 
+     * @param node the JCR node with the file content 
+     * @param targetFile target file to write data into
+     * @return the target file descriptor
+     * @throws IOException in case of an error
+     */
+    public static File downloadFileContent(JCRNodeWrapper node, File targetFile) throws IOException {
+        InputStream is = node.getFileContent().downloadFile();
+        if (is == null) {
+            throw new IllegalArgumentException("Provided node has no file content");
+        }
+        FileOutputStream os = new FileOutputStream(targetFile);
+        try {
+            IOUtils.copy(is, os);
+        } finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
+        }
+        return targetFile;
     }
 
     /**
@@ -125,33 +208,158 @@ public final class JCRContentUtils {
         return encodedPrefix;
     }
 
+    public static String escapeLocalNodeName(String name) {
+        StringBuilder buffer = new StringBuilder(name.length() * 2);
+        for (int i = 0; i < name.length(); i++) {
+            char ch = name.charAt(i);
+            if (ch == '/' || ch == ':' || ch == '[' || ch == ']'
+                || ch == '*' || ch == '|') {
+                buffer.append('%');
+                buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
+                buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
+            } else if (ch == '\t' || ch == '\r' || ch == '\n') {
+                buffer.append(' ');
+            } else {
+                buffer.append(ch);
+            }
+        }
+        return buffer.toString();
+    }
+    
+    public static String escapeNodePath(String path) {
+        StringBuilder buffer = new StringBuilder(path.length() * 2);
+        for (int i = 0; i < path.length(); i++) {
+            char ch = path.charAt(i);
+            if (ch == ':' || ch == '[' || ch == ']'
+                || ch == '*' || ch == '|') {
+                buffer.append('%');
+                buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
+                buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
+            } else {
+                buffer.append(ch);
+            }
+        }
+        return buffer.toString();
+    }
+    
     /**
-     * Reverse operation of encodeJCRNamePrefix.
-     * Note : this is not yet complete as it depends on the restrictions imposed on XML namespaces as
-     * defined here http://www.w3.org/TR/REC-xml-names/
-     * @param encodedPrefix
-     * @return
+     * Returns the next available name for a node, appending if needed numbers.
+     * 
+     * @param dest the destination node, where the new one will be created
+     * @param name the name of the new node
+     * @return the next available name for a node, appending if needed numbers
      */
-    public static String decodeJCRNamePrefix(final String encodedPrefix) {
-        String originalPrefix = encodedPrefix.replace("\\3A", ":");
-        return originalPrefix;
+    public static String findAvailableNodeName(Node dest, String name) {
+        int i = 1;
+
+        String basename = name;
+        int dot = basename.lastIndexOf('.');
+        String ext = "";
+        if (dot > 0) {
+            ext = basename.substring(dot);
+            basename = basename.substring(0, dot);
+        }
+        int und = basename.lastIndexOf('-');
+        if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
+            basename = basename.substring(0, und);
+        }
+
+        do {
+            try {
+                dest.getNode(name);
+                name = basename + "-" + (i++) + ext;
+            } catch (RepositoryException e) {
+                break;
+            }
+
+        } while (true);
+
+        return name;
+    }
+
+    public static JCRNodeWrapper findDisplayableNode(JCRNodeWrapper node, RenderContext context) {
+        Template template = null;
+        JCRNodeWrapper currentNode = node;
+        try {
+            while (template == null && currentNode != null) {
+                try {
+                    template = RenderService.getInstance().resolveTemplate(
+                            new org.jahia.services.render.Resource(currentNode, "html", null, org.jahia.services.render.Resource.CONFIGURATION_PAGE), context);
+                } catch (Exception e) {
+                    // template cannot be resolved, so try on the parent
+                }
+                if (template == null) {
+                    currentNode = currentNode.getParent();
+                }
+            }
+        } catch (Exception e) {
+            currentNode = node;
+        }
+        if (currentNode == null) {
+            currentNode = node;
+        }
+        return currentNode;
     }
 
     /**
-     * Small utility method to help with proper namespace registration in all JCR providers.
-     * @param session
-     * @param prefix
-     * @param uri
-     * @throws RepositoryException
+     * Generates the JCR node name from the provided text by normalizing it,
+     * converting to lower case, replacing spaces with dashes and truncating to
+     * ${@code maxLength} characters.
+     * 
+     * @param text the original text to be used as a source
+     * @param maxLength the maximum length of the resulting name (it will be
+     *            truncated if needed)
+     * @return the JCR node name from the provided text by normalizing it,
+     *         converting to lower case, replacing spaces with dashes and
+     *         truncating to ${@code maxLength} characters
      */
-    public static void registerNamespace(Session session, String prefix, String uri) throws RepositoryException {
-        NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
-        Set<String> prefixes = ImmutableSet.copyOf(namespaceRegistry.getPrefixes());
-        if (!prefixes.contains(prefix)) {
-            namespaceRegistry.registerNamespace(prefix, uri);
-            session.setNamespacePrefix(prefix, uri);
+    public static String generateNodeName(String text, int maxLength) {
+        String nodeName = text;
+        final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
+        final char[] newChars = new char[chars.length];
+        int j = 0;
+        for (char aChar : chars) {
+            if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32 || aChar == '-') {
+                newChars[j++] = aChar;
+            }
+        }
+        nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
+        if (nodeName.length() > maxLength) {
+            nodeName = nodeName.substring(0, maxLength);
+            if (nodeName.endsWith("-") && nodeName.length() > 2) {
+                nodeName = nodeName.substring(0, nodeName.length() - 1);
+            }
         }
 
+        return StringUtils.isNotEmpty(nodeName) ? nodeName : "untitled";
+    }
+
+    public static List<JCRNodeWrapper> getChildrenOfType(JCRNodeWrapper node, String type) {
+        List<JCRNodeWrapper> children = null;
+        if (node == null) {
+            return null;
+        }
+        if (type.contains(",")) {
+            String[] typesToCheck = type.split(",");
+            List<JCRNodeWrapper> matchingChildren = new LinkedList<JCRNodeWrapper>();
+            try {
+                for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+                    Node child = iterator.nextNode();
+                    for (String matchType : typesToCheck) {
+                        if (child.isNodeType(matchType)) {
+                            matchingChildren.add((JCRNodeWrapper) child);
+                            break;
+                        }
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.warn(e.getMessage(), e);
+            }
+            children = matchingChildren;
+        } else {
+            children = getNodes(node, type);
+        }
+        return children;
     }
 
     /**
@@ -168,7 +376,7 @@ public final class JCRContentUtils {
             throws RepositoryException {
         return node.getName();
     }
-    
+
     /**
      * Returns a node path, composed using only content object keys, i.e.
      * 
@@ -206,219 +414,17 @@ public final class JCRContentUtils {
         return path.toString();
     }
     
-    public static JCRContentUtils getInstance() {
-        if (instance == null) {
-            throw new UnsupportedOperationException("JCRContentUtils is not initialized yet");
-        }
-        return instance;
-    }
-
-    private static ExtendedPropertyDefinition getPropertyDefExtension(
-            PropertyDefinition propDef) {
+    public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
         try {
-            return NodeTypeRegistry.getInstance().getNodeType(
-                    propDef.getDeclaringNodeType().getName()).getPropertyDefinition(
-                    propDef.getName());
-        } catch (NoSuchNodeTypeException e) {
-            logger.error(e.getMessage(), e);
+            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where isdescendantnode(sel,['"+node.getPath()+"'])",
+                                                                                  Query.JCR_SQL2).execute().getNodes();
+        } catch (InvalidQueryException e) {
+            logger.error("Error while retrieving nodes", e);
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving nodes", e);
         }
-        return null;
-    }
-
-    public static PropertyDefinition getPropertyDefinition(NodeType type,
-            String property) throws RepositoryException {
-        PropertyDefinition foundDefintion = null;
-        PropertyDefinition[] pds = type.getDeclaredPropertyDefinitions();
-        for (int i = 0; i < pds.length; i++) {
-            PropertyDefinition pd = pds[i];
-            if (pd.getName().equals(property)) {
-                foundDefintion = pd;
-                break;
-            }
-        }
-
-        return foundDefintion;
-    }
-
-    public static PropertyDefinition getPropertyDefinition(String nodeType,
-            String property) throws RepositoryException {
-        return getPropertyDefinition(NodeTypeRegistry.getInstance().getNodeType(
-                        nodeType), property);
-    }
-
-    public static int getPropertyDefSelector(ItemDefinition itemDef) {
-        ExtendedPropertyDefinition propDefExtension = null;
-        if (itemDef instanceof PropertyDefinition) {
-            propDefExtension = getPropertyDefExtension((PropertyDefinition) itemDef);
-        }
-
-        return propDefExtension != null ? propDefExtension.getSelector() : 0;
-    }
-
-    public static boolean isValidFilename(String name) {
-        return (!name.startsWith(" ") && !name.endsWith(" ") && name.matches("([^\\*:/\\\\<>|?\"])*"));
-    }
-    
-    /**
-     * Convert a string to a JCR search expression literal, suitable for use in
-     * jcr:contains() (inside XPath) or contains (SQL2). The characters - and " have
-     * special meaning, and may be escaped with a backslash to obtain their
-     * literal value. See JSR-283 spec v2.0, Sec. 4.6.6.19.
-     * 
-     * @param str
-     *            Any string.
-     * @return A valid string literal suitable for use in
-     *         JCR contains clauses, including enclosing quotes.
-     */
-    public static String stringToJCRSearchExp(String str) {
-        // Escape ' and \ everywhere, preceding them with \ except when \
-        // appears
-        // in one of the combinations \" or \-
-        return stringToQueryLiteral(Text.escapeIllegalXpathSearchChars(str));
+        return NodeIteratorImpl.EMPTY;
     }    
-
-    /**
-     * Convert a path string to encoded path Strings in XPATH queries
-     * 
-     * @param str
-     *            Any string.
-     * @return A valid string path suitable for use in XPATH queries
-     */
-    public static String stringToJCRPathExp(String str) {
-        return ISO9075.encode(Text.escapeIllegalJcrChars(str));
-    }
-    
-    /**
-     * Convert a string to a literal, suitable for inclusion
-     * in a query. See JSR-283 spec v2.0, Sec. 4.6.6.19.
-     * 
-     * @param str
-     *            Any string.
-     * @return A valid JCR query string literal, including enclosing quotes.
-     */
-    public static String stringToQueryLiteral(String str) {
-        // Single quotes needed for jcr:contains()
-        return "'" + str.replaceAll("'", "''") + "'";
-    }    
-
-    /**
-     * If the node path contains site information (i.e.
-     * <code>/sites/&lt;siteKey&gt;/...</code>) this method returns the site key
-     * part; otherwise <code>null</code> is returned.
-     * 
-     * @param jcrNodePath the JCR node path
-     * @return if the node path contains site information (i.e.
-     *         <code>/sites/&lt;siteKey&gt;/...</code>) this method returns the
-     *         site key part; otherwise <code>null</code> is returned
-     */
-    public static String getSiteKey(String jcrNodePath) {
-        return jcrNodePath != null ? (jcrNodePath.startsWith("/sites/") ? StringUtils.substringBetween(jcrNodePath,
-                "/sites/", "/") : null) : null;
-    }
-    
-    /**
-     * Returns the number of elements in the provided iterator.
-     * 
-     * @param iterator the item iterator to check the size
-     * @return the number of elements in the provided iterator
-     */
-    public static long size(RangeIterator iterator) {
-        long size = iterator.getSize();
-        if (size <= 0) {
-            size = 0;
-            while (iterator.hasNext()) {
-                size++;
-                iterator.next();
-            }
-        }
-
-        return size;
-    }
-
-    private Map<String, List<String>> mimeTypes;
-
-    private Map<String, String> fileExtensionIcons;
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param mimeTypes
-     *            a map with mime type mappings
-     * @param fileExtensionIcons mapping between file extensions and corresponding icons 
-     */
-    @SuppressWarnings("unchecked")
-    public JCRContentUtils(Map<String, List<String>> mimeTypes, Map<String, String> fileExtensionIcons) {
-        super();
-        instance = this;
-        this.mimeTypes = UnmodifiableMap.decorate(mimeTypes);
-        this.fileExtensionIcons = UnmodifiableMap.decorate(fileExtensionIcons);
-    }
-
-    public static String getExpandedName(String name, NamespaceRegistry namespaceRegistry) throws RepositoryException {
-        if (!name.startsWith("{")) {
-            if (name.contains(":")) {
-                name = "{" + namespaceRegistry.getURI(StringUtils.substringBefore(name, ":")) + "}" +
-                        StringUtils.substringAfter(name, ":");
-            } else {
-                name = "{}" + name;
-            }
-        }
-        return name;
-    }
-
-    public static JCRNodeWrapper findDisplayableNode(JCRNodeWrapper node, RenderContext context) {
-        Template template = null;
-        JCRNodeWrapper currentNode = node;
-        try {
-            while (template == null && currentNode != null) {
-                try {
-                    template = RenderService.getInstance().resolveTemplate(
-                            new org.jahia.services.render.Resource(currentNode, "html", null, org.jahia.services.render.Resource.CONFIGURATION_PAGE), context);
-                } catch (Exception e) {
-                    // template cannot be resolved, so try on the parent
-                }
-                if (template == null) {
-                    currentNode = currentNode.getParent();
-                }
-            }
-        } catch (Exception e) {
-            currentNode = node;
-        }
-        if (currentNode == null) {
-            currentNode = node;
-        }
-        return currentNode;
-    }
-
-    /**
-     * Return a map of mime types (file formats) to be available in the
-     * advanced search form.
-     * 
-     * @return a map of mime types (file formats) to be available in the
-     *         advanced search form
-     */
-    public Map<String, List<String>> getMimeTypes() {
-        return mimeTypes;
-    }
-
-    /**
-     * Used by portlet backends to determine if a user is part of a specific permissionName on a node specified by it's
-     * UUID
-     *
-     * @param permissionName
-     * @param nodeUUID
-     * @return
-     */
-    public static boolean hasPermission(final String permissionName, final String nodeUUID) {
-        try {
-            JCRSessionWrapper session = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession();
-            JCRNodeWrapper node = session.getNodeByIdentifier(nodeUUID);
-            return node.hasPermission(permissionName);
-        } catch (Exception e) {
-            logger.error("Error while checking permission "+ permissionName +" for node UUID " + nodeUUID, e);
-        }
-        return false;
-    }
 
     /**
      * Get the node or property display name depending on the locale
@@ -470,170 +476,88 @@ public final class JCRContentUtils {
         }
         return null;
     }
-
-    /**
-     * Returns the next available name for a node, appending if needed numbers.
-     * 
-     * @param dest the destination node, where the new one will be created
-     * @param name the name of the new node
-     * @return the next available name for a node, appending if needed numbers
-     */
-    public static String findAvailableNodeName(Node dest, String name) {
-        int i = 1;
-
-        String basename = name;
-        int dot = basename.lastIndexOf('.');
-        String ext = "";
-        if (dot > 0) {
-            ext = basename.substring(dot);
-            basename = basename.substring(0, dot);
-        }
-        int und = basename.lastIndexOf('-');
-        if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
-            basename = basename.substring(0, und);
-        }
-
-        do {
-            try {
-                dest.getNode(name);
-                name = basename + "-" + (i++) + ext;
-            } catch (RepositoryException e) {
-                break;
+    
+    public static String getExpandedName(String name, NamespaceRegistry namespaceRegistry) throws RepositoryException {
+        if (!name.startsWith("{")) {
+            if (name.contains(":")) {
+                name = "{" + namespaceRegistry.getURI(StringUtils.substringBefore(name, ":")) + "}" +
+                        StringUtils.substringAfter(name, ":");
+            } else {
+                name = "{}" + name;
             }
-
-        } while (true);
-
+        }
         return name;
+    }    
+
+    public static String getIcon(ExtendedNodeType type) throws RepositoryException {
+        String icon = getIconsFolder(type) + type.getName().replace(':', '_');
+        if (check(icon)) {
+            return icon;
+        }
+        for (ExtendedNodeType nodeType : type.getSupertypes()) {
+            icon = getIconsFolder(nodeType) + nodeType.getName().replace(':', '_');
+            if (check(icon)) {
+                return icon;
+            }
+        }
+        return null;
     }
     
-    /**
-     * Generates the JCR node name from the provided text by normalizing it,
-     * converting to lower case, replacing spaces with dashes and truncating to
-     * ${@code maxLength} characters.
-     * 
-     * @param text the original text to be used as a source
-     * @param maxLength the maximum length of the resulting name (it will be
-     *            truncated if needed)
-     * @return the JCR node name from the provided text by normalizing it,
-     *         converting to lower case, replacing spaces with dashes and
-     *         truncating to ${@code maxLength} characters
-     */
-    public static String generateNodeName(String text, int maxLength) {
-        String nodeName = text;
-        final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
-        final char[] newChars = new char[chars.length];
-        int j = 0;
-        for (char aChar : chars) {
-            if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32 || aChar == '-') {
-                newChars[j++] = aChar;
-            }
-        }
-        nodeName = new String(newChars, 0, j).trim().replaceAll(" ", "-").toLowerCase();
-        if (nodeName.length() > maxLength) {
-            nodeName = nodeName.substring(0, maxLength);
-            if (nodeName.endsWith("-") && nodeName.length() > 2) {
-                nodeName = nodeName.substring(0, nodeName.length() - 1);
-            }
-        }
-
-        return StringUtils.isNotEmpty(nodeName) ? nodeName : "untitled";
-    }
-
-    /**
-     * Returns a mapping between file extensions and corresponding icons.
-     * 
-     * @return a mapping between file extensions and corresponding icons
-     */
-    public Map<String, String> getFileExtensionIcons() {
-        return fileExtensionIcons;
-    }
-
-    /**
-     * Validates if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>).
-     * 
-     * @param workspace
-     *            the workspace name to check
-     * @return <code>true</code> if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>);
-     *         otherwise returns <code>false</code>
-     */
-    public static final boolean isValidWorkspace(String workspace) {
-        return isValidWorkspace(workspace, false);
-    }
-
-    /**
-     * Validates if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>).
-     * 
-     * @param workspace
-     *            the workspace name to check
-     * @param allowBlank set to true if the workspace name is allowed to be null or empty
-     * @return <code>true</code> if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>);
-     *         otherwise returns <code>false</code>
-     */
-    public static final boolean isValidWorkspace(String workspace, boolean allowBlank) {
-        return StringUtils.isEmpty(workspace) ? allowBlank : EDIT_WORKSPACE.equals(workspace)
-                || LIVE_WORKSPACE.equals(workspace);
-    }
-
-    public static Node getPathFolder(Node root, String name, String options, String nodeType) throws RepositoryException {
-        Node result = root;
-        if (options.contains("initials")) {
-            String s = "" + Character.toUpperCase(name.charAt(0));
-            if (!result.hasNode(s)) {
-                result = result.addNode(s, nodeType);
-            } else {
-                result = result.getNode(s);
-            }
-        }
-        return result;
-    }
-
-    public static JCRNodeWrapper getParentOfType(JCRNodeWrapper node,
-            String type) {
-        JCRNodeWrapper matchingParent = null;
-        try {
-            JCRNodeWrapper parent = node.getParent();
-            while (parent != null) {
-                if (parent.isNodeType(type)) {
-                    matchingParent = parent;
-                    break;
-                }
-                parent = parent.getParent();
-            }
-        } catch (ItemNotFoundException e) {
-            // we reached the hierarchy top
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving nodes parent node. Cause: "
-                    + e.getMessage(), e);
-        }
-        return matchingParent;
-    }
-
-    public static List<JCRNodeWrapper> getChildrenOfType(JCRNodeWrapper node, String type) {
-        List<JCRNodeWrapper> children = null;
-        if (node == null) {
-            return null;
-        }
-        if (type.contains(",")) {
-            String[] typesToCheck = type.split(",");
-            List<JCRNodeWrapper> matchingChildren = new LinkedList<JCRNodeWrapper>();
+    public static String getIcon(JCRNodeWrapper f) throws RepositoryException {
+        String folder = JCRContentUtils.getIconsFolder(f.getPrimaryNodeType());
+        if (f.isFile()) {
+            return folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
+        } else if (f.isPortlet()) {
             try {
-                for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
-                    Node child = iterator.nextNode();
-                    for (String matchType : typesToCheck) {
-                        if (child.isNodeType(matchType)) {
-                            matchingChildren.add((JCRNodeWrapper) child);
-                            break;
-                        }
-                    }
+                JCRPortletNode portletNode = new JCRPortletNode(f);
+                if (portletNode.getContextName().equalsIgnoreCase("/rss")) {
+                    return folder + "jnt_portlet_rss";
+                } else {
+                    return folder + "jnt_portlet";
                 }
             } catch (RepositoryException e) {
-                logger.warn(e.getMessage(), e);
+                return folder + "jnt_portlet";
             }
-            children = matchingChildren;
         } else {
-            children = getNodes(node, type);
+            final ExtendedNodeType type = f.getPrimaryNodeType();
+            String icon = JCRContentUtils.getIcon(type);
+            return icon;
         }
-        return children;
+    }
+
+    public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
+        String folder = primaryNodeType.getSystemId();
+        if (folder.startsWith("system-")) {
+            folder = "assets";
+        } else {
+            final JahiaTemplatesPackage aPackage =
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(folder);
+            if (aPackage != null) {
+                folder = aPackage.getRootFolder().equals("default")?"assets":aPackage.getRootFolder();
+            } else {
+                folder = "assets"; // todo handle portlets
+            }
+        }
+        folder += "/icons/";
+        return folder;
+    }
+
+    public static JCRContentUtils getInstance() {
+        if (instance == null) {
+            throw new UnsupportedOperationException("JCRContentUtils is not initialized yet");
+        }
+        return instance;
+    }
+
+    /**
+     * Returns the last part of a path, so the last name. This method supports expanded form names in the path, so the
+     * last slash detection will be properly handled.
+     * @param path the path to get the name from
+     * @return the name of the leaf in the path.
+     */
+    public static String getNameFromPath(String path) {
+        String[] pathNames = splitJCRPath(path);
+        return pathNames[pathNames.length-1];
     }
 
     public static List<JCRNodeWrapper> getNodes(JCRNodeWrapper node, String type) {
@@ -655,119 +579,6 @@ public final class JCRContentUtils {
             logger.error("Error while retrieving nodes", e);
         }
         return new LinkedList<JCRNodeWrapper>();
-    }
-
-    public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
-        try {
-            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where isdescendantnode(sel,['"+node.getPath()+"'])",
-                                                                                  Query.JCR_SQL2).execute().getNodes();
-        } catch (InvalidQueryException e) {
-            logger.error("Error while retrieving nodes", e);
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving nodes", e);
-        }
-        return NodeIteratorImpl.EMPTY;
-    }
-
-    
-    /**
-     * Downloads the JCR content to a specified file. 
-     * @param node the JCR node with the file content 
-     * @param targetFile target file to write data into
-     * @return the target file descriptor
-     * @throws IOException in case of an error
-     */
-    public static File downloadFileContent(JCRNodeWrapper node, File targetFile) throws IOException {
-        InputStream is = node.getFileContent().downloadFile();
-        if (is == null) {
-            throw new IllegalArgumentException("Provided node has no file content");
-        }
-        FileOutputStream os = new FileOutputStream(targetFile);
-        try {
-            IOUtils.copy(is, os);
-        } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(os);
-        }
-        return targetFile;
-    }
-    
-    /**
-     * Downloads the JCR content to a temporary file. 
-     * @param node the JCR node with the file content 
-     * @return the target file descriptor
-     * @throws IOException in case of an error
-     */
-    public static File downloadFileContent(JCRNodeWrapper node) throws IOException {
-        return downloadFileContent(node, File.createTempFile("data", null));
-    }
-
-    /**
-     * Utility method to split a JCR path into names. Note that this method supports expanded name notation (using
-     * URIs), such as {http://www.jcp.org/jcr/1.0}read, as it is tricky to split simply using the "/" character when
-     * URIs are present.
-     * @param path a relative or absolute path, with node names in qualified or expanded form
-     * @return an array of String instances that contain the node names in order of the path.
-     */
-    public static String[] splitJCRPath(String path) {
-        List<String> result = new ArrayList<String>();
-        int pathPos = 0;
-
-        if (path.startsWith("/")) {
-            pathPos++;
-        }
-
-        int nextSlashPos = -1;
-        do {
-            StringBuffer currentName = new StringBuffer();
-            if (path.indexOf('{', pathPos) == pathPos) {
-                int endingBracketPos = path.indexOf('}', pathPos+1);
-                currentName.append(path.substring(pathPos, endingBracketPos+1));
-                pathPos = endingBracketPos + 1;
-            }
-            nextSlashPos = path.indexOf('/', pathPos);
-            if (nextSlashPos > -1) {
-                currentName.append(path.substring(pathPos, nextSlashPos));
-                pathPos = nextSlashPos + 1;
-            } else {
-                currentName.append(path.substring(pathPos));
-            }
-            result.add(currentName.toString());
-        } while (nextSlashPos > -1);
-
-        return result.toArray(new String[result.size()]);
-    }
-
-    /**
-     * A small utility method to retrieve the parent path of a path that contains expanded form names.
-     * @param path the path for which we want to retrieve the parent path.
-     * @return the parent path including all names in expanded or qualified form.
-     */
-    public static String getParentJCRPath(String path) {
-        String[] pathNames = splitJCRPath(path);
-        StringBuffer parentPath = new StringBuffer();
-        // if we are dealing with an absolute path, we add the initial separator
-        if (path.startsWith("/")) {
-            parentPath.append("/");
-        }
-        for (int i=0; i < pathNames.length -1; i++) {
-            parentPath.append(pathNames[i]);
-            if (i < pathNames.length -2) {
-                parentPath.append("/");
-            }
-        }
-        return parentPath.toString();
-    }
-
-    /**
-     * Returns the last part of a path, so the last name. This method supports expanded form names in the path, so the
-     * last slash detection will be properly handled.
-     * @param path the path to get the name from
-     * @return the name of the leaf in the path.
-     */
-    public static String getNameFromPath(String path) {
-        String[] pathNames = splitJCRPath(path);
-        return pathNames[pathNames.length-1];
     }
 
     /**
@@ -803,81 +614,171 @@ public final class JCRContentUtils {
         return node;
     }
 
-    public static String getIcon(JCRNodeWrapper f) throws RepositoryException {
-        String folder = JCRContentUtils.getIconsFolder(f.getPrimaryNodeType());
-        if (f.isFile()) {
-            return folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
-        } else if (f.isPortlet()) {
-            try {
-                JCRPortletNode portletNode = new JCRPortletNode(f);
-                if (portletNode.getContextName().equalsIgnoreCase("/rss")) {
-                    return folder + "jnt_portlet_rss";
-                } else {
-                    return folder + "jnt_portlet";
-                }
-            } catch (RepositoryException e) {
-                return folder + "jnt_portlet";
-            }
-        } else {
-            final ExtendedNodeType type = f.getPrimaryNodeType();
-            String icon = JCRContentUtils.getIcon(type);
-            return icon;
+    /**
+     * A small utility method to retrieve the parent path of a path that contains expanded form names.
+     * @param path the path for which we want to retrieve the parent path.
+     * @return the parent path including all names in expanded or qualified form.
+     */
+    public static String getParentJCRPath(String path) {
+        String[] pathNames = splitJCRPath(path);
+        StringBuffer parentPath = new StringBuffer();
+        // if we are dealing with an absolute path, we add the initial separator
+        if (path.startsWith("/")) {
+            parentPath.append("/");
         }
+        for (int i=0; i < pathNames.length -1; i++) {
+            parentPath.append(pathNames[i]);
+            if (i < pathNames.length -2) {
+                parentPath.append("/");
+            }
+        }
+        return parentPath.toString();
     }
 
-
-    public static String getIcon(ExtendedNodeType type) throws RepositoryException {
-        String icon = getIconsFolder(type) + type.getName().replace(':', '_');
-        if (check(icon)) {
-            return icon;
-        }
-        for (ExtendedNodeType nodeType : type.getSupertypes()) {
-            icon = getIconsFolder(nodeType) + nodeType.getName().replace(':', '_');
-            if (check(icon)) {
-                return icon;
+    public static JCRNodeWrapper getParentOfType(JCRNodeWrapper node,
+            String type) {
+        JCRNodeWrapper matchingParent = null;
+        try {
+            JCRNodeWrapper parent = node.getParent();
+            while (parent != null) {
+                if (parent.isNodeType(type)) {
+                    matchingParent = parent;
+                    break;
+                }
+                parent = parent.getParent();
             }
+        } catch (ItemNotFoundException e) {
+            // we reached the hierarchy top
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving nodes parent node. Cause: "
+                    + e.getMessage(), e);
+        }
+        return matchingParent;
+    }
+
+    public static Node getPathFolder(Node root, String name, String options, String nodeType) throws RepositoryException {
+        Node result = root;
+        if (options.contains("initials")) {
+            String s = "" + Character.toUpperCase(name.charAt(0));
+            if (!result.hasNode(s)) {
+                result = result.addNode(s, nodeType);
+            } else {
+                result = result.getNode(s);
+            }
+        }
+        return result;
+    }
+
+    private static ExtendedPropertyDefinition getPropertyDefExtension(
+            PropertyDefinition propDef) {
+        try {
+            return NodeTypeRegistry.getInstance().getNodeType(
+                    propDef.getDeclaringNodeType().getName()).getPropertyDefinition(
+                    propDef.getName());
+        } catch (NoSuchNodeTypeException e) {
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
-
-    private  static Map<String, Boolean> iconsPresence = new HashMap<String, Boolean>();
-
-    public static boolean check(String icon) {
-        try {
-            synchronized (iconsPresence) {
-                if (!iconsPresence.containsKey(icon)) {
-                    iconsPresence.put(icon,
-                            Jahia.getStaticServletConfig().getServletContext().getResource("/modules/" + icon + ".png") !=
-                                    null);
-                }
-            }
-            return iconsPresence.get(icon);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return false;
-    }
-
-    public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
-        String folder = primaryNodeType.getSystemId();
-        if (folder.startsWith("system-")) {
-            folder = "assets";
-        } else {
-            final JahiaTemplatesPackage aPackage =
-                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(folder);
-            if (aPackage != null) {
-                folder = aPackage.getRootFolder().equals("default")?"assets":aPackage.getRootFolder();
-            } else {
-                folder = "assets"; // todo handle portlets
+    
+    public static PropertyDefinition getPropertyDefinition(NodeType type,
+            String property) throws RepositoryException {
+        PropertyDefinition foundDefintion = null;
+        PropertyDefinition[] pds = type.getDeclaredPropertyDefinitions();
+        for (int i = 0; i < pds.length; i++) {
+            PropertyDefinition pd = pds[i];
+            if (pd.getName().equals(property)) {
+                foundDefintion = pd;
+                break;
             }
         }
-        folder += "/icons/";
-        return folder;
+
+        return foundDefintion;
     }
 
+    public static PropertyDefinition getPropertyDefinition(String nodeType,
+            String property) throws RepositoryException {
+        return getPropertyDefinition(NodeTypeRegistry.getInstance().getNodeType(
+                        nodeType), property);
+    }
+
+    public static int getPropertyDefSelector(ItemDefinition itemDef) {
+        ExtendedPropertyDefinition propDefExtension = null;
+        if (itemDef instanceof PropertyDefinition) {
+            propDefExtension = getPropertyDefExtension((PropertyDefinition) itemDef);
+        }
+
+        return propDefExtension != null ? propDefExtension.getSelector() : 0;
+    }
+
+    /**
+     * If the node path contains site information (i.e.
+     * <code>/sites/&lt;siteKey&gt;/...</code>) this method returns the site key
+     * part; otherwise <code>null</code> is returned.
+     * 
+     * @param jcrNodePath the JCR node path
+     * @return if the node path contains site information (i.e.
+     *         <code>/sites/&lt;siteKey&gt;/...</code>) this method returns the
+     *         site key part; otherwise <code>null</code> is returned
+     */
+    public static String getSiteKey(String jcrNodePath) {
+        return jcrNodePath != null ? (jcrNodePath.startsWith("/sites/") ? StringUtils.substringBetween(jcrNodePath,
+                "/sites/", "/") : null) : null;
+    }
 
     public static String getSystemSitePath() {
         return "/sites/" + JahiaSitesBaseService.SYSTEM_SITE_KEY;        
+    }
+
+    /**
+     * Returns an object value that corresponds to the provided JCR property value depending on its type.
+     * 
+     * @param propertyValue
+     *            the JCR property value to be converted
+     * @return the object value
+     * @throws RepositoryException
+     *             in case of a conversion error
+     * @throws ValueFormatException
+     *             in case of a conversion error
+     */
+    public static Object getValue(Value propertyValue) throws ValueFormatException,
+            RepositoryException {
+        Object value = propertyValue.getString();
+        switch (propertyValue.getType()) {
+            case PropertyType.BOOLEAN:
+                value = Boolean.valueOf(propertyValue.getBoolean());
+                break;
+            case PropertyType.DATE:
+                value = propertyValue.getDate();
+                break;
+            case PropertyType.DECIMAL:
+            case PropertyType.LONG:
+                value = Long.valueOf(propertyValue.getDecimal().longValue());
+                break;
+            case PropertyType.DOUBLE:
+                value = Double.valueOf(propertyValue.getDouble());
+                break;
+        }
+        return value;
+    }
+
+    /**
+     * Used by portlet backends to determine if a user is part of a specific permissionName on a node specified by it's
+     * UUID
+     *
+     * @param permissionName
+     * @param nodeUUID
+     * @return
+     */
+    public static boolean hasPermission(final String permissionName, final String nodeUUID) {
+        try {
+            JCRSessionWrapper session = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession();
+            JCRNodeWrapper node = session.getNodeByIdentifier(nodeUUID);
+            return node.hasPermission(permissionName);
+        } catch (Exception e) {
+            logger.error("Error while checking permission "+ permissionName +" for node UUID " + nodeUUID, e);
+        }
+        return false;
     }
 
     /**
@@ -903,31 +804,6 @@ public final class JCRContentUtils {
                                        JCRSessionWrapper session) throws IOException, InvalidSerializedDataException,
             RepositoryException {
         importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, new HashMap<String,String>());
-    }
-
-    /**
-     * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
-     *
-     *
-     * @param skeletonLocations
-     *            the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
-     *            delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
-     * @param targetPath
-     *            target JCR path to perform import into
-     * @param session
-     *            the current JCR session
-     * @param replacements
-     * @throws IOException
-     *             in case of skeleton lookup error
-     * @throws InvalidSerializedDataException
-     *             import related exception
-     * @throws RepositoryException
-     *             general JCR exception
-     */
-    public static void importSkeletons(String skeletonLocations, String targetPath,
-                                       JCRSessionWrapper session, Map<String, String> replacements) throws IOException, InvalidSerializedDataException,
-            RepositoryException {
-        importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, replacements);
     }
 
     /**
@@ -966,77 +842,225 @@ public final class JCRContentUtils {
         }
     }
 
+    
     /**
-     * Creates the JCR property value, depending on the type of the corresponding value.
-     * 
-     * @param objectValue
-     *            the object value to be converted
-     * @param factory
-     *            the {@link ValueFactory} instance
-     * @return the JCR property value
+     * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
+     *
+     *
+     * @param skeletonLocations
+     *            the (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any
+     *            delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
+     * @param targetPath
+     *            target JCR path to perform import into
+     * @param session
+     *            the current JCR session
+     * @param replacements
+     * @throws IOException
+     *             in case of skeleton lookup error
+     * @throws InvalidSerializedDataException
+     *             import related exception
+     * @throws RepositoryException
+     *             general JCR exception
      */
-    public static Value createValue(Object objectValue, ValueFactory factory) {
-        if (objectValue instanceof String) {
-            return factory.createValue((String) objectValue);
-        } else if (objectValue instanceof Boolean) {
-            return factory.createValue((Boolean) objectValue);
-        } else if (objectValue instanceof Long) {
-            return factory.createValue((Long) objectValue);
-        } else if (objectValue instanceof Integer) {
-            return factory.createValue(((Integer) objectValue).longValue());
-        } else if (objectValue instanceof Calendar) {
-            return factory.createValue((Calendar) objectValue);
-        } else if (objectValue instanceof Date) {
-            Calendar c = new GregorianCalendar();
-            c.setTime((Date) objectValue);
-            return factory.createValue(c);
-        } else if (objectValue instanceof byte[] || objectValue instanceof File) {
-            InputStream is = null;
-            try {
-                is = objectValue instanceof File ? new FileInputStream((File) objectValue)
-                        : new ByteArrayInputStream((byte[]) objectValue);
-                return factory.createValue(factory.createBinary(is));
-            } catch (Exception e) {
-                throw new IllegalArgumentException(e);
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
-        } else {
-            logger.warn("Do not know, how to handle value of type {}", objectValue.getClass()
-                    .getName());
-        }
-        return null;
+    public static void importSkeletons(String skeletonLocations, String targetPath,
+                                       JCRSessionWrapper session, Map<String, String> replacements) throws IOException, InvalidSerializedDataException,
+            RepositoryException {
+        importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, replacements);
+    }
+    
+    public static boolean isValidFilename(String name) {
+        return (!name.startsWith(" ") && !name.endsWith(" ") && name.matches("([^\\*:/\\\\<>|?\"])*"));
     }
 
     /**
-     * Returns an object value that corresponds to the provided JCR property value depending on its type.
+     * Validates if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>).
      * 
-     * @param propertyValue
-     *            the JCR property value to be converted
-     * @return the object value
-     * @throws RepositoryException
-     *             in case of a conversion error
-     * @throws ValueFormatException
-     *             in case of a conversion error
+     * @param workspace
+     *            the workspace name to check
+     * @return <code>true</code> if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>);
+     *         otherwise returns <code>false</code>
      */
-    public static Object getValue(Value propertyValue) throws ValueFormatException,
-            RepositoryException {
-        Object value = propertyValue.getString();
-        switch (propertyValue.getType()) {
-            case PropertyType.BOOLEAN:
-                value = Boolean.valueOf(propertyValue.getBoolean());
-                break;
-            case PropertyType.DATE:
-                value = propertyValue.getDate();
-                break;
-            case PropertyType.DECIMAL:
-            case PropertyType.LONG:
-                value = Long.valueOf(propertyValue.getDecimal().longValue());
-                break;
-            case PropertyType.DOUBLE:
-                value = Double.valueOf(propertyValue.getDouble());
-                break;
+    public static final boolean isValidWorkspace(String workspace) {
+        return isValidWorkspace(workspace, false);
+    }
+
+    /**
+     * Validates if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>).
+     * 
+     * @param workspace
+     *            the workspace name to check
+     * @param allowBlank set to true if the workspace name is allowed to be null or empty
+     * @return <code>true</code> if the specified name is a valid JCR workspace (either <code>default</code> or <code>live</code>);
+     *         otherwise returns <code>false</code>
+     */
+    public static final boolean isValidWorkspace(String workspace, boolean allowBlank) {
+        return StringUtils.isEmpty(workspace) ? allowBlank : EDIT_WORKSPACE.equals(workspace)
+                || LIVE_WORKSPACE.equals(workspace);
+    }
+
+    /**
+     * Small utility method to help with proper namespace registration in all JCR providers.
+     * @param session
+     * @param prefix
+     * @param uri
+     * @throws RepositoryException
+     */
+    public static void registerNamespace(Session session, String prefix, String uri) throws RepositoryException {
+        NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
+        Set<String> prefixes = ImmutableSet.copyOf(namespaceRegistry.getPrefixes());
+        if (!prefixes.contains(prefix)) {
+            namespaceRegistry.registerNamespace(prefix, uri);
+            session.setNamespacePrefix(prefix, uri);
         }
-        return value;
+
+    }
+
+    /**
+     * Returns the number of elements in the provided iterator.
+     * 
+     * @param iterator the item iterator to check the size
+     * @return the number of elements in the provided iterator
+     */
+    public static long size(RangeIterator iterator) {
+        long size = iterator.getSize();
+        if (size <= 0) {
+            size = 0;
+            while (iterator.hasNext()) {
+                size++;
+                iterator.next();
+            }
+        }
+
+        return size;
+    }
+
+    /**
+     * Utility method to split a JCR path into names. Note that this method supports expanded name notation (using
+     * URIs), such as {http://www.jcp.org/jcr/1.0}read, as it is tricky to split simply using the "/" character when
+     * URIs are present.
+     * @param path a relative or absolute path, with node names in qualified or expanded form
+     * @return an array of String instances that contain the node names in order of the path.
+     */
+    public static String[] splitJCRPath(String path) {
+        List<String> result = new ArrayList<String>();
+        int pathPos = 0;
+
+        if (path.startsWith("/")) {
+            pathPos++;
+        }
+
+        int nextSlashPos = -1;
+        do {
+            StringBuffer currentName = new StringBuffer();
+            if (path.indexOf('{', pathPos) == pathPos) {
+                int endingBracketPos = path.indexOf('}', pathPos+1);
+                currentName.append(path.substring(pathPos, endingBracketPos+1));
+                pathPos = endingBracketPos + 1;
+            }
+            nextSlashPos = path.indexOf('/', pathPos);
+            if (nextSlashPos > -1) {
+                currentName.append(path.substring(pathPos, nextSlashPos));
+                pathPos = nextSlashPos + 1;
+            } else {
+                currentName.append(path.substring(pathPos));
+            }
+            result.add(currentName.toString());
+        } while (nextSlashPos > -1);
+
+        return result.toArray(new String[result.size()]);
+    }
+
+
+    /**
+     * Convert a path string to encoded path Strings in XPATH queries
+     * 
+     * @param str
+     *            Any string.
+     * @return A valid string path suitable for use in XPATH queries
+     */
+    public static String stringToJCRPathExp(String str) {
+        return ISO9075.encode(Text.escapeIllegalJcrChars(str));
+    }
+
+    /**
+     * Convert a string to a JCR search expression literal, suitable for use in
+     * jcr:contains() (inside XPath) or contains (SQL2). The characters - and " have
+     * special meaning, and may be escaped with a backslash to obtain their
+     * literal value. See JSR-283 spec v2.0, Sec. 4.6.6.19.
+     * 
+     * @param str
+     *            Any string.
+     * @return A valid string literal suitable for use in
+     *         JCR contains clauses, including enclosing quotes.
+     */
+    public static String stringToJCRSearchExp(String str) {
+        // Escape ' and \ everywhere, preceding them with \ except when \
+        // appears
+        // in one of the combinations \" or \-
+        return stringToQueryLiteral(Text.escapeIllegalXpathSearchChars(str));
+    }
+
+    /**
+     * Convert a string to a literal, suitable for inclusion
+     * in a query. See JSR-283 spec v2.0, Sec. 4.6.6.19.
+     * 
+     * @param str
+     *            Any string.
+     * @return A valid JCR query string literal, including enclosing quotes.
+     */
+    public static String stringToQueryLiteral(String str) {
+        // Single quotes needed for jcr:contains()
+        return "'" + str.replaceAll("'", "''") + "'";
+    }
+
+    /**
+     * Decode an encoded JCR local name encoded with the encodeJCRLocalName method
+     * Note : this implementation is not yet complete as it does not handle the XML
+     * restrictions yet, only the JCR ones.
+     * @param encodedLocalName
+     * @return
+     */
+    public static String unescapeLocalNodeName(final String encodedLocalName) {
+        return Text.unescapeIllegalJcrChars(encodedLocalName);
+    }
+
+
+    private Map<String, String> fileExtensionIcons;
+
+    private Map<String, List<String>> mimeTypes;
+
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param mimeTypes
+     *            a map with mime type mappings
+     * @param fileExtensionIcons mapping between file extensions and corresponding icons 
+     */
+    @SuppressWarnings("unchecked")
+    public JCRContentUtils(Map<String, List<String>> mimeTypes, Map<String, String> fileExtensionIcons) {
+        super();
+        instance = this;
+        this.mimeTypes = UnmodifiableMap.decorate(mimeTypes);
+        this.fileExtensionIcons = UnmodifiableMap.decorate(fileExtensionIcons);
+    }
+
+    /**
+     * Returns a mapping between file extensions and corresponding icons.
+     * 
+     * @return a mapping between file extensions and corresponding icons
+     */
+    public Map<String, String> getFileExtensionIcons() {
+        return fileExtensionIcons;
+    }
+
+    /**
+     * Return a map of mime types (file formats) to be available in the
+     * advanced search form.
+     * 
+     * @return a map of mime types (file formats) to be available in the
+     *         advanced search form
+     */
+    public Map<String, List<String>> getMimeTypes() {
+        return mimeTypes;
     }
 }

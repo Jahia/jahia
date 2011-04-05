@@ -64,7 +64,7 @@ public class ImagePopup extends Window {
 
         //setLayout(new FitLayout()) ;
         final HTML img = new HTML("<img src=\"" + n.getUrl() + "\" width=\"" + w +
-                "\" height=\"" + h + "\" alt=\"" + n.getName() + "\" />") ;
+                "\" height=\"" + h + "\" alt=\"" + n.getDisplayName() + "\" />") ;
         img.setSize(String.valueOf(w) + "px", String.valueOf(h) + "px");
 
         setSize(w + 18, h + 34);

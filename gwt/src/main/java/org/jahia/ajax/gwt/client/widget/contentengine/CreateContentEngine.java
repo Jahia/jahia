@@ -308,7 +308,7 @@ public class CreateContentEngine extends AbstractContentEngine {
 					        Messages.get(
 					                "org.jahia.engines.contentmanager.addContentWizard.formCard.success.save",
 					                "Content node created successfully:")
-					                + " " + node.getName());
+					                + " " + node.getDisplayName());
                     CreateContentEngine.this.container.closeEngine();
 
                     if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")

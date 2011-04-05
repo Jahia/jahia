@@ -122,12 +122,12 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode("/users");
 
                     jcrSessionWrapper.checkout(parentNodeWrapper);
-                    JCRNodeWrapper userNode = parentNodeWrapper.addNode(JCRContentUtils.escapeJCRLocalName(name), Constants.JAHIANT_USER);
+                    JCRNodeWrapper userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
                         String skeletons = parentNodeWrapper.getProperty("j:usersFolderSkeleton")
                                 .getString();
                         try {
-                            JCRContentUtils.importSkeletons(skeletons, "/users/" + JCRContentUtils.escapeJCRLocalName(name), jcrSessionWrapper);
+                            JCRContentUtils.importSkeletons(skeletons, "/users/" + JCRContentUtils.escapeLocalNodeName(name), jcrSessionWrapper);
                         } catch (Exception importEx) {
                             logger.error("Unable to import data using user skeletons " + skeletons, importEx);
                             throw new RepositoryException("Could not create user due to some import issues", importEx);
@@ -333,7 +333,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node userNode = session.getNode("/users/" + JCRContentUtils.escapeJCRLocalName(name));
+                    Node userNode = session.getNode("/users/" + JCRContentUtils.escapeLocalNodeName(name));
                     if (!userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(userNode.getIdentifier());
                         cache.put(name, user);

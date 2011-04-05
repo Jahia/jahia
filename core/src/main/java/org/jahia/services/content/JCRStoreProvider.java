@@ -89,6 +89,8 @@ public class JCRStoreProvider {
 
     private static Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
 
+    private static String httpPath;
+
     private String key;
     private String mountPoint;
     private String webdavPath;
@@ -170,10 +172,11 @@ public class JCRStoreProvider {
     }
 
     public String getHttpPath() {
-        if (Jahia.getContextPath().length() == 0) {
-            return "/files";
+        if (httpPath == null) {
+            httpPath = Jahia.getContextPath() + "/files";
         }
-        return Jahia.getContextPath() + "/files";
+        
+        return httpPath;
     }
 
     public String getRepositoryName() {
@@ -315,7 +318,7 @@ public class JCRStoreProvider {
 //        JahiaUser root = getGroupManagerService().getAdminUser(0);
         if (canRegisterCustomNodeTypes()) {
 
-            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
+            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
             Properties p = new Properties();
 
             JCRSessionWrapper session = getSystemSession();
@@ -400,8 +403,8 @@ public class JCRStoreProvider {
                 JCRNodeWrapper rootNode = session.getRootNode();
                 if (!rootNode.hasNode("sites")) {
                     rootNode.addMixin("mix:referenceable");
-
-                    JCRContentUtils.importSkeletons("WEB-INF/etc/repository/root.xml,WEB-INF/etc/repository/root-*.xml", "/", session, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, new HashMap<String, String>());
+                    
+                    JCRContentUtils.importSkeletons("WEB-INF/etc/repository/root.xml,WEB-INF/etc/repository/root-*.xml", "/", session, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, new HashMap<String,String>());
 
                     JahiaPrivilegeRegistry.init(session);
 
@@ -466,7 +469,7 @@ public class JCRStoreProvider {
 
     public void deployDefinitions(String systemId) {
         try {
-            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
+            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
             Properties p = new Properties();
             if (f.exists()) {
                 FileInputStream stream = new FileInputStream(f);
@@ -486,7 +489,7 @@ public class JCRStoreProvider {
                 }
             }
         } catch (IOException e) {
-            logger.error("Cannot save definitions timestamps", e);
+            logger.error("Cannot save definitions timestamps",e);
         }
     }
 
@@ -707,7 +710,6 @@ public class JCRStoreProvider {
 
         if (def.getDeclaringNodeType().isNodeType(Constants.JAHIANT_TRANSLATION)) {
             Node parent = prop.getParent();
-            String lang = parent.getProperty("jcr:language").getString();
             jcrNode = getNodeWrapper(parent.getParent(), session);
             String name = prop.getName();
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(name);
@@ -735,49 +737,49 @@ public class JCRStoreProvider {
                 Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:usersFolder]", Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
-                while (ni.hasNext()) {
-                    Node usersFolderNode = ni.nextNode();
-                    String options = "";
-                    if (usersFolderNode.hasProperty("j:usersFolderConfig")) {
-                        options = usersFolderNode.getProperty("j:usersFolderConfig").getString();
-                    }
+                    while (ni.hasNext()) {
+                        Node usersFolderNode = ni.nextNode();
+                        String options = "";
+                        if (usersFolderNode.hasProperty("j:usersFolderConfig")) {
+                            options = usersFolderNode.getProperty("j:usersFolderConfig").getString();
+                        }
 
-                    Node f = JCRContentUtils.getPathFolder(usersFolderNode, username, options, "jnt:usersFolder");
+                        Node f = JCRContentUtils.getPathFolder(usersFolderNode, username, options, "jnt:usersFolder");
 
-                    try {
-                        f.getNode(username);
-                    } catch (PathNotFoundException e) {
-                        synchronized (this) {
-                            try {
-                                f.getNode(username);
-                            } catch (PathNotFoundException ee) {
+                        try {
+                            f.getNode(username);
+                        } catch (PathNotFoundException e) {
+                            synchronized (this) {
                                 try {
-                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
-                                    Node userNode = f.addNode(username, Constants.JAHIANT_USER);
-                                    if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                        String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
-                                        try {
-                                            JCRContentUtils.importSkeletons(skeletons, f.getPath() + "/" + username, session, new HashMap<String, String>());
-                                        } catch (Exception importEx) {
-                                            logger.error("Unable to import data using user skeletons " + skeletons, importEx);
+                                    f.getNode(username);
+                                } catch (PathNotFoundException ee) {
+                                    try {
+                                        session.getWorkspace().getVersionManager().checkout(f.getPath());
+                                        Node userNode = f.addNode(username, Constants.JAHIANT_USER);
+                                        if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
+                                        	String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
+                                        	try {
+                                        		JCRContentUtils.importSkeletons(skeletons, f.getPath() + "/" + username, session, new HashMap<String,String>());
+                                        	} catch (Exception importEx) {
+                                        		logger.error("Unable to import data using user skeletons " + skeletons, importEx);
+                                        	}
                                         }
+
+                                        userNode.setProperty(JCRUser.J_EXTERNAL, true);
+                                        userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, providerName);
+                                        ((JCRNodeWrapper)userNode).grantRoles("u:" + username, Collections.singleton("owner"));
+
+                                        session.save();
+                                        session.getWorkspace().getVersionManager().checkin(f.getPath());
+                                        publicationService.publishByMainId(userNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                                                true, new ArrayList<String>());
+                                    } catch (RepositoryException e1) {
+                                        logger.error("Cannot save", e1);
                                     }
-
-                                    userNode.setProperty(JCRUser.J_EXTERNAL, true);
-                                    userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, providerName);
-                                    ((JCRNodeWrapper) userNode).grantRoles("u:" + username, Collections.singleton("owner"));
-
-                                    session.save();
-                                    session.getWorkspace().getVersionManager().checkin(f.getPath());
-                                    publicationService.publishByMainId(userNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                                            true, new ArrayList<String>());
-                                } catch (RepositoryException e1) {
-                                    logger.error("Cannot save", e1);
                                 }
                             }
                         }
                     }
-                }
             }
         } finally {
             session.logout();
@@ -877,7 +879,7 @@ public class JCRStoreProvider {
         return ("/".equals(mountPoint));
     }
 
-    private void dump(Node n) throws RepositoryException {
+    protected void dump(Node n) throws RepositoryException {
         System.out.println(n.getPath());
         PropertyIterator pit = n.getProperties();
         while (pit.hasNext()) {
@@ -909,7 +911,7 @@ public class JCRStoreProvider {
 
     public JCRSessionWrapper getSystemSession() throws RepositoryException {
         return sessionFactory.getSystemSession();
-    }
+        }
 
     public JCRSessionWrapper getSystemSession(String user, String workspace) throws RepositoryException {
         return sessionFactory.getSystemSession(user, workspace);

@@ -381,7 +381,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
                                 throw new PathNotFoundException("not found in "+path);
                             }
                             try {
-                                reference = session.getNode(currentPath);
+                                reference = session.getNode(JCRContentUtils.escapeNodePath(currentPath));
                                 break;
                             } catch (PathNotFoundException e) {
                                 // continue
@@ -397,7 +397,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
                                 throw new PathNotFoundException("not found in "+path);
                             }
                             try {
-                                reference = session.getNode("/"+currentPath);
+                                reference = session.getNode(JCRContentUtils.escapeNodePath("/"+currentPath));
                                 break;
                             } catch (PathNotFoundException e) {
                                 // continue

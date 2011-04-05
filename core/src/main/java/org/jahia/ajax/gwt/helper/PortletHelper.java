@@ -168,7 +168,6 @@ public class PortletHelper {
             if (name == null) {
                 name = gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
             }
-            contentManager.checkName(name);
             if (contentManager.checkExistence(parentPath + "/" + name, currentUserSession)) {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }

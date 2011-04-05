@@ -45,7 +45,6 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
@@ -54,11 +53,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: ktlili
  * Date: Aug 21, 2009
  * Time: 9:58:29 AM
- * 
  */
 public class PickedContentView extends BottomRightComponent {
     private GroupingStore<GWTJahiaNode> store;
@@ -215,6 +212,7 @@ public class PickedContentView extends BottomRightComponent {
      *
      * @param root
      */
+    @SuppressWarnings("unchecked")
     public void fillData(Object root) {
         if (readOnly) {
             return;
@@ -310,11 +308,21 @@ public class PickedContentView extends BottomRightComponent {
             return new ArrayList<String>();
         } else {
             List<String> pathes = new ArrayList<String>();
+            String prefix = jahiaContextPath + filesServletPath;
             for (GWTJahiaNode s : selectedContents) {
                 if (config.getNodeTypes().contains("nt:file")) {
-                    pathes.add(jahiaContextPath + filesServletPath + "/{workspace}" + s.getPath());
+                    String url = s.getUrl();
+                    if (url.startsWith(prefix) && url.length() > prefix.length() + 2) {
+                        try {
+                            url = url.substring(prefix.length()).substring(1);
+                            url = prefix + "/{workspace}" + url.substring(url.indexOf("/"));
+                        } catch (Exception e) {
+                            // ignore;
+                        }
+                    }
+                    pathes.add(url);
                 } else {
-                    pathes.add(jahiaContextPath + jahiaServletPath+ "/{mode}/{lang}" + s.getPath() + ".html");
+                    pathes.add(prefix + "/{mode}/{lang}" + s.getPath() + ".html");
                 }
             }
             return pathes;

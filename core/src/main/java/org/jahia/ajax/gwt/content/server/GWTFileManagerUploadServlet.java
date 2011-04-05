@@ -45,6 +45,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.ZipHelper;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRVersionService;
@@ -267,7 +268,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             return READONLY;
         }
         try {
-            if (locationFolder.hasNode(filename)) {
+            if (locationFolder.hasNode(JCRContentUtils.escapeLocalNodeName(filename))) {
                 return EXISTS;
             }
             InputStream is = item.getInputStream();

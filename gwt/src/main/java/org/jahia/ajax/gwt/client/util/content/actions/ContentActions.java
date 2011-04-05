@@ -160,7 +160,7 @@ public class ContentActions {
         if (selection != null && selection.isFile()) {
             linker.loading(Messages.get("statusbar.downloading.label"));
             if (url != null) {
-                HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
+                HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getDisplayName() + "</a>");
                 final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
                 dl.setModal(true);
                 dl.setHeading(Messages.get("label.download"));

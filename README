@@ -343,6 +343,18 @@ properly before running the Maven release plugin
 
 mvn -Prelease,installer,java-installer,windows-installer,qa-build,test -Dmaven.repo.local=/home/bamboo/.m2/repository-for-package release:prepare
 
+When asked for versions, here is an example :
+
+There are still some remaining snapshot dependencies.
+: Do you want to resolve them now? (yes/no) no: : yes
+Dependency type to resolve,: specify the selection number ( 0:All 1:Project Dependencies 2:Plugins 3:Reports 4:Extensions ): (0/1/2/3) 1: :
+Dependency 'org.codehaus.izpack:izpack-standalone-compiler' is a snapshot (4.3.3.jahia-SNAPSHOT)
+: Which release version should it be set to? 4.3.3.jahia: : 4.3.3.jahia-SNAPSHOT
+What version should the dependency be reset to for development? 4.3.3.jahia-SNAPSHOT: :
+What is the release version for "Jahia Project Root"? (org.jahia.server:jahia-root) 6.5: : 6.5-BETA2
+What is SCM release tag or label for "Jahia Project Root"? (org.jahia.server:jahia-root) jahia-root-6.5-BETA2: : JAHIA_6_5_BETA2
+What is the new development version for "Jahia Project Root"? (org.jahia.server:jahia-root) 6.5-BETA3-SNAPSHOT: : 6.5-SNAPSHOT
+
 7. Now go back into \core\src\main\java\org\jahia\bin\Jahia.java and change the
  release number to the next release number you want.
 

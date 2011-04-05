@@ -1017,7 +1017,7 @@ public class ContentManagerHelper {
         if (historyEntry.getLocale() != null) {
             languageCode = historyEntry.getLocale().toString();
         }
-        GWTJahiaContentHistoryEntry result = new GWTJahiaContentHistoryEntry(historyEntry.getDate(), historyEntry.getAction(), historyEntry.getPropertyName(), historyEntry.getUserKey(), historyEntry.getPath(), historyEntry.getMessage(), languageCode);
+        GWTJahiaContentHistoryEntry result = new GWTJahiaContentHistoryEntry(historyEntry.getDate() > 0 ? new Date(historyEntry.getDate()) : null, historyEntry.getAction(), historyEntry.getPropertyName(), historyEntry.getUserKey(), historyEntry.getPath(), historyEntry.getMessage(), languageCode);
         return result;
     }
 

@@ -4,7 +4,6 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -18,7 +17,7 @@ import java.util.Locale;
 public class HistoryEntry {
 
     private String id;
-    private Date date;
+    private Long date;
     private String path;
     private String uuid;
     private String action;
@@ -39,13 +38,12 @@ public class HistoryEntry {
         this.id = id;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "entry_date")
-    public Date getDate() {
+    public Long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Long date) {
         this.date = date;
     }
 

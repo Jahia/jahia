@@ -22,7 +22,6 @@ import org.jahia.services.content.JCRTemplate;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -220,7 +219,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 // Not found new object
                 if (!shouldSkipInsertion) {
 					HistoryEntry historyEntry = new HistoryEntry();
-					historyEntry.setDate(date);
+					historyEntry.setDate(date != null ? date.getTime() : null);
 					historyEntry.setPath(path);
 					historyEntry.setUuid(nodeIdentifier);
 					historyEntry.setUserKey(userKey);
@@ -308,9 +307,8 @@ public class ContentHistoryService implements Processor, CamelContextAware {
         try {
             Transaction tx = session.beginTransaction();
 
-            String hqlDelete = "delete HistoryEntry c where c.date < :date";
-            int deletedEntities = session.createQuery(hqlDelete)
-                    .setTimestamp("date", date)
+            int deletedEntities = session.createQuery("delete HistoryEntry c where c.date < :date")
+                    .setLong("date", date != null ? date.getTime() : Long.MAX_VALUE)
                     .executeUpdate();
             tx.commit();
             if (deletedEntities > 0) {
@@ -326,28 +324,17 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     }
 
     public long getMostRecentTimeInHistory() {
+        Long timeStamp = -1L;
         Session session = sessionFactoryBean.openSession();
 
         try {
-            Transaction tx = session.beginTransaction();
-
-            String hqlSelectMax = "select max(c.date) as latestDate from HistoryEntry c";
-            Iterator resultIter = session.createQuery(hqlSelectMax).list().iterator();
-            while (resultIter.hasNext()) {
-                Timestamp timeStamp = (Timestamp) resultIter.next();
-                if (timeStamp != null) {
-                    return timeStamp.getTime();
-                } else {
-                    return -1;
-                }
-            }
+            timeStamp = (Long) session.createQuery("select max(c.date) as latestDate from HistoryEntry c").uniqueResult();
         } catch (Exception e) {
             logger.error("Error while trying to retrieve latest date processed.", e);
-            return -1;
         } finally {
             session.close();
         }
-        return -1;
+        return timeStamp != null ? timeStamp : -1;
     }
 
     public void setCamelContext(final CamelContext camelContext) {

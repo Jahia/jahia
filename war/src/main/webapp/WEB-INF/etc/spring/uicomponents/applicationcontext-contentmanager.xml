@@ -1183,6 +1183,25 @@
                   value="repository.siteRepository.label"/>
     </bean>
 
+    <bean id="repository.studioContents" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="studioContentsRepository"/>
+        <property name="paths" value="$site/templates/content"/>
+        <property name="titleKey"
+                  value="repository.studioContentsRepository.label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.StudioVisibility"/>
+        </property>
+    </bean>
+    <bean id="repository.studioFiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="studioFilesRepository"/>
+        <property name="paths" value="$site/templates/files"/>
+        <property name="titleKey"
+                  value="repository.studioFilesRepository.label"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.StudioVisibility"/>
+        </property>
+    </bean>
+
 
     <bean id="ContentManagerAccessCheckFilter" class="org.jahia.bin.filters.ContentManagerAccessCheckFilter">
         <property name="defaultContentManager" value="contentmanager"/>

@@ -95,12 +95,8 @@ public class HtmlExternalizationService {
             HttpServletResponse response) {
         String out = sourceContent;
         long timer = System.currentTimeMillis();
-        if (rewriteUrls) {
-            // process URLs
-            out = rewriteUrls(sourceContent, serverUrl);
-            if (logger.isDebugEnabled()) {
-                logger.debug("...done processing URLs in " + (System.currentTimeMillis() - timer) + " ms");
-            }
+        if (removeExternalScripts || removeInlinedScripts) {
+            out = removeJavaScript(out);
         }
 
         if (inlineCss) {
@@ -108,8 +104,12 @@ public class HtmlExternalizationService {
             out = processCss(out, serverUrl, request, response);
         }
 
-        if (removeExternalScripts || removeInlinedScripts) {
-            out = removeJavaScript(out);
+        if (rewriteUrls) {
+            // process URLs
+            out = rewriteUrls(out, serverUrl);
+            if (logger.isDebugEnabled()) {
+                logger.debug("...done processing URLs in " + (System.currentTimeMillis() - timer) + " ms");
+            }
         }
 
         if (logger.isDebugEnabled()) {

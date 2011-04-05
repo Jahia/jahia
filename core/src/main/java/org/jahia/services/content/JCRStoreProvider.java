@@ -117,7 +117,7 @@ public class JCRStoreProvider {
     private JCRStoreService service;
     private JCRPublicationService publicationService;
 
-    private JCRSessionFactory sessionFactory;
+    protected JCRSessionFactory sessionFactory;
     protected Repository repo = null;
 
     private boolean mainStorage = false;
@@ -318,9 +318,9 @@ public class JCRStoreProvider {
             File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
             Properties p = new Properties();
 
-            Session session = getSystemSession();
+            JCRSessionWrapper session = getSystemSession();
             try {
-                Workspace workspace = session.getWorkspace();
+                Workspace workspace = session.getProviderSession(this).getWorkspace();
                 workspace.getNodeTypeManager().getNodeType("jmix:droppableContent");
 
                 if (f.exists()) {
@@ -359,8 +359,8 @@ public class JCRStoreProvider {
         Set<String> workspaces = service.getListeners().keySet();
         for (String ws : workspaces) {
             // This session must not be released
-            final Session session = getSystemSession(null, ws);
-            final Workspace workspace = session.getWorkspace();
+            final JCRSessionWrapper session = getSystemSession(null, ws);
+            final Workspace workspace = session.getProviderSession(this).getWorkspace();
 
             ObservationManager observationManager = workspace.getObservationManager();
             JCRObservationManagerDispatcher listener = new JCRObservationManagerDispatcher();
@@ -502,9 +502,9 @@ public class JCRStoreProvider {
         if (needUpdate) {
             try {
                 repo = getRepository();
-                Session session = getSystemSession();
+                JCRSessionWrapper session = sessionFactory.getSystemSession();
                 try {
-                    Workspace workspace = session.getWorkspace();
+                    Workspace workspace = session.getProviderSession(this).getWorkspace();
 
                     try {
                         registerCustomNodeTypes(systemId, workspace);
@@ -637,15 +637,6 @@ public class JCRStoreProvider {
 //
 //        }
         return s;
-    }
-
-    public NodeType getNodeType(String name) throws RepositoryException {
-        Session session = getSystemSession();
-        try {
-            return session.getWorkspace().getNodeTypeManager().getNodeType(name);
-        } finally {
-            session.logout();
-        }
     }
 
     public JCRItemWrapper getItemWrapper(Item item, JCRSessionWrapper session) throws RepositoryException {
@@ -916,31 +907,12 @@ public class JCRStoreProvider {
         return session.getProviderSession(JCRStoreProvider.this).getWorkspace().getQueryManager();
     }
 
-    public ValueFactory getValueFactory(JahiaUser user) {
-        ValueFactory valueFactory = null;
-        try {
-            Session session = getCurrentUserSession();
-            valueFactory = session.getValueFactory();
-        } catch (RepositoryException e) {
-            logger.error("Repository error", e);
-        }
-        return valueFactory;
+    public JCRSessionWrapper getSystemSession() throws RepositoryException {
+        return sessionFactory.getSystemSession();
     }
 
-    public Session getCurrentUserSession() throws RepositoryException {
-        return sessionFactory.getCurrentUserSession().getProviderSession(this);
-    }
-
-    public Session getCurrentUserSession(String workspace) throws RepositoryException {
-        return sessionFactory.getCurrentUserSession(workspace).getProviderSession(this);
-    }
-
-    public Session getSystemSession() throws RepositoryException {
-        return sessionFactory.getSystemSession().getProviderSession(this);
-    }
-
-    public Session getSystemSession(String user, String workspace) throws RepositoryException {
-        return sessionFactory.getSystemSession(user, workspace).getProviderSession(this);
+    public JCRSessionWrapper getSystemSession(String user, String workspace) throws RepositoryException {
+        return sessionFactory.getSystemSession(user, workspace);
     }
 
     public boolean isInitialized() {

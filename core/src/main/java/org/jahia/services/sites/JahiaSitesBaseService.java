@@ -812,6 +812,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     JCRPublicationService.getInstance().publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
                 } catch (RepositoryException e) {
                     e.printStackTrace();
+                } finally {
+                    JCRSessionFactory.getInstance().closeAllSessions();
                 }
             }
         } catch (JahiaException e) {

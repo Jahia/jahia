@@ -747,6 +747,7 @@ public class JCRSessionWrapper implements Session {
             throws VersionException, LockException, ConstraintViolationException, AccessDeniedException,
             RepositoryException {
         getItem(absPath).remove();
+        sessionCacheByPath.remove(absPath);
     }
 
     public boolean hasPermission(String absPath, String actions) throws RepositoryException {

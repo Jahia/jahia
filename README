@@ -339,9 +339,18 @@ svn checkout https://username@svnserver/svn/jahia/trunk
 You will probably want to also test a commit to make sure you have setup everything
 properly before running the Maven release plugin
 
-6. You can perform all this with the following command line :
+6a. If you're not familiar with the release plugin or want to simply double-check things, you can perform first
+a dry run with the command :
 
-mvn -Prelease,installer,java-installer,windows-installer,qa-build,test -Dmaven.repo.local=/home/bamboo/.m2/repository-for-package release:prepare
+mvn -DdryRun release:prepare -P installer,java-installer,windows-installer,qa-build,test
+
+Once it is completed reset the project by using the command :
+
+mvn release:clean -P installer,java-installer,windows-installer,qa-build,test
+
+6b. You can perform all this with the following command line :
+
+mvn release:prepare -P installer,java-installer,windows-installer,qa-build,test
 
 When asked for versions, here is an example :
 
@@ -360,17 +369,25 @@ What is the new development version for "Jahia Project Root"? (org.jahia.server:
 
 8. Do the same in the /jahia-installer-package/pom.xml as in step 2
 
-9. Checkout the new tag that was created by the plugin in step 6 and run :
+9. Test a staging of the release by doing the following :
 
-mvn -Prelease,installer,java-installer,windows-installer,qa-build,test -Dmaven.repo.local=/home/bamboo/.m2/repository-for-package clean install deploy
+mvn -DstagingRepository=stagingDir::default::file:///Users/loom/java/temp release:stage
+
+10. Once everything looks right, you can perform the release by doing :
+
+mvn release:perform
 
    This step requires that you have correctly setup deployment to the Maven repository
 as described in this README in the section called "Deploying new JARs to maven.jahia.org"
 
-If for some reason you need to start again you can use the release:clean or
+Tips :
+
+- If for some reason you need to start again you can use the release:clean or
 if something was already committed, prepare a rollback with release:rollback
 
-It's also a good idea if you're not familiar with the process to execute first
-a dry run (won't do any real changes). You can do this with the following line:
+- If you want to perform staging on a specific tag, here is an example :
 
-mvn -Prelease,installer,java-installer,windows-installer,qa-build,test -Dmaven.repo.local=/home/bamboo/.m2/repository-for-package -DdryRun=true release:prepare
+mvn -DconnectionUrl=scm:svn:https://10.8.37.111/svn/jahia/tags/JAHIA_6_5_BETA2 -DstagingRepository=stagingDir::default::file:///Users/loom/java/temp release:stage
+
+- If you're running of these an the Bamboo server, make sure you use the alternate local repository with the following
+command line option : -Dmaven.repo.local=/home/bamboo/.m2/repository-for-package

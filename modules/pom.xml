@@ -122,7 +122,6 @@
         <module>calendar</module>
         <module>contact</module>
         <module>contentRetrieval</module>
-        <module>content-browser</module>
         <module>contributeToolbar</module>
         <module>default</module>
         <module>docConverter</module>

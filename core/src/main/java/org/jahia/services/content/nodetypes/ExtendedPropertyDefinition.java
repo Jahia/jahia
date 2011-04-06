@@ -119,19 +119,6 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
                 for (Value value : v) {
                     res.add(value);
                 }
-            } else if (requiredType == PropertyType.REFERENCE
-                    || requiredType == PropertyType.WEAKREFERENCE) {
-                Value valueConstraint = valueConstraints[i];
-                try {
-                    String constraintValue = valueConstraint.getString();
-                    ExtendedNodeType nodeType = registry.getNodeType(constraintValue);
-                    Name name = nodeType.getNameObject();
-                    valueConstraint = new ValueImpl(
-                            "{" + name.getUri() + "}" + name.getLocalName(),
-                            valueConstraint.getType());
-                } catch (RepositoryException ex) {
-                }
-                res.add(valueConstraint);
             } else {
                 res.add(valueConstraints[i]);
             }
@@ -140,13 +127,28 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     }
     
     public ValueConstraint[] getValueConstraintObjects() {
-        ValueConstraint[] constraints = null;
+        ValueConstraint[] constraintObjs = null;
         try {
-            constraints = ValueConstraint.create(getRequiredType(), getValueConstraints());
+            String[] constraints = getValueConstraints();
+            if (requiredType == PropertyType.REFERENCE
+                    || requiredType == PropertyType.WEAKREFERENCE) {
+                String[] expandedConstraints = new String[constraints.length];
+                int i = 0;
+                for (String constraint : constraints) {
+                    try {
+                        ExtendedNodeType nodeType = registry.getNodeType(constraint);
+                        Name name = nodeType.getNameObject();
+                        expandedConstraints[i++] = "{" + name.getUri() + "}" + name.getLocalName();
+                    } catch (RepositoryException ex) {
+                    }
+                }
+                constraints = expandedConstraints;
+            }
+            constraintObjs = ValueConstraint.create(getRequiredType(), constraints);
         } catch (InvalidConstraintException e) {
             logger.warn("Internal error during creation of constraint.", e);
         }
-        return constraints;
+        return constraintObjs;
     }
 
     public String[] getValueConstraints() {

@@ -172,7 +172,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 
                 if (latestTimeProcessed > date.getTime()) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Skipping content history entry since it's date "+date+"is older than last processed date");
+                        logger.debug("Skipping content history entry since it's date {} is older than last processed date", date);
                     }
                     ignoredCount++;
                     whatDidWeDo = "skipped";
@@ -198,7 +198,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                         if (mustCheckInDB) {
                             Criteria criteria = session.createCriteria(HistoryEntry.class);
                             criteria.add(Restrictions.eq("uuid", nodeIdentifier));
-                            criteria.add(Restrictions.eq("date", date));
+                            criteria.add(Restrictions.eq("date", date != null ? Long.valueOf(date.getTime()) : null));
                             criteria.add(Restrictions.eq("propertyName", propertyName));
                             criteria.add(Restrictions.eq("action", action));
 

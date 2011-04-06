@@ -376,6 +376,14 @@ public class WorkflowHelper {
                 gwtWorkflowsMap.put(wf.getId(), gwtWfHistory);
                 gwtWorkflows.add(gwtWfHistory);
                 gwtWfHistory.setRunningWorkflow(getGWTJahiaWorkflow(wf));
+                try {
+                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByIdentifier(
+                            gwtWfHistory.getNodeId());
+                    gwtWfHistory.set("nodeWrapper", ((NavigationHelper)SpringContextSingleton.getInstance().getContext().getBeansOfType(NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                gwtWfHistory.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
             }
         }
 
@@ -511,20 +519,6 @@ public class WorkflowHelper {
     public int getNumberOfTasksForUser(JahiaUser user, Locale locale) throws GWTJahiaServiceException {
         int total = 0;
         List<WorkflowTask> tasks = service.getTasksForUser(user, locale);
-        total = tasks.size();
-        List<Workflow> workflows = service.getWorkflowsForUser(user, locale);
-        for (Workflow workflow : workflows) {
-            boolean found = false;
-            for (WorkflowTask task : tasks) {
-                if(workflow.getId().equals(task.getProcessId())) {
-                    found = true;
-                    break;
-                }
-            }
-            if(!found) {
-                total++;
-            }
-        }
-        return total;
+        return tasks.size();
     }
 }

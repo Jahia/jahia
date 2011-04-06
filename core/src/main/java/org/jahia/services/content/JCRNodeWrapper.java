@@ -800,6 +800,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     JCRSiteNode getResolveSite() throws RepositoryException;
 
+    boolean hasTranslations() throws RepositoryException;
+
     boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale) throws RepositoryException;
 
     String getDisplayableName();

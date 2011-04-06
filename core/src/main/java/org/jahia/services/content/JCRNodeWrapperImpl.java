@@ -3143,7 +3143,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return true;
     }
 
-    private boolean hasTranslations() throws RepositoryException {
+    public boolean hasTranslations() throws RepositoryException {
         NodeIterator ni = objectNode.getNodes();
         boolean translated = false;
         while (!translated && ni.hasNext()) {

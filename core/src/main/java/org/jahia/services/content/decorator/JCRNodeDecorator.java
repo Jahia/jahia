@@ -73,6 +73,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getUser();
     }
 
+    public boolean hasTranslations() throws RepositoryException {
+        return node.hasTranslations();
+    }
+
     public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale)
             throws RepositoryException {
         return node.checkI18nAndMandatoryPropertiesForLocale(locale);

@@ -300,8 +300,16 @@ public class WorkflowService {
     public List<Workflow> getActiveWorkflows(JCRNodeWrapper node, Locale locale) {
         List<Workflow> workflows = new ArrayList<Workflow>();
         try {
-            if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW) && node.hasProperty(Constants.PROCESSID)) {
-                addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), locale);
+            Node n = node;
+            try {
+                if (locale != null && node.hasTranslations()) {
+                    n = node.getI18N(locale);
+                }
+            } catch (ItemNotFoundException e) {
+                return workflows;
+            }
+            if (n.isNodeType(Constants.JAHIAMIX_WORKFLOW) && n.hasProperty(Constants.PROCESSID)) {
+                addActiveWorkflows(workflows, n.getProperty(Constants.PROCESSID), locale);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

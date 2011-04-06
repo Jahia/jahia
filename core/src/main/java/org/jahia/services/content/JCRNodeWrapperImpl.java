@@ -1007,7 +1007,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean canAddMixin(String s) throws NoSuchNodeTypeException, RepositoryException {
-        checkLock();
+        try {
+            checkLock();
+        } catch (LockException e) {
+            return false;
+        }
 
         return objectNode.canAddMixin(s);
     }

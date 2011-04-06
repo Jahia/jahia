@@ -681,7 +681,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         if (!siteNode.isCheckedOut()) {
             session.checkout(siteNode);
         }
-        siteNode.setProperty("jcr:title", site.getTitle());
+        siteNode.setProperty("j:title", site.getTitle());
         siteNode.setProperty("j:description", site.getDescr());
         siteNode.setProperty("j:serverName", site.getServerName());
 //                    siteNode.setProperty("j:installedModules", new String[]{site.getTemplatePackageName()});

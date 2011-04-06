@@ -542,7 +542,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                 JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
                         if (sitePrivGroup == null) {
                             sitePrivGroup = jgms.createGroup(site.getID(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null,
-                                    true);
+                                    false);
                         }
                         // atach site privileged group to server privileged
                         privGroup.addMember(sitePrivGroup);

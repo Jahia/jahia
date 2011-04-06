@@ -75,17 +75,17 @@
                                     <j:translation_en jcr:language="en" label="Categories" jcr:primaryType="jnt:translation" />
                                 </fieldFacet-1>
                                 <queryFacet mincount="1" jcr:primaryType="jnt:queryFacet" facet="nextEvents" query="0\:FACET\:startDate:[NOW/DAY TO NOW/MONTH+1MONTH] OR 0\:FACET\:endDate:[NOW/DAY TO NOW/MONTH+1MONTH]">
-                                  <j:translation_en jcr:primaryType="jnt:translation" label="Next events per month" jcr:language="en" valueLabel="##DynamicDateLabel(NOW/MONTH,date,MMMM)##" />
+                                    <j:translation_en jcr:primaryType="jnt:translation" label="Next events per month" jcr:language="en" valueLabel="##DynamicDateLabel(NOW/MONTH,date,MMMM)##" />
                                 </queryFacet>
                                 <queryFacet-1 mincount="1" jcr:primaryType="jnt:queryFacet" facet="nextEvents" query="0\:FACET\:startDate:[NOW/MONTH+1MONTH TO NOW/MONTH+2MONTH] OR 0\:FACET\:endDate:[NOW/MONTH+1MONTH TO NOW/MONTH+2MONTH]">
-                                  <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" label="Next events per month" valueLabel="##DynamicDateLabel(NOW/MONTH+1MONTH,date,MMMM)##" />
+                                    <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" label="Next events per month" valueLabel="##DynamicDateLabel(NOW/MONTH+1MONTH,date,MMMM)##" />
                                 </queryFacet-1>
                                 <queryFacet-2 mincount="1" jcr:primaryType="jnt:queryFacet" facet="nextEvents" query="0\:FACET\:startDate:[NOW/MONTH+2MONTH TO NOW/MONTH+3MONTH] OR 0\:FACET\:endDate:[NOW/MONTH+2MONTH TO NOW/MONTH+3MONTH]">
-                                  <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" label="Next events per month" valueLabel="##DynamicDateLabel(NOW/MONTH+2MONTH,date,MMMM)##" />
+                                    <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" label="Next events per month" valueLabel="##DynamicDateLabel(NOW/MONTH+2MONTH,date,MMMM)##" />
                                 </queryFacet-2>
                                 <queryFacet-3 mincount="1" jcr:primaryType="jnt:queryFacet" facet="nextEvents" query="0\:FACET\:startDate:[NOW/MONTH+3MONTH TO NOW/MONTH+4MONTH] OR 0\:FACET\:endDate:[NOW/MONTH+3MONTH TO NOW/MONTH+4MONTH]">
-                                  <j:translation_en jcr:primaryType="jnt:translation" label="Next events per month" jcr:language="en" valueLabel="##DynamicDateLabel(NOW/MONTH+3MONTH,date,MMMM)##" />
-                                </queryFacet-3>                                
+                                    <j:translation_en jcr:primaryType="jnt:translation" label="Next events per month" jcr:language="en" valueLabel="##DynamicDateLabel(NOW/MONTH+3MONTH,date,MMMM)##" />
+                                </queryFacet-3>
                             </facets>
                         </row1-col2>
                     </events>
@@ -114,23 +114,18 @@
                             <mainResourceDisplay j:mainResourceView="fullpage" jcr:primaryType="jnt:mainResourceDisplay" />
                         </row-col1>
                     </news-template>
-          <user j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="10" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent j:style="blue" jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList">
-              <custom-rows-960gs customColumn="16" jcr:primaryType="jnt:customRow"/>
-            </pagecontent>
-            <custom-rows-960gs-col1 jcr:primaryType="jnt:contentList">
-              <public-profile j:skin="skins.box2style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Public Profile"/>
-                <userDetails j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails"/>
-              </public-profile>
-            </custom-rows-960gs-col1>
-          </user>
+                    <user j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="10" jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent j:style="blue" jcr:mixinTypes="jmix:style" jcr:primaryType="jnt:contentList">
+                            <custom-rows-960gs customColumn="16" jcr:primaryType="jnt:customRow"/>
+                        </pagecontent>
+                        <custom-rows-960gs-col1 jcr:primaryType="jnt:contentList">
+                            <public-profile j:skin="skins.box2style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" jcr:title="Public Profile"/>
+                                <userDetails j:view="full" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:userDetails"/>
+                            </public-profile>
+                        </custom-rows-960gs-col1>
+                    </user>
                 </base>
-                <content-template j:applyOn="jnt:content" j:hiddenTemplate="true" j:priority="1" j:view="web" jcr:primaryType="jnt:contentTemplate">
-                  <pagecontent jcr:primaryType="jnt:contentList">
-                    <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-                  </pagecontent>
-                </content-template>
             </templates>
             <search-results jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-web/templates/base" priority="0.5">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Search results" jcr:primaryType="jnt:translation" />
@@ -146,12 +141,12 @@
                 </pagecontent>
             </search-results>
             <newsletter-confirmation jcr:primaryType="jnt:page" j:templateNode="/templateSets/templates-web/templates/base/simple" >
-              <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="Newsletter confirmation" jcr:primaryType="jnt:translation" />
-              <listA jcr:primaryType="jnt:contentList" >
-                <bigText jcr:primaryType="jnt:bigText" >
-                  <j:translation_en jcr:language="en" text="&lt;p&gt;  Your request has been taken into account.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
-                </bigText>
-              </listA>
+                <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="Newsletter confirmation" jcr:primaryType="jnt:translation" />
+                <listA jcr:primaryType="jnt:contentList" >
+                    <bigText jcr:primaryType="jnt:bigText" >
+                        <j:translation_en jcr:language="en" text="&lt;p&gt;  Your request has been taken into account.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
+                    </bigText>
+                </listA>
             </newsletter-confirmation>
 
         </templates-web>

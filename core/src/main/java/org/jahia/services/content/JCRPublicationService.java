@@ -167,6 +167,18 @@ public class JCRPublicationService extends JahiaService {
     }
 
     /**
+     * Publish a node sub-tree from default into the live workspace.
+     * Referenced nodes will also be published.
+     * Parent node must be published, or will be published if publishParent is true.
+     *
+     * @param uuid                 UUID of the node to publish
+     * @throws javax.jcr.RepositoryException in case of error
+     */
+    public void publishByMainId(final String uuid) throws RepositoryException {
+        publishByMainId(uuid, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+    }
+
+    /**
      * Publish a node into the live workspace.
      * Referenced nodes will also be published.
      * Parent node must be published, or will be published if publishParent is true.

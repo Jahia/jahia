@@ -201,6 +201,11 @@
             </custom-rows-960gs-col1>
           </user>
         </base>
+        <content-template j:applyOn="jnt:content" j:hiddenTemplate="true" j:priority="1" j:view="templates-web-blue" jcr:primaryType="jnt:contentTemplate">
+          <pagecontent jcr:primaryType="jnt:contentList">
+            <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
+          </pagecontent>
+        </content-template>
         <contents jcr:primaryType="jnt:contentFolder" />
         <files jcr:primaryType="jnt:folder">
           <themes jcr:primaryType="jnt:folder">

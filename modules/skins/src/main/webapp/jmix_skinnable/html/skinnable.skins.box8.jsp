@@ -8,14 +8,14 @@
 <c:if test="${not empty title}">
     <div class="clear"></div>
     <h4 class="box8-title box8-title${currentNode.properties['j:style'].string} <c:if test="${!empty currentNode.properties.icon}">box8-title-icon</c:if> ">
-
+<c:if test="${!empty currentNode.properties.icon}">
             <span class="box8-icon"
-                  <c:if test="${!empty currentNode.properties.icon}">
+                  
                     style="background-image: url(${currentNode.properties.icon.node.url})"
-                  </c:if>
+                  
             >
             </span>
-
+</c:if>
         ${title.string}
     </h4>
 

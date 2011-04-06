@@ -337,6 +337,7 @@ public class JCRSessionWrapper implements Session {
             throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException,
             LockException, RepositoryException {
         getWorkspace().move(source, dest, true);
+        flushCaches();
     }
 
     public void save()
@@ -895,5 +896,10 @@ public class JCRSessionWrapper implements Session {
 
     public static AtomicLong getActiveSessions() {
         return activeSessions;
+    }
+    
+    protected void flushCaches() {
+        sessionCacheByIdentifier.clear();
+        sessionCacheByPath.clear();
     }
 }

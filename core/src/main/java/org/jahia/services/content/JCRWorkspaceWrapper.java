@@ -406,6 +406,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                             return null;
                         }
                     });
+            getSession().flushCaches();
         }
 
         public void restore(final String absPath, final String versionName, final boolean removeExisting) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
@@ -415,6 +416,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                     return null;
                 }
             });
+            getSession().flushCaches();
         }
 
         public void restore(final Version version, final boolean removeExisting) throws VersionException, ItemExistsException, InvalidItemStateException, UnsupportedRepositoryOperationException, LockException, RepositoryException {
@@ -424,6 +426,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                     return null;
                 }
             });
+            getSession().flushCaches();
         }
 
         public void restore(final String absPath, final Version version, final boolean removeExisting) throws PathNotFoundException, ItemExistsException, VersionException, ConstraintViolationException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
@@ -433,6 +436,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                     return null;
                 }
             });
+            getSession().flushCaches();
         }
 
         public void restoreByLabel(final String absPath, final String versionLabel, final boolean removeExisting) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
@@ -442,6 +446,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                     return null;
                 }
             });
+            getSession().flushCaches();
         }
 
         public NodeIterator merge(final String absPath, final String srcWorkspace, final boolean bestEffort) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {

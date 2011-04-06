@@ -899,15 +899,17 @@ public class ContentManagerHelper {
     }
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
-        boolean isTemplatesSet = "templatesSet".equals(siteType);
+        String shortName = JCRContentUtils.generateNodeName(key, 50);
         if (baseSet == null) {
-            String shortName = JCRContentUtils.generateNodeName(key, 50);
 
             try {
-                JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(shortName, "jnt:virtualsite");
+                JCRNodeWrapper node = session.getNode("/templateSets");
+                shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
+                JCRNodeWrapper templateSet = node.addNode(shortName, "jnt:virtualsite");
                 session.save();
                 templateSet.setProperty("j:siteType", siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
+                templateSet.setProperty("j:title",key);
 
                 String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
                 HashMap<String, String> replacements = new HashMap<String, String>();
@@ -917,7 +919,7 @@ public class ContentManagerHelper {
 //                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
 //                }
                 session.save();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, isTemplatesSet);
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName, "templatesSet".equals(siteType));
 
                 return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);
             } catch (IOException e) {
@@ -927,9 +929,14 @@ public class ContentManagerHelper {
             }
         } else {
             try {
-                List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", key, false, false, false, false, session);
+                JCRNodeWrapper node = session.getNode("/templateSets");
+                shortName = JCRContentUtils.findAvailableNodeName(node, shortName);
+
+                List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", shortName, false, false, false, false, session);
                 siteType = session.getNode("/templateSets/" + baseSet).getProperty("j:siteType").getValue().getString();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key, isTemplatesSet);
+                session.getNode("/templateSets/" + shortName).setProperty("j:title",key);
+                session.save();
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key, "templatesSet".equals(siteType));
 
                 JCRNodeWrapper templateSet = session.getNodeByUUID(result.get(0).getUUID());
                 return navigation.getGWTJahiaNode(templateSet, GWTJahiaNode.DEFAULT_SITE_FIELDS);

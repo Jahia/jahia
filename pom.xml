@@ -362,36 +362,6 @@
                 </plugins>
             </build>
         </profile>
-
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${javadoc.plugin.version}</version>
-                        <configuration>
-                            <detectOfflineLinks>false</detectOfflineLinks>
-                            <minmemory>128m</minmemory>
-                            <maxmemory>1g</maxmemory>
-                            <failOnError>false</failOnError>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>${release.plugin.version}</version>
-                        <configuration>
-                            <autoVersionSubmodules>true</autoVersionSubmodules>
-                            <goals>deploy</goals>
-                            <preparationGoals>clean verify install</preparationGoals>
-                            <releaseProfiles>release,installer,java-installer,windows-installer,qa-build,test,!do-attach-sources</releaseProfiles>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>do-attach-sources</id>
             <activation>
@@ -573,6 +543,28 @@
                      <svn>javasvn</svn>
                    </providerImplementations>
                     -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.plugin.version}</version>
+                <configuration>
+                    <detectOfflineLinks>false</detectOfflineLinks>
+                    <minmemory>128m</minmemory>
+                    <maxmemory>1g</maxmemory>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${release.plugin.version}</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy</goals>
+                    <preparationGoals>clean verify install</preparationGoals>
+                    <releaseProfiles>installer,java-installer,windows-installer,qa-build,test,!do-attach-sources</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

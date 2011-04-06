@@ -140,7 +140,8 @@ QueryResultWrapper queryResult = (QueryResultWrapper) q.execute();
   
   Notice however that when using XPATH queries, you may need to have more knowledge of the way how Jahia stores nodes internally (e.g. translation nodes), as SQL-2 and JQOM queries
   are automatically overwritten to mask the internal storage structure. Also for JQOM and SQL-2 Jahia is internally modifying the query and adding the current language as a constraint
-  (if no other constraint is existing on the language property). This is not done with XPATH queries. 
+  (if no other constraint is existing on the language property). This is not done with XPATH queries, which means that if you do not modify the query or filter the results, you may get 
+  duplicated results - one for the main node and one for the translation node, as both are returned by querying on a nodetype. 
   
   More information about XPATH query syntax can be found in the {{{http://www.day.com/specs/jcr/1.0/6.6.2_XPath_and_SQL.html}JCR 1.0 specification}} or check this
   {{{http://wiki.gxdeveloperweb.com/confluence/display/GXDEV/XPath+JCR+Sample+Queries}examples}}. 

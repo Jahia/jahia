@@ -51,6 +51,7 @@
 package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
+import org.jahia.api.Constants;
 import org.jahia.params.*;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.JCRSessionFactory;
@@ -132,7 +133,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     private static String EDITION;
 
     /** Jahia server release number */
-    private static double RELEASE_NUMBER = 6.5;
+    private static double RELEASE_NUMBER = -1.0;
 
     public static final String VERSION = String.valueOf(RELEASE_NUMBER);
 
@@ -170,6 +171,30 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     }
 
     public static double getReleaseNumber() {
+        if (RELEASE_NUMBER == -1.0) {
+            int qualifierPosition = Constants.JAHIA_PROJECT_VERSION.indexOf("-");
+            String releaseNumberStr = Constants.JAHIA_PROJECT_VERSION;
+            if (qualifierPosition != -1) {
+                releaseNumberStr = Constants.JAHIA_PROJECT_VERSION.substring(0, qualifierPosition);
+            }
+            // should now be in a format like X.X.X
+            int firstDotPos = releaseNumberStr.indexOf(".");
+            if (firstDotPos > -1) {
+                int secondDotPos = releaseNumberStr.indexOf(".", firstDotPos+1);
+                if (secondDotPos > -1) {
+                    releaseNumberStr = releaseNumberStr.substring(0, secondDotPos);
+                } else {
+                    // no second dot, we are in the case X.X
+                }
+            } else {
+                // no first dot, we are in the case X
+            }
+            try {
+                RELEASE_NUMBER = Double.parseDouble(releaseNumberStr);
+            } catch (NumberFormatException nfe) {
+                RELEASE_NUMBER = 0.0;
+            }
+        }
         return RELEASE_NUMBER;
     }
 

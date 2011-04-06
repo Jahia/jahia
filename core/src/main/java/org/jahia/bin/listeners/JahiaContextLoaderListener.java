@@ -34,6 +34,7 @@ package org.jahia.bin.listeners;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.IOUtils;
+import org.jahia.api.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.pluto.driver.PortalStartupListener;
@@ -166,6 +167,12 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             buildBuffer.append(buildString.substring(i, i + 1));
         }
 
+        StringBuilder versionBuffer = new StringBuilder();
+        for (int i = 0; i < Constants.JAHIA_PROJECT_VERSION.length(); i++) {
+            versionBuffer.append(" ");
+            versionBuffer.append(Constants.JAHIA_PROJECT_VERSION.substring(i, i + 1));
+        }
+
         String msg;
         InputStream is = null;
         try {
@@ -183,8 +190,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                             + "             |__\\---\\_____________:______:    :____|____:_____\\\n"
                             + "                                        /_____|\n"
                             + "\n"
-                            + "      . . . s t a r t i n g   j a h i a   b u i l d  @BUILD_NUMBER@"+
-                    " . . .\n"
+                            + "      . . . s t a r t i n g   j a h i a   b u i l d  @BUILD_NUMBER@ . . .\n"
+                            + "\n"
+                            + "                  v e r s i o n  :  @VERSION@\n"
                             + "\n\n"
                             + "   Copyright 2002-2011 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
                             + "\n\n"
@@ -201,6 +209,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 			IOUtils.closeQuietly(is);
 		}
         msg = msg.replace("@BUILD_NUMBER@", buildBuffer.toString());
+        msg = msg.replace("@VERSION@", versionBuffer.toString());
 
         System.out.println (msg);
         System.out.flush();

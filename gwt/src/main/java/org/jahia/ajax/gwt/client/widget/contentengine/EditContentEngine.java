@@ -262,6 +262,10 @@ public class EditContentEngine extends AbstractContentEngine {
                 EditContentEngine.this.container.closeEngine();
             }
 
+            @Override
+            public void onSessionExpired() {
+                EditContentEngine.this.container.closeEngine();
+            }
         });
 
     }

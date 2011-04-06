@@ -96,7 +96,7 @@ public class CommonEntryPoint implements EntryPoint {
     }
     
     protected void handleSessionExpired(BaseAsyncCallback<?> callback) {
-        callback.onSessionExpired();
+        callback.showLogin();
     }
 
     public static Timer getSessionCheckTimer() {

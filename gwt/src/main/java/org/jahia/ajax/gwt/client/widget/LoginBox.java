@@ -55,6 +55,15 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class LoginBox extends Window {
 
+    private static LoginBox instance;
+
+    public static LoginBox getInstance() {
+        if (instance == null) {
+            instance = new LoginBox();
+        }
+        return instance;
+    }
+
     private FormData formData;
 
     @Override

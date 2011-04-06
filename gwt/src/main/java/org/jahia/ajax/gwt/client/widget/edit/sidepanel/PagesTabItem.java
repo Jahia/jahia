@@ -120,7 +120,9 @@ public class PagesTabItem extends SidePanelTabItem {
                 final GWTJahiaNode node = se.getSelectedItem();
                 if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
                     !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
-                        !node.getInheritedNodeTypes().contains("jmix:link")) {
+                        !node.getInheritedNodeTypes().contains("jmix:link") &&
+                         PermissionsUtils.isPermitted("editModeAccess", node)
+                        ) {
                     editLinker.onMainSelection(node.getPath(), null, null);
                 }
             }

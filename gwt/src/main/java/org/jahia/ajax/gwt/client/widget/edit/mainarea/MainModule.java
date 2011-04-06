@@ -216,8 +216,12 @@ public class MainModule extends Module {
                             }
 
                             @Override public void onApplicationFailure(Throwable caught) {
-                                editLinker.onMainSelection(previousPath, previousTemplate, null);
-                                Window.alert("Cannot get page");
+                                if (!previousPath.equals(path)) {
+                                    path = previousPath;
+                                    template = previousTemplate;
+                                    editLinker.onMainSelection(previousPath, previousTemplate, null);
+                                }
+                                editLinker.getMainModule().unmask();
                             }
                         });
 

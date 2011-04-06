@@ -36,6 +36,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 import org.jahia.ajax.gwt.client.widget.LoginBox;
 
 /**
@@ -46,7 +47,9 @@ import org.jahia.ajax.gwt.client.widget.LoginBox;
 public abstract class BaseAsyncCallback<T> implements AsyncCallback<T> {
 
     public void onFailure(Throwable caught) {
-        if (caught instanceof SessionExpirationException) {
+        if (caught instanceof SessionExpirationException ||
+                (caught instanceof StatusCodeException && ((StatusCodeException)caught).getStatusCode() == 403)) {
+            showLogin();
             onSessionExpired();
         } else {
             onApplicationFailure(caught);
@@ -58,12 +61,17 @@ public abstract class BaseAsyncCallback<T> implements AsyncCallback<T> {
     }
 
     public void onSessionExpired() {
+    }
+
+    public void showLogin() {
         GWT.runAsync(new RunAsyncCallback() {
             public void onFailure(Throwable reason) {
             }
 
             public void onSuccess() {
-                new LoginBox().show();
+                if (!LoginBox.getInstance().isVisible()) {
+                    LoginBox.getInstance().show();
+                }
             }
         });        
     }

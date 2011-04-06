@@ -2,6 +2,8 @@ package org.jahia.services.render;
 
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.services.content.*;
+import org.jahia.services.seo.jcr.VanityUrlManager;
+import org.jahia.services.seo.jcr.VanityUrlService;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
@@ -17,6 +19,7 @@ public class URLResolverListener extends DefaultEventListener {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLResolverListener.class);
 
     private URLResolverFactory urlResolverFactory;
+    private VanityUrlService vanityUrlService;
 
     @Override
     public int getEventTypes() {
@@ -33,7 +36,7 @@ public class URLResolverListener extends DefaultEventListener {
                 userId = userId.substring(JahiaLoginModule.SYSTEM.length());
             }
 
-            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     while (events.hasNext()) {
                         Event event = events.nextEvent();
@@ -51,7 +54,7 @@ public class URLResolverListener extends DefaultEventListener {
                             nodeMoved(session, path);
                         }
                     }
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return null;  
                 }
             });
         } catch (RepositoryException e) {
@@ -64,16 +67,28 @@ public class URLResolverListener extends DefaultEventListener {
         this.urlResolverFactory = urlResolverFactory;
     }
 
+    public void setVanityUrlService(VanityUrlService vanityUrlService) {
+        this.vanityUrlService = vanityUrlService;
+    }    
+    
     private void nodeAdded(JCRSessionWrapper session, String path) throws RepositoryException {
         urlResolverFactory.flushCaches();
+        if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
+            vanityUrlService.flushCaches();
+        }
     }
 
     private void nodeRemoved(JCRSessionWrapper session, String path) throws RepositoryException {
         urlResolverFactory.flushCaches();
+        if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
+            vanityUrlService.flushCaches();
+        }
     }
 
     private void nodeMoved(JCRSessionWrapper session, String path) {
         urlResolverFactory.flushCaches();
+        if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
+            vanityUrlService.flushCaches();
+        }
     }
-
 }

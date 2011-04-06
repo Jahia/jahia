@@ -45,6 +45,7 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.render.URLResolverListener;
 import org.jahia.services.seo.VanityUrl;
 import org.slf4j.Logger;
 
@@ -58,8 +59,7 @@ public class VanityUrlService {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(VanityUrlService.class);
 
     private VanityUrlManager vanityUrlManager;
-    private CacheService cacheService;
-    private Cache cacheByUrl;
+    private Cache<String, List<VanityUrl>> cacheByUrl;
 
     public static final String CACHE_BY_URL = "vanityUrlByUrlCache";
     private static final String KEY_SEPARATOR = "___";
@@ -281,7 +281,6 @@ public class VanityUrlService {
     }
 
     public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
         try {
             cacheByUrl = cacheService.getCache(CACHE_BY_URL, true);
         } catch (JahiaInitializationException e) {
@@ -297,4 +296,12 @@ public class VanityUrlService {
         builder.append(workspace);
         return builder.toString();
     }
+    
+    public void setUrlResolverListener(URLResolverListener urlResolverListener) {
+        urlResolverListener.setVanityUrlService(this); // we wire this manually to avoid loops.
+    }
+    
+    public void flushCaches() {
+        cacheByUrl.flush();
+    }    
 }

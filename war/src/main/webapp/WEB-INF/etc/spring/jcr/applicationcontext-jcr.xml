@@ -54,7 +54,9 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 
-    <bean id="urlResolverListener" class="org.jahia.services.render.URLResolverListener" />
+    <bean id="urlResolverListener" class="org.jahia.services.render.URLResolverListener">
+        <property name="availableDuringPublish" value="true"/>
+    </bean>
 
     <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true" depends-on="springContextSingleton">

@@ -40,7 +40,6 @@ import java.util.Set;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 
@@ -325,16 +324,16 @@ public class URLFilterTest {
     @Test
     public void testURLFilterResolving() throws Exception {
         Object[][] testPathes = new Object[][] {
-                { "/", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
-                { "/render", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
-                { "/render/default", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
-                { "/render/live", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
-                { "/render/live/fr", Constants.LIVE_WORKSPACE, Locale.FRENCH, "/", PathNotFoundException.class, "" },
+                { "/", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
+                { "/render", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
+                { "/render/default", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
+                { "/render/live", Constants.LIVE_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
+                { "/render/live/fr", Constants.LIVE_WORKSPACE, Locale.FRENCH, "/", JCRNodeWrapper.class, "/" },
                 { "/render/default/en/sites/test/testPage.html", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/sites/test/testPage.html", JCRNodeWrapper.class, "/sites/test/testPage" },
                 { "/render/default/en/sites/test/testPage/testContent.detail.html", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/sites/test/testPage/testContent.detail.html", JCRNodeWrapper.class, "/sites/test/testPage/testContent" },
-                { "/edit/default", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
-                { "/edit/default/en", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", PathNotFoundException.class, "" },
-                { "/edit/default/fr", Constants.EDIT_WORKSPACE, Locale.FRENCH, "/", PathNotFoundException.class, "" },
+                { "/edit/default", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
+                { "/edit/default/en", Constants.EDIT_WORKSPACE, Locale.ENGLISH, "/", JCRNodeWrapper.class, "/" },
+                { "/edit/default/fr", Constants.EDIT_WORKSPACE, Locale.FRENCH, "/", JCRNodeWrapper.class, "/" },
                 { "/edit/default/fr/sites/test/home.html", Constants.EDIT_WORKSPACE, Locale.FRENCH, "/sites/test/home.html", JCRNodeWrapper.class, "/sites/test/home" }, };
         for (Object[] testPath : testPathes) {
             URLResolver urlResolver = getUrlResolverFactory().createURLResolver((String) testPath[0], "", (HttpServletRequest) new MockHttpServletRequest("GET",(String) testPath[0]));
@@ -409,21 +408,14 @@ public class URLFilterTest {
                         Constants.EDIT_WORKSPACE, Locale.FRENCH).getUrl()
                 .equals("/testpage/french2"));
         URLResolver urlResolver = getUrlResolverFactory().createURLResolver("/edit/default/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/edit/default/testpage"));
-        JCRNodeWrapper resolvedNode = null;
-        try {
-            resolvedNode = urlResolver.getNode();
-            assertNull("Node should not be returned as edit servlet does not resolve vanity URLs", resolvedNode);
-        } catch (PathNotFoundException e) {
-        }
+        JCRNodeWrapper resolvedNode = urlResolver.getNode();
+        assertEquals("Node should not be returned as edit servlet does not resolve vanity URLs",
+                "/", resolvedNode.getPath());
 
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
-        try {
-            resolvedNode = urlResolver.getNode();
-            assertNull(
-                    "Node should not be returned as it is not published yet",
-                    resolvedNode);
-        } catch (PathNotFoundException e) {
-        }
+        resolvedNode = urlResolver.getNode();
+        assertEquals("Node should not be returned as it is not published yet", "/",
+                resolvedNode.getPath());
 
         languages.clear();
         languages.add("en");
@@ -438,12 +430,9 @@ public class URLFilterTest {
                 && "en".equals(resolvedNode.getLanguage()));
         
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage2"));
-        try {
-            resolvedNode = urlResolver.getNode();
-            assertNull("Node should not be returned as mapping is not active",
-                    resolvedNode);
-        } catch (PathNotFoundException e) {
-        }        
+        resolvedNode = urlResolver.getNode();
+        assertEquals("Node should not be returned as mapping is not active", "/",
+                resolvedNode.getPath());
 
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/page3", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/page3"));
         resolvedNode = urlResolver.getNode();
@@ -455,10 +444,10 @@ public class URLFilterTest {
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
         try {
             resolvedNode = urlResolver.getNode();
-            assertNull(
-                    "Node should not be returned as it is not published yet",
-                    resolvedNode);
-        } catch (PathNotFoundException e) {
+            assertEquals(
+                    "Node should not be returned as it is not published yet", "/",
+                    resolvedNode.getPath());
+        } catch (PathNotFoundException e) {            
         } catch (AccessDeniedException e) {            
         }
         languages.clear();

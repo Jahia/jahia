@@ -94,10 +94,10 @@ public class URLResolver {
     };
 
     private String urlPathInfo = null;
-    private String servletPart;
+    private String servletPart = "";
     private String workspace;
     private Locale locale;
-    private String path;
+    private String path = "";
     private String siteKey;
     private boolean mappable = false;
 
@@ -136,7 +136,7 @@ public class URLResolver {
                     StringUtils.indexOf(getUrlPathInfo(), "/", 1));
             path = StringUtils.substring(getUrlPathInfo(), servletPart.length() + 2,
                     getUrlPathInfo().length());
-        }
+        } 
         if (!resolveUrlMapping(serverName)) {
             init();
             if (!URLGenerator.isLocalhost(serverName) && isMappable()

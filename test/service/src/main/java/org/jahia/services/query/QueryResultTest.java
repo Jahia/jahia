@@ -299,14 +299,14 @@ public class QueryResultTest {
 
         // check one descendantnode
         res = doQuery(session, XPATH_SITECONTENT_ROOT_NODE
-                + "/contents/news//element(*, jnt:news) order by @jcr:title", Query.XPATH);
+                + "/contents/news//element(*, jnt:news) [@jcr:language = 'en'] order by @jcr:title", Query.XPATH);
         checkResultSize(res, 23);
 
         // check two descendantnodes with or
         res = doQuery(
                 session,
                 XPATH_SITECONTENT_ROOT_NODE
-                        + "/contents/*[fn:name() = 'news' or fn:name() = 'events']//element(*, jmix:editorialContent) order by @jcr:title",
+                        + "/contents/*[fn:name() = 'news' or fn:name() = 'events']//element(*, jmix:editorialContent) [@jcr:language = 'en'] order by @jcr:title",
                 Query.XPATH);        
         checkResultSize(res, 50);
 
@@ -314,13 +314,13 @@ public class QueryResultTest {
         res = doQuery(
                 session,
                 XPATH_SITECONTENT_ROOT_NODE
-                        + "/contents/news//element(*, jmix:editorialContent)[@date = '" + ISO8601.format(new GregorianCalendar(2000, 0, 1, 12, 0)) + "']",
+                        + "/contents/news//element(*, jmix:editorialContent)[not(@jcr:language) and @date = '" + ISO8601.format(new GregorianCalendar(2000, 0, 1, 12, 0)) + "']",
                 Query.XPATH);        
         checkResultSize(res, 5);
 
         // check descendantnodes with freetext
         res = doQuery(session, XPATH_SITECONTENT_ROOT_NODE
-                + "/contents/news//element(*, jmix:editorialContent) [jcr:contains(., 'cucumber')]",
+                + "/contents/news//element(*, jmix:editorialContent) [@jcr:language = 'en' and jcr:contains(., 'cucumber')]",
                 Query.XPATH);        
         checkResultSize(res, 13);
     }

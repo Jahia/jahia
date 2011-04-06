@@ -251,4 +251,6 @@ public class Constants {
     public static final List<String> forbiddenPropertiesToSerialize = Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_BASEVERSION,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT);
+
+    public static final String JAHIA_PROJECT_VERSION = "${project.version}"; // this is filtered by Maven.
 }

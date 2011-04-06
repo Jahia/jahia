@@ -1185,7 +1185,7 @@
 
     <bean id="repository.studioContents" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="studioContentsRepository"/>
-        <property name="paths" value="$site/templates/content"/>
+        <property name="paths" value="$site/templates/contents"/>
         <property name="titleKey"
                   value="repository.studioContentsRepository.label"/>
         <property name="visibility">

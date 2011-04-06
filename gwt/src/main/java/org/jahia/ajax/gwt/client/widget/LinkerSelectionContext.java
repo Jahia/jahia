@@ -123,6 +123,7 @@ public class LinkerSelectionContext {
 
         permissions = null;
         parentWriteable = true;
+        parent = null;
         lockable = true;
         locked = true;
         file = true;
@@ -137,11 +138,11 @@ public class LinkerSelectionContext {
                 permissions.and(node.getPermissions());
             }
             if (node.getParent() != null) {
-                if (parent == null) {
-                    parentWriteable = PermissionsUtils.isPermitted("jcr:addChildNodes", (GWTJahiaNode) node.getParent());
-                    parent = ((GWTJahiaNode) node.getParent());
-                }
+                parent = ((GWTJahiaNode) node.getParent());
+            } else if (mainNode != null) {
+                parent = mainNode;
             }
+            parentWriteable = PermissionsUtils.isPermitted("jcr:addChildNodes",  parent) && !parent.isLocked();
             lockable &= node.isLockable();
             locked &= node.isLocked();
 

@@ -52,6 +52,9 @@ public class UploadActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
-        setEnabled(lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.getSingleSelection().getNodeTypes().contains("jnt:folder"));
+        setEnabled(lh.getSingleSelection() != null
+                && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
+                && lh.getSingleSelection().getNodeTypes().contains("jnt:folder")
+                && !lh.isLocked());
     }
 }

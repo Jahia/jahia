@@ -196,6 +196,7 @@ public class DeleteActionItem extends BaseActionItem {
         setEnabled(lh.getMultipleSelection() != null
                 && lh.getMultipleSelection().size() > 0
                 && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
-                && !lh.isSecondarySelection());
+                && !lh.isSecondarySelection()
+                && !lh.isLocked());
     }
 }

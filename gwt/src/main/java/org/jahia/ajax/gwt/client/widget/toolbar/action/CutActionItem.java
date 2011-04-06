@@ -93,6 +93,7 @@ public class CutActionItem extends BaseActionItem  {
         setEnabled(lh.getMultipleSelection() != null
                 && lh.getMultipleSelection().size() > 0
                 && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
+                && !lh.isLocked()
                 && !lh.isSecondarySelection()
                 && !lh.getMultipleSelection()
                         .get(0)

@@ -115,7 +115,9 @@ public class NewContentActionItem extends BaseActionItem  {
                     break;
                 }
             }
-            setEnabled(isValidParent && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
+            setEnabled(isValidParent
+                    && !lh.isLocked()
+                    && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
         } else {
             setEnabled(false);
         }

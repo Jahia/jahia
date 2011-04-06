@@ -49,6 +49,9 @@ public class NewPortletActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.getSingleSelection().getNodeTypes().contains("jnt:portletFolder"));
+        setEnabled(lh.getSingleSelection() != null
+                && !lh.isLocked()
+                && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
+                && lh.getSingleSelection().getNodeTypes().contains("jnt:portletFolder"));
     }
 }

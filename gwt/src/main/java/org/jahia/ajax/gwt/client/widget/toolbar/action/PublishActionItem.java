@@ -136,6 +136,8 @@ public class PublishActionItem extends BaseActionItem {
                     updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName() + " - " +
                                 JahiaGWTParameters.getLanguageDisplayName());
                 }
+            } else {
+                setEnabled(false);
             }
         }
     }

@@ -93,7 +93,10 @@ public class PasteReferenceActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        boolean b = lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.isPasteAllowed();
+        boolean b = lh.getSingleSelection() != null
+                && !lh.isLocked()
+                && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
+                && lh.isPasteAllowed();
 
         String refTypes = null;
         if (linker instanceof EditLinker && b) {

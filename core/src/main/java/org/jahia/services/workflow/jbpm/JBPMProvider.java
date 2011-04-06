@@ -57,6 +57,8 @@ import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
 import org.jbpm.pvm.internal.cmd.DeleteDeploymentCmd;
 import org.jbpm.pvm.internal.cmd.DeployCmd;
 import org.jbpm.pvm.internal.model.ActivityImpl;
+import org.jbpm.pvm.internal.model.EventImpl;
+import org.jbpm.pvm.internal.model.EventListenerReference;
 import org.jbpm.pvm.internal.svc.HistoryServiceImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
@@ -93,6 +95,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     private static JBPMProvider instance;
     private Cache workflowDefByKey;
     public static final String WORKFLOW_DEFINITION_BY_KEY_CACHE = "workflowDefByKey";
+    private JBPMListener listener = new JBPMListener(this);
 
     static {
         participationRoles.put(WorkflowService.CANDIDATE, Participation.CANDIDATE);
@@ -534,21 +537,42 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     }
 
     public void registerListeners() {
-        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
-
-        JBPMListener listener = new JBPMListener(this);
-
-        for (ProcessDefinition definition : definitionList) {
-            if (definition instanceof JpdlProcessDefinition) {
-                ((JpdlProcessDefinition) definition).createEvent("start").createEventListenerReference(listener);
-                ((JpdlProcessDefinition) definition).createEvent("end").createEventListenerReference(listener);
-            }
-
-        }
+        registerProcessListeners();
 
         // now let's connect to JBPM event generator we have added.
         JBPMEventGeneratorInterceptor.registerListener(this);
 
+    }
+
+    private void registerProcessListeners() {
+        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
+
+        for (ProcessDefinition definition : definitionList) {
+            if (definition instanceof JpdlProcessDefinition) {
+                JpdlProcessDefinition processDefinition = (JpdlProcessDefinition) definition;
+                addEventListener(processDefinition, "start");
+                addEventListener(processDefinition, "end");
+            }
+        }
+    }
+
+    private void addEventListener(JpdlProcessDefinition processDefinition, String eventName) {
+        EventImpl event = processDefinition.getEvent(eventName);
+        if (event == null) {
+            event = processDefinition.createEvent(eventName);
+        }
+        boolean found = false;
+        if (event.getListenerReferences() != null) {
+            for (EventListenerReference start : event.getListenerReferences()) {
+                if (start.getEventListener() == listener) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            event.createEventListenerReference(listener);
+        }
     }
 
     public String getProcessDefinitionType(ProcessDefinition definition) {
@@ -795,6 +819,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
     public <T> void afterCommand(Command<T> command) {
         if (command instanceof DeployCmd) {
             DeployCmd deployCmd = (DeployCmd) command;
+            registerProcessListeners();
         } else if (command instanceof DeleteDeploymentCmd) {
             DeleteDeploymentCmd deleteDeploymentCmd = (DeleteDeploymentCmd) command;
             workflowDefByKey.flush();

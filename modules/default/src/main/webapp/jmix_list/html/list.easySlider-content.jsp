@@ -26,13 +26,12 @@
 <!-- recuperer une liste d'items de type teasers et boucler dessus -->
 
 <div id="slider2">
-	<ul>
+    <ul>
         <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status">
-            <jcr:node var="child" uuid="${child.properties['j:node'].string}"/>
-                    <li>
-                        <template:module path="${child.path}"/>
-                    </li>
+            <li>
+                <template:module path="${child.path}"/>
+            </li>
         </c:forEach>
         <template:module path="*"/>
-	</ul>
+    </ul>
 </div>

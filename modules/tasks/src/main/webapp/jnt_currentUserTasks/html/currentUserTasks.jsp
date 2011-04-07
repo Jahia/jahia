@@ -186,7 +186,7 @@
                             <div id="task${node.identifier}-${task.id}" class="taskformdiv">
                                 <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
                                 <c:url value="${url.current}.ajax" var="myUrl"/>
-                                <template:module node="${node}" view="contribute.add">
+                                <template:module node="${node}" view="contribute.workflow">
                                     <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                                     <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                                     <template:param name="workflowTaskFormTaskName" value="${task.name}"/>

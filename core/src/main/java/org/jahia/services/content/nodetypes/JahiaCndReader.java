@@ -205,6 +205,14 @@ public class JahiaCndReader {
         for (ExtendedNodeType type : nodeTypesList) {
             try {
                 type.validate();
+                if (!type.getPrefix().equals("nt") && !type.isMixin() && !type.isNodeType(Constants.MIX_REFERENCEABLE)) {
+                    int length = type.getDeclaredSupertypeNames().length;
+                    String[] newTypes = new String[length + 1];
+                    System.arraycopy(type.getDeclaredSupertypeNames(), 0, newTypes, 0, length);
+                    newTypes[length] = Constants.MIX_REFERENCEABLE;
+                    type.setDeclaredSupertypes(newTypes);
+                    type.validate();
+                }
             } catch (NoSuchNodeTypeException e) {
                 throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,filename);
             }

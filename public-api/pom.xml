@@ -31,6 +31,19 @@
 
     <build>
 
+        <plugins>
+            <!-- Work around http://jira.codehaus.org/browse/MRESOURCES-117 -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <delimiters>
+                        <delimiter>${*}</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+        </plugins>
+
         <!-- Overrule the default pom source directory to match
                     our generated sources so the compiler will pick them up -->
         <sourceDirectory>target/filtered-sources/java</sourceDirectory>

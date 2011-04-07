@@ -57,9 +57,16 @@
                     <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
                          src="<c:url value='${url.templatesPath}/default/images/icons/locked.gif'/>">
                 </c:if>
-                <a href="<c:url value='${url.base}${child.path}.viewContent.html'/>">
-                    ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
-                </a>
+                <c:if test="${jcr:isNodeType(child, 'jnt:contentFolder')}">
+                    <a href="<c:url value='${url.base}${child.path}.html'/>">
+                        ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                    </a>
+                </c:if>
+                <c:if test="${not jcr:isNodeType(child, 'jnt:contentFolder')}">
+                    <a href="<c:url value='${url.base}${child.path}.viewContent.html'/>">
+                        ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                    </a>
+                </c:if>
             </div>
         </td>
         <td>

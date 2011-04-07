@@ -76,7 +76,16 @@
                              src="<c:url value='${url.templatesPath}/default/images/icons/locked.gif'/>">
                     </c:if>
 
-                    <a href="<c:url value='${url.base}${child.path}.editContent.html'/>">${fn:escapeXml(child.displayableName)}</a>
+                    <c:if test="${jcr:isNodeType(child, 'jnt:contentFolder')}">
+                        <a href="<c:url value='${url.base}${child.path}.html'/>">
+                            ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                        </a>
+                    </c:if>
+                    <c:if test="${not jcr:isNodeType(child, 'jnt:contentFolder')}">
+                        <a href="<c:url value='${url.base}${child.path}.editContent.html'/>">
+                            ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                        </a>
+                    </c:if>
                 </td>
                 <td>
                     <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>

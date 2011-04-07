@@ -319,6 +319,13 @@ public class URLGenerator {
     public String buildURL(JCRNodeWrapper node, String template, String templateType) {
         return base + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
     }
+    
+    public String buildURL(JCRNodeWrapper node, String languageCode, String template, String templateType) {
+        if (StringUtils.isEmpty(languageCode)) {
+            return buildURL(node, template, templateType);
+        }
+        return context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
+    }
 
     public String getInitializers() {
         return initializers;

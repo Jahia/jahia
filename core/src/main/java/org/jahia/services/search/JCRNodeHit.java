@@ -200,7 +200,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     private String resolveURL() {
         JCRNodeWrapper currentNode = JCRContentUtils.findDisplayableNode(resource, context);
-        return context.getURLGenerator().buildURL(currentNode, null, "html");
+        return context.getURLGenerator().buildURL(currentNode, currentNode.getLanguage(), null, "html");
     }
 
 }

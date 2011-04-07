@@ -34,6 +34,7 @@ package org.jahia.services.query;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.jcr.ItemNotFoundException;
@@ -52,7 +53,10 @@ import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.core.query.FacetedQueryResult;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.jahia.api.Constants;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.utils.LanguageCodeConverters;
 
 /**
  * Implementation of the JCR {@link QueryResult}.
@@ -65,6 +69,7 @@ public class QueryResultWrapper implements QueryResult {
     private JCRStoreProvider provider;
     private QueryResult result;
     private JCRSessionWrapper session;
+    private String sessionLanguage;
 
     /**
      * A facade for a single query result row.
@@ -155,8 +160,21 @@ public class QueryResultWrapper implements QueryResult {
         }
 
         private Node wrap(Node node) throws RepositoryException {
+            JCRSessionWrapper session = getSession();
+            if (session.getLocale() != null && node.hasProperty(Constants.JCR_LANGUAGE)) {
+                String language = node.getProperty(Constants.JCR_LANGUAGE).getString();
+                if (!getSessionLanguage().equals(language)) {
+                    session = ServicesRegistry
+                            .getInstance()
+                            .getJCRStoreService()
+                            .getSessionFactory()
+                            .getCurrentUserSession(session.getWorkspace().getName(),
+                                    LanguageCodeConverters.languageCodeToLocale(language),
+                                    session.getFallbackLocale());                
+                }
+            }
             return node != null && !(node instanceof JCRNodeWrapper) ? getProvider()
-                    .getNodeWrapper(node, getSession()) : node;
+                    .getNodeWrapper(node, session) : node;
         }
 
         public String getSpellcheck() throws ItemNotFoundException, RepositoryException {
@@ -170,6 +188,7 @@ public class QueryResultWrapper implements QueryResult {
         this.result = result;
         this.provider = provider;
         this.session = session;
+        this.sessionLanguage = session.getLocale() != null ? session.getLocale().toString() : null;
     }
 
     public JCRStoreProvider getProvider() {
@@ -255,5 +274,9 @@ public class QueryResultWrapper implements QueryResult {
 
     JCRSessionWrapper getSession() {
         return session;
+    }
+
+    private String getSessionLanguage() {
+        return sessionLanguage;
     }
 }

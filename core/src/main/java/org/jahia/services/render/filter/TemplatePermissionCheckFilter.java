@@ -38,6 +38,8 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.RepositoryException;
@@ -54,7 +56,7 @@ import java.util.List;
  */
 public class TemplatePermissionCheckFilter extends AbstractFilter {
 
-    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public String prepare(RenderContext renderContext, final Resource resource, RenderChain chain) throws Exception {
         Script script = (Script) renderContext.getRequest().getAttribute("script");
         JCRNodeWrapper node = resource.getNode();
         if (script != null) {
@@ -84,11 +86,13 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             }
         }
         if (!"studiomode".equals(renderContext.getEditModeConfigName())) {
+            JahiaUser aliasedUser = JCRSessionFactory.getInstance().getCurrentAliasedUser();
+
             if (node.hasProperty("j:requiredPermissions")) {
                 chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
 
                 final Value[] values = node.getProperty("j:requiredPermissions").getValues();
-                List<String> perms = JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
+                final List<String> perms = JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
                     public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         List<String> permissionNames = new ArrayList<String>();
                         for (Value value : values) {
@@ -102,18 +106,46 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                         return "";
                     }
                 }
+
+                if (aliasedUser != null) {
+                    if (!JCRTemplate.getInstance().doExecuteWithUserSession(aliasedUser.getUsername(), node.getSession().getWorkspace().getName(),
+                            new JCRCallback<Boolean>() {
+                                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                    JCRNodeWrapper aliasedNode = session.getNode(resource.getNode().getPath());
+                                    for (String perm : perms) {
+                                        if (!aliasedNode.hasPermission(perm)) {
+                                            return false;
+                                        }
+                                    }
+                                    return true;
+                                }
+                            }
+                    )) {
+                        return "";
+                    }
+                }
+
             }
             if (node.hasProperty("j:requireLoggedUser") && node.getProperty("j:requireLoggedUser").getBoolean()) {
                 if (!renderContext.isLoggedIn()) {
                     return "";
+                }
+                if (aliasedUser != null) {
+                    if (JahiaUserManagerService.isGuest(aliasedUser)) {
+                        return "";
+                    }
                 }
             }
             if (node.hasProperty("j:requirePrivilegedUser") && node.getProperty("j:requirePrivilegedUser").getBoolean()) {
                 if (!renderContext.getUser().isMemberOfGroup(0,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                     return "";
                 }
+                if (aliasedUser != null) {
+                    if (!aliasedUser.isMemberOfGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
+                        return "";
+                    }
+                }
             }
-
         }
         return null;
     }

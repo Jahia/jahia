@@ -59,12 +59,12 @@
                 </c:if>
                 <c:if test="${jcr:isNodeType(child, 'jnt:contentFolder')}">
                     <a href="<c:url value='${url.base}${child.path}.html'/>">
-                        ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                        ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.displayableName)}
                     </a>
                 </c:if>
                 <c:if test="${not jcr:isNodeType(child, 'jnt:contentFolder')}">
                     <a href="<c:url value='${url.base}${child.path}.viewContent.html'/>">
-                        ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                        ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.displayableName)}
                     </a>
                 </c:if>
             </div>

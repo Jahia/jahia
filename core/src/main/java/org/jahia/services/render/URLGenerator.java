@@ -411,7 +411,7 @@ public class URLGenerator {
 
     public String getMyProfile() {
         if (myProfile == null) {
-            myProfile = JahiaUserManagerService.isNotGuest(context.getUser()) ? "/users/" + context.getUser().getUsername() + ".html" : "";
+            myProfile = JahiaUserManagerService.isNotGuest(context.getUser()) ? "/start" : "";
         }
         return myProfile;
     }

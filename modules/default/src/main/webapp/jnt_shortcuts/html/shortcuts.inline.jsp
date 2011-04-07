@@ -28,7 +28,7 @@
             </li>
             <c:if test="${!empty url.myProfile}">
                 <li class="shortcuts-mysettings">
-                    <a href="<c:url value='${url.base}${url.myProfile}'/>"><fmt:message key="userProfile.link"/></a>
+                    <a href="<c:url value='${url.myProfile}'/>"><fmt:message key="userProfile.link"/></a>
                 </li>
             </c:if>
             <c:if test="${jcr:hasPermission(renderContext.mainResource.node, 'editModeAccess')}">

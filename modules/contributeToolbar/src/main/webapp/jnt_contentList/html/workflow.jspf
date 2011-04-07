@@ -42,7 +42,7 @@
             <c:choose>
                 <c:when test="${not empty wf.formResourceName}">
                     <div style="display:none;" id="workflow${child.identifier}-${wf.key}" class="workflowformdiv">
-                        <template:module node="${child}" template="contribute.workflow">
+                        <template:include view="contribute.workflow">
                             <template:param name="resourceNodeType" value="${wf.formResourceName}"/>
                             <template:param name="workflowStartForm" value="${wf.provider}:${wf.key}"/>
                             <template:param name="workflowStartFormWFName" value="${wf.displayName}"/>
@@ -50,7 +50,7 @@
                             <template:param name="workflowStartFormWFCallbackURL" value="${url.current}.ajax"/>
                             <template:param name="workflowStartFormWFCallbackJS"
                                             value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});$('.workflowformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=workflow');});animatedcollapse.reinit();"/>
-                        </template:module>
+                        </template:include>
                     </div>
                 </c:when>
             </c:choose>

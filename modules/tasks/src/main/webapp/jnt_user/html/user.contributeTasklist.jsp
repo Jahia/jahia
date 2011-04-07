@@ -124,7 +124,7 @@
                                             <c:url var="myUrl" value="${url.current}.ajax"/>
                                             <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                                                 <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                                                <template:module node="${node}" view="contribute.workflow">
+                                                <template:include view="contribute.workflow">
                                                     <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                                                     <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                                                     <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
@@ -132,7 +132,7 @@
                                                     <template:param name="workflowTaskFormCallbackURL" value="${myUrl}"/>
                                                     <template:param name="workflowTaskFormCallbackJS"
                                                                     value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();"/>
-                                                </template:module>
+                                                </template:include>
                                             </div>
                                         </td>
                                     </tr>

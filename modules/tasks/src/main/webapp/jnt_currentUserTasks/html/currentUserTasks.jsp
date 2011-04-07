@@ -78,8 +78,6 @@
              sql="select * from [jnt:task] as task where task.assignee='${user.identifier}' order by task.[jcr:created]"/>
     <c:set var="nodes" value="${tasks.nodes}"/>
     <%--<c:set value="${jcr:getNodes(currentNode,'jnt:task')}" var="tasks"/>--%>
-    <template:initPager pageSize="25" totalSize="${nodes.size}"
-                        id="${user.identifier}"/>
     <c:if test="${currentNode.properties['viewUserTasks'].boolean}">
         <c:forEach items="${nodes}" var="task"
                    begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
@@ -186,7 +184,7 @@
                             <div id="task${node.identifier}-${task.id}" class="taskformdiv">
                                 <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
                                 <c:url value="${url.current}.ajax" var="myUrl"/>
-                                <template:module node="${node}" view="contribute.workflow">
+                                <template:include view="contribute.workflow">
                                     <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                                     <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                                     <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
@@ -194,7 +192,7 @@
                                     <template:param name="workflowTaskFormCallbackURL" value="${myUrl}"/>
                                     <template:param name="workflowTaskFormCallbackJS"
                                                     value=""/>
-                                </template:module>
+                                </template:include>
                             </div>
                         </td>
                     </tr>

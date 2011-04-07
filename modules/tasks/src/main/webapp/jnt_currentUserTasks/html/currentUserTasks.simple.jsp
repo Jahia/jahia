@@ -153,7 +153,7 @@
                         <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                             <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
                             <c:url var="myUrl" value="${url.current}.ajax"/>
-                            <template:module node="${node}" view="contribute.workflow">
+                            <template:include view="contribute.workflow">
                                 <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                                 <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                                 <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
@@ -161,7 +161,7 @@
                                 <template:param name="workflowTaskFormCallbackURL" value="${myUrl}"/>
                                 <template:param name="workflowTaskFormCallbackJS"
                                                 value=""/>
-                            </template:module>
+                            </template:include>
                         </div>
                     </div>
                 </c:if>

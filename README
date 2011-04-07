@@ -306,6 +306,16 @@ try the following:
 2. Close all browsers windows.
 3. Restart your browser and try again. If the problem persists, please contact us.
 
+ Version numbering
+------------------------------------------------------------------------------
+
+We following the following convention for version numbering :
+
+MAJOR.MINOR.SERVICEPACK.PATCH
+
+Please respect this when performing releases so that all the parsing code
+works correctly.
+
  Performing a release with the Maven Release plugin
 ------------------------------------------------------------------------------
 It is now possible to use the Maven Release plugin to automate the build of

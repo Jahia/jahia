@@ -173,6 +173,7 @@ body {
 	z-index:700;
 	width:100%;
 	background: url(img/bg-content.png) repeat-x top left;
+	min-height:250px;
 }
 /******************************************************************************
 *  footer
@@ -645,7 +646,7 @@ body {
 .bodywrapper .table
 {
     border-collapse:collapse;
-	margin-bottom:1em;
+	margin:1em 0;
 	border:none;
 }
 .bodywrapper .table, .bodywrapper .table th, .bodywrapper .table td
@@ -663,8 +664,9 @@ border: 1px solid #eaeaea;
 .bodywrapper .table th {
     color: #333;
 	white-space:nowrap;
-	background-color:#99BBE8;
+	background:#e0effc url(img/bg-table-th.png) repeat-x top left;
 	padding:2px;
+	
 }
 .bodywrapper .table td
 {
@@ -675,7 +677,7 @@ border: 1px solid #eaeaea;
 	background-color:#ccc
 }
 .bodywrapper .table .odd td{background-color:#fff}
-.bodywrapper .table .even td{ background-color:#eaeaea}
+.bodywrapper .table .even td{ background-color:#f2f2f2}
 .bodywrapper .col1{}
 .bodywrapper .col2{}
 .bodywrapper .col3{}
@@ -803,8 +805,81 @@ border: 1px solid #eaeaea;
 	margin:0.5em 0;
 }
 /******************************************************************************
-* Links
+* Mod tabular List
 ******************************************************************************/
+.bodywrapper #tabstabularList{
+	background-color:#FFF;
+	overflow:hidden;
+	padding:0.2em;
+	border-top:none;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	margin-bottom:1em;
+	border:1px solid #eaeaea;
+}
+
 .bodywrapper ul.idTabs {
-    background: url(img/tab-bg.png) repeat-x scroll left bottom transparent !important;
+	background-image:none;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	margin-bottom:1em;
+	border:none;
+	margin-bottom:0;
+	padding:0.2em;
+	padding-bottom:0;
+	background-color:#eaeaea
+}
+.bodywrapper .tabContainer {
+	background-color:#FFF;
+	overflow:hidden;
+	padding:20px;
+	border-top:none;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	margin-bottom:1em;
+}
+.bodywrapper .idTabs li a {
+	background:none;
+	display:inline;
+	float:left;
+	height:auto;
+	line-height:2em;
+	padding-left:1px;
+	text-decoration:none;
+	margin-right:2px;
+	font-weight:bold;
+
+}
+.bodywrapper .idTabs li a.selected,
+.bodywrapper .idTabs li a:hover,
+.bodywrapper .idTabs li a.selected {
+	text-decoration:none;
+	color: #0099FF;
+}
+
+
+.bodywrapper .idTabs li a span {
+	background:none;
+	color:#666;
+	cursor:pointer;
+	display:inline;
+	float:left;
+	height:auto;
+	line-height:3em;
+	padding:0 10px;
+	text-decoration:none;
+}
+.bodywrapper .idTabs li a.selected span,
+.bodywrapper .idTabs li a:hover span,
+.bodywrapper .idTabs li a.idTabs span {
+	text-decoration:none;
+	background-color:#FFF;
+	-moz-border-radius:  10px 10px 0 0 ;
+	-webkit-border-radius: 10px;
+	border-radius: 0 0 0 10px;
+	color: #0099FF;
+
 }

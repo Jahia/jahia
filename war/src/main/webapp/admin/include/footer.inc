@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div id="copyright">
-  <%=copyright %>&nbsp;Jahia <%=Jahia.VERSION + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber() %>
+  <%=copyright %>&nbsp;Jahia <%=Jahia.VERSION + "." + Jahia.getServicePackNumber() + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber() %>
 </div>
 </div>
 <br/>

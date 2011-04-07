@@ -45,8 +45,11 @@ import org.slf4j.LoggerFactory;
  *
  * Currently it recognized Strings of the form :
  *
- * major.minor.build.other1.other2.*Bbetanumber
- * major.minor.build.other1.other2.*RCreleasecandidatenumber
+ * major.minor.servicepack.hotfix.other1.other2.*Bbetanumber
+ * major.minor.servicepack.hotfix.other1.other2.*RCbetanumber
+ * major.minor.servicepack.hotfix.other1.other2.*_updatenumber
+ * major.minor.servicepack.hotfix.other1.other2.*_updatenumber-bbuildernumber
+ * major.minor.servicepack.hotfix.other1.other2.*_updatenumber-qualifier1-qualifier2
  *
  * "B" and "RC" can be uppercase or minor case, the comparison is case insensitive
  * for the moment.
@@ -64,6 +67,8 @@ public class Version implements Comparable<Version> {
     private List<Integer> orderedVersionNumbers = new ArrayList<Integer>();
     private int betaNumber = -1;
     private int releaseCandidateNumber = -1;
+    private String updateMarker;
+    private List<String> qualifiers = new ArrayList<String>();
 
     /**
      * Constructor. See class definition for syntax of the version string
@@ -72,42 +77,48 @@ public class Version implements Comparable<Version> {
      * @throws NumberFormatException if there was a problem parsing the string
      * containing the version.
      */
-    public Version(String versionString)
-    throws NumberFormatException  {
-        String workString = versionString.toLowerCase();
-        int betaPos = workString.indexOf("b");
-        int rcPos = workString.indexOf("rc");
+    public Version(final String versionString) throws NumberFormatException {
+        if (versionString == null) {
+            throw new NumberFormatException("Null string passed as version !");
+        }
+        String trimmedVersionString = versionString.trim();
+        String versionPart = null;
+        StringTokenizer tokenizer = new StringTokenizer(trimmedVersionString, "-");
+        if (tokenizer.hasMoreTokens()) {
+            versionPart = tokenizer.nextToken().toLowerCase();
+        } else {
+            versionPart = trimmedVersionString.toLowerCase();
+        }
+        while (tokenizer.hasMoreTokens()) {
+            qualifiers.add(tokenizer.nextToken());
+        }
+        int betaPos = versionPart.indexOf("b");
+        int rcPos = versionPart.indexOf("rc");
 
         String betaString = null;
         String rcString = null;
         if (betaPos != -1) {
-            betaString = workString.substring(betaPos + 1).trim();
-            workString = workString.substring(0, betaPos);
+            betaString = versionPart.substring(betaPos + 1).trim();
+            versionPart = versionPart.substring(0, betaPos);
             betaNumber = Integer.parseInt(betaString);
         } else if (rcPos != -1) {
-            rcString = workString.substring(rcPos + 2).trim();
-            workString = workString.substring(0, rcPos);
+            rcString = versionPart.substring(rcPos + 2).trim();
+            versionPart = versionPart.substring(0, rcPos);
             releaseCandidateNumber = Integer.parseInt(rcString);
         }
 
-        int underscorePos = workString.indexOf("_");
+        int underscorePos = versionPart.indexOf("_");
         if (underscorePos != -1) {
-            workString = workString.substring(0, underscorePos).trim();
+            updateMarker = versionPart.substring(underscorePos + 1).trim();
+            versionPart = versionPart.substring(0, underscorePos).trim();
         }
 
-        int hyphenPos = workString.indexOf("-");
-        if (hyphenPos != -1) {
-            workString = workString.substring(0, hyphenPos).trim();
-        }
-
-        StringTokenizer versionTokenizer = new StringTokenizer(workString, ".");
+        StringTokenizer versionTokenizer = new StringTokenizer(versionPart, ".");
         while (versionTokenizer.hasMoreTokens()) {
             String curToken = versionTokenizer.nextToken().trim();
             int curVersionNumber = Integer.parseInt(curToken);
             orderedVersionNumbers.add(new Integer(curVersionNumber));
         }
-        // JahiaConsole.println("Version.constructor",
-        //                      "Version=" + this.toString());
     }
 
     /**
@@ -169,6 +180,16 @@ public class Version implements Comparable<Version> {
         } else if (releaseCandidateNumber != -1) {
             result.append("rc");
             result.append(releaseCandidateNumber);
+        }
+        if (updateMarker != null) {
+            result.append("_");
+            result.append(updateMarker);
+        }
+        if (qualifiers.size() > 0) {
+            for (String qualifier : qualifiers) {
+                result.append("-");
+                result.append(qualifier);
+            }
         }
         return result.toString();
     }
@@ -296,6 +317,23 @@ public class Version implements Comparable<Version> {
         return releaseCandidateNumber;
     }
 
+    /**
+     * Returns the update marker string, located after the underscore. This is usually a numeric value but we support
+     * String values
+     * @return
+     */
+    public String getUpdateMarker() {
+        return updateMarker;
+    }
+
+    /**
+     * Return the list of qualifiers if there were any specified.
+     * @return
+     */
+    public List<String> getQualifiers() {
+        return qualifiers;
+    }
+
     public boolean equals(Object obj) {
         if (this == obj) return true;
         
@@ -318,10 +356,71 @@ public class Version implements Comparable<Version> {
                     return false;
                 }
             }
+            if ((updateMarker != null) && (rightVersion.getUpdateMarker() != null)) {
+                if (!updateMarker.equals(rightVersion.getUpdateMarker())) {
+                    return false;
+                }
+            } else {
+                if ((updateMarker == null) && (rightVersion.getUpdateMarker() == null)) {
+                } else {
+                    return false;
+                }
+            }
+            if (!qualifiers.equals(rightVersion.getQualifiers())) {
+                return false;
+            }
             // if we got here it means the version are equal.
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Returns the major version number, which is the first number in a X.X.X.X format or 0 if there is no first number
+     * @return
+     */
+    public int getMajorVersion() {
+        if (orderedVersionNumbers.size() > 0) {
+            return orderedVersionNumbers.get(0);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns the minor version number, which is the second number in a X.X.X.X format or 0 if there is no second number
+     * @return
+     */
+    public int getMinorVersion() {
+        if (orderedVersionNumbers.size() > 1) {
+            return orderedVersionNumbers.get(1);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns the service pack version number, which is the third number in a X.X.X.X format or 0 if there is no third number
+     * @return
+     */
+    public int getServicePackVersion() {
+        if (orderedVersionNumbers.size() > 2) {
+            return orderedVersionNumbers.get(2);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns the patch version number, which is the fourth number in a X.X.X.X format or 0 if there is no fourth number
+     * @return
+     */
+    public int getPatchVersion() {
+        if (orderedVersionNumbers.size() > 3) {
+            return orderedVersionNumbers.get(3);
+        } else {
+            return 0;
         }
     }
 

@@ -132,13 +132,17 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     
     private static String EDITION;
 
+    private static final Version JAHIA_VERSION = new Version(Constants.JAHIA_PROJECT_VERSION);
+
     /** Jahia server release number */
     private static double RELEASE_NUMBER = -1.0;
 
     public static String VERSION = String.valueOf(RELEASE_NUMBER);
 
+    private static final int SERVICEPACK_NUMBER = JAHIA_VERSION.getServicePackVersion();
+
     /** Jahia server patch number */
-    private static int PATCH_NUMBER = 0;
+    private static final int PATCH_NUMBER = JAHIA_VERSION.getPatchVersion();
     
 
     public static int getBuildNumber() {
@@ -172,23 +176,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     public static double getReleaseNumber() {
         if (RELEASE_NUMBER == -1.0) {
-            int qualifierPosition = Constants.JAHIA_PROJECT_VERSION.indexOf("-");
-            String releaseNumberStr = Constants.JAHIA_PROJECT_VERSION;
-            if (qualifierPosition != -1) {
-                releaseNumberStr = Constants.JAHIA_PROJECT_VERSION.substring(0, qualifierPosition);
-            }
-            // should now be in a format like X.X.X
-            int firstDotPos = releaseNumberStr.indexOf(".");
-            if (firstDotPos > -1) {
-                int secondDotPos = releaseNumberStr.indexOf(".", firstDotPos+1);
-                if (secondDotPos > -1) {
-                    releaseNumberStr = releaseNumberStr.substring(0, secondDotPos);
-                } else {
-                    // no second dot, we are in the case X.X
-                }
-            } else {
-                // no first dot, we are in the case X
-            }
+            String releaseNumberStr = JAHIA_VERSION.getMajorVersion() + "." + JAHIA_VERSION.getMinorVersion();
             try {
                 RELEASE_NUMBER = Double.parseDouble(releaseNumberStr);
                 VERSION = String.valueOf(RELEASE_NUMBER);
@@ -202,6 +190,10 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     public static int getPatchNumber() {
         return PATCH_NUMBER;
+    }
+
+    public static int getServicePackNumber() {
+        return SERVICEPACK_NUMBER;
     }
 
 

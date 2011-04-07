@@ -13,6 +13,11 @@
         <internal:gwtGenerateDictionary/>
 		<internal:gwtInit standalone="true"/>
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker" />
+        <c:if test="${config == 'filepicker' || config == 'imagepicker'}">
+            <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.css"/>
+            <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.js'/>"></script>
+            <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.js'/>"></script>
+        </c:if>
 	</head>
 	<body>
         <internal:contentPicker conf="${fn:escapeXml(config)}" mimeTypes="${fn:escapeXml(param.mime)}" jahiaServletPath="/cms" filesServletPath="/files" jahiaContextPath="${pageContext.request.contextPath}"  callback="${fn:escapeXml(param.CKEditorFuncNum)}"/>    

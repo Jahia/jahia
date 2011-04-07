@@ -137,7 +137,10 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     /** Jahia server release number */
     private static double RELEASE_NUMBER = -1.0;
 
-    public static String VERSION = String.valueOf(RELEASE_NUMBER);
+    public final static String VERSION = JAHIA_VERSION.getMajorVersion() + "." +
+            JAHIA_VERSION.getMinorVersion() + "." +
+            JAHIA_VERSION.getServicePackVersion() + "." +
+            JAHIA_VERSION.getPatchVersion();
 
     private static final int SERVICEPACK_NUMBER = JAHIA_VERSION.getServicePackVersion();
 
@@ -179,10 +182,8 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             String releaseNumberStr = JAHIA_VERSION.getMajorVersion() + "." + JAHIA_VERSION.getMinorVersion();
             try {
                 RELEASE_NUMBER = Double.parseDouble(releaseNumberStr);
-                VERSION = String.valueOf(RELEASE_NUMBER);
             } catch (NumberFormatException nfe) {
                 RELEASE_NUMBER = 0.0;
-                VERSION = String.valueOf(RELEASE_NUMBER);
             }
         }
         return RELEASE_NUMBER;

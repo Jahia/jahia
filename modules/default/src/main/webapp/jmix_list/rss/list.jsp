@@ -34,7 +34,7 @@
         <title>${fn:escapeXml(title)}</title>
         <link><c:url value="${url.server}${url.base}${currentNode.path}.html" context="/"/></link>
         <description>${fn:escapeXml(description)}</description>
-        <generator>Jahia <%= Jahia.VERSION + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber() %>, http://www.jahia.org</generator>
+        <generator>Jahia <%= Jahia.VERSION + " r" + Jahia.getBuildNumber() %>, http://www.jahia.org</generator>
             <c:forEach items="${moduleMap.currentList}" var="subchild">
                 <template:module node="${subchild}" editable="false"/>
             </c:forEach>

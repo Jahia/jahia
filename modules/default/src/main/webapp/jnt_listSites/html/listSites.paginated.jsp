@@ -30,6 +30,17 @@
     </c:if>
 </c:forEach>
 <c:set target="${moduleMap}" property="pagerUrl" value="${param.pagerUrl}"/>
+<c:choose>
+    <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
+        <c:set var="page" value="/contents"/>
+    </c:when>
+    <c:when test="${currentNode.properties.typeOfContent.string eq 'files'}">
+        <c:set var="page" value="/files"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="page" value="/home"/>
+    </c:otherwise>
+</c:choose>
 
 <div id="listsites${currentNode.identifier}">
     <template:initPager totalSize="${moduleMap.end}" pageSize="${currentNode.properties['numberOfSitesPerPage'].string}" id="${renderContext.mainResource.node.identifier}"/>
@@ -48,13 +59,13 @@
                 <c:if test="${jcr:hasPermission(home,'editModeAccess') || jcr:hasPermission(home,'contributeModeAccess') || home.properties['j:published'].boolean}">
                     <li class="listsiteicon">${node.displayableName}
                         <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(home,'editModeAccess')}">
-                            <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseEdit}${node.path}/home.html'/>"><fmt:message key="label.editMode"/></a>
+                            <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseEdit}${node.path}${page}.html'/>"><fmt:message key="label.editMode"/></a>
                         </c:if>
                         <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(home,'contributeModeAccess')}">
-                            <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseContribute}${node.path}/home.html'/>"><fmt:message key="label.contribute"/></a>
+                            <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseContribute}${node.path}${page}.html'/>"><fmt:message key="label.contribute"/></a>
                         </c:if>
                         <c:if test="${currentNode.properties.live.boolean && home.properties['j:published'].boolean}">
-                            <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseLive}${node.path}/home.html'/>"><fmt:message key="label.live"/></a>
+                            <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseLive}${node.path}${page}.html'/>"><fmt:message key="label.live"/></a>
                         </c:if>
                     </li>
                 </c:if>

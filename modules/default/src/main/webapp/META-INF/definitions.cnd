@@ -166,6 +166,7 @@
  - edit (boolean)
  - contribute (boolean)
  - live (boolean)
+ - typeOfContent (string,choicelist[resourceBundle]) = website < website,contents,files
  - numberOfSitesPerPage (long) = 10 mandatory
  - numberMaxOfSitesDisplayed (long)
 

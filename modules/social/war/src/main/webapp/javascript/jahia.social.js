@@ -55,7 +55,7 @@ function requestConnection(userURL, toUserKey) {
 }
 
 
-function submitStatusUpdate(base, modulePath, userPath, updateText) {
+function submitStatusUpdate(base, modulePath, userPath, updateText, param, pageSize) {
     $.ajax({
         url: base + userPath + '.addActivity.do',
         type : 'post',
@@ -64,14 +64,14 @@ function submitStatusUpdate(base, modulePath, userPath, updateText) {
 	    	'text': updateText
     	},
         success : function (data) {
-            loadActivities(base, modulePath, userPath);
+            loadActivities(base, modulePath, userPath, param, pageSize);
         }
     });
 }
 
-function loadActivities(base, moduleUrl, userPath) {
+function loadActivities(base, moduleUrl, userPath, param, pageSize) {
     $.ajax({
-        url: base + moduleUrl + '.activities.html.ajax?user='+userPath,
+        url: base + moduleUrl + '.activities.html.ajax' + param + '&user='+userPath + '&pageSize='+pageSize,
         type: 'get',
         dataType : "html",
         success : function (data) {

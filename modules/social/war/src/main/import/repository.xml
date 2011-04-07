@@ -41,7 +41,7 @@
           <pagecontent j:id="user-connections" jcr:mixinTypes="jmix:customSkin" jcr:primaryType="jnt:contentList">
             <my-connections icon="/templateSets/social/templates/files/icons/myconnections.png" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My connections" />
-              <currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed" />
+              <currentUserNewsFeed jcr:primaryType="jnt:currentUserNewsFeed" numberOfNewsFeedPerPage="10"/>
             </my-connections>
           </pagecontent>
           <user-profile-aside-right jcr:primaryType="jnt:contentList">

@@ -62,4 +62,5 @@
 [jnt:currentUserMessages] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:list, jmix:studioOnly
 - numberOfMessagesPerPage (long) = "10" mandatory
 
-[jnt:currentUserNewsFeed] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
+[jnt:currentUserNewsFeed] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:list, jmix:studioOnly
+- numberOfNewsFeedPerPage (long) = "10" mandatory

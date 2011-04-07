@@ -5,15 +5,24 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="social" uri="http://www.jahia.org/tags/socialLib" %>
-
-<social:get-connections var="userConnections" path="${param.user}" />
-<social:get-activities var="activities" sourcePaths="${userConnections}" />
+<template:include view="hidden.header"/>
 <template:addCacheDependency flushOnPathMatchingRegexp="${param.user}/activities/.*" />
-<c:if test="${empty activities}">
-    <fmt:message key="message.noActivitiesFound"/>
+
+
+<c:set var="ps" value="?pagerUrl=${url.mainResource}"/>
+<c:if test="${!empty param.pageUrl}">
+    <c:set var="ps" value="?pagerUrl=${param.pageUrl}"/>
 </c:if>
-<c:if test="${not empty activities}">
-<c:forEach items="${activities}" var="activity">
+<c:forEach items="${param}" var="p" varStatus="status">
+    <c:if test="${p.key != 'pagerUrl' && p.key != 'jsite'}">
+        <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
+    </c:if>
+</c:forEach>
+<c:set target="${moduleMap}" property="pagerUrl" value="${param.pagerUrl}"/>
+
+<template:initPager totalSize="${fn:length(moduleMap.currentList)}" pageSize="${param.pageSize}" id="${renderContext.mainResource.node.identifier}"/>
+<template:displayPagination/>
+
+<c:forEach items="${moduleMap.currentList}" var="activity" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
     <template:module path="${activity.path}" />
 </c:forEach>
-</c:if>

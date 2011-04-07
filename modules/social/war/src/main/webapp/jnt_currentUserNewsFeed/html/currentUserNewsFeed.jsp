@@ -36,6 +36,16 @@
 <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
     <jcr:node var="user" path="/users/${renderContext.user.username}"/>
 </c:if>
+<c:set var="ps" value="?pagerUrl=${url.mainResource}"/>
+<c:if test="${!empty param.pageUrl}">
+    <c:set var="ps" value="?pagerUrl=${param.pageUrl}"/>
+</c:if>
+<c:forEach items="${param}" var="p" varStatus="status">
+    <c:if test="${p.key != 'pagerUrl' && p.key != 'jsite'}">
+        <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
+    </c:if>
+</c:forEach>
+<c:set target="${moduleMap}" property="pagerUrl" value="${param.pagerUrl}"/>
 
 <%--map all display values --%>
 <jsp:useBean id="userProperties" class="java.util.HashMap"/>
@@ -52,11 +62,11 @@
             // validate and process form here
             var updateText = $("textarea#statusUpdateText").val();
             // alert('Sending text ' + updateText);
-            submitStatusUpdate('<c:url value="${url.base}"/>', '${currentNode.path}', '${user.path}', updateText);
+            submitStatusUpdate('<c:url value="${url.base}"/>', '${currentNode.path}', '${user.path}', updateText, '${ps}', '${currentNode.properties['numberOfNewsFeedPerPage'].string}');
             return false;
         });
 
-        loadActivities('<c:url value="${url.base}"/>', '${currentNode.path}', '${user.path}');
+        loadActivities('<c:url value="${url.base}"/>', '${currentNode.path}', '${user.path}', '${ps}', '${currentNode.properties['numberOfNewsFeedPerPage'].string}');
 
     }
 

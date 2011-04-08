@@ -172,7 +172,7 @@ public class Functions {
                     "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count", e);
         }
         String facetValueFilter = builder.toString();
-        if (!StringUtils.contains(queryString, facetValueFilter)) {
+        if (!StringUtils.contains(queryString, facetValueFilter) && queryString != null) {
             builder = new StringBuilder(queryString.length() + facetValueFilter.length() + 1);
             builder.append(queryString).append(queryString.length() == 0 ? "" : FACET_DELIM).append(facetValueFilter);
         }

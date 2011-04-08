@@ -4,8 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
-
   <bean name="jahiaProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
   	<property name="ignoreResourceNotFound" value="true"/>
   	<property name="locations">
@@ -14,6 +12,7 @@
   			<value>/WEB-INF/etc/config/jahia.advanced.properties</value>
   			<value>/WEB-INF/etc/config/jahia.custom.properties</value>
   			<value>classpath:org/jahia/config/jahia*.properties</value>
+            <value>file:${jahia.config}</value>
   		</list>
   	</property>
   </bean>
@@ -33,9 +32,10 @@
       <constructor-arg index="1" type="java.util.Properties">
           <ref bean="jahiaProperties"/>
       </constructor-arg>
-      <constructor-arg index="2" type="org.springframework.core.io.Resource[]">
+      <constructor-arg index="2" type="java.util.List">
           <list>
               <!-- we will take the first found license file -->
+              <value>file:/${jahia.license}</value>
               <value>classpath:org/jahia/config/license*.xml</value>
               <value>WEB-INF/etc/config/license*.xml</value>
           </list>

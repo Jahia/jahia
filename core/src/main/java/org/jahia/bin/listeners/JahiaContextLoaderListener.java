@@ -49,6 +49,7 @@ import org.springframework.web.context.ContextLoader;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpSessionEvent;
@@ -77,7 +78,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     private static long sessionCount = 0;
 
-    private static Map requestTimes = Collections.synchronizedMap(new LRUMap(1000));
+    @SuppressWarnings("unchecked")
+    private static Map<ServletRequest, Long> requestTimes = Collections.synchronizedMap(new LRUMap(1000));
 
     public void contextInitialized(ServletContextEvent event) {
         startupTime = System.currentTimeMillis();
@@ -88,6 +90,12 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         servletContext = event.getServletContext();
         String jahiaWebAppRoot = servletContext.getRealPath("/");
         System.setProperty("jahiaWebAppRoot", jahiaWebAppRoot);
+        if (System.getProperty("jahia.config") == null) {
+            System.setProperty("jahia.config", "");
+        }
+        if (System.getProperty("jahia.license") == null) {
+            System.setProperty("jahia.license", "");
+        }
         Jahia.initContextData(servletContext);
         
         try {
@@ -232,8 +240,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public void requestDestroyed(ServletRequestEvent sre) {
-        long requestStartTime = (Long) requestTimes.remove(sre.getServletRequest());
-        long requestTotalTime = System.currentTimeMillis() - requestStartTime;
+        requestTimes.remove(sre.getServletRequest());
     }
 
     public void requestInitialized(ServletRequestEvent sre) {

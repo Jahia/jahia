@@ -57,6 +57,10 @@ import org.jahia.bin.Jahia;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.utils.properties.PropertiesManager;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
 
@@ -65,7 +69,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class SettingsBean implements ServletContextAware {
+public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
     private static final transient Logger logger =
             org.slf4j.LoggerFactory.getLogger (SettingsBean.class);
@@ -157,6 +161,10 @@ public class SettingsBean implements ServletContextAware {
 
     private Resource licenseFile;
 
+    private ApplicationContext applicationContext;
+
+    private List<String> licenseFileLocations;
+
     /**
      * Default constructor.
      *
@@ -181,11 +189,11 @@ public class SettingsBean implements ServletContextAware {
 
     public SettingsBean(PathResolver pathResolver,
     					Properties props,
-    					Resource[] licenseFiles) throws IOException {
+    					List<String> licenseFileLocations) throws IOException {
         this.pathResolver = pathResolver;
         this.properties = new Properties();
         properties.putAll(props);
-        this.licenseFile = licenseFiles.length > 0 ? licenseFiles[0] : null;
+        this.licenseFileLocations = licenseFileLocations;
         instance = this;
     }
 
@@ -814,5 +822,33 @@ public class SettingsBean implements ServletContextAware {
 
     public Resource getLicenseFile() {
         return licenseFile;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        if (licenseFileLocations != null) {
+            for (String location : licenseFileLocations) {
+                String path = location.trim();
+                if ("file:/".equals(path)) {
+                    continue;
+                }
+                try {
+                    for (Resource resource : applicationContext.getResources(path)) {
+                        if (resource.exists()) {
+                            licenseFile = resource;
+                            break;
+                        }
+                    }
+                    if (licenseFile != null) {
+                        break;
+                    }
+                } catch (IOException e) {
+                    // ignore missing locations
+                }
+            }
+        }
     }
 }

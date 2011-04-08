@@ -497,7 +497,7 @@ public class SearchCriteria implements Serializable {
     }
 
     /**
-     * Single text serch criterion with a search text and match type.
+     * Single text search criterion with a search text and match type.
      * 
      * @author Sergiy Shyrkov
      */

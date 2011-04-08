@@ -337,13 +337,14 @@ public class PropertiesEditor extends FormPanel {
                 }
                 if (field instanceof ComboBox) {
                     final ComboBox<GWTJahiaValueDisplayBean> c = (ComboBox<GWTJahiaValueDisplayBean>) field;
+                    final List<GWTJahiaValueDisplayBean> oldSelection = c.getSelection();
                     c.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                         public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> event) {
-                            setExternalMixin(c, true);
+                            setExternalMixin(oldSelection,c, true);
                         }
                     });
                     if (c.getValue() != null) {
-                        setExternalMixin(c, false);
+                        setExternalMixin(null,c, false);
                     }
                 }
             }
@@ -354,8 +355,15 @@ public class PropertiesEditor extends FormPanel {
      * Set template
      *
      */
-    private void setExternalMixin(ComboBox<GWTJahiaValueDisplayBean> c, boolean b) {
+    private void setExternalMixin(List<GWTJahiaValueDisplayBean> oldSelection, ComboBox<GWTJahiaValueDisplayBean> c, boolean b) {
         String addMixin = null;
+        if (b && oldSelection.size() > 0 && oldSelection.get(0).getValue() != null) {
+            String removeMixin = oldSelection.get(0).get("addMixin");
+            if (externalMixin.contains(removeMixin)) {
+                removedTypes.add(removeMixin);
+                externalMixin.remove(removeMixin);
+            }
+        }
         if (c.getValue() != null) {
             addMixin = c.getValue().get("addMixin");
         }

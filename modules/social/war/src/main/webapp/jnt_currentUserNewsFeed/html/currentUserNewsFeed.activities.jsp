@@ -23,6 +23,11 @@
 <template:initPager totalSize="${fn:length(moduleMap.currentList)}" pageSize="${param.pageSize}" id="${renderContext.mainResource.node.identifier}"/>
 <template:displayPagination/>
 
-<c:forEach items="${moduleMap.currentList}" var="activity" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
-    <template:module path="${activity.path}" />
-</c:forEach>
+<c:if test="${fn:length(moduleMap.currentList) eq 0}">
+    <p><fmt:message key="newsFeed.emptyResults"/></p>
+</c:if>
+<c:if test="${fn:length(moduleMap.currentList) ne 0}">
+    <c:forEach items="${moduleMap.currentList}" var="activity" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+        <template:module path="${activity.path}" view="default"/>
+    </c:forEach>
+</c:if>

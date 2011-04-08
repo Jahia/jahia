@@ -202,7 +202,7 @@
 
     <bean id="ImageService" class="org.jahia.services.image.ImageJImageService" factory-method="getInstance"/>
 
-    <!--<bean id="ImageService" class="org.jahia.services.image.ImageMagickImageService" factory-method="getInstance">-->
+    <!--<bean id="ImageService" class="org.jahia.services.image.ImageMagickImageService" factory-method="getInstance" init-method="init">-->
         <!--<property name="imageMagickPath" value="C:\Programs\ImageMagick;C:\Programs\exiftool"/>-->
     <!--</bean>-->
 

@@ -56,7 +56,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.contentengine.*;
@@ -323,7 +322,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
             // general properties
             final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
-
+            final Set<String> removedTypes = new HashSet<String>();
             // general properties
             final Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties =
                     new HashMap<String, List<GWTJahiaNodeProperty>>();
@@ -361,7 +360,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                             changedProperties.addAll(pe.getProperties(true, true, true));
                         }
                     }
-
+                    if (pe != null) {
+                        removedTypes.addAll(pe.getRemovedTypes());
+                    }
                     // case of contentTabItem
                     if (item instanceof ContentTabItem) {
                         if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
@@ -385,6 +386,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                     }
                 } else {
                     item.doSave(getNode(), changedProperties, changedI18NProperties);
+                    removedTypes.addAll(item.getRemovedTypes());
+                    item.getRemovedTypes().clear();
                 }
             }
             // Ajax call to update values
@@ -403,11 +406,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             };
 
             if (isMultipleSelection()) {
-                JahiaContentManagementService.App.getInstance().savePropertiesAndACL(getNodes(), null, changedI18NProperties, changedProperties, callback);
+                JahiaContentManagementService.App.getInstance().savePropertiesAndACL(getNodes(), null, changedI18NProperties, changedProperties, removedTypes, callback);
 
             } else {
                 JahiaContentManagementService.App.getInstance()
-                        .saveNode(getNode(), orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties, callback);
+                        .saveNode(getNode(), orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties, removedTypes, callback);
             }
         }
 

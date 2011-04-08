@@ -8,7 +8,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.http.client.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -153,7 +152,7 @@ public class SendNewsletterActionItem extends BaseActionItem {
 
             List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
             nodes.add(gwtJahiaNode);
-            JahiaContentManagementService.App.getInstance().saveProperties(nodes, props, new BaseAsyncCallback() {
+            JahiaContentManagementService.App.getInstance().saveProperties(nodes, props, null, new BaseAsyncCallback() {
                 public void onSuccess(Object result) {
                     linker.loaded();
                     unmask();

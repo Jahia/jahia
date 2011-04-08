@@ -232,6 +232,8 @@ public class CategoriesTabItem extends EditEngineTabItem {
         if (this.categoryProperty != null) {
             if (values.isEmpty()) {
                 mixin.remove("jmix:categorized");
+                getRemovedTypes().add("jmix:categorized");
+
             } else {
                 newProperties.add(gwtJahiaNodeProperty);
             }

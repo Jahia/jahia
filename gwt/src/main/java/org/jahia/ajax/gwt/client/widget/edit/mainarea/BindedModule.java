@@ -85,7 +85,7 @@ public class BindedModule extends SimpleModule {
                                         GWTJahiaNodePropertyType.WEAKREFERENCE));
                         properties.add(gwtJahiaNodeProperty);
                         JahiaContentManagementService.App.getInstance()
-                                .saveProperties(Arrays.asList(node), properties, new BaseAsyncCallback() {
+                                .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
                                     public void onSuccess(Object o) {
                                         getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN);
                                     }
@@ -114,7 +114,7 @@ public class BindedModule extends SimpleModule {
                                                     GWTJahiaNodePropertyType.WEAKREFERENCE));
                                     properties.add(gwtJahiaNodeProperty);
                                     JahiaContentManagementService.App.getInstance()
-                                            .saveProperties(Arrays.asList(node), properties, new BaseAsyncCallback() {
+                                            .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
                                                 public void onSuccess(Object o) {
                                                     getMainModule().getEditLinker().refresh(EditLinker.REFRESH_MAIN);
                                                 }

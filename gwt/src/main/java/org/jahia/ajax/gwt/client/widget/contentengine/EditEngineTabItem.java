@@ -39,9 +39,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: toto
@@ -54,6 +52,7 @@ public abstract class EditEngineTabItem implements Serializable {
     protected boolean handleCreate = true;
     private List<String> showForTypes = new ArrayList<String>();
     private List<String> hideForTypes = new ArrayList<String>();
+    private Set<String> removedTypes = new HashSet<String>();
 
     protected EditEngineTabItem() {
     }
@@ -112,5 +111,13 @@ public abstract class EditEngineTabItem implements Serializable {
 
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
 
+    }
+
+    public Set<String> getRemovedTypes() {
+        return removedTypes;
+    }
+
+    public void setRemovedTypes(Set<String> removedTypes) {
+        this.removedTypes = removedTypes;
     }
 }

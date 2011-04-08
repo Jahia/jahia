@@ -575,4 +575,9 @@ public class PropertiesEditor extends FormPanel {
     public List<FieldSet> getOrderingListFieldSet() {
         return orderingListFieldSet;
     }
+
+    @Override
+    public String toString() {
+        return nodeTypes.toString();
+    }
 }

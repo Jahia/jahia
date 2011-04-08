@@ -341,7 +341,9 @@ public class EditContentEngine extends AbstractContentEngine {
                         changedProperties.addAll(pe.getProperties(true, true, true));
                     }
                 }
-
+                if (pe != null) {
+                    removedTypes.addAll(pe.getRemovedTypes());
+                }
                 // case of contentTabItem
                 if (item instanceof ContentTabItem) {
                     if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
@@ -366,12 +368,14 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
             } else {
                 item.doSave(node, changedProperties, changedI18NProperties);
+                removedTypes.addAll(item.getRemovedTypes());
+                item.getRemovedTypes().clear();
             }
         }
         
         contentService.saveNode(node,
                 orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
-                new BaseAsyncCallback<Object>() {
+                removedTypes, new BaseAsyncCallback<Object>() {
                     public void onApplicationFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert(Messages.get(
                                 "saved_prop_failed", "Properties save failed\n\n")
@@ -399,5 +403,10 @@ public class EditContentEngine extends AbstractContentEngine {
                     }
                 });
         
+    }
+
+    @Override
+    public String toString() {
+        return node.getPath();
     }
 }

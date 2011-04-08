@@ -111,6 +111,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     // general properties
     protected final Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
 
+    protected final Set<String> removedTypes = new HashSet<String>();
+
     protected GWTJahiaNodeACL newNodeACL;
 
     protected String parentPath;

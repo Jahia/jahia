@@ -261,6 +261,7 @@ public class TagsTabItem extends EditEngineTabItem {
         }
         if (noTag) {
             mixin.remove("jmix:tagged");
+            getRemovedTypes().add("jmix:tagged");
         } else if (!mixin.contains("jmix:tagged")) {
             mixin.add("jmix:tagged");
         }
@@ -301,6 +302,9 @@ public class TagsTabItem extends EditEngineTabItem {
         }
         if (!noTag && !mixin.contains("jmix:tagged")) {
             mixin.add("jmix:tagged");
+        } else {
+            mixin.remove("jmix:tagged");
+            getRemovedTypes().add("jmix:tagged");
         }
     }
 

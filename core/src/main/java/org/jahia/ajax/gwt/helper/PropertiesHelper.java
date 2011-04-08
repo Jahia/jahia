@@ -113,7 +113,7 @@ public class PropertiesHelper {
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
 
                     for (Value val : values) {
-                        GWTJahiaNodePropertyValue convertedValue = contentDefinition.convertValue(val, def.getRequiredType()); 
+                        GWTJahiaNodePropertyValue convertedValue = contentDefinition.convertValue(val, def.getRequiredType());
                         if (convertedValue != null) {
                             gwtValues.add(convertedValue);
                         }
@@ -197,13 +197,14 @@ public class PropertiesHelper {
     /**
      * A batch-capable save properties method.
      *
-     * @param currentUserSession
+     *
      * @param nodes    the nodes to save the properties of
      * @param newProps the new properties
-     * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
+     * @param removedTypes
+     *@param currentUserSession  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
-    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, JahiaUser user, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JahiaUser user, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode;
             try {
@@ -214,24 +215,25 @@ public class PropertiesHelper {
             }
             try {
                 List<String> types = aNode.getNodeTypes();
-                for (ExtendedNodeType mixin : objectNode.getMixinNodeTypes()) {
-                    if (!types.contains(mixin.getName())) {
-                        List<ExtendedItemDefinition> items = mixin.getItems();
-                        for (ExtendedItemDefinition item : items) {
-                            if (item.isNode()) {
-                                if (objectNode.hasNode(item.getName())) {
-                                    currentUserSession.checkout(objectNode);
-                                    objectNode.getNode(item.getName()).remove();
-                                }
-                            } else {
-                                if (objectNode.hasProperty(item.getName())) {
-                                    currentUserSession.checkout(objectNode);
-                                    objectNode.getProperty(item.getName()).remove();
+                if (removedTypes != null) {
+                    for (ExtendedNodeType mixin : objectNode.getMixinNodeTypes()) {
+                        if (removedTypes.contains(mixin.getName())) {
+                            List<ExtendedItemDefinition> items = mixin.getItems();
+                            for (ExtendedItemDefinition item : items) {
+                                if (item.isNode()) {
+                                    if (objectNode.hasNode(item.getName())) {
+                                        currentUserSession.checkout(objectNode);
+                                        objectNode.getNode(item.getName()).remove();
+                                    }
+                                } else {
+                                    if (objectNode.hasProperty(item.getName())) {
+                                        currentUserSession.checkout(objectNode);
+                                        objectNode.getProperty(item.getName()).remove();
+                                    }
                                 }
                             }
+                            objectNode.removeMixin(mixin.getName());
                         }
-                        objectNode.removeMixin(mixin.getName());
-
                     }
                 }
                 for (String type : types) {

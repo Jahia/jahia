@@ -28,7 +28,7 @@
                         </entry>
                         <entry key="sites">
                             <list>
-                                <value>http://example.domain.com</value>
+                                <!--<value>http://example.domain.com</value>-->
                             </list>
                         </entry>
                     </map>

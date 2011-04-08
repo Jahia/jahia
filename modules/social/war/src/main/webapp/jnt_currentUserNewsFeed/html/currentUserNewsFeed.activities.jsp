@@ -28,6 +28,6 @@
 </c:if>
 <c:if test="${fn:length(moduleMap.currentList) ne 0}">
     <c:forEach items="${moduleMap.currentList}" var="activity" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
-        <template:module path="${activity.path}" view="default"/>
+        <template:module path="${activity.path}" templateType="html"/>
     </c:forEach>
 </c:if>

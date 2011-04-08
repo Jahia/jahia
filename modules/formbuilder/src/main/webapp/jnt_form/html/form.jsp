@@ -74,9 +74,11 @@
     </div>
 </c:if>
 <div class="Form FormBuilder">
+
+
     <c:if test="${not renderContext.editMode}">
+    <template:tokenizedForm>
     <form action="<c:url value='${action}'/>" method="post" id="${currentNode.name}">
-        </c:if>
         <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
         <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
         <%-- Define the output format for the newly created node by default html or by redirectTo--%>
@@ -84,25 +86,33 @@
         <c:if test="${not empty chainActive}">
             <input type="hidden" name="chainOfAction" value="${chainActive}"/>
         </c:if>
-        <c:if test="${renderContext.editMode}">
-        <div class="addfieldsets">
-            <span><fmt:message key="form.addFieldSet"/></span>
-            </c:if>
-            <template:list path="fieldsets" listType="jnt:fieldsetstList" editable="true"/>
-            <c:if test="${renderContext.editMode}">
-        </div>
-        </c:if>
-        <div class="<c:if test="${not renderContext.editMode}">divButton</c:if><c:if test="${renderContext.editMode}">addbuttons</c:if>">
-            <c:if test="${renderContext.editMode}">
-                <span><fmt:message key="form.addButtons"/></span>
-            </c:if>
+        <template:list path="fieldsets" listType="jnt:fieldsetstList" editable="true"/>
+        <div class="divButton">
             <template:list path="formButtons" listType="jnt:formButtonsList" editable="true"/>
         </div>
-
-        <c:if test="${not renderContext.editMode}">
         <div class="validation"></div>
     </form>
+    </template:tokenizedForm>
     </c:if>
+
+    <c:if test="${renderContext.editMode}">
+        <input type="hidden" name="nodeType" value="jnt:responseToForm"/>
+        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
+        <%-- Define the output format for the newly created node by default html or by redirectTo--%>
+        <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <c:if test="${not empty chainActive}">
+            <input type="hidden" name="chainOfAction" value="${chainActive}"/>
+        </c:if>
+        <div class="addfieldsets">
+            <span><fmt:message key="form.addFieldSet"/></span>
+            <template:list path="fieldsets" listType="jnt:fieldsetstList" editable="true"/>
+        </div>
+        <div class="addbuttons">
+                <span><fmt:message key="form.addButtons"/></span>
+            <template:list path="formButtons" listType="jnt:formButtonsList" editable="true"/>
+        </div>
+    </c:if>
+
 </div>
 <br/><br/>
 

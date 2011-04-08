@@ -175,7 +175,9 @@ public class LastModifiedListener extends DefaultEventListener {
 
     private void addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
         if (autoPublished != null) {
-            if (n.isNodeType("jmix:autoPublish") && !autoPublished.contains(n.getIdentifier())) {
+            if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType("jmix:autoPublish")) {
+                autoPublished.add(n.getIdentifier());
+            } else if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType(Constants.JAHIANT_TRANSLATION) && n.getParent().isNodeType("jmix:autoPublish")) {
                 autoPublished.add(n.getIdentifier());
             }
         }

@@ -1633,6 +1633,8 @@ public class ManageSites extends AbstractAdministrationModule {
             JahiaSite siteToUseNow = sMgr.getDefaultSite() != null ? sMgr.getDefaultSite() :
                     new JahiaSite(-1, "", "", "", "", new Properties(), null);
             jParams.setSite(siteToUseNow);
+            jParams.setSiteKey(siteToUseNow.getSiteKey());
+            session.setAttribute(ProcessingContext.SESSION_SITE, siteToUseNow);
         }
     }
 

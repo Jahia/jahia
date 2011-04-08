@@ -36,6 +36,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.services.render.*;
 import org.slf4j.Logger;
@@ -82,7 +83,8 @@ public class NavigationHelper {
 
     private PublicationHelper publication;
     private WorkflowHelper workflow;
-    
+    private LanguageHelper languages;
+
     private Set<String> ignoreInUsages = Collections.emptySet();
 
 
@@ -96,6 +98,10 @@ public class NavigationHelper {
 
     public void setWorkflow(WorkflowHelper workflow) {
         this.workflow = workflow;
+    }
+
+    public void setLanguages(LanguageHelper languages) {
+        this.languages = languages;
     }
 
     public void setJcrVersionService(JCRVersionService jcrVersionService) {
@@ -1011,6 +1017,17 @@ public class NavigationHelper {
             }
         } catch (RepositoryException e) {
             logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+        }
+
+        if (fields.contains(GWTJahiaNode.DEFAULT_LANGUAGE)) {
+            try {
+                if (node.hasProperty(GWTJahiaNode.DEFAULT_LANGUAGE)) {
+                    Locale locale = LanguageCodeConverters.languageCodeToLocale(node.getProperty(GWTJahiaNode.DEFAULT_LANGUAGE).getString());
+                    n.set(GWTJahiaNode.DEFAULT_LANGUAGE, languages.getCurrentLang(locale));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+            }
         }
 
         // properties

@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 public class LanguageSwitcherActionItem extends BaseActionItem {
     private static final long serialVersionUID = 9115660301140902069L;
 	protected transient ComboBox<GWTJahiaLanguage> mainComponent;
+    protected boolean events = true;
 	protected List<GWTJahiaLanguage> gwtJahiaLanguages;
 	protected GWTJahiaLanguage selectedLang;
 
@@ -90,10 +91,12 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
         mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
-                if (linker instanceof EditLinker) {
-                    ((EditLinker) linker).getMainModule().switchLanguage(event.getSelectedItem());
-                } else if (linker instanceof ManagerLinker) {
-                    ((ManagerLinker) linker).switchLanguage(event.getSelectedItem());
+                if (events) {
+                    if (linker instanceof EditLinker) {
+                        ((EditLinker) linker).getMainModule().switchLanguage(event.getSelectedItem());
+                    } else if (linker instanceof ManagerLinker) {
+                        ((ManagerLinker) linker).switchLanguage(event.getSelectedItem());
+                    }
                 }
             }
         });

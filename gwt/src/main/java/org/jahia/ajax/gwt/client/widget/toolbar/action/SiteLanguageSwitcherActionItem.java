@@ -58,14 +58,24 @@ public class SiteLanguageSwitcherActionItem extends LanguageSwitcherActionItem {
         if (node != null
 		        && !node.getSiteUUID().equalsIgnoreCase(siteKey)) {
 			siteKey = node.getSiteUUID();
+            events = false;
+            mainComponent.getStore().removeAll();
+            mainComponent.reset();
 			JahiaContentManagementService.App.getInstance().getSiteLanguages(
 			        new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
 				        public void onSuccess(List<GWTJahiaLanguage> languages) {
 					        gwtJahiaLanguages = languages;
-					        mainComponent.getStore().removeAll();
 					        mainComponent.getStore().add(languages);
-				        }
 
+                            if (mainComponent.getSelection().isEmpty()) {
+                                for (GWTJahiaLanguage language : languages) {
+                                    if (language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
+                                        mainComponent.select(language);
+                                    }
+                                }
+                            }
+                            events = true;
+				        }
 				        public void onApplicationFailure(Throwable throwable) {
 					        mainComponent.getStore().removeAll();
 				        }

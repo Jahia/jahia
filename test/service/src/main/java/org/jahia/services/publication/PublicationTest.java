@@ -50,6 +50,10 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -1233,4 +1237,76 @@ public class PublicationTest {
         JCRSessionFactory.getInstance().closeAllSessions();
     }
 
+    @Test
+    public void testNodeReorder() throws Exception {
+        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+
+        getCleanSession();
+        JCRNodeWrapper home = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+        
+        JCRNodeWrapper source = home.addNode("source", "jnt:page");
+        source.setProperty("jcr:title", "Source");
+        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        page1.setProperty("jcr:title", "Page1");
+        JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
+        page2.setProperty("jcr:title", "Page2");
+        JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
+        page3.setProperty("jcr:title", "Page3");
+        JCRNodeWrapper page4 = source.addNode("page4", "jnt:page");
+        page4.setProperty("jcr:title", "Page4");
+        JCRNodeWrapper page5 = source.addNode("page5", "jnt:page");
+        page5.setProperty("jcr:title", "Page5");
+        JCRNodeWrapper page6 = source.addNode("page6", "jnt:page");
+        page6.setProperty("jcr:title", "Page6");
+        englishEditSession.save();
+
+        jcrService.publishByMainId(home.getIdentifier());
+
+        JCRNodeWrapper liveSource = englishLiveSession.getNodeByIdentifier(source.getIdentifier());
+
+        List<String> pageNames = Arrays.asList("page1", "page2", "page3", "page4", "page5", "page6");
+        List<String> pageFound = new ArrayList<String>();
+        NodeIterator nodeIterator = liveSource.getNodes();
+        int i = 0;
+        while (nodeIterator.hasNext()) {
+            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
+            String s = pageNames.get(i);
+            logger.info("testNodeReorder: [" + i + "] " + nodeWrapper.getName());
+            assertEquals("Order of published nodes is wrong."
+                    + " Node name should be: " + s, pageNames.get(i),
+                    nodeWrapper.getName());
+            pageFound.add(s);
+            i++;
+        }
+        assertTrue("Number of pages should be " + pageNames.size() + " but found " + pageFound.size(),
+                pageNames.size() == pageFound.size());
+
+        englishEditSession.checkout(source);
+        englishEditSession.checkout(page1);
+        englishEditSession.checkout(page2);
+        englishEditSession.checkout(page3);
+        englishEditSession.checkout(page4);
+        englishEditSession.checkout(page5);
+        englishEditSession.checkout(page6);
+        source.orderBefore("page4", "page2");
+        source.orderBefore("page6", "page5");
+        englishEditSession.save();
+
+        jcrService.publishByMainId(home.getIdentifier());
+        
+        pageNames = Arrays.asList("page1", "page4", "page2", "page3", "page6", "page5");
+        pageFound = new ArrayList<String>();
+        i = 0;
+        nodeIterator = englishLiveSession.getNodeByIdentifier(source.getIdentifier()).getNodes();
+        while (nodeIterator.hasNext()) {
+            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
+            String s = pageNames.get(i);
+            logger.info("testNodeReorder source: [" + i + "] " + nodeWrapper.getName());
+            assertEquals("Publishing of the node reodering failed."
+                    + " Node name should be: " + s, pageNames.get(i),
+                    nodeWrapper.getName());
+            pageFound.add(s);
+            i++;
+        }
+   }
 }

@@ -47,6 +47,7 @@
 
     <camelContext id="jahiaNotificationContext" xmlns="http://camel.apache.org/schema/spring"
                   depends-on="jahiaProperties">
+        <jmxAgent id="agent" disabled="true"/>
         <route>
             <!-- route for sending mails synchronously -->
             <from uri="direct:mailUsers"/>

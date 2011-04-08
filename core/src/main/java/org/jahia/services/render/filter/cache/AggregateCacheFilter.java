@@ -523,16 +523,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                     content);
                         }
                         setResources(renderContext, cacheEntry);
-                        Object property = cacheEntry.getProperty(FORM_TOKEN);
-                        if (property != null) {
-                            Map<String, Map<String, String>> forms = (Map<String, Map<String, String>>) renderContext.getRequest().getAttribute(
-                                    "form-parameter");
-                            if (forms == null) {
-                                forms = new HashMap<String, Map<String, String>>();
-                                renderContext.getRequest().setAttribute("form-parameter", forms);
-                            }
-                            forms.putAll((Map<? extends String, ? extends Map<String, String>>) property);
-                        }
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         logger.debug("Missing content : " + cacheKey);
@@ -559,6 +549,16 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             for (String s : map.keySet()) {
                 renderContext.getStaticAssetOptions().get(s).putAll(map.get(s));
             }
+        }
+        Object property = cacheEntry.getProperty(FORM_TOKEN);
+        if (property != null) {
+            Map<String, Map<String, String>> forms = (Map<String, Map<String, String>>) renderContext.getRequest().getAttribute(
+                    "form-parameter");
+            if (forms == null) {
+                forms = new HashMap<String, Map<String, String>>();
+                renderContext.getRequest().setAttribute("form-parameter", forms);
+            }
+            forms.putAll((Map<? extends String, ? extends Map<String, String>>) property);
         }
     }
 

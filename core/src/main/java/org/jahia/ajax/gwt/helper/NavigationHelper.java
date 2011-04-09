@@ -292,7 +292,11 @@ public class NavigationHelper {
                 if (path.contains("$systemsite/") || path.equals("$systemsite")) {
                     String systemSiteKey = JCRContentUtils.getSystemSitePath();
                     path = path.replace("$systemsite", systemSiteKey);
-                    displayName = StringUtils.substringAfterLast(systemSiteKey, "/");
+                    try {
+                        displayName = site.getSession().getNode(path).getDisplayableName();
+                    } catch (PathNotFoundException e) {
+                        displayName = StringUtils.substringAfterLast(systemSiteKey, "/");
+                    }
                 }
                 if (site != null && path.contains("$sites")) {
                     JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {

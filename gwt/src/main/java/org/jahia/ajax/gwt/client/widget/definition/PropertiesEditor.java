@@ -277,6 +277,7 @@ public class PropertiesEditor extends FormPanel {
                     field.setName(f.getName());
                     field.setFieldLabel(f.getFieldLabel());
                 }
+                field.setId(nodeType.getName().replace(":","-") + "_" + field.getName().replace(":","-"));
                 field.setWidth("98%");
                 field.setStyleAttribute("padding-left", "0");
                 fields.put(field.getName(), field);
@@ -341,6 +342,11 @@ public class PropertiesEditor extends FormPanel {
                     c.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                         public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> event) {
                             setExternalMixin(oldSelection,c, true);
+                            if (oldSelection.size() > 0) {
+                                oldSelection.remove(0);
+                            }
+                            oldSelection.add(c.getSelection().get(0));
+
                         }
                     });
                     if (c.getValue() != null) {
@@ -362,6 +368,16 @@ public class PropertiesEditor extends FormPanel {
             if (externalMixin.contains(removeMixin)) {
                 removedTypes.add(removeMixin);
                 externalMixin.remove(removeMixin);
+                FieldSet fs = (FieldSet) c.getParent();
+                Set<Component> compToRemove = new HashSet<Component>();
+                for (Component co : fs.getItems()) {
+                    if (co.getId().startsWith(removeMixin.replace(":", "-") + "_")) {
+                        compToRemove.add(co);
+                    }
+                }
+                for (Component co : compToRemove) {
+                    co.removeFromParent();
+                }
             }
         }
         if (c.getValue() != null) {

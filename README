@@ -326,15 +326,12 @@ a SNAPSHOT version and commit again.
 But before we do this, there are a few changes we must do to the Jahia
 project :
 
-1. In the /jahia-installer-package/pom.xml file also change the launch4j.jahia.version
-   property value
+1. Create the adequate license.xml files
 
-2. Create the adequate license.xml files
-
-3. Commit the changes and then use the Maven Release Plugin (see below) to
+2. Commit the changes and then use the Maven Release Plugin (see below) to
 perform the rest of the release
 
-4. It is recommended also to do all the following steps on a clean checkout of
+3. It is recommended also to do all the following steps on a clean checkout of
 the codebase, as in your working directory you might have local changes or
 IDE project files that will conflict with proper preparation. You can for example
 checkout the project like this : 
@@ -344,38 +341,33 @@ svn checkout https://username@svnserver/svn/jahia/trunk
 You will probably want to also test a commit to make sure you have setup everything
 properly before running the Maven release plugin
 
-5a. If you're not familiar with the release plugin or want to simply double-check things, you can perform first
+4a. If you're not familiar with the release plugin or want to simply double-check things, you can perform first
 a dry run with the command :
 
-mvn -DdryRun release:prepare -P installer,java-installer,windows-installer,qa-build,test
+mvn -DdryRun release:prepare -P installer,windows-installer,qa-build,test
 
 Once it is completed reset the project by using the command :
 
-mvn release:clean -P installer,java-installer,windows-installer,qa-build,test
+mvn release:clean -P installer,windows-installer,qa-build,test
 
-5b. You can perform all this with the following command line :
+4b. You can perform all this with the following command line :
 
-mvn release:prepare -P installer,java-installer,windows-installer,qa-build,test
+mvn release:prepare -P installer,windows-installer,qa-build,test
 
 When asked for versions, here is an example :
 
 There are still some remaining snapshot dependencies.
 : Do you want to resolve them now? (yes/no) no: : yes
 Dependency type to resolve,: specify the selection number ( 0:All 1:Project Dependencies 2:Plugins 3:Reports 4:Extensions ): (0/1/2/3) 1: :
-Dependency 'org.codehaus.izpack:izpack-standalone-compiler' is a snapshot (4.3.3.jahia-SNAPSHOT)
-: Which release version should it be set to? 4.3.3.jahia: : 4.3.3.jahia-SNAPSHOT
-What version should the dependency be reset to for development? 4.3.3.jahia-SNAPSHOT: :
 What is the release version for "Jahia Project Root"? (org.jahia.server:jahia-root) 6.5: : 6.5-BETA2
 What is SCM release tag or label for "Jahia Project Root"? (org.jahia.server:jahia-root) jahia-root-6.5-BETA2: : JAHIA_6_5_BETA2
 What is the new development version for "Jahia Project Root"? (org.jahia.server:jahia-root) 6.5-BETA3-SNAPSHOT: : 6.5-SNAPSHOT
 
-6. Do the same in the /jahia-installer-package/pom.xml as in step 2
-
-7. Test a staging of the release by doing the following :
+5. Test a staging of the release by doing the following :
 
 mvn -DstagingRepository=stagingDir::default::file:///Users/loom/java/temp release:stage
 
-8. Once everything looks right, you can perform the release by doing :
+6. Once everything looks right, you can perform the release by doing :
 
 mvn release:perform
 

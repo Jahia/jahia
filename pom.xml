@@ -583,7 +583,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>installer,java-installer,windows-installer,qa-build,test,do-attach-sources,do-attach-javadocs</releaseProfiles>
+                    <releaseProfiles>installer,windows-installer,qa-build,test,do-attach-sources,do-attach-javadocs</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

@@ -358,39 +358,6 @@
         </attribute>
     </tag>
 
-    <tag>
-        <description>Displays a link from the information given in a page bean</description>
-        <name>displayWindowSizeComboBox</name>
-        <tag-class>org.jahia.taglibs.uicomponents.windowSizeSelector.DisplayWindowSizeComboBoxTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>form</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>listName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>values</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>defaultWindowSize</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-    </tag>
-
     <tag-file>
         <name>dateSelector</name>
         <path>/META-INF/tags/dateSelector.tag</path>

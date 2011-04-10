@@ -61,7 +61,7 @@
             <c:when test="${not empty task.formResourceName}">
                 <div style="display:none;" id="task${child.identifier}-${task.id}" class="taskformdiv">
                     <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                    <template:module node="${child}"  template="contribute.add">
+                    <template:module node="${child}"  template="contribute.workflow">
                         <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                         <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                         <template:param name="workflowTaskFormTaskName" value="${task.displayName}"/>

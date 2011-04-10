@@ -5,7 +5,7 @@
 <template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="css" resources="goto-links.css"/>
         <img src="${url.context}/icons/editMode.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">
-        <a href="${url.edit}">
+        <a href="<c:url value='${url.edit}'/>">
     <c:if test="${!empty currentNode.properties['jcr:title']}">
         ${fn:escapeXml(currentNode.properties["jcr:title"].string)}
     </c:if>

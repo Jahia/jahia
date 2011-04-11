@@ -878,8 +878,8 @@ border: 1px solid #eaeaea;
 	text-decoration:none;
 	background-color:#FFF;
 	-moz-border-radius:  10px 10px 0 0 ;
-	-webkit-border-radius: 10px;
-	border-radius: 0 0 0 10px;
+	-webkit-border-radius: 10px 10px 0 0 ;
+	border-radius: 10px 10px 0 0 ;
 	color: #0099FF;
 
 }

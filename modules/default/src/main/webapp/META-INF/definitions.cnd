@@ -192,3 +192,4 @@
  [jnt:glossary] >   jnt:content, jmix:siteComponent, jmix:bindedComponent
  - field (string, choicelist[sortableFieldnames]) indexed=no
 
+[jnt:categorizing] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent

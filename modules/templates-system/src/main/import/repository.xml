@@ -115,8 +115,21 @@
                     </addTag>
                   </tags>
                   <categories jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Classifications" />
-                  </categories>
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                        jcr:title="Classifications" jcr:primaryType="jnt:translation"/>
+                      <category jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:categorizing"
+                                j:bindedComponent="/templateSets/templates-system/templates/base/editContent/custom-rows-960gs-col1/edit-content/mainResourceDisplay-table"
+                                j:view="default">
+                          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                            jcr:title="Category" jcr:primaryType="jnt:translation"/>
+                      </category>
+                      <category-1 jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:categorizing"
+                                  j:bindedComponent="/templateSets/templates-system/templates/base/editContent/custom-rows-960gs-col1/edit-content/mainResourceDisplay-table"
+                                  j:view="addcategory">
+                          <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                            jcr:title="Category" jcr:primaryType="jnt:translation"/>
+                      </category-1>
+                    </categories>
                 </tabularList>
               </edit-content>
             </custom-rows-960gs-col1>

@@ -57,6 +57,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -160,6 +162,13 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     } catch (Exception e) {
                         logger.warn("Error resolving search hit", e);
                     }
+                }
+            }
+        } catch (RepositoryException e) {
+            if (e.getMessage() != null && e.getMessage().contains(ParseException.class.getName())) {
+                logger.warn(e.getMessage());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
@@ -623,6 +632,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     private String getSearchExpressionForMatchType(String term,
             MatchType matchType) {
+        if (Term.MatchType.AS_IS != matchType) {
+            term = QueryParser.escape(term.replaceAll(" AND ", " and ").replaceAll(
+                    " OR ", " or ").replaceAll(" NOT ", " not "));
+        }
+        
         if (MatchType.ANY_WORD == matchType) {
             term = StringUtils.replace(cleanMultipleWhiteSpaces(term), " ",
                     " OR ");

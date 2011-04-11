@@ -21,7 +21,7 @@ Building search forms
   2: 
   3: <s:form method="post">
   4:    <label for="searchTerm">Start searching:</label>
-  5:      <s:term id="searchTerm"/>
+  5:      <s:term id="searchTerm" match="all_words"/>
   6:      <s:site value="${renderContext.site.name}" display="false"/>
   7:      <input type="submit" value="Search" title="Search"/>
   8: </s:form>

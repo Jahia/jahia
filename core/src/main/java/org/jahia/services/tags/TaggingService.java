@@ -35,7 +35,6 @@ package org.jahia.services.tags;
 import static org.jahia.api.Constants.JAHIANT_TAG;
 import static org.jahia.api.Constants.TAGS;
 
-import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -43,6 +42,7 @@ import javax.jcr.Value;
 
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
@@ -161,7 +161,7 @@ public class TaggingService {
 	public JCRNodeWrapper getTag(String tag, String siteKey, JCRSessionWrapper session) throws RepositoryException {
 		JCRNodeWrapper node = null;
 		try {
-			node = session.getNode(getTagsPath(siteKey) + "/" + tag);
+			node = session.getNode(getTagsPath(siteKey) + "/" + JCRContentUtils.escapeLocalNodeName(tag));
 		} catch (PathNotFoundException ex) {
 			// no tag can be found
 		}

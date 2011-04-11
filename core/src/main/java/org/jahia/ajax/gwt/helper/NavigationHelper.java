@@ -36,7 +36,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.apache.lucene.queryParser.ParseException;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.services.render.*;
 import org.slf4j.Logger;
@@ -62,7 +62,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -647,9 +646,21 @@ public class NavigationHelper {
             throws RepositoryException {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         Set<String> addedIds = new HashSet<String>();
-        QueryResult qr = q.execute();
-        NodeIterator ni = qr.getNodes();
-        while (ni.hasNext()) {
+        NodeIterator ni = null;
+        try {
+            ni = q.execute().getNodes();
+        } catch (RepositoryException e) {
+            if (e.getMessage() != null && e.getMessage().contains(ParseException.class.getName())) {
+                logger.warn(e.getMessage());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(e.getMessage(), e);
+                }
+            } else {
+                throw e;
+            }
+        }
+
+        while (ni != null && ni.hasNext()) {
             try {
                 JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
                 if (n.isNodeType(Constants.JAHIANT_TRANSLATION)

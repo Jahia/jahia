@@ -22,7 +22,6 @@
     $(document).ready(function() {
 
         $("#${currentNode.name}").autocomplete("<c:url value='${url.initializers}'/>", {
-            dataType: "json",
             parse: function parse(data) {
                 return $.map(data, function(row) {
                     return {
@@ -39,7 +38,9 @@
                 initializers : "${fn:split(currentNode.properties.type.string,';')[0]}",
                 path : "${currentNode.path}",
                 name : "type"
-            }
+            },
+            maxCacheLength : 1,
+            matchSubset : 0
         });
     });
 </script>

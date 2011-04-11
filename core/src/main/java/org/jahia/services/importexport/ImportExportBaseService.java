@@ -555,7 +555,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setNoRoot(true);
 
                         handleImport(zis, documentViewImportHandler);
-                        session.save();
+                        session.save(JCRObservationManager.IMPORT);
                         break;
                     }
                     zis.closeEntry();
@@ -680,7 +680,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                         : null);
                         importHandler.setReferences(references);
                         handleImport(zis, importHandler);
-                        siteFolder.getSession().save();
+                        siteFolder.getSession().save(JCRObservationManager.IMPORT);
                     }
                     zis.closeEntry();
                 }
@@ -695,7 +695,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
 //        session.save();
         ReferencesHelper.resolveCrossReferences(session, references);
-        session.save();
+        session.save(JCRObservationManager.IMPORT);
     }
 
 
@@ -989,7 +989,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         } finally {
                             IOUtils.closeQuietly(is);
                         }
-                        session.save();
+                        session.save(JCRObservationManager.IMPORT);
                     } else {
                         final File contentFile = tempFile;
                         JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
@@ -998,7 +998,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 try {
                                     is = new FileInputStream(contentFile);
                                     session.importXML(parentNodePath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, noRoot);
-                                    session.save();
+                                    session.save(JCRObservationManager.IMPORT);
                                 } catch (IOException e) {
                                     throw new RepositoryException(e);
                                 } finally {
@@ -1079,7 +1079,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     documentViewImportHandler.setNoRoot(noRoot);
 
                     handleImport(zis, documentViewImportHandler);
-                    session.save();
+                    session.save(JCRObservationManager.IMPORT);
                 } else if (name.endsWith(".xml")) {
                     importXML(parentNodePath, zis, false);
                 }
@@ -1090,7 +1090,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 //        }
 
-        session.save();
+        session.save(JCRObservationManager.IMPORT);
     }
 
     private void getFileList(File file, Map<String, Long> sizes, List<String> fileList) throws IOException {

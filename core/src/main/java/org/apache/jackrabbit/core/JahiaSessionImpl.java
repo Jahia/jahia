@@ -16,7 +16,7 @@ import java.util.Map;
  * Jackrabbit XASession extension for jahia
  */
 public class JahiaSessionImpl extends XASessionImpl {
-    private JahiaNodeTypeInstanceHandler myNtInstanceHandler;
+    private NodeTypeInstanceHandler myNtInstanceHandler;
     private Map<String, Object> jahiaAttributes;
 
     public JahiaSessionImpl(RepositoryContext repositoryContext, AuthContext loginContext, WorkspaceConfig wspConfig) throws AccessDeniedException, RepositoryException {
@@ -30,14 +30,16 @@ public class JahiaSessionImpl extends XASessionImpl {
     }
 
     private void init() {
-        myNtInstanceHandler = new JahiaNodeTypeInstanceHandler(userId);
         jahiaAttributes = new HashMap<String, Object>();
     }
 
     // @Override
 
-    public JahiaNodeTypeInstanceHandler getNodeTypeInstanceHandler() {
-        return myNtInstanceHandler;
+    public JahiaNodeTypeInstanceHandler getNodeTypeInstanceHandler() throws RepositoryException {
+        if (myNtInstanceHandler == null) {
+            myNtInstanceHandler = super.getNodeTypeInstanceHandler();
+        }
+        return (JahiaNodeTypeInstanceHandler) myNtInstanceHandler;
     }
 
     public String getPrefix(String uri) throws NamespaceException {

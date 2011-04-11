@@ -84,6 +84,11 @@
             <!--param name="cacheSize" value="100000" /-->
         </SearchIndex>
 
+        <NodeTypeInstanceHandler class="org.apache.jackrabbit.core.JahiaNodeTypeInstanceHandlerFactory">
+
+        </NodeTypeInstanceHandler>
+
+
     </Workspace>
 
     <Cluster id="${cluster.node.serverId}">

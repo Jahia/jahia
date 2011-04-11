@@ -1,5 +1,7 @@
 package org.apache.jackrabbit.core;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.core.state.NodeState;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.spi.Name;
@@ -33,9 +35,11 @@ public class JahiaNodeTypeInstanceHandler extends NodeTypeInstanceHandler {
      */
     public JahiaNodeTypeInstanceHandler(String userId) {
         super(userId);
-        this.userId = userId == null
-                ? DEFAULT_USERID
-                : userId;
+        if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
+            userId = userId.substring(JahiaLoginModule.SYSTEM.length());
+        }
+
+        this.userId = StringUtils.isEmpty(userId) ? DEFAULT_USERID : userId;
     }
 
     public void setCreated(Calendar created) {

@@ -49,17 +49,18 @@ import java.util.*;
  */
 public class JCRObservationManager implements ObservationManager {
     public static final int SESSION_SAVE = 1;
-    public static final int WORKSPACE_MOVE = 1 << 1;
-    public static final int WORKSPACE_COPY = 1 << 2;
-    public static final int WORKSPACE_CLONE = 1 << 3;
-    public static final int WORKSPACE_CREATE_ACTIVITY = 1 << 6;
-    public static final int NODE_CHECKIN = 1 << 7;
-    public static final int NODE_CHECKOUT = 1 << 8;
-    public static final int NODE_CHECKPOINT = 1 << 9;
-    public static final int NODE_RESTORE = 1 << 10;
-    public static final int NODE_UPDATE = 1 << 11;
-    public static final int NODE_MERGE = 1 << 12;
-    public static final int EXTERNAL_SYNC = 1 << 13;
+    public static final int WORKSPACE_MOVE = 2;
+    public static final int WORKSPACE_COPY = 3;
+    public static final int WORKSPACE_CLONE = 4;
+    public static final int WORKSPACE_CREATE_ACTIVITY = 5;
+    public static final int NODE_CHECKIN = 6;
+    public static final int NODE_CHECKOUT = 7;
+    public static final int NODE_CHECKPOINT = 8;
+    public static final int NODE_RESTORE = 9;
+    public static final int NODE_UPDATE = 10;
+    public static final int NODE_MERGE = 11;
+    public static final int EXTERNAL_SYNC = 12;
+    public static final int IMPORT = 13;
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
 
@@ -223,7 +224,7 @@ public class JCRObservationManager implements ObservationManager {
                     List<Event> filteredEvents = new ArrayList<Event>();
                     for (Event event : list) {
                         if ((consumer.eventTypes & event.getType()) != 0 &&
-                                (consumer.useExternalEvents || (operationType & EXTERNAL_SYNC) == 0) &&
+                                (consumer.useExternalEvents || operationType != EXTERNAL_SYNC) &&
                                 (consumer.absPath == null || (consumer.isDeep && event.getPath().startsWith(consumer.absPath)) || consumer.isDeep && event.getPath().equals(consumer.absPath)) &&
                                 (consumer.nodeTypeName == null || checkNodeTypeNames(event.getPath(), session, consumer.nodeTypeName)) &&
                                 (consumer.uuid == null || checkUuids(event.getPath(), session, consumer.nodeTypeName))) {

@@ -243,7 +243,8 @@ public class RulesListener extends DefaultEventListener {
 
 
     public void onEvent(EventIterator eventIterator) {
-        if (((JCREventIterator) eventIterator).getOperationType() != JCRObservationManager.SESSION_SAVE) {
+        int operationType = ((JCREventIterator) eventIterator).getOperationType();
+        if (operationType != JCRObservationManager.SESSION_SAVE && operationType != JCRObservationManager.IMPORT) {
             return;
         }
 

@@ -59,6 +59,8 @@ public class LastModifiedListener extends DefaultEventListener {
     public void onEvent(final EventIterator eventIterator) {
         try {
             String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
+            final int type = ((JCREventIterator)eventIterator).getOperationType();
+
             if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
                 userId = userId.substring(JahiaLoginModule.SYSTEM.length());
             }
@@ -119,7 +121,7 @@ public class LastModifiedListener extends DefaultEventListener {
                             try {
                                 JCRNodeWrapper n = session.getNode(node);
                                 sessions.add(n.getRealNode().getSession());
-                                updateProperty(n, c, finalUserId, autoPublishedIds);
+                                updateProperty(n, c, finalUserId, autoPublishedIds, type);
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }
@@ -131,7 +133,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
                                     n.setProperty("j:originWS", workspace);
                                 }
-                                updateProperty(n, c, finalUserId, autoPublishedIds);
+                                updateProperty(n, c, finalUserId, autoPublishedIds, type);
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }
@@ -154,7 +156,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
     }
 
-    private void updateProperty(JCRNodeWrapper n, Calendar c, String userId, List<String> autoPublished) throws RepositoryException {
+    private void updateProperty(JCRNodeWrapper n, Calendar c, String userId, List<String> autoPublished, int type) throws RepositoryException {
         while (!n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
             addAutoPublish(n, autoPublished);
             try {
@@ -169,8 +171,10 @@ public class LastModifiedListener extends DefaultEventListener {
         if (!n.isCheckedOut()) {
             n.checkout();
         }
-        n.setProperty("jcr:lastModified",c);
-        n.setProperty("jcr:lastModifiedBy", userId);
+        if (type != JCRObservationManager.IMPORT) {
+            n.setProperty("jcr:lastModified",c);
+            n.setProperty("jcr:lastModifiedBy", userId);
+        }
     }
 
     private void addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {

@@ -58,6 +58,7 @@ function initEditFields(id) {
         submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
         cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
         tooltip : contributionI18n['edit'],
+        ckeditorToolbar : $(".ckeditorEdit" + id).attr('jcr:ckeditorToolbar'),
         onreset: function (settings, original) {
         	$('#wcag-' + $(original).attr('id') + '_ckeditor').remove();
         	return true;

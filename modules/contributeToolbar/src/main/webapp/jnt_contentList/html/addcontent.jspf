@@ -62,7 +62,7 @@
                     'autoScale':false,
                     'autoDimensions':false,
                     'onComplete':function() {
-                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(function(){},{toolbar: 'User', filebrowserBrowseUrl: '<c:url value="/engines/contentpicker.jsp?site=${renderContext.site.identifier}"/>', filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: '<c:url value="/engines/contentpicker.jsp?type=editorialpicker&site=${renderContext.site.identifier}"/>', filebrowserLinkBrowseUrl: '<c:url value="/engines/contentpicker.jsp?type=imagepicker&site=${renderContext.site.identifier}"/>'}); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; });
+                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(function(){}, contributeCKEditorToolbar); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant;});
 
                     },
 

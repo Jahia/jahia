@@ -31,7 +31,9 @@
 
     <link rel="stylesheet" href="../modules/assets/css/jquery.treeview.css" media="screen" type="text/css"/>
     <style>
-
+        body {
+            background-color: white;
+        }
         img {
             border: none;
         }
@@ -45,50 +47,52 @@
             padding: 5px;
             display: none;
             color: #fff;
-            z-index:9999;
+            z-index: 9999;
         }
 
         /*  */
     </style>
 </head>
 <body>
-<ul id="imagepicker-treeItemSelectorTree"></ul>
-<fmt:message key="label.select.file" var="fileLabel"/>
-<script>
-    // Helper function to get parameters from the query string.
-    function getUrlParam(paramName) {
-        var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=([^&]+)', 'i');
-        var match = window.location.search.match(reParam);
+<div class="bodywrapper">
+    <ul id="imagepicker-treeItemSelectorTree"></ul>
+    <fmt:message key="label.select.file" var="fileLabel"/>
+    <script>
+        // Helper function to get parameters from the query string.
+        function getUrlParam(paramName) {
+            var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=([^&]+)', 'i');
+            var match = window.location.search.match(reParam);
 
-        return (match && match.length > 1) ? match[1] : '';
-    }
+            return (match && match.length > 1) ? match[1] : '';
+        }
 
-    var funcNum = getUrlParam('CKEditorFuncNum');
-    var base = getUrlParam('base');
-    var files = getUrlParam('files');
-    var root = getUrlParam('root');
-    var type = getUrlParam('type');
-    if (type == '') {
-        type = 'file';
-    }
-    $(document).ready(function() {
-        var queryString = "nodeTypes=" +
-                          encodeURIComponent(type == 'pages' ? 'jnt:page' : 'nt:folder,nt:file,jnt:virtualsite') +
-                          "&selectableNodeTypes=" + encodeURIComponent(type == 'pages' ? 'jnt:page' : 'nt:file');
-        queryString = queryString.length > 0 ? "?" + queryString : "";
-        $("#imagepicker-treeItemSelectorTree").treeview($.extend({
-            urlBase: base,
-            urlExtension: ".tree.json" + queryString,
-            urlStartWith: base + root + ".treeRootItem.json" + queryString,
-            url: base + root + ".treeRootItem.json" + queryString,
-            preview:type=='file',
-            previewPath:files,
-            callback: function (uuid, path, title) {
-                window.opener.CKEDITOR.tools.callFunction(funcNum, files + path + (type == 'pages' ? '.html' : ''));
-                window.close();
-            }
-        }, {}));
-    });
-</script>
+        var funcNum = getUrlParam('CKEditorFuncNum');
+        var base = getUrlParam('base');
+        var files = getUrlParam('files');
+        var root = getUrlParam('root');
+        var type = getUrlParam('type');
+        if (type == '') {
+            type = 'file';
+        }
+        $(document).ready(function() {
+            var queryString = "nodeTypes=" +
+                              encodeURIComponent(type == 'pages' ? 'jnt:page' : 'nt:folder,nt:file,jnt:virtualsite') +
+                              "&selectableNodeTypes=" + encodeURIComponent(type == 'pages' ? 'jnt:page' : 'nt:file');
+            queryString = queryString.length > 0 ? "?" + queryString : "";
+            $("#imagepicker-treeItemSelectorTree").treeview($.extend({
+                urlBase: base,
+                urlExtension: ".tree.json" + queryString,
+                urlStartWith: base + root + ".treeRootItem.json" + queryString,
+                url: base + root + ".treeRootItem.json" + queryString,
+                preview:type == 'file',
+                previewPath:files,
+                callback: function (uuid, path, title) {
+                    window.opener.CKEDITOR.tools.callFunction(funcNum, files + path + (type == 'pages' ? '.html' : ''));
+                    window.close();
+                }
+            }, {}));
+        });
+    </script>
+</div>
 </body>
 </html>

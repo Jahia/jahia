@@ -181,7 +181,7 @@
                     <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
                         <div jcr:id="${propertyDefinition.name}" class="ckeditorEdit${currentNode.identifier}"
                               id="ckeditorEdit${currentNode.identifier}${scriptPropName}"
-                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>">${prop.string}</div>
+                              jcr:url="<c:url value='${url.base}${currentNode.path}'/>" jcr:ckeditorToolbar="contributeCKEditorToolbar">${prop.string}</div>
                     </c:when>
                     <c:otherwise>
                         <div jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"

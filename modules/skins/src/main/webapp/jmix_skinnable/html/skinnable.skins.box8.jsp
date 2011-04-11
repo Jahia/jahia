@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="box8.css"/>
 
@@ -16,7 +17,7 @@
             >
             </span>
 </c:if>
-        ${title.string}
+        ${fn:escapeXml(title.string)}
     </h4>
 
 </c:if>

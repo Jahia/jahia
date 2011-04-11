@@ -588,7 +588,7 @@ public class PrincipalViewHelper implements Serializable {
         JahiaGroupManagerService jahiaGroupManagerService =
                 ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final Properties searchParameters = new Properties();
-        final Set searchResults = new HashSet();
+        final Set searchResults = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");

@@ -118,7 +118,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
                             parentNodeWrapper = session.getNode("/sites/" + siteName + "/groups");
                         }
-                        parentNodeWrapper.checkout();
+                        session.checkout(parentNodeWrapper);
                         nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
                         nodeWrapper.setProperty(JCRGroup.J_HIDDEN, hidden);
                         if (properties != null) {
@@ -182,7 +182,12 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     private JCRCallback<Boolean> deleteCallback(final JCRGroup jcrGroup) {
         return new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                Node node = jcrGroup.getNode(session);
+                Node node = null;
+                try {
+                    node = jcrGroup.getNode(session);
+                } catch (ItemNotFoundException e) {
+                    return true;
+                }
                 if (node.isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
                     return false;
                 }

@@ -40,6 +40,7 @@ int stretcherToOpen   = 1; %>
               <br>
               <td>
                 <b><fmt:message key="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= groupName %>
+				<input type="hidden" name="groupName" value="<%= groupName%>">
               </td>
             </tr>
             <tr>

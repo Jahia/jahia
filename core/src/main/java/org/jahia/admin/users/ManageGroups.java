@@ -692,8 +692,6 @@ public class ManageGroups extends AbstractAdministrationModule {
             groupMessage += getMessage("label.group");
         }
 
-        JahiaGroup theGroup = (JahiaGroup) gMgr.lookupGroup(jahiaSite.getID(), groupName);
-
         // for the moment we forbid the deletion of the following groups,
         // because code in Jahia assumes they are always there :
         // - administrators
@@ -708,6 +706,8 @@ public class ManageGroups extends AbstractAdministrationModule {
         }
 
         if (groupMessage.equals("")) {
+            JahiaGroup theGroup = (JahiaGroup) gMgr.lookupGroup(jahiaSite.getID(), groupName);
+
             // delete group...
             if (!gMgr.deleteGroup(theGroup)) {
                 groupMessage = getMessage("org.jahia.admin.groupMessage.cannotRemoved.label");

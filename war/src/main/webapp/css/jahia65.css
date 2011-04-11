@@ -112,7 +112,7 @@ select
 {
     font-size: 11px;
 }
-select[multiple]{
+select[multiple], select.principalList {
     font-family:"Courier New",Courier,monospace;
 }
 .fontfix {

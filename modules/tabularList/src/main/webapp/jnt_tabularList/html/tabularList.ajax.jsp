@@ -35,20 +35,20 @@
                 <c:choose>
                     <c:when test="${(empty displayTab and status.first) or (displayTab eq subList.name)}">
                         <li>
-                            <a class="selected"><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a>
+                            <a class="selected"><span>${fn:escapeXml(subList.displayableName)}</span></a>
                         </li>
                     </c:when>
                     <c:otherwise>
                         <c:choose>
                             <c:when test="${renderContext.editMode}">
                                 <li>
-                                    <a href="<c:url value='${url.mainResource}?displayTab=${subList.name}'/>"><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a>
+                                    <a href="<c:url value='${url.mainResource}?displayTab=${subList.name}'/>"><span>${fn:escapeXml(subList.displayableName)}</span></a>
                                 </li>
                             </c:when>
                             <c:otherwise>
                                 <c:set var="res" value="${renderContext.ajaxRequest and not empty renderContext.ajaxResource ? renderContext.ajaxResource.node.path : renderContext.mainResource.node.path}"/>
                                 <li>
-                                    <a onclick="jreplace('tabs${currentNode.name}', '<c:url value="${url.base}${currentNode.path}.html"/>',{displayTab:'${subList.name}',mainResource:'${res}.html'});"><span>${subList.properties['jcr:title'].string}</span></a>
+                                    <a onclick="jreplace('tabs${currentNode.name}', '<c:url value="${url.base}${currentNode.path}.html"/>',{displayTab:'${subList.name}',mainResource:'${res}.html'});"><span>${subList.displayableName}</span></a>
                                 </li>
                             </c:otherwise>
                         </c:choose>

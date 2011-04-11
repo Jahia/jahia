@@ -93,6 +93,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
      * TODO use ResourceBundle#clearCache() after switch to Java 6
      */
     public static void clearCache() {
+        loadersCache.clear();
         try {
             Field cacheList = ResourceBundle.class
                     .getDeclaredField("cacheList");
@@ -154,7 +155,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                     }
                 }
                 try {
-                	File file = new File(Jahia.getSettings().getClassDiskPath(), fileName);
+                    File file = new File(Jahia.getSettings().getClassDiskPath(), fileName);
                     if (file.exists()) {
                     	return new FileInputStream(file);
                     }

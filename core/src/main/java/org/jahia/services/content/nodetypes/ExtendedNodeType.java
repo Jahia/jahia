@@ -1164,4 +1164,8 @@ public class ExtendedNodeType implements NodeType {
                 .append(getName())
                 .toHashCode();
     }
+    
+    public void clearLabels() {
+        labels.clear();
+    }
 }

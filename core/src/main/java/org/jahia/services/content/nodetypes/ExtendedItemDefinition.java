@@ -289,4 +289,9 @@ public class ExtendedItemDefinition implements ItemDefinition {
                 .toHashCode();
     }    
 
+
+    public void clearLabels() {
+        labels.clear();
+        tooltipsByNodeType.clear();
+    }
 }

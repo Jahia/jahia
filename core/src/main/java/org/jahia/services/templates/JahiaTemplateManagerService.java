@@ -42,6 +42,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
@@ -352,6 +353,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             // flush resource bundle cache
             JahiaTemplatesRBLoader.clearCache();
             JahiaResourceBundle.flushCache();
+            NodeTypeRegistry.flushLabels();
         }
     }
 

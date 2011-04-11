@@ -67,6 +67,18 @@ public class NodeTypeRegistry implements NodeTypeManager {
     public static NodeTypeRegistry getInstance() {
         return instance;
     }
+    
+    public static void flushLabels() {
+        for (ExtendedNodeType nodeType : getInstance().nodetypes.values()) {
+            nodeType.clearLabels();
+        }
+        for (Set<ExtendedItemDefinition> itemSet : getInstance().typedItems.values()) {
+            for (ExtendedItemDefinition item : itemSet) {
+                item.clearLabels();
+                item.getDeclaringNodeType().clearLabels();
+            }
+        }
+    }
 
     public NodeTypeRegistry() {
         try {

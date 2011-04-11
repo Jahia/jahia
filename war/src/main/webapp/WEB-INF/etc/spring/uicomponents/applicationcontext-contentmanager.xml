@@ -1183,20 +1183,20 @@
                   value="repository.siteRepository.label"/>
     </bean>
 
-    <bean id="repository.studioContents" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="studioContentsRepository"/>
+    <bean id="repository.templateContents" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="templateContentsRepository"/>
         <property name="paths" value="$site/templates/contents"/>
         <property name="titleKey"
-                  value="repository.studioContentsRepository.label"/>
+                  value="repository.templateContentsRepository.label"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.contentmanager.StudioVisibility"/>
         </property>
     </bean>
-    <bean id="repository.studioFiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="studioFilesRepository"/>
+    <bean id="repository.templateFiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="templateFilesRepository"/>
         <property name="paths" value="$site/templates/files"/>
         <property name="titleKey"
-                  value="repository.studioFilesRepository.label"/>
+                  value="repository.templateFilesRepository.label"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.contentmanager.StudioVisibility"/>
         </property>

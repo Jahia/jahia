@@ -48,7 +48,11 @@
                         <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseEdit}${node.path}${page}.html'/>"><fmt:message key="label.editMode"/></a>
                     </c:if>
                     <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(home,'contributeModeAccess')}">
-                        <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseContribute}${node.path}${page}.html'/>"><fmt:message key="label.contribute"/></a>
+                        <c:url value='/icons/contribute.png' var="icon"/>
+                        <c:if test="${currentNode.properties.typeOfContent.string eq 'contents'}">
+                            <c:url value='/icons/content-manager-1616.png' var="icon"/>
+                        </c:if>
+                        <img src="${icon}" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseContribute}${node.path}${page}.html'/>"><fmt:message key="label.contribute"/></a>
                     </c:if>
                     <c:if test="${currentNode.properties.live.boolean && home.properties['j:published'].boolean}">
                         <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseLive}${node.path}${page}.html'/>"><fmt:message key="label.live"/></a>

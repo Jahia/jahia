@@ -35,7 +35,7 @@
         <c:param name="workspace" value="${renderContext.mainResource.workspace}"/>
     </c:url>
     <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
-            key="label.contentmanager"/></a>
+            key="label.repositoryExplorer"/></a>
 
     <p>
         <strong>Path :&nbsp;</strong>${fn:escapeXml(currentNode.path)}<br/>

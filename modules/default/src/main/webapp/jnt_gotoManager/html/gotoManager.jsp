@@ -19,18 +19,18 @@
         <c:if test="${gotoType eq 'document'}">
             <c:set var="conf" value="filemanager"/>
             <c:set var="label" value="label.filemanager"/>
-            <c:set var="icon" value="fileManager"/>
+            <c:set var="icon" value="treepanel-files-manager-1616"/>
             <c:set var="multisite" value="true"/>
         </c:if>
         <c:if test="${gotoType eq 'content'}">
             <c:set var="conf" value="editorialcontentmanager"/>
-            <c:set var="label" value="label.contentmanager"/>
-            <c:set var="icon" value="contentManager"/>
+            <c:set var="label" value="label.contentManager"/>
+            <c:set var="icon" value="treepanel-content-manager-1616"/>
             <c:set var="multisite" value="true"/>
         </c:if>
         <c:if test="${gotoType eq 'united content'}">
             <c:set var="conf" value="contentmanager"/>
-            <c:set var="label" value="label.unitedcontentmanager"/>
+            <c:set var="label" value="label.repositoryExplorer"/>
             <c:set var="icon" value="contentManager"/>
         </c:if>
         <c:if test="${gotoType eq 'roles'}">

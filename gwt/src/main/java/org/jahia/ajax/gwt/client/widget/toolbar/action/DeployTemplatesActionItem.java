@@ -64,8 +64,13 @@ public class DeployTemplatesActionItem extends BaseActionItem {
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
         instances.add(this);
-        setEnabled(false);
+        getSites(linker);
+    }
 
+    private void getSites(final Linker linker) {
+        setEnabled(false);
+        sitesMap.clear();
+        sites.clear();
         JahiaContentManagementService.App.getInstance().getAvailableSites(new BaseAsyncCallback<List<GWTJahiaSite>>() {
             public void onSuccess(List<GWTJahiaSite> result) {
                 for (GWTJahiaSite gwtJahiaSite : result) {
@@ -88,7 +93,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
     public static void refreshAllMenus(final Linker linker) {
         for (DeployTemplatesActionItem instance : instances) {
-            instance.refreshMenu(linker);
+            instance.getSites(linker);
         }
     }
 
@@ -147,6 +152,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 JahiaContentManagementService.App.getInstance()
                         .deployTemplates(nodePath, destinationPath, new BaseAsyncCallback() {
                             public void onApplicationFailure(Throwable caught) {
+                                getSites(linker);
                                 Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.get("org.jahia.admin.site.ManageTemplates.deploymentError", "Error during your templates deployment"));
                             }
 

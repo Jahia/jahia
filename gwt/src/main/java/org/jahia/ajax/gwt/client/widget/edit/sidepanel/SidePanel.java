@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class SidePanel extends ContentPanel {
         add(tabPanel);
     }
 
-    public void initWithLinker(EditLinker editLinker) {
+    public void initWithLinker(final EditLinker editLinker) {
         for (GWTJahiaToolbarItem item : config.getSidePanelToolbar().getGwtToolbarItems()) {
             ((ToolbarHeader)head).addItem(editLinker, item);
         }
@@ -100,6 +101,7 @@ public class SidePanel extends ContentPanel {
         head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 refresh(EditLinker.REFRESH_ALL);
+                DeployTemplatesActionItem.refreshAllMenus(editLinker);
             }
         }));
 

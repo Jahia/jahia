@@ -571,7 +571,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             pathMapping.put("/", "/sites/"+site.getSiteKey()+"/files/");
         }
 
-        NodeTypeRegistry reg = null;
+        NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
         DefinitionsMapping mapping = null;
 
         // Import additional files - site.properties, old cateogries.xml , sitepermissions.xml

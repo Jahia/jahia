@@ -66,6 +66,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
@@ -1988,6 +1989,11 @@ public class ManageSites extends AbstractAdministrationModule {
                     if (infos.get("type").equals("files")) {
                         try {
                             JahiaSite system = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+
+                            Map<String,String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping();
+                            pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");
+                            pathMapping.put("/shared/mashups/", "/sites/" + system.getSiteKey() + "/portlets/");
+
                             ImportExportBaseService.getInstance().importSiteZip(file, system, infos);
                         } catch (Exception e) {
                             logger.error("Error when getting templates", e);

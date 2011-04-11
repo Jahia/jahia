@@ -35,6 +35,7 @@ package org.jahia.services.importexport;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -180,6 +181,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
             }
 
             String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
+
+            if (pathMapping.containsKey(path+"/")) {
+                path = StringUtils.substringBeforeLast(pathMapping.get(path+"/"), "/");
+            }
+
             if (Constants.JAHIANT_VIRTUALSITE.equals(pt) && siteKey != null) {
                 decodedQName = siteKey;
                 pathMapping.put(path + "/", "/sites/" + siteKey + "/");
@@ -414,6 +420,10 @@ public class DocumentViewImportHandler extends DefaultHandler {
                                         value = entry.getValue() + StringUtils.substringAfter(value, entry.getKey());
                                         break;
                                     }
+                                }
+                                if (attrName.equals("j:defaultCategory") && value.startsWith("/root")) {
+                                    // Map categories from legacy imports
+                                    value = JCRContentUtils.getSystemSitePath() + "/categories" + StringUtils.substringAfter(value, "/root");
                                 }
                                 if (!references.containsKey(value)) {
                                     references.put(value, new ArrayList<String>());

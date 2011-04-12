@@ -159,7 +159,6 @@
         <module>tags</module>
         <module>tasks</module>
         <module>teasers</module>
-        <module>templates-apps</module>
         <module>templates-intranet</module>
         <module>templates-system</module>
         <module>templates-web</module>

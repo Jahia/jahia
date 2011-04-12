@@ -1136,13 +1136,6 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
-            <artifactId>templates-apps</artifactId>
-            <version>6.5-SNAPSHOT</version>
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.modules</groupId>
             <artifactId>templates-system</artifactId>
             <version>6.5-SNAPSHOT</version>
             <type>war</type>

@@ -79,6 +79,7 @@ public class CKEditor extends Component {
 			public void execute() {
 		        instanceId = getElement().getId();
 		        DOM.setElementAttribute(getElement(), "name", instanceId);
+                destroyEditor();
                 initEditor();
                 isLoaded = true;
                 field.afterCKEditorInstanceReady();
@@ -86,6 +87,12 @@ public class CKEditor extends Component {
 		});
 
         super.onRender(target, index);
+    }
+
+    @Override
+    protected void onDetach() {
+        destroyEditor();
+        super.onDetach();
     }
 
     /**
@@ -172,6 +179,13 @@ public class CKEditor extends Component {
         
         return true;
       }-*/;
+
+    private native void destroyEditor()/*-{
+        var instance = $wnd.CKEDITOR.instances[this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId];
+        if(instance) {
+            $wnd.CKEDITOR.remove(instance);
+        }
+    }-*/;
 
     /**
      * Check dirty

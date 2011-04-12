@@ -76,8 +76,8 @@ import java.util.*;
  * - Go to the parent node, repeat
  * - Deny access
  * <p/>
+ *
  * @author toto
- * 
  */
 public class JahiaAccessManager extends AbstractAccessControlManager implements AccessManager, AccessControlManager {
     public static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaAccessManager.class);
@@ -247,7 +247,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
     }
 
-    @Override protected void checkInitialized() throws IllegalStateException {
+    @Override
+    protected void checkInitialized() throws IllegalStateException {
         if (!initialized) {
             throw new IllegalStateException("not initialized");
         }
@@ -317,14 +318,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         if ((actions & WRITE) == WRITE) {
             if (id.denotesNode()) {
                 // TODO: check again if correct
-                perm.add(Privilege.JCR_ADD_CHILD_NODES+"_"+workspaceName);
-                perm.add(Privilege.JCR_MODIFY_PROPERTIES+"_"+workspaceName);
+                perm.add(Privilege.JCR_ADD_CHILD_NODES + "_" + workspaceName);
+                perm.add(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName);
             } else {
-                perm.add(Privilege.JCR_MODIFY_PROPERTIES+"_"+workspaceName);
+                perm.add(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName);
             }
         }
         if ((actions & REMOVE) == REMOVE) {
-            perm.add( (id.denotesNode()) ? Privilege.JCR_REMOVE_CHILD_NODES+"_"+workspaceName : Privilege.JCR_REMOVE_NODE+"_"+workspaceName);
+            perm.add((id.denotesNode()) ? Privilege.JCR_REMOVE_CHILD_NODES + "_" + workspaceName : Privilege.JCR_REMOVE_NODE + "_" + workspaceName);
         }
         Path path = hierMgr.getPath(id);
         return isGranted(path, perm);
@@ -350,7 +351,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             return true;
         }
 
-        if (permissions.equals(Collections.singleton(Privilege.JCR_READ + "_" +workspaceName)) && absPathStr.equals("{}")) {
+        if (permissions.equals(Collections.singleton(Privilege.JCR_READ + "_" + workspaceName)) && absPathStr.equals("{}")) {
             return true;
         }
 
@@ -381,7 +382,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             // Always deny write access on system folders
             if (permissions.contains(Privilege.JCR_WRITE + "_" + workspaceName) ||
-                    permissions.contains(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName)||
+                    permissions.contains(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName) ||
                     permissions.contains(Privilege.JCR_REMOVE_NODE + "_" + workspaceName)) {
                 itemExists = getSecuritySession().itemExists(jcrPath);
                 if (itemExists.booleanValue()) {
@@ -409,7 +410,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             // Administrators are always granted
             if (jahiaPrincipal != null) {
-                if (isAdmin(jahiaPrincipal.getName(),0)) {
+                if (isAdmin(jahiaPrincipal.getName(), 0)) {
                     cache.put(absPathStr + " : " + permissions, true);
                     return true;
                 }
@@ -450,7 +451,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             // Translation permissions
-            String name = StringUtils.substringAfterLast(jcrPath,"/");
+            String name = StringUtils.substringAfterLast(jcrPath, "/");
             if (name.startsWith("j:translation_")) {
                 String language = StringUtils.substringAfter(name, "j:translation_");
                 if (permissions.contains(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName)) {
@@ -461,11 +462,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             String ntName = n.getPrimaryNodeType().getName();
             if (ntName.equals("jnt:acl") || ntName.equals("jnt:ace")) {
-                if (permissions.contains(Privilege.JCR_READ+"_"+workspaceName)) {
-                    permissions.add(Privilege.JCR_READ_ACCESS_CONTROL+"_"+workspaceName);
+                if (permissions.contains(Privilege.JCR_READ + "_" + workspaceName)) {
+                    permissions.add(Privilege.JCR_READ_ACCESS_CONTROL + "_" + workspaceName);
                 }
-                if (permissions.contains(Privilege.JCR_MODIFY_PROPERTIES+"_"+workspaceName)) {
-                    permissions.add(Privilege.JCR_MODIFY_ACCESS_CONTROL+"_"+workspaceName);
+                if (permissions.contains(Privilege.JCR_MODIFY_PROPERTIES + "_" + workspaceName)) {
+                    permissions.add(Privilege.JCR_MODIFY_ACCESS_CONTROL + "_" + workspaceName);
                 }
             }
 
@@ -473,8 +474,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 //            int siteId = 0;
             String site = null;
             if (jcrPath.startsWith(JahiaSitesBaseService.SITES_JCR_PATH)) {
-                if (jcrPath.length() > JahiaSitesBaseService.SITES_JCR_PATH.length()+1) {
-                    site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesBaseService.SITES_JCR_PATH.length()+1), "/");
+                if (jcrPath.length() > JahiaSitesBaseService.SITES_JCR_PATH.length() + 1) {
+                    site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesBaseService.SITES_JCR_PATH.length() + 1), "/");
                 }
             } else {
                 Node s = n;
@@ -483,7 +484,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                         s = s.getParent();
                     }
                     site = s.getName();
-    //                siteId = (int) s.getProperty("j:siteId").getLong();
+                    //                siteId = (int) s.getProperty("j:siteId").getLong();
                 } catch (ItemNotFoundException e) {
                 } catch (PathNotFoundException e) {
                 }
@@ -600,13 +601,13 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
 
-    public Set<Privilege> getPermissionsInRole(String role,Session s) throws RepositoryException {
+    public Set<Privilege> getPermissionsInRole(String role, Session s) throws RepositoryException {
         if (privilegesInRole.containsKey(role)) {
             return privilegesInRole.get(role);
         } else {
             Set<Privilege> list = new HashSet<Privilege>();
             try {
-                Node roleNode = securitySession.getNode("/roles/"+role);
+                Node roleNode = securitySession.getNode("/roles/" + role);
                 if (roleNode.hasProperty("j:permissions")) {
                     Value[] perms = roleNode.getProperty("j:permissions").getValues();
                     for (Value value : perms) {
@@ -623,15 +624,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public boolean matchPermission(Set<String> permissions, String role, Session s) throws RepositoryException {
-        Set<Privilege> permsInRole = getPermissionsInRole(role,s);
+        Set<Privilege> permsInRole = getPermissionsInRole(role, s);
 
         for (Privilege privilege : permsInRole) {
             String privilegeName = privilege.getName();
             if (checkPrivilege(permissions, privilegeName)) {
                 return true;
             }
-            if(isAliased && privilegeName.contains("_"+Constants.LIVE_WORKSPACE)) {
-                if (checkPrivilege(permissions, privilegeName.replaceAll("_"+Constants.LIVE_WORKSPACE,"_"+workspaceName))) {
+            if (isAliased && privilegeName.contains("_" + Constants.LIVE_WORKSPACE)) {
+                if (checkPrivilege(permissions, privilegeName.replaceAll("_" + Constants.LIVE_WORKSPACE, "_" + workspaceName))) {
                     return true;
                 }
             }
@@ -693,31 +694,27 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
         Set<Privilege> results = new HashSet<Privilege>();
-        try {
-            if (isAdmin(jahiaPrincipal.getName(),0)) {
-                return getSupportedPrivileges(absPath);
-            }
-            Session s = getSecuritySession();
-            Set<String> grantedRoles = getRoles(absPath);
+        if (isAdmin(jahiaPrincipal.getName(), 0)) {
+            return getSupportedPrivileges(absPath);
+        }
+        Session s = getSecuritySession();
+        Set<String> grantedRoles = getRoles(absPath);
 
-            for (String role : grantedRoles) {
-                Node node = securitySession.getNode("/roles/" + role);
-                if (node.hasProperty("j:permissions")) {
-                    Value[] perms = node.getProperty("j:permissions").getValues();
+        for (String role : grantedRoles) {
+            Node node = securitySession.getNode("/roles/" + role);
+            if (node.hasProperty("j:permissions")) {
+                Value[] perms = node.getProperty("j:permissions").getValues();
 
-                    for (Value value : perms) {
-                        Node p = s.getNodeByIdentifier(value.getString());
-                        try {
-                            Privilege privilege = privilegeRegistry.getPrivilege(p);
-                            results.add(privilege);
-                        } catch (AccessControlException e) {
-                            logger.debug("Permission not available : "+p,e);
-                        }
+                for (Value value : perms) {
+                    Node p = s.getNodeByIdentifier(value.getString());
+                    try {
+                        Privilege privilege = privilegeRegistry.getPrivilege(p);
+                        results.add(privilege);
+                    } catch (AccessControlException e) {
+                        logger.debug("Permission not available : " + p, e);
                     }
                 }
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
         }
 
         return results.toArray(new Privilege[results.size()]);
@@ -792,63 +789,58 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {
+        Set<String> grantedRoles = new HashSet<String>();
+        Set<String> foundRoles = new HashSet<String>();
+        Session s = getSecuritySession();
+        Node n = s.getNode(absPath);
+
+        String site = null;
+        Node c = n;
         try {
-            Set<String> grantedRoles = new HashSet<String>();
-            Set<String> foundRoles = new HashSet<String>();
-            Session s = getSecuritySession();
-            Node n = s.getNode(absPath);
-
-            String site = null;
-            Node c = n;
-            try {
-                while (!c.isNodeType("jnt:virtualsite")) {
-                    c = c.getParent();
-                }
-                site = c.getName();
-            } catch (ItemNotFoundException e) {
-            } catch (PathNotFoundException e) {
+            while (!c.isNodeType("jnt:virtualsite")) {
+                c = c.getParent();
             }
+            site = c.getName();
+        } catch (ItemNotFoundException e) {
+        } catch (PathNotFoundException e) {
+        }
 
-            try {
-                while (true) {
-                    if (n.hasNode("j:acl")) {
-                        Node acl = n.getNode("j:acl");
-                        NodeIterator aces = acl.getNodes();
-                        while (aces.hasNext()) {
-                            Node ace = aces.nextNode();
-                            if (ace.isNodeType("jnt:ace")) {
-                                String principal = ace.getProperty("j:principal").getString();
+        try {
+            while (true) {
+                if (n.hasNode("j:acl")) {
+                    Node acl = n.getNode("j:acl");
+                    NodeIterator aces = acl.getNodes();
+                    while (aces.hasNext()) {
+                        Node ace = aces.nextNode();
+                        if (ace.isNodeType("jnt:ace")) {
+                            String principal = ace.getProperty("j:principal").getString();
 
-                                if (matchUser(principal, site)) {
-                                    boolean granted = ace.getProperty("j:aceType").getString().equals("GRANT");
+                            if (matchUser(principal, site)) {
+                                boolean granted = ace.getProperty("j:aceType").getString().equals("GRANT");
 
-                                    Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
-                                    for (Value r : roles) {
-                                        String role = r.getString();
-                                        if (!foundRoles.contains(principal+":"+role)) {
-                                            if (granted) {
-                                                grantedRoles.add(role);
-                                            }
-                                            foundRoles.add(principal+":"+role);
+                                Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
+                                for (Value r : roles) {
+                                    String role = r.getString();
+                                    if (!foundRoles.contains(principal + ":" + role)) {
+                                        if (granted) {
+                                            grantedRoles.add(role);
                                         }
+                                        foundRoles.add(principal + ":" + role);
                                     }
                                 }
                             }
                         }
-                        if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
-                            return grantedRoles;
-                        }
                     }
-                    n = n.getParent();
+                    if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
+                        return grantedRoles;
+                    }
                 }
-            } catch (ItemNotFoundException e) {
-                logger.debug(e.getMessage(), e);
+                n = n.getParent();
             }
-            return grantedRoles;
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+        } catch (ItemNotFoundException e) {
+            logger.debug(e.getMessage(), e);
         }
-        return Collections.emptySet();
+        return grantedRoles;
     }
 
 

@@ -9,6 +9,7 @@
 <%@ page import="java.util.Enumeration" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="java.util.Arrays" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <% long beginPageLoadTime = System.currentTimeMillis();%>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -99,7 +100,7 @@
             white-space: nowrap;
         }
 
-        .filterText {
+        .filterText, .filterText2 {
 
             font-size: 0.75em;
             background-color: #fff;
@@ -108,9 +109,8 @@
 
             border: 1px solid #ccc;
             white-space: nowrap;
-
         }
-
+        
         .filterButton {
             font-size: 0.75em;
 
@@ -146,6 +146,7 @@
     String logNameFilter = (String) request.getParameter("logNameFilter");
     String logNameFilterType = (String) request.getParameter("logNameFilterType");
 
+    pageContext.setAttribute("logLevels", logLevels);
 %>
 <div id="content">
 <h1>Log4j Administration</h1>
@@ -163,6 +164,17 @@
         <input name="logNameReset" type="reset" value="Reset" class="filterButton"/>
 
         <param name="operation" value="changeLogLevel"/>
+        
+        <br/>
+        Add logger:&nbsp;&nbsp;
+        <input name="logger" type="text" size="50" value="" class="filterText"/>
+        &nbsp;
+        <select name="newLogLevel">
+            <c:forEach items="${logLevels}" var="level">
+                <option value="${level}"${level == 'DEBUG' ? ' selected="selected"' : ''}>${level}</option>
+            </c:forEach>
+        </select>&nbsp;
+        <input name="operation" type="submit" value="Add" class="filterButton"/>
     </form>
 </div>
 
@@ -174,6 +186,11 @@
         <th width="35%">Change Log Level To</th>
     </tr>
 
+    <c:if test="${param.operation == 'Add' && not empty param.logger}">
+        <%
+        LogManager.getLogger(targetLogger).setLevel(Level.toLevel(targetLogLevel));
+        %>
+    </c:if>
     <%
         Enumeration loggers = LogManager.getCurrentLoggers();
 

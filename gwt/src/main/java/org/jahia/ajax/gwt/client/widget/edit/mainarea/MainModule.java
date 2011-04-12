@@ -39,13 +39,11 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.xml.client.Document;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -64,7 +62,6 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupList
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
 import java.util.*;
@@ -212,7 +209,7 @@ public class MainModule extends Module {
                                 editLinker.getMainModule().unmask();
                                 editLinker.onModuleSelection(MainModule.this);
                                 editLinker.getSidePanel().refresh(Linker.REFRESH_WORKFLOW);
-                                switchStaticAssets(result.getStaticAssets());
+                                switchStaticAssets(result.getStaticAssets(), node != null && !node.getSiteKey().equals(JahiaGWTParameters.getSiteKey()));
                             }
 
                             @Override public void onApplicationFailure(Throwable caught) {
@@ -230,11 +227,15 @@ public class MainModule extends Module {
     private int maxLink = -1;
     private int maxScript = -1;
 
-    private void switchStaticAssets(Map<String, Set<String>> assets) {
+    private void switchStaticAssets(Map<String, Set<String>> assets, boolean switchAll) {
         int m;
         Set<String> values = assets.get("css");
         if (values != null) {
-            m = removeAllAssets("link", "href", values);
+            if (switchAll) {
+                m = removeAllAssets("link", "href");
+            } else {
+                m = removeUnusedAssets("link", "href", values);
+            }
             if (maxLink == -1) maxLink = m;
             for (String s : values) {
                 addAsset("css", s, ++maxLink);
@@ -242,7 +243,7 @@ public class MainModule extends Module {
         }
         values = assets.get("javascript");
         if (values != null) {
-            m = removeAllAssets("script", "src", values);
+            m = removeUnusedAssets("script", "src", values);
             if (maxScript == -1) maxScript = m;
             for (String s : values) {
                 addAsset("javascript", s, ++maxScript);
@@ -250,7 +251,22 @@ public class MainModule extends Module {
         }
     }
 
-    private native int removeAllAssets(String tagname, String attrname, Set values) /*-{
+    private native int removeAllAssets(String tagname, String attrname) /*-{
+        var links = $doc.getElementsByTagName(tagname);
+        if (links != null) {
+            for (var i=links.length-1; i>=0; i--){ //search backwards within nodelist for matching elements to remove
+                if (links[i] && links[i].getAttribute("id")!=null && links[i].getAttribute("id").indexOf("staticAsset")==0) {
+                    links[i].parentNode.removeChild(links[i]) //remove element by calling parentNode.removeChild()
+                }
+            }
+
+            return links.length;
+        } else {
+            return 0;
+        }
+    }-*/;
+
+    private native int removeUnusedAssets(String tagname, String attrname, Set values) /*-{
         var links = $doc.getElementsByTagName(tagname);
         if (links != null) {
             for (var i=links.length-1; i>=0; i--){ //search backwards within nodelist for matching elements to remove

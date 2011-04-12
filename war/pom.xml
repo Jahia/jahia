@@ -842,7 +842,7 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
-            <artifactId>contributeToolbar</artifactId>
+            <artifactId>contribute</artifactId>
             <version>6.5-SNAPSHOT</version>
             <type>war</type>
             <scope>runtime</scope>

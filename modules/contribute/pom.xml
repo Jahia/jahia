@@ -41,10 +41,10 @@
         <version>6.5-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
-    <artifactId>contributeToolbar</artifactId>
-    <name>Jahia Contribute Toolbar</name>
+    <artifactId>contribute</artifactId>
+    <name>Jahia Contribute Mode</name>
     <packaging>war</packaging>
-    <description>This is the default contribute toolbar.</description>
+    <description>This is the default contribute mode.</description>
 
     <dependencies>
         <dependency>

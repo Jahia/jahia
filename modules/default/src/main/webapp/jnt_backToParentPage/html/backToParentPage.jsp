@@ -7,5 +7,11 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <div class="backToParent">
-    <a class="returnLink" href="<c:url value='${url.base}${jcr:getParentOfType(renderContext.mainResource.node, "jnt:page").path}.html'/>" title='<fmt:message key="backToPreviousPage"/>'>${title.string}</a>
+   <c:if test="${!empty jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}">
+		<c:url value='${url.base}${jcr:getParentOfType(renderContext.mainResource.node, "jnt:page").path}.html' var="action"/>
+    </c:if>
+    <c:if test="${empty jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}">
+        <c:set var="action">javascript:history.back()</c:set>
+    </c:if>
+    <a class="returnLink" href="${action}" title='<fmt:message key="backToPreviousPage"/>'><fmt:message key='label.backToNewsList'/></a>
 </div>

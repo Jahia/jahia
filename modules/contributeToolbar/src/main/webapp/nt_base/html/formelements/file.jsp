@@ -25,15 +25,12 @@
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <fmt:message key="label.select.file" var="fileLabel"/>
 <c:url value="${url.files}" var="previewPath"/>
-<ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
-                 displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
-        label="${fileLabel}"
-        onSelect="function(uuid, path, title) {
+<c:set var="onSelect">function(uuid, path, title) {
             $('#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').val(uuid);
             $('#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').html('<img src=\"${previewPath}'+path+'\"/>');
             return false;
-        }"
-        onClose="$.defer( 200, function() {
+        }</c:set>
+<c:set var="onClose">$.defer( 200, function() {
             $.fancybox({
                 'content':$('.FormContribute'),
                 'height':600,
@@ -51,13 +48,19 @@
                 }
              }
             );
-        })"
-        fancyboxOptions="{
+        })</c:set>
+<c:set var="fancyboxOptions">{
             onStart: function() {
                 $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
                 $('#addNewContent').append($('.FormContribute'))
             }
-        }" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
+        }</c:set>
+<ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                 displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
+        label="${fileLabel}"
+        onSelect="onSelect"
+        onClose="${onClose}"
+        fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
 <span><fmt:message key="label.or"/></span>
 <div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
     <span><fmt:message key="add.file"/></span>

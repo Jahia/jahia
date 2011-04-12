@@ -54,7 +54,7 @@
     <c:if test="${not empty sessionScope['org.jahia.usermanager.jahiauser'] && sessionScope['org.jahia.usermanager.jahiauser'].username != 'guest'}">
     <internal:gwtInit/>
     </c:if>
-    <link rel="stylesheet" href="<c:url value='/css/jahia65.css'/>" type="text/css" />
+    <link rel="stylesheet" href="<c:url value='/css/admin-1.0.css'/>" type="text/css" />
 
     <c:if test="${not empty sessionScope['org.jahia.usermanager.jahiauser'] && sessionScope['org.jahia.usermanager.jahiauser'].username != 'guest'}">
     <script type="text/javascript">

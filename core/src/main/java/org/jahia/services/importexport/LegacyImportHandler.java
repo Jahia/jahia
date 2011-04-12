@@ -37,6 +37,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO8601;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -62,10 +63,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA. User: toto Date: Oct 28, 2009 Time: 2:31:18 PM
+ * @author toto
+ * Date: Oct 28, 2009
+ * Time: 2:31:18 PM
  */
 public class LegacyImportHandler extends DefaultHandler {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(LegacyImportHandler.class);
 
     private final static int CTX_PAGE = 0;
     private final static int CTX_CTN = 1;
@@ -155,7 +158,9 @@ public class LegacyImportHandler extends DefaultHandler {
                 ctx = currentCtx.peek().ctx.peek();
             }
 
-            logger.info(StringUtils.repeat(" ", level) + "<" + currentNode + "> , ctx = " + ctx);
+            if (logger.isDebugEnabled()) {
+                logger.debug(StringUtils.repeat(" ", level) + "<" + currentNode + "> , ctx = " + ctx);
+            }
             level++;
             if (ctx == -1 && HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
                 // System.out.println("create page" + attributes.getValue("jahia:title"));

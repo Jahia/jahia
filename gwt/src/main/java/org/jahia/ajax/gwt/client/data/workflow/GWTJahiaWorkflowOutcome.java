@@ -37,15 +37,11 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Feb 4, 2010
  * Time: 4:07:50 PM
- * 
  */
 public class GWTJahiaWorkflowOutcome extends BaseModelData implements Serializable {
-    private String name;
-    private String label;
 
     public GWTJahiaWorkflowOutcome() {
     }
@@ -65,6 +61,14 @@ public class GWTJahiaWorkflowOutcome extends BaseModelData implements Serializab
 
     public void setLabel(String label) {
         set("label",label);
+    }
+
+    public String getIcon() {
+        return get("icon");
+    }
+
+    public void setIcon(String icon) {
+        set("icon",icon);
     }
 
 }

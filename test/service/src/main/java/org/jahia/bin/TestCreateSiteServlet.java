@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
+ * Servlet to create sites and publish them.
  * User: Dorth
  * Date: 9 sept. 2010
  * Time: 15:50:42
@@ -113,7 +113,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
                             TestHelper.createSite(siteKey, "localhost" + numberOfSites, TestHelper.WEB_BLUE_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
                                             + "/prepackagedSites/acme.zip", "ACME.zip");
-                            JCRNodeWrapper homeNode = session.getRootNode().getNode("sites/ACME" + (numberOfSites) + "/home");
+                            JCRNodeWrapper homeNode = session.getRootNode().getNode("sites/" + siteKey + "/home");
                             if (numberOfParents != 0) {
                                 for (int i = 0; i < numberOfParents; i++) {
                                     session.checkout(homeNode);
@@ -135,7 +135,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
                                     }
                                 }
                             }
-                            jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME" + (numberOfSites))
+                            jcrService.publishByMainId(session.getRootNode().getNode("sites/" + siteKey)
                                     .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                             session.save();
                             siteKey = null;

@@ -70,7 +70,9 @@
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.FilePreview"/>
+                                    <!--
                                     <ref bean="Toolbar.Item.Webfolder"/>
+                                    -->
                                 </list>
                             </property>
                         </bean>
@@ -637,7 +639,9 @@
                                     <ref bean="Toolbar.Item.NewPortlet"/>
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
+                                    <!--
                                     <ref bean="Toolbar.Item.Webfolder"/>
+                                    -->
                                 </list>
                             </property>
                         </bean>

@@ -32,10 +32,8 @@
 
 package org.jahia.services.render;
 
-import org.apache.commons.collections.FastHashMap;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.content.*;
@@ -44,7 +42,6 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
-import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptResolver;
@@ -452,13 +449,4 @@ public class RenderService {
         templatesCache.flushAll(true);
     }
 
-    private class EmptyTemplate extends Template {
-        public EmptyTemplate(String serialized) {
-            super(serialized);
-        }
-
-        public EmptyTemplate(String view, String node, Template next) {
-            super(view, node, next);
-        }
-    }
 }

@@ -5,16 +5,18 @@
 <%@page import="org.jahia.services.content.JCRNodeWrapper"%>
 <%@page import="org.jahia.services.content.JCRSessionFactory"%>
 <%@page import="org.jahia.services.content.JCRSessionWrapper"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt"%>
-<%@taglib uri="http://www.jahia.org/tags/functions" prefix="functions"%>
-<%@taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
+<%@taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr"%>
+<%@taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>JCR Browser</title>
 </head>
+<utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
 <c:set var="showProperties" value="${functions:default(param.showProperties, 'false')}"/>
 <c:set var="showNodes" value="${functions:default(param.showNodes, 'true')}"/>
 <c:set var="showActions" value="${functions:default(param.showActions, 'false')}"/>
@@ -25,6 +27,7 @@ JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstanc
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
 try {
 pageContext.setAttribute("node", jcrSession.getNodeByIdentifier((String) pageContext.getAttribute("nodeId")));
+pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
 %>
 <body style="color:#36393D; font-family:Arial,Helvetica,sans-serif; font-size:80%; line-height:160%;">
 <c:url var="switchWorkspaceUrl" value="?">

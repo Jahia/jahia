@@ -237,7 +237,7 @@
         <author jcr:primaryType="jnt:role"/>
 
         <privileged jcr:primaryType="jnt:role"
-                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/editMode/editSelector/sitemapSelector"
+                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/managers /permissions/editMode/editSelector/sitemapSelector"
                     />
 
         <editor jcr:primaryType="jnt:role"

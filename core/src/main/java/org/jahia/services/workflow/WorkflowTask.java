@@ -42,11 +42,13 @@ import java.util.Set;
 /**
  * Represents task action.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 3 févr. 2010
+ * @author rincevent
+ * @since JAHIA 6.5
  */
 public class WorkflowTask extends WorkflowAction {
+    
+    private static final long serialVersionUID = 2178724997919059897L;
+    
     private Date dueDate;
     private String description;
     private Date createTime;
@@ -58,6 +60,7 @@ public class WorkflowTask extends WorkflowAction {
     private String processId;
     private List<String> displayOutcomes;
     private Map<String, Object> variables;
+    private List<String> outcomeIcons;
 
     public WorkflowTask(String name, String provider) {
         super(name, provider);
@@ -149,5 +152,13 @@ public class WorkflowTask extends WorkflowAction {
 
     public Map<String, Object> getVariables() {
         return variables;
+    }
+
+    public List<String> getOutcomeIcons() {
+        return outcomeIcons;
+    }
+
+    public void setOutcomeIcons(List<String> outcomeIcons) {
+        this.outcomeIcons = outcomeIcons;
     }
 }

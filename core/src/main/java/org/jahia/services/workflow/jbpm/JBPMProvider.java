@@ -786,21 +786,31 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
             WorkflowTask workflowTask = (WorkflowTask) workflowAction;
             Set<String> outcomes = workflowTask.getOutcomes();
             List<String> displayOutcomes = new LinkedList<String>();
+            List<String> outcomeIcons = new LinkedList<String>();
             for (String outcome : outcomes) {
                 String key = workflowAction.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
                         outcome.replaceAll(" ", ".").trim().toLowerCase();
-                String s= outcome;
+                String s = outcome;
                 if (resourceBundle != null) {
                     try {
-
                         s = resourceBundle.getString(key);
                     } catch (Exception e) {
                         logger.info("Missing ressource : " + key + " in " + resourceBundle);
                     }
                 }
                 displayOutcomes.add(s);
+                String icon = null;
+                if (resourceBundle != null) {
+                    try {
+                        icon = resourceBundle.getString(key + ".icon");
+                    } catch (MissingResourceException e) {
+                        // ignore;
+                    }
+                }
+                outcomeIcons.add(icon);
             }
             workflowTask.setDisplayOutcomes(displayOutcomes);
+            workflowTask.setOutcomeIcons(outcomeIcons);
         }
     }
 

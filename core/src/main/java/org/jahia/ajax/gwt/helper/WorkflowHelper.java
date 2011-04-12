@@ -169,11 +169,14 @@ public class WorkflowHelper {
         task.setProcessId(workflowTask.getProcessId());
         Set<String> outcomes = workflowTask.getOutcomes();
         List<String> display = workflowTask.getDisplayOutcomes();
+        List<String> icons = workflowTask.getOutcomeIcons();
         int i=0;
         for (String outcome : outcomes) {
             GWTJahiaWorkflowOutcome gwtOutcome = new GWTJahiaWorkflowOutcome();
             gwtOutcome.setName(outcome);
-            gwtOutcome.setLabel(display.get(i++));
+            gwtOutcome.setLabel(display.get(i));
+            gwtOutcome.setIcon(icons.get(i));
+            i++;
             gwtOutcomes.add(gwtOutcome);
         }
         return task;

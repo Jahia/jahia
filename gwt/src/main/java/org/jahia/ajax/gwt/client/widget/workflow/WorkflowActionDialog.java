@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -401,6 +402,9 @@ public class WorkflowActionDialog extends LayoutContainer {
         final List<Button> allButtons = new ArrayList<Button>();
         for (final GWTJahiaWorkflowOutcome outcome : outcomes) {
             Button button = new Button(outcome.getLabel());
+            if (outcome.getIcon() != null) {
+                button.setIcon(ToolbarIconProvider.getInstance().getIcon(outcome.getIcon()));
+            }
             allButtons.add(button);
             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override

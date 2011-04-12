@@ -27,7 +27,7 @@
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
-<utility:setBundle basename="JahiaContributeToolbar" useUILocale="true"/>
+<utility:setBundle basename="JahiaContributeMode" useUILocale="true"/>
 <div id="${currentNode.UUID}">
     <c:set var="animatedTasks" value=""/>
     <c:set var="animatedWFs" value=""/>

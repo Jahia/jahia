@@ -144,7 +144,7 @@
 
     </script>
 </template:addResources>
-<utils:setBundle basename="JahiaContributeToolbar" useUILocale="true" templateName="Jahia Contribute Toolbar"/>
+<utils:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Mode"/>
 <div id="contributeToolbar" >
 
     <div id="edit">

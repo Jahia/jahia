@@ -5,6 +5,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@page import="java.lang.System"%>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
@@ -76,7 +77,8 @@
     </div>
     </div>
 </s:results>
-<%System.out.println("Search render time: " + (System.currentTimeMillis() - startTime) + "ms"); %>
+<% pageContext.setAttribute("searchTime", Long.valueOf(System.currentTimeMillis() - startTime)); %>
+<utility:logger level="info" value="Search render time: ${searchTime} ms"/>
 <c:if test="${renderContext.editMode}">
 	</fieldset>
 </c:if>

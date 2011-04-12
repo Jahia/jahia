@@ -54,6 +54,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.query.Query;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -191,34 +192,27 @@ public class FilesAclImportHandler extends DefaultHandler {
     }
 
     private String getMappedProperty(ExtendedNodeType baseType, String qName) {
-        String property = qName;
         String mappedProperty = davPropertiesMapping.get(qName);
         if (mappedProperty == null) {
             mappedProperty = mapping.getMappedProperty(baseType, qName);
         }
         if (mappedProperty != null) {
-            property = mappedProperty;
+            return mappedProperty;
         }
-        return property;
+        return null;
     }
 
     protected final Map<String, String> initializeDavPropertiesMapping() {
         Map<String, String> davPropertiesMapping = new HashMap<String, String>();
-        davPropertiesMapping.put("dav:creationdate", "jcr:created");
-        davPropertiesMapping.put("dav:creationuser", "jcr:createdBy");
-        davPropertiesMapping.put("dav:getlastmodified", "jcr:lastModified");
-        davPropertiesMapping.put("dav:modificationdate", "jcr:lastModified");
-        davPropertiesMapping.put("dav:modificationuser", "jcr:lastModifiedBy");
-        davPropertiesMapping.put("dav:getcontenttype", "jcr:content/jcr:mimeType");
         davPropertiesMapping.put("dav:getcontentlanguage", "mix:language|jcr:content/jcr:language");
-        davPropertiesMapping.put("dav:owner", "#skip");
         davPropertiesMapping.put("dav:displayname", "mix:title|jcr:title");
+        davPropertiesMapping.put("ged:categories", "jmix:categorized|j:defaultCategory");
         return davPropertiesMapping;
     }
 
     private boolean setPropertyField(ExtendedNodeType baseType, String localName,
                                      JCRNodeWrapper node, String propertyName, String value) throws RepositoryException {
-        if ("#skip".equals(propertyName)) {
+        if (propertyName == null || "#skip".equals(propertyName)) {
             return false;
         }
         JCRNodeWrapper parent = node;
@@ -269,6 +263,20 @@ public class FilesAclImportHandler extends DefaultHandler {
 
                 default:
                     switch (propertyDefinition.getSelector()) {
+                        case SelectorType.CATEGORY: {
+                            String[] cats = value.split(",");
+                            List<Value> values = new ArrayList<Value>();
+                            for (int i = 0; i < cats.length; i++) {
+                                String cat = cats[i];
+                                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:category] as cat where NAME(cat) = '"+cat+"'", Query.JCR_SQL2);
+                                NodeIterator ni = q.execute().getNodes();
+                                if (ni.hasNext()) {
+                                    values.add(session.getValueFactory().createValue(ni.nextNode()));
+                                }
+                            }
+                            n.setProperty(propertyName, values.toArray(new Value[values.size()]));
+                            break;
+                        }
                         case SelectorType.RICHTEXT: {
                             n.setProperty(propertyName, value);
                             break;

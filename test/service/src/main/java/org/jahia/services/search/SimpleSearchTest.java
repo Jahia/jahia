@@ -33,14 +33,12 @@
 package org.jahia.services.search;
 
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
@@ -78,19 +76,19 @@ public class SimpleSearchTest {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
-            final JCRPublicationService jcrService = ServicesRegistry
-                    .getInstance().getJCRPublicationService();
+//            final JCRPublicationService jcrService = ServicesRegistry
+//                    .getInstance().getJCRPublicationService();
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         TestHelper.createSite(FIRST_TESTSITE_NAME, "localhost",
-                                TestHelper.WEB_BLUE_TEMPLATES, SettingsBean.getInstance()
+                                TestHelper.WEB_TEMPLATES, SettingsBean.getInstance()
                                         .getJahiaVarDiskPath()
                                         + "/prepackagedSites/webtemplates.zip", "ACME.zip");
-                        jcrService.publishByMainId(
-                                session.getNode(FIRST_SITECONTENT_ROOT_NODE + "/home")
-                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
-                                Constants.LIVE_WORKSPACE, null, true, null);
+//                        jcrService.publishByMainId(
+//                                session.getNode(FIRST_SITECONTENT_ROOT_NODE + "/home")
+//                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
+//                                Constants.LIVE_WORKSPACE, null, true, null);
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
                     }
@@ -105,13 +103,13 @@ public class SimpleSearchTest {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         TestHelper.createSite(SECOND_TESTSITE_NAME, "127.0.0.1",
-                                TestHelper.WEB_BLUE_TEMPLATES, SettingsBean.getInstance()
+                                TestHelper.WEB_TEMPLATES, SettingsBean.getInstance()
                                         .getJahiaVarDiskPath()
                                         + "/prepackagedSites/webtemplates.zip", "ACME.zip");
-                        jcrService.publishByMainId(
-                                session.getNode(SECOND_SITECONTENT_ROOT_NODE + "/home")
-                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
-                                Constants.LIVE_WORKSPACE, null, true, null);
+//                        jcrService.publishByMainId(
+//                                session.getNode(SECOND_SITECONTENT_ROOT_NODE + "/home")
+//                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
+//                                Constants.LIVE_WORKSPACE, null, true, null);
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
                     }
@@ -122,16 +120,6 @@ public class SimpleSearchTest {
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
         }
-    }
-
-    @Before
-    public void setUp() {
-
-    }
-
-    @After
-    public void tearDown() {
-        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     @Test
@@ -167,8 +155,12 @@ public class SimpleSearchTest {
 
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
+            int i = 0;
+            for (Hit<?> hit : hits) {
+                logger.info("[" + (++i) + "]: " + hit.getLink());
+            }
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    28, hits.size());
+                    24, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -208,7 +200,7 @@ public class SimpleSearchTest {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    26, hits.size());
+                    23, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -317,7 +309,7 @@ public class SimpleSearchTest {
             criteria.getTerms().get(0).setMatch(MatchType.AS_IS);
             hits = searchService.search(criteria, context).getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    1, hits.size());
+                    2, hits.size());
 
             criteria.getTerms().get(0).setTerm("civil");
             criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
@@ -325,7 +317,7 @@ public class SimpleSearchTest {
             criteria.getTerms().get(1).setMatch(MatchType.WITHOUT_WORDS);
             hits = searchService.search(criteria, context).getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    1, hits.size());
+                    2, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -365,7 +357,7 @@ public class SimpleSearchTest {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: "
-                            + criteria.toString(), 28 * 2, hits.size());
+                            + criteria.toString(), 24 * 2, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -373,23 +365,8 @@ public class SimpleSearchTest {
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                    .getCurrentUserSession();
-            if (session.nodeExists(FIRST_SITECONTENT_ROOT_NODE)) {
-                TestHelper.deleteSite(FIRST_TESTSITE_NAME);
-            }
-            session.save();
-
-            if (session.nodeExists(SECOND_SITECONTENT_ROOT_NODE)) {
-                TestHelper.deleteSite(SECOND_TESTSITE_NAME);
-            }
-
-            session.save();
-            session.logout();
-        } catch (Exception ex) {
-            logger.warn("Exception during test tearDown", ex);
-        }
+        TestHelper.deleteSite(FIRST_TESTSITE_NAME);
+        TestHelper.deleteSite(SECOND_TESTSITE_NAME);
     }
 
 }

@@ -125,6 +125,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             context.getMainResource().getLocale(), context.getFallbackLocale());
             Query query = buildQuery(criteria, session);
             if (query != null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Executing search query [{}]", query.getStatement());
+                }
                 QueryResult queryResult = query.execute();
                 RowIterator it = queryResult.getRows();
                 Set<String> languages = new HashSet<String>();
@@ -170,9 +173,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 if (logger.isDebugEnabled()) {
                     logger.debug(e.getMessage(), e);
                 }
+            } else {
+                logger.error("Error while trying to perform a search", e);
             }
         } catch (Exception e) {
             logger.error("Error while trying to perform a search", e);
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Search query has {} results", results.size());
         }
         response.setResults(results);
 
@@ -565,7 +573,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             "jcr:contains(@j:nodename, "
                                     + (textSearch.getTerm().endsWith("*") ? searchExpression
                                             : getSearchExpressionForMatchType(textSearch.getTerm()
-                                                    + "*", textSearch.getMatch())) + ")");
+                                                    , textSearch.getMatch(), "*")) + ")");
                 }
                 if (searchFields.isTags() && getTaggingService() != null
                         && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)
@@ -632,6 +640,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     private String getSearchExpressionForMatchType(String term,
             MatchType matchType) {
+        return getSearchExpressionForMatchType(term, matchType, null);
+    }
+
+    private String getSearchExpressionForMatchType(String term,
+            MatchType matchType, String postfix) {
         if (Term.MatchType.AS_IS != matchType) {
             term = QueryParser.escape(term.replaceAll(" AND ", " and ").replaceAll(
                     " OR ", " or ").replaceAll(" NOT ", " not "));
@@ -650,9 +663,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             " -");
         }
 
-        return stringToJCRSearchExp(term);
+        return stringToJCRSearchExp(postfix != null ? term + postfix : term);
     }
-
+    
     private String cleanMultipleWhiteSpaces(String term) {
         return term.replaceAll("\\s{2,}", " ");
     }

@@ -172,7 +172,7 @@
                     <c:param name="site" value="${renderContext.site.identifier}"/>
                     <c:param name="selectedPaths" value="${currentNode.path}"/>
                 </c:url>
-                <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+                <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/treepanel-files-manager-1616.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                         key="label.filemanager"/></a>
             </c:when>
             <c:otherwise>
@@ -190,7 +190,7 @@
         </c:choose>
         <span><fmt:message key="label.goto"/>: </span> <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/home.html'/>"><img src="<c:url value='/icons/siteManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteHomepage"/></a>
         <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/contents.html'/>"><img src="<c:url value='/icons/content-manager-1616.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteContent"/></a>
-        <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/files.html'/>"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteFiles"/></a>
+        <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/files.html'/>"><img src="<c:url value='/icons/files-manager-1616.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteFiles"/></a>
     </div>
     <div style="display:none;">
         <div id="clipboardpreview-${currentNode.identifier}">

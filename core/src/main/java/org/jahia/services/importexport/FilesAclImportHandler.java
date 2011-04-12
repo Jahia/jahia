@@ -32,6 +32,9 @@
 
 package org.jahia.services.importexport;
 
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRObservationManager;
+import org.jahia.utils.zip.ZipEntry;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
@@ -49,42 +52,43 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.jcr.Node;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: toto
  * Date: 6 juil. 2005
  * Time: 17:31:05
- * 
  */
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);
-    
+
+    private File archive;
+    private NoCloseZipInputStream zis;
+    private ZipEntry nextEntry;
+    private List<String> fileList = new ArrayList<String>();
+
     private JahiaSite site;
     private DefinitionsMapping mapping;
     private JCRSessionWrapper session;
-    
+
     private Map<String, String> davPropertiesMapping = initializeDavPropertiesMapping();
 
-    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping) {
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
+
+    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, File archive, List<String> fileList) {
         this.site = site;
         this.mapping = mapping;
+        this.archive = archive;
+        this.fileList = fileList;
         try {
             this.session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
         } catch (RepositoryException e) {
@@ -96,14 +100,47 @@ public class FilesAclImportHandler extends DefaultHandler {
         if ("file".equals(localName) && ImportExportBaseService.JAHIA_URI.equals(uri)) {
             String path = attributes.getValue(ImportExportBaseService.JAHIA_URI, "path");
             String acl = attributes.getValue(ImportExportBaseService.JAHIA_URI, "fileacl");
-            if (path.startsWith("/shared")) {
-                path = "/sites/" + site.getSiteKey() + "/files" + path;
-            } else if (path.startsWith("/users")) {
-                path = path.replaceFirst("/users/([^/]+)/", "/users/$1/files/");
-            }
+
             try {
-                JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
-                JCRNodeWrapper f = session.getNode(path);
+                boolean contentFound = findContent(path);
+
+                if (path.startsWith("/shared")) {
+                    path = "/sites/" + site.getSiteKey() + "/files" + path;
+                } else if (path.startsWith("/users")) {
+                    path = path.replaceFirst("/users/([^/]+)/", "/users/$1/files/");
+                }
+
+                if (session.itemExists(path)) {
+                    return;
+                }
+                JCRNodeWrapper f;
+                String parentPath = StringUtils.substringBeforeLast(path, "/");
+                try {
+                    f = session.getNode(parentPath);
+                } catch (PathNotFoundException e) {
+                    f = ImportExportBaseService.getInstance().ensureDir(session, parentPath, site);
+                }
+
+
+                Calendar created = new GregorianCalendar();
+                if (attributes.getValue("dav:creationdate") != null) {
+                    created.setTime(DATE_FORMAT.parse(attributes.getValue("dav:creationdate")));
+                }
+                Calendar lastModified = new GregorianCalendar();
+                if (attributes.getValue("dav:modificationdate") != null) {
+                    lastModified.setTime(DATE_FORMAT.parse(attributes.getValue("dav:modificationdate")));
+                }
+                String createdBy = attributes.getValue("dav:creationuser");
+                String lastModifiedBy = attributes.getValue("dav:modificationuser");
+
+                checkoutNode(f);
+                if (!contentFound) {
+                    f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:folder", null, created, createdBy, lastModified, lastModifiedBy);
+                } else {
+                    f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:file", null, created, createdBy, lastModified, lastModifiedBy);
+                    f.getFileContent().uploadFile(zis, attributes.getValue("dav:getcontenttype"));
+                    zis.close();
+                }
                 if (acl != null && acl.length() > 0) {
                     StringTokenizer st = new StringTokenizer(acl, "|");
                     while (st.hasMoreElements()) {
@@ -111,34 +148,26 @@ public class FilesAclImportHandler extends DefaultHandler {
                         int beginIndex = s.lastIndexOf(":");
 
                         String principal = s.substring(0, beginIndex);
-                        String userName = principal.substring(2);
-                        String value = null;
 
-                        if (principal.charAt(0) == 'u') {
-                            JahiaUser user = ServicesRegistry
-                                    .getInstance()
-                                    .getJahiaSiteUserManagerService()
-                                    .getMember(site.getID(),
-                                            userName);
-                            if (user != null) {
-                                value = "/users/" + user.getUsername();
-                            }
+                        Set<String> grantedRoles = new HashSet<String>();
+                        Set<String> removedRoles = new HashSet<String>();
+                        String perm = s.substring(beginIndex + 1);
+                        if (perm.charAt(0) == 'r') {
+                            grantedRoles.addAll(LegacyImportHandler.READ_ROLES);
                         } else {
-                            JahiaGroup group = ServicesRegistry
-                                    .getInstance()
-                                    .getJahiaGroupManagerService()
-                                    .lookupGroup(site.getID(),
-                                            userName);
-                            if (group != null) {
-                                value = "+/groups/"
-                                        + group.getGroupname()
-                                        + "/members";
-                            }
+                            removedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                        }
+                        if (perm.charAt(1) == 'w') {
+                            grantedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                        } else {
+                            removedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
                         }
 
-                        if (value != null) {
-//                            f.changeRoles(value, s
-//                                    .substring(beginIndex + 1));
+                        if (!grantedRoles.isEmpty()) {
+                            f.grantRoles(principal, grantedRoles);
+                        }
+                        if (!removedRoles.isEmpty()) {
+                            f.denyRoles(principal, removedRoles);
                         }
                     }
                 }
@@ -154,13 +183,13 @@ public class FilesAclImportHandler extends DefaultHandler {
                         }
                     }
                 }
-                session.save();
-            } catch (RepositoryException e) {
+                session.save(JCRObservationManager.IMPORT);
+            } catch (Exception e) {
                 logger.error("error", e);
             }
         }
     }
-    
+
     private String getMappedProperty(ExtendedNodeType baseType, String qName) {
         String property = qName;
         String mappedProperty = davPropertiesMapping.get(qName);
@@ -172,13 +201,13 @@ public class FilesAclImportHandler extends DefaultHandler {
         }
         return property;
     }
-    
+
     protected final Map<String, String> initializeDavPropertiesMapping() {
-        Map<String, String> davPropertiesMapping = new HashMap<String, String>(); 
+        Map<String, String> davPropertiesMapping = new HashMap<String, String>();
         davPropertiesMapping.put("dav:creationdate", "jcr:created");
         davPropertiesMapping.put("dav:creationuser", "jcr:createdBy");
         davPropertiesMapping.put("dav:getlastmodified", "jcr:lastModified");
-        davPropertiesMapping.put("dav:modificationdate", "jcr:lastModified");        
+        davPropertiesMapping.put("dav:modificationdate", "jcr:lastModified");
         davPropertiesMapping.put("dav:modificationuser", "jcr:lastModifiedBy");
         davPropertiesMapping.put("dav:getcontenttype", "jcr:content/jcr:mimeType");
         davPropertiesMapping.put("dav:getcontentlanguage", "mix:language|jcr:content/jcr:language");
@@ -186,9 +215,9 @@ public class FilesAclImportHandler extends DefaultHandler {
         davPropertiesMapping.put("dav:displayname", "mix:title|jcr:title");
         return davPropertiesMapping;
     }
-    
+
     private boolean setPropertyField(ExtendedNodeType baseType, String localName,
-            JCRNodeWrapper node, String propertyName, String value) throws RepositoryException {
+                                     JCRNodeWrapper node, String propertyName, String value) throws RepositoryException {
         if ("#skip".equals(propertyName)) {
             return false;
         }
@@ -301,11 +330,39 @@ public class FilesAclImportHandler extends DefaultHandler {
 
         return true;
     }
-    
+
     private JCRNodeWrapper checkoutNode(JCRNodeWrapper node) throws RepositoryException {
         if (!node.isCheckedOut()) {
             session.checkout(node);
         }
         return node;
     }
+
+    private boolean findContent(String path) throws IOException {
+        if (archive == null) {
+            return false;
+        }
+        if (zis == null) {
+            zis = new NoCloseZipInputStream(new FileInputStream(archive));
+            nextEntry = zis.getNextEntry();
+        }
+
+        path = path.replace(":", "_");
+
+        int fileIndex = fileList.indexOf(path);
+        if (fileIndex != -1) {
+            if (fileList.indexOf("/" + nextEntry.getName().replace('\\', '/')) > fileIndex) {
+                zis.reallyClose();
+                zis = new NoCloseZipInputStream(new FileInputStream(archive));
+            }
+            do {
+                nextEntry = zis.getNextEntry();
+            } while (!("/" + nextEntry.getName().replace('\\', '/')).equals(path));
+
+            return true;
+        }
+        return false;
+    }
+
+
 }

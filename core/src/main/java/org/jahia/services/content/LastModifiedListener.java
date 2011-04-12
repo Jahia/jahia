@@ -61,6 +61,10 @@ public class LastModifiedListener extends DefaultEventListener {
             String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
             final int type = ((JCREventIterator)eventIterator).getOperationType();
 
+            if (type == JCRObservationManager.NODE_CHECKOUT || type == JCRObservationManager.NODE_CHECKIN) {
+                return;
+            }
+
             if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
                 userId = userId.substring(JahiaLoginModule.SYSTEM.length());
             }

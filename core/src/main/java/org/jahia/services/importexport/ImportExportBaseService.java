@@ -590,7 +590,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 						name = name.replace('\\', '/');
 					}
                     if (name.indexOf('/') > -1) {
-                        if (!sizes.containsKey(REPOSITORY_XML)) {
+                        if (!sizes.containsKey(REPOSITORY_XML) && !sizes.containsKey(FILESACL_XML)) {
                             // No repository descriptor - Old import format only
                             name = "/" + name;
                             if (name.startsWith("/content/sites")) {
@@ -605,7 +605,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             } else if (name.startsWith("/users")) {
                                 name = name.replaceFirst(
                                                 "/users/([^/]+)/",
-                                                "/users/$1/files/");                                        
+                                                "/users/$1/files/");
                             } else {
                                 name = pathMapping.get("/")
                                         + StringUtils.stripStart(name, "/");
@@ -663,7 +663,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     if (zipentry == null) break;
                     String name = zipentry.getName();
                     if (name.equals(FILESACL_XML)) {
-                        importFilesAcl(site, zis, mapping);
+                        importFilesAcl(site, file, zis, mapping, fileList);
                     } else if (name.startsWith("export")) {
                         String languageCode;
                         if (name.indexOf("_") != -1) {
@@ -699,12 +699,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
 
-    private JCRNodeWrapper ensureDir(JCRSessionWrapper session, String name, JahiaSite site) throws RepositoryException {
+    public JCRNodeWrapper ensureDir(JCRSessionWrapper session, String path, JahiaSite site) throws RepositoryException {
         JCRNodeWrapper dir;
         try {
-            dir = session.getNode(name);
+            dir = session.getNode(path);
 
-            String current = name;
+            String current = path;
 
             while (current.lastIndexOf('/') > 0) {
                 JCRNodeWrapper currentNode = session.getNode(current);
@@ -715,9 +715,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     }
                     String newName = current.substring(0, current.lastIndexOf('/')) + "/" + site.getSiteKey();
                     session.getPathMapping().put(current, newName);
-                    name = name.replace(current, newName);
+                    path = path.replace(current, newName);
 
-                    return ensureDir(session, name, site);
+                    return ensureDir(session, path, site);
                 }
                 int endIndex = current.lastIndexOf('/');
                 current = current.substring(0, endIndex);
@@ -727,12 +727,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 //                dir = JahiaWebdavBaseService.getInstance().getDAVFileAccess(name.substring(0, endIndex)+"/"+site.getSiteKey(), jParams.getUser());
 //            }
         } catch (PathNotFoundException pnfe) {
-            int endIndex = name.lastIndexOf('/');
+            int endIndex = path.lastIndexOf('/');
             if (endIndex == -1) {
-                logger.warn("Cannot create folder " + name);
+                logger.warn("Cannot create folder " + path);
                 return null;
             }
-            JCRNodeWrapper parentDir = ensureDir(session, name.substring(0, endIndex), site);
+            JCRNodeWrapper parentDir = ensureDir(session, path.substring(0, endIndex), site);
             if (parentDir == null) {
                 return null;
             }
@@ -740,7 +740,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 dir = parentDir.getNode(site.getSiteKey());
             } else {
                 try {
-                    String dirName = name.substring(name.lastIndexOf('/') + 1);
+                    String dirName = path.substring(path.lastIndexOf('/') + 1);
                     if (!StringUtils.isEmpty(dirName)) {
                         if (!parentDir.isCheckedOut()) {
                             session.getWorkspace().getVersionManager()
@@ -752,14 +752,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 } catch (RepositoryException e) {
                     logger.error("RepositoryException", e);
                 }
-                dir = session.getNode(name);
-                logger.debug("Folder created " + name);
+                dir = session.getNode(path);
+                logger.debug("Folder created " + path);
             }
         }
         return dir;
     }
 
-    private void ensureFile(JCRSessionWrapper session, String path, InputStream inputStream, String type, JahiaSite destSite) {
+    public void ensureFile(JCRSessionWrapper session, String path, InputStream inputStream, String type, JahiaSite destSite) {
         String name = path.substring(path.lastIndexOf('/') + 1);
         try {
             JCRNodeWrapper parentDir = ensureDir(session, path.substring(0, path.lastIndexOf('/')), destSite);
@@ -788,8 +788,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
-    private void importFilesAcl(JahiaSite site, InputStream is, DefinitionsMapping mapping) {
-        handleImport(is, new FilesAclImportHandler(site, mapping));
+    private void importFilesAcl(JahiaSite site, File file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
+        handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList));
     }
 
     private void importSiteProperties(InputStream is, JahiaSite site) throws IOException {

@@ -116,10 +116,6 @@ public class JCRVersionService extends JahiaService {
     }
 
 
-    public void checkin(Session session, JCRNodeWrapper node, Calendar checkinDate) throws RepositoryException {
-        session.getWorkspace().getVersionManager().checkin(node.getPath());
-    }
-
     /**
      * Finds the closest version in a version history to a specific date.
      *
@@ -389,10 +385,6 @@ public class JCRVersionService extends JahiaService {
                         JCRNodeWrapper nodeWrapper = session.getNodeByUUID(node.getIdentifier());
                         VersionManager versionManager = session.getWorkspace().getVersionManager();
                         VersionHistory versionHistory = versionManager.getVersionHistory(node.getPath());
-                        if (versionManager.isCheckedOut(nodeWrapper.getPath())) {
-                            logger.debug("Checkin node " + nodeWrapper.getPath());
-                            versionManager.checkin(nodeWrapper.getPath());
-                        }
                         String labelWithWs = node.getSession().getWorkspace().getName() + "_" + label;
                         if (!versionHistory.hasVersionLabel(labelWithWs)) {
                             Version version = versionManager.getBaseVersion(node.getPath());
@@ -417,9 +409,6 @@ public class JCRVersionService extends JahiaService {
                     try {
                         JCRNodeWrapper nodeWrapper = session.getNodeByUUID(allUuid);
                         VersionHistory versionHistory = versionManager.getVersionHistory(nodeWrapper.getPath());
-                        if (versionManager.isCheckedOut(nodeWrapper.getPath())) {
-                            versionManager.checkin(nodeWrapper.getPath());
-                        }
                         String labelWithWs = workspace + "_" + label;
                         if (!versionHistory.hasVersionLabel(labelWithWs)) {
                             Version version = versionManager.getBaseVersion(nodeWrapper.getPath());

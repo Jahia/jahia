@@ -2469,8 +2469,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKPOINT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    objectNode.checkin();
-                    objectNode.checkout();
+                    session.getWorkspace().getVersionManager().checkpoint(localPath);
                     return null;
                 }
             });

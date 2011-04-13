@@ -199,10 +199,10 @@
 // Tags
 //---------------------------------------------------------
 
-[jnt:tag] > nt:base, jmix:nodenameInfo, jmix:basemetadata
+[jnt:tag] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:autoPublish
  - tags (weakreference) multiple hidden < jnt:tag
 
-[jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list, jmix:basemetadata
+[jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list, jmix:basemetadata, jmix:autoPublish
  + * (jnt:tag) = jnt:tag
 
 //---------------------------------------------------------
@@ -417,7 +417,7 @@
  - j:virtualsitesFolderSkeleton (string) nofulltext
  + * (jnt:virtualsite)
 
-[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:htmlSettings
+[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:autoPublish, jmix:observable, jmix:htmlSettings
  - j:title (string) protected nofulltext primary
  - j:serverName (string) protected nofulltext
  - j:description (string) protected

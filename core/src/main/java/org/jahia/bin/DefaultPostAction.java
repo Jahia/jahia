@@ -144,7 +144,7 @@ public class DefaultPostAction extends Action {
 
             if (parameters.containsKey(Render.AUTO_CHECKIN) && ((String) ((List) parameters.get(Render.AUTO_CHECKIN)).get(
                     0)).length() > 0) {
-                newNode.checkin();
+                newNode.checkpoint();
             }
         }
 

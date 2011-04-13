@@ -117,7 +117,7 @@ public class VersioningHelper implements InitializingBean {
                 VersionIterator allVersions = versionManager.getVersionHistory(node.getPath()).getAllVersions();
                 if(allVersions.getSize()==1) {
                     // First version ever apart root version
-                    versionManager.checkin(node.getPath());
+                    versionManager.checkpoint(node.getPath());
                     String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(node.getProperty("jcr:created").getDate().getTime());
                     versionService.addVersionLabel(node,label);
                 }
@@ -135,7 +135,7 @@ public class VersioningHelper implements InitializingBean {
                 }
                 
                 session.save();
-                versionManager.checkin(node.getPath());
+                versionManager.checkpoint(node.getPath());
                 String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
                 versionService.addVersionLabel(node,label);
                 cacheManager.invalidate(session.getWorkspace().getName(), node.getPath());

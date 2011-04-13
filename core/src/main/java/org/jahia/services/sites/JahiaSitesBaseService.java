@@ -715,8 +715,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         session.save();
 
 
-        JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                false, new ArrayList<String>());
+//        JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+//                false, new ArrayList<String>());
     }
 
 

@@ -301,7 +301,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         session.save();
         if (req.getParameter(AUTO_CHECKIN) != null && req.getParameter(AUTO_CHECKIN).length() > 0) {
-            session.getWorkspace().getVersionManager().checkin(node.getPath());
+            session.getWorkspace().getVersionManager().checkpoint(node.getPath());
         }
         final String requestWith = req.getHeader("x-requested-with");
         if (req.getHeader("accept").contains("application/json") && requestWith != null &&

@@ -474,11 +474,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         ReferencesHelper.resolveCrossReferences(session, references);
                         session.save();
 
-                        for (String newNode : newNodes) {
-                            JCRPublicationService.getInstance().publishByMainId(newNode, "default", "live", null, true, null);
-                        }
+                        synchronized (this) {
+                            for (String newNode : newNodes) {
+                                JCRPublicationService.getInstance().publishByMainId(newNode, "default", "live", null, true, null);
+                            }
 
-                        JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getIdentifier(), "default", "live", null, true, null);
+                            JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getIdentifier(), "default", "live", null, true, null);
+                        }
 
                         JCRPropertyWrapper installedModules = destinationNode.getProperty("j:installedModules");
                         Value[] values = installedModules.getValues();

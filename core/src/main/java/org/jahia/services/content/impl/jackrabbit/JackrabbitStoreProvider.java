@@ -126,7 +126,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
 
     private void recurseCheckin(Node node, VersionManager versionManager) throws RepositoryException {
         if (node.isNodeType("mix:versionable")) {
-            versionManager.checkin(node.getPath());
+            versionManager.checkpoint(node.getPath());
         }
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {

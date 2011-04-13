@@ -276,7 +276,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 locationFolder.getSession().getWorkspace().getVersionManager().checkout(locationFolder.getPath());
                 JCRNodeWrapper node = locationFolder.uploadFile(filename, is, item.getContentType());
                 node.save();
-                node.checkin();
+                node.checkpoint();
                 String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(node.getProperty("jcr:created").getDate().getTime());
                 JCRVersionService.getInstance().addVersionLabel(node,label);
             } finally {

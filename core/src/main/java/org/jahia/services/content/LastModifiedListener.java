@@ -105,9 +105,9 @@ public class LastModifiedListener extends DefaultEventListener {
                         }
                         if (event.getType() == Event.NODE_ADDED) {
                             addedNodes.add(path);
-                            if(!path.contains("j:translation")) {
-                                nodes.add(StringUtils.substringBeforeLast(path,"/"));
-                            }
+//                            if(!path.contains("j:translation")) {
+//                                nodes.add(StringUtils.substringBeforeLast(path,"/"));
+//                            }
                         }
                         else {
                             nodes.add(StringUtils.substringBeforeLast(path,"/"));
@@ -143,7 +143,11 @@ public class LastModifiedListener extends DefaultEventListener {
                             }
                         }
                         for (Session jcrsession : sessions) {
-                            jcrsession.save();
+                            try {
+                                jcrsession.save();
+                            } catch (RepositoryException e) {
+                                logger.debug("Cannot update lastModification properties");
+                            }
                         }
                     }
                     return null;
@@ -151,7 +155,9 @@ public class LastModifiedListener extends DefaultEventListener {
             });
 
             if (autoPublishedIds != null && !autoPublishedIds.isEmpty()) {
-                JCRPublicationService.getInstance().publish(autoPublishedIds, "default", "live", null);
+                synchronized (this) {
+                    JCRPublicationService.getInstance().publish(autoPublishedIds, "default", "live", null);
+                }
             }
 
         } catch (RepositoryException e) {

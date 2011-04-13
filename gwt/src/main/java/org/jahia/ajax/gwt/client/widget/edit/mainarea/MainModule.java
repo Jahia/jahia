@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -209,7 +210,7 @@ public class MainModule extends Module {
                                 editLinker.getMainModule().unmask();
                                 editLinker.onModuleSelection(MainModule.this);
                                 editLinker.getSidePanel().refresh(Linker.REFRESH_WORKFLOW);
-                                switchStaticAssets(result.getStaticAssets(), node != null && !node.getSiteKey().equals(JahiaGWTParameters.getSiteKey()));
+                                switchStaticAssets(result.getStaticAssets());
                             }
 
                             @Override public void onApplicationFailure(Throwable caught) {
@@ -224,39 +225,99 @@ public class MainModule extends Module {
 
     }
 
-    private int maxLink = -1;
-    private int maxScript = -1;
+    private Map<String,Integer> maxValues = new HashMap<String, Integer>();
 
-    private void switchStaticAssets(Map<String, Set<String>> assets, boolean switchAll) {
-        int m;
-        Set<String> values = assets.get("css");
-        if (values != null) {
-            if (switchAll) {
-                m = removeAllAssets("link", "href");
-            } else {
-                m = removeUnusedAssets("link", "href", values);
-            }
-            if (maxLink == -1) maxLink = m;
-            for (String s : values) {
-                addAsset("css", s, ++maxLink);
-            }
-        }
-        values = assets.get("javascript");
-        if (values != null) {
-            m = removeUnusedAssets("script", "src", values);
-            if (maxScript == -1) maxScript = m;
-            for (String s : values) {
-                addAsset("javascript", s, ++maxScript);
-            }
-        }
+    private void switchStaticAssets(Map<String, List<String>> assets) {
+        switchStaticAssets(assets, "css", "link", "href");
+        switchStaticAssets(assets, "javascript", "script", "src");
     }
 
-    private native int removeAllAssets(String tagname, String attrname) /*-{
+    private void switchStaticAssets(Map<String, List<String>> assets, String fileType, String tagName, String tagAttribute) {
+        List oldValues = new ArrayList();
+        getAssets(tagName, tagAttribute, oldValues);
+        Element head = (Element) getHead();
+        List<String> newValues = assets.get(fileType);
+
+        Integer maxValue = oldValues.size() + 1;
+
+        if (!maxValues.containsKey(fileType)) {
+            maxValues.put(fileType, maxValue);
+        } else {
+            maxValue = maxValues.get(fileType);
+        }
+
+        int j = 0;
+
+        Element oldElement = null;
+        String oldValue = null;
+
+        for (; !newValues.isEmpty() || j<oldValues.size() ; j++) {
+            while (j < oldValues.size()) {
+                oldElement = (Element) oldValues.get(j);
+                oldValue = DOM.getElementAttribute(oldElement, tagAttribute);
+                if (!newValues.contains(oldValue)) {
+                    // Remove current element as it is not supposed to stay
+                    head.removeChild(oldElement);
+                    j++;
+                } else {
+                    break;
+                }
+            }
+            if (j < oldValues.size()) {
+                if (!newValues.isEmpty()) {
+                    String newValue = newValues.remove(0);
+                    if (newValue.equals(oldValue)) {
+                        // Elements are equal, don't change
+                    } else {
+                        Element newElem = createAsset(fileType, (maxValue++), newValue);
+                        if (newElem != null) {
+                            head.insertBefore(newElem, oldElement);
+                        }
+                        // Stay on current element for next comparison
+                        j--;
+                    }
+                } else {
+                    head.removeChild(oldElement);
+                }
+            } else {
+                Element newElem = createAsset(fileType, j, newValues.remove(0));
+                if (newElem != null) {
+                    if (oldElement != null) {
+                        head.insertAfter(newElem, oldElement);
+                        oldElement = newElem;
+                    } else {
+                        head.appendChild(newElem);
+                    }
+                }
+            }
+        }
+        maxValues.put(fileType, maxValue);
+    }
+
+    private Element createAsset(String filetype, int j, String newValue) {
+        Element newElem = null;
+        if (filetype.equals("javascript")) {
+            newElem = DOM.createElement("script");
+            newElem.setAttribute("id","staticAsset"+filetype+j);
+            newElem.setAttribute("type", "text/javascript");
+            newElem.setAttribute("src", newValue);
+        } else if (filetype.equals("css")) { //if filename is an external CSS file
+            newElem = DOM.createElement("link");
+            newElem.setAttribute("id","staticAsset"+filetype+j);
+            newElem.setAttribute("rel", "stylesheet");
+            newElem.setAttribute("type", "text/css");
+            newElem.setAttribute("href", newValue);
+        }
+
+        return newElem;
+    }
+
+    private native int getAssets(String tagname, String attrname, List results) /*-{
         var links = $doc.getElementsByTagName(tagname);
         if (links != null) {
-            for (var i=links.length-1; i>=0; i--){ //search backwards within nodelist for matching elements to remove
+            for (var i=0; i<links.length; i++){
                 if (links[i] && links[i].getAttribute("id")!=null && links[i].getAttribute("id").indexOf("staticAsset")==0) {
-                    links[i].parentNode.removeChild(links[i]) //remove element by calling parentNode.removeChild()
+                    results.@java.util.List::add(Ljava/lang/Object;)(links[i])
                 }
             }
 
@@ -264,43 +325,11 @@ public class MainModule extends Module {
         } else {
             return 0;
         }
+
     }-*/;
 
-    private native int removeUnusedAssets(String tagname, String attrname, Set values) /*-{
-        var links = $doc.getElementsByTagName(tagname);
-        if (links != null) {
-            for (var i=links.length-1; i>=0; i--){ //search backwards within nodelist for matching elements to remove
-                if (links[i] && links[i].getAttribute("id")!=null && links[i].getAttribute("id").indexOf("staticAsset")==0
-                        && !values.@java.util.Set::contains(Ljava/lang/Object;)(links[i].getAttribute(attrname))) {
-
-                    links[i].parentNode.removeChild(links[i]) //remove element by calling parentNode.removeChild()
-                } else if (links[i]) {
-                    values.@java.util.Set::remove(Ljava/lang/Object;)(links[i].getAttribute(attrname))
-                }
-            }
-
-            return links.length;
-        } else {
-            return 0;
-        }
-    }-*/;
-
-    private native void addAsset(String filetype, String filename, int i) /*-{
-        if (filetype=="javascript"){ //if filename is a external JavaScript file
-            var fileref=$doc.createElement('script')
-            fileref.setAttribute("id","staticAsset"+filetype+i)
-            fileref.setAttribute("type","text/javascript")
-            fileref.setAttribute("src", filename)
-            $doc.getElementsByTagName("head")[0].appendChild(fileref)
-        } else if (filetype=="css"){ //if filename is an external CSS file
-            var fileref=$doc.createElement("link")
-            fileref.setAttribute("id","staticAsset"+filetype+i)
-            fileref.setAttribute("rel", "stylesheet")
-            fileref.setAttribute("type", "text/css")
-            fileref.setAttribute("href", filename)
-            $doc.getElementsByTagName("head")[0].appendChild(fileref)
-        }
-
+    private native Object getHead() /*-{
+        return $doc.getElementsByTagName("head")[0];
     }-*/;
 
     public static native void evalScripts(Element element) /*-{

@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.data;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,14 +43,14 @@ import java.util.Set;
  */
 public class GWTRenderResult implements Serializable {
     private String result;
-    private Map<String,Set<String>> staticAssets;
+    private Map<String,List<String>> staticAssets;
     private String nodeTypes;
     private String name;
 
     public GWTRenderResult() {
     }
 
-    public GWTRenderResult(String result, Map<String, Set<String>> staticAssets, String nodeTypes, String name) {
+    public GWTRenderResult(String result, Map<String, List<String>> staticAssets, String nodeTypes, String name) {
         this.result = result;
         this.staticAssets = staticAssets;
         this.nodeTypes = nodeTypes;
@@ -60,7 +61,7 @@ public class GWTRenderResult implements Serializable {
         return result;
     }
 
-    public Map<String, Set<String>> getStaticAssets() {
+    public Map<String, List<String>> getStaticAssets() {
         return staticAssets;
     }
 

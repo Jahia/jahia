@@ -125,7 +125,11 @@ public class TemplateHelper {
             if (constraints == null) {
                 constraints = "";
             }
-            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(map), constraints, node.getDisplayableName());
+            Map<String, List<String>> m = new HashMap<String, List<String>>();
+            for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+                m.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
+            }
+            result = new GWTRenderResult(res, m, constraints, node.getDisplayableName());
         } catch (PathNotFoundException e) {
             throw new GWTJahiaServiceException("Not found");
         } catch (RepositoryException e) {

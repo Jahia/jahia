@@ -44,15 +44,14 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * @author toto
  * Date: Aug 5, 2010
  * Time: 6:08:37 PM
  */
 public class LastModifiedInterceptor extends BaseInterceptor {
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition)
             throws RepositoryException {
-        return definition.getDeclaringNodeType().getName().equals(Constants.MIX_LAST_MODIFIED) && node.getSession().getLocale() != null;
+        return node.getSession().getLocale() != null && definition.getDeclaringNodeType().getName().equals(Constants.MIX_LAST_MODIFIED);
     }
 
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue)

@@ -119,6 +119,12 @@ public class JCRUserNode extends JCRNodeDecorator {
     }
 
     @Override
+    public boolean hasProperty(String s) throws RepositoryException {
+        boolean b = super.hasProperty(s);
+        return b&canGetProperty(s);
+    }
+
+    @Override
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
         if (user == null) {
             user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());

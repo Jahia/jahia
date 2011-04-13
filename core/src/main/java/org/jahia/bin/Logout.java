@@ -105,6 +105,9 @@ public class Logout implements Controller {
             String redirect = request.getParameter("redirect");
             if (redirect == null) {
                 redirect = request.getHeader("referer");
+                if (redirect == null) {
+                    redirect = "";
+                }
             }
             String url = request.getServerName().startsWith(request.getContextPath()) ? redirect.substring(
                     redirect.indexOf(request.getContextPath())) : redirect;

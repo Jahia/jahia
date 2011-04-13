@@ -4,6 +4,7 @@
 <jcr:nodeProperty node="${currentNode}" name="j:node" var="reference"/>
 <jcr:nodeProperty node="${currentNode}" name="j:alternateText" var="title"/>
 <c:set var="node" value="${reference.node}"/>
+<c:url var="url" value="/missing-image.png" context="/"/>
 <c:if test="${not empty node}">
     <c:url var="url" value="${node.url}" context="/"/>
 </c:if>

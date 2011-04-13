@@ -437,4 +437,33 @@ public class URLGenerator {
         return FindUser.getFindUserServletPath();
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("URLGenerator");
+        sb.append("{base='").append(base).append('\'');
+        sb.append(", live='").append(live).append('\'');
+        sb.append(", edit='").append(edit).append('\'');
+        sb.append(", preview='").append(preview).append('\'');
+        sb.append(", contribute='").append(contribute).append('\'');
+        sb.append(", studio='").append(studio).append('\'');
+        sb.append(", find='").append(find).append('\'');
+        sb.append(", initializers='").append(initializers).append('\'');
+        sb.append(", resource=").append(resource);
+        sb.append(", context=").append(context);
+        sb.append(", languages=").append(languages);
+        sb.append(", templates=").append(templates);
+        sb.append(", templateTypes=").append(templateTypes);
+        sb.append(", templatesPath='").append(templatesPath).append('\'');
+        sb.append(", baseLive='").append(baseLive).append('\'');
+        sb.append(", baseContribute='").append(baseContribute).append('\'');
+        sb.append(", baseEdit='").append(baseEdit).append('\'');
+        sb.append(", basePreview='").append(basePreview).append('\'');
+        sb.append(", convert='").append(convert).append('\'');
+        sb.append(", myProfile='").append(myProfile).append('\'');
+        sb.append(", server='").append(server).append('\'');
+        sb.append(", login='").append(login).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

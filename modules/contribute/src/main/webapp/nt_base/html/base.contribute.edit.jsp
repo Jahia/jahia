@@ -41,7 +41,7 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<utility:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Toolbar"/>
+<utility:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Mode"/>
 <c:if test="${!renderContext.ajaxRequest}">
 <template:addResources>
     <script>

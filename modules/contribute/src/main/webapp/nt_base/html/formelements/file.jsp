@@ -75,6 +75,7 @@
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
+            submitdata : {'contributePost':'true'},
             tooltip : 'Click to edit',
             callback : function (data, status,original) {
                 var id = $(original).attr('jcr:id');

@@ -831,7 +831,11 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     @Override
     public void flushCache() {
         super.flushCache();
-        cache.flush();
-        membershipCache.flush();
+        try {
+            getCache().flush();
+            getMembershipCache().flush();
+        } catch (JahiaInitializationException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

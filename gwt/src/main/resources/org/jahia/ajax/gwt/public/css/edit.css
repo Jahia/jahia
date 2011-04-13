@@ -426,3 +426,8 @@
     background : url(images/area-liveOnly.png) top left;
     height:100%;
 }
+
+.x-form-readonly input {
+    background-color: transparent;
+    border: 0;
+}

@@ -14,7 +14,9 @@
     ${currentNode.properties.intro.string}
 </div>
 <c:forEach items="${currentNode.nodes}" var="paragraph">
-    <template:module node="${paragraph}" view="default"/>
+    <c:if test="${jcr:isNodeType(paragraph,'jnt:paragraph')}">
+        <template:module node="${paragraph}" view="default"/>
+    </c:if>
 </c:forEach>
 <c:if test="${renderContext.editMode}">
     <template:module path="*"/>

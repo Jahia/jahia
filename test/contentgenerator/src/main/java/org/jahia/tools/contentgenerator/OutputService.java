@@ -34,5 +34,13 @@ public class OutputService {
 	public void appendPageToFile(File f, PageBO page) throws IOException {
 		appendStringToFile(f, page.toString());
 	}
+	
+	public void appendPathToFile(File f, List<String> paths) throws IOException {
+		for (Iterator<String> iterator = paths.iterator(); iterator.hasNext();) {
+			String path = (String) iterator.next();
+			path = path + ",";
+			appendStringToFile(f, path);
+		}		
+	}
 
 }

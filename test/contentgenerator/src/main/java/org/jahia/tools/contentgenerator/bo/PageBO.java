@@ -3,10 +3,9 @@ package org.jahia.tools.contentgenerator.bo;
 import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.util.StringUtils;
-
 public class PageBO {
 	private Integer idPage;
+	private String uniqueName;
 	private String titleEn;
 	private String contentEn;
 	private String titleFr;
@@ -21,6 +20,10 @@ public class PageBO {
 
 	public void setIdPage(Integer idPage) {
 		this.idPage = idPage;
+	}
+
+	public String getUniqueName() {
+		return uniqueName;
 	}
 
 	public Integer getLevel() {
@@ -88,14 +91,15 @@ public class PageBO {
 		this.contentFr = pContentFr;
 		this.level = pLevel;
 		this.subPages = pSubPages;
+		this.uniqueName = "page" + pId.toString();
 	}
 	
 	public String getHeader() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("	<!-- generated page (level " + this.getLevel() + ") -->\n");
 
-		sb.append("	<page"
-				+ this.getIdPage()
+		sb.append("	<"
+				+ this.getUniqueName()
 				+ " xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:jnt=\"http://www.jahia.org/jahia/nt/1.0\" xmlns:test=\"http://www.apache.org/jackrabbit/test\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:jmix=\"http://www.jahia.org/jahia/mix/1.0\" xmlns:j=\"http://www.jahia.org/jahia/1.0\" xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:rep=\"internal\" changefreq=\"monthly\" j:templateNode=\"/sites/ACME/templates/base/events\" jcr:created=\"2011-03-29T22:51:16.184+02:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-29T22:51:35.896+02:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:vanityUrlMapped  jmix:sitemap\" jcr:primaryType=\"jnt:page\" priority=\"0.5\">\n"
 				+ "		<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
 				+ this.getTitleFr()
@@ -107,7 +111,7 @@ public class PageBO {
 				+ "			<bigText_17 j:view=\"introduction\" jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">\n"
 				+ "				<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
 				+ this.getContentFr()
-				+ " \" />v"
+				+ " \" />"
 				+ "				<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
 				+ this.getContentEn()
 				+ " \" />\n"
@@ -123,13 +127,14 @@ public class PageBO {
 				+ "			<imageReference j:node=\"/sites/ACME/files/images/banner-sections/publications.jpg\" jcr:created=\"2011-03-28T13:00:41.420-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:imageReference\" />\n"
 				+ "		</illustration>\n"
 				+ " 	<vanityUrlMapping jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrls\">"
-				+ "			<_x0025_2Fpage" + this.getIdPage() + " j:active=\"true\" j:default=\"true\" j:url=\"/page" + this.getIdPage() + "\" jcr:created=\"2011-03-30T15:13:22.874+02:00\" jcr:createdBy=\" system \" jcr:language=\"en\" jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrl\" />"
+				+ "			<_x0025_2F" + this.getUniqueName() + " j:active=\"true\" j:default=\"true\" j:url=\"/" + this.getUniqueName() + "\" jcr:created=\"2011-03-30T15:13:22.874+02:00\" jcr:createdBy=\" system \" jcr:language=\"en\" jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrl\" />"
 				+ "		</vanityUrlMapping>");
-		return sb.toString();
+  		return sb.toString();
+ 
 	}
 	
 	public String getFooter() {
-		return new String("		</page" + this.getIdPage().toString() + ">\n");
+		return new String("		</" + this.getUniqueName() + ">\n");
 	}
 
 	public String toString() {

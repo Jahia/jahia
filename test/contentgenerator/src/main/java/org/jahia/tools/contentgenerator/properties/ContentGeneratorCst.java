@@ -19,6 +19,9 @@ public final class ContentGeneratorCst {
 	public static final String OUTPUT_DIR_PROPERTY = "jahia_cg_outputDir";
 	public static final String OUTPUT_FILE_PROPERTY = "jahia_cg_outputFilename";
 	
+	public static final String CREATE_MAP_YN_PROPERTY = "jahia_cg_createMapYn";
+	
+	
 
 	/**
 	 * Default properties
@@ -33,7 +36,7 @@ public final class ContentGeneratorCst {
 	 * Configuration
 	 */
 	public static final String PROPERTIES_FILE_NAME = "jahiaContentGenerator.properties";
-	public static final Integer SQL_RECORDSET_SIZE = Integer.valueOf(2500);
+	public static final Integer SQL_RECORDSET_SIZE = Integer.valueOf(5000);
 	public static final Integer MAX_TOTAL_PAGES = Integer.valueOf(200000);
 
 	private ContentGeneratorCst() {

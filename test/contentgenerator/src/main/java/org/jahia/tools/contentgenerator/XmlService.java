@@ -2,6 +2,7 @@ package org.jahia.tools.contentgenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -10,6 +11,7 @@ import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
 import org.jahia.tools.contentgenerator.bo.SiteBO;
+import org.jfree.util.Log;
 import org.springframework.util.StringUtils;
 
 public class XmlService {
@@ -98,9 +100,36 @@ public class XmlService {
 					createSubPages(articles, currentPageIndex, export.getNbSubPagesPerPage(), export.getNbSubLevels(),
 							export.getMaxArticleIndex()));
 			outService.appendPageToFile(export.getOutputFile(), pageTopLevel);
+
+			// path
+			if (export.getCreateMap()) {
+				Log.info("Pages path are being written to the map file");
+				List<PageBO> listeTopPage = new ArrayList<PageBO>();
+				listeTopPage.add(pageTopLevel);
+
+				List<String> pagesPath = getPagesPath(listeTopPage, "/" + homePage.getUniqueName());
+				outService.appendPathToFile(export.getMapFile(), pagesPath);
+			}
+
 			logger.debug("XML code of top level page #" + i + " written in output file");
 			logger.info("Top page #" + i + " with subpages created and written to file");
 		}
 		outService.appendStringToFile(export.getOutputFile(), homePage.getFooter());
+	}
+
+	private List<String> getPagesPath(List<PageBO> pages, String path) {
+		List<String> siteMap = new ArrayList<String>();
+
+		for (Iterator<PageBO> iterator = pages.iterator(); iterator.hasNext();) {
+			PageBO page = (PageBO) iterator.next();
+			String newPath = path + "/" + page.getUniqueName();
+			logger.debug("new path: " + newPath);
+			siteMap.add(newPath);
+			if (page.getSubPages() != null) {
+				siteMap.addAll(getPagesPath(page.getSubPages(), newPath));
+			}
+		}
+
+		return siteMap;
 	}
 }

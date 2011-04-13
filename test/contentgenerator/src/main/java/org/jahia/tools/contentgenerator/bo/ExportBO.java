@@ -20,6 +20,10 @@ public class ExportBO {
 	
 	private Integer maxArticleIndex;
 	
+	private Boolean createMap;
+	
+	private File mapFile;
+	
 	public File getOutputFile() {
 		return outputFile;
 	}
@@ -82,6 +86,22 @@ public class ExportBO {
 
 	public void setMaxArticleIndex(Integer maxArticleIndex) {
 		this.maxArticleIndex = maxArticleIndex;
+	}
+
+	public Boolean getCreateMap() {
+		return createMap;
+	}
+
+	public void setCreateMap(Boolean createMap) {
+		this.createMap = createMap;
+	}
+
+	public File getMapFile() {
+		return mapFile;
+	}
+
+	public void setMapFile(File mapFile) {
+		this.mapFile = mapFile;
 	}
 
 	public ExportBO() {

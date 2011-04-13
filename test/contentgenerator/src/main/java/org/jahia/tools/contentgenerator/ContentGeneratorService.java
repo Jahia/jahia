@@ -43,6 +43,9 @@ public class ContentGeneratorService {
 		Integer nbSubLevels;
 
 		File outputFile;
+
+		Boolean createMap;
+		File mapFile = null;
 		if (properties == null) {
 			logger.info("Properties not found, default properties used.");
 			nbPagesTopLevel = ContentGeneratorCst.NB_PAGES_TOP_LEVEL_DEFAULT;
@@ -50,6 +53,8 @@ public class ContentGeneratorService {
 			nbSubLevels = ContentGeneratorCst.NB_SUB_LEVELS_DEFAULT;
 			/** @FIXM: use default variable */
 			outputFile = new File("output.xml");
+
+			createMap = Boolean.FALSE;
 		} else {
 			nbPagesTopLevel = Integer.valueOf(properties.getProperty(ContentGeneratorCst.NB_PAGES_TOP_LEVEL));
 			nbSubPagesPerPage = Integer.valueOf(properties.getProperty(ContentGeneratorCst.NB_SUBPAGES_PER_PAGE));
@@ -60,12 +65,19 @@ public class ContentGeneratorService {
 			String pathSeparator = System.getProperty("file.separator");
 			String outputFilePath = outputDir + pathSeparator + filename;
 			outputFile = new File(outputFilePath);
+
+			createMap = new Boolean(properties.getProperty(ContentGeneratorCst.CREATE_MAP_YN_PROPERTY));
+			if (createMap) {
+				mapFile = new File(outputDir + pathSeparator + "jahiaGeneratedExport_map.csv");
+			}
 		}
 
 		export.setNbPagesTopLevel(nbPagesTopLevel);
 		export.setNbSubLevels(nbSubLevels);
 		export.setNbSubPagesPerPage(nbSubPagesPerPage);
 		export.setOutputFile(outputFile);
+		export.setCreateMap(createMap);
+		export.setMapFile(mapFile);
 
 		Integer totalPages = getTotalNumberOfPagesNeeded(nbPagesTopLevel, nbSubLevels, nbSubPagesPerPage);
 		export.setTotalPages(totalPages);
@@ -87,6 +99,9 @@ public class ContentGeneratorService {
 		try {
 			xmlManager.createTopPages(export, articles);
 			logger.info("XML import file available here: " + export.getOutputFile().getAbsolutePath());
+			if (export.getCreateMap()) {
+				logger.info("Paths list available here: " + export.getMapFile().getAbsolutePath());
+			}
 
 		} catch (IOException e) {
 			logger.error("Error while writing to output file: ", e);

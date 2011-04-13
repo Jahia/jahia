@@ -273,7 +273,7 @@
             </user-edit-details>
             <user-tasks j:applyOn="jnt:user" j:defaultTemplate="true" j:hiddenTemplate="false" j:priority="20" j:requireLoggedUser="false" j:requirePrivilegedUser="true" j:requiredPermissions="/permissions/repository-permissions/jcr:all_default/jcr:write_default" jcr:primaryType="jnt:contentTemplate">
               <pagecontent j:id="user-tasks" jcr:mixinTypes="jmix:customSkin" jcr:primaryType="jnt:contentList">
-                <my-tasks icon="/templateSets/templates-system/templates/files/icons/mybookmarks.png" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                <my-tasks icon="/templateSets/templates-system/templates/files/icons/my-tasks.png" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My tasks" />
                   <currentUserTasks jcr:primaryType="jnt:currentUserTasks" viewUserTasks="true" viewWorkflowTasks="true" />
                 </my-tasks>

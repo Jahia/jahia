@@ -163,7 +163,7 @@ public class JahiaArchiveFileHandler {
     }
 
     /**
-     * Decompress the file in a gived folder
+     * Decompress the file in a given folder
      *
      * @param (String) path
      */

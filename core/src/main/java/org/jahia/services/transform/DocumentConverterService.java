@@ -218,7 +218,7 @@ public class DocumentConverterService implements ApplicationContextAware {
 
         InputStream is = null;
         try {
-            is = new FileInputStream(file);
+            is = new BufferedInputStream(new FileInputStream(file));
             IOUtils.copy(is, os);
         } catch (IOException ioe) {
             logger.warn("File " + file.getName() + " can't be written into outputStream", ioe);

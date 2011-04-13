@@ -47,7 +47,7 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -113,7 +113,7 @@ public class ImportJob extends BackgroundJob {
                     item.dispose();
                 }
             } else if ("application/xml".equals(item.getContentType()) || "text/xml".equals(item.getContentType())) {
-                FileInputStream is = item.getStream();
+                InputStream is = item.getStream();
                 try {
                     importExport.importXML(parentPath, is, false);
                 } finally {

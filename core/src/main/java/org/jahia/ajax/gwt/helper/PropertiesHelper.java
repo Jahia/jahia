@@ -53,7 +53,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -295,7 +295,7 @@ public class PropertiesHelper {
                                             Node content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
 
                                             content.setProperty(Constants.JCR_MIMETYPE, fileItem.getContentType());
-                                            FileInputStream is = fileItem.getStream();
+                                            InputStream is = fileItem.getStream();
                                             try {
                                                 content.setProperty(Constants.JCR_DATA, is);
                                             } finally {

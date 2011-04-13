@@ -41,6 +41,7 @@
 
 package org.jahia.utils.properties;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -55,6 +57,7 @@ import java.util.ArrayList;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
 
@@ -127,10 +130,10 @@ public class PropertiesManager
 	 */
     private void loadProperties()
     {
-    	FileInputStream inputStream = null;
+    	InputStream inputStream = null;
         try
         {
-            inputStream =  new FileInputStream( propertiesFilePath );
+            inputStream =  new BufferedInputStream(new FileInputStream( propertiesFilePath ));
             properties  = new Properties();
             properties.load( inputStream );
 
@@ -139,12 +142,7 @@ public class PropertiesManager
         } catch (SecurityException se) {
             logger.error( "SecurityException on file ["+propertiesFilePath+"]", se);
         } finally {
-        	try {
-	        	inputStream.close();
-    	    	inputStream = null;
-    	    } catch (Exception t){
-                logger.error("Error closing input stream for properties file " + propertiesFilePath, t);
-    	    }
+            IOUtils.closeQuietly(inputStream);
         }
     } // end loadProperties
 

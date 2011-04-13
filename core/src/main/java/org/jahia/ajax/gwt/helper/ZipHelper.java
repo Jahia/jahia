@@ -76,7 +76,7 @@ public class ZipHelper {
         File tmp = null;
         try {
             tmp = File.createTempFile("jahiazip", null);
-            final ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(tmp));
+            final ZipOutputStream zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(tmp)));
             final byte[] buffer = new byte[4096];
             String parentDir = parentDirectory.getPath();
             if (!parentDir.endsWith("/")) {
@@ -93,7 +93,7 @@ public class ZipHelper {
                     missedPaths.add(file.getPath());
                 }
             }
-            InputStream is = new FileInputStream(tmp);
+            InputStream is = new BufferedInputStream(new FileInputStream(tmp));
             try {
                 zout.close();
                 JCRNodeWrapper result = parentDirectory.uploadFile(zipname, is, "application/zip");

@@ -52,7 +52,6 @@ import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -151,7 +150,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                         case EXISTS:
                             File f = File.createTempFile("upload", null);
                             InputStream is = item.getInputStream();
-                            FileOutputStream os = new FileOutputStream(f);
+                            OutputStream os = new BufferedOutputStream(new FileOutputStream(f));
                             try {
                                 IOUtils.copy(is, os);
                             } finally {
@@ -195,7 +194,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 printWriter.write("<html><body>");
                 File f = File.createTempFile("upload", ".tmp");
                 InputStream is = fileItem.getInputStream();
-                FileOutputStream os = new FileOutputStream(f);
+                OutputStream os = new BufferedOutputStream(new FileOutputStream(f));
                 try {
                     IOUtils.copy(is, os);
                 } finally {
@@ -311,8 +310,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             return originalFileName;
         }
 
-        public FileInputStream getStream() throws FileNotFoundException {
-            return new FileInputStream(file);
+        public InputStream getStream() throws FileNotFoundException {
+            return new BufferedInputStream(new FileInputStream(file));
         }
 
         public String getContentType() {

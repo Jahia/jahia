@@ -69,12 +69,15 @@ import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.*;
 
@@ -134,7 +137,7 @@ public final class JCRContentUtils {
         } else if (objectValue instanceof byte[] || objectValue instanceof File) {
             InputStream is = null;
             try {
-                is = objectValue instanceof File ? new FileInputStream((File) objectValue)
+                is = objectValue instanceof File ? new BufferedInputStream(new FileInputStream((File) objectValue))
                         : new ByteArrayInputStream((byte[]) objectValue);
                 return factory.createValue(factory.createBinary(is));
             } catch (Exception e) {
@@ -185,7 +188,7 @@ public final class JCRContentUtils {
         if (is == null) {
             throw new IllegalArgumentException("Provided node has no file content");
         }
-        FileOutputStream os = new FileOutputStream(targetFile);
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(targetFile));
         try {
             IOUtils.copy(is, os);
         } finally {
@@ -486,6 +489,7 @@ public final class JCRContentUtils {
                 name = "{}" + name;
             }
         }
+        
         return name;
     }    
 

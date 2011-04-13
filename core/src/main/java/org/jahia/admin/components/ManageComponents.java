@@ -34,9 +34,11 @@ package org.jahia.admin.components;
 
 import static org.jahia.bin.JahiaAdministration.JSP_PATH;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Set;
@@ -50,7 +52,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.jahia.admin.AbstractAdministrationModule;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ParamBean;
@@ -153,15 +154,16 @@ public class ManageComponents extends AbstractAdministrationModule {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required parameter war is not found in the request");
             return;
         }
-        FileInputStream is = null;
+        InputStream is = null;
         try {
             response.setContentType("application/zip");
             response.setHeader("Content-Disposition", "attachment; filename=\"" + warName + "\"");
 
-            is = new FileInputStream(war);
+            is = new BufferedInputStream(new FileInputStream(war));
             IOUtils.copy(is, response.getOutputStream());
         } finally {
             IOUtils.closeQuietly(is);
+            FileUtils.deleteQuietly(war);
         }
     }
 

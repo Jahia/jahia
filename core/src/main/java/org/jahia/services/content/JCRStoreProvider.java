@@ -57,7 +57,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.ObservationManager;
@@ -327,7 +326,7 @@ public class JCRStoreProvider {
                 workspace.getNodeTypeManager().getNodeType("jmix:droppableContent");
 
                 if (f.exists()) {
-                    FileInputStream stream = new FileInputStream(f);
+                    InputStream stream = new BufferedInputStream(new FileInputStream(f));
                     try {
                         p.load(stream);
                     } finally {
@@ -348,7 +347,7 @@ public class JCRStoreProvider {
             }
 
             if (needUpdate) {
-                FileOutputStream out = new FileOutputStream(f);
+                OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
                 try {
                     p.store(out, "");
                 } finally {
@@ -472,7 +471,7 @@ public class JCRStoreProvider {
             File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
             Properties p = new Properties();
             if (f.exists()) {
-                FileInputStream stream = new FileInputStream(f);
+                InputStream stream = new BufferedInputStream(new FileInputStream(f));
                 try {
                     p.load(stream);
                 } finally {
@@ -481,7 +480,7 @@ public class JCRStoreProvider {
             }
 
             if (deployDefinitions(systemId, p)) {
-                FileOutputStream out = new FileOutputStream(f);
+                OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
                 try {
                     p.store(out, "");
                 } finally {

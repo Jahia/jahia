@@ -52,6 +52,8 @@ import com.google.common.collect.ImmutableSet;
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -453,7 +455,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
             return false;
         }
         if (zis == null) {
-            zis = new NoCloseZipInputStream(new FileInputStream(archive));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(archive)));
             nextEntry = zis.getNextEntry();
         }
         String path = pathes.peek();
@@ -467,7 +469,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         if (fileIndex != -1) {
             if (fileList.indexOf("/" + nextEntry.getName().replace('\\', '/')) > fileIndex) {
                 zis.reallyClose();
-                zis = new NoCloseZipInputStream(new FileInputStream(archive));
+                zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(archive)));
             }
             do {
                 nextEntry = zis.getNextEntry();

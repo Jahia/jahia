@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -870,7 +871,7 @@ public class ContentManagerHelper {
                     }
                 default:
                     GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
-                    FileInputStream is = null;
+                    InputStream is = null;
                     try {
                         is = item.getStream();
                         parent.uploadFile(newName, is, item.getContentType());
@@ -953,7 +954,7 @@ public class ContentManagerHelper {
             File f = File.createTempFile("templateSet", ".war");
             File templateDir = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
 
-            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(f));
+            ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
             zip(templateDir, templateDir, zos);
             zos.close();
 
@@ -969,12 +970,16 @@ public class ContentManagerHelper {
             if (!parent.isCheckedOut()) {
                 parent.checkout();
             }
-            JCRNodeWrapper res = parent.uploadFile(moduleName + ".war", new FileInputStream(f), "application/x-zip");
-            session.save();
+            InputStream is = new BufferedInputStream(new FileInputStream(f));
+            try {
+                JCRNodeWrapper res = parent.uploadFile(moduleName + ".war", is, "application/x-zip");
+                session.save();
 
-            f.delete();
-
-            return navigation.getGWTJahiaNode(res);
+                return navigation.getGWTJahiaNode(res);
+            } finally {
+                IOUtils.closeQuietly(is);
+                FileUtils.deleteQuietly(f);
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (IOException e) {
@@ -990,9 +995,12 @@ public class ContentManagerHelper {
             if (file.isFile()) {
                 ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1).replace("\\", "/"));
                 zos.putNextEntry(ze);
-                final FileInputStream input = new FileInputStream(file);
-                IOUtils.copy(input, zos);
-                input.close();
+                final InputStream input = new BufferedInputStream(new FileInputStream(file));
+                try {
+                    IOUtils.copy(input, zos);
+                } finally {
+                    IOUtils.closeQuietly(input);
+                }
             }
 
             if (file.isDirectory()) {

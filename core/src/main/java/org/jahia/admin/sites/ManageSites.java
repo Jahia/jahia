@@ -1730,33 +1730,36 @@ public class ManageSites extends AbstractAdministrationModule {
             ZipInputStream zis = null;
             try {
                 Properties exportProps = new Properties();
-                zis = new ZipInputStream(new FileInputStream(f));
+                zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(f)));
                 ZipEntry z;
                 Map<File, String> imports = new HashMap<File, String>();
                 List<File> importList = new ArrayList<File>();
                 while ((z = zis.getNextEntry()) != null) {
                     File i = File.createTempFile("import", ".zip");
-                    OutputStream os = new FileOutputStream(i);
-                    IOUtils.copy(zis, os);
-                    os.close();
+                    OutputStream os = new BufferedOutputStream(new FileOutputStream(i));
+                    try {
+                        IOUtils.copy(zis, os);
+                    } finally {
+                        IOUtils.closeQuietly(os);
+                    }
 
                     String n = z.getName();
                     if (n.equals("export.properties")) {
-                        FileInputStream is = new FileInputStream(i);
+                        InputStream is = new BufferedInputStream(new FileInputStream(i));
                         try {
                             exportProps.load(is);
                         } finally {
                             IOUtils.closeQuietly(is);
-                            i.delete();
+                            FileUtils.deleteQuietly(i);
                         }
                         jParams.setAttribute("exportProps", exportProps);
                     } else if (n.equals("classes.jar")) {
-                        i.delete();
+                        FileUtils.deleteQuietly(i);
                     } else if (n.equals("site.properties") || ((n.startsWith("export_") && n.endsWith(".xml")))) {
                         // this is a single site import, stop everything and import
-                        i.delete();
+                        FileUtils.deleteQuietly(i);
                         for (File file : imports.keySet()) {
-                            file.delete();
+                            FileUtils.deleteQuietly(file);
                         }
                         imports.clear();
                         importList.clear();
@@ -1820,7 +1823,7 @@ public class ManageSites extends AbstractAdministrationModule {
             importInfos.put("type", "files");
         } else {
             ZipEntry z;
-            ZipInputStream zis2 = new ZipInputStream(new FileInputStream(i));
+            ZipInputStream zis2 = new ZipInputStream(new BufferedInputStream(new FileInputStream(i)));
             boolean isSite = false;
             boolean isLegacySite = false;
             while ((z = zis2.getNextEntry()) != null) {

@@ -376,11 +376,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 File defaultTpl = new File(settingsBean.getJahiaTemplatesDiskPath() + "/default/jnt_template/html/template.jsp");
                 if (defaultTpl.exists()) {
                     File out = new File(tmplRootFolder, "jnt_template/html/template."+moduleName+".jsp");
-                    FileInputStream source = null;
-                    FileOutputStream target = null;
+                    InputStream source = null;
+                    OutputStream target = null;
                     try {
-                    	source = new FileInputStream(defaultTpl);
-                    	target = new FileOutputStream(out);
+                    	source = new BufferedInputStream(new FileInputStream(defaultTpl));
+                    	target = new BufferedOutputStream(new FileOutputStream(out));
                         IOUtils.copy(source, target);
                     } catch (IOException e) {
                         logger.error(e.getMessage(), e);
@@ -475,11 +475,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         session.save();
 
                         synchronized (this) {
-                            for (String newNode : newNodes) {
-                                JCRPublicationService.getInstance().publishByMainId(newNode, "default", "live", null, true, null);
-                            }
+                        for (String newNode : newNodes) {
+                            JCRPublicationService.getInstance().publishByMainId(newNode, "default", "live", null, true, null);
+                        }
 
-                            JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getIdentifier(), "default", "live", null, true, null);
+                        JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getIdentifier(), "default", "live", null, true, null);
                         }
 
                         JCRPropertyWrapper installedModules = destinationNode.getProperty("j:installedModules");

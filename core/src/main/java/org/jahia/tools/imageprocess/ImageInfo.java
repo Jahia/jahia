@@ -46,6 +46,7 @@
 
 
 
+import java.io.BufferedInputStream;
 import java.io.DataInput;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -1026,7 +1027,7 @@ public class ImageInfo {
                               if (name.startsWith("http://")) {
                                     in = new URL(name).openConnection().getInputStream();
                               } else {
-                                    in = new FileInputStream(name);
+                                    in = new BufferedInputStream(new FileInputStream(name));
                               }
                               run(name, in, imageInfo, verbose);
                               in.close();

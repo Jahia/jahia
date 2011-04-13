@@ -51,6 +51,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.web.context.ServletContextAware;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -408,7 +409,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 if (imp.toLowerCase().endsWith(".xml")) {
                     InputStream is = null;
                     try {
-                        is = new FileInputStream(importFile);
+                        is = new BufferedInputStream(new FileInputStream(importFile));
                         importExportService.importXML(targetPath, is, true);
                     } finally {
                         IOUtils.closeQuietly(is);

@@ -47,8 +47,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -123,7 +123,7 @@ public class VersioningHelper implements InitializingBean {
                 }
                 versionManager.checkout(node.getPath());
                 GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
-                FileInputStream is = null;
+                InputStream is = null;
                 try {
                     is = item.getStream();
                     node.getFileContent().uploadFile(is, item.getContentType());

@@ -11,9 +11,13 @@ import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +54,14 @@ public class ImageMagickImageService implements JahiaImageService {
     public Image getImage(JCRNodeWrapper node) throws IOException, RepositoryException {
         File tmp = File.createTempFile("image", "tmp");
         Node contentNode = node.getNode(Constants.JCR_CONTENT);
-        IOUtils.copy(contentNode.getProperty(Constants.JCR_DATA).getStream(), new FileOutputStream(tmp));
+        InputStream is = contentNode.getProperty(Constants.JCR_DATA).getStream();
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(tmp));
+        try {
+            IOUtils.copy(is, os);
+        } finally {
+            IOUtils.closeQuietly(os);
+            IOUtils.closeQuietly(is);
+        }
         return new ImageMagickImage(tmp, node.getPath());
     }
 

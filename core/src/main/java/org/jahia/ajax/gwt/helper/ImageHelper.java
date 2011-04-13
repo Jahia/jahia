@@ -14,8 +14,10 @@ import org.jahia.services.image.JahiaImageService;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.slf4j.Logger;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class ImageHelper {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ImageHelper.class);
@@ -43,7 +45,7 @@ public class ImageHelper {
             File f = File.createTempFile("image", null);
             imageService.cropImage(image, f, top, left, width, height);
 
-            FileInputStream fis = new FileInputStream(f);
+            InputStream fis = new BufferedInputStream(new FileInputStream(f));
             try {
                 node.getParent().uploadFile(target, fis, node.getFileContent().getContentType());
                 session.save();
@@ -71,7 +73,7 @@ public class ImageHelper {
             File f = File.createTempFile("image", null);
             imageService.resizeImage(image, f, width, height);
 
-            FileInputStream fis = new FileInputStream(f);
+            InputStream fis = new BufferedInputStream(new FileInputStream(f));
             try {
                 node.getParent().uploadFile(target, fis, node.getFileContent().getContentType());
                 session.save();
@@ -99,7 +101,7 @@ public class ImageHelper {
             File f = File.createTempFile("image", null);
             imageService.rotateImage(image, f, true);
 
-            FileInputStream fis = new FileInputStream(f);
+            InputStream fis = new BufferedInputStream(new FileInputStream(f));
             try {
                 node.getParent().uploadFile(target, fis, node.getFileContent().getContentType());
                 session.save();

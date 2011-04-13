@@ -49,10 +49,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -183,8 +185,7 @@ final class JahiaTemplatesPackageHandler {
         try {
             File manifestFile = new File(file, "META-INF/MANIFEST.MF");
             if (manifestFile.exists()) {
-                FileInputStream manifestStream = new FileInputStream(
-                        manifestFile);
+                InputStream manifestStream = new BufferedInputStream(new FileInputStream(manifestFile), 1024);
                 Manifest manifest = new Manifest(manifestStream);
                 IOUtils.closeQuietly(manifestStream);
                 String packageName = (String) manifest.getMainAttributes().get(new Attributes.Name("package-name"));

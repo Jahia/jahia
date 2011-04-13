@@ -165,7 +165,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 JCRNodeWrapper dest = session.getNode("/imports");
                                 for (File file : files) {
                                     try {
-                                        FileInputStream is = new FileInputStream(file);
+                                        InputStream is = new BufferedInputStream(new FileInputStream(file));
                                         try {
                                             dest.uploadFile(file.getName(), is,
                                                     JahiaContextLoaderListener.getServletContext().getMimeType(
@@ -515,7 +515,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         NoCloseZipInputStream zis;
         if (sizes.containsKey(USERS_XML)) {
             // Import users first
-            zis = new NoCloseZipInputStream(new FileInputStream(file));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -542,7 +542,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         if (sizes.containsKey(REPOSITORY_XML)) {
             // Import repository content
-            zis = new NoCloseZipInputStream(new FileInputStream(file));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -580,7 +580,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 sizes.containsKey(CATEGORIES_XML)|| sizes.containsKey(SITE_PERMISSIONS_XML) ||
                 sizes.containsKey(DEFINITIONS_CND)|| sizes.containsKey(DEFINITIONS_MAP)
                 ) {
-            zis = new NoCloseZipInputStream(new FileInputStream(file));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -656,7 +656,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             // Old import
             JCRNodeWrapper siteFolder = jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/sites/" + site.getSiteKey());
 
-            zis = new NoCloseZipInputStream(new FileInputStream(file));
+            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -889,7 +889,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public List<String[]> importUsers(File file) throws IOException {
-        FileInputStream is = new FileInputStream(file);
+        InputStream is = new BufferedInputStream(new FileInputStream(file));
         try {
             return importUsers(is, new UsersImportHandler());
         } finally {
@@ -908,7 +908,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private List<String[]> importUsersFromZip(File file, UsersImportHandler usersImportHandler)
             throws IOException {
-        NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
+        NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
         List<String[]> userProps = null;
         try {
             while (true) {
@@ -975,15 +975,19 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
             IOUtils.copy(content, fileOutputStream);
             fileOutputStream.close();
-            FileInputStream inputStream = new FileInputStream(tempFile);
-            int format = detectXmlFormat(inputStream);
-            inputStream.close();
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(tempFile));
+            int format;
+            try {
+                format = detectXmlFormat(inputStream);
+            } finally {
+                IOUtils.closeQuietly(inputStream);
+            }
 
             switch (format) {
                 case XMLFormatDetectionHandler.JCR_DOCVIEW: {
                     if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
                         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null);
-                        InputStream is = new FileInputStream(tempFile);
+                        InputStream is = new BufferedInputStream(new FileInputStream(tempFile));
                         try {
                             session.importXML(parentNodePath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                         } finally {
@@ -996,7 +1000,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 InputStream is = null;
                                 try {
-                                    is = new FileInputStream(contentFile);
+                                    is = new BufferedInputStream(new FileInputStream(contentFile));
                                     session.importXML(parentNodePath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, noRoot);
                                     session.save(JCRObservationManager.IMPORT);
                                 } catch (IOException e) {
@@ -1017,7 +1021,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 case XMLFormatDetectionHandler.CATEGORIES: {
                     Category cat = categoryService.getCategoryByPath(parentNodePath);
-                    FileInputStream is = new FileInputStream(tempFile);
+                    InputStream is = new BufferedInputStream(new FileInputStream(tempFile));
                     try {
                         importCategories(cat, is);
                     } finally {
@@ -1066,7 +1070,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
 //        if (sizes.containsKey(REPOSITORY_XML)) {
         // Import repository content
-        zis = new NoCloseZipInputStream(new FileInputStream(file));
+        zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
         try {
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();
@@ -1094,7 +1098,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void getFileList(File file, Map<String, Long> sizes, List<String> fileList) throws IOException {
-        NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
+        NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
         try {
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();

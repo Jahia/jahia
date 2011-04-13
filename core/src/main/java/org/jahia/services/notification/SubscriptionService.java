@@ -52,6 +52,8 @@ import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -431,7 +433,7 @@ public class SubscriptionService {
         InputStream is = null;
         CSVReader reader = null;
         try {
-            is = new FileInputStream(subscribersCSVFile);
+            is = new BufferedInputStream(new FileInputStream(subscribersCSVFile));
             char separator = ',';
             reader = new CSVReader(new InputStreamReader(is, "UTF-8"), separator);
             String[] columns = reader.readNext();
@@ -443,7 +445,7 @@ public class SubscriptionService {
                 // semicolon is used as a separator
                 reader.close();
                 IOUtils.closeQuietly(is);
-                is = new FileInputStream(subscribersCSVFile);
+                is = new BufferedInputStream(new FileInputStream(subscribersCSVFile));
                 separator = ';';
                 reader = new CSVReader(new InputStreamReader(is, "UTF-8"), separator);
                 columns = reader.readNext();

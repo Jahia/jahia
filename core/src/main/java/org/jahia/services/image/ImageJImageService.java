@@ -41,11 +41,11 @@ public class ImageJImageService  implements JahiaImageService {
 
     public Image getImage(JCRNodeWrapper node) throws IOException, RepositoryException {
         File tmp = null;
-        FileOutputStream os = null;
+        OutputStream os = null;
         try {
             tmp = File.createTempFile("image", null);
             Node contentNode = node.getNode(Constants.JCR_CONTENT);
-            os = new FileOutputStream(tmp);
+            os = new BufferedOutputStream(new FileOutputStream(tmp));
             InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
             try {
                 IOUtils.copy(is, os);

@@ -176,17 +176,17 @@ public class RulesListener extends DefaultEventListener {
             if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
                 ObjectInputStream ois = null;
                 try {
-                	ois = new ObjectInputStream(new FileInputStream(pkgFile));
-                	Package pkg = (Package) ois.readObject();
+                    ois = new ObjectInputStream(new FileInputStream(pkgFile));
+                    Package pkg = (Package) ois.readObject();
                     if (ruleBase.getPackage(pkg.getName()) != null) {
                         ruleBase.removePackage(pkg.getName());
                     }
                     ruleBase.addPackage(pkg);
                 } finally {
-                	IOUtils.closeQuietly(ois);
+                    IOUtils.closeQuietly(ois);
                 }
             } else {
-                drl = new InputStreamReader(new FileInputStream(dsrlFile));
+                drl = new InputStreamReader(new BufferedInputStream(new FileInputStream(dsrlFile)));
 
                 Properties properties = new Properties();
                 properties.setProperty("drools.dialect.java.compiler", "JANINO");

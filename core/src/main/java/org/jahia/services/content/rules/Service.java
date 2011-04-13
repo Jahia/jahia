@@ -32,6 +32,7 @@
 
 package org.jahia.services.content.rules;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
@@ -255,32 +256,43 @@ public class Service extends JahiaService {
             List<File> importList = new ArrayList<File>();
             while ((z = zis.getNextEntry()) != null) {
                 File i = File.createTempFile("import", ".zip");
-                OutputStream os = new FileOutputStream(i);
-                byte[] buf = new byte[4096];
-                int r;
-                while ((r = zis.read(buf)) > 0) {
-                    os.write(buf, 0, r);
+                OutputStream os = new BufferedOutputStream(new FileOutputStream(i));
+                try {
+                    IOUtils.copy(zis, os);
+                } finally {
+                    IOUtils.closeQuietly(os);
                 }
-                os.close();
 
                 String n = z.getName();
                 if (n.equals("export.properties")) {
-                    exportProps.load(new FileInputStream(i));
-                    i.delete();
-
+                    InputStream is = null;
+                    try {
+                        is = new BufferedInputStream(new FileInputStream(i), 1024);
+                        exportProps.load(is);
+                    } finally {
+                        IOUtils.closeQuietly(is);
+                        FileUtils.deleteQuietly(i);
+                    }
                 } else if (n.equals("classes.jar")) {
-                    i.delete();
+                    FileUtils.deleteQuietly(i);
                 } else if (n.equals("site.properties") || ((n.startsWith("export_") && n.endsWith(".xml")))) {
                     // this is a single site import, stop everything and import
-                    i.delete();
+                    FileUtils.deleteQuietly(i);
                     for (File file : imports.keySet()) {
-                        file.delete();
+                        FileUtils.deleteQuietly(file);
                     }
                     imports.clear();
                     importList.clear();
                     File tempFile = File.createTempFile("import", ".zip");
-                    IOUtils.copy(contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream(), new FileOutputStream(
-                            tempFile));
+                    InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
+                    OutputStream tos = new BufferedOutputStream(new FileOutputStream(tempFile));
+                    try {
+                        IOUtils.copy(is, tos);    
+                    } finally {
+                        IOUtils.closeQuietly(is);
+                        IOUtils.closeQuietly(tos);
+                    }
+                    
                     imports.put(tempFile, name);
                     importList.add(tempFile);
                     break;
@@ -335,22 +347,26 @@ public class Service extends JahiaService {
             importInfos.put("type", "xml");
         } else {
             ZipEntry z;
-            ZipInputStream zis2 = new ZipInputStream(new FileInputStream(i));
+            ZipInputStream zis2 = new ZipInputStream(new BufferedInputStream(new FileInputStream(i)));
             boolean isSite = false;
             boolean isLegacySite = false;
-            while ((z = zis2.getNextEntry()) != null) {
-                if ("site.properties".equals(z.getName())) {
-                    Properties p = new Properties();
-                    p.load(zis2);
-                    zis2.closeEntry();
-                    importInfos.putAll(p);
-                    importInfos.put("templates", importInfos.containsKey("templatePackageName") ? importInfos.get(
-                            "templatePackageName") : "");
-                    importInfos.put("oldsitekey", importInfos.get("sitekey"));
-                    isSite = true;
-                } else if (z.getName().startsWith("export_")) {
-                    isLegacySite = true;
+            try {
+                while ((z = zis2.getNextEntry()) != null) {
+                    if ("site.properties".equals(z.getName())) {
+                        Properties p = new Properties();
+                        p.load(zis2);
+                        zis2.closeEntry();
+                        importInfos.putAll(p);
+                        importInfos.put("templates", importInfos.containsKey("templatePackageName") ? importInfos.get(
+                                "templatePackageName") : "");
+                        importInfos.put("oldsitekey", importInfos.get("sitekey"));
+                        isSite = true;
+                    } else if (z.getName().startsWith("export_")) {
+                        isLegacySite = true;
+                    }
                 }
+            } finally {
+                IOUtils.closeQuietly(zis2);
             }
             importInfos.put("isSite", Boolean.valueOf(isSite));
             // todo import ga parameters

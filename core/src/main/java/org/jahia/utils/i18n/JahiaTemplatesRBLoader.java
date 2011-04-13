@@ -39,6 +39,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -157,7 +158,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                 try {
                     File file = new File(Jahia.getSettings().getClassDiskPath(), fileName);
                     if (file.exists()) {
-                    	return new FileInputStream(file);
+                    	return new BufferedInputStream(new FileInputStream(file));
                     }
                 } catch (FileNotFoundException e) {
                     logger.warn(e.getMessage(), e);

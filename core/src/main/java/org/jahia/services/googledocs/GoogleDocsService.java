@@ -32,6 +32,7 @@
 
 package org.jahia.services.googledocs;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -220,10 +221,10 @@ public class GoogleDocsService {
      * @throws ServiceException in case of Google Data API errors
      */
     public void downloadFile(String exportUrl, File file) throws IOException, MalformedURLException, ServiceException {
-        FileOutputStream outStream = null;
+        OutputStream outStream = null;
 
         try {
-            outStream = new FileOutputStream(file);
+            outStream = new BufferedOutputStream(new FileOutputStream(file));
             downloadFile(exportUrl, outStream);
         } finally {
             IOUtils.closeQuietly(outStream);

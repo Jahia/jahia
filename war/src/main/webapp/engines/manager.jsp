@@ -13,6 +13,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <c:set var="cfg" value="${functions:default(param.conf, 'contentmanager')}"/>
 <head>
+    <fmt:message key="label.${fn:escapeXml(cfg)}" var="title"/>
+    <c:if test="${cfg == 'contentmanager'}">
+        <fmt:message key="label.repositoryExplorer" var="title"/>
+    </c:if>
     <title><fmt:message key="label.${fn:escapeXml(cfg)}"/></title>
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit standalone="true"/>

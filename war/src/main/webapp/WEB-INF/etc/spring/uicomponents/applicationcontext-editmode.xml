@@ -131,6 +131,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Logout"/>
+                                    <ref bean="Toolbar.Item.Start"/>
                                 </list>
                             </property>
                         </bean>

@@ -660,7 +660,7 @@ public class WorkflowService {
     public Collection<WorkflowRule> getWorkflowRules(JCRNodeWrapper objectNode, Locale locale) {
         try {
             List<WorkflowRule> rules = new ArrayList<WorkflowRule>();
-            recurseonRules(rules, objectNode);
+            recurseOnRules(rules, objectNode);
             return rules;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -668,7 +668,7 @@ public class WorkflowService {
         return null;
     }
 
-    private void recurseonRules(List<WorkflowRule> results, Node n)
+    private void recurseOnRules(List<WorkflowRule> results, Node n)
             throws RepositoryException {
         String defPath = null;
         try {

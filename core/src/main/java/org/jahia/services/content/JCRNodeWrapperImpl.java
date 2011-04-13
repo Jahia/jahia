@@ -92,7 +92,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected Map<Locale, Node> i18NobjectNodes = null;
 
-    private transient Map<String, String> propertiesAsString;
     private static final String REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME = "j:referenceNodeIdentifiers";
     private static final String REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:referencePropertyNames";
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
@@ -3149,10 +3148,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean hasTranslations() throws RepositoryException {
         NodeIterator ni = objectNode.getNodes();
         boolean translated = false;
-        while (!translated && ni.hasNext()) {
-            Node n = (Node) ni.next();
+        while (ni.hasNext()) {
+            Node n = ni.nextNode();
             if (n.getName().startsWith("j:translation_")) {
                 translated = true;
+                break;
             }
         }
         return translated;

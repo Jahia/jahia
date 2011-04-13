@@ -41,7 +41,7 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<utility:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Mode"/>
+<utility:setBundle basename="JahiaContributeMode" useUILocale="true" templateName="Jahia Contribute Toolbar"/>
 <c:if test="${!renderContext.ajaxRequest}">
 <template:addResources>
     <script>
@@ -176,7 +176,7 @@
                                                   name="${propertyDefinition.name}"/>
                         <div jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
                               jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
-                              jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</div>
+                              jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:set var="value" value="${fn:replace(option.displayName,'\\'',' ')}"/><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${value}'<c:if test="${prop.string eq option.value.string}"><c:set var="val" value="${value}"/></c:if></c:forEach>}">${val}</div>
                     </c:when>
                     <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
                         <div jcr:id="${propertyDefinition.name}" class="ckeditorEdit${currentNode.identifier}"

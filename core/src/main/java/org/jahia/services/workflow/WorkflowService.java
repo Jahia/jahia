@@ -696,6 +696,9 @@ public class WorkflowService {
                         }
                     }
                 }
+                if ("/".equals(defPath)) {
+                    break;
+                }
                 n = n.getParent();
             }
         } catch (ItemNotFoundException e) {

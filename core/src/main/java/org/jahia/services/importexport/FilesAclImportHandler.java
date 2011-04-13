@@ -193,7 +193,7 @@ public class FilesAclImportHandler extends DefaultHandler {
 
     private String getMappedProperty(ExtendedNodeType baseType, String qName) {
         String mappedProperty = davPropertiesMapping.get(qName);
-        if (mappedProperty == null) {
+        if (mappedProperty == null && mapping != null) {
             mappedProperty = mapping.getMappedProperty(baseType, qName);
         }
         if (mappedProperty != null) {
@@ -293,7 +293,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                                                 .getResourceBundleKey().length() + 1);
                                     }
                                 }
-                                value = baseType != null ? mapping.getMappedPropertyValue(baseType,
+                                value = baseType != null && mapping != null ? mapping.getMappedPropertyValue(baseType,
                                         localName, value) : value;
                                 if (constraints.isEmpty() || constraints.contains(value)) {
                                     try {

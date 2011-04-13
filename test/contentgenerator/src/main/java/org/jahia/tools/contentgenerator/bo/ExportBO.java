@@ -24,6 +24,8 @@ public class ExportBO {
 	
 	private File mapFile;
 	
+	private Boolean pagesHaveVanity;
+	
 	public File getOutputFile() {
 		return outputFile;
 	}
@@ -102,6 +104,14 @@ public class ExportBO {
 
 	public void setMapFile(File mapFile) {
 		this.mapFile = mapFile;
+	}
+
+	public Boolean getPagesHaveVanity() {
+		return pagesHaveVanity;
+	}
+
+	public void setPagesHaveVanity(Boolean pagesHaveVanity) {
+		this.pagesHaveVanity = pagesHaveVanity;
 	}
 
 	public ExportBO() {

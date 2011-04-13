@@ -36,6 +36,12 @@ public class ContentGeneratorService {
 		}
 	}
 
+	/**
+	 * Get properties and initialize ExportBO
+	 * @TODO: manage null for each property
+	 * @param properties
+	 * @return
+	 */
 	private ExportBO initExport(Properties properties) {
 		ExportBO export = new ExportBO();
 		Integer nbPagesTopLevel;
@@ -46,6 +52,7 @@ public class ContentGeneratorService {
 
 		Boolean createMap;
 		File mapFile = null;
+		Boolean pagesHaveVanity = null;
 		if (properties == null) {
 			logger.info("Properties not found, default properties used.");
 			nbPagesTopLevel = ContentGeneratorCst.NB_PAGES_TOP_LEVEL_DEFAULT;
@@ -55,6 +62,7 @@ public class ContentGeneratorService {
 			outputFile = new File("output.xml");
 
 			createMap = Boolean.FALSE;
+			pagesHaveVanity = ContentGeneratorCst.HAS_VANITY_DEFAULT;
 		} else {
 			nbPagesTopLevel = Integer.valueOf(properties.getProperty(ContentGeneratorCst.NB_PAGES_TOP_LEVEL));
 			nbSubPagesPerPage = Integer.valueOf(properties.getProperty(ContentGeneratorCst.NB_SUBPAGES_PER_PAGE));
@@ -70,6 +78,8 @@ public class ContentGeneratorService {
 			if (createMap) {
 				mapFile = new File(outputDir + pathSeparator + "jahiaGeneratedExport_map.csv");
 			}
+			String s = properties.getProperty(ContentGeneratorCst.PAGES_HAVE_VANITY_PROPERTY);
+			pagesHaveVanity = new Boolean(s);
 		}
 
 		export.setNbPagesTopLevel(nbPagesTopLevel);
@@ -78,6 +88,7 @@ public class ContentGeneratorService {
 		export.setOutputFile(outputFile);
 		export.setCreateMap(createMap);
 		export.setMapFile(mapFile);
+		export.setPagesHaveVanity(pagesHaveVanity);
 
 		Integer totalPages = getTotalNumberOfPagesNeeded(nbPagesTopLevel, nbSubLevels, nbSubPagesPerPage);
 		export.setTotalPages(totalPages);

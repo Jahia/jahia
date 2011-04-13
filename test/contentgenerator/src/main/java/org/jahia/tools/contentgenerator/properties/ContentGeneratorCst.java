@@ -20,8 +20,7 @@ public final class ContentGeneratorCst {
 	public static final String OUTPUT_FILE_PROPERTY = "jahia_cg_outputFilename";
 	
 	public static final String CREATE_MAP_YN_PROPERTY = "jahia_cg_createMapYn";
-	
-	
+	public static final String PAGES_HAVE_VANITY_PROPERTY = "jahia_cg_pagesHaveVanity";
 
 	/**
 	 * Default properties
@@ -31,6 +30,7 @@ public final class ContentGeneratorCst {
 	public static final Integer NB_SUBPAGES_PER_PAGE_DEFAULT = Integer.valueOf(10);
 	public static final String OUTPUT_DIR_DEFAULT = "/home/guillaume";
 	public static final String OUTPUT_FILE_DEFAULT = "jahiaExport.xml";
+	public static final Boolean HAS_VANITY_DEFAULT = Boolean.TRUE;
 
 	/**
 	 * Configuration

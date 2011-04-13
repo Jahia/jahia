@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
@@ -149,7 +150,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         initFooter();
 
         container.getPanel().setFooter(true);
-        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
     }
 
     /**
@@ -553,7 +554,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                 PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
                                 if (lpe != null) {
                                     for (Field<?> field : lpe.getFields()) {
-                                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
+                                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)field.getParent()).isExpanded() && ((GWTJahiaPropertyDefinition) lpe.getGWTJahiaItemDefinition(field.getName())).isInternationalized()) {
                                             if (allValid || tab.equals(tabs.getSelectedItem())
                                                     && !tab.equals(firstErrorTab)) {
                                                 firstErrorTab = tab;

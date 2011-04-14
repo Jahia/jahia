@@ -36,7 +36,6 @@ import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.commons.AbstractRepository;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
-import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
 
@@ -50,8 +49,6 @@ import java.io.IOException;
  * Time: 11:21:20 AM
  */
 public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository, ServletContextAware {
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger (SpringJackrabbitRepository.class);
 
     private JackrabbitRepository repository;
 
@@ -109,8 +106,6 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     public void start() throws RepositoryException, IOException {
 
         repository = createRepository();
-
-        JahiaAccessManager.setRepository(repository);
 
         if ((servletContextAttributeName != null) &&
             (servletContext != null)) {

@@ -159,7 +159,7 @@ public final class JahiaPrivilegeRegistry {
 
         privilegeName = JCRContentUtils.getExpandedName(privilegeName, ns);
 
-        String s = privilegeName + "_" + workspaceName;
+        String s = JahiaAccessManager.getPrivilegeName(privilegeName, workspaceName);
         if (map.containsKey(s)) {
             return map.get(s);
         } else if (map.containsKey(privilegeName)) {

@@ -63,12 +63,12 @@ public class SiteLanguageSwitcherActionItem extends LanguageSwitcherActionItem {
             mainComponent.reset();
 			JahiaContentManagementService.App.getInstance().getSiteLanguages(
 			        new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
-				        public void onSuccess(List<GWTJahiaLanguage> languages) {
-					        gwtJahiaLanguages = languages;
-					        mainComponent.getStore().add(languages);
+				        public void onSuccess(List<GWTJahiaLanguage> langs) {
+					        languages = langs;
+					        mainComponent.getStore().add(langs);
 
                             if (mainComponent.getSelection().isEmpty()) {
-                                for (GWTJahiaLanguage language : languages) {
+                                for (GWTJahiaLanguage language : langs) {
                                     if (language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
                                         mainComponent.select(language);
                                     }

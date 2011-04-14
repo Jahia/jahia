@@ -32,22 +32,18 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
-import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageAware;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
@@ -59,11 +55,12 @@ import org.jahia.services.uicomponents.bean.toolbar.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.script.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -72,9 +69,7 @@ import java.util.*;
  * Time: 5:25:09 PM
  */
 public class UIConfigHelper {
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UIConfigHelper.class);
-    private static Map<String, Class<?>> CLASS_CACHE = new HashMap<String, Class<?>>();
-    private static transient SchedulerService SCHEDULER_SERVICE;
+    private static final Logger logger = LoggerFactory.getLogger(UIConfigHelper.class);
     private LanguageHelper languages;
     private ScriptEngineUtils scriptEngineUtils;
 
@@ -169,51 +164,6 @@ public class UIConfigHelper {
             throw new GWTJahiaServiceException("Error when triing to load Jahia state.");
         }
     }
-
-    /**
-     * Get Scheduler Service
-     *
-     * @return
-     */
-    private SchedulerService getSchedulerService() {
-        if (SCHEDULER_SERVICE == null) {
-            SCHEDULER_SERVICE = ServicesRegistry.getInstance().getSchedulerService();
-        }
-        return SCHEDULER_SERVICE;
-    }
-
-    /**
-     * Create object from the given className
-     *
-     * @param className
-     * @return
-     */
-    private Object getClassInstance(String className) {
-        Class<?> clazz = CLASS_CACHE.get(className);
-        if (null == clazz) {
-            synchronized (UIConfigHelper.class) {
-                if (null == clazz) {
-                    try {
-                        clazz = Class.forName(className);
-                        CLASS_CACHE.put(className, clazz);
-                    } catch (ClassNotFoundException e) {
-                        throw new IllegalArgumentException(e);
-                    }
-                }
-            }
-        }
-
-        Object classInstance = null;
-        try {
-            classInstance = clazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return classInstance;
-    }
-
 
     /**
      * Create gwt toolbar
@@ -374,14 +324,7 @@ public class UIConfigHelper {
         }
     }
 
-    private GWTEngineTab copy(GWTEngineTab original) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-    	GWTEngineTab copy = (GWTEngineTab) BeanUtilsBean.getInstance().cloneBean(original);
-    	copy.setTabItem((EditEngineTabItem) BeanUtilsBean.getInstance().cloneBean(original.getTabItem()));
-    	
-	    return copy;
-    }
-
-	private GWTColumn createGWTColumn(Column item, JCRSiteNode site, Locale locale, Locale uiLocale) {
+    private GWTColumn createGWTColumn(Column item, JCRSiteNode site, Locale locale, Locale uiLocale) {
         GWTColumn col = new GWTColumn();
         col.setKey(item.getKey());
         if (item.getTitleKey() != null) {
@@ -551,13 +494,9 @@ public class UIConfigHelper {
         gwtToolbarItem.setProperties(pMap);
 
         ActionItem actionItem = item.getActionItem();
-        try {
-            actionItem.getClass().getMethod("setLanguages", List.class);
-            BeanUtils.setProperty(actionItem, "languages", languages.getLanguages(site, jahiaUser, locale));
-            BeanUtils.setProperty(actionItem, "selectedLang", languages.getCurrentLang(locale));
-        } catch (NoSuchMethodException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
+        if (actionItem instanceof LanguageAware) {
+            ((LanguageAware) actionItem).setLanguages(languages.getLanguages(site, jahiaUser, locale));
+            ((LanguageAware) actionItem).setSelectedLang(languages.getCurrentLang(locale));
         }
 
         gwtToolbarItem.setActionItem(actionItem);
@@ -711,7 +650,7 @@ public class UIConfigHelper {
                 scriptContext.setWriter(new StringWriter());
                 scriptContext.setErrorWriter(new StringWriter());
                 byName.eval(value, bindings);
-                String error = scriptContext.getErrorWriter().toString();
+                //String error = scriptContext.getErrorWriter().toString();
                 return scriptContext.getWriter().toString().trim();
             } catch (ScriptException e) {
                 logger.error("Error while executing script [" + value + "]", e);

@@ -32,8 +32,6 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import java.util.List;
-
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -52,21 +50,10 @@ import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
  * Date: Feb 4, 2010
  * Time: 4:19:51 PM
  */
-public class LanguageSwitcherActionItem extends BaseActionItem {
+public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
     private static final long serialVersionUID = 9115660301140902069L;
 	protected transient ComboBox<GWTJahiaLanguage> mainComponent;
     protected boolean events = true;
-	protected List<GWTJahiaLanguage> gwtJahiaLanguages;
-	protected GWTJahiaLanguage selectedLang;
-
-    public void setLanguages(List<GWTJahiaLanguage> gwtJahiaLanguages) {
-        this.gwtJahiaLanguages = gwtJahiaLanguages;
-    }
-
-
-    public void setSelectedLang(GWTJahiaLanguage selectedLang) {
-        this.selectedLang = selectedLang;
-    }
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -80,7 +67,7 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
     private void initMainComponent() {
         mainComponent = new ComboBox<GWTJahiaLanguage>();
         mainComponent.setStore(new ListStore<GWTJahiaLanguage>());
-        mainComponent.getStore().add(gwtJahiaLanguages);
+        mainComponent.getStore().add(languages);
         mainComponent.setDisplayField("displayName");
         mainComponent.setTemplate(getLangSwitchingTemplate());
         mainComponent.setTypeAhead(true);

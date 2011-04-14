@@ -7,13 +7,11 @@
 <jcr:nodeProperty node="${currentNode}" name="j:firstName" var="firstname"/>
 <jcr:nodeProperty node="${currentNode}" name="j:lastName" var="lastname"/>
 
-<h3><fmt:message key="welcome"/>
-<c:choose>
+<h3><fmt:message key="welcome"/>&nbsp;<c:choose>
         <c:when test="${empty firstname.string && empty lastname.string}">
-           , ${currentNode.name}
+           ${currentNode.name}
         </c:when>
         <c:otherwise>
-            , ${firstname.string}&nbsp;${lastname.string}.
+           ${firstname.string}&nbsp;${lastname.string}.
         </c:otherwise>
-</c:choose>
-</h3>
+</c:choose></h3>

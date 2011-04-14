@@ -385,10 +385,15 @@ class TemplatePackageRegistry {
 
         // handle resource bundles
         for (JahiaTemplatesPackage sourcePack : registry.values()) {
-        	sourcePack.getResourceBundleHierarchy().clear();
-            sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
+            sourcePack.getResourceBundleHierarchy().clear();
+            if (sourcePack.getResourceBundleName() != null) {
+        	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
+            }
             for (String s : sourcePack.getDepends()) {
-                sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + lookup(s).getRootFolder() + "." + sourcePack.getResourceBundleName());
+                JahiaTemplatesPackage depenedncy = lookup(s);
+                if (!depenedncy.isDefault() && depenedncy.getResourceBundleName() != null) { 
+                    sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + depenedncy.getRootFolder() + "." + depenedncy.getResourceBundleName());
+                }
             }
             if (!sourcePack.isDefault()) {
             	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default.resources.DefaultJahiaTemplates");

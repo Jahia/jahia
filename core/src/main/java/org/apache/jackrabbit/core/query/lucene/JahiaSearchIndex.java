@@ -63,7 +63,18 @@ public class JahiaSearchIndex extends SearchIndex {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(JahiaSearchIndex.class);
     private static final String TRANSLATION_LOCALNODENAME_PREFIX = "translation_";
 
-//    /**
+    private int maxClauseCount = 1024;
+
+    public int getMaxClauseCount() {
+        return maxClauseCount;
+    }
+
+    public void setMaxClauseCount(int maxClauseCount) {
+        this.maxClauseCount = maxClauseCount;
+        BooleanQuery.setMaxClauseCount(maxClauseCount);
+    }
+
+    //    /**
 //     * This implementation forwards the call to
 //     * {@link MultiIndex#update(java.util.Collection , java.util.Collection)} and
 //     * transforms the two iterators to the required types.

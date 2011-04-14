@@ -872,6 +872,19 @@ public final class JCRContentUtils {
         importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, replacements);
     }
     
+    /**
+     * Returns <code>true</code> if the provided UUID string does not seem like a valid Jackrabbit node UUID. In such a case it comes from a
+     * different provide, like VFS.
+     * 
+     * @param uuid
+     *            the UUID string to check
+     * @return code>true</code> if the provided UUID string does not seem like a valid Jackrabbit node UUID. In such a case it comes from a
+     *         different provide, like VFS
+     */
+    public static boolean isNotJcrUuid(String uuid) {
+        return StringUtils.isEmpty(uuid) || uuid.contains("/");
+    }
+
     public static boolean isValidFilename(String name) {
         return (!name.startsWith(" ") && !name.endsWith(" ") && name.matches("([^\\*:/\\\\<>|?\"])*"));
     }
@@ -938,6 +951,7 @@ public final class JCRContentUtils {
         return size;
     }
 
+
     /**
      * Utility method to split a JCR path into names. Note that this method supports expanded name notation (using
      * URIs), such as {http://www.jcp.org/jcr/1.0}read, as it is tricky to split simply using the "/" character when
@@ -973,7 +987,6 @@ public final class JCRContentUtils {
 
         return result.toArray(new String[result.size()]);
     }
-
 
     /**
      * Convert a path string to encoded path Strings in XPATH queries
@@ -1017,6 +1030,7 @@ public final class JCRContentUtils {
         return "'" + str.replaceAll("'", "''") + "'";
     }
 
+
     /**
      * Decode an encoded JCR local name encoded with the encodeJCRLocalName method
      * Note : this implementation is not yet complete as it does not handle the XML
@@ -1027,7 +1041,6 @@ public final class JCRContentUtils {
     public static String unescapeLocalNodeName(final String encodedLocalName) {
         return Text.unescapeIllegalJcrChars(encodedLocalName);
     }
-
 
     private Map<String, String> fileExtensionIcons;
 

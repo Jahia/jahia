@@ -1,5 +1,6 @@
 package org.jahia.services.content.impl.vfs;
 
+import org.apache.commons.io.FileUtils;
 import org.jahia.test.JahiaAdminUser;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -11,7 +12,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
- * User: loom
+ * Unit test for VFS content store provider.
+ * 
+ * @author loom
  * Date: Aug 20, 2010
  * Time: 3:29:57 PM
- * 
  */
 public class VFSContentStoreProviderTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(VFSContentStoreProviderTest.class);
@@ -51,49 +51,27 @@ public class VFSContentStoreProviderTest {
     @BeforeClass
     public static void oneTimeSetUp()
             throws Exception {
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
-                public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        return TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web");
-                    }
-                    catch (Exception e) {
-                        logger.error("Cannot create or publish site", e);
+        TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web");
+        
+        File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
 
-                        session.save();
-                    }
-                    return null;
-                }
-            });
-            File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
-
-            staticMountDir = new File(sysTempDir, STATIC_MOUNT_FILE_NAME);
-            if (!staticMountDir.exists()) {
-                staticMountDir.mkdir();
-            }
-
-            dynamicMountDir = new File(sysTempDir, DYNAMIC_MOUNT_FILE_NAME);
-            if (!dynamicMountDir.exists())
-                dynamicMountDir.mkdir();
+        staticMountDir = new File(sysTempDir, STATIC_MOUNT_FILE_NAME);
+        if (!staticMountDir.exists()) {
+            staticMountDir.mkdir();
         }
-        catch (Exception ex) {
-            logger.warn("Exception during test setUp", ex);
+
+        dynamicMountDir = new File(sysTempDir, DYNAMIC_MOUNT_FILE_NAME);
+        if (!dynamicMountDir.exists()) {
+            dynamicMountDir.mkdir();
         }
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
+        TestHelper.deleteSite(TESTSITE_NAME);
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            if (session.nodeExists(SITECONTENT_ROOT_NODE)) {
-                TestHelper.deleteSite(TESTSITE_NAME);
-            }
-            session.save();
-
-            session.logout();
-
-            dynamicMountDir.delete();
-            staticMountDir.delete();
+            FileUtils.deleteDirectory(dynamicMountDir);
+            FileUtils.deleteDirectory(staticMountDir);
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }
@@ -104,7 +82,7 @@ public class VFSContentStoreProviderTest {
         VFSContentStoreProvider vfsProvider = new VFSContentStoreProvider();
         vfsProvider.setKey("local");
         vfsProvider.setRoot("file://" + staticMountDir.getAbsolutePath());
-        vfsProvider.setRmibind("local");
+        //vfsProvider.setRmibind("local");
         vfsProvider.setMountPoint(MOUNTS_STATIC_MOUNT_POINT);
         vfsProvider.setUserManagerService(ServicesRegistry.getInstance().getJahiaUserManagerService());
         vfsProvider.setGroupManagerService(ServicesRegistry.getInstance().getJahiaGroupManagerService());
@@ -116,18 +94,21 @@ public class VFSContentStoreProviderTest {
         vfsProvider.setPublicationService(jcrPublicationService);
         vfsProvider.start();
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        assertRootNavigation(session);
-
-        JCRNodeWrapper mountNode = getNode(session, MOUNTS_STATIC_MOUNT_POINT);
-        assertNode(mountNode, 0);
-        createFolder(session, "folder1", mountNode);
-        JCRNodeWrapper folder1Node = getNode(session, MOUNTS_STATIC_MOUNT_POINT + "/folder1");
-        assertNode(folder1Node, 0);
-        session.checkout(folder1Node);
-        folder1Node.remove();
-        session.save();
-        vfsProvider.stop();
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            assertRootNavigation(session);
+    
+            JCRNodeWrapper mountNode = getNode(session, MOUNTS_STATIC_MOUNT_POINT);
+            assertNode(mountNode, 0);
+            createFolder(session, "folder1", mountNode);
+            JCRNodeWrapper folder1Node = getNode(session, MOUNTS_STATIC_MOUNT_POINT + "/folder1");
+            assertNode(folder1Node, 0);
+            session.checkout(folder1Node);
+            folder1Node.remove();
+            session.save();
+        } finally {
+            vfsProvider.stop();
+        }
     }
 
     private void assertRootNavigation(JCRSessionWrapper session) throws RepositoryException, GWTJahiaServiceException {

@@ -39,6 +39,7 @@ import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.slf4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
+import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
@@ -188,6 +189,10 @@ public class JCRSessionWrapper implements Session {
             if (!provider.isInitialized()) {
                 logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() +
                         " is not yet initialized, skipping...");
+                continue;
+            }
+            if (provider instanceof JackrabbitStoreProvider && JCRContentUtils.isNotJcrUuid(uuid)) {
+                // not a valid UUID, probably a VFS node
                 continue;
             }
             try {

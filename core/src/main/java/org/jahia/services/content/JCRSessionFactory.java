@@ -37,6 +37,8 @@ import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
@@ -56,8 +58,11 @@ import java.util.*;
  * @author toto
  */
 public class JCRSessionFactory implements Repository, ServletContextAware {
-    private static transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(
-            JCRSessionFactory.class);
+    
+    public static final String DEFAULT_PROVIDER_KEY = "default";
+    
+    private static transient Logger logger = LoggerFactory.getLogger(JCRSessionFactory.class);
+    
     protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
     private NamespaceRegistryWrapper namespaceRegistry;
     private Map<String, String> descriptors = new HashMap<String, String>();
@@ -307,6 +312,10 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public Map<String, JCRStoreProvider> getProviders() {
         return providers;
+    }
+
+    public JCRStoreProvider getDefaultProvider() {
+        return providers.get(DEFAULT_PROVIDER_KEY);
     }
 
     public void addProvider(String key, String mountPoint, JCRStoreProvider p) {

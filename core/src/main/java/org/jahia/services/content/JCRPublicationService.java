@@ -867,7 +867,13 @@ public class JCRPublicationService extends JahiaService {
         final JCRSessionWrapper sourceSession = sessionFactory.getCurrentUserSession(sourceWorkspace);
         final JCRSessionWrapper destinationSession = sessionFactory.getCurrentUserSession(destinationWorkspace);
 
-        JCRNodeWrapper stageNode = sourceSession.getNodeByUUID(uuid);
+        JCRNodeWrapper stageNode;
+        try {
+            stageNode = sourceSession.getNodeByUUID(uuid);
+        } catch (ItemNotFoundException e) {
+            logger.warn("ItemNotFoundException for {} in workspace {}", uuid, sourceSession.getWorkspace().getName());
+            throw e;
+        }
         List<PublicationInfo> infos = new ArrayList<PublicationInfo>();
         PublicationInfo tree = new PublicationInfo();
         infos.add(tree);
@@ -908,6 +914,11 @@ public class JCRPublicationService extends JahiaService {
 
         PublicationInfoNode info = new PublicationInfoNode(node.getIdentifier(), node.getPath());
         infosMap.put(uuid, info);
+        
+        if (JCRContentUtils.isNotJcrUuid(uuid)) {
+            info.setStatus(PublicationInfo.PUBLISHED);
+            return info;
+        }
 
         JCRNodeWrapper publishedNode = null;
         try {

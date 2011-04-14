@@ -32,54 +32,76 @@
 
 package org.jahia.services.content.impl.vfs;
 
-import org.jahia.services.content.JCRStoreProvider;
-import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
+import java.rmi.Naming;
 
 import javax.jcr.Repository;
-import javax.jcr.Workspace;
 import javax.jcr.RepositoryException;
-import java.rmi.Naming;
-import java.rmi.RemoteException;
-import java.net.MalformedURLException;
+import javax.jcr.Workspace;
+
+import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
+import org.jahia.services.content.JCRStoreProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * JCR store provider implementation for VFS.
+ * 
+ * @author toto
  * Date: Apr 23, 2008
  * Time: 11:45:31 AM
- * 
  */
 public class VFSContentStoreProvider extends JCRStoreProvider {
+    
+    private static final Logger logger = LoggerFactory.getLogger(VFSContentStoreProvider.class);
+    
+    private VFSAccessControlManager accessControlManager; 
+
+    private boolean readOnly;
+
     private Repository repo;
-
+    
     private String root;
-
-    public String getRoot() {
-        return root;
-    }
-
-    public void setRoot(String root) {
-        this.root = root;
-    }
-
-    public synchronized Repository getRepository(){
+    
+    public Repository getRepository(){
         if (repo == null) {
-            repo = new VFSRepositoryImpl(root);
-            if (rmibind != null) {
-                try {
-                    Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
-                } catch (MalformedURLException e) {
-                } catch (RemoteException e) {
+            synchronized (VFSContentStoreProvider.class) {
+                if (repo == null) {
+                    accessControlManager = new VFSAccessControlManager(readOnly);
+                    repo = new VFSRepositoryImpl(root, accessControlManager);
+                    if (rmibind != null) {
+                        try {
+                            Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
+                        } catch (Exception e) {
+                            logger.warn("Unable to bind remote JCR repository to RMI using "
+                                    + rmibind, e);
+                        }
+                    }
                 }
             }
         }
         return repo;
     }
 
-    protected void registerNamespaces(Workspace workspace) throws RepositoryException {
+    public String getRoot() {
+        return root;
     }
 
     public boolean isExportable() {
         return false;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    protected void registerNamespaces(Workspace workspace) throws RepositoryException {
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    public void setRoot(String root) {
+        this.root = root;
     }
 }

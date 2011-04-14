@@ -311,8 +311,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         BitSet b = null;
         try {
             AccessControlManager accessControlManager = getAccessControlManager();
-            List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPath));
             List<Privilege> app = Arrays.asList(accessControlManager.getPrivileges(localPath));
+            List<Privilege> pr = Arrays.asList(accessControlManager.getSupportedPrivileges(localPath));                
             b = new BitSet(pr.size());
             for (Privilege privilege : app) {
                 b.set(pr.indexOf(privilege));
@@ -326,18 +326,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return b;
     }
 
-
-    private List<Privilege> convertPermToPrivileges(String perm, AccessControlManager accessControlManager) throws RepositoryException {
-        List<Privilege> privileges = new ArrayList<Privilege>();
-        if (Constants.JCR_READ_RIGHTS.equals(perm) || Constants.JCR_READ_RIGHTS_LIVE.equals(perm)) {
-            privileges.add(accessControlManager.privilegeFromName(Privilege.JCR_READ));
-        } else if (Constants.JCR_WRITE_RIGHTS.equals(perm) || Constants.JCR_WRITE_RIGHTS_LIVE.equals(perm)) {
-            privileges.add(accessControlManager.privilegeFromName(Privilege.JCR_ADD_CHILD_NODES));
-        } else if (Constants.JCR_MODIFYACCESSCONTROL_RIGHTS.equals(perm)) {
-            privileges.add(accessControlManager.privilegeFromName(Privilege.JCR_MODIFY_ACCESS_CONTROL));
-        }
-        return privileges;
-    }
 
     /**
      * {@inheritDoc}
@@ -1902,6 +1890,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         getSession().move(getPath(), parent.getPath() + "/" + newName);
         this.localPath = parent.getPath() + "/" + newName;
+        String mountPoint = getProvider().getMountPoint();
+        if (mountPoint.length() > 1 && localPath.startsWith(mountPoint)) {
+            localPath = StringUtils.substringAfter(localPath, mountPoint);
+        }
         this.objectNode = getSession().getProviderSession(getProvider()).getNode(localPath);
         if ((nodePositionFound) && (parent.getPrimaryNodeType().hasOrderableChildNodes())) {
             parent.orderBefore(newName, nextNodeName);

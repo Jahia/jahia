@@ -51,11 +51,10 @@ import java.security.AccessControlException;
 import java.util.UUID;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * JCR session implementation for VFS provider.
+ * @author toto
  * Date: Apr 23, 2008
  * Time: 11:56:11 AM
- * 
  */
 public class VFSSessionImpl implements Session {
     private VFSRepositoryImpl repository;
@@ -294,18 +293,20 @@ public class VFSSessionImpl implements Session {
     }
 
     public boolean hasPermission(String absPath, String actions) throws RepositoryException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO implement me
+        return false;
     }
 
     public boolean hasCapability(String s, Object o, Object[] objects) throws RepositoryException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        // TODO implement me
+        return false;
     }
 
     public AccessControlManager getAccessControlManager() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return repository.getAccessControlManager();
     }
 
     public RetentionManager getRetentionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 }

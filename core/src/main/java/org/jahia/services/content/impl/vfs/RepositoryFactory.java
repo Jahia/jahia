@@ -50,7 +50,7 @@ public class RepositoryFactory implements ObjectFactory {
                                     Hashtable environment)
             throws Exception {
 
-        return new VFSRepositoryImpl("");
+        return new VFSRepositoryImpl("", null);
     }
 
 }

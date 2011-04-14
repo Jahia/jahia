@@ -37,20 +37,21 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
+ * JCR repository implementation for VFS provider.
+ * @author toto
  * Date: Apr 23, 2008
  * Time: 11:45:50 AM
  * 
  */
 public class VFSRepositoryImpl implements Repository {
 
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(VFSRepositoryImpl.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(VFSRepositoryImpl.class);
 
     private String root;
     private String rootPath;
@@ -58,6 +59,8 @@ public class VFSRepositoryImpl implements Repository {
     private FileSystemManager manager;
 
     private Map<String, Object> repositoryDescriptors = new HashMap<String, Object>();
+
+    private VFSAccessControlManager accessControlManager;
 
     private static final Set<String> STANDARD_KEYS = new HashSet<String>() {{
         add(Repository.QUERY_FULL_TEXT_SEARCH_SUPPORTED);
@@ -174,9 +177,10 @@ public class VFSRepositoryImpl implements Repository {
         repositoryDescriptors.put(Repository.OPTION_XML_IMPORT_SUPPORTED, new VFSValueImpl(false));
     }
 
-    public VFSRepositoryImpl(String root) {
+    public VFSRepositoryImpl(String root, VFSAccessControlManager accessControlManager) {
         initDescriptors();
         this.root = root;
+        this.accessControlManager = accessControlManager;
 
         try {
             manager = VFS.getManager();
@@ -249,5 +253,9 @@ public class VFSRepositoryImpl implements Repository {
 
     public Value[] getDescriptorValues(String key) {
         return (Value[]) repositoryDescriptors.get(key);
+    }
+
+    protected VFSAccessControlManager getAccessControlManager() {
+        return accessControlManager;
     }
 }

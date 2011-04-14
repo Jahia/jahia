@@ -1,32 +1,40 @@
 package org.jahia.services.content;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
-* Created by IntelliJ IDEA.
-* User: toto
-* Date: Aug 26, 2010
-* Time: 5:31:55 PM
-* 
-*/
+ * @author toto
+ * Date: Aug 26, 2010
+ * Time: 5:31:55 PM
+ */
 public class PublicationInfoNode implements Serializable {
+    
+    private static final long serialVersionUID = 8826165087616513109L;
+    
     private String uuid;
     private String path;
     private int status;
     private boolean locked;
     private boolean canPublish;
-    private List<PublicationInfoNode> child = new ArrayList<PublicationInfoNode>();
-    private List<PublicationInfo> references = new ArrayList<PublicationInfo>();
+    private List<PublicationInfoNode> child = new LinkedList<PublicationInfoNode>();
+    private List<PublicationInfo> references = new LinkedList<PublicationInfo>();
     private List<String> pruned;
 
     public PublicationInfoNode() {
+        super();
     }
 
     public PublicationInfoNode(String uuid, String path) {
+        this();
         this.uuid = uuid;
         this.path = path;
+    }
+
+    public PublicationInfoNode(String uuid, String path, int status) {
+        this(uuid, path);
+        this.status = status;
     }
 
     public String getUuid() {

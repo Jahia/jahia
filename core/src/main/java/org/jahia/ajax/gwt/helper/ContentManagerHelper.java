@@ -167,6 +167,11 @@ public class ContentManagerHelper {
         }
 
         JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props);
+        try {
+            childNode.getSession().save();
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException("An error occur when trying to save the node '" + childNode.getPath() + "'");
+        }
         return navigation.getGWTJahiaNode(childNode);
     }
 

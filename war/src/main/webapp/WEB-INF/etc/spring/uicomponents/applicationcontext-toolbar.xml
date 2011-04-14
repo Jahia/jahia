@@ -1084,5 +1084,35 @@
         <property name="titleKey" value="label.cache.flush.all"/>
         <property name="icon" value="publish"/>
     </bean>
+    <bean id="Toolbar.Item.NavMenuText" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:navMenuText"/>
+                <property name="parentTypes" value="jnt:page"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.newNavMenuText"/>
+        <property name="icon" value="newNavMenuText"/>
+    </bean>
+    <bean id="Toolbar.Item.NewInternalLink" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:nodeLink"/>
+                <property name="parentTypes" value="jnt:page"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.newInternalLink"/>
+        <property name="icon" value="newInternalLink"/>
+    </bean>
+    <bean id="Toolbar.Item.NewExternalLink" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:externalLink"/>
+                <property name="parentTypes" value="jnt:page"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.newExternalLink"/>
+        <property name="icon" value="newExternalLink"/>
+    </bean>
 
 </beans>

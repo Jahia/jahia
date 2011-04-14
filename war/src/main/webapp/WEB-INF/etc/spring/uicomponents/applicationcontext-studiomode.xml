@@ -481,36 +481,9 @@
                                 <list>
                                     <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.NewContentFolder"/>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                                <property name="nodeTypes" value="jnt:nodeLink"/>
-                                                <property name="parentTypes" value="jnt:page"/>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.newInternalLink"/>
-                                        <property name="icon" value="newInternalLink"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                                <property name="nodeTypes" value="jnt:externalLink"/>
-                                                <property name="parentTypes" value="jnt:page"/>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.newExternalLink"/>
-                                        <property name="icon" value="newExternalLink"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                                <property name="nodeTypes" value="jnt:navMenuText"/>
-                                                <property name="parentTypes" value="jnt:page"/>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.newNavMenuText"/>
-                                        <property name="icon" value="newNavMenuText"/>
-                                    </bean>
+                                    <ref bean="Toolbar.Item.NewInternalLink"/>
+                                    <ref bean="Toolbar.Item.NewExternalLink"/>
+                                    <ref bean="Toolbar.Item.NavMenuText"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Separator"/>

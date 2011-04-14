@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
-    <users jcr:primaryType="jnt:usersFolder" >
+    <users jcr:primaryType="jnt:usersFolder" j:picture="/users/root/files/profile/root.png" >
         <root  jcr:primaryType="jnt:user">
             <files jcr:primaryType="jnt:folder">
                 <profile  jcr:primaryType="jnt:folder">
@@ -12,7 +12,6 @@
                         <avatar_60 jcr:lastModified="2011-04-01T17:46:22.822+02:00" jcr:lastModifiedBy="root" jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
                     </root.png>
                 </profile>
-                <profile2  jcr:primaryType="jnt:folder"/>
             </files>
         </root>
     </users>

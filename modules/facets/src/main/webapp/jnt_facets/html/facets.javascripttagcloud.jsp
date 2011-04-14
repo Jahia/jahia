@@ -21,6 +21,7 @@
 <template:addResources type="javascript" resources="jquery.js,jqcloud.js"/>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<template:addCacheDependency node="${bindedComponent}"/>
 <c:if test="${not empty bindedComponent}">
     <c:set var="facetParamVarName" value="N-${bindedComponent.name}"/>
     <c:set var="activeFacetMapVarName" value="afm-${bindedComponent.name}"/>

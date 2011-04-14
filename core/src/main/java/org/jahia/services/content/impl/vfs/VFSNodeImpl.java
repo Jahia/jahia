@@ -35,6 +35,7 @@ package org.jahia.services.content.impl.vfs;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileType;
+import org.apache.commons.vfs.Selectors;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -156,7 +157,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         try {
-            fileObject.delete();
+            fileObject.delete(Selectors.SELECT_ALL);
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
         }

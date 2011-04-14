@@ -34,12 +34,12 @@ package org.jahia.services.content;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.decorator.JCRVersionHistory;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.OnConflictAction;
+import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.version.VersionHistory;
@@ -145,9 +145,9 @@ public class ConflictResolver {
                 sourceVersion = null;
             }                
         }
-        logger.info("compare "+sourceNode.getPath()+" version : "+baseSourceVersion.getName()+" with "+sourceNode.getBaseVersion().getName());
+        logger.info("compare "+sourceNode.getPath()+" version : "+baseSourceVersion.getName()+" with (source) "+sourceNode.getBaseVersion().getName());
         List<Diff> sourceDiff = compare(baseSourceVersion.getFrozenNode(), sourceNode, "");
-        logger.info("compare "+targetNode.getPath()+" version : "+baseTargetVersion.getName()+" with "+targetNode.getBaseVersion().getName());
+        logger.info("compare "+targetNode.getPath()+" version : "+baseTargetVersion.getName()+" with (target) "+targetNode.getBaseVersion().getName());
         List<Diff> targetDiff = compare(baseTargetVersion.getFrozenNode(), targetNode, "");
 
         sourceDiff.removeAll(targetDiff);
@@ -199,8 +199,8 @@ public class ConflictResolver {
             // Ordering
             Map<String,String> oldOrdering = getOrdering(uuids1, removed);
             Map<String,String> newOrdering = getOrdering(uuids2, added);
-            for (Map.Entry<String, String> entry : oldOrdering.entrySet()) {
-                if (!newOrdering.get(entry.getKey()).equals(entry.getValue())) {
+            if (!newOrdering.equals(oldOrdering)) {
+                for (Map.Entry<String, String> entry : newOrdering.entrySet()) {
                     diffs.add(new ChildNodeReorderedDiff(entry.getKey(), newOrdering.get(entry.getKey()),
                             addPath(basePath,(String) uuids2.get(entry.getKey())), (String) uuids2.get(newOrdering.get(entry.getKey())),newOrdering));
                 }
@@ -219,7 +219,11 @@ public class ConflictResolver {
 
             // Added nodes
             for (String s : added) {
-                diffs.add(new ChildAddedDiff(s,addPath(basePath,(String) uuids2.get(s))));
+                if (s.equals(uuids2.lastKey())) {
+                    diffs.add(new ChildAddedDiff(s, addPath(basePath, (String) uuids2.get(s)), null));
+                } else {
+                    diffs.add(new ChildAddedDiff(s, addPath(basePath, (String) uuids2.get(s)), (String) uuids2.get(uuids2.get(uuids2.indexOf(s)+1))));
+                }
             }
         }
 
@@ -332,7 +336,7 @@ public class ConflictResolver {
     }
 
     private Map<String,String> getOrdering(ListOrderedMap uuids1, List<String> removed) {
-        Map<String,String> previousMap = new HashMap<String,String>();
+        Map<String,String> previousMap = new LinkedHashMap<String,String>();
         ListIterator it = uuids1.keyList().listIterator(uuids1.size());
         String previous = "";
         while (it.hasPrevious()) {
@@ -461,14 +465,20 @@ public class ConflictResolver {
         private String uuid;
         private String newName;
         private String sourceWorkspace;
+        private String nextSibling;
 
-        ChildAddedDiff(String uuid, String newName) {
+        ChildAddedDiff(String uuid, String newName, String nextSibling) {
             this.uuid = uuid;
             this.newName = newName;
+            this.nextSibling = nextSibling;
         }
 
         public boolean apply() throws RepositoryException {
             if (sourceNode.getNode(newName).isVersioned() || targetNode.hasNode(newName)) {
+                if (targetNode.hasNode(newName) && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+                    targetNode.orderBefore(newName, nextSibling);
+                    targetNode.getSession().save();
+                }
                 return true;
             }
 
@@ -484,20 +494,22 @@ public class ConflictResolver {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (!(o instanceof ChildAddedDiff)) return false;
 
             ChildAddedDiff that = (ChildAddedDiff) o;
 
-            if (!newName.equals(that.newName)) return false;
-            if (!uuid.equals(that.uuid)) return false;
+            if (newName != null ? !newName.equals(that.newName) : that.newName != null) return false;
+            if (nextSibling != null ? !nextSibling.equals(that.nextSibling) : that.nextSibling != null) return false;
+            if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = uuid.hashCode();
-            result = 31 * result + newName.hashCode();
+            int result = uuid != null ? uuid.hashCode() : 0;
+            result = 31 * result + (newName != null ? newName.hashCode() : 0);
+            result = 31 * result + (nextSibling != null ? nextSibling.hashCode() : 0);
             return result;
         }
 

@@ -3,17 +3,12 @@ package org.jahia.ajax.gwt.client.data.node;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 1/4/11
  * Time: 17:44
- * To change this template use File | Settings | File Templates.
  */
 public class GWTBitSet implements Cloneable, Serializable {
     private final static int ADDRESS_BITS_PER_WORD = 6;
-    private final static int BITS_PER_WORD = 1 << ADDRESS_BITS_PER_WORD;
-    private final static int BIT_INDEX_MASK = BITS_PER_WORD - 1;
-
     private long[] words;
 
 

@@ -302,7 +302,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
     private Node getUsersNode(Session session, String userKey) throws RepositoryException {
         String name = getUserNameFromKey(userKey);
-        Node userNode = session.getNode("/users/" + name);
+        Node userNode = session.getNode(jahiaUserManagerService.getUserSplittingRule().getPathForUsername(name));
         return userNode;
     }
 
@@ -359,7 +359,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
             public JahiaPersonImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JahiaPersonImpl jahiaPersonImpl = new JahiaPersonImpl(jahiaUser);
                 String name = getUserNameFromKey(jahiaUser.getUserKey());
-                Node usersFolderNode = session.getNode("/users/" + name);
+                Node usersFolderNode = session.getNode(jahiaUserManagerService.getUserSplittingRule().getPathForUsername(name));
                 JCRUser jcrUser = null;
                 if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                     jcrUser = new JCRUser(usersFolderNode.getUUID());
@@ -392,7 +392,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
                         Node userNode = null;
                         try {
-                            userNode = session.getNode("/users/" + userName);
+                            userNode = session.getNode(jahiaUserManagerService.getUserSplittingRule().getPathForUsername(userName));
                         } catch (PathNotFoundException pnfe) {
                             return returnVal;
                         }

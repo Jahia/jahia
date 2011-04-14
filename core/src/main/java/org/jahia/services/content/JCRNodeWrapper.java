@@ -773,6 +773,16 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     Node getI18N(Locale locale) throws RepositoryException;
 
     /**
+     * Checks if the translation node exists
+     * Use only in un-localized session
+     *
+     * @param locale
+     * @return <code>true</code> if the translation node exists
+     * @throws RepositoryException
+     */
+    boolean hasI18N(Locale locale) throws RepositoryException;
+
+    /**
      * Get or create the translation node
      * Use only in un-localized session
      *

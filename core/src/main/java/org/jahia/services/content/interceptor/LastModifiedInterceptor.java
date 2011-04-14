@@ -32,6 +32,8 @@
 
 package org.jahia.services.content.interceptor;
 
+import java.util.Locale;
+
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -57,7 +59,12 @@ public class LastModifiedInterceptor extends BaseInterceptor {
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue)
             throws ValueFormatException, RepositoryException {
         try {
-            Node i18n = property.getParent().getI18N(property.getSession().getLocale());
+            JCRNodeWrapper parent = property.getParent();
+            Locale locale = property.getSession().getLocale();
+            if (!parent.hasI18N(locale)) {
+                return storedValue;
+            }
+            Node i18n = parent.getI18N(locale);
             if (i18n.hasProperty("jcr:lastModified")) {
                 final boolean isLM = property.getName().equals("jcr:lastModified");
                 Value lastModified = isLM ? storedValue :

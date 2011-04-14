@@ -1243,6 +1243,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return getI18N(locale, true);
     }
 
+    public boolean hasI18N(Locale locale) throws RepositoryException {
+        return hasI18N(locale, true);
+    }
+    
     private boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
         boolean b = (i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode(
                 "j:translation_" + locale);

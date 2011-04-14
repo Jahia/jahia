@@ -67,13 +67,6 @@
                 <version>${war.plugin.version}</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warSourceExcludes>resources/*.properties</warSourceExcludes>
-                    <webResources>
-                        <resource>
-                          <directory>${project.build.directory}/native2ascii</directory>
-                          <targetPath>resources</targetPath>
-                        </resource>
-                    </webResources>
                     <archive>
                         <manifestEntries>
 		                	<Implementation-Title>${project.name}</Implementation-Title>

@@ -112,19 +112,19 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                         return returnValue;
                     } else {
                         try {
+                            if ("/".equals(curNode.getPath())) {
+                                return returnValue;
+                            }
                             curNode = curNode.getParent();
                         } catch (ItemNotFoundException e2) {
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Property : " + name + " not found in parent nodes " + node.getPath());
+                                logger.debug("Property {} not found in parent nodes {}", name, node.getPath());
                             }
                             return returnValue;
                         } catch (AccessDeniedException e1) {
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Property : " + name + " parent access denied " + node.getPath());
+                                logger.debug("Property {} parent access denied {}", name, node.getPath());
                             }
-                            return returnValue;
-                        } catch (RepositoryException e1) {
-                            logger.error(e1.getMessage(), e1);
                             return returnValue;
                         }
                     }

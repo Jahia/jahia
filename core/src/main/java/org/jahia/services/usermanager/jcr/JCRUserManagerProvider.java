@@ -396,6 +396,31 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         return null;
     }
 
+    public JCRUser lookupExternalUser(final String username) {
+        try {
+            JCRUser user = cache.get(username);
+            if (user != null) {
+                return user;
+            }
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
+                public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node userNode = session.getNode(ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(username));
+                    if (userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                        JCRUser user = new JCRUser(userNode.getIdentifier(), true);
+                        cache.put(username, user);
+                        return user;
+                    }
+                    return null;
+                }
+            });
+        } catch (PathNotFoundException pnfe) {
+            // This is expected in the case the user doesn't exist in the repository. We will simply return null.
+        } catch (RepositoryException e) {
+            logger.error("Error while looking up external user by name " + username, e);
+        }
+        return null;
+    }
+
 
     /**
      * Find users according to a table of name=value properties. If the left

@@ -810,7 +810,8 @@ display:block
 	padding-left:24px;
 }
 /* Post delete edit link */
-.bodywrapper a.postedit {
+.bodywrapper a.postedit,
+.bodywrapper a.pageedit{
 	background:url(img/blog/postedit.png) no-repeat scroll 0 50% transparent;
 	clear:both;
 	display:inline;
@@ -826,6 +827,7 @@ display:block
 	padding-left:20px;
 }
 
-.bodywrapper span.posteditdelete{
+.bodywrapper span.posteditdelete,
+.bodywrapper span.pageedit{
 	float:right;
 }

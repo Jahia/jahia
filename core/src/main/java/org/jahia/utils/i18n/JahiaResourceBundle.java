@@ -41,7 +41,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -92,24 +91,6 @@ public class JahiaResourceBundle extends ResourceBundle {
         jahiaCacheList.clear();
     }
     
-    private static Object getObjectOrNull(ResourceBundle rb, String key) {
-        if (rb == null) {
-            return null;
-        }
-        Object value = null;
-        if (rb instanceof PropertyResourceBundle) {
-            value = ((PropertyResourceBundle) rb).handleGetObject(key);
-        } else {
-            try {
-                value = rb.getObject(key);
-            } catch (MissingResourceException e) {
-                value = null;
-            }
-        }
-
-        return value;
-    }
-    
     public JahiaResourceBundle(Locale locale, String templatesPackageName) {
         this(null, locale, templatesPackageName, null);
     }
@@ -139,7 +120,8 @@ public class JahiaResourceBundle extends ResourceBundle {
         Object o = null;
         if (basename != null) {
             try {
-                o = getObjectOrNull(lookupBundle(basename, locale, templatesRBLoader, false), s);
+                ResourceBundle rb = lookupBundle(basename, locale, templatesRBLoader, false);
+                o = rb != null ? rb.getString(s) : null;
             } catch (MissingResourceException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Not found '{}' in the base resource bundle '{}' for locale '{}'", new Object[] {s, basename, locale});
@@ -154,7 +136,8 @@ public class JahiaResourceBundle extends ResourceBundle {
                     continue;
                 }
                 try {
-                    o = getObjectOrNull(lookupBundle(bundleToLookup, locale, templatesRBLoader, false), s);
+                    ResourceBundle rb = lookupBundle(bundleToLookup, locale, templatesRBLoader, false);
+                    o = rb != null ? rb.getString(s) : null;
                     if (o != null) {
                         break;
                     }
@@ -348,8 +331,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     public String getString(String key, String defaultValue) {
         String message;
         try {
-            Object obj = handleGetObject(key);
-            message = obj != null ? String.valueOf(obj) : defaultValue;
+            message = getString(key);
         } catch (MissingResourceException e) {
             message = defaultValue;
         }
@@ -394,19 +376,6 @@ public class JahiaResourceBundle extends ResourceBundle {
         // Control.needsReload().
         private String format;
 
-        // These time values are in JahiaCacheKey so that NONEXISTENT_BUNDLE
-        // doesn't need to be cloned for caching.
-
-        // The time when the bundle has been loaded
-        private volatile long loadTime;
-
-        // The time when the bundle expires in the cache, or either
-        // Control.TTL_DONT_CACHE or Control.TTL_NO_EXPIRATION_CONTROL.
-        private volatile long expirationTime;
-
-        // Placeholder for an error report by a Throwable
-        private Throwable cause;
-
         // Hash code value cache to avoid recalculating the hash code
         // of this instance.
         private int hashCodeCache;
@@ -420,30 +389,6 @@ public class JahiaResourceBundle extends ResourceBundle {
                 loaderRef = new JahiaLoaderReference(loader, jahiaReferenceQueue, this);
             }
             calculateHashCode();
-        }
-
-        String getName() {
-            return name;
-        }
-
-        JahiaCacheKey setName(String baseName) {
-            if (!this.name.equals(baseName)) {
-                this.name = baseName;
-                calculateHashCode();
-            }
-            return this;
-        }
-
-        Locale getLocale() {
-            return locale;
-        }
-
-        JahiaCacheKey setLocale(Locale locale) {
-            if (!this.locale.equals(locale)) {
-                this.locale = locale;
-                calculateHashCode();
-            }
-            return this;
         }
 
         ClassLoader getLoader() {
@@ -503,37 +448,11 @@ public class JahiaResourceBundle extends ResourceBundle {
                 if (loaderRef != null) {
                     clone.loaderRef = new JahiaLoaderReference(loaderRef.get(), jahiaReferenceQueue, clone);
                 }
-                // Clear the reference to a Throwable
-                clone.cause = null;
                 return clone;
             } catch (CloneNotSupportedException e) {
                 //this should never happen
                 throw new InternalError();
             }
-        }
-
-        String getFormat() {
-            return format;
-        }
-
-        void setFormat(String format) {
-            this.format = format;
-        }
-
-        private void setCause(Throwable cause) {
-            if (this.cause == null) {
-                this.cause = cause;
-            } else {
-                // Override the cause if the previous one is
-                // ClassNotFoundException.
-                if (this.cause instanceof ClassNotFoundException) {
-                    this.cause = cause;
-                }
-            }
-        }
-
-        private Throwable getCause() {
-            return cause;
         }
 
         public String toString() {

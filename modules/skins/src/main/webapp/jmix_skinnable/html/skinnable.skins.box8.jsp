@@ -8,15 +8,10 @@
 
 <c:if test="${not empty title}">
     <div class="clear"></div>
-    <h4 class="box8-title box8-title${currentNode.properties['j:style'].string} <c:if test="${!empty currentNode.properties.icon}">box8-title-icon</c:if> ">
-<c:if test="${!empty currentNode.properties.icon}">
-            <span class="box8-icon"
-                  
-                    style="background-image: url(${currentNode.properties.icon.node.url})"
-                  
-            >
-            </span>
-</c:if>
+    <h4 class="box8-title box8-title${currentNode.properties['j:style'].string}${!empty currentNode.properties.icon ? ' box8-title-icon' : ''}">
+        <c:if test="${!empty currentNode.properties.icon}">
+            <span class="box8-icon" style="background-image: url(${currentNode.properties.icon.node.url})"></span>
+        </c:if>
         ${fn:escapeXml(title.string)}
     </h4>
 
@@ -24,8 +19,8 @@
 <div class="box8">
     <div class="box8 box5padding box5marginbottom">
         <div class="box8-content">
-                    ${wrappedContent}
-                    <div class="clear"></div>
+            ${wrappedContent}
+            <div class="clear"></div>
         </div>
     </div>
 </div>

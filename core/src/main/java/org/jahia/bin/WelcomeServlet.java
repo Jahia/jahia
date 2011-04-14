@@ -111,7 +111,7 @@ public class WelcomeServlet extends HttpServlet {
     protected void userRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
         if (!JahiaUserManagerService.isGuest(user)) {
-            response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/cms/render/live/en/users/" + user.getUsername() + ".html"));
+            response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/cms/render/live/en" + user.getLocalPath() + ".html"));
         } else {
             throw new AccessDeniedException();
         }

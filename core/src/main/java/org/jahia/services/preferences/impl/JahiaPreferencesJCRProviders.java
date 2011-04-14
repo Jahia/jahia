@@ -376,11 +376,10 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     private String getPreferencesNodePath(Principal principal) {
         String principalName;
         if (principal instanceof JahiaUser) {
-            principalName = ((JahiaUser) principal).getUsername();
-        } else {
-            principalName = ((JahiaGroup) principal).getGroupname();
+            principalName = ((JahiaUser) principal).getLocalPath();
+            return principalName + "/preferences";
         }
-        return "/users/" + principalName + "/preferences";
+        return "";
     }
 
     private NodeIterator findPreferenceNodeByJahiaPreferenceSQL(Principal p, String sqlConstraint) {

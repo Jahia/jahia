@@ -26,7 +26,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <template:module path="/users/${renderContext.user.username}" view="${mainTemplate}"/>
+        <template:module path="${renderContext.user.localPath}" view="${mainTemplate}"/>
     </c:otherwise>
 </c:choose>
 

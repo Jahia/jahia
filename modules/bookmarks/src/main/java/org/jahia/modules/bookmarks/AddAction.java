@@ -67,10 +67,11 @@ public class AddAction extends Action {
         // test if bookmark node is present
         JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale());
         JCRNodeWrapper userBookmarks = null;
+        String userPath = renderContext.getUser().getLocalPath();
         try {
-            userBookmarks = jcrSessionWrapper.getNode("/users/" + renderContext.getUser().getName() + "/" + bookmarkPath);
+            userBookmarks = jcrSessionWrapper.getNode(userPath + "/" + bookmarkPath);
         } catch (PathNotFoundException pnf) {
-            userBookmarks =  contentManager.addNode(jcrSessionWrapper.getNode("/users/" + renderContext.getUser().getName()), bookmarkPath, "jnt:bookmarks", null, null);
+            userBookmarks =  contentManager.addNode(jcrSessionWrapper.getNode(userPath), bookmarkPath, "jnt:bookmarks", null, null);
             userBookmarks.saveSession();
         }
         if (userBookmarks != null &&  !contentManager.checkExistence(userBookmarks.getPath() + "/" + req.getParameter("jcr:title").replace(" ","-"), jcrSessionWrapper)) {

@@ -63,10 +63,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.*;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.services.usermanager.jcr.JCRGroup;
 
@@ -473,9 +470,15 @@ public class ManageGroups extends AbstractAdministrationModule {
         // convert to HashSet
         Set<Principal> candidateMembers = new HashSet<Principal>();
         if (newMembersList != null) {
-            for (int i = 0; i < newMembersList.length; i++) {
+            for (String aNewMembersList : newMembersList) {
                 // remove identifier type ("u " or "g " and provider) for future use.
-                JahiaUser usr = uMgr.lookupUserByKey(newMembersList[i].substring(1));
+                JahiaPrincipal usr;
+                String key = aNewMembersList.substring(1);
+                if(aNewMembersList.charAt(0)=='u') {
+                    usr = uMgr.lookupUserByKey(key);
+                } else {
+                    usr = gMgr.lookupGroup(key);
+                }
                 candidateMembers.add(usr);
             }
         }

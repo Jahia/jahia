@@ -406,7 +406,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             uuid = ((JCRPrincipal) principal).getIdentifier();
         } else {
             if (principal instanceof JahiaUser) {
-                JCRUser extUser = userManagerProvider.lookupExternalUser(((JahiaUser) principal).getName());
+                JCRUser extUser = userManagerProvider.lookupExternalUser((JahiaUser) principal);
                 if (extUser != null) {
                     uuid = extUser.getIdentifier();
                 }
@@ -665,7 +665,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             if (user instanceof JCRUser) {
                 uuid = ((JCRUser) user).getIdentifier();
             } else {
-                JCRUser extUser = userManagerProvider.lookupExternalUser(user.getName());
+                JCRUser extUser = userManagerProvider.lookupExternalUser(user);
                 if (extUser != null) {
                     uuid = extUser.getIdentifier();
                 }

@@ -34,6 +34,7 @@ package org.jahia.services.usermanager.jcr;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -119,54 +120,74 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
-                    JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode("/users");
-
-                    jcrSessionWrapper.checkout(parentNodeWrapper);
-                    JCRNodeWrapper userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
-                    if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
-                        String skeletons = parentNodeWrapper.getProperty("j:usersFolderSkeleton")
-                                .getString();
+                    String jcrUsernamePath[] = StringUtils.substringAfter(
+                            ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(
+                                    name), "/").split("/");
+                    JCRNodeWrapper startNode = jcrSessionWrapper.getNode("/" + jcrUsernamePath[0]);
+                    Node usersFolderNode = startNode;
+                    int length = jcrUsernamePath.length;
+                    for (int i = 1; i < length; i++) {
                         try {
-                            JCRContentUtils.importSkeletons(skeletons, "/users/" + JCRContentUtils.escapeLocalNodeName(name), jcrSessionWrapper);
-                        } catch (Exception importEx) {
-                            logger.error("Unable to import data using user skeletons " + skeletons, importEx);
-                            throw new RepositoryException("Could not create user due to some import issues", importEx);
-                        }
-                        userNode.grantRoles("u:" + name, Collections.singleton("owner"));
-                    } else {
-                        userNode.grantRoles("u:" + name, Collections.singleton("owner"));
-                    }
-                    String l_password;
-                    if (!password.startsWith("SHA-1:")) {
-                        // Encrypt the password
-                        l_password = JahiaUserManagerService.encryptPassword(password);
-                    } else {
-                        l_password = password.substring(6);
-                    }
+                            startNode = startNode.getNode(jcrUsernamePath[i]);
+                        } catch (PathNotFoundException e) {
+                            try {
+                                jcrSessionWrapper.getWorkspace().getVersionManager().checkout(startNode.getPath());
+                                if (i == (length - 1)) {
+                                    jcrSessionWrapper.checkout(startNode);
+                                    JCRNodeWrapper userNode = startNode.addNode(name, Constants.JAHIANT_USER);
+                                    if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
+                                        String skeletons = usersFolderNode.getProperty(
+                                                "j:usersFolderSkeleton").getString();
+                                        try {
+                                            JCRContentUtils.importSkeletons(skeletons,
+                                                    startNode.getPath() + "/" + jcrUsernamePath[i], jcrSessionWrapper);
+                                        } catch (Exception importEx) {
+                                            logger.error("Unable to import data using user skeletons " + skeletons,
+                                                    importEx);
+                                            throw new RepositoryException(
+                                                    "Could not create user due to some import issues", importEx);
+                                        }
+                                    }
+                                    userNode.grantRoles("u:" + name, Collections.singleton("owner"));
+                                    String l_password;
+                                    if (!password.startsWith("SHA-1:")) {
+                                        // Encrypt the password
+                                        l_password = JahiaUserManagerService.encryptPassword(password);
+                                    } else {
+                                        l_password = password.substring(6);
+                                    }
 
-                    userNode.setProperty(JCRUser.J_PASSWORD, l_password);
-                    userNode.setProperty(JCRUser.J_EXTERNAL, false);
-                    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-                        String key = (String) entry.getKey();
-                        if (mappingOfProperties.containsKey(key)) {
-                            key = mappingOfProperties.get(key);
+                                    userNode.setProperty(JCRUser.J_PASSWORD, l_password);
+                                    userNode.setProperty(JCRUser.J_EXTERNAL, false);
+                                    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+                                        String key = (String) entry.getKey();
+                                        if (mappingOfProperties.containsKey(key)) {
+                                            key = mappingOfProperties.get(key);
+                                        }
+                                        userNode.setProperty(key, (String) entry.getValue());
+                                    }
+                                    jcrSessionWrapper.save();
+                                    return new JCRUser(userNode.getIdentifier());
+                                } else {
+                                    // Simply create a folder
+                                    startNode = startNode.addNode(jcrUsernamePath[i], "jnt:usersFolder");
+                                    jcrSessionWrapper.save();
+                                }
+                            } catch (RepositoryException e1) {
+                                logger.error("Cannot save", e1);
+                            }
                         }
-                        userNode.setProperty(key, (String) entry.getValue());
                     }
-                    jcrSessionWrapper.save();
-                    // Use rules instead to publish the user
-                    /* publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                    true);*/
-                    return new JCRUser(userNode.getIdentifier());
+                    return new JCRUser(startNode.getIdentifier());
                 }
             });
         } catch (RepositoryException e) {
-            logger.error("Error while creating user " + name, e);
-            return null;
+            logger.error(e.getMessage(), e);
         }
+        return null;
     }
 
-    /**
+            /**
      * This method removes a user from the system. All the user's attributes are
      * remove, and also all the related objects belonging to the user. On success,
      * true is returned and the user parameter is not longer valid. Return false
@@ -333,7 +354,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node userNode = session.getNode("/users/" + JCRContentUtils.escapeLocalNodeName(name));
+                    Node userNode = session.getNode(ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(name));
                     if (!userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(userNode.getIdentifier());
                         cache.put(name, user);
@@ -350,18 +371,18 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         return null;
     }
 
-    public JCRUser lookupExternalUser(final String name) {
+    public JCRUser lookupExternalUser(final JahiaUser jahiaUser) {
         try {
-            JCRUser user = cache.get(name);
+            JCRUser user = cache.get(jahiaUser.getName());
             if (user != null) {
                 return user;
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node userNode = session.getNode("/users/" + name.trim());
+                    Node userNode = session.getNode(jahiaUser.getLocalPath());
                     if (userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                         JCRUser user = new JCRUser(userNode.getIdentifier(), true);
-                        cache.put(name, user);
+                        cache.put(jahiaUser.getName(), user);
                         return user;
                     }
                     return null;
@@ -370,7 +391,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         } catch (PathNotFoundException pnfe) {
             // This is expected in the case the user doesn't exist in the repository. We will simply return null.
         } catch (RepositoryException e) {
-            logger.error("Error while looking up external user by name " + name, e);
+            logger.error("Error while looking up external user by name " + jahiaUser.getName(), e);
         }
         return null;
     }

@@ -6,6 +6,23 @@
 
     <bean id="JahiaUserManagerService" class="org.jahia.services.usermanager.JahiaUserManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance">
     	<property name="defaultProvider" ref="JCRUserManagerProvider"/>
+        <property name="userSplittingRule">
+            <bean class="org.jahia.services.usermanager.DefaultJahiaUserSplittingRuleImpl">
+                <property name="usersRootNode" value="/users"/>
+                <property name="nonSplittedUsers">
+                    <list value-type="java.lang.String">
+                        <!-- System users are not splitted -->
+                        <value>guest</value>
+                        <value>root</value>
+                        <!-- Users from the ACME demo are also not splitted -->
+                        <value>jenifer</value>
+                        <value>john</value>
+                        <value>max</value>
+                        <value>marc</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
     </bean>
 
 	<bean id="JahiaUserManagerProvider" class="org.jahia.services.usermanager.JahiaUserManagerProvider" parent="jahiaServiceTemplate" abstract="true">

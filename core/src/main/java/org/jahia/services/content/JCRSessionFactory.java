@@ -167,7 +167,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 s = login(JahiaLoginModule.getCredentials(username), workspace, locale, fallbackLocale);
                 // should be done somewhere else, call can be quite expensive
                 if (!(user instanceof JCRUser)) {
-                    mountPoints.get("/").deployExternalUser(username, user.getProviderName());
+                    mountPoints.get("/").deployExternalUser(user);
                 }
             } else {
                 s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, fallbackLocale);

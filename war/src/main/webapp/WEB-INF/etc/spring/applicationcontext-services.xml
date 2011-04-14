@@ -134,6 +134,7 @@
 
 	<bean id="org.jahia.services.tasks.TaskService" class="org.jahia.services.tasks.TaskService">
 		<property name="groupManager" ref="JahiaGroupManagerService" />
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
 	</bean>
 
 	<bean id="SearchService" class="org.jahia.services.search.SearchServiceImpl"

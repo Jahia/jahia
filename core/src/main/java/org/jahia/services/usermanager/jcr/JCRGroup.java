@@ -221,9 +221,8 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                         name = name + "___" + ((JCRGroup) principal).getSiteID();
                         jcrUser = (JCRPrincipal) principal;
                     } else if (principal instanceof JahiaUser) {
-                        JCRTemplate.getInstance().getProvider("/").deployExternalUser(name,
-                                ((JahiaUser) principal).getProviderName());
-                        jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser(name);
+                        JCRTemplate.getInstance().getProvider("/").deployExternalUser((JahiaUser) principal);
+                        jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser((JahiaUser) principal);
                     }
                     if (jcrUser != null) {
                         Node node = getNode(session);
@@ -360,7 +359,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                         memberUuid = ((JCRPrincipal) principal).getIdentifier();
                     } else if (principal instanceof JahiaUser) {
                         // external user
-                        JCRUser externalUser = JCRUserManagerProvider.getInstance().lookupExternalUser(principal.getName());
+                        JCRUser externalUser = JCRUserManagerProvider.getInstance().lookupExternalUser((JahiaUser) principal);
                         if (externalUser != null) {
                             memberUuid = externalUser.getIdentifier();
                         } else {

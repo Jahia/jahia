@@ -18,7 +18,7 @@
 <template:addResources type="css" resources="converter.css,files.css"/>
 <c:if test="${renderContext.loggedIn}">
 <jcr:sql var="result"
-         sql="select * from [jmix:convertedFile] as conversion where isdescendantnode(conversion, ['/users/${renderContext.user.name}/']) order by conversion.[jcr:lastModified] desc"/>
+         sql="select * from [jmix:convertedFile] as conversion where isdescendantnode(conversion, ['${renderContext.user.localPath}/']) order by conversion.[jcr:lastModified] desc"/>
 <c:set var="currentList" value="${result.nodes}" scope="request"/>
 <c:set var="listTotalSize" value="${functions:length(result.nodes)}" scope="request"/>
 <c:choose>

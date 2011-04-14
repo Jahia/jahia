@@ -239,6 +239,7 @@
  - j:usersFolderConfig (string) nofulltext
  - j:usersFolderSkeleton (string) nofulltext
  + * (jnt:user)
+ + * (jnt:usersFolder)
 
 [jnt:address] > nt:base
  - j:street (string)

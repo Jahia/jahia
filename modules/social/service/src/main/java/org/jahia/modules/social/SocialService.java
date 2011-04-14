@@ -463,7 +463,7 @@ public class SocialService {
         if (jahiaUser instanceof JCRUser) {
             jcrUser = (JCRUser) jahiaUser;
         } else {
-            jcrUser = jcrUserManager.lookupExternalUser(jahiaUser.getName());
+            jcrUser = jcrUserManager.lookupExternalUser(jahiaUser);
         }
 
         return jcrUser;

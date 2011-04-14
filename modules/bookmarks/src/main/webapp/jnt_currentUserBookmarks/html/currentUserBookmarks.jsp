@@ -24,11 +24,8 @@
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
-<%--<c:if test="${not jcr:isNodeType(user, 'jnt:user')}">--%>
-<%--<jcr:node var="user" path="/users/${user.properties['jcr:createdBy'].string}"/>--%>
-<%--</c:if>--%>
 <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
-    <jcr:node var="user" path="/users/${renderContext.user.username}"/>
+    <jcr:node var="user" path="${renderContext.user.localPath}"/>
 </c:if>
 <c:set var="ps" value="?pagerUrl=${url.mainResource}"/>
 <c:if test="${!empty param.pageUrl}">

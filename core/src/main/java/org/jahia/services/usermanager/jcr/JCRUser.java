@@ -76,6 +76,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
     private UserProperties userProperties;
     private boolean external;
 	private List<PasswordHistoryEntry> passwordHistory;
+    private String path = null;
 
     public JCRUser(String nodeUuid) {
         this(nodeUuid, false);
@@ -398,6 +399,19 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      */
     public String getProviderName() {
         return PROVIDER_NAME;
+    }
+
+    /**
+     * Get the path of this user in the local store. For examle for LDAP user this will return the path of
+     * the user in the JCR with all necessary encoding.
+     *
+     * @return String representation of the name of the provider of this user
+     */
+    public String getLocalPath() {
+        if (path == null) {
+            path = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(getUsername());
+        }
+        return path;
     }
 
     @Override

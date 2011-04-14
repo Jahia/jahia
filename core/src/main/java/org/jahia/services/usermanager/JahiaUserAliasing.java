@@ -117,4 +117,13 @@ public class JahiaUserAliasing implements JahiaUser {
         return user;
     }
 
+    /**
+     * Get the path of this user in the local store. For examle for LDAP user this will return the path of
+     * the user in the JCR with all necessary encoding.
+     *
+     * @return String representation of the name of the provider of this user
+     */
+    public String getLocalPath() {
+        return user.getLocalPath();
+    }
 }

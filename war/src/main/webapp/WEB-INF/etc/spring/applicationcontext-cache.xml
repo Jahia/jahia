@@ -9,7 +9,7 @@
          applicationcontext-hibernate.xml file.
     -->
     <bean id="noCacheProvider" class="org.jahia.services.cache.dummy.DummyCacheProvider"/>
-    
+
     <bean id="ehCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider">
     	<property name="configurationResource">
 			<bean class="org.jahia.settings.EhCacheConfigFactoryBean">
@@ -39,10 +39,11 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean id="cacheKeyGenerator" class="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator">
-                <property name="groupManagerService" ref="JahiaGroupManagerService"/>
-                <property name="cacheProvider" ref="ehCacheProvider"/>
-                <property name="template" ref="jcrTemplate"/>
-        	</bean>
+        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="cacheProvider" ref="ehCacheProvider"/>
+        <property name="template" ref="jcrTemplate"/>
+    </bean>
 
 	<bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
         <property name="cacheProvider" ref="ehCacheProvider"/>

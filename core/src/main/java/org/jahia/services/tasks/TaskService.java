@@ -32,6 +32,7 @@
 
 package org.jahia.services.tasks;
 
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import static org.jahia.api.Constants.JAHIANT_TASK;
 import static org.jahia.api.Constants.JAHIANT_TASKS;
@@ -53,14 +54,16 @@ public class TaskService {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaskService.class);
 
-    private static String getTasksPath(String username) {
-        if (username == null || username.length() == 0) {
+    private static String getTasksPath(String userPath) {
+        if (userPath == null || userPath.length() == 0) {
             throw new IllegalArgumentException("The user name cannot be null or empty.");
         }
-        return "/users/" + username + "/tasks";
+        return userPath + "/tasks";
     }
 
     private JahiaGroupManagerService groupManager;
+
+    private JahiaUserManagerService userManagerService;
 
     /**
      * Creates a task for the specified user.
@@ -109,7 +112,7 @@ public class TaskService {
         }
         taskNode.setProperty("state", task.getState().toString().toLowerCase());
         try {
-            taskNode.setProperty("assignee", session.getNode("/users/" + forUser).getIdentifier());
+            taskNode.setProperty("assignee", session.getNode(userManagerService.getUserSplittingRule().getPathForUsername(forUser)).getIdentifier());
         } catch (Exception e) {
             logger.warn("Unable to find user '" + forUser + "' to assign a task", e);
         }
@@ -160,14 +163,15 @@ public class TaskService {
     private JCRNodeWrapper getUserTasksNode(final String username, JCRSessionWrapper session)
             throws RepositoryException {
         JCRNodeWrapper tasksNode = null;
+        String pathForUsername = userManagerService.getUserSplittingRule().getPathForUsername(username);
         try {
-            tasksNode = session.getNode(getTasksPath(username));
+            tasksNode = session.getNode(getTasksPath(pathForUsername));
         } catch (PathNotFoundException ex) {
             // no tasks node found
         }
         if (tasksNode == null) {
             // create it
-            JCRNodeWrapper userNode = session.getNode("/users/" + username);
+            JCRNodeWrapper userNode = session.getNode(pathForUsername);
             session.checkout(userNode);
             tasksNode = userNode.addNode("tasks", JAHIANT_TASKS);
         }
@@ -177,5 +181,9 @@ public class TaskService {
 
     public void setGroupManager(JahiaGroupManagerService groupManager) {
         this.groupManager = groupManager;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 }

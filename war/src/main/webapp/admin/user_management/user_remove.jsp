@@ -59,7 +59,7 @@
             <p>
               <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.label"/><br/>
               <fmt:message key="org.jahia.admin.users.ManageUsers.definitivelyRemove.files.label"/>&nbsp;
-              (<a href="<c:url value='/cms/export/default/users/${selectedUser.username}.zip?cleanup=simple'/>" target="_blank"><fmt:message key="label.export"/></a>)          
+              (<a href="<c:url value='/cms/export/default${selectedUser.localPath}.zip?cleanup=simple'/>" target="_blank"><fmt:message key="label.export"/></a>)
             </p>
             <c:set var="doRemove" value="true"/>
         </c:if>        

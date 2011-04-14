@@ -33,6 +33,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
@@ -131,6 +132,8 @@ public class JCRStoreProvider {
     private Boolean lockingAvailable = null;
     private Boolean searchAvailable = null;
 
+    private final Object syncRepoInit = new Object();
+
     public String getKey() {
         return key;
     }
@@ -174,7 +177,7 @@ public class JCRStoreProvider {
         if (httpPath == null) {
             httpPath = Jahia.getContextPath() + "/files";
         }
-        
+
         return httpPath;
     }
 
@@ -402,7 +405,7 @@ public class JCRStoreProvider {
                 JCRNodeWrapper rootNode = session.getRootNode();
                 if (!rootNode.hasNode("sites")) {
                     rootNode.addMixin("mix:referenceable");
-                    
+
                     JCRContentUtils.importSkeletons("WEB-INF/etc/repository/root.xml,WEB-INF/etc/repository/root-*.xml", "/", session, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, new HashMap<String,String>());
 
                     JahiaPrivilegeRegistry.init(session);
@@ -524,27 +527,33 @@ public class JCRStoreProvider {
         return needUpdate;
     }
 
-    public synchronized Repository getRepository() {
+    public Repository getRepository() {
         if (repo == null) {
-            if (repositoryName != null) {
-                repo = getRepositoryByJNDI();
-                if (rmibind != null) {
-                    try {
-                        Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
-                    } catch (MalformedURLException e) {
-                    } catch (RemoteException e) {
+            synchronized (syncRepoInit) {
+                if (repo == null) {
+                    if (repositoryName != null) {
+                        repo = getRepositoryByJNDI();
+                        if (rmibind != null) {
+                            try {
+                                Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
+                            } catch (MalformedURLException e) {
+                            } catch (RemoteException e) {
+                            }
+                        }
+                        return repo;
+                    } else if (factory != null && url != null) {
+                        repo = getRepositoryByRMI();
                     }
                 }
-                return repo;
-            } else if (factory != null && url != null) {
-                repo = getRepositoryByRMI();
             }
         }
         return repo;
     }
 
     public void setRepository(Repository repo) {
-        this.repo = repo;
+        synchronized (syncRepoInit) {
+            this.repo = repo;
+        }
     }
 
     protected Repository getRepositoryByJNDI() {
@@ -728,57 +737,49 @@ public class JCRStoreProvider {
         return;
     }
 
-
-    public void deployExternalUser(String username, String providerName) throws RepositoryException {
+    public void deployExternalUser(JahiaUser jahiaUser) throws RepositoryException {
+        String username = jahiaUser.getUsername();
         JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
         try {
-            if (session.getWorkspace().getQueryManager() != null) {
-                Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:usersFolder]", Query.JCR_SQL2);
-                QueryResult qr = q.execute();
-                NodeIterator ni = qr.getNodes();
-                    while (ni.hasNext()) {
-                        Node usersFolderNode = ni.nextNode();
-                        String options = "";
-                        if (usersFolderNode.hasProperty("j:usersFolderConfig")) {
-                            options = usersFolderNode.getProperty("j:usersFolderConfig").getString();
-                        }
-
-                        Node f = JCRContentUtils.getPathFolder(usersFolderNode, username, options, "jnt:usersFolder");
-
+            String jcrUsernamePath[] = StringUtils.substringAfter(jahiaUser.getLocalPath(), "/").split("/");
+            try {
+                Node startNode = session.getNode("/" + jcrUsernamePath[0]);
+                Node usersFolderNode = startNode;
+                int length = jcrUsernamePath.length;
+                for (int i = 1; i < length; i++) {
+                    try {
+                        startNode = startNode.getNode(jcrUsernamePath[i]);
+                    } catch (PathNotFoundException e) {
                         try {
-                            f.getNode(username);
-                        } catch (PathNotFoundException e) {
-                            synchronized (this) {
-                                try {
-                                    f.getNode(username);
-                                } catch (PathNotFoundException ee) {
+                            session.getWorkspace().getVersionManager().checkout(startNode.getPath());
+                            if (i == (length - 1)) {
+                                Node userNode = startNode.addNode(jcrUsernamePath[i], Constants.JAHIANT_USER);
+                                if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
+                                    String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
                                     try {
-                                        session.getWorkspace().getVersionManager().checkout(f.getPath());
-                                        Node userNode = f.addNode(username, Constants.JAHIANT_USER);
-                                        if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                        	String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
-                                        	try {
-                                        		JCRContentUtils.importSkeletons(skeletons, f.getPath() + "/" + username, session, new HashMap<String,String>());
-                                        	} catch (Exception importEx) {
-                                        		logger.error("Unable to import data using user skeletons " + skeletons, importEx);
-                                        	}
-                                        }
-
-                                        userNode.setProperty(JCRUser.J_EXTERNAL, true);
-                                        userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, providerName);
-                                        ((JCRNodeWrapper)userNode).grantRoles("u:" + username, Collections.singleton("owner"));
-
-                                        session.save();
-                                        session.getWorkspace().getVersionManager().checkin(f.getPath());
-                                        publicationService.publishByMainId(userNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                                                true, new ArrayList<String>());
-                                    } catch (RepositoryException e1) {
-                                        logger.error("Cannot save", e1);
+                                        JCRContentUtils.importSkeletons(skeletons,
+                                                startNode.getPath() + "/" + jcrUsernamePath[i], session,
+                                                new HashMap<String, String>());
+                                    } catch (Exception importEx) {
+                                        logger.error("Unable to import data using user skeletons " + skeletons,
+                                                importEx);
                                     }
                                 }
+
+                                userNode.setProperty(JCRUser.J_EXTERNAL, true);
+                                userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, jahiaUser.getProviderName());
+                                ((JCRNodeWrapper) userNode).grantRoles("u:" + username, Collections.singleton("owner"));
+                            } else {
+                                // Simply create a folder
+                                startNode = startNode.addNode(jcrUsernamePath[i], "jnt:usersFolder");
                             }
+                            session.save();
+                        } catch (RepositoryException e1) {
+                            logger.error("Cannot save", e1);
                         }
                     }
+                }
+            } catch (PathNotFoundException e) {
             }
         } finally {
             session.logout();

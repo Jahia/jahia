@@ -311,7 +311,7 @@ public class NavigationHelper {
                     });
                 }
                 if (path.contains("$user")) {
-                    path = path.replace("$user", "/users/" + currentUserSession.getUserID());
+                    path = path.replace("$user", currentUserSession.getUser().getLocalPath());
                     displayName = JahiaResourceBundle
                             .getJahiaInternalResource("label.personalFolder", uiLocale, "label.personalFolder");
                 }

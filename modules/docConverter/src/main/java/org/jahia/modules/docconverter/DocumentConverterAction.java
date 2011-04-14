@@ -101,7 +101,7 @@ public class DocumentConverterAction extends Action {
         String originMimeType = inputFile.getContentType();
         String convertedFileName = FilenameUtils.getBaseName(inputFile.getName()) + "." + converterService.getExtension(
                 returnedMimeType);
-        JCRNodeWrapper convertedFilesNode = session.getNode("/users/" + renderContext.getUser().getName() + "/files");
+        JCRNodeWrapper convertedFilesNode = session.getNode(renderContext.getUser().getLocalPath() + "/files");
         JCRNodeWrapper convertedFileNode;
         if (conversionSucceeded) {
             FileInputStream iStream = new FileInputStream(convertedFile);

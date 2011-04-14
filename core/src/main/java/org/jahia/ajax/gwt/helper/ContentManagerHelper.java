@@ -958,7 +958,7 @@ public class ContentManagerHelper {
             zip(templateDir, templateDir, zos);
             zos.close();
 
-            JCRNodeWrapper privateFolder = session.getNode("/users/" + session.getUser().getName() + "/files/private");
+            JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
 
             if (!privateFolder.hasNode("templates-sets")) {
                 if (!privateFolder.isCheckedOut()) {

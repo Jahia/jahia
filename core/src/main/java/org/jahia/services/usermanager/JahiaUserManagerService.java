@@ -61,6 +61,7 @@ public abstract class JahiaUserManagerService extends JahiaService {
      */
     public static final String GUEST_USERNAME = Constants.GUEST_USERNAME;
 
+    private JahiaUserSplittingRule userSplittingRule;
 // -------------------------- STATIC METHODS --------------------------
 
     //--------------------------------------------------------------------------
@@ -283,4 +284,12 @@ public abstract class JahiaUserManagerService extends JahiaService {
 	 *            an instance of the user provider to register
 	 */
 	public abstract void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider);
+
+    public void setUserSplittingRule(JahiaUserSplittingRule userSplittingRule) {
+        this.userSplittingRule = userSplittingRule;
+    }
+
+    public JahiaUserSplittingRule getUserSplittingRule() {
+        return userSplittingRule;
+    }
 }

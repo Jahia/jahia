@@ -18,7 +18,7 @@
 <c:if test="${renderContext.loggedIn}" >
 <form action="<c:url value='${url.basePreview}${currentResource.node.parent.path}.add.do'/>" method="post" name="bookmark" id="bookmarkForm">
     <p>
-        <jcr:node path="/users/${renderContext.user.name}" var="user" />
+        <jcr:node path="${renderContext.user.localPath}" var="user" />
 
         <label for="bookmark"><fmt:message key="bookmark.add"/></label>
         <input type="hidden" name="jcr:title" value=""/>

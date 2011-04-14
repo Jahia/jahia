@@ -20,7 +20,7 @@
 
 <c:set var="user" value="${ui:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
-    <jcr:node var="user" path="/users/${renderContext.user.username}"/>
+    <jcr:node var="user" path="${renderContext.user.localPath}"/>
 </c:if>
 <social:get-connections var="userConnections" path="${user.path}" />
 <social:get-activities var="activities" sourcePaths="${userConnections}" />

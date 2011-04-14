@@ -243,14 +243,9 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
     }
 
     public Future<Activity> getActivity(UserId userId, GroupId groupId, final String appId, Set<String> fields, final String activityId, SecurityToken token) throws ProtocolException {
-        final List<Activity> result = Lists.newArrayList();
         try {
-            final String userKey = userId.getUserId(token);
-
             Activity activity = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Activity>() {
                 public Activity doInJCR(JCRSessionWrapper session) throws RepositoryException {
-
-                    Node userNode = getUsersNode(session, userKey);
                     // now let's retrieve the activities for the user.
                     JCRNodeWrapper activityNode = session.getNodeByUUID(activityId);
 
@@ -302,8 +297,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
     private Node getUsersNode(Session session, String userKey) throws RepositoryException {
         String name = getUserNameFromKey(userKey);
-        Node userNode = session.getNode(jahiaUserManagerService.getUserSplittingRule().getPathForUsername(name));
-        return userNode;
+        return session.getNode(jahiaUserManagerService.getUserSplittingRule().getPathForUsername(name));
     }
 
     private Map<String, Object> getPersonAppData(final String id, final Set<String> fields) throws RepositoryException {
@@ -362,7 +356,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
                 Node usersFolderNode = session.getNode(jahiaUserManagerService.getUserSplittingRule().getPathForUsername(name));
                 JCRUser jcrUser = null;
                 if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                    jcrUser = new JCRUser(usersFolderNode.getUUID());
+                    jcrUser = new JCRUser(usersFolderNode.getIdentifier());
                 } else {
                     return null;
                 }

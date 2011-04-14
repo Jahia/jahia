@@ -13,5 +13,5 @@
     <c:if test="${empty jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}">
         <c:set var="action">javascript:history.back()</c:set>
     </c:if>
-    <a class="returnLink" href="${action}" title='<fmt:message key="backToPreviousPage"/>'>${title}</a>
+    <a class="returnLink" href="${action}" title='<fmt:message key="backToPreviousPage"/>'>${title.string}</a>
 </div>

@@ -61,6 +61,8 @@ import javax.jcr.query.Query;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author toto
@@ -1066,8 +1068,18 @@ public class LegacyImportHandler extends DefaultHandler {
                 default: {
                     if (value.startsWith("/")) {
                         try {
-                            if (value.startsWith("/users")) {
-                                value = value.replaceFirst("/users/([^/]+)/", "/users/$1/files/");
+                            if (value.startsWith("/users/")) {
+                                Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(value);
+                                if (m.matches()) {
+                                    value = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+                                    value = value + "/files" + ((m.group(2) != null) ? m.group(2) : "");
+                                }
+                            } else if (value.startsWith("/content/users/")) {
+                                Matcher m = Pattern.compile("/content/users/([^/]+)(/.*)?").matcher(value);
+                                if (m.matches()) {
+                                    value = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+                                    value = value + ((m.group(2) != null) ? m.group(2) : "");
+                                }
                             } else if (pathMapping != null) {
                                 for (String map : pathMapping.keySet()) {
                                     if (value.startsWith(map)) {

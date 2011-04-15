@@ -63,6 +63,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -108,8 +110,12 @@ public class FilesAclImportHandler extends DefaultHandler {
 
                 if (path.startsWith("/shared")) {
                     path = "/sites/" + site.getSiteKey() + "/files" + path;
-                } else if (path.startsWith("/users")) {
-                    path = path.replaceFirst("/users/([^/]+)/", "/users/$1/files/");
+                } else if (path.startsWith("/users/")) {
+                    Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(path);
+                    if (m.matches()) {
+                        path = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+                        path = path + "/files" + ((m.group(2) != null) ? m.group(2) : "");
+                    }
                 }
 
                 if (session.itemExists(path)) {

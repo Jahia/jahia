@@ -32,6 +32,7 @@
  */
 package org.jahia.services.usermanager;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
 
@@ -60,13 +61,10 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
         if (nonSplittedUsers.contains(username)) {
             return builder.append(usersRootNode).append("/").append(username).toString();
         }
-        String firstFolder = username.substring(0, 2);
-        String secondFolder;
-        if (username.length() > 2) {
-            secondFolder = username.substring(2, 4 < username.length() ? 4 : username.length());
-        } else {
-            secondFolder = firstFolder;
-        }
+        String paddedUsername = StringUtils.rightPad(username, 4, "_");
+        String firstFolder = paddedUsername.substring(0, 2);
+        String secondFolder = paddedUsername.substring(2, 4 < paddedUsername.length() ? 4 : paddedUsername.length());
+
         return builder.append(usersRootNode).append("/").append(firstFolder).append("/").append(secondFolder).append(
                 "/").append(JCRContentUtils.escapeLocalNodeName(username)).toString().toLowerCase();
     }

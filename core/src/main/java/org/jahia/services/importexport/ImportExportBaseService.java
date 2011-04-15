@@ -78,6 +78,8 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Service used to perform all import/export operations for content and documents.
@@ -598,14 +600,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                         + StringUtils.stripStart(name
                                                 .replaceFirst("/content/sites/[^/]+/files/", ""),
                                                 "/");
-                            } else if (name.startsWith("/content/users")) {
-                                name = name.replaceFirst(
-                                                "/content/users/([^/]+)/",
-                                                "/users/$1/files/");
                             } else if (name.startsWith("/users")) {
-                                name = name.replaceFirst(
-                                                "/users/([^/]+)/",
-                                                "/users/$1/files/");
+                                Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(name);
+                                if (m.matches()) {
+                                    name = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+                                    name = name + "/files" + ((m.group(2) != null) ? m.group(2) : "");
+                                }
+                            } else if (name.startsWith("/content/users")) {
+                                Matcher m = Pattern.compile("/content/users/([^/]+)(/.*)?").matcher(name);
+                                if (m.matches()) {
+                                    name = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+                                    name = name + ((m.group(2) != null) ? m.group(2) : "");
+                                }
                             } else {
                                 name = pathMapping.get("/")
                                         + StringUtils.stripStart(name, "/");

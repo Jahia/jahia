@@ -35,6 +35,7 @@ package org.jahia.services.importexport;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
@@ -58,6 +59,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -180,6 +182,13 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 path = "/" + decodedQName;
             } else {
                 path = nodes.peek().getPath() + "/" + decodedQName;
+            }
+
+            if (pathes.peek().startsWith("/content/users/") && "jnt:user".equals(atts.getValue("jcr:primaryType"))) {
+                Matcher m = Pattern.compile("/content/users/([^/]+)").matcher(pathes.peek());
+                if (m.matches()) {
+                    path = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+                }
             }
 
             String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);

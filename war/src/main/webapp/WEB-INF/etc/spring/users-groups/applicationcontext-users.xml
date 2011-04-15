@@ -14,11 +14,6 @@
                         <!-- System users are not splitted -->
                         <value>guest</value>
                         <value>root</value>
-                        <!-- Users from the ACME demo are also not splitted -->
-                        <value>jenifer</value>
-                        <value>john</value>
-                        <value>max</value>
-                        <value>marc</value>
                     </list>
                 </property>
             </bean>

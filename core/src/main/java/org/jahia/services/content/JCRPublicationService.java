@@ -32,11 +32,12 @@
 
 package org.jahia.services.content;
 
+import static org.jahia.api.Constants.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -175,7 +176,7 @@ public class JCRPublicationService extends JahiaService {
      * @throws javax.jcr.RepositoryException in case of error
      */
     public void publishByMainId(final String uuid) throws RepositoryException {
-        publishByMainId(uuid, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+        publishByMainId(uuid, EDIT_WORKSPACE, LIVE_WORKSPACE, null, true, null);
     }
 
     /**
@@ -292,9 +293,11 @@ public class JCRPublicationService extends JahiaService {
         }
         VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
-        if (destinationSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
+        if (destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
-                logger.debug("Publishing node " + jcrNodeWrapper.getPath());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Publishing node {}", jcrNodeWrapper.getPath());
+                }
                 if (jcrNodeWrapper.isNodeType("jmix:publication") && (!jcrNodeWrapper.hasProperty("j:published") ||
                         !jcrNodeWrapper.getProperty("j:published").getBoolean())) {
                     if (!sourceVersionManager.isCheckedOut(jcrNodeWrapper.getPath())) {
@@ -414,8 +417,10 @@ public class JCRPublicationService extends JahiaService {
 
         for (JCRNodeWrapper node : modified) {
             if (node.isNodeType("jmix:lastPublished")) {
-                logger.debug("Setting last published : " + node.getPath());
-//            if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Setting last published for {}", node.getPath());
+                }
+//            if (!sourceSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
                 VersionManager versionManager = node.getSession().getWorkspace().getVersionManager();
                 if (!versionManager.isCheckedOut(node.getPath())) {
                     versionManager.checkout(node.getPath());
@@ -462,9 +467,11 @@ public class JCRPublicationService extends JahiaService {
 
                 final String oldPath = handleSharedMove(sourceSession, node, node.getPath());
 
-                logger.debug(
+                if (logger.isDebugEnabled()) {
+                    logger.debug(
                         "Merge node : " + path + " source v=" + node.getBaseVersion().getName() + " , dest node v=" +
                                 destinationSession.getNode(destinationPath).getBaseVersion().getName());
+                }
 
                 if (!node.getPath().equals(destinationPath)) {
                     try {
@@ -539,7 +546,7 @@ public class JCRPublicationService extends JahiaService {
                             logger.error("Error when merging differences",e);
                         }
                     }
-//                    if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
+//                    if (!sourceSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
                     recurseCheckpoint(destinationSession, destinationNode, uuids,
                             destinationVersionManager, calendar);
 //                        node.update(destinationSession.getWorkspace().getName()); // do not update live in reverse publish
@@ -561,11 +568,11 @@ public class JCRPublicationService extends JahiaService {
                     }
                 }
 
-                logger.debug("Merge node end : " + path + " source v=" +
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Merge node end : " + path + " source v=" +
                         sourceSession.getNode(path).getBaseVersion().getName() + " , dest node v=" +
                         destinationSession.getNode(destinationPath).getBaseVersion().getName());
-
-
+                }
             } catch (ItemNotFoundException e) {
                 // Item does not exist yet in live space
                 JCRNodeWrapper destinationNode =
@@ -586,7 +593,9 @@ public class JCRPublicationService extends JahiaService {
         final String sourceNodePath =
                 sourceNode.getIndex() > 1 ? sourceNode.getPath() + "[" + sourceNode.getIndex() + "]" :
                         sourceNode.getPath();
-        logger.debug("Cloning node : " + sourceNodePath + " parent path " + parent.getPath());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Cloning node : " + sourceNodePath + " parent path " + parent.getPath());
+        }
         final String destinationWorkspaceName = destinationSession.getWorkspace().getName();
          String destinationParentPath = null;
         try {
@@ -731,13 +740,17 @@ public class JCRPublicationService extends JahiaService {
 
     private void checkpoint(Session session, JCRNodeWrapper node, VersionManager versionManager)
             throws RepositoryException {
-        logger.debug("Checkin node " + node.getPath() + " in workspace " + session.getWorkspace().getName() +
+        if (logger.isDebugEnabled()) {
+            logger.debug("Checkin node " + node.getPath() + " in workspace " + session.getWorkspace().getName() +
                 " with current version " + versionManager.getBaseVersion(node.getPath()).getName());
+        }
         session.save();
         Version version = versionManager.checkpoint(node.getPath());
-        logger.debug("Checkin node " + node.getPath() + " in workspace " + session.getWorkspace().getName() +
+        if (logger.isDebugEnabled()) {
+            logger.debug("Checkin node " + node.getPath() + " in workspace " + session.getWorkspace().getName() +
                 " with new version " + version.getName() + " base version is " +
                 versionManager.getBaseVersion(node.getPath()).getName());
+        }
     }
 
     private void recurseCheckpoint(Session session, JCRNodeWrapper node, List<String> uuidsToPublish,
@@ -779,7 +792,7 @@ public class JCRPublicationService extends JahiaService {
      */
     public void unpublish(String uuid, Set<String> languages) throws RepositoryException {
         JCRSessionWrapper sourceSession = getSessionFactory().getCurrentUserSession();
-        JCRSessionWrapper destinationSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
+        JCRSessionWrapper destinationSession = getSessionFactory().getCurrentUserSession(LIVE_WORKSPACE);
         JCRNodeWrapper node = sourceSession.getNodeByUUID(uuid);
         VersionManager vm = sourceSession.getWorkspace().getVersionManager();
         if (!vm.isCheckedOut(node.getPath())) {
@@ -788,7 +801,7 @@ public class JCRPublicationService extends JahiaService {
         unpublish(node, languages);
         sourceSession.save();
 
-        JCRNodeWrapper destNode = destinationSession.getNode(node.getCorrespondingNodePath(Constants.LIVE_WORKSPACE));
+        JCRNodeWrapper destNode = destinationSession.getNode(node.getCorrespondingNodePath(LIVE_WORKSPACE));
         unpublish(destNode, languages);
         destinationSession.save();
     }
@@ -953,7 +966,7 @@ public class JCRPublicationService extends JahiaService {
             }
 
             info.setStatus(PublicationInfo.NOT_PUBLISHED);
-            if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+            if (node.isNodeType(JAHIANT_TRANSLATION)) {
                 boolean hasProperty = false;
                 final PropertyIterator iterator = node.getProperties();
                 while (iterator.hasNext() && !hasProperty) {
@@ -990,8 +1003,8 @@ public class JCRPublicationService extends JahiaService {
             }
         }
 
-        if (node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
-            Value[] lockTypes = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
+        if (node.hasProperty(JAHIA_LOCKTYPES)) {
+            Value[] lockTypes = node.getProperty(JAHIA_LOCKTYPES).getValues();
             for (Value lockType : lockTypes) {
                 if (lockType.getString().endsWith(":validation")) {
                     info.setLocked(true);
@@ -1069,7 +1082,9 @@ public class JCRPublicationService extends JahiaService {
                                 if (definition.getRequiredType() == PropertyType.REFERENCE) {
                                     logger.warn("Cannot get reference " + v.getString() + " from node " + node.getPath());
                                 } else {
-                                    logger.debug("Cannot get weak reference " + v.getString() + " from node " + node.getPath());
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug("Cannot get weak reference {} from node {}", v.getString(), node.getPath());
+                                    }
                                 }
 
                             }

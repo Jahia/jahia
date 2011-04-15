@@ -62,7 +62,7 @@
 [jmix:versionInfo] mixin
 - j:checkinDate (date) hidden
 
-[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:description mixin
+[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:description, jmix:workflow mixin
 
 [jmix:autoPublish] > jmix:observable mixin
 
@@ -74,7 +74,7 @@
 // Multi language
 //---------------------------------------------------------
 
-[jnt:translation] > nt:base, jmix:lockable, mix:language, mix:lastModified, jmix:lastPublished, mix:versionable, jmix:versionInfo, jmix:observable
+[jnt:translation] > nt:base, jmix:lockable, mix:language, mix:lastModified, jmix:lastPublished, mix:versionable, jmix:versionInfo, jmix:observable, jmix:workflow
   - * (undefined) multiple
   - * (undefined)
 

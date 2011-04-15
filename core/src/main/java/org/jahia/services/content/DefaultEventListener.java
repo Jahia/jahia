@@ -32,8 +32,9 @@
 
 package org.jahia.services.content;
 
+import static org.jahia.api.Constants.*;
+
 import org.apache.jackrabbit.core.observation.EventImpl;
-import org.jahia.api.Constants;
 
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
@@ -41,7 +42,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 14 janv. 2008
  * Time: 15:56:43
@@ -55,33 +55,33 @@ public abstract class DefaultEventListener implements EventListener {
 
     protected DefaultEventListener() {
         propertiesToIgnore = new HashSet<String>();
-        propertiesToIgnore.add(Constants.JCR_PRIMARYTYPE);
-        propertiesToIgnore.add(Constants.JCR_UUID);
-        propertiesToIgnore.add(Constants.JCR_CREATED);
-        propertiesToIgnore.add(Constants.JCR_CREATEDBY);
-        propertiesToIgnore.add(Constants.JCR_LASTMODIFIED);
-        propertiesToIgnore.add(Constants.JCR_LASTMODIFIEDBY);
-        propertiesToIgnore.add(Constants.LASTPUBLISHED);
-        propertiesToIgnore.add(Constants.LASTPUBLISHEDBY);        
-        propertiesToIgnore.add(Constants.PUBLISHED);
-        propertiesToIgnore.add(Constants.JCR_LOCKOWNER);
-        propertiesToIgnore.add(Constants.JCR_LOCKISDEEP);
-        propertiesToIgnore.add(Constants.LOCKTOKEN);
-        propertiesToIgnore.add(Constants.LOCKTYPES);
-        propertiesToIgnore.add(Constants.JCR_ISCHECKEDOUT);
-        propertiesToIgnore.add(Constants.JCR_VERSIONHISTORY);
-        propertiesToIgnore.add(Constants.JCR_PREDECESSORS);
-        propertiesToIgnore.add(Constants.JCR_SUCCESSORS);
-        propertiesToIgnore.add(Constants.JCR_BASEVERSION);
-        propertiesToIgnore.add(Constants.JCR_FROZENUUID);
-        propertiesToIgnore.add(Constants.FULLPATH);
-        propertiesToIgnore.add(Constants.NODENAME);
-        propertiesToIgnore.add(Constants.PROCESSID);
-        propertiesToIgnore.add(Constants.JCR_MERGEFAILED);
-        propertiesToIgnore.add(Constants.REVISION_NUMBER);
-        propertiesToIgnore.add(Constants.CHECKIN_DATE);
-        propertiesToIgnore.add(Constants.JCR_LASTLOGINDATE);
-        propertiesToIgnore.add(Constants.ORIGIN_WORKSPACE);
+        propertiesToIgnore.add(JCR_PRIMARYTYPE);
+        propertiesToIgnore.add(JCR_UUID);
+        propertiesToIgnore.add(JCR_CREATED);
+        propertiesToIgnore.add(JCR_CREATEDBY);
+        propertiesToIgnore.add(JCR_LASTMODIFIED);
+        propertiesToIgnore.add(JCR_LASTMODIFIEDBY);
+        propertiesToIgnore.add(LASTPUBLISHED);
+        propertiesToIgnore.add(LASTPUBLISHEDBY);        
+        propertiesToIgnore.add(PUBLISHED);
+        propertiesToIgnore.add(JCR_LOCKOWNER);
+        propertiesToIgnore.add(JCR_LOCKISDEEP);
+        propertiesToIgnore.add(LOCKTOKEN);
+        propertiesToIgnore.add(LOCKTYPES);
+        propertiesToIgnore.add(JCR_ISCHECKEDOUT);
+        propertiesToIgnore.add(JCR_VERSIONHISTORY);
+        propertiesToIgnore.add(JCR_PREDECESSORS);
+        propertiesToIgnore.add(JCR_SUCCESSORS);
+        propertiesToIgnore.add(JCR_BASEVERSION);
+        propertiesToIgnore.add(JCR_FROZENUUID);
+        propertiesToIgnore.add(FULLPATH);
+        propertiesToIgnore.add(NODENAME);
+        propertiesToIgnore.add(PROCESSID);
+        propertiesToIgnore.add(JCR_MERGEFAILED);
+        propertiesToIgnore.add(REVISION_NUMBER);
+        propertiesToIgnore.add(CHECKIN_DATE);
+        propertiesToIgnore.add(JCR_LASTLOGINDATE);
+        propertiesToIgnore.add(ORIGIN_WORKSPACE);
     }
 
     public void setWorkspace(String workspace) {

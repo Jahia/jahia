@@ -32,10 +32,11 @@
 
 package org.jahia.services.content;
 
+import static org.jahia.api.Constants.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
 
 import javax.jcr.*;
 import javax.jcr.observation.Event;
@@ -167,7 +168,7 @@ public class LastModifiedListener extends DefaultEventListener {
     }
 
     private void updateProperty(JCRNodeWrapper n, Calendar c, String userId, List<String> autoPublished, int type) throws RepositoryException {
-        while (!n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
+        while (!n.isNodeType(MIX_LAST_MODIFIED)) {
             addAutoPublish(n, autoPublished);
             try {
                 n = n.getParent();
@@ -178,12 +179,12 @@ public class LastModifiedListener extends DefaultEventListener {
 
         addAutoPublish(n, autoPublished);
 
-        if (!n.isCheckedOut()) {
-            n.checkout();
-        }
         if (type != JCRObservationManager.IMPORT) {
-            n.setProperty("jcr:lastModified",c);
-            n.setProperty("jcr:lastModifiedBy", userId);
+            if (!n.isCheckedOut()) {
+                n.checkout();
+            }
+            n.setProperty(JCR_LASTMODIFIED,c);
+            n.setProperty(JCR_LASTMODIFIEDBY, userId);
         }
     }
 
@@ -191,24 +192,9 @@ public class LastModifiedListener extends DefaultEventListener {
         if (autoPublished != null) {
             if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType("jmix:autoPublish")) {
                 autoPublished.add(n.getIdentifier());
-            } else if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType(Constants.JAHIANT_TRANSLATION) && n.getParent().isNodeType("jmix:autoPublish")) {
+            } else if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType(JAHIANT_TRANSLATION) && n.getParent().isNodeType("jmix:autoPublish")) {
                 autoPublished.add(n.getIdentifier());
             }
-        }
-    }
-
-    private void handleTranslationNodes(final JCRNodeWrapper node, final Calendar c,
-            final String userId) throws RepositoryException {
-        NodeIterator ni = node.getNodes("j:translation*");
-
-        while (ni.hasNext()) {
-            Node translation = ni.nextNode();
-            if (!translation.isCheckedOut()) {
-                translation.getSession().getWorkspace().getVersionManager()
-                        .checkout(translation.getPath());
-            }
-            translation.setProperty(Constants.JCR_LASTMODIFIED, c);
-            translation.setProperty(Constants.JCR_LASTMODIFIEDBY, userId);
         }
     }
 }

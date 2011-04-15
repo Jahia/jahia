@@ -32,10 +32,7 @@
 
 package org.jahia.services.content;
 
-import org.jahia.exceptions.JahiaException;
-
 import javax.jcr.RepositoryException;
-import java.text.ParseException;
 import java.util.Locale;
 
 /**
@@ -49,7 +46,7 @@ import java.util.Locale;
  * <p/>
  * Requires a {@link JCRSessionFactory} to provide access to a JCR repository.
  *
- * @author C�dric Mailleux
+ * @author Cedric Mailleux
  */
 public class JCRTemplate {
     private JCRSessionFactory sessionFactory;

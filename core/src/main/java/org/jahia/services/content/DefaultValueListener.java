@@ -44,11 +44,9 @@ import javax.jcr.observation.EventIterator;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Apr 30, 2008
  * Time: 11:56:02 AM
- * 
  */
 public class DefaultValueListener extends DefaultEventListener {
     private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultValueListener.class);
@@ -68,10 +66,8 @@ public class DefaultValueListener extends DefaultEventListener {
             if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
                 userId = userId.substring(JahiaLoginModule.SYSTEM.length());
             }
-            final List<Event> events = new ArrayList<Event>();
-            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
-                    Iterator<Event> it = eventIterator;
                     final Set<Session> sessions = new HashSet<Session>();
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();
@@ -80,15 +76,16 @@ public class DefaultValueListener extends DefaultEventListener {
                         }
                         try {
                             JCRNodeWrapper n = null;
+                            String eventPath = event.getPath();
                             if (event.getType() == Event.NODE_ADDED) {
                                 try {
-                                    n = (JCRNodeWrapper) s.getItem(event.getPath());
+                                    n = (JCRNodeWrapper) s.getItem(eventPath);
                                 } catch (PathNotFoundException e) {
                                     continue;
                                 }
                             }
-                            if (event.getPath().endsWith(Constants.JCR_MIXINTYPES)) {
-                                String path = event.getPath().substring(0, event.getPath().lastIndexOf('/'));
+                            if (eventPath.endsWith(Constants.JCR_MIXINTYPES)) {
+                                String path = eventPath.substring(0, eventPath.lastIndexOf('/'));
                                 n = (JCRNodeWrapper) s.getItem(path.length() == 0 ? "/" : path);
                             }
                             if (n != null) {
@@ -133,7 +130,7 @@ public class DefaultValueListener extends DefaultEventListener {
                     for (Session jcrsession : sessions) {
                         jcrsession.save();
                     }
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return null;
                 }
 
             });

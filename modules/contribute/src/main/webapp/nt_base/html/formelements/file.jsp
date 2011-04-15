@@ -27,7 +27,7 @@
 <c:url value="${url.files}" var="previewPath"/>
 <c:set var="onSelect">function(uuid, path, title) {
             $('#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').val(uuid);
-            $('#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').html('<img src=\"${previewPath}'+path+'\"/>');
+            $('#display${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}').html('<img src="${previewPath}'+path+'"/>');
             return false;
         }</c:set>
 <c:set var="onClose">$.defer( 200, function() {
@@ -38,27 +38,27 @@
                 'autoScale':false,
                 'autoDimensions':false,
                 'onComplete':function() {
-                    $(\"#treepreview\").remove();
-                    $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { $(this).ckeditor(); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; })
+                    $("#treepreview").remove();
+                    $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}").each(function() { $(this).ckeditor(); $(this).data('ckeditorInstance').checkWCAGCompliance=wcagCompliant; })
                 },
 
                 'onCleanup':function() {
-                    $(\"#treepreview\").remove();
-                    $(\".newContentCketempditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
+                    $("#treepreview").remove();
+                    $(".newContentCketempditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
                 }
              }
             );
         })</c:set>
 <c:set var="fancyboxOptions">{
             onStart: function() {
-                $(\".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}\").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
+                $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(resourceNodeType,':','_')}").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
                 $('#addNewContent').append($('.FormContribute'))
             }
         }</c:set>
 <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                  displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
         label="${fileLabel}"
-        onSelect="onSelect"
+        onSelect="${onSelect}"
         onClose="${onClose}"
         fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
 <span><fmt:message key="label.or"/></span>

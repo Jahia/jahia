@@ -95,19 +95,16 @@ public final class JCRContentUtils {
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
     
     public static boolean check(String icon) {
-        try {
-            synchronized (iconsPresence) {
-                if (!iconsPresence.containsKey(icon)) {
-                    iconsPresence.put(icon,
-                            Jahia.getStaticServletConfig().getServletContext().getResource("/modules/" + icon + ".png") !=
-                                    null);
-                }
+        Boolean present = iconsPresence.containsKey(icon);
+        if (present == null) {
+            try {
+                present = Jahia.getStaticServletConfig().getServletContext().getResource("/modules/" + icon + ".png") != null;
+                iconsPresence.put(icon, present);
+            } catch (MalformedURLException e) {
+                logger.warn(e.getMessage(), e);
             }
-            return iconsPresence.get(icon);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        return false;
+        return present;
     }
     
     /**

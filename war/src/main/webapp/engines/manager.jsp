@@ -17,7 +17,7 @@
     <c:if test="${cfg == 'contentmanager'}">
         <fmt:message key="label.repositoryExplorer" var="title"/>
     </c:if>
-    <title><fmt:message key="label.${fn:escapeXml(cfg)}"/></title>
+    <title>${title}</title>
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>

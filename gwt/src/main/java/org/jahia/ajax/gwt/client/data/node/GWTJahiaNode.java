@@ -85,7 +85,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String DEFAULT_LANGUAGE = "j:defaultLanguage";
 
     public static final List<String> DEFAULT_FIELDS =
-            Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height");
+            Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PUBLICATION_INFO);
 
     public static final List<String> DEFAULT_REFERENCE_FIELDS =
             Arrays.asList(ICON, COUNT, CHILDREN_INFO,NAME,DISPLAY_NAME);

@@ -67,6 +67,7 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
+import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.googledocs.GoogleDocsEditor;
@@ -86,6 +87,7 @@ import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
@@ -1708,7 +1710,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> getSitePagesWithTargetAreaName(String targetAreaName) {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         try {
-            Query q = retrieveCurrentSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:contentFolder] as l where localname()='"+targetAreaName+"' and isdescendantnode(l,['"+getSite().getPath()+"'])",Query.JCR_SQL2);
+            Query q = retrieveCurrentSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:contentFolder] as l where localname()='"+targetAreaName+"' and isdescendantnode(l,['"+ JCRContentUtils.getSystemSitePath() + "'])",Query.JCR_SQL2);
             QueryResult queryResult = q.execute();
             NodeIterator nodeIterator = queryResult.getNodes();
             while (nodeIterator.hasNext()) {

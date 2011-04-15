@@ -95,7 +95,7 @@ public final class JCRContentUtils {
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
     
     public static boolean check(String icon) {
-        Boolean present = iconsPresence.containsKey(icon);
+        Boolean present = iconsPresence.get(icon);
         if (present == null) {
             try {
                 present = Jahia.getStaticServletConfig().getServletContext().getResource("/modules/" + icon + ".png") != null;

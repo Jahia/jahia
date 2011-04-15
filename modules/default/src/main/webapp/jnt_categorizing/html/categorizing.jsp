@@ -26,9 +26,9 @@
             var uuidCategories = "${bindedComponent.identifier}";
             var uuids = new Array();
             <c:forEach items="${assignedCategories}" var="category" varStatus="status">
-                <c:if test="${not empty category.node}">
-                    uuids.push("${category.node.identifier}");
-                </c:if>
+            <c:if test="${not empty category.node}">
+            uuids.push("${category.node.identifier}");
+            </c:if>
             </c:forEach>
 
             function deleteCategory(uuid) {
@@ -40,13 +40,19 @@
                     }
                 }
                 uuids = newUuids;
-                $.post("${postUrl}", {"j:defaultCategory":uuids,methodToCall:"put","jcr:mixinTypes":"jmix:categorized"}, function(result) {
-                    $("#category" + uuid).hide();
-                    if(uuids.length == 0){
-                        var spanNoYetCat = $('<span><fmt:message key="label.categories.noCategory"/></span>').attr('class','nocategorizeditem'+uuidCategories);
-                        $("#jahia-categories-" + uuidCategories).append(spanNoYetCat)
-                    }
-                }, "json");
+                if (uuids.length == 0) {
+                    $.post("${postUrl}", {methodToCall:"put","removeMixin":"jmix:categorized"}, function(result) {
+                        $("#category" + uuid).hide();
+                        if (uuids.length == 0) {
+                            var spanNoYetCat = $('<span><fmt:message key="label.categories.noCategory"/></span>').attr('class', 'nocategorizeditem' + uuidCategories);
+                            $("#jahia-categories-" + uuidCategories).append(spanNoYetCat)
+                        }
+                    }, "json");
+                } else {
+                    $.post("${postUrl}", {"j:defaultCategory":uuids,methodToCall:"put","jcr:mixinTypes":"jmix:categorized"}, function(result) {
+                        $("#category" + uuid).hide();
+                    }, "json");
+                }
                 return false;
             }
 

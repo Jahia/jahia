@@ -79,7 +79,6 @@ public class CompareEngine extends Window {
      *
      * @param node   the content object to be edited
      * @param linker the edit linker for refresh purpose
-     * @param b
      */
     public CompareEngine(GWTJahiaNode node, String locale, Linker linker, boolean displayVersionSelector, boolean displayTwoPanels) {
         this.linker = linker;
@@ -110,7 +109,10 @@ public class CompareEngine extends Window {
     protected void init(boolean displayVersionSelector, boolean displayTwoPanels) {
         setLayout(new BorderLayout());
         setBodyBorder(false);
-        setSize(1300, 750);
+        int windowHeight=com.google.gwt.user.client.Window.getClientHeight()-10;
+        int windowWidth=com.google.gwt.user.client.Window.getClientWidth()-10;
+        int halfWindowWidth=windowWidth/2;
+        setSize(windowWidth, windowHeight);
         setClosable(true);
         setResizable(true);
         setModal(true);
@@ -135,8 +137,9 @@ public class CompareEngine extends Window {
         } else {
             leftPanel = new VersionViewer(uuid, locale, workspace!=null?workspace:"live", false, displayVersionSelector, versionDate, this, versionLabel);
         }
-        leftPanel.setSize(displayTwoPanels?650:1300, 750);
-        BorderLayoutData liveLayoutData = new BorderLayoutData(displayTwoPanels?Style.LayoutRegion.WEST:Style.LayoutRegion.CENTER, displayTwoPanels?650:1300);
+
+        leftPanel.setSize(displayTwoPanels?halfWindowWidth:windowWidth, windowHeight);
+        BorderLayoutData liveLayoutData = new BorderLayoutData(displayTwoPanels?Style.LayoutRegion.WEST:Style.LayoutRegion.CENTER, displayTwoPanels?halfWindowWidth:windowWidth);
         liveLayoutData.setCollapsible(true);
         add(leftPanel, liveLayoutData);
         if(displayTwoPanels) {
@@ -158,8 +161,9 @@ public class CompareEngine extends Window {
                 }
             };
         }
-        rightPanel.setSize(650, 750);
-        BorderLayoutData stagingLayoutData = new BorderLayoutData(Style.LayoutRegion.CENTER, 650);
+        rightPanel.setSize(halfWindowWidth, windowHeight);
+        rightPanel.setScrollMode(Style.Scroll.AUTO);
+        BorderLayoutData stagingLayoutData = new BorderLayoutData(Style.LayoutRegion.CENTER, halfWindowWidth);
         add(rightPanel, stagingLayoutData);
         }
         LayoutContainer buttonsPanel = new LayoutContainer();

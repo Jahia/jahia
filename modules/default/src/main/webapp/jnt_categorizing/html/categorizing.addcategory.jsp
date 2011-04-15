@@ -28,19 +28,14 @@
     <jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
     <c:url var="postUrl" value="${url.base}${bindedComponent.path}"/>
     <script type="text/javascript">
-        var uuids = new Array();
-        <c:forEach items="${assignedCategories}" var="category" varStatus="status">
-        <c:if test="${not empty category.node}">
-        uuids.push("${category.node.identifier}");
-        </c:if>
-        </c:forEach>
 
         function addCategory(uuid, separator) {
+            var catToAddUuid = $("#categorytoadd").val();
             $.ajaxSetup({ traditional: true });
             var isAlreadyExist = new Boolean();
             isAlreadyExist = false;
             for (i = 0; i < uuids.length; i++) {
-                if (uuids[i] == $("#categorytoadd").val()) {
+                if (uuids[i] == catToAddUuid) {
                     isAlreadyExist = true;
                 }
             }
@@ -48,22 +43,21 @@
                 uuids.push($("#categorytoadd").val());
                 $.post("${postUrl}", {"j:defaultCategory":uuids,methodToCall:"put","jcr:mixinTypes":"jmix:categorized"}, function(result) {
                     var catContainer = jQuery('#jahia-categories-' + uuid);
-                    if (jQuery(".nocategorizeditem" + uuid).length > 0) {
+                    if (jQuery(".nocategorizeditem" + uuid).length > 0 && $(".nocategorizeditem" + uuid).is(":visible")) {
                         jQuery(".nocategorizeditem" + uuid).hide();
                         separator = '';
+                    }else {
+                        separator = ' ,'
                     }
 
-                    if (separator.length > 0 && jQuery('#jahia-categories-' + uuid + ' > span').length > 0) {
-                        catContainer.append(separator);
-                    }
+                    var catDiv = $('<div></div>').attr('id','category'+catToAddUuid).attr('style','display:inline');
                     var catDisplay = jQuery('<span class="categorizeditem">' + $("#category").val() + '</span>');
-                    catDisplay.hide();
-                    if (jQuery(".nocategorizeditem" + uuid).length > 0) {
-                        jQuery(".nocategorizeditem" + uuid).replaceWith(catDisplay);
-                    } else {
-                        catContainer.append(catDisplay);
-                    }
-                    catDisplay.fadeIn('fast');
+                    var catLinkDelete = $('<a></a>').attr('onclick','deleteCategory(\''+ catToAddUuid +'\')').attr('class','delete').attr('href','#');
+
+                    catContainer.append(catDiv);
+                    catDiv.append(separator);
+                    catDiv.append(catDisplay);
+                    catDiv.append(catLinkDelete);
                     $("#category").val();
                 }, "json");
             } else {

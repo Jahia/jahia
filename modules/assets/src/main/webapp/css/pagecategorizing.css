@@ -1,0 +1,19 @@
+/******************************************************************************
+*  Category this Page
+******************************************************************************/
+.bodywrapper .categorythispage span span.categorizeditem {
+    background: transparent url(img/categorytitle.png) no-repeat scroll 0 70%;
+    display: inline !important;
+    margin-left: 8px;
+    padding: 5px 0 5px 18px;
+}
+
+.bodywrapper .categorythispage {
+    margin: 0.5em 0;
+}
+
+a.delete {
+    background: url("/icons/delete.png") no-repeat scroll 0 0 transparent;
+    display: inline;
+    padding-right: 18px;
+}

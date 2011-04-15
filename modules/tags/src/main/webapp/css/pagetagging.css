@@ -3,8 +3,7 @@
 ******************************************************************************/
 .bodywrapper .tagthispage span span {
     background:transparent url(img/page-tag.gif) no-repeat scroll 0 70%;
-    display:inline;
-    margin-right:8px;
+    display:inline !important;
     padding:5px 0 5px 18px;
 }
 .bodywrapper .tagthispage  {

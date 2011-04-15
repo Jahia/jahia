@@ -14,16 +14,48 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
+<template:addResources type="css" resources="pagecategorizing.css"/>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
     <div class="categorythispage">
-            <jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
-            <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
-            <jsp:useBean id="filteredCategories" class="java.util.LinkedHashMap"/>
+        <jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
+        <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
+        <c:url var="postUrl" value="${url.base}${bindedComponent.path}"/>
+        <script type="text/javascript">
+            var uuidCategories = "${bindedComponent.identifier}";
+            var uuids = new Array();
+            <c:forEach items="${assignedCategories}" var="category" varStatus="status">
+                <c:if test="${not empty category.node}">
+                    uuids.push("${category.node.identifier}");
+                </c:if>
+            </c:forEach>
+
+            function deleteCategory(uuid) {
+                $.ajaxSetup({traditional: true});
+                var newUuids = new Array();
+                for (i = 0; i < uuids.length; i++) {
+                    if (uuids[i] != uuid) {
+                        newUuids.push(uuids[i])
+                    }
+                }
+                uuids = newUuids;
+                $.post("${postUrl}", {"j:defaultCategory":uuids,methodToCall:"put","jcr:mixinTypes":"jmix:categorized"}, function(result) {
+                    $("#category" + uuid).hide();
+                    if(uuids.length == 0){
+                        var spanNoYetCat = $('<span><fmt:message key="label.categories.noCategory"/></span>').attr('class','nocategorizeditem'+uuidCategories);
+                        $("#jahia-categories-" + uuidCategories).append(spanNoYetCat)
+                    }
+                }, "json");
+                return false;
+            }
+
+        </script>
+        <jsp:useBean id="filteredCategories" class="java.util.LinkedHashMap"/>
         <c:forEach items="${assignedCategories}" var="category" varStatus="status">
             <c:if test="${not empty category.node}">
-                <c:set target="${filteredCategories}" property="${category.node.properties['jcr:title'].string}" value="${category.node.properties['jcr:title'].string}"/>
+                <c:set target="${filteredCategories}" property="${category.node.identifier}"
+                       value="${category.node.properties['jcr:title'].string}"/>
             </c:if>
         </c:forEach>
         <div class="categorized">
@@ -32,11 +64,16 @@
                 <c:choose>
                     <c:when test="${not empty filteredCategories}">
                         <c:forEach items="${filteredCategories}" var="category" varStatus="status">
-                            ${!status.first ? separator : ''}<span class="categorizeditem">${fn:escapeXml(category.value)}</span>
+                            <div id="category${category.key}" style="display:inline">
+                                    ${!status.first ? separator : ''}<span
+                                    class="categorizeditem">${fn:escapeXml(category.value)}</span>
+                                <a class="delete" onclick="deleteCategory('${category.key}')" href="#"></a>
+                            </div>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <span class="nocategorizeditem${bindedComponent.identifier}"><fmt:message key="label.categories.noCategory"/></span>
+                        <span class="nocategorizeditem${bindedComponent.identifier}"><fmt:message
+                                key="label.categories.noCategory"/></span>
                     </c:otherwise>
                 </c:choose>
             </span>

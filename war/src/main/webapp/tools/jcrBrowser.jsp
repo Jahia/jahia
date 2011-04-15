@@ -2,6 +2,7 @@
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider"%>
+<%@page import="org.jahia.services.content.JCRContentUtils"%>
 <%@page import="org.jahia.services.content.JCRNodeWrapper"%>
 <%@page import="org.jahia.services.content.JCRSessionFactory"%>
 <%@page import="org.jahia.services.content.JCRSessionWrapper"%>
@@ -49,6 +50,15 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
                 jcrSession.save();
                 %>
                 <p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> deleted successfully</p>
+            </c:when>
+            <c:when test="${param.action == 'rename' && not empty param.target && not empty param.name}">
+                <% JCRNodeWrapper target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
+                pageContext.setAttribute("target", target);
+                jcrSession.checkout(target.getParent());
+                target.rename(JCRContentUtils.findAvailableNodeName(target.getParent(), request.getParameter("name")));
+                jcrSession.save();
+                %>
+                <p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> renamed successfully</p>
             </c:when>
         </c:choose>
     </c:if>
@@ -156,10 +166,24 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
                             <c:param name="action" value="delete"/>
                             <c:param name="target" value="${child.identifier}"/>
                         </c:url>
-                        &nbsp;<a href="${deleteUrl}" onclick='var nodeName="${child.name}"; return confirm("You are about to delete the node " + nodeName + " with all child nodes. Continue?")' title="delete"><img src="${pageContext.request.contextPath}/icons/delete.png" height="16" width="16" title="delete" border="0" style="vertical-align: middle;"/></a>
+                        <c:url var="renameUrl" value="?">
+                            <c:param name="uuid" value="${node.identifier}"/>
+                            <c:param name="showProperties" value="${showProperties}"/>
+                            <c:param name="showNodes" value="${showNodes}"/>
+                            <c:param name="showActions" value="${showActions}"/>
+                            <c:param name="workspace" value="${workspace}"/>
+                            <c:param name="action" value="rename"/>
+                            <c:param name="target" value="${child.identifier}"/>
+                        </c:url>
+                        &nbsp;|
                         <c:if test="${jcr:isNodeType(child, 'nt:file')}">
                             &nbsp;<a target="_blank" href="<c:url value='${child.url}' context='/'/>" title="download"><img src="${pageContext.request.contextPath}/icons/download.png" height="16" width="16" title="download" border="0" style="vertical-align: middle;"/></a>
                         </c:if>
+                        &nbsp;<a target="_blank" href="<c:url value='/cms/export/${workspace}${child.path}.xml?cleanup=simple'/>" title="Exaport as XML"><img src="${pageContext.request.contextPath}/icons/import.png" height="16" width="16" title="Export as XML" border="0" style="vertical-align: middle;"/></a>
+                        &nbsp;<a target="_blank" href="<c:url value='/cms/export/${workspace}${child.path}.zip?cleanup=simple'/>" title="Exaport as ZIP"><img src="${pageContext.request.contextPath}/icons/zip.png" height="16" width="16" title="Export as ZIP" border="0" style="vertical-align: middle;"/></a>
+                        |&nbsp;
+                        &nbsp;<a href="${renameUrl}" onclick='var name=prompt("Please provide a new name for the node:", "${child.name}"); if (name != null & name != "${child.name}") { this.href = this.href + "name=" + name; return true; } else { return false; }' title="Rename"><img src="${pageContext.request.contextPath}/icons/editContent.png" height="16" width="16" title="Rename" border="0" style="vertical-align: middle;"/></a>
+                        &nbsp;<a href="${deleteUrl}" onclick='var nodeName="${child.name}"; return confirm("You are about to delete the node " + nodeName + " with all child nodes. Continue?")' title="Delete"><img src="${pageContext.request.contextPath}/icons/delete.png" height="16" width="16" title="Delete" border="0" style="vertical-align: middle;"/></a>
                     </c:if>
                 </li>
             </c:forEach>

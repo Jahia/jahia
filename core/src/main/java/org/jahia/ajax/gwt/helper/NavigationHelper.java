@@ -40,6 +40,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.services.render.*;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -72,7 +73,7 @@ import java.util.*;
  * Time: 2:16:27 PM
  */
 public class NavigationHelper {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(NavigationHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(NavigationHelper.class);
 
     public final static String SAVED_OPEN_PATHS = "org.jahia.contentmanager.savedopenpaths.";
     public final static String SELECTED_PATH = "org.jahia.contentmanager.selectedpath.";
@@ -766,7 +767,7 @@ public class NavigationHelper {
         try {
             n.setHasAcl(node.hasNode("j:acl"));
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
         try {
             String username = node.getSession().getUser().getUsername();
@@ -784,9 +785,6 @@ public class NavigationHelper {
             n.setLocked(isLocked);
             Map<String, List<String>> infos = node.getLockInfos();
             n.setLockInfos(infos);
-//            if (!infos.isEmpty()) {
-//                System.out.println(node.getPath() + "-------> "+infos);
-//            }
             if (node.getSession().getLocale() != null) {
                 String l = node.getSession().getLocale().toString();
                 n.setCanLock(infos.isEmpty() || !infos.containsKey(l));

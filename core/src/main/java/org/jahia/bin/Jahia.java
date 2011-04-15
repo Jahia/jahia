@@ -129,6 +129,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     static private ThreadLocal<HttpServlet> servletThreadLocal = new ThreadLocal<HttpServlet>();
 
     private static int BUILD_NUMBER = -1;
+    private static int EE_BUILD_NUMBER = -1;
     
     private static String EDITION;
 
@@ -175,6 +176,32 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         }
 
         return BUILD_NUMBER;
+    }
+
+    public static int getEEBuildNumber() {
+        if (EE_BUILD_NUMBER == -1) {
+            try {
+                InputStream in = Jahia.class.getResourceAsStream("/META-INF/jahia-ee-impl-marker.txt");
+                if (in != null) {
+                    try {
+                        String buildNumber = IOUtils.toString(in);
+                        EE_BUILD_NUMBER = Integer.parseInt(buildNumber);
+                    } finally {
+                        IOUtils.closeQuietly(in);
+                    }
+                } else {
+                    EE_BUILD_NUMBER = 0;
+                }
+            } catch (IOException ioe) {
+                logger.error(ioe.getMessage(), ioe);
+                EE_BUILD_NUMBER = 0;
+            } catch (NumberFormatException nfe) {
+                logger.error(nfe.getMessage(), nfe);
+                EE_BUILD_NUMBER = 0;
+            }
+        }
+
+        return EE_BUILD_NUMBER;
     }
 
     public static double getReleaseNumber() {

@@ -149,6 +149,11 @@ public class JahiaResourceBundle extends ResourceBundle {
             }
         }
 
+        if (o == null) {
+            logger.warn("Cannot find resource {} for locale {}", s, locale);
+            throw new MissingResourceException("Cannot find resource " + s, basename, s);
+        }
+        
         return o;
     }
 

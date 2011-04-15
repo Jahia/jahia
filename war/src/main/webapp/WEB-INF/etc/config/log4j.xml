@@ -156,7 +156,7 @@
     </category>
 
     <category name="org.jahia.utils.i18n">
-        <priority value="error"/>
+        <priority value="warn"/>
     </category>
 
     <category name="org.quartz">

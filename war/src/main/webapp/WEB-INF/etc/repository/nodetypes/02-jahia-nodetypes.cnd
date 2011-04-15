@@ -103,7 +103,7 @@
 // Role based access control
 //---------------------------------------------------------
 
-[jnt:role] > nt:base, mix:referenceable, mix:title, jmix:autoPublish, jmix:observable
+[jnt:role] > nt:base, mix:versionable, mix:title, jmix:autoPublish, jmix:observable
  - jcr:description (string,textarea) i18n itemtype = content
  - j:nodeTypes (string,choicelist[nodetypes=nt:base,resourceBundle]) multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
@@ -114,7 +114,7 @@
 [jnt:roles] > nt:base, mix:versionable, jmix:autoPublish, jmix:observable
  + * (jnt:role)
 
-[jnt:permission] > nt:base, mix:referenceable, mix:title, jmix:autoPublish, jmix:observable
+[jnt:permission] > nt:base, mix:versionable, mix:title, jmix:autoPublish, jmix:observable
  - j:isAbstract (boolean)
  - j:dependencies (weakreference) protected hidden multiple < jnt:permission
  + * (jnt:permission)

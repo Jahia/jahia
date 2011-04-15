@@ -16,6 +16,26 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>JCR Browser</title>
+<style type="text/css">
+body {
+    color:#36393D;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 80%;
+    line-height:160%;
+}
+#goToPath {
+    width: 750px;
+}
+#goToUuid {
+    width: 270px;
+}
+</style>
+<script type="text/javascript">
+function doNavigate(what, whereToGo) {
+	document.getElementById(what).value=whereToGo; 
+	document.getElementById('navigateForm').submit();
+}
+</script>
 </head>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
 <c:set var="showProperties" value="${functions:default(param.showProperties, 'false')}"/>
@@ -27,10 +47,17 @@
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
 JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
 try {
-pageContext.setAttribute("node", jcrSession.getNodeByIdentifier((String) pageContext.getAttribute("nodeId")));
+JCRNodeWrapper node = null;
+if (request.getParameter("path") != null && request.getParameter("path").length() > 0) {
+    node = jcrSession.getNode(JCRContentUtils.escapeNodePath(request.getParameter("path")));
+    pageContext.setAttribute("nodeId", node.getIdentifier());
+} else {
+    node = jcrSession.getNodeByIdentifier((String) pageContext.getAttribute("nodeId"));
+}
+pageContext.setAttribute("node", node);
 pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
 %>
-<body style="color:#36393D; font-family:Arial,Helvetica,sans-serif; font-size:80%; line-height:160%;">
+<body>
 <c:url var="switchWorkspaceUrl" value="?">
     <c:param name="uuid" value="${node.identifier}"/>
     <c:param name="showProperties" value="${showProperties}"/>
@@ -38,6 +65,26 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
     <c:param name="showActions" value="${showActions}"/>
     <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
 </c:url>
+<fieldset>
+    <form id="navigateForm" action="?" method="get">
+        <input type="hidden" name="showProperties" value="${showProperties}"/>
+        <input type="hidden" name="showNodes" value="${showNodes}"/>
+        <input type="hidden" name="showActions" value="${showActions}"/>
+        <input type="hidden" name="workspace" value="${workspace}"/>
+        <input type="hidden" id="path" name="path" value=""/>
+        <input type="hidden" id="uuid" name="uuid" value=""/>
+    </form> 
+    <input type="text" id="goToPath" name="goToPath" value="${fn:escapeXml(node.path)}"
+        onkeypress="if ((event || window.event).keyCode == 13) doNavigate('path', this.value);" />
+    &nbsp;<a href="#go"
+        onclick='var path=document.getElementById("goToPath").value; if (path.length > 0) { doNavigate("path", path); } return false;' title="Got to the node with path">
+        <img src="${pageContext.request.contextPath}/icons/refresh.png" height="16" width="16" title="Got to the node with path" border="0" style="vertical-align: middle;"/>
+    </a>
+    <label for="goToUuid">UUID: </label>
+    <input type="text" id="goToUuid" name="goToUuid" value=""
+        onkeypress="if ((event || window.event).keyCode == 13) doNavigate('uuid', this.value);" />
+    &nbsp;<a href="#go" onclick='var uuid=document.getElementById("goToUuid").value; if (uuid.length > 0) { doNavigate("uuid", uuid); } return false;' title="Got to the node with UUID"><img src="${pageContext.request.contextPath}/icons/search.png" height="16" width="16" title="Got to the node with UUID" border="0" style="vertical-align: middle;"/></a>
+</fieldset>
 <fieldset>
     <legend><strong>${fn:escapeXml(not empty node.name ? node.name : '<root>')}</strong>&nbsp;- workspace:&nbsp;<strong>${workspace}</strong>&nbsp;(<a href="${switchWorkspaceUrl}">switch to ${workspace == 'default' ? 'live' : 'default'}</a>)</legend>
     <c:if test="${not empty param.action}">
@@ -204,10 +251,29 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
     <c:param name="showActions" value="${showActions}"/>
     <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
 </c:url>
-<p>Item with UUID <strong>${nodeId}</strong> does not exist in the '${workspace}' workspace:
-&nbsp;<a href="${switchWorkspaceUrl}">switch to ${workspace == 'default' ? 'live' : 'default'}</a>
+<body>
+<p>Item with UUID <strong>${nodeId}</strong> does not exist in the '${workspace}' workspace</p>
+<p>Actions:
+&nbsp;<a href="${switchWorkspaceUrl}">switch to ${workspace == 'default' ? 'live' : 'default'} workspace</a>
+&nbsp;<a href="javascript:history.back()">go back</a>
+</p>
+<%} catch (javax.jcr.PathNotFoundException e) {
+%>
+<body>
+<c:url var="switchWorkspaceUrl" value="?">
+    <c:param name="path" value="${param.path}"/>
+    <c:param name="showProperties" value="${showProperties}"/>
+    <c:param name="showNodes" value="${showNodes}"/>
+    <c:param name="showActions" value="${showActions}"/>
+    <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
+</c:url>
+<p>Item with the path <strong>${param.path}</strong> does not exist in the '${workspace}' workspace</p>
+<p>Actions:
+&nbsp;<a href="${switchWorkspaceUrl}">switch to ${workspace == 'default' ? 'live' : 'default'} workspace</a>
+&nbsp;<a href="javascript:history.back()">go back</a>
 </p>
 <%} finally {
     JCRSessionFactory.getInstance().setCurrentUser(null);
 }%>
+</body>
 </html>

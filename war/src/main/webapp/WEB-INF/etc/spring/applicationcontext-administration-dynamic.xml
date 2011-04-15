@@ -19,7 +19,7 @@
         <property name="permissionName" value="adminDocumentation" />
         <property name="name" value="pedia" />
         <property name="icon" value="books" />
-        <property name="label" value="Jahiapedia" />
+        <property name="label" value="label.jahiapedia" />
         <property name="urlType" value="external" />
         <property name="urlAction" value="http://www.jahia.org/cms/home/jahiapedia" />
         <property name="rank" value="99"/>

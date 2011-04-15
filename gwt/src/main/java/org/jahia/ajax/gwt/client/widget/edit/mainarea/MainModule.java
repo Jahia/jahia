@@ -249,6 +249,7 @@ public class MainModule extends Module {
         int j = 0;
 
         Element oldElement = null;
+        Element lastElement = null;
         String oldValue = null;
 
         for (; !newValues.isEmpty() || j<oldValues.size() ; j++) {
@@ -260,6 +261,7 @@ public class MainModule extends Module {
                     head.removeChild(oldElement);
                     j++;
                 } else {
+                    lastElement = oldElement;
                     break;
                 }
             }
@@ -282,9 +284,10 @@ public class MainModule extends Module {
             } else {
                 Element newElem = createAsset(fileType, j, newValues.remove(0));
                 if (newElem != null) {
-                    if (oldElement != null) {
-                        head.insertAfter(newElem, oldElement);
-                        oldElement = newElem;
+                    String lastValue = lastElement.getAttribute(tagAttribute);
+                    if (lastElement != null) {
+                        head.insertAfter(newElem, lastElement);
+                        lastElement = newElem;
                     } else {
                         head.appendChild(newElem);
                     }

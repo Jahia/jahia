@@ -130,7 +130,7 @@
 [jnt:backToParentPage] > jnt:content, jmix:siteComponent, mix:title
 
 [jnt:addContent] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
- - j:type (string, choicelist[nodetypes=nt:base,resourceBundle]) multiple 
+ - j:type (string, choicelist[nodetypes=jmix:editorialContent,resourceBundle]) multiple
 
 [jnt:introduction] > jnt:bigText, jmix:structuredContent, jmix:editorialContent
 

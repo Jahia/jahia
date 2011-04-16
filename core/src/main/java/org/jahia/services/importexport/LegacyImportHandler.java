@@ -961,19 +961,26 @@ public class LegacyImportHandler extends DefaultHandler {
                 default:
                     switch (propertyDefinition.getSelector()) {
                         case SelectorType.RICHTEXT: {
-                            if (value.contains("=\"###/")) {
+                            if (value.contains("=\"###")) {
                                 int count = 1;
                                 StringBuffer buf = new StringBuffer(value);
-                                while (buf.indexOf("=\"###/") > -1) {
-                                    int from = buf.indexOf("=\"###/") + 2;
+                                while (buf.indexOf("=\"###") > -1) {
+                                    int from = buf.indexOf("=\"###") + 2;
                                     int to = buf.indexOf("\"", from);
 
                                     String ref = buf.substring(from, to);
                                     if (ref.startsWith("###/webdav")) {
 //                                        buf.replace(from, to, "##doc-context##/{mode}/#");
 //                                        continue;
-                                        ref = currentSiteNode.getPath() + "/files" + StringUtils.substringAfter(ref, "###/webdav");
-                                        buf.replace(from, to, "##doc-context##/{mode}/##ref:link" + (count++) + "##");
+                                        ref = StringUtils.substringAfter(ref, "###/webdav");
+                                        buf.replace(from, to, "##doc-context##/{mode}/##ref:link" + count + "##");
+                                    } else if (ref.startsWith("###file:")) {
+                                        ref = StringUtils.substringAfter(ref, "###file:");
+                                        if (ref.indexOf('?') != -1) {
+                                            ref = StringUtils.substringBefore(ref, "?");
+                                        }
+                                        ref = correctFilename(ref);
+                                        buf.replace(from, to, "##doc-context##/{mode}/##ref:link" + count + "##");                                                                                
                                     } else {
                                         ref = StringUtils.substringAfterLast(ref, "/");
                                         buf.replace(from, to, "##cms-context##/{mode}/{lang}/##ref:link" + count + "##.html");
@@ -1068,26 +1075,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 default: {
                     if (value.startsWith("/")) {
                         try {
-                            if (value.startsWith("/users/")) {
-                                Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(value);
-                                if (m.matches()) {
-                                    value = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
-                                    value = value + "/files" + ((m.group(2) != null) ? m.group(2) : "");
-                                }
-                            } else if (value.startsWith("/content/users/")) {
-                                Matcher m = Pattern.compile("/content/users/([^/]+)(/.*)?").matcher(value);
-                                if (m.matches()) {
-                                    value = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
-                                    value = value + ((m.group(2) != null) ? m.group(2) : "");
-                                }
-                            } else if (pathMapping != null) {
-                                for (String map : pathMapping.keySet()) {
-                                    if (value.startsWith(map)) {
-                                        value = pathMapping.get(map) + value.substring(map.length());
-                                    }
-                                }
-                            }
-                            JCRNodeWrapper file = session.getNode(value);
+                            JCRNodeWrapper file = session.getNode(correctFilename(value));
                             return new ValueImpl(file.getIdentifier(), PropertyType.WEAKREFERENCE);
                         } catch (PathNotFoundException e) {
 
@@ -1110,6 +1098,29 @@ public class LegacyImportHandler extends DefaultHandler {
             logger.error("Cannot get categories", e);
         }
         return null;
+    }
+    
+    private String correctFilename(String value) {
+        if (value.startsWith("/users/")) {
+            Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(value);
+            if (m.matches()) {
+                value = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+                value = value + "/files" + ((m.group(2) != null) ? m.group(2) : "");
+            }
+        } else if (value.startsWith("/content/users/")) {
+            Matcher m = Pattern.compile("/content/users/([^/]+)(/.*)?").matcher(value);
+            if (m.matches()) {
+                value = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+                value = value + ((m.group(2) != null) ? m.group(2) : "");
+            }
+        } else if (pathMapping != null) {
+            for (String map : pathMapping.keySet()) {
+                if (value.startsWith(map)) {
+                    value = pathMapping.get(map) + value.substring(map.length());
+                }
+            }
+        }
+        return value;
     }
 
     private JCRNodeWrapper getCurrentPageNode() {

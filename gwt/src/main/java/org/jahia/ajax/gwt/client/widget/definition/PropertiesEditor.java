@@ -180,11 +180,11 @@ public class PropertiesEditor extends FormPanel {
      * @param fieldSetGrouping
      */
     private void addItems(GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items,
-                          boolean optional, boolean fieldSetGrouping, FieldSet remoteFieldSet) {
+                          boolean optional, boolean fieldSetGrouping, Field remoteField) {
 
         FieldSet fieldSet = null;
-        if (remoteFieldSet != null) {
-            fieldSet = remoteFieldSet;
+        if (remoteField != null) {
+            fieldSet = (FieldSet) remoteField.getParent();
         }
         for (final GWTJahiaItemDefinition definition : items) {
 
@@ -283,7 +283,18 @@ public class PropertiesEditor extends FormPanel {
                 fields.put(field.getName(), field);
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));
-                fieldSet.add(field, fd);
+                if (remoteField != null) {
+                    int i = 1;
+                    for (Component component : fieldSet.getItems()) {
+                        if (component.equals(remoteField)) {
+                            fieldSet.insert(field, i, fd);
+                            break;
+                        }
+                        i++;
+                    }
+                }   else {
+                    fieldSet.add(field, fd);
+                }
                 fieldSet.layout();
                 if (optional) {
                     boolean isOrderingList = "jmix:orderedList".equalsIgnoreCase(definition.getDeclaringNodeType());
@@ -375,7 +386,7 @@ public class PropertiesEditor extends FormPanel {
                 if (mix.getName().equals(addMixin)) {
                     if (!b || !externalMixin.contains(addMixin)) {
                         externalMixin.add(mix.getName());
-                        addItems(mix, mix.getItems(), false, false, (FieldSet) c.getParent());
+                        addItems(mix, mix.getItems(), false, false, c);
                     }
                 }
             }
@@ -598,7 +609,7 @@ public class PropertiesEditor extends FormPanel {
     public GWTJahiaItemDefinition getGWTJahiaItemDefinition(GWTJahiaNodeProperty prop) {
         return getGWTJahiaItemDefinition(prop.getName());
     }
-    
+
     public GWTJahiaItemDefinition getGWTJahiaItemDefinition(String propName) {
         return propertyDefinitions.get(propName);
     }

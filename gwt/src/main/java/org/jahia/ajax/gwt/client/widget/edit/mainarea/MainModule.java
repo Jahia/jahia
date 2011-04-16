@@ -252,7 +252,7 @@ public class MainModule extends Module {
         Element lastElement = null;
         String oldValue = null;
 
-        for (; !newValues.isEmpty() || j<oldValues.size() ; j++) {
+        for (; newValues != null && (!newValues.isEmpty() || j<oldValues.size()) ; j++) {
             while (j < oldValues.size()) {
                 oldElement = (Element) oldValues.get(j);
                 oldValue = DOM.getElementAttribute(oldElement, tagAttribute);

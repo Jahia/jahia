@@ -355,7 +355,7 @@ public class WorkflowHelper {
             if (gwtWfHistory == null) {
                 gwtWfHistory = getGWTJahiaHistoryProcess(service.getHistoryWorkflow(task.getProcessId(), task.getProvider(), locale));
                 try {
-                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByIdentifier(
+                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,locale).getNodeByIdentifier(
                             gwtWfHistory.getNodeId());
                     gwtWfHistory.set("nodeWrapper", ((NavigationHelper)SpringContextSingleton.getInstance().getContext().getBeansOfType(NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
                 } catch (RepositoryException e) {

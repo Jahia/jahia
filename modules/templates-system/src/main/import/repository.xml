@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
-    <users jcr:primaryType="jnt:usersFolder" j:picture="/users/root/files/profile/root.png" >
-        <root  jcr:primaryType="jnt:user">
+    <users jcr:primaryType="jnt:usersFolder">
+        <root  jcr:primaryType="jnt:user" j:picture="/users/root/files/profile/root.png">
             <files jcr:primaryType="jnt:folder">
                 <profile  jcr:primaryType="jnt:folder">
                     <root.png j:height="64" j:lastPublished="2011-04-01T17:46:22.881+02:00" j:lastPublishedBy="root" j:published="true" j:width="64" jcr:created="2011-04-01T17:46:22.422+02:00" jcr:createdBy="root" jcr:lastModified="2011-04-01T17:46:22.822+02:00" jcr:lastModifiedBy="root" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">

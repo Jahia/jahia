@@ -109,6 +109,7 @@ public class InfoLayers {
         if (listener != null) {
             layoutContainer.sinkEvents(Event.ONCLICK);
             layoutContainer.addListener(Events.OnClick, listener);
+            module.addListener(Events.Detach, listener);
         }
     }
 

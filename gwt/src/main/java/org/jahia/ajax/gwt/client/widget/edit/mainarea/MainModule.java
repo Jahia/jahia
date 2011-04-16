@@ -282,14 +282,16 @@ public class MainModule extends Module {
                     head.removeChild(oldElement);
                 }
             } else {
-                Element newElem = createAsset(fileType, j, newValues.remove(0));
-                if (newElem != null) {
-                    String lastValue = lastElement.getAttribute(tagAttribute);
-                    if (lastElement != null) {
-                        head.insertAfter(newElem, lastElement);
-                        lastElement = newElem;
-                    } else {
-                        head.appendChild(newElem);
+                if (newValues.size() > 0) {
+                    Element newElem = createAsset(fileType, j, newValues.remove(0));
+                    if (newElem != null) {
+                        String lastValue = lastElement.getAttribute(tagAttribute);
+                        if (lastElement != null) {
+                            head.insertAfter(newElem, lastElement);
+                            lastElement = newElem;
+                        } else {
+                            head.appendChild(newElem);
+                        }
                     }
                 }
             }

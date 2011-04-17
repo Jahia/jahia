@@ -566,5 +566,7 @@ public class MainModule extends Module {
         }
     }-*/;
 
-
+    public InfoLayers getInfoLayers() {
+        return infoLayers;
+    }
 }

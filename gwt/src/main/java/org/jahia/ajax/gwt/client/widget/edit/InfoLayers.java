@@ -51,7 +51,6 @@ public class InfoLayers {
                 super.widgetScrolled(ce);
             }
         });
-
     }
 
     public void addInfoLayer(Module module, final List<AbstractImagePrototype> images, Listener<ComponentEvent> removeListener, boolean headerOnly, final String opacity) {
@@ -109,7 +108,6 @@ public class InfoLayers {
         if (listener != null) {
             layoutContainer.sinkEvents(Event.ONCLICK);
             layoutContainer.addListener(Events.OnClick, listener);
-            module.addListener(Events.Detach, listener);
         }
     }
 

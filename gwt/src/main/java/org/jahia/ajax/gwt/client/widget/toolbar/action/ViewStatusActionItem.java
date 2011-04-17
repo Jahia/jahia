@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
@@ -96,7 +97,7 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
 
     @Override public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem,linker);
-        infoLayers = new InfoLayers();
+        infoLayers = ((EditLinker) linker).getMainModule().getInfoLayers();
         infoLayers.initWithLinker(linker);
     }
 }

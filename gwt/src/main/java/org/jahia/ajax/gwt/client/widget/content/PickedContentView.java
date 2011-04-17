@@ -322,6 +322,7 @@ public class PickedContentView extends BottomRightComponent {
                     }
                     pathes.add(url);
                 } else {
+                    prefix = jahiaContextPath + jahiaServletPath;
                     pathes.add(prefix + "/{mode}/{lang}" + s.getPath() + ".html");
                 }
             }

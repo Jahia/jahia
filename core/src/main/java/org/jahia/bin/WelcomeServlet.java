@@ -205,8 +205,8 @@ public class WelcomeServlet extends HttpServlet {
         String language = DEFAULT_LOCALE;
         if (!newLocaleList.isEmpty()) {
             language = newLocaleList.get(0).toString();
-        } else if (!siteLanguages.isEmpty()){
-            language = siteLanguages.get(0).toString();            
+        } else if (site!=null){
+            language = site.getDefaultLanguage();
         } else if (!StringUtils.isEmpty(SettingsBean.getInstance().getDefaultLanguageCode())) {
             language = SettingsBean.getInstance().getDefaultLanguageCode();
         }

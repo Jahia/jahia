@@ -31,6 +31,7 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -41,18 +42,15 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -97,7 +95,6 @@ public class PasteReferenceActionItem extends BaseActionItem  {
                 && !lh.isLocked()
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
                 && lh.isPasteAllowed();
-
         String refTypes = null;
         if (linker instanceof EditLinker && b) {
             final Module module = ((EditLinker) linker).getSelectedModule();
@@ -110,7 +107,10 @@ public class PasteReferenceActionItem extends BaseActionItem  {
             allowedRefs = new ArrayList<String>();
             for (String ref : refs) {
                 String[] types = ref.split("\\[|\\]");
-                if (checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), types[1])) {
+                if (Arrays.asList(types[1].split(" |,")).contains("jnt:contentReference")) {
+                    allowedRefs.add("jnt:contentReference");
+                    break;
+                } else if (checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), types[1])) {
                     allowedRefs.add(types[0]);
                 }
             }

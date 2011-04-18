@@ -222,96 +222,104 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 return (String) map.get(path)+"_p_"+checkRootPath+nodePath;
             }
         }
-        Map<String, Set<JahiaGroup>> allAclsGroups = getAllAclsGroups();
-        String path = nodePath;
-        if (checkRootPath) {
-            while (!allAclsGroups.containsKey(path) && !path.equals("")) {
-                path = StringUtils.substringBeforeLast(path, "/");
-            }
-            if (path.equals("")) {
-                path = "/";
-            }
-        }
-        Set<JahiaGroup> aclGroups = allAclsGroups.get(path);
-        if (aclGroups == null) {
-            // found no specific entry for this path
-            String fakePath = path;
-            while (!allAclsGroups.containsKey(fakePath) && !fakePath.equals("")) {
-                fakePath = StringUtils.substringBeforeLast(fakePath, "/");
-            }
-            if (fakePath.equals("")) {
-                fakePath = "/";
-            }
-            aclGroups = allAclsGroups.get(fakePath);
-        }
-        StringBuilder b = new StringBuilder();
-        if (aclGroups != null) {
-            for (JahiaGroup g : aclGroups) {
-                if (g != null && g.isMember(principal)) {
-                    if (b.length() > 0) {
-                        b.append("|");
-                    }
-                    b.append(g.getGroupname());
+        synchronized (aclGroups) {
+            StringBuilder b = new StringBuilder();
+            String path = nodePath;
+            Map<String, Set<JahiaGroup>> allAclsGroups = getAllAclsGroups();
+            if (checkRootPath) {
+                while (!allAclsGroups.containsKey(path) && !path.equals("")) {
+                    path = StringUtils.substringBeforeLast(path, "/");
+                }
+                if (path.equals("")) {
+                    path = "/";
                 }
             }
-        }
-        if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
-                JahiaUserManagerService.GUEST_USERNAME)) {
-            b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
-        }
-        String userKey = b.toString();
-        if ("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
-            userKey = userName;
-        }
-        Set<String> roles = ((JahiaAccessManager) ((JCRNodeWrapper) renderContext.getMainResource().getNode()).getAccessControlManager()).getRoles(path);
-        b = new StringBuilder();
-        for (String g : roles) {
-            if (b.length() > 0) {
-                b.append("|");
+            Set<JahiaGroup> aclGroups = allAclsGroups.get(path);
+            if (aclGroups == null) {
+                // found no specific entry for this path
+                String fakePath = path;
+                while (!allAclsGroups.containsKey(fakePath) && !fakePath.equals("")) {
+                    fakePath = StringUtils.substringBeforeLast(fakePath, "/");
+                }
+                if (fakePath.equals("")) {
+                    fakePath = "/";
+                }
+                aclGroups = allAclsGroups.get(fakePath);
             }
-            b.append(g);
+            if (aclGroups != null) {
+                for (JahiaGroup g : aclGroups) {
+                    if (g != null && g.isMember(principal)) {
+                        if (b.length() > 0) {
+                            b.append("|");
+                        }
+                        b.append(g.getGroupname());
+                    }
+                }
+            }
+            if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
+                    JahiaUserManagerService.GUEST_USERNAME)) {
+                b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
+            }
+            String userKey = b.toString();
+            if ("".equals(userKey.trim()) && userName.equals(JahiaUserManagerService.GUEST_USERNAME)) {
+                userKey = userName;
+            }
+            if ("".equals(userKey.trim())) {
+                throw new RepositoryException(
+                        "Userkey is empty while generating cache key for path " + path + " and nodepath = " + nodePath +
+                        " checkrootpath = " + checkRootPath);
+            }
+            Set<String> roles = ((JahiaAccessManager) ((JCRNodeWrapper) renderContext.getMainResource().getNode()).getAccessControlManager()).getRoles(
+                    path);
+            b = new StringBuilder();
+            for (String g : roles) {
+                if (b.length() > 0) {
+                    b.append("|");
+                }
+                b.append(g);
+            }
+            Map<String, String> map;
+            element = (Element) cache.get(userName);
+            if (element == null) {
+                map = new LinkedHashMap<String, String>();
+            } else {
+                map = (Map<String, String>) element.getValue();
+            }
+            String value = userKey + "_r_" + b.toString();
+            map.put(path, value);
+            element = new Element(userName, map);
+            element.setEternal(true);
+            cache.put(element);
+            return value + "_p_" + checkRootPath + nodePath;
         }
-        Map<String, String> map;
-        if (!cache.isKeyInCache(userName)) {
-            map = new LinkedHashMap<String, String>();
-        } else {
-            map = (Map<String, String>) ((Element) cache.get(userName)).getValue();
-        }
-        String value = userKey + "_r_" + b.toString();
-        map.put(path, value);
-        element = new Element(userName, map);
-        element.setEternal(true);
-        cache.put(element);
-        return value+"_p_"+checkRootPath+nodePath;
     }
 
     private Element hasUserAcl(final String userName) throws RepositoryException {
-        if (cache.getSize() == 0) {
-            initCache();
+        Element element = cache.get(userName);
+        if (element == null) {
+            initCache(userName);
+            element = cache.get(userName);
         }
-        return cache.get(userName);
+        return element;
     }
 
-    private synchronized void initCache() throws RepositoryException {
-        if (cache.getSize() > 0) {
-            return;
-        }
+    private void initCache(final String userName) throws RepositoryException {
         template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 Query query = session.getWorkspace().getQueryManager().createQuery(
-                        "select * from [jnt:ace] as ace where ace.[j:principal] like 'u%'", Query.JCR_SQL2);
+                        "select * from [jnt:ace] as ace where ace.[j:principal] = 'u:" + userName + "'",
+                        Query.JCR_SQL2);
                 QueryResult queryResult = query.execute();
                 NodeIterator rowIterator = queryResult.getNodes();
                 while (rowIterator.hasNext()) {
                     Node node = (Node) rowIterator.next();
-                    String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
-                    String userPath = userManagerService.getUserSplittingRule().getPathForUsername(s);
+                    String userPath = userManagerService.getUserSplittingRule().getPathForUsername(userName);
                     if (!node.getPath().startsWith(userPath + "/j:acl")) {
                         Map<String, String> map;
-                        if (!cache.isKeyInCache(s)) {
+                        if (!cache.isKeyInCache(userName)) {
                             map = new LinkedHashMap<String, String>();
                         } else {
-                            map = (Map<String, String>) ((Element) cache.get(s)).getValue();
+                            map = (Map<String, String>) ((Element) cache.get(userName)).getValue();
                         }
                         String path = node.getParent().getParent().getPath();
                         StringBuilder b = new StringBuilder();
@@ -329,12 +337,12 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                                     foundRoles.add(role);
                                 }
                             }
-                            map.put(path, s + "_r_" + b.toString());
+                            map.put(path, userName + "_r_" + b.toString());
                             if (!"/".equals(path)) {
                                 path = node.getParent().getParent().getParent().getPath();
                             }
-                            map.put(path, s + "_r_" + b.toString());
-                            final Element element = new Element(s, map);
+                            map.put(path, userName + "_r_" + b.toString());
+                            final Element element = new Element(userName, map);
                             element.setEternal(true);
                             cache.put(element);
                         }
@@ -356,7 +364,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         if (!aclGroups.isEmpty()) {
             return;
         }
-        synchronized (aclGroups) {
+//        synchronized (aclGroups) {
             if (aclGroups.isEmpty()) {
                 template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -368,24 +376,26 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                             JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
                             String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
                             final JahiaGroup group = groupManagerService.lookupGroup(s);
-                            String path = node.getParent().getParent().getPath();
-                            boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
-                            if (granted) {
-                                Set<JahiaGroup> groups;
-                                if (!aclGroups.containsKey(path)) {
-                                    groups = new LinkedHashSet<JahiaGroup>();
-                                    aclGroups.put(path, groups);
-                                } else {
-                                    groups = aclGroups.get(path);
+                            if (group != null) {
+                                String path = node.getParent().getParent().getPath();
+                                boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
+                                if (granted) {
+                                    Set<JahiaGroup> groups;
+                                    if (!aclGroups.containsKey(path)) {
+                                        groups = new LinkedHashSet<JahiaGroup>();
+                                        aclGroups.put(path, groups);
+                                    } else {
+                                        groups = aclGroups.get(path);
+                                    }
+                                    groups.add(group);
                                 }
-                                groups.add(group);
                             }
                         }
                         return null;
                     }
                 });
             }
-        }
+//        }
     }
 
     public String getPath(String key) throws ParseException {

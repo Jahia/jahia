@@ -219,15 +219,19 @@
                                          jcr:createdBy=" system " jcr:primaryType="jnt:passwordHistoryEntry"/>
             </passwordHistory>
         </guest>
-        <jo j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+        <fb j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
             jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
             jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
             jcr:primaryType="jnt:usersFolder">
-            <hn j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+            <hi j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
                 jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
                 jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
                 jcr:primaryType="jnt:usersFolder">
-                <john email="" emailNotificationsDisabled="false"
+                <cg j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                    <john email="" emailNotificationsDisabled="false"
                       j:about="&lt;p&gt;  I began my career working for the Ministry of Defense, in the department of Maritime Affairs, based first in Rotterdam (Netherlands), then in Cap Town (South Africa). I joined Acme in 1988 as head of the commercial department. After being involved in a number of construction projects, I took charge of the Russian subsidiary in 1997. I&amp;#39;m Senior Vice President, Constructions of Acme since my nomination in 2002.&lt;/p&gt; "
                       j:accountLocked="false" j:checkinDate="2010-04-11T14:29:14.439+02:00" j:email=""
                       j:external="false"
@@ -303,18 +307,23 @@
                                                  jcr:primaryType="jnt:passwordHistoryEntry"/>
                     </passwordHistory>
                 </john>
-            </hn>
-        </jo>
+                </cg>
+            </hi>
+        </fb>
 
-        <je j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+        <dj j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
             jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
             jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
             jcr:primaryType="jnt:usersFolder">
-            <ni j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+            <gi j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
                 jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
                 jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
                 jcr:primaryType="jnt:usersFolder">
-                <jenifer email="" emailNotificationsDisabled="false" j:accountLocked="false"
+                <ej j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                    <jenifer email="" emailNotificationsDisabled="false" j:accountLocked="false"
                          j:checkinDate="2010-04-11T14:29:23.243+02:00" j:email="" j:external="false"
                          j:firstName="Jenifer"
                          j:lastName="Farell" j:lastPublished="2011-04-01T17:42:22.745+02:00" j:lastPublishedBy="jenifer"
@@ -392,18 +401,22 @@
                                                  jcr:primaryType="jnt:passwordHistoryEntry"/>
                     </passwordHistory>
                 </jenifer>
-            </ni>
-        </je>
-        <ma j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                </ej>
+            </gi>
+        </dj>
+        <hg j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
             jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
             jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
             jcr:primaryType="jnt:usersFolder">
-            <x_ j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+            <hi j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
                 jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
                 jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
                 jcr:primaryType="jnt:usersFolder">
-
-                <max email="" emailNotificationsDisabled="false" j:accountLocked="false"
+                <ba j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                    <max email="" emailNotificationsDisabled="false" j:accountLocked="false"
                      j:checkinDate="2010-04-11T14:29:27.778+02:00" j:email="" j:external="false" j:firstName="Max"
                      j:lastName="Dupond" j:lastPublished="2011-04-01T17:45:45.125+02:00" j:lastPublishedBy="max"
                      j:organization="ACME" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
@@ -477,85 +490,108 @@
                                                  jcr:primaryType="jnt:passwordHistoryEntry"/>
                     </passwordHistory>
                 </max>
-            </x_>
-            <rc j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                </ba>
+            </hi>
+        </hg>
+        <gj j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+            jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+            jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+            jcr:primaryType="jnt:usersFolder">
+            <ea j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
                 jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
                 jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
                 jcr:primaryType="jnt:usersFolder">
-                <marc email="" j:accountLocked="false" j:checkinDate="2010-04-11T14:29:31.374+02:00" j:external="false"
-                      j:firstName="Marc" j:lastName="Sanders" j:lastPublished="2011-04-01T17:44:28.034+02:00"
-                      j:lastPublishedBy="marc" j:organization="ACME" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
-                      j:picture="/users/ma/rc/marc/files/profile/visitor.png" j:published="true"
-                      jcr:created="2011-04-01T17:39:59.281+02:00" jcr:createdBy="root"
-                      jcr:lastModified="2011-04-01T17:44:27.993+02:00" jcr:lastModifiedBy="marc"
-                      jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:user" lastLoginDate="1233238151917"
-                      password.history.1242739225800="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en">
-                    <j:addresses jcr:primaryType="jnt:addresses"/>
-                    <j:phones jcr:primaryType="jnt:phoneNumbers"/>
-                    <files j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:created="2011-04-01T17:39:59.283+02:00"
-                           jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
-                           jcr:lastModifiedBy="root"
-                           jcr:primaryType="jnt:folder">
-                        <private j:checkinDate="2010-04-11T14:29:31.374+02:00"
-                                 jcr:created="2011-04-01T17:39:59.283+02:00"
-                                 jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
-                                 jcr:lastModifiedBy="root"
-                                 jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:folder">
-                            <imports j:checkinDate="2010-04-11T14:29:31.374+02:00"
-                                     jcr:created="2011-04-01T17:39:59.284+02:00"
+                <de j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                    jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                    jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                    jcr:primaryType="jnt:usersFolder">
+                    <marc email="" j:accountLocked="false" j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                          j:external="false"
+                          j:firstName="Marc" j:lastName="Sanders" j:lastPublished="2011-04-01T17:44:28.034+02:00"
+                          j:lastPublishedBy="marc" j:organization="ACME" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                          j:picture="/users/ma/rc/marc/files/profile/visitor.png" j:published="true"
+                          jcr:created="2011-04-01T17:39:59.281+02:00" jcr:createdBy="root"
+                          jcr:lastModified="2011-04-01T17:44:27.993+02:00" jcr:lastModifiedBy="marc"
+                          jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:user"
+                          lastLoginDate="1233238151917"
+                          password.history.1242739225800="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en">
+                        <j:addresses jcr:primaryType="jnt:addresses"/>
+                        <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+                        <files j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:created="2011-04-01T17:39:59.283+02:00"
+                               jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                               jcr:lastModifiedBy="root"
+                               jcr:primaryType="jnt:folder">
+                            <private j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                                     jcr:created="2011-04-01T17:39:59.283+02:00"
                                      jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
-                                     jcr:lastModifiedBy="root" jcr:primaryType="jnt:importDropBox"/>
-                            <j:acl j:inherit="false" jcr:primaryType="jnt:acl">
-                                <GRANT_u_marc j:aceType="GRANT" j:principal="u:marc" j:protected="false" j:roles="owner"
-                                              jcr:primaryType="jnt:ace"/>
-                            </j:acl>
-                        </private>
-                        <profile jcr:created="2011-04-01T17:39:59.285+02:00" jcr:createdBy="root"
-                                 jcr:lastModified="2011-04-01T17:44:27.776+02:00" jcr:lastModifiedBy="marc"
-                                 jcr:primaryType="jnt:folder">
-                            <visitor.png j:height="64" j:lastPublished="2011-04-01T17:44:28.271+02:00"
-                                         j:lastPublishedBy="marc"
-                                         j:published="true" j:width="64" jcr:created="2011-04-01T17:44:27.745+02:00"
-                                         jcr:createdBy="marc" jcr:lastModified="2011-04-01T17:44:28.246+02:00"
-                                         jcr:lastModifiedBy="marc" jcr:mixinTypes="jmix:image"
-                                         jcr:primaryType="jnt:file">
-                                <jcr:content jcr:lastModified="2011-04-01T17:44:27.776+02:00" jcr:lastModifiedBy="marc"
-                                             jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail jcr:lastModified="2011-04-01T17:44:27.917+02:00" jcr:lastModifiedBy="marc"
-                                           jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <thumbnail2 jcr:lastModified="2011-04-01T17:44:27.917+02:00" jcr:lastModifiedBy="marc"
-                                            jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <avatar_120 jcr:lastModified="2011-04-01T17:44:28.246+02:00" jcr:lastModifiedBy="marc"
-                                            jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                <avatar_60 jcr:lastModified="2011-04-01T17:44:28.246+02:00" jcr:lastModifiedBy="marc"
-                                           jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                            </visitor.png>
-                        </profile>
-                    </files>
-                    <portlets j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:created="2011-04-01T17:39:59.285+02:00"
-                              jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
-                              jcr:lastModifiedBy="root"
-                              jcr:primaryType="jnt:portletFolder"/>
-                    <contents j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:created="2011-04-01T17:39:59.286+02:00"
-                              jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
-                              jcr:lastModifiedBy="root"
-                              jcr:primaryType="jnt:contentFolder"/>
-                    <preferences jcr:primaryType="jnt:preferences"/>
-                    <tasks j:checkinDate="2010-04-11T14:29:31.374+02:00" j:lastPublished="2011-04-01T17:44:28.271+02:00"
-                           j:lastPublishedBy="marc" jcr:created="2011-04-01T17:39:59.287+02:00" jcr:createdBy="root"
-                           jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
-                           jcr:primaryType="jnt:tasks"/>
-                    <j:acl jcr:primaryType="jnt:acl">
-                        <GRANT_u_marc j:aceType="GRANT" j:principal="u:marc" j:protected="false" j:roles="owner"
-                                      jcr:primaryType="jnt:ace"/>
-                    </j:acl>
-                    <passwordHistory jcr:primaryType="jnt:passwordHistory">
-                        <pwd-2011-04-01-17-40-02 j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
-                                                 jcr:created="2011-04-01T17:40:02.236+02:00" jcr:createdBy=" system "
-                                                 jcr:primaryType="jnt:passwordHistoryEntry"/>
-                    </passwordHistory>
-                </marc>
-            </rc>
-        </ma>
+                                     jcr:lastModifiedBy="root"
+                                     jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:folder">
+                                <imports j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                                         jcr:created="2011-04-01T17:39:59.284+02:00"
+                                         jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                         jcr:lastModifiedBy="root" jcr:primaryType="jnt:importDropBox"/>
+                                <j:acl j:inherit="false" jcr:primaryType="jnt:acl">
+                                    <GRANT_u_marc j:aceType="GRANT" j:principal="u:marc" j:protected="false"
+                                                  j:roles="owner"
+                                                  jcr:primaryType="jnt:ace"/>
+                                </j:acl>
+                            </private>
+                            <profile jcr:created="2011-04-01T17:39:59.285+02:00" jcr:createdBy="root"
+                                     jcr:lastModified="2011-04-01T17:44:27.776+02:00" jcr:lastModifiedBy="marc"
+                                     jcr:primaryType="jnt:folder">
+                                <visitor.png j:height="64" j:lastPublished="2011-04-01T17:44:28.271+02:00"
+                                             j:lastPublishedBy="marc"
+                                             j:published="true" j:width="64" jcr:created="2011-04-01T17:44:27.745+02:00"
+                                             jcr:createdBy="marc" jcr:lastModified="2011-04-01T17:44:28.246+02:00"
+                                             jcr:lastModifiedBy="marc" jcr:mixinTypes="jmix:image"
+                                             jcr:primaryType="jnt:file">
+                                    <jcr:content jcr:lastModified="2011-04-01T17:44:27.776+02:00"
+                                                 jcr:lastModifiedBy="marc"
+                                                 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail jcr:lastModified="2011-04-01T17:44:27.917+02:00"
+                                               jcr:lastModifiedBy="marc"
+                                               jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail2 jcr:lastModified="2011-04-01T17:44:27.917+02:00"
+                                                jcr:lastModifiedBy="marc"
+                                                jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <avatar_120 jcr:lastModified="2011-04-01T17:44:28.246+02:00"
+                                                jcr:lastModifiedBy="marc"
+                                                jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <avatar_60 jcr:lastModified="2011-04-01T17:44:28.246+02:00"
+                                               jcr:lastModifiedBy="marc"
+                                               jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                </visitor.png>
+                            </profile>
+                        </files>
+                        <portlets j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                                  jcr:created="2011-04-01T17:39:59.285+02:00"
+                                  jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                  jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:portletFolder"/>
+                        <contents j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                                  jcr:created="2011-04-01T17:39:59.286+02:00"
+                                  jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                  jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:contentFolder"/>
+                        <preferences jcr:primaryType="jnt:preferences"/>
+                        <tasks j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                               j:lastPublished="2011-04-01T17:44:28.271+02:00"
+                               j:lastPublishedBy="marc" jcr:created="2011-04-01T17:39:59.287+02:00" jcr:createdBy="root"
+                               jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                               jcr:primaryType="jnt:tasks"/>
+                        <j:acl jcr:primaryType="jnt:acl">
+                            <GRANT_u_marc j:aceType="GRANT" j:principal="u:marc" j:protected="false" j:roles="owner"
+                                          jcr:primaryType="jnt:ace"/>
+                        </j:acl>
+                        <passwordHistory jcr:primaryType="jnt:passwordHistory">
+                            <pwd-2011-04-01-17-40-02 j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                                                     jcr:created="2011-04-01T17:40:02.236+02:00"
+                                                     jcr:createdBy=" system "
+                                                     jcr:primaryType="jnt:passwordHistoryEntry"/>
+                        </passwordHistory>
+                    </marc>
+                </de>
+            </ea>
+        </gj>
     </users>
 </content>

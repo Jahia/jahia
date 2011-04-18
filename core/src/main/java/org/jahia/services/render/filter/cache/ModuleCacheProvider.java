@@ -101,9 +101,6 @@ public class ModuleCacheProvider implements InitializingBean {
             cacheManager.addCache(DEPS_CACHE_NAME);
             dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         }
-        if (!cacheManager.cacheExists(REGEXPDEPS_CACHE_NAME)) {
-            cacheManager.addCache(REGEXPDEPS_CACHE_NAME);
-        }
         dependenciesCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
         
         regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);

@@ -61,12 +61,20 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
         if (nonSplittedUsers.contains(username)) {
             return builder.append(usersRootNode).append("/").append(username).toString();
         }
-        String paddedUsername = StringUtils.rightPad(username, 4, "_");
-        String firstFolder = paddedUsername.substring(0, 2);
-        String secondFolder = paddedUsername.substring(2, 4 < paddedUsername.length() ? 4 : paddedUsername.length());
-
+        int userNameHashcode = Math.abs(username.hashCode());
+        String firstFolder = getFolderName(userNameHashcode);
+        userNameHashcode = Math.round(userNameHashcode/100);
+        String secondFolder = getFolderName(userNameHashcode);
+        userNameHashcode = Math.round(userNameHashcode/100);
+        String thirdFolder = getFolderName(userNameHashcode);
         return builder.append(usersRootNode).append("/").append(firstFolder).append("/").append(secondFolder).append(
-                "/").append(JCRContentUtils.escapeLocalNodeName(username)).toString().toLowerCase();
+                "/").append(thirdFolder).append("/").append(JCRContentUtils.escapeLocalNodeName(
+                username)).toString().toLowerCase();
+    }
+
+    private String getFolderName(int userNameHashcode) {
+        int i = (userNameHashcode % 100);
+        return Character.toString((char) ('a' + Math.round(i / 10)))+Character.toString((char)('a'+ (i%10)));
     }
 
     public void setNonSplittedUsers(List<String> nonSplittedUsers) {

@@ -107,7 +107,7 @@ public class PasteReferenceActionItem extends BaseActionItem  {
             allowedRefs = new ArrayList<String>();
             for (String ref : refs) {
                 String[] types = ref.split("\\[|\\]");
-                if (Arrays.asList(types[1].split(" |,")).contains("jnt:contentReference")) {
+                if (types[1] != null && Arrays.asList(types[1].split(" |,")).contains("jnt:contentReference")) {
                     allowedRefs.add("jnt:contentReference");
                     break;
                 } else if (checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), types[1])) {

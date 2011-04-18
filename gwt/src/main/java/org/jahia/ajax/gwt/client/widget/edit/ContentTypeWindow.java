@@ -115,7 +115,7 @@ public class ContentTypeWindow extends Window {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 final GWTJahiaNodeType contentTypeModelData = contentTypeTree.getTreeGrid().getSelectionModel().getSelectedItem();
-                if (contentTypeModelData != null) {
+                if (contentTypeModelData != null && !contentTypeModelData.isMixin()) {
                     final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData;
                     if (gwtJahiaNodeType != null) {
                         EngineLoader.showCreateEngine(ContentTypeWindow.this.linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore);

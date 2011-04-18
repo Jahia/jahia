@@ -45,10 +45,7 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.View;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import java.util.*;
 
 /**
@@ -105,6 +102,16 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     for (Value type : types) {
                         nodeTypeList.add(type.getString());
                     }                    
+                } else {
+                    // No restrictions get node type list from already existing nodes
+                    NodeIterator nodeIterator = node.getNodes();
+                    while (nodeIterator.hasNext()) {
+                        Node next = (Node) nodeIterator.next();
+                        String name = next.getPrimaryNodeType().getName();
+                        if (!nodeTypeList.contains(name)) {
+                            nodeTypeList.add(name);
+                        }
+                    }
                 }
                 param = nextParam;
             } else if ("reference".equals(param)) {
@@ -183,8 +190,26 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             views = new TreeSet<View>();
 
             for (String s : nodeTypeList) {
-                views.addAll(RenderService.getInstance().getViewsSet(
-                        NodeTypeRegistry.getInstance().getNodeType(s)));
+                SortedSet<View> viewsSet = RenderService.getInstance().getViewsSet(
+                        NodeTypeRegistry.getInstance().getNodeType(s));
+                if(views.isEmpty()) {
+                    views.addAll(viewsSet);
+                } else {
+                    Set<View> toBeRemoved = new LinkedHashSet<View>();
+                    for (View view : views) {
+                        boolean found = false;
+                        for (View view1 : viewsSet) {
+                            if(view1.getKey().equals(view.getKey())) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(!found){
+                            toBeRemoved.add(view);
+                        }
+                    }
+                    views.removeAll(toBeRemoved);
+                }
             }
 
         } catch (RepositoryException e) {
@@ -209,6 +234,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                         new ValueImpl(view.getKey(), PropertyType.STRING, false)));
             }
         }
+        Collections.sort(vs);
         return vs;
     }
 }

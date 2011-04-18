@@ -59,28 +59,25 @@ public class ContentExport extends Window {
         setHeading(Messages.get("label.export"));
         setSize(500, 80);
         setResizable(false);
+        setLayout(new FitLayout());
 
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
         setModal(true);
         final String result = JahiaGWTParameters.getContextPath() + "/cms/export/" + JahiaGWTParameters.getWorkspace() + n.getPath();
-
-        setLayout(new FitLayout());
-        HorizontalPanel p = new HorizontalPanel();
-        p.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
-        p.add(new Text(Messages.get("label.exportChoose", "Choose export format")));
-        add(p);
-
         Button b;
-
-        b = new Button(Messages.get("label.exportXML", "XML content"));
-        b.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                com.google.gwt.user.client.Window.open(result + ".xml?cleanup=simple", "","");
-            }
-        });
         if (!n.getNodeTypes().contains("jnt:page")) {
+            HorizontalPanel p = new HorizontalPanel();
+            p.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+            p.add(new Text(Messages.get("label.exportChoose", "Choose export format")));
+            add(p);
+            b = new Button(Messages.get("label.exportXML", "XML content"));
+            b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    com.google.gwt.user.client.Window.open(result + ".xml?cleanup=simple", "","");
+                }
+            });
             addButton(b);
         }
 

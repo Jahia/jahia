@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-root</artifactId>
+        <version>6.5-SNAPSHOT</version>
+    </parent>
+    <groupId>org.jahia.prepackagedsites</groupId>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>prepackagedSites</artifactId>
+    <name>Prepackaged sites</name>
+    <packaging>pom</packaging>
+
+
+  <modules>
+    <module>acme</module>
+    <module>webtemplates</module>
+    <module>corpv2demo5x</module>
+  </modules>
+
+
+</project>

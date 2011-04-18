@@ -1,0 +1,471 @@
+## Menu
+[demo:navigationContainerList] = #navlink
+ - navigationLink = #navlink
+
+[demo:blogs] = #navlink
+ - blogPage = #navlink
+ 
+[demo:pages] = #navlink
+ -page = #navlink
+ 
+[demo:pages_navcol] = #navlink
+ -page = #navlink
+
+[demo:pages_leftcol] = #navlink
+ -page = #navlink
+ 
+[demo:pages_rightcol] = #navlink
+ -page = #navlink
+ 
+[demo:pages_full] = #navlink
+ -page = #navlink
+
+[demo:pages_right] = #navlink
+ -page = #navlink
+ 
+
+## Value lists   (TODO ???)
+[demo:skillContainer] = #skip
+[demo:projectCategoriesContainer] = #skip
+[demo:sourceContainer] = #skip
+[demo:typeContainer] = #skip
+[demo:categorielist] = #skip
+
+
+## News
+[demo:newsCl] = jnt:news
+ - newsTitle = mix:title|jcr:title
+ - newsDesc = desc
+ - link = #skip
+ - date = date
+ - newsCategory = jmix:categorized|j:defaultCategory
+
+## Metadata 
+[demo:metadataContainer] = jmix:metadata
+ - metadataDescription = mix:title|jcr:description
+ - metadataKeywords = jmix:keywords|j:keywords
+
+## Site settings
+[demo:siteSettings] = jnt:contentList
+ -logo = j:node
+ -footer = text
+
+## Image 
+[demo:splash] = jnt:imageReference
+ -splashImage = j:node  
+ 
+## Links 
+[demo:quickLinksContainerList] = #skip
+[demo:footerLinksContainerList] = #skip
+[demo:links] = #skip
+[demo:links_navcol] = #skip
+[demo:links_leftcol] = #skip
+[demo:links_rightcol] = #skip
+[demo:PlinksContainer18] = #skip
+[demo:PlinksContainer20] = #skip
+[demo:links_right] = #skip
+[demo:links_full] = #skip
+
+#[demo:quickLinksContainerList] = jnt:nodeLink
+# -quickLink = j:node
+
+#[demo:footerLinksContainerList] = jnt:nodeLink
+# -footerLink = j:node
+
+#[demo:links] = jnt:nodeLink
+# -boxlink = j:node
+# -linkDesc = mix:title|jcr:description
+
+#[demo:links_navcol] = jnt:nodeLink
+# -boxlink = j:node
+# -linkDesc = mix:title|jcr:description
+
+#[demo:links_leftcol] = jnt:nodeLink
+# -boxlink = j:node
+# -linkDesc = mix:title|jcr:description
+
+#[demo:links_rightcol] = jnt:nodeLink
+# -boxlink = j:node
+# -linkDesc = mix:title|jcr:description
+
+#[demo:PlinksContainer18] = jnt:nodeLink
+# -Pboxlink = j:node
+# -PlinkDesc = mix:title|jcr:description
+ 
+#[demo:PlinksContainer20] = jnt:nodeLink
+# -Pboxlink = j:node
+# -PlinkDesc = mix:title|jcr:description 
+
+#[demo:links_right] = jnt:nodeLink
+# -boxlink = j:node
+# -linkDesc = mix:title|jcr:description
+ 
+#[demo:links_full] = jnt:nodeLink
+# -boxlink = j:node
+# -linkDesc = mix:title|jcr:description 
+
+## Files  
+[demo:files] = jnt:fileReference
+ -file = j:node
+ -fileDesc = mix:title|jcr:description
+ 
+[demo:filesContainer] = jnt:fileReference
+ -fileDir = j:node
+ -descriptionDir = mix:title|jcr:description
+
+[demo:files_navcol] = jnt:fileReference
+ -file = j:node
+ -fileDesc = mix:title|jcr:description
+ 
+[demo:files_leftcol] = jnt:fileReference
+ -file = j:node
+ -fileDesc = mix:title|jcr:description 
+ 
+[demo:files_rightcol] = jnt:fileReference
+ -file = j:node
+ -fileDesc = mix:title|jcr:description  
+ 
+[demo:files_full] = jnt:fileReference
+ -file = j:node
+ -fileDesc = mix:title|jcr:description   
+ 
+[demo:files_right] = jnt:fileReference
+ -file = j:node
+ -fileDesc = mix:title|jcr:description   
+
+[demo:PfilesContainer18] = jnt:fileReference
+ -file = j:node
+ -description = mix:title|jcr:description   
+ 
+[demo:PfilesContainer20] = jnt:fileReference
+ -file = j:node
+ -description = mix:title|jcr:description    
+ 
+## Text container
+[demo:texts] = jnt:bigText
+
+[demo:texts_navcol] = jnt:bigText
+ 
+[demo:texts_leftcol] = jnt:bigText
+ 
+[demo:texts_rightcol] = jnt:bigText
+ 
+[demo:texts_full] = jnt:bigText
+
+[demo:texts_right] = jnt:bigText
+
+[demo:PtextContainer18] = jnt:bigText
+ -content = text  
+ -textimage = #skip
+
+[demo:PtextContainer20] = jnt:mainContent
+ -content = body
+ -textimage = image
+
+## News container
+[demo:PnewsContainer18] = jnt:news
+ -newsTitle = mix:title|jcr:title
+ -newsDesc = desc
+ -newsLink = link
+ -newsStartDate = date
+ -newsEndDate = #skip
+
+[demo:PnewsContainer20] = jnt:news
+ -newsTitle = mix:title|jcr:title
+ -newsDesc = desc
+ -newsLink = link
+ -newsStartDate = date
+ -newsEndDate = #skip
+
+[demo:lastNews] = jnt:lastNews
+ - max = maxNews
+ 
+[demo:lastNews_navcol] = jnt:lastNews
+ - max = maxNews
+ 
+[demo:lastNews_leftcol] = jnt:lastNews
+ - max = maxNews 
+ 
+[demo:lastNews_rightcol] = jnt:lastNews
+ - max = maxNews  
+ 
+[demo:lastNews_full] = jnt:lastNews
+ - max = maxNews   
+ 
+[demo:lastNews_right] = jnt:lastNews
+ - max = maxNews    
+ 
+## Main content
+[demo:mainContentList_leftcol] = jnt:mainContent
+ -mainContentTitle = mix:title|jcr:title
+ -content = body
+
+[demo:mainContentList_rightcol] = jnt:mainContent
+ -mainContentTitle = mix:title|jcr:title
+ -content = body 
+ 
+[demo:mainContentList_full] = jnt:mainContent
+ -mainContentTitle = mix:title|jcr:title
+ -content = body  
+ 
+[demo:mainContentList_right] = jnt:mainContent
+ -mainContentTitle = mix:title|jcr:title
+ -content = body  
+
+[demo:contentContainer] = jnt:mainContent
+ -subTitle = mix:title|jcr:title
+ -mainContent = body
+ -picture = image
+ -align = align
+ 
+[demo:contentContainermain_1] = jnt:mainContent
+ -subTitlemain_1 = mix:title|jcr:title
+ -mainContentmain_1 = body
+ -picturemain_1 = image
+ -alignmain_1 = align
+ 
+## Portlet containers 
+
+[demo:webapps] = jnt:portletReference
+ - webapp = j:node
+ 
+[demo:webapps_navcol] = jnt:portletReference
+ - webapp = j:node
+
+[demo:webapps_leftcol] = jnt:portletReference
+ - webapp = j:node
+
+[demo:webapps_rightcol] = jnt:portletReference
+ - webapp = j:node
+ 
+[demo:webapps_full] = jnt:portletReference
+ - webapp = j:node
+ 
+[demo:webapps_right] = jnt:portletReference
+ - webapp = j:node 
+ 
+[demo:PwebappsContainer18] = jnt:portletReference
+ - webapp = j:node
+
+[demo:PwebappsContainer20] = jnt:portletReference
+ - webapp = j:node
+ 
+## Filter box
+[demo:filterWizards] = #skip 
+[demo:filterWizards_navcol] = #skip
+[demo:filterWizards_leftcol] = #skip
+[demo:filterWizards_rightcol] = #skip
+[demo:filterWizards_full] = #skip
+[demo:filterWizards_right] = #skip
+ 
+
+## Box  
+
+[jnt:box] = jnt:box
+ - boxTitle = mix:title|jcr:title
+ - skin = jmix:skinnable|j:skin
+   resourceKey(skins.box2) = skins.box2
+   
+
+[demo:boxContainer] = jnt:box
+ -title = mix:title|jcr:title
+ -layout = jmix:skinnable|j:skin
+   resourceKey(layout0) = skins.box2 
+   resourceKey(layout1) = skins.box2
++files_leftcol = files
++links_leftcol = links
++pages_leftcol = pages
++texts_leftcol = texts
++webapps_leftcol = webapps
++filterWizards_leftcol = filterWizards 
++lastNews_leftcol = lastNews   
+
+[demo:boxContainer_navcol] = jnt:box
+ -title = mix:title|jcr:title
+ -layout = jmix:skinnable|j:skin
+   resourceKey(layout0) = skins.box2 
+   resourceKey(layout1) = skins.box2
+
+[demo:boxContainer_leftcol] = jnt:box
+ -title = mix:title|jcr:title
+ -layout = jmix:skinnable|j:skin
+   resourceKey(layout0) = skins.box2 
+   resourceKey(layout1) = skins.box2
+
+[demo:boxContainer_rightcol] = jnt:box
+ -title = mix:title|jcr:title
+ -layout = jmix:skinnable|j:skin
+   resourceKey(layout0) = skins.box2 
+   resourceKey(layout1) = skins.box2
+
+[demo:boxContainer_full] = jnt:box
+ -title = mix:title|jcr:title
+ -layout = jmix:skinnable|j:skin
+   resourceKey(layout0) = skins.box2 
+   resourceKey(layout1) = skins.box2
+
+[demo:boxContainer_right] = jnt:box
+ -title = mix:title|jcr:title
+ -layout = jmix:skinnable|j:skin
+   resourceKey(layout0) = skins.box2 
+   resourceKey(layout1) = skins.box2   
+
+[demo:boxContainer18] = jnt:box
+ -PboxTitle = mix:title|jcr:title
+ -PboxTitleLayout = jmix:skinnable|j:skin
+   resourceKey(layout0) = skins.box2 
+   resourceKey(layout1) = skins.box2   
+
+[demo:boxContainer20] = jnt:box
+ -PboxTitle = mix:title|jcr:title
+ -PboxTitleLayout = jmix:skinnable|j:skin
+   resourceKey(layout0) = skins.box2 
+   resourceKey(layout1) = skins.box2   
+   
+## Comments   
+   
+[demo:comments] = jmix:comments
+   { addNode post(jnt:post) }
+ -commentAuthor = post/jcr:createdBy
+ -commentTitle = post/jcr:title
+ -commentBody = post/content
+ -commentDate = post/jcr:created
+
+## Blog module 
+ 
+[demo:trackBackPingURLs] = #skip
+
+[demo:trackbacks] = #skip
+
+[demo:blogEntries] = jnt:blogContent
+ -blogTitle = mix:title|jcr:title
+ -blogBody = text
+ -blogAttachement = #skip
+ -blogDate = jcr:created
+ -blogAuthor = jcr:createdBy
+ -blogExcerpt = #skip
+ -blogKeyWords = jmix:keywords|j:keywords
+ +trackBackPingURLs = #skip
+ +trackbacks = #skip
+
+[demo:subscriber_list] = #skip
+ -subscriber_username = #skip
+ -subscriber_mail = #skip
+
+
+## Portlets
+
+[demo:PortletContentList] = #skip
+ -PboxTitle = #skip
+ -PboxType = #skip
+ -PboxTitleLayout = #skip
+ -PboxContentLayout = #skip
+
+[demo:PortletContentListMetaData] = #skip
+ -PortletID = #skip
+ -PortletSourceID = #skip
+ -PortletW = #skip
+ -PortletH = #skip
+ -PortletColumn = #skip
+ -PortletRow = #skip
+
+## Docspace
+ 
+[demo:directoryDocContainer] = #skip
+ -directoryDocPage = #skip
+ -directoryShortDocDescription = #skip
+ -directoryDocSource = #skip
+ -directoryDocType = #skip
+
+[demo:linkContainer] = jnt:nodeLink
+ -linkCat = j:node
+ -linkDir = j:node
+
+[demo:directoryLinkContainer] = #skip
+ -directoryLink = #skip
+ -directoryLinkDescription = #skip
+ -directoryLinkOwner = #skip
+ -directoryLinkDate = #skip
+
+[demo:directoryPeopleContainer] = jnt:person
+ -directoryPeopleFirstName = firstname
+ -directoryPeopleLastName = lastname
+ -directoryPeopleType = #skip
+ -directoryPeopleSkill = #skip
+ -directoryPeopleLevel = #skip
+ -directoryPeopleRate = #skip
+ -directoryPeopleTel = telephone
+ -directoryPeopleMobil = cellular
+ -directoryPeopleEmail = email
+ -directoryPeopleStreet = #skip
+ -directoryPeopleNpa = #skip
+ -directoryPeoplePicture = picture
+ -directoryPeopleHomePage = #skip
+
+[demo:directoryProjectContainer] = #skip
+ -directoryProjectName = #skip
+ -directoryProjectDescription = #skip
+ -directoryProjectCategory = #skip
+ -directoryProjectBudget = #skip
+ -directoryProjectStart = #skip
+ -directoryProjectEnd = #skip
+ -directoryProjectPage = #skip
+
+ 
+## Pages
+
+[jnt:page] = jnt:page
+ - jahia:template = j:view
+    Double = base/simple
+    News = base/simple
+    Blog Listing = base/simple   	
+    Blog = base/simple   		
+    Document Listing = base/simple   		
+    Document Detail = base/simple   			
+    Directories Main = base/simple
+    Directories Links = base/simple	
+    Directories People = base/simple		
+    Directories Project = base/simple			
+    Directories Files = base/simple				
+    Portal = base/simple   			
+ 
+[demo:blog] = jnt:page
+ +blogEntries = listA
+
+[demo:blog_listing] = jnt:page
+ +blogs = listA
+
+[demo:directories_files] = jnt:page
+ +filesContainer = listA
+
+[demo:directories_links] = jnt:page
+ +directoryLinkContainer = listA
+
+[demo:directories_main] = jnt:page
+ +mainContentList_full = listA
+ +linkContainer_directories_main = listA
+
+[demo:directories_people] = jnt:page
+ +directoryPeopleContainer = listA
+
+[demo:directories_project] = jnt:page
+ +directoryProjectContainer = listA
+
+[demo:document_detail] = jnt:page
+ +boxContainer = listA
+
+[demo:document_listing] = jnt:page
+ +directoryDocContainer = listA
+
+[demo:double] = jnt:page
+ +mainContentList_leftcol = listA
+ +boxContainer_leftcol = listA
+ +mainContentList_rightcol = listB
+ +boxContainer_rightcol = listB
+ +footerLinksContainerList = #skip
+
+[demo:news] = jnt:page
+ +newsCl = listA
+ +boxContainer_navcol = listA
+
+[demo:portal] = jnt:page

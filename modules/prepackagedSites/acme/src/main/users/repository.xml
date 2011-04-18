@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0"
+         xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+    <users j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+           j:usersFolderSkeleton="WEB-INF/etc/repository/user.xml,WEB-INF/etc/repository/user-*.xml,modules/**/META-INF/user-skeleton.xml,modules/**/META-INF/user-skeleton-*.xml"
+           jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+           jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root" jcr:primaryType="jnt:usersFolder">
+        <root j:accountLocked="false" j:external="false" j:lastPublished="2011-04-01T17:46:22.623+02:00"
+              j:lastPublishedBy="root" j:password="B1ZQLtup8YLYX8/MrygHxoKj0n0=" j:published="true"
+              jcr:created="2011-04-01T17:24:07.633+02:00" jcr:createdBy=" system "
+              jcr:lastModified="2011-04-01T17:46:22.616+02:00" jcr:lastModifiedBy="root"
+              jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:user">
+            <files jcr:created="2011-04-01T17:24:07.642+02:00" jcr:createdBy=" system "
+                   jcr:lastModified="2010-12-17T15:26:43.332+01:00" jcr:lastModifiedBy="" jcr:primaryType="jnt:folder">
+                <private jcr:created="2011-04-01T17:24:07.643+02:00" jcr:createdBy=" system "
+                         jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                         jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:folder">
+                    <j:acl j:inherit="false" jcr:primaryType="jnt:acl">
+                        <GRANT_u_root j:aceType="GRANT" j:principal="u:root" j:protected="false" j:roles="owner"
+                                      jcr:primaryType="jnt:ace"/>
+                    </j:acl>
+                    <imports jcr:created="2011-04-01T17:24:07.648+02:00" jcr:createdBy=" system "
+                             jcr:lastModified="2010-12-17T15:26:43.332+01:00" jcr:lastModifiedBy=""
+                             jcr:primaryType="jnt:importDropBox"/>
+                </private>
+            </files>
+            <portlets jcr:created="2011-04-01T17:24:07.650+02:00" jcr:createdBy=" system "
+                      jcr:lastModified="2010-12-17T15:26:43.332+01:00" jcr:lastModifiedBy=""
+                      jcr:primaryType="jnt:portletFolder"/>
+            <contents j:lastPublished="2011-04-01T17:46:22.881+02:00" j:lastPublishedBy="root"
+                      jcr:created="2011-04-01T17:24:07.651+02:00" jcr:createdBy=" system "
+                      jcr:lastModified="2010-12-17T15:26:43.332+01:00" jcr:lastModifiedBy=""
+                      jcr:primaryType="jnt:contentList"/>
+            <preferences jcr:primaryType="jnt:preferences"/>
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_u_root j:aceType="GRANT" j:principal="u:root" j:protected="false" j:roles="owner"
+                              jcr:primaryType="jnt:ace"/>
+            </j:acl>
+            <j:addresses jcr:primaryType="jnt:addresses"/>
+            <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+            <passwordHistory jcr:primaryType="jnt:passwordHistory">
+                <pwd-2011-04-01-17-24-13 j:password="B1ZQLtup8YLYX8/MrygHxoKj0n0="
+                                         jcr:created="2011-04-01T17:24:13.367+02:00" jcr:createdBy=" system "
+                                         jcr:primaryType="jnt:passwordHistoryEntry"/>
+            </passwordHistory>
+            <activities j:lastPublished="2011-04-01T17:46:22.881+02:00" j:lastPublishedBy="root"
+                        j:splitConfig="date,jcr:created,yyyy;date,jcr:created,MM" j:splitNodeType="jnt:contentList"
+                        jcr:created="2011-04-01T17:26:30.607+02:00" jcr:createdBy="root"
+                        jcr:lastModified="2011-04-01T17:39:56.088+02:00" jcr:lastModifiedBy="root"
+                        jcr:mixinTypes="jmix:autoSplitFolders" jcr:primaryType="jnt:contentList">
+                <socialActivity j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                j:type="created" jcr:created="2011-04-01T17:26:30.608+02:00" jcr:createdBy="root"
+                                jcr:lastModified="2011-04-01T17:26:30.644+02:00" jcr:lastModifiedBy="root"
+                                jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-1 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                  j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                  j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                  j:type="created" jcr:created="2011-04-01T17:26:30.849+02:00" jcr:createdBy="root"
+                                  jcr:lastModified="2011-04-01T17:26:30.871+02:00" jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-2 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                  j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                  j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                  j:type="created" jcr:created="2011-04-01T17:26:30.882+02:00" jcr:createdBy="root"
+                                  jcr:lastModified="2011-04-01T17:26:30.904+02:00" jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-3 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                  j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                  j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                  j:type="created" jcr:created="2011-04-01T17:26:30.917+02:00" jcr:createdBy="root"
+                                  jcr:lastModified="2011-04-01T17:26:30.938+02:00" jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-4 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                  j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                  j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                  j:type="created" jcr:created="2011-04-01T17:26:30.959+02:00" jcr:createdBy="root"
+                                  jcr:lastModified="2011-04-01T17:26:30.991+02:00" jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-5 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                  j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                  j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                  j:type="created" jcr:created="2011-04-01T17:26:31.002+02:00" jcr:createdBy="root"
+                                  jcr:lastModified="2011-04-01T17:26:31.023+02:00" jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-6 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                  j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                  j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                  j:type="created" jcr:created="2011-04-01T17:26:31.036+02:00" jcr:createdBy="root"
+                                  jcr:lastModified="2011-04-01T17:26:31.058+02:00" jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-7 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                  j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                  j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                  j:type="created" jcr:created="2011-04-01T17:26:31.091+02:00" jcr:createdBy="root"
+                                  jcr:lastModified="2011-04-01T17:26:31.113+02:00" jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-8 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                  j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                  j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                  j:type="created" jcr:created="2011-04-01T17:26:31.125+02:00" jcr:createdBy="root"
+                                  jcr:lastModified="2011-04-01T17:26:31.147+02:00" jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-9 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                  j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                  j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                  j:type="created" jcr:created="2011-04-01T17:26:31.159+02:00" jcr:createdBy="root"
+                                  jcr:lastModified="2011-04-01T17:26:31.287+02:00" jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-10 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:26:31.336+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:26:31.356+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-11 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage" j:targetNode=""
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:26:31.369+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:26:31.390+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-12 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/events"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.532+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:55.555+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-13 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/sitemap"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.568+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:55.591+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-14 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/activities"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.641+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:55.661+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-15 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/news"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.673+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:55.695+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-16 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/publications"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.740+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:55.763+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-17 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/about-us"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.814+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:55.852+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-18 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/news/Archives_x0020_2009"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.865+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:55.886+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-19 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/activities/research-and-innovation"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.909+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:55.930+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-20 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/activities/construction-et-projets-civils-d"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.951+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:55.971+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-21 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/about-us/jobs"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:55.984+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:56.005+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-22 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/news/Archvies_x0020_2008"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:56.026+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:56.048+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+                <socialActivity-23 j:from="/users/root" j:lastPublished="2011-04-01T17:46:22.881+02:00"
+                                   j:lastPublishedBy="root" j:messageKey="created.newpage"
+                                   j:targetNode="/sites/ACME/home/about-us/management-team"
+                                   j:targetNodeTypes="jnt:page nt:base jmix:nodenameInfo mix:referenceable jmix:observable jmix:basemetadata mix:created jmix:lockable mix:lockable mix:lastModified jmix:lastPublished jmix:i18n jmix:originWS mix:versionable mix:simpleVersionable jmix:versionInfo jmix:description mix:title jmix:publication jmix:tagged jmix:navMenuItem jmix:hasTemplateNode jmix:sitemap"
+                                   j:type="created" jcr:created="2011-04-01T17:39:56.068+02:00" jcr:createdBy="root"
+                                   jcr:lastModified="2011-04-01T17:39:56.088+02:00" jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:socialActivity"/>
+            </activities>
+        </root>
+        <guest j:accountLocked="false" j:external="false" j:lastPublished="2011-04-01T17:24:13.714+02:00"
+               j:lastPublishedBy="" j:password="" j:published="true" jcr:created="2011-04-01T17:24:07.653+02:00"
+               jcr:createdBy=" system " jcr:lastModified="2011-04-01T17:24:13.706+02:00" jcr:lastModifiedBy=""
+               jcr:mixinTypes="jmix:systemNode" jcr:primaryType="jnt:user">
+            <j:addresses jcr:primaryType="jnt:addresses"/>
+            <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+            <passwordHistory jcr:primaryType="jnt:passwordHistory">
+                <pwd-2011-04-01-17-24-13 j:password="" jcr:created="2011-04-01T17:24:13.698+02:00"
+                                         jcr:createdBy=" system " jcr:primaryType="jnt:passwordHistoryEntry"/>
+            </passwordHistory>
+        </guest>
+        <fb j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+            jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+            jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+            jcr:primaryType="jnt:usersFolder">
+            <hi j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                <cg j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                    <john email="" emailNotificationsDisabled="false"
+                      j:about="&lt;p&gt;  I began my career working for the Ministry of Defense, in the department of Maritime Affairs, based first in Rotterdam (Netherlands), then in Cap Town (South Africa). I joined Acme in 1988 as head of the commercial department. After being involved in a number of construction projects, I took charge of the Russian subsidiary in 1997. I&amp;#39;m Senior Vice President, Constructions of Acme since my nomination in 2002.&lt;/p&gt; "
+                      j:accountLocked="false" j:checkinDate="2010-04-11T14:29:14.439+02:00" j:email=""
+                      j:external="false"
+                      j:firstName="John" j:lastName="Mac Cormick" j:lastPublished="2011-04-01T17:41:22.845+02:00"
+                      j:lastPublishedBy="john" j:organization="ACME" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                      j:picture="/users/jo/hn/john/files/profile/author.png" j:published="true"
+                      jcr:created="2011-04-01T17:39:59.259+02:00" jcr:createdBy="root"
+                      jcr:lastModified="2011-04-01T17:41:22.835+02:00" jcr:lastModifiedBy="john"
+                      jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:user" lastLoginDate="1292438303397"
+                      password.history.1242739225145="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en">
+                    <j:addresses jcr:primaryType="jnt:addresses"/>
+                    <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+                    <files j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:created="2011-04-01T17:39:59.261+02:00"
+                           jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                           jcr:lastModifiedBy="root"
+                           jcr:primaryType="jnt:folder">
+                        <private j:checkinDate="2010-04-11T14:29:14.439+02:00"
+                                 jcr:created="2011-04-01T17:39:59.262+02:00"
+                                 jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                 jcr:lastModifiedBy="root"
+                                 jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:folder">
+                            <imports j:checkinDate="2010-04-11T14:29:14.439+02:00"
+                                     jcr:created="2011-04-01T17:39:59.262+02:00"
+                                     jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                     jcr:lastModifiedBy="root" jcr:primaryType="jnt:importDropBox"/>
+                            <j:acl j:inherit="false" jcr:primaryType="jnt:acl">
+                                <GRANT_u_john j:aceType="GRANT" j:principal="u:john" j:protected="false" j:roles="owner"
+                                              jcr:primaryType="jnt:ace"/>
+                            </j:acl>
+                        </private>
+                        <profile jcr:created="2011-04-01T17:39:59.264+02:00" jcr:createdBy="root"
+                                 jcr:lastModified="2011-04-01T17:41:22.338+02:00" jcr:lastModifiedBy="john"
+                                 jcr:primaryType="jnt:folder">
+                            <author.png j:height="64" j:lastPublished="2011-04-01T17:41:23.234+02:00"
+                                        j:lastPublishedBy="john"
+                                        j:published="true" j:width="64" jcr:created="2011-04-01T17:41:22.189+02:00"
+                                        jcr:createdBy="john" jcr:lastModified="2011-04-01T17:41:23.203+02:00"
+                                        jcr:lastModifiedBy="john" jcr:mixinTypes="jmix:image"
+                                        jcr:primaryType="jnt:file">
+                                <jcr:content jcr:lastModified="2011-04-01T17:41:22.338+02:00" jcr:lastModifiedBy="john"
+                                             jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <thumbnail jcr:lastModified="2011-04-01T17:41:22.777+02:00" jcr:lastModifiedBy="john"
+                                           jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <thumbnail2 jcr:lastModified="2011-04-01T17:41:22.777+02:00" jcr:lastModifiedBy="john"
+                                            jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <avatar_120 jcr:lastModified="2011-04-01T17:41:23.203+02:00" jcr:lastModifiedBy="john"
+                                            jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <avatar_60 jcr:lastModified="2011-04-01T17:41:23.203+02:00" jcr:lastModifiedBy="john"
+                                           jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            </author.png>
+                        </profile>
+                    </files>
+                    <portlets j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:created="2011-04-01T17:39:59.264+02:00"
+                              jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                              jcr:lastModifiedBy="root"
+                              jcr:primaryType="jnt:portletFolder"/>
+                    <contents j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:created="2011-04-01T17:39:59.265+02:00"
+                              jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                              jcr:lastModifiedBy="root"
+                              jcr:primaryType="jnt:contentFolder"/>
+                    <preferences jcr:primaryType="jnt:preferences"/>
+                    <tasks j:checkinDate="2010-04-11T14:29:14.439+02:00" j:lastPublished="2011-04-01T17:41:23.234+02:00"
+                           j:lastPublishedBy="john" jcr:created="2011-04-01T17:39:59.266+02:00" jcr:createdBy="root"
+                           jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                           jcr:primaryType="jnt:tasks"/>
+                    <j:acl jcr:primaryType="jnt:acl">
+                        <GRANT_u_john j:aceType="GRANT" j:principal="u:john" j:protected="false" j:roles="owner"
+                                      jcr:primaryType="jnt:ace"/>
+                    </j:acl>
+                    <passwordHistory jcr:primaryType="jnt:passwordHistory">
+                        <pwd-2011-04-01-17-40-01 j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                                                 jcr:created="2011-04-01T17:40:01.867+02:00" jcr:createdBy=" system "
+                                                 jcr:primaryType="jnt:passwordHistoryEntry"/>
+                    </passwordHistory>
+                </john>
+                </cg>
+            </hi>
+        </fb>
+
+        <dj j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+            jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+            jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+            jcr:primaryType="jnt:usersFolder">
+            <gi j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                <ej j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                    <jenifer email="" emailNotificationsDisabled="false" j:accountLocked="false"
+                         j:checkinDate="2010-04-11T14:29:23.243+02:00" j:email="" j:external="false"
+                         j:firstName="Jenifer"
+                         j:lastName="Farell" j:lastPublished="2011-04-01T17:42:22.745+02:00" j:lastPublishedBy="jenifer"
+                         j:organization="ACME" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                         j:picture="/users/je/ni/jenifer/files/profile/publisher.png" j:published="true"
+                         jcr:created="2011-04-01T17:39:59.267+02:00" jcr:createdBy="root"
+                         jcr:lastModified="2011-04-01T17:42:22.735+02:00" jcr:lastModifiedBy="jenifer"
+                         jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:user" lastLoginDate="1233151317240"
+                         password.history.1242739225417="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en">
+                    <j:addresses jcr:primaryType="jnt:addresses"/>
+                    <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+                    <files j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:created="2011-04-01T17:39:59.269+02:00"
+                           jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                           jcr:lastModifiedBy="root"
+                           jcr:primaryType="jnt:folder">
+                        <private j:checkinDate="2010-04-11T14:29:23.243+02:00"
+                                 jcr:created="2011-04-01T17:39:59.269+02:00"
+                                 jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                 jcr:lastModifiedBy="root"
+                                 jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:folder">
+                            <imports j:checkinDate="2010-04-11T14:29:23.243+02:00"
+                                     jcr:created="2011-04-01T17:39:59.270+02:00"
+                                     jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                     jcr:lastModifiedBy="root" jcr:primaryType="jnt:importDropBox"/>
+                            <j:acl j:inherit="false" jcr:primaryType="jnt:acl">
+                                <GRANT_u_jenifer j:aceType="GRANT" j:principal="u:jenifer" j:protected="false"
+                                                 j:roles="owner"
+                                                 jcr:primaryType="jnt:ace"/>
+                            </j:acl>
+                        </private>
+                        <profile jcr:created="2011-04-01T17:39:59.271+02:00" jcr:createdBy="root"
+                                 jcr:lastModified="2011-04-01T17:42:22.517+02:00" jcr:lastModifiedBy="jenifer"
+                                 jcr:primaryType="jnt:folder">
+                            <publisher.png j:height="64" j:lastPublished="2011-04-01T17:42:22.985+02:00"
+                                           j:lastPublishedBy="jenifer" j:published="true" j:width="64"
+                                           jcr:created="2011-04-01T17:42:22.487+02:00" jcr:createdBy="jenifer"
+                                           jcr:lastModified="2011-04-01T17:42:22.961+02:00" jcr:lastModifiedBy="jenifer"
+                                           jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
+                                <jcr:content jcr:lastModified="2011-04-01T17:42:22.517+02:00"
+                                             jcr:lastModifiedBy="jenifer"
+                                             jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <thumbnail jcr:lastModified="2011-04-01T17:42:22.684+02:00" jcr:lastModifiedBy="jenifer"
+                                           jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <thumbnail2 jcr:lastModified="2011-04-01T17:42:22.684+02:00"
+                                            jcr:lastModifiedBy="jenifer"
+                                            jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <avatar_120 jcr:lastModified="2011-04-01T17:42:22.961+02:00"
+                                            jcr:lastModifiedBy="jenifer"
+                                            jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <avatar_60 jcr:lastModified="2011-04-01T17:42:22.961+02:00" jcr:lastModifiedBy="jenifer"
+                                           jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            </publisher.png>
+                        </profile>
+                    </files>
+                    <portlets j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:created="2011-04-01T17:39:59.271+02:00"
+                              jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                              jcr:lastModifiedBy="root"
+                              jcr:primaryType="jnt:portletFolder"/>
+                    <contents j:checkinDate="2010-04-11T14:29:23.243+02:00" jcr:created="2011-04-01T17:39:59.272+02:00"
+                              jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                              jcr:lastModifiedBy="root"
+                              jcr:primaryType="jnt:contentFolder"/>
+                    <preferences jcr:primaryType="jnt:preferences"/>
+                    <tasks j:checkinDate="2010-04-11T14:29:23.243+02:00" j:lastPublished="2011-04-01T17:42:22.985+02:00"
+                           j:lastPublishedBy="jenifer" jcr:created="2011-04-01T17:39:59.273+02:00" jcr:createdBy="root"
+                           jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                           jcr:primaryType="jnt:tasks"/>
+                    <j:acl jcr:primaryType="jnt:acl">
+                        <GRANT_u_jenifer j:aceType="GRANT" j:principal="u:jenifer" j:protected="false" j:roles="owner"
+                                         jcr:primaryType="jnt:ace"/>
+                    </j:acl>
+                    <passwordHistory jcr:primaryType="jnt:passwordHistory">
+                        <pwd-2011-04-01-17-40-02 j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                                                 jcr:created="2011-04-01T17:40:02.439+02:00" jcr:createdBy=" system "
+                                                 jcr:primaryType="jnt:passwordHistoryEntry"/>
+                    </passwordHistory>
+                </jenifer>
+                </ej>
+            </gi>
+        </dj>
+        <hg j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+            jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+            jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+            jcr:primaryType="jnt:usersFolder">
+            <hi j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                <ba j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                    <max email="" emailNotificationsDisabled="false" j:accountLocked="false"
+                     j:checkinDate="2010-04-11T14:29:27.778+02:00" j:email="" j:external="false" j:firstName="Max"
+                     j:lastName="Dupond" j:lastPublished="2011-04-01T17:45:45.125+02:00" j:lastPublishedBy="max"
+                     j:organization="ACME" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                     j:picture="/users/ma/x_/max/files/profile/siteadmin.png" j:published="true"
+                     jcr:created="2011-04-01T17:39:59.274+02:00" jcr:createdBy="root"
+                     jcr:lastModified="2011-04-01T17:45:45.117+02:00" jcr:lastModifiedBy="max"
+                     jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:user"
+                     password.history.1242739225611="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en">
+                    <j:addresses jcr:primaryType="jnt:addresses"/>
+                    <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+                    <files j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:created="2011-04-01T17:39:59.275+02:00"
+                           jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                           jcr:lastModifiedBy="root"
+                           jcr:primaryType="jnt:folder">
+                        <private j:checkinDate="2010-04-11T14:29:27.778+02:00"
+                                 jcr:created="2011-04-01T17:39:59.276+02:00"
+                                 jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                 jcr:lastModifiedBy="root"
+                                 jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:folder">
+                            <imports j:checkinDate="2010-04-11T14:29:27.778+02:00"
+                                     jcr:created="2011-04-01T17:39:59.277+02:00"
+                                     jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                     jcr:lastModifiedBy="root" jcr:primaryType="jnt:importDropBox"/>
+                            <j:acl j:inherit="false" jcr:primaryType="jnt:acl">
+                                <GRANT_u_max j:aceType="GRANT" j:principal="u:max" j:protected="false" j:roles="owner"
+                                             jcr:primaryType="jnt:ace"/>
+                            </j:acl>
+                        </private>
+                        <profile jcr:created="2011-04-01T17:39:59.278+02:00" jcr:createdBy="root"
+                                 jcr:lastModified="2011-04-01T17:45:44.953+02:00" jcr:lastModifiedBy="max"
+                                 jcr:primaryType="jnt:folder">
+                            <siteadmin.png j:height="64" j:lastPublished="2011-04-01T17:45:45.373+02:00"
+                                           j:lastPublishedBy="max"
+                                           j:published="true" j:width="64" jcr:created="2011-04-01T17:45:44.923+02:00"
+                                           jcr:createdBy="max" jcr:lastModified="2011-04-01T17:45:45.350+02:00"
+                                           jcr:lastModifiedBy="max" jcr:mixinTypes="jmix:image"
+                                           jcr:primaryType="jnt:file">
+                                <jcr:content jcr:lastModified="2011-04-01T17:45:44.953+02:00" jcr:lastModifiedBy="max"
+                                             jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <thumbnail jcr:lastModified="2011-04-01T17:45:45.065+02:00" jcr:lastModifiedBy="max"
+                                           jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <thumbnail2 jcr:lastModified="2011-04-01T17:45:45.065+02:00" jcr:lastModifiedBy="max"
+                                            jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <avatar_120 jcr:lastModified="2011-04-01T17:45:45.350+02:00" jcr:lastModifiedBy="max"
+                                            jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                <avatar_60 jcr:lastModified="2011-04-01T17:45:45.350+02:00" jcr:lastModifiedBy="max"
+                                           jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            </siteadmin.png>
+                        </profile>
+                    </files>
+                    <portlets j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:created="2011-04-01T17:39:59.279+02:00"
+                              jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                              jcr:lastModifiedBy="root"
+                              jcr:primaryType="jnt:portletFolder"/>
+                    <contents j:checkinDate="2010-04-11T14:29:27.778+02:00" jcr:created="2011-04-01T17:39:59.279+02:00"
+                              jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                              jcr:lastModifiedBy="root"
+                              jcr:primaryType="jnt:contentFolder"/>
+                    <preferences jcr:primaryType="jnt:preferences"/>
+                    <tasks j:checkinDate="2010-04-11T14:29:27.778+02:00" j:lastPublished="2011-04-01T17:45:00.488+02:00"
+                           j:lastPublishedBy="max" jcr:created="2011-04-01T17:39:59.280+02:00" jcr:createdBy="root"
+                           jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                           jcr:primaryType="jnt:tasks"/>
+                    <j:acl jcr:primaryType="jnt:acl">
+                        <GRANT_u_mac j:aceType="GRANT" j:principal="u:max" j:protected="false" j:roles="owner"
+                                     jcr:primaryType="jnt:ace"/>
+                    </j:acl>
+                    <passwordHistory jcr:primaryType="jnt:passwordHistory">
+                        <pwd-2011-04-01-17-40-02 j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                                                 jcr:created="2011-04-01T17:40:02.631+02:00" jcr:createdBy=" system "
+                                                 jcr:primaryType="jnt:passwordHistoryEntry"/>
+                    </passwordHistory>
+                </max>
+                </ba>
+            </hi>
+        </hg>
+        <gj j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+            jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+            jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+            jcr:primaryType="jnt:usersFolder">
+            <ea j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                jcr:primaryType="jnt:usersFolder">
+                <de j:lastPublished="2011-04-01T17:40:00.289+02:00" j:lastPublishedBy="root" j:published="true"
+                    jcr:created="2011-04-01T17:24:07.613+02:00" jcr:createdBy=" system "
+                    jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                    jcr:primaryType="jnt:usersFolder">
+                    <marc email="" j:accountLocked="false" j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                          j:external="false"
+                          j:firstName="Marc" j:lastName="Sanders" j:lastPublished="2011-04-01T17:44:28.034+02:00"
+                          j:lastPublishedBy="marc" j:organization="ACME" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                          j:picture="/users/ma/rc/marc/files/profile/visitor.png" j:published="true"
+                          jcr:created="2011-04-01T17:39:59.281+02:00" jcr:createdBy="root"
+                          jcr:lastModified="2011-04-01T17:44:27.993+02:00" jcr:lastModifiedBy="marc"
+                          jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:user"
+                          lastLoginDate="1233238151917"
+                          password.history.1242739225800="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" preferredLanguage="en">
+                        <j:addresses jcr:primaryType="jnt:addresses"/>
+                        <j:phones jcr:primaryType="jnt:phoneNumbers"/>
+                        <files j:checkinDate="2010-04-11T14:29:31.374+02:00" jcr:created="2011-04-01T17:39:59.283+02:00"
+                               jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                               jcr:lastModifiedBy="root"
+                               jcr:primaryType="jnt:folder">
+                            <private j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                                     jcr:created="2011-04-01T17:39:59.283+02:00"
+                                     jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                     jcr:lastModifiedBy="root"
+                                     jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:folder">
+                                <imports j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                                         jcr:created="2011-04-01T17:39:59.284+02:00"
+                                         jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                         jcr:lastModifiedBy="root" jcr:primaryType="jnt:importDropBox"/>
+                                <j:acl j:inherit="false" jcr:primaryType="jnt:acl">
+                                    <GRANT_u_marc j:aceType="GRANT" j:principal="u:marc" j:protected="false"
+                                                  j:roles="owner"
+                                                  jcr:primaryType="jnt:ace"/>
+                                </j:acl>
+                            </private>
+                            <profile jcr:created="2011-04-01T17:39:59.285+02:00" jcr:createdBy="root"
+                                     jcr:lastModified="2011-04-01T17:44:27.776+02:00" jcr:lastModifiedBy="marc"
+                                     jcr:primaryType="jnt:folder">
+                                <visitor.png j:height="64" j:lastPublished="2011-04-01T17:44:28.271+02:00"
+                                             j:lastPublishedBy="marc"
+                                             j:published="true" j:width="64" jcr:created="2011-04-01T17:44:27.745+02:00"
+                                             jcr:createdBy="marc" jcr:lastModified="2011-04-01T17:44:28.246+02:00"
+                                             jcr:lastModifiedBy="marc" jcr:mixinTypes="jmix:image"
+                                             jcr:primaryType="jnt:file">
+                                    <jcr:content jcr:lastModified="2011-04-01T17:44:27.776+02:00"
+                                                 jcr:lastModifiedBy="marc"
+                                                 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail jcr:lastModified="2011-04-01T17:44:27.917+02:00"
+                                               jcr:lastModifiedBy="marc"
+                                               jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <thumbnail2 jcr:lastModified="2011-04-01T17:44:27.917+02:00"
+                                                jcr:lastModifiedBy="marc"
+                                                jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <avatar_120 jcr:lastModified="2011-04-01T17:44:28.246+02:00"
+                                                jcr:lastModifiedBy="marc"
+                                                jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    <avatar_60 jcr:lastModified="2011-04-01T17:44:28.246+02:00"
+                                               jcr:lastModifiedBy="marc"
+                                               jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                </visitor.png>
+                            </profile>
+                        </files>
+                        <portlets j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                                  jcr:created="2011-04-01T17:39:59.285+02:00"
+                                  jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                  jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:portletFolder"/>
+                        <contents j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                                  jcr:created="2011-04-01T17:39:59.286+02:00"
+                                  jcr:createdBy="root" jcr:lastModified="2011-04-01T17:40:00.165+02:00"
+                                  jcr:lastModifiedBy="root"
+                                  jcr:primaryType="jnt:contentFolder"/>
+                        <preferences jcr:primaryType="jnt:preferences"/>
+                        <tasks j:checkinDate="2010-04-11T14:29:31.374+02:00"
+                               j:lastPublished="2011-04-01T17:44:28.271+02:00"
+                               j:lastPublishedBy="marc" jcr:created="2011-04-01T17:39:59.287+02:00" jcr:createdBy="root"
+                               jcr:lastModified="2011-04-01T17:40:00.165+02:00" jcr:lastModifiedBy="root"
+                               jcr:primaryType="jnt:tasks"/>
+                        <j:acl jcr:primaryType="jnt:acl">
+                            <GRANT_u_marc j:aceType="GRANT" j:principal="u:marc" j:protected="false" j:roles="owner"
+                                          jcr:primaryType="jnt:ace"/>
+                        </j:acl>
+                        <passwordHistory jcr:primaryType="jnt:passwordHistory">
+                            <pwd-2011-04-01-17-40-02 j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g="
+                                                     jcr:created="2011-04-01T17:40:02.236+02:00"
+                                                     jcr:createdBy=" system "
+                                                     jcr:primaryType="jnt:passwordHistoryEntry"/>
+                        </passwordHistory>
+                    </marc>
+                </de>
+            </ea>
+        </gj>
+    </users>
+</content>

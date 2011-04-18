@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jahia:users xmlns:jahia="http://www.jahia.org/">
+    <jahia:user jahia:organization="" jahia:email="" jahia:password.history.1249977433062="cojt0Pw//L6ToM8G41aOKFIWh7w=" jahia:lastname="" jahia:user_homepage="12548293-c4cb-4936-9d59-3f389c499353" jahia:firstname="" jahia:name="customer1" jahia:password="SHA-1:cojt0Pw//L6ToM8G41aOKFIWh7w="></jahia:user>
+    <jahia:user jahia:organization="" jahia:email="" jahia:lastname="" jahia:user_homepage="da7c7323-37b5-4f63-afe3-1c5aa6d48d7e" jahia:firstname="" jahia:password.history.1249977433093="cojt0Pw//L6ToM8G41aOKFIWh7w=" jahia:name="customer2" jahia:password="SHA-1:cojt0Pw//L6ToM8G41aOKFIWh7w="></jahia:user>
+    <jahia:user jahia:organization="" jahia:email="" jahia:lastname="" jahia:user_homepage="4854afb4-8e24-4f52-a92c-e44df3fe2c92" jahia:firstname="" jahia:password.history.1249977433093="cojt0Pw//L6ToM8G41aOKFIWh7w=" jahia:name="john" jahia:password="SHA-1:cojt0Pw//L6ToM8G41aOKFIWh7w="></jahia:user>
+    <jahia:user jahia:organization="" jahia:email="siteadmin@abc.com" jahia:password.history.1249977433109="500j4dyBpJQDk8Ipc3Y89925Xwg=" jahia:lastname="" jahia:firstname="" jahia:name="siteadmin" jahia:password="SHA-1:500j4dyBpJQDk8Ipc3Y89925Xwg="></jahia:user>
+    <jahia:user jahia:password.history.1249977433125="cojt0Pw//L6ToM8G41aOKFIWh7w=" jahia:organization="" jahia:email="" jahia:lastname="" jahia:user_homepage="dc4a276e-1c27-4d2e-9ef2-278b8e5a54da" jahia:firstname="" jahia:name="steven" jahia:password="SHA-1:cojt0Pw//L6ToM8G41aOKFIWh7w="></jahia:user>
+    <jahia:group jahia:name="administrators">
+        <jahia:user jahia:name="root"></jahia:user>
+        <jahia:user jahia:name="siteadmin"></jahia:user>
+    </jahia:group>
+    <jahia:group jahia:name="Customers">
+        <jahia:user jahia:name="customer2"></jahia:user>
+        <jahia:user jahia:name="customer1"></jahia:user>
+    </jahia:group>
+    <jahia:group jahia:name="Employees">
+        <jahia:user jahia:name="steven"></jahia:user>
+        <jahia:user jahia:name="john"></jahia:user>
+    </jahia:group>
+</jahia:users>

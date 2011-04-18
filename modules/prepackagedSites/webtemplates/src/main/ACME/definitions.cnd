@@ -1,0 +1,473 @@
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+<web_templates = 'http://www.jahia.org/jahia/web_templates/nt/1.0'>
+
+[jmix:layout] mixin
+
+[jmix:skinnable] > jmix:layout mixin
+ sharedSmallText skin (choicelist[skins,resourceBundle,image]) indexed=no
+
+[jmix:positionnable] > jmix:layout mixin
+ integer rowIndex hidden indexed=no
+ integer columnIndex  hidden indexed=no
+ sharedSmallText status hidden indexed=no
+
+[jmix:containerExtension] mixin
+
+[jmix:subscribable] > jmix:containerExtension mixin
+
+[jnt:comment] > jnt:container
+ smallText commentTitle primary
+ sharedSmallText commentAuthor = currentUser()
+ bigText commentBody
+ date commentDate = now() hidden
+
+[jmix:commentable] > jmix:containerExtension mixin
+ boolean isCommentable
+ containerList comment (jnt:comment) workflow='none'
+
+[jmix:rssable] > jmix:containerExtension mixin
+
+[jmix:sendAsNewsletter] mixin
+
+[jnt:navLink] > jnt:container
+ page navLink primary
+ smallText separator
+
+[jnt:box] > jnt:container abstract
+ smallText boxTitle primary mandatory
+
+[jnt:fileContainer] > jnt:container
+ file file primary
+ bigText fileDesc
+ boolean fileDisplayDetails
+
+[jnt:filesBox] > jnt:box
+ containerList fileContainer (jnt:fileContainer)
+
+[jnt:lastNewsContainer] > jnt:container
+ integer maxNews = 10 indexed=no
+
+[jnt:lastNewsBox] > jnt:box
+ containerList lastNewsContainer (jnt:lastNewsContainer)
+
+[jnt:linkContainer] > jnt:container
+ page link (page[type="external,internal"])
+ bigText linkDesc
+
+[jnt:linksBox] > jnt:box
+ containerList linkContainer (jnt:linkContainer)
+
+[jnt:mainContentContainer] > jnt:container
+ smallText mainContentTitle primary
+ bigText mainContentBody
+ file mainContentImage
+ sharedSmallText mainContentAlign (choicelist) = resourceKey(left) indexed=no < resourceKey(left), resourceKey(right), resourceKey(default)
+
+[jnt:mainContentsBox] > jnt:box
+ containerList mainContentContainer (jnt:mainContentContainer)
+
+[jnt:newsContainer] > jnt:container
+ smallText newsTitle primary
+ bigText newsDesc
+ file newsImage (file[mime='image/*'])
+ page newslink (page[type="external,internal"])
+ date newsDate = now()
+
+[jnt:newsBox] > jnt:box
+ containerList newsContainer (jnt:newsContainer)
+
+[jnt:pageContainer] > jnt:container
+ page page (page[type="direct"])
+
+[jnt:pagesBox] > jnt:box
+ containerList pageContainer (jnt:pageContainer)
+
+[jnt:savedSearchContainer] > jnt:container
+ smallText boxSavedSearchTitle
+ sharedSmallText boxSavedSearchQuery indexed=no
+ sharedSmallText boxSavedSearchView (choicelist) = resourceKey(list) indexed=no < resourceKey(list),resourceKey(table)
+ integer boxSavedSearchMaxs (choicelist) = 10 indexed=no < 1,5,10,20,50,100,200,500
+
+[jnt:savedSearchBox] > jnt:box
+ containerList savedSearchContainer (jnt:savedSearchContainer)
+
+[jnt:textContainer] > jnt:container
+ bigText text
+
+[jnt:textsBox] > jnt:box
+ containerList textContainer (jnt:textContainer)
+
+[jnt:groupsContainer] > jnt:container
+ sharedSmallText groupDisplayLimit = 5 indexed=no
+ sharedSmallText groupQuery = '*' indexed=no
+
+[jnt:groupsBox] > jnt:box
+ containerList groupsContainer (jnt:groupsContainer)
+
+[jnt:usersContainer] > jnt:container
+ integer userDisplayLimit = 5 indexed=no
+ sharedSmallText userQuery = '*' indexed=no
+
+[jnt:usersBox] > jnt:box
+ containerList usersContainer (jnt:usersContainer)
+
+[jnt:portletContainer] > jnt:container
+ portlet portlet
+
+[jnt:portletsBox] > jnt:box
+ containerList portletContainer (jnt:portletContainer)
+
+[jnt:peopleContainer] > jnt:container
+ sharedSmallText peopleFirstname
+ sharedSmallText peopleLastname sortable
+ date peopleBirthdate
+ sharedSmallText peopleCivility (choicelist) analyzer='keyword' < 'M.','Mme.','Mlle.'
+ sharedSmallText peopleGender (choicelist) analyzer='keyword' < 'male','female'
+ smallText peopleTitle
+ smallText peopleNationality facetable
+ file peoplePicture (file[mime='image/*'])
+
+[jnt:peopleBox] > jnt:box
+ containerList peopleContainer (jnt:peopleContainer)
+
+[jnt:locationContainer] > jnt:container
+ sharedSmallText locationStreet
+ sharedSmallText locationZipCode analyzer='keyword'
+ smallText locationTown facetable
+ smallText locationCountry facetable
+
+[jnt:locationBox] > jnt:box
+ containerList locationContainer (jnt:locationContainer)
+
+[jnt:organizationContainer] > jnt:container
+ sharedSmallText organizationName facetable
+ sharedSmallText organizationAcronym analyzer='keyword' facetable
+ file organizationLogo (file[mime='image/*'])
+ sharedSmallText organizationReference
+
+[jnt:organizationBox] > jnt:box
+ containerList organizationContainer (jnt:organizationContainer)
+
+[jnt:mediaContainer] > jnt:container
+ file mediaFile
+ sharedSmallText mediaAuthor analyzer='simple'
+ date mediaDate
+ smallText mediaNote
+ sharedSmallText mediaCredit
+
+[jnt:mediaBox] > jnt:box
+ containerList mediaContainer (jnt:mediaContainer)
+
+[jnt:eventContainer] > jnt:container
+ smallText eventTitle
+ date eventDateBegin
+ date eventDateEnd
+ bigText eventContent
+ singleContainer locationContainer (jnt:locationContainer)
+
+[jnt:eventBox] > jnt:box
+ containerList eventContainer (jnt:eventContainer)
+
+[jnt:IframeContainer] > jnt:container
+ sharedSmallText IframeSource indexed=no
+ sharedSmallText IframeName indexed=no
+ integer IframeWidth indexed=no
+ integer IframeHeight indexed=no
+ integer IframeFrameborder = '0' indexed=no
+ integer IframeMarginwidth = '0' indexed=no
+ integer IframeMarginheight = '0' indexed=no
+ sharedSmallText IframeScrolling (choicelist) indexed=no < 'yes','no','auto'
+ smallText IframeAlt indexed=no
+
+[jnt:IframeBox] > jnt:box
+ containerList IframeContainer (jnt:IframeContainer)
+
+[jnt:videoContainer] > jnt:container
+ sharedSmallText videoName
+ file videoSource
+ integer videoWidth = '0'
+ integer videoHeight = '0'
+ integer videoHspace = '0'
+ integer videoVspace = '0'
+ sharedSmallText videoAutostart (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
+ sharedSmallText videoInvokeURLs (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
+ sharedSmallText videoEnablecontextmenu (choicelist) analyzer='keyword' fulltextsearchable=no < '0','1'
+ sharedSmallText videoShowstatusbar (choicelist) analyzer='keyword' fulltextsearchable=no < '0','1'
+ sharedSmallText videoShowcontrols (choicelist) analyzer='keyword' fulltextsearchable=no < '0','1'
+ sharedSmallText videoAutosize (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
+ integer videoDisplaysize = '0' analyzer='keyword' fulltextsearchable=no
+ sharedSmallText videoLoop (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
+
+[jnt:videoBox] > jnt:box
+ containerList videoContainer (jnt:videoContainer)
+
+[jnt:fileContentContainer] > jnt:container
+  file fileContentSource
+
+[jnt:fileContentBox] > jnt:box
+ containerList fileContentContainer (jnt:fileContentContainer)
+
+[jnt:flashContainer] > jnt:container
+ file flashSourceFlashContainer
+ sharedSmallText widthFlashContainer analyzer='keyword' fulltextsearchable=no
+ sharedSmallText heightFlashContainer analyzer='keyword' fulltextsearchable=no
+ sharedSmallText flashPlayerFlashContainer = '9' analyzer='keyword' fulltextsearchable=no
+ sharedSmallText idFlashContainer analyzer='keyword' fulltextsearchable=no
+ sharedSmallText nameFlashContainer
+ sharedSmallText swliveconnectFlashContainer (choicelist) analyzer='keyword' fulltextsearchable=no < 'true', 'false'
+ sharedSmallText playFlashContainer (choicelist) indexed=no < 'true','false'
+ sharedSmallText loopFlashContainer (choicelist) indexed=no < 'true','false'
+ sharedSmallText menuFlashContainer (choicelist) indexed=no < 'true','false'
+ sharedSmallText qualityFlashContainer (choicelist) analyzer='keyword' fulltextsearchable=no < 'low','high','autolow','autohigh','best'
+ sharedSmallText scaleFlashContainer (choicelist) analyzer='keyword' fulltextsearchable=no < 'default','noborder','exactfit'
+ sharedSmallText alignFlashContainer (choicelist) indexed=no < 'l','r','t','b'
+ sharedSmallText salignFlashContainer (choicelist) indexed=no < 'l','r','t','b','tl','tr','bl','br'
+ sharedSmallText wmodeFlashContainer (choicelist) indexed=no < 'window','opaque','transparent'
+ color bgcolorFlashContainer
+ sharedSmallText baseFlashContainer indexed=no
+ sharedSmallText flashvarsFlashContainer indexed=no
+
+[jnt:flashBox] > jnt:box
+ containerList flashContainer (jnt:flashContainer)
+
+[jnt:rssContainer] > jnt:container
+ sharedSmallText url
+ integer entriesCount
+
+[jnt:rssBox] > jnt:box
+ singleContainer rssContainer (jnt:rssContainer) mandatory
+
+// from jahia std definition (cf 05-standard-types.cnd)
+// [jnt:newsContainer]
+// [jnt:peopleContainer]
+// [jnt:mainContentContainer]
+
+// Web templates common declaration
+
+[web_templates:layoutmanagerBoxExtraFields] mixin
+file logo (file[mime='image/*'])
+bigText description
+
+[web_templates:navigation] mixin
+containerList   navLink (jnt:navLink)
+
+[web_templates:introductionContainer] > jnt:container
+bigText       introduction primary
+
+[web_templates:introduction] mixin
+singleContainer introduction (web_templates:introductionContainer)
+
+[web_templates:title] mixin
+smallText       title  primary sortable
+
+// Web templates content definitions
+
+[web_templates:basicLinkContainer] > jnt:container
+page            link (page[type="internal,external"])
+
+[web_templates:bottomLinksContainer] > jnt:container
+page            link (page[type="internal"])
+
+[web_templates:bannerContainer] > jnt:container, web_templates:title
+file            background (file[mime='image/*'])
+smallText       cast
+integer         positionTop indexed=no
+integer         positionLeft indexed=no
+
+[web_templates:shortcutsContainer] > jnt:container
+page            link (page[type="external,internal"])
+sharedSmallText target (choicelist) = self indexed=no < self,new_,parent
+file            icon
+
+[web_templates:promoContainer] > jnt:container
+file            image (file[mime='image/*'])
+page            link (page[type="external,internal"])
+
+[web_templates:fileContainer] > jnt:fileContainer, web_templates:title
+
+[web_templates:filesBox] > jnt:box
+containerList fileContainer (web_templates:fileContainer)
+
+[web_templates:logoContainer] > jnt:container
+file logo (file[mime='image/*'])
+
+[web_templates:footerContentContainer] > jnt:container
+bigText        footer = "&copy; Copyright 2002-2009 - Jahia Solutions" i15d indexed=no
+
+[web_templates:peopleContainer] > jnt:container
+ sharedSmallText peopleFirstname
+ sharedSmallText peopleLastname primary sortable
+ smallText peopleFunction sortable
+ sharedSmallText peopleBusinessUnit (choicelist) analyzer='keyword' facetable <
+    resourceKey(sales),
+    resourceKey(marketing),
+    resourceKey(GA),
+    resourceKey(production),
+    resourceKey(humanressources)
+ sharedSmallText peopleTelephone
+ sharedSmallText peopleCellular
+ sharedSmallText peopleFax
+ sharedSmallText peopleEmail
+ bigText peopleBiography
+ file peoplePicture (file[mime='image/*'])
+
+[web_templates:pressContainer] > jnt:container, web_templates:title
+bigText         body
+date            date
+file            pdfVersion
+
+[web_templates:eventContainer] > jnt:container, web_templates:title
+date            startDate
+date            endDate
+smallText       location facetable sortable
+sharedSmallText eventsType (choicelist) facetable sortable < resourceBundle(resources.eventsType)
+bigText         body
+
+[web_templates:answerJobContainer] > jnt:container
+sharedSmallText firstname
+sharedSmallText lastname primary sortable
+sharedSmallText email
+bigText         text
+
+
+
+[web_templates:jobContainer] > jnt:container, web_templates:title
+smallText       reference
+smallText       businessUnit facetable sortable
+sharedSmallText contract (choicelist) facetable sortable <
+    resourceKey(contract1),
+    resourceKey(contract2),
+    resourceKey(contract3),
+    resourceKey(contract4)
+smallText       town sortable
+smallText       country (choicelist[country]) facetable sortable
+smallText       educationLevel analyzer='keyword' sortable
+bigText         description
+bigText         skills
+containerList   jobAnswers (web_templates:answerJobContainer)
+
+[web_templates:publicationContainer] > jnt:container, web_templates:title
+file            file
+file            preview
+smallText      author analyzer='simple' sortable
+smallText      source
+smallText      date indexed=untokenized
+bigText         body
+
+[web_templates:lastNewsContainer] > jnt:container
+integer         maxNews = 10 indexed=no
+sharedSmallText display (choicelist) = medium indexed=no < large,medium,small
+category        filter (category[autoSelectParent=false]) indexed=no
+
+[web_templates:preferencesContainer] > jnt:container
+integer         maxNews = 10 indexed=no
+category        filter (category[autoSelectParent=false]) indexed=no
+
+
+[web_templates:mediaGalleryContainer] > jnt:container
+file pictFolder (file[folder])
+
+[web_templates:newsletterIssue] > jnt:container
+ page link (page[type="direct",templates="newsletterIssue"])
+ file image (file[mime='image/*'])
+ bigText description
+
+/* end of Newsletter*/
+
+// Web templates content extensions
+
+[web_templates:paragraphContainer] > jnt:mainContentContainer
+bigText         insertText
+sharedSmallText insertType (choicelist) = resourceKey(quote) indexed=no < resourceKey(quote), resourceKey(exergue)
+sharedSmallText insertPosition (choicelist) = resourceKey(left) indexed=no < resourceKey(left), resourceKey(right)
+integer         insertWidth = "150" indexed=no
+
+[web_templates:articleContainer] > jnt:container, web_templates:title
+bigText         intro
+containerList   paragraph (web_templates:paragraphContainer)
+
+[web_templates:promoAdvancedContainer] > web_templates:promoContainer, web_templates:title
+smallText      abstract (text[multiline])
+
+[web_templates:newsContainer] > jnt:newsContainer
+
+// Web templates Box
+
+[web_templates:subscriptionBox] > jnt:box
+
+[web_templates:lastNewsBox] > jnt:box
+ singleContainer lastNewsContainer (web_templates:lastNewsContainer)
+
+[web_templates:contentContainerBox] > jnt:box
+containerList contentContainer(jnt:mainContentContainer)
+
+// Web templates templates definitions
+
+[web_templates:home] > jnt:page, web_templates:navigation
+singleContainer logo (web_templates:logoContainer)
+singleContainer banner (web_templates:bannerContainer)
+containerList   promo (web_templates:promoAdvancedContainer)
+containerList   promoLarge (web_templates:promoAdvancedContainer)
+containerList   columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:IframeBox,web_templates:lastNewsBox,jnt:textsBox,web_templates:filesBox"])
+containerList   columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:subscriptionBox,web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:flashBox,web_templates:lastNewsBox,jnt:fileContentBox,jnt:videoBox"])
+containerList   basicLinkHeader (web_templates:basicLinkContainer)
+singleContainer footerContainerList (web_templates:footerContentContainer)
+containerList   basicLinkFooter (web_templates:basicLinkContainer)
+singleContainer logoFooter (web_templates:logoContainer)
+containerList   bottomLinks (web_templates:bottomLinksContainer)
+
+[web_templates:simple] > jnt:page,web_templates:navigation
+containerList mainColumn_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:subscriptionBox,web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+containerList maincontent (jnt:mainContentContainer)
+
+[web_templates:article] > jnt:page,web_templates:navigation
+singleContainer article (web_templates:articleContainer [addMixin="jmix:skinnable"])
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+
+[web_templates:events] > jnt:page,web_templates:navigation, web_templates:introduction
+containerList events (web_templates:eventContainer [addListMixin="jmix:subscribable"])
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+
+[web_templates:people] > jnt:page,web_templates:navigation, web_templates:introduction
+containerList people (web_templates:peopleContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
+
+[web_templates:pressRelease] > jnt:page, web_templates:introduction,web_templates:navigation
+containerList press (web_templates:pressContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+
+[web_templates:news] > jnt:page,web_templates:navigation, web_templates:introduction
+containerList news (web_templates:newsContainer [addMixin="jmix:commentable"])
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+
+[web_templates:job] > jnt:page,web_templates:navigation, web_templates:introduction
+containerList job (web_templates:jobContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
+
+[web_templates:publication] > jnt:page,web_templates:navigation, web_templates:introduction
+containerList publication (web_templates:publicationContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
+
+[web_templates:full] > jnt:page,web_templates:navigation
+containerList maincontent (jnt:mainContentContainer)
+containerList portlet (jnt:portletContainer [addMixin="jmix:skinnable"])
+containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:IframeBox,jnt:lastNewsBox,jnt:portletsBox,jnt:peopleBox,jnt:flashBox,jnt:fileContentBox,jnt:videoBox"])
+
+[web_templates:layoutManager] > jnt:page,web_templates:navigation, web_templates:introduction
+containerList columnA_box (jnt:box [addMixin="jmix:skinnable,web_templates:layoutmanagerBoxExtraFields", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox"])
+
+[web_templates:mediaGallery] > jnt:page,web_templates:navigation, web_templates:introduction
+singleContainer pictures (web_templates:mediaGalleryContainer)
+
+[web_templates:newsletter] > jnt:page,web_templates:navigation, web_templates:introduction
+containerList issues (web_templates:newsletterIssue)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
+
+[web_templates:newsletterIssuePage] > jnt:page,web_templates:navigation, web_templates:introduction, jmix:sendAsNewsletter
+singleContainer preferences (web_templates:preferencesContainer)

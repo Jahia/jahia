@@ -1,0 +1,214 @@
+### Standard mappings
+
+## Main content
+
+[jnt:mainContentContainer] = jnt:mainContent
+ - mainContentBody = body
+ - mainContentAlign = align
+ - mainContentTitle = mix:title|jcr:title
+ - mainContentImage = image
+
+## Text container
+
+[jnt:textContainer] = jnt:bigText
+ - bigText = text
+
+## File container
+
+#[jnt:fileContainer] = #shareable
+# + file = #shareableSource
+[jnt:fileContainer] = jnt:fileReference
+ - file = j:node
+ - fileDisplayDetails = jmix:renderableReference|j:referenceView
+   true = detail
+   false = link
+
+## Extension types
+[jmix:photo] = jmix:exif
+ 
+## Portlet containers
+
+[jnt:portletContainer] = jnt:portletReference
+ - portlet = j:node
+
+### Webtemplates mappings
+
+[web_templates:title] = mix:title
+ - title = mix:title|jcr:title
+ 
+## File container
+
+#[web_templates:fileContainer] = #shareable
+# + file = #shareableSource
+[web_templates:fileContainer] = jnt:fileReference
+ - file = j:node 
+ - fileDisplayDetails = jmix:renderableReference|j:referenceView
+   true = detail
+   false = link
+
+## News module
+
+[web_templates:newsContainer] = jnt:news
+ - newsTitle = mix:title|jcr:title
+ - newsDesc = desc
+ - newsImage = image
+ - newslink = link
+ - newsDate = date
+
+[web_templates:lastNewsContainer] = jnt:lastNews
+ - display = j:subNodesView
+   large = default
+   medium = medium
+
+## Events module
+
+[web_templates:eventContainer] = jnt:event
+ - eventsType = eventsType
+   events.type.meeting = meeting
+   events.type.consumer.show = consumer.show
+   events.type.road.show = road.show
+   events.type.conference = conference
+
+## Job module
+
+[web_templates:jobContainer] = jnt:job
+ - country = country
+   Spain = ES
+
+## Promo
+
+[web_templates:promoAdvancedContainer] = jnt:teaser
+
+## Banner
+
+[web_templates:bannerContainer] = jnt:banner
+
+## Publication
+
+[web_templates:publicationContainer] = jnt:publication
+
+## People
+
+[web_templates:peopleContainer] = jnt:person
+ - peopleFirstname = firstname
+ - peopleLastname = lastname
+ - peopleFunction = function
+ - peopleBusinessUnit = businessUnit
+ - peopleTelephone = telephone
+ - peopleCellular = cellular
+ - peopleFax = fax
+ - peopleEmail = email
+ - peopleBiography = biography
+ - peoplePicture = picture
+
+## Press
+
+[web_templates:pressContainer] = jnt:press
+ - title = mix:title|jcr:title
+
+## Text containers
+
+[web_templates:introductionContainer] = jnt:bigText
+   { addMixin jmix:renderable }
+   { setProperty [j:view=introduction] }
+ - introduction = text
+
+[web_templates:logoContainer] = jnt:imageReference
+ - logo = j:node
+
+[web_templates:footerContentContainer] = jnt:bigText
+ - footer = text
+
+[web_templates:bottomLinksContainer] = #skip
+
+[web_templates:basicLinkContainer] = #skip
+
+## Box
+
+[jnt:box] = jnt:box
+ - boxTitle = mix:title|jcr:title
+ - skin = jmix:skinnable|j:skin
+   resourceKey(skins.box2) = skins.box2
+    
+## Menu
+
+[jnt:navLink] = #navlink
+ - navLink = #navlink
+
+## Pages
+
+[jnt:page] = jnt:page
+ - jahia:template = j:view
+    Home = base/home
+    simple = base/simple
+    double = base/simple
+    events = base/events
+    publication = base/simple
+    news = base/simple
+    people = base/simple
+    press = base/simple
+    job = base/simple
+    Blog = base/simple
+    formBuilder = base/simple
+    layout = base/simple
+
+[web_templates:home] = jnt:page
+ + logo = logo
+ + banner = listA
+ + promo = listA/promo
+    { addMixin jmix:columns}
+   { setProperty [jmix:renderable|j:view=columns] }
+ + promoLarge = #skip
+ + columnA_box = listA
+ + columnB_box = listB
+ + logoFooter = logoFooter
+ + footerContainerList = footer
+ + navLink = #navlink
+
+[web_templates:simple] = jnt:page   
+ + mainColumn_box = listA
+ + maincontent = listA
+ + columnB_box = listA
+ + navLink = #navlink
+
+[web_templates:double] = jnt:page   
+ + mainColumn_box = listA
+ + maincontent = listA
+ + columnB_box = listA
+ + navLink = #navlink
+
+[web_templates:events] = jnt:page   
+ + introduction = listA
+ + events = events
+ + columnB_box = listA
+ + navLink = #navlink
+
+[web_templates:publication] = jnt:page   
+ + introduction = listA
+ + publication = listA/publications
+ + columnB_box = listA 
+ + navLink = #navlink
+
+[web_templates:news] = jnt:page   
+ + introduction = listA
+ + news = listA
+ + columnB_box = listA
+ + navLink = #navlink
+
+[web_templates:people] = jnt:page   
+ + introduction = listA
+ + people = listA
+ + columnB_box = listA
+ + navLink = #navlink
+
+[web_templates:pressRelease] = jnt:page   
+ + introduction = listA
+ + press = listA
+ + columnB_box = listA
+ + navLink = #navlink
+
+[web_templates:job] = jnt:page   
+ + introduction = listA
+ + job = listA
+ + columnB_box = listA
+ + navLink = #navlink

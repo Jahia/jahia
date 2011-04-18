@@ -1,0 +1,508 @@
+Jahia Migration - 6.0 to 6.5
+
+* Goals Overview
+
+  This import file shows how to import a site created and exported with Jahia 6.0 . The package is basically composed
+  of a standard 6.0 export file with additional mapping and definitions files. It demonstrates how a basic 6.0 Jahia
+  site can be converted to a 6.5 site using only the standard modules provided with the system.
+
+* Prerequisites
+
+  Jahia 6.5 contains a lot of reusable modules that can be used for any web site. It is strongly advised that all
+  definitions matching an existing definition from the standard modules are mapped to these modules. Definitions that
+  are really specific to site can be kept and should be put into a new module.
+
+  In this example, the webtemplates demo are completely mapped to 6.5 standard modules.
+
+  Additional modules need to be developed and deployed before starting the migration.
+
+* Migration
+
+  This part describes step by step how the webtemplates import demo coming from Jahia 6.0 is migrated to Jahia 6.5.
+
+** Export file format
+
+  An export file can be  :
+
+    * Either a site export - a zip containing a <site.properties> file, one or more <export_[lang].xml> files containing the
+      site data, <users.xml>, <categories.xml> and <sitePermissions.xml> files
+
+    * Or a global export - a zip containing multiple site exports, with <export.properties> file and
+      <serverPermissions.xml> file
+
+    These files cannot be imported directly into Jahia 6.5 - original definitions and a mapping file must be added into
+    the site exports first.
+
+    < todo : definitions.cnd should be directly inserted into the exports file for latest versions of Jahia 6.0 >
+
+** Definitions
+
+  The migration process needs to have a full knowledge of the definitions that were used in the Jahia site. A 6.0 site
+  can use standard definitions coming from the <05-standard-types.cnd> file, define its own definitions in a
+  <definitions.cnd> file packaged with the templates, or inherit definitions from another packages. All definitions
+  used in the site need to be aggregated into a single <definitions.cnd> file that will be added to the site export.
+
+  A simple definitions.cnd file for webtemplate can be found in this package.
+
+** Templates
+
+  All the JSP templates used in Jahia 6.0 can no longer be used in Jahia 6.5 as the way how content is rendered has 
+  completely changed. Fortunately the need for custom template JSPs in Jahia 6.5 is largely reduced, as projects 
+  will be able to use the standard rendering JSP provided with Jahia on default. Also, as the ACME demo example, 
+  shows you, you can now have just a few template JSPs as like in the ACME demo many specific templates are mapped
+  to the simple template. 
+  
+  Before migrating the content you can define the templates, like we did for the ACME demo in the templates/templates-web
+  folder. There is an import.xml file in this project, where the initial node structure is defined. In this file we 
+  for instance create the definition of the simple template (under templateSet/templates-web/templates/simple). You
+  can also use the new Studio in Jahia for defining templates and then exporting their definition.
+
+** Mapping
+
+  The mapping file is a simple file that associates 6.0 to 6.5 definitions. The format is similar to CND and it is
+  used to map the original definition names to new ones and/or to trigger some predefined actions. 
+
+  The file is called definitions.map and is inserted into the site export zip, along with the definitions.cnd file.
+  
+*** Grammar
+
+  The following grammar defines the notation for the mapping definition used in definitions.map:
+
++----------------------------------------------------
+NodeTypeMappingDef ::= '[' NodeTypeName ']' '=' NodeTypeMapping
+                  {ActionDef}
+                  {PropertyMappingDef | ChildNodeMappingDef}
+				  
+NodeTypeMapping ::= NodeTypeName | '#skip' | '#box' | '#navlink' | '#shareable'
+
+NodeTypeName ::= String
+
+ActionDef ::= '{' AddNodeAction | AddMixinAction | SetPropertyAction '}'
+
+AddNodeAction ::= 'addNode' NodeWithOptionalNodeTypeName [PropertySettingList]
+
+NodeWithOptionalNodeTypeName ::= NodeName ['(' NodeTypeName ')']
+
+NodeName ::= String
+
+AddMixinAction ::= 'addMixin' NodeTypeName
+
+SetPropertyAction ::= 'setProperty' PropertySettingList
+
+PropertySettingList ::= '[' PropertySetting {',' PropertySetting} ']'
+
+PropertySetting ::= PropertyNameWithOptionalMixin '=' PropertyValue
+
+PropertyNameWithOptionalMixin ::= [NodeTypeName'|']PropertyName
+
+PropertyName ::= String
+
+PropertyValue ::= String
+
+PropertyMappingDef ::= '-' PropertyName '=' PropertyMapping
+                  {ValueMappingDef}                
+
+PropertyMapping ::= PropertyNameWithOptionalMixin | '#skip' | '#navlink'
+				  
+ValueMappingDef ::= String '=' String				  
+
+ChildNodeMappingDef ::=  '+' NodeName '=' ChildNodeMapping
+                  {ActionDef}
+				  
+ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'		
++----------------------------------------------------
+
+  The following sections show some of the most used mappings in detail:
+  
+*** Container definition mapping
+
+  A container definition mapping starts with the original node type name on the left side, whereas the right hand side
+  contains the new node type name to use.
+  
+  For example:
+  
++------------------------------------------------------  
+[jnt:mainContentContainer] = jnt:mainContent
++------------------------------------------------------
+  
+  This line may then be followed by actions and/or field or container list definition mappings (see next sections for
+  more info). 
+  
+  Example with actions:
+ 
++------------------------------------------------------  
+[web_templates:introductionContainer] = jnt:bigText
+ { addMixin jmix:renderable }
+ { setProperty [j:view=introduction] }
++------------------------------------------------------
+  
+  This definition does not only map to the new standard definition name, but it also automatically on the target
+  object adds a mixin node type (jmix:renderable) and sets the property j:view to the value 'introduction'.
+  What was previously solved with a distinct container definition in Jahia 6.5 is now mapped to a standard Jahia 
+  node definition, but now having a distinct template.
+
+*** Page definition mapping
+
+  Similar to the container definition mapping, page definitions should now be mapped to the standard jnt:page
+  node type: 
+  
++------------------------------------------------------
+[web_templates:home] = jnt:page  
++------------------------------------------------------
+
+  and then followed by the container list definition mappings like described below.
+
+  You can either set the new template name, like this:
+  
++------------------------------------------------------
+[web_templates:home] = jnt:page  
+ { setProperty [j:view=Home] }
++------------------------------------------------------
+  
+  Alternatively you can make all template mappings at one place in the definition mapping for jnt:page, like this:
+  
++------------------------------------------------------  
+[jnt:page] = jnt:page
+ - jahia:template = j:view
+    Home = default
+    simple = simple
+    double = simple
+    events = simple
+    publication = simple
+    news = simple
+    people = simple
+    press = simple    
+    job = simple
++------------------------------------------------------
+
+  This example shows that when the node type name is unchanged, the left and the right side of the node type definition
+  can be the same. What changed is the property field name (from jahia:template to j:view) and the possible values,
+  where you can make the mapping from the previous template name to the new template name. You can see that in Jahia 6.5
+  you can use fewer templates to achieve the same as before. This is because container lists are no longer strongly 
+  typed and can contain containers of different types.  
+  
+*** Container list definition mapping
+
+  A container list will be mapped to a standard content list if no specific definition is present in the parent node
+  type's mapping (page or container definition mapping).
+  
+  If you want to map to a new node type or move the list to a different position then you have to add a mapping definition
+  in the parent node type's mapping. The container list definition starts with a + and the container list name. The list 
+  name should not contain the "List" suffix.
+  
+  For instance:
+  
++------------------------------------------------------  
+[web_templates:home] = jnt:page
+ + logo = ../wrapperContent/logo
+ + banner = pagecontent/row1/col1/banner
++------------------------------------------------------
+
+  The list previously named logo is now no longer underneath the page, but as you can define relative paths, the mapping 
+  shows that it is moved to a different place in the content hierarchy. Concretely we go to the parent node of the home page 
+  and then to its sub-node called 'wrapperContent' and again another sub-node called 'logo'. These nodes may already exist 
+  or they will be created using the jnt:contentList node type. You can also specify an alternative nodeType in brackets, e.g.
+
++------------------------------------------------------  
++ mainColumn_box = maincontent(jnt:row)  
++------------------------------------------------------  
+  
+*** Field definition mapping
+
+  A field mapping rule is placed below its original declaring node type mapping (container or page). It starts with a -  
+  followed by the field name.
+  
+  For example:
+  
++------------------------------------------------------  
+[jnt:mainContentContainer] = jnt:mainContent
+ - mainContentBody = body
+ - mainContentTitle = mix:title|jcr:title
++------------------------------------------------------
+ 
+  For standard Jahia metadata fields the mapping rules are already internally hardcoded so they do not need to be extra 
+  specified.
+
+  If the field need to be mapped to a simple property, the right hand side just contains the new property name, like 'body'
+  in the above example.
+
+  A field can be associated to an optional mixin type - the right hand side is then the mixin node type name,
+  followed by | and the property name. When mapping the field, the mixin type will be automatically added to
+  the node. In the above example the previous field mainContentTitle is now mapped to the standard property jcr:title after
+  also adding the mixin type mix:title.    
+
+*** Field value mapping
+
+  It is also possible to transform field values during migration. It is especially useful when using constrained fields
+  ( like simple text coming from a drop down menu ). The field value mappings must be directly underneath a field definition
+  mapping. They have no special character to start with, but are simple mappings with the old value on the left side and the 
+  new value on the right side.
+  
+  For example the following rule will transform the "Spain" value from web_templates:jobContainer.country to "ES" value :
+
++------------------------------------------------------
+[web_templates:jobContainer] = jnt:job
+ - country = country
+   Spain = ES
++------------------------------------------------------
+
+  Combined the field mapping, it allows to do some complex stuff, like assigning a specific template to a node based on
+  a field value :
+  
++------------------------------------------------------
+[web_templates:fileContainer] = jnt:fileReference
+ - file = j:node 
+ - fileDisplayDetails = jmix:renderableReference|j:referenceView
+   true = details
+   false = link
++------------------------------------------------------
+
+  Here the value fileDisplayDetails, which was defining the way the file is rendered, is replaced by the template
+  property, and the values true and false are mapped to the template name to assign.
+
+*** Box mapping - merging containers lists
+
+  Jahia boxes are handled in a specific way - they were usually used to make heterogeneous containers list, containing
+  different types of boxes. The mechanism was to create typed sub-container lists, which is not needed anymore with the
+  new Jahia model. By default for the type jnt:box these sub container lists are removed and elements are put and merged 
+  with the parent box element.
+
+  For example, the following structure :
+
++-------------------------------------------------------
++boxList
+  +FilesBox
+    -titleA
+    -skinA
+    +Files
+      +fileContainer1
+       -refA
+      +fileContainer2
+       -refB
+  +TextsBox
+    -titleB
+    -skinB
+    +Texts
+      +textContainer1
+       -textA
+      +textContainer2
+       -textB
++-------------------------------------------------------
+
+  Will be mapped by default to :
+
++-------------------------------------------------------
++boxList
+  +fileContainer1
+    -titleA
+    -skinA
+    -refA
+  +fileContainer2
+    -titleA
+    -skinA
+    -refB
+  +textContainer1
+    -titleB
+    -skinB
+    -textA
+  +textContainer2
+    -titleB
+    -skinB
+    -textB
++-------------------------------------------------------
+
+  This is done with the following mapping: 
+  
++-------------------------------------------------------  
+[jnt:box] = jnt:box
+ - boxTitle = mix:title|jcr:title
+ - skin = jmix:skinnable|j:skin
+   resourceKey(skins.box2) = skins.box2
++-------------------------------------------------------
+     
+  If a different behavior is required for a specific box, the type can be mapped as any other standard type.
+
+*** Shareable node mapping
+
+  JCR 2.0 adds a new feature for shareable nodes, whereas before only node references were supported. For 
+  instance you could map fileContainer objects to directly use the files as shareable nodes, like this: 
+   
++-------------------------------------------------------  
+[web_templates:fileContainer] = #shareable
+ + file = #shareableSource
++-------------------------------------------------------
+
+  The problem with this is, that it only works for single-language sites as shareable file nodes can't be
+  language dependent. That is why the above mapping is just commented in the packaged definitions.map.
+  The advantage of using shareable nodes would be that its content is automatically included in the site pages
+  search, whereas references are not followed in search.
+
+*** Actions
+
+  Following a node type definition mapping (container, page or container list) you can add actions, which need
+  to be executed by the importing process. For now we support three actions:
+  
+  [[1]] Add node action
+  
+  With this action you can specify to add a node of a certain node type relative to the node matched with the 
+  mapping above the action. If the node type is not specified, jnt:contentList will be used on default.
+  Optionally you can also specify to set properties on this newly added node.
+  
+  For instance: 
+
++-------------------------------------------------------  
+[web_templates:home] = jnt:page
+ { addNode maincontent(jnt:row) [column=2col124] } 
+ + logo = logo(jnt:contentList)    
++------------------------------------------------------- 
+  
+  When a node of type web_templates:home is imported it will be now rather mapped to the type jnt:page and 
+  there will also be a new node named 'maincontent' of type jnt:row added to this page node and on this 
+  newly added node the column property will be set to 2col124. Other property settings can be specified 
+  delimited with commas.
+  
+  In the definitions.map we do not use this powerful action, because you can achieve the same with the 
+  imports.xml file in the templates module, which we think is a better practice.
+  
+  In the above example one could also add the action underneath the logo mapping, which would mean that the 
+  node would be created relative to the logo node.  
+  
+  [[2]] Add mixin type action
+
+  With this action you can specify to add a mixin type to a created node.
+
++-------------------------------------------------------  
+[web_templates:introductionContainer] = jnt:bigText
+   { addMixin jmix:renderable }
+   { setProperty [j:view=introduction] }
++-------------------------------------------------------
+
+  The above example will map an introductionContainer to jnt:bigText and will add the mixin node type 
+  jmix:renderable and then also set the j:view property. As setProperty also allows to directly
+  specify a mixin type, the following statement would actually do the same as the above example:
+  
++-------------------------------------------------------  
+[web_templates:introductionContainer] = jnt:bigText
+   { setProperty [jmix:renderable|j:view=introduction] }
++-------------------------------------------------------  
+  
+  [[3]] Set property action 
+  
+  With the last available action you can specify to set properties on the node matched with the 
+  mapping above the action definition. 
+
++-------------------------------------------------------
+[web_templates:home] = jnt:page
+ ...
+ + promo = pagecontent/row1/col1/promo
+   { setProperty [jmix:renderable|j:view=columns] }
++-------------------------------------------------------
+
+  This example will add a mixin and set a property on the promo node.    
+
+*** Skipping nodes and navigation menu
+
+  Migrating content from one version to another most of the time also imposes some template design 
+  changes and sometimes old content is no longer needed. It could also be that parts of the site are
+  totally restructured, which makes it sometimes harder to find an automatic migration compared to
+  manually recapturing the content.
+  
+  Therefore we added the keyword "#skip", which simply will ignore any content of the mapped type
+  or name and also all the descending nodes.
+  
+  Here are some examples we use: 
+
++-------------------------------------------------------
+[web_templates:bottomLinksContainer] = #skip
+
+[web_templates:home] = jnt:page
+ ...
+ + promoLarge = #skip
++-------------------------------------------------------
+  
+  In Jahia 6.5 the navigation menu component is implemented very different to Jahia 6.0, where new
+  pages were created directly via the navigation menu. In Jahia 6.5 page creation is no longer done
+  with the navigation menu component. 
+  
+  Therefore we no longer use the jnt:navLink nodes, but we can't use #skip for them, because we 
+  still want to import the descending nodes (pages). Therefore we added the #navlink keyword, to
+  identify such navigation link objects, which will not be imported, but the direct pages they
+  point to, will be imported.  
+  
++-------------------------------------------------------
+[jnt:navLink] = #navlink
+ - navLink = #navlink
++------------------------------------------------------- 
+
+*** Example
+
+  All mappings provided in this package can be used for any export coming from a 6.0 site.
+
+  Here is some standard mapping that can be used for any site using these standard types :
+
++----------------------------------------------------
+## Box
+
+[jnt:box] = jnt:box
+ - boxTitle = mix:title<jcr:title
+ - skin = jmix:skinnable|j:skin
+   resourceKey(skins.box2) = skins.box2
+
+## Menu
+
+[jnt:navLink] = #navlink
+ - navLink = #navlink
+
+## Main content
+
+[jnt:mainContentContainer] = jnt:mainContent
+ - mainContentBody = body
+ - mainContentAlign = align
+ - mainContentTitle = mix:title|jcr:title
+ - mainContentImage = image
+
+## Text container
+
+[jnt:textContainer] = jnt:bigText
+ - bigText = text
+
+## File container
+
+[jnt:fileContainer] = jnt:fileReference
+ - file = j:node
+ - fileDisplayDetails = jmix:renderableReference|j:referenceView
+   true = details
+   false = link
+
+## Portlet containers
+
+[jnt:portletContainer] = jnt:portletReference
+ - portlet = j:node
+
+## Pages
+
+[jnt:page] = jnt:page
+ - jahia:template = j:view
+    Home = default
+    simple = simple
+    double = simple
+    events = simple
+    publication = simple
+    news = simple
+    people = simple
+    press = simple    
+    job = simple    
+     
+[web_templates:home] = jnt:page
+ + logo = ../wrapperContent/logo
+ + banner = pagecontent/row1/col1/banner
+ + promo = pagecontent/row1/col1/promo
+   { setProperty [jmix:renderable|j:view=columns] }
+ + promoLarge = #skip
+ + columnA_box = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col2
+ + logoFooter = ../wrapperContent/logoFooter 
+ + footerContainerList = ../wrapperContent/footer 
+ 
++----------------------------------------------------
+

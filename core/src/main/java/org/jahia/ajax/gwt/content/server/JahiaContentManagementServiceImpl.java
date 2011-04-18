@@ -37,7 +37,6 @@ import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -67,7 +66,6 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
-import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.googledocs.GoogleDocsEditor;
@@ -87,7 +85,6 @@ import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
@@ -494,13 +491,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut)
             throws GWTJahiaServiceException {
         contentManager
-                .copy(pathsToCopy, destinationPath, newName, false, cut, false, false, retrieveCurrentSession(null));
+                .copy(pathsToCopy, destinationPath, newName, false, cut, false, false, retrieveCurrentSession(getLocale()));
     }
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName)
             throws GWTJahiaServiceException {
         contentManager
-                .copy(pathsToCopy, destinationPath, newName, false, false, true, false, retrieveCurrentSession(null));
+                .copy(pathsToCopy, destinationPath, newName, false, false, true, false, retrieveCurrentSession(getLocale()));
     }
 
     public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException {

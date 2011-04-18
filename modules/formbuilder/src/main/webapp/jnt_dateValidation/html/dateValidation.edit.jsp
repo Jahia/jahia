@@ -1,1 +1,0 @@
-This node is a date

@@ -1,2 +1,0 @@
-[consequence][]Add activity {activityType} on {node} of types {nodeTypeList} for user {user} with messageKey {messageKey}=socialService.addActivity({activityType}, {user},{messageKey}, {node}, {nodeTypeList}, drools);
-[consequence][]Send message {message} with subject {subject} from user {fromUser} to user {toUser}=socialService.sendMessage({fromUser}, {toUser}, {subject}, {message}, drools);

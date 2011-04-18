@@ -1,6 +1,0 @@
-<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
-
-
-[jnt:faq] > jnt:content, jmix:editorialContent, jmix:structuredContent
- - question (string) i18n
- - answer (string, richtext) i18n

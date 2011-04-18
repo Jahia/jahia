@@ -1,6 +1,0 @@
-<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
-
-
-[jnt:summary] > mix:title, jnt:content, jmix:bindedComponent, jmix:siteComponent
- - startDate (date,datetimepicker[format='yyyy-MM-dd HH:mm'])
- - endDate (date,datetimepicker[format='yyyy-MM-dd HH:mm'])

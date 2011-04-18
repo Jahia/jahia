@@ -1,9 +1,0 @@
-<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
-
-[jnt:publication] > jnt:content, jmix:editorialContent, mix:title, jmix:structuredContent
- - file (weakreference, picker[type='file']) i18n
- - preview (weakreference, picker[type='file']) i18n
- - author (string) i18n analyzer='simple'
- - source (string) i18n
- - date (string) i18n indexed=untokenized nofulltext
- - body (string, richtext) i18n

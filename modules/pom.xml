@@ -115,62 +115,20 @@
     </profiles>
 
     <modules>
-		<module>article</module>
         <module>assets</module>
-        <module>blog</module>
-        <module>bookmarks</module>
-        <module>calendar</module>
-        <module>contact</module>
         <module>contentRetrieval</module>
         <module>contribute</module>
         <module>default</module>
-        <module>docConverter</module>
-        <module>event</module>
         <module>facets</module>
-        <module>faq</module>
-        <module>formbuilder</module>
-        <module>forum</module>
-        <module>googleAnalytics</module>
         <module>grid</module>
-        <module>job</module>
-        <module>location</module>
         <module>macros</module>
-        <module>news</module>
-        <module>newsletter</module>
-        <module>pageHit</module>
-        <module>person</module>
-        <module>poll</module>
-        <module>portal</module>
-        <module>press</module>
-        <module>publication</module>
         <module>profile</module>
-        <module>rating</module>
-        <module>rss</module>
         <module>search</module>
-        <module>seo</module>
-        <module>social</module>
-		<module>socialsharing</module>
-        <module>shindig</module>
-        <module>sitemap</module>
-        <module>summary</module>
         <module>skins</module>
-        <module>staticHTML</module>
         <module>tabularList</module>
         <module>tags</module>
         <module>tasks</module>
-        <module>teasers</module>
-        <module>templates-intranet</module>
         <module>templates-system</module>
-        <module>templates-web</module>
-        <module>templates-web-blue</module>
-        <module>test</module>
-        <module>topstories</module>
-        <module>translationworkflow</module>
-        <module>twitter</module>
-        <module>userregistration</module>
-		<module>videostreaming</module>
-        <module>webClipping</module>
-        <module>wiki</module>
   </modules>
   
     <build>

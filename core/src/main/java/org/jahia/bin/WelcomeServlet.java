@@ -175,9 +175,9 @@ public class WelcomeServlet extends HttpServlet {
         return resolvedSite;
     }
     
-    protected String resolveLanguage(HttpServletRequest request, JahiaSite site)
+    protected String resolveLanguage(HttpServletRequest request, final JahiaSite site)
             throws JahiaException {
-        List<Locale> newLocaleList = new ArrayList<Locale>();
+        final List<Locale> newLocaleList = new ArrayList<Locale>();
         List<Locale> siteLanguages = Collections.emptyList();
         try {
             if (site != null) {
@@ -193,15 +193,11 @@ public class WelcomeServlet extends HttpServlet {
                 .hasNext();) {
             final Locale curLocale = browserLocales.next();
             if (siteLanguages.contains(curLocale)) {
-                if (!newLocaleList.contains(curLocale)) {
-                    newLocaleList.add(curLocale);
-                }
+                addLocale(site, newLocaleList, curLocale);
             } else if (!StringUtils.isEmpty(curLocale.getCountry())) {
                 final Locale langOnlyLocale = new Locale(curLocale.getLanguage());
                 if (siteLanguages.contains(langOnlyLocale)) {
-                    if (!newLocaleList.contains(langOnlyLocale)) {
-                        newLocaleList.add(langOnlyLocale);
-                    }
+                    addLocale(site, newLocaleList, langOnlyLocale);
                 }
             }
         }
@@ -215,5 +211,28 @@ public class WelcomeServlet extends HttpServlet {
             language = SettingsBean.getInstance().getDefaultLanguageCode();
         }
         return language;
+    }
+
+    private void addLocale(final JahiaSite site, final List<Locale> newLocaleList, final Locale curLocale) {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null,
+                    Constants.LIVE_WORKSPACE,curLocale,new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        if(site!=null) {
+                            session.getNode(site.getJCRLocalPath()+"/home");
+                            if (!newLocaleList.contains(curLocale)) {
+                                newLocaleList.add(curLocale);
+                            }
+                        }
+                    } catch (RepositoryException e) {
+                        logger.debug("This site does not have a published home in language "+curLocale,e);
+                    }
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }

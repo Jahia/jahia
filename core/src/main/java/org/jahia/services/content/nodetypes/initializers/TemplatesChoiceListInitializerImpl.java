@@ -102,7 +102,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     for (Value type : types) {
                         nodeTypeList.add(type.getString());
                     }                    
-                } else {
+                } else if (node !=null) {
                     // No restrictions get node type list from already existing nodes
                     NodeIterator nodeIterator = node.getNodes();
                     while (nodeIterator.hasNext()) {

@@ -480,8 +480,8 @@ public class WorkflowHelper {
                 session.checkout(node);
             }
             if (!actives.isEmpty()) {
-                if (!node.isNodeType("jmix:worklfowRulesable")) {
-                    node.addMixin("jmix:worklfowRulesable");
+                if (!node.isNodeType("jmix:workflowRulesable")) {
+                    node.addMixin("jmix:workflowRulesable");
                 }
                 session.save();
             }
@@ -507,8 +507,8 @@ public class WorkflowHelper {
                     // No more active definitions for this nodes
                     wfRulesNode.remove();
                     // Remove also associated workflows
-                    if (node.isNodeType("jmix:worklfowRulesable")) {
-                        node.removeMixin("jmix:worklfowRulesable");
+                    if (node.isNodeType("jmix:workflowRulesable")) {
+                        node.removeMixin("jmix:workflowRulesable");
                     }
                 } else {
                     NodeIterator ni = wfRulesNode.getNodes();

@@ -149,7 +149,7 @@
  - j:workflow (string,choicelist[workflow]) nofulltext
 
 
-[jmix:worklfowRulesable] mixin
+[jmix:workflowRulesable] mixin
 + j:workflowRules (jnt:workflowRules) = jnt:workflowRules autocreated
 
 //---------------------------------------------------------

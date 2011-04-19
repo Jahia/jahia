@@ -540,7 +540,7 @@ public class WorkflowService {
             if(!node.isCheckedOut()) {
                 node.checkout();
             }
-            node.addMixin("jmix:worklfowRulesable");
+            node.addMixin("jmix:workflowRulesable");
             rules = node.addNode(WORKFLOWRULES_NODE_NAME, "jnt:workflowRules");
         }
         JCRNodeWrapper n;

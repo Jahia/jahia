@@ -175,7 +175,10 @@ public class JBPMIdentitySession implements IdentitySession {
         if (user != null) {
             List<String> l = groupService.getUserMembership(user);
             for (String groupKey : l) {
-                results.add(findGroupById(groupKey));
+                Group groupById = findGroupById(groupKey);
+                if (groupById != null) {
+                    results.add(groupById);
+                }
             }
         }
         return results;

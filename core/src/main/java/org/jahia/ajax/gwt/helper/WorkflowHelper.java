@@ -51,6 +51,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
@@ -208,10 +209,10 @@ public class WorkflowHelper {
         try {
             JCRNodeWrapper node = session.getNode(path);
             HashMap<String, Object> map = getVariablesMap(properties);
-            String id = service.startProcess(node, def.getId(), def.getProvider(), map);
-            for (String s : comments) {
-                service.addComment(id, def.getProvider(), s, session.getUser().getUserKey());
-            }
+            service.startProcessAsJob(Arrays.asList(node.getIdentifier()), session, def.getId(), def.getProvider(), map, comments);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
@@ -225,10 +226,10 @@ public class WorkflowHelper {
         try {
             HashMap<String, Object> map = getVariablesMap(properties);
             map.putAll(args);
-            String id = service.startProcess(uuids, session, def.getId(), def.getProvider(), map);
-            for (String s : comments) {
-                service.addComment(id, def.getProvider(), s, session.getUser().getUserKey());
-            }
+            service.startProcessAsJob(uuids, session, def.getId(), def.getProvider(), map, comments);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
@@ -237,9 +238,16 @@ public class WorkflowHelper {
 
     public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
                                       JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
-        service.assignTask(task.getId(), task.getProvider(), session.getUser());
         HashMap<String, Object> map = getVariablesMap(properties);
-        service.completeTask(task.getId(), task.getProvider(), outcome.getName(), map,session.getUser());
+        try {
+            service.assignAndCompleteTaskAsJob(task.getId(), task.getProvider(), outcome.getName(), map, session.getUser());
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            throw new GWTJahiaServiceException(e.getMessage());
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
     private HashMap<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties) {

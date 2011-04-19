@@ -36,13 +36,14 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 
@@ -401,21 +402,23 @@ public class WorkflowService {
         lookupProvider(provider).signalProcess(processId, transitionName, signalName, args);
     }
 
-    /**
-     * This method will call the underlying provider to signal the identified process.
-     *
-     * @param stageNode
-     * @param provider  The provider executing the process
-     * @param args      Map of args for the process
-     */
-    public String startProcess(JCRNodeWrapper stageNode, String processKey, String provider, Map<String, Object> args)
-            throws RepositoryException {
-        return startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), processKey, provider,
-                args);
+    public void startProcessAsJob(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
+                             Map<String, Object> args, List<String> comments) throws RepositoryException, SchedulerException {
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("StartProcess", StartProcessJob.class);
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        jobDataMap.put(BackgroundJob.JOB_USERKEY, session.getUser().getUserKey());
+        jobDataMap.put(BackgroundJob.JOB_CURRENT_LOCALE, session.getLocale().toString());
+        jobDataMap.put(StartProcessJob.NODE_IDS, nodeIds);
+        jobDataMap.put(StartProcessJob.PROVIDER, provider);
+        jobDataMap.put(StartProcessJob.PROCESS_KEY, processKey);
+        jobDataMap.put(StartProcessJob.MAP, args);
+        jobDataMap.put(StartProcessJob.COMMENTS, comments);
+
+        ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
     }
 
-    public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
-                               Map<String, Object> args) throws RepositoryException {
+    public void startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
+                             Map<String, Object> args, List<String> comments) throws RepositoryException {
         args.put("nodeId", nodeIds.iterator().next());
         args.put("nodeIds", nodeIds);
         args.put("workspace", session.getWorkspace().getName());
@@ -428,7 +431,11 @@ public class WorkflowService {
                     " from workspace " + args.get("workspace") + " in locale " + args.get("locale") + " with id " +
                     processId);
         }
-        return processId;
+        if (comments != null) {
+            for (String s : comments) {
+                addComment(processId, provider, s, session.getUser().getUserKey());
+            }
+        }
     }
 
     public synchronized void addProcessId(JCRNodeWrapper stageNode, String provider, String processId)
@@ -497,6 +504,23 @@ public class WorkflowService {
 
     public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) {
         lookupProvider(provider).completeTask(taskId, outcome, args);
+    }
+
+    public void assignAndCompleteTaskAsJob(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) throws RepositoryException, SchedulerException {
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("AssignAndCompleteTask", AssignAndCompleteTaskJob.class);
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        jobDataMap.put(BackgroundJob.JOB_USERKEY, user.getUserKey());
+        jobDataMap.put(AssignAndCompleteTaskJob.TASK_ID, taskId);
+        jobDataMap.put(AssignAndCompleteTaskJob.PROVIDER, provider);
+        jobDataMap.put(AssignAndCompleteTaskJob.OUTCOME, outcome);
+        jobDataMap.put(AssignAndCompleteTaskJob.MAP, args);
+
+        ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
+    }
+
+    public void assignAndCompleteTask(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) {
+        assignTask(taskId, provider,  user);
+        completeTask(taskId, provider, outcome, args, user);
     }
 
     public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {

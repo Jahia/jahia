@@ -82,9 +82,9 @@ public class MultiplePublishAction extends Action {
             final HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("customWorkflowInfo", entry.getKey());
             if (entry.getValue() != null) {
-                workflowService.startProcess(entry.getKey().getAllUuids(),
+                workflowService.startProcessAsJob(entry.getKey().getAllUuids(),
                         session, entry.getValue().getKey(),
-                        entry.getValue().getProvider(), map);
+                        entry.getValue().getProvider(), map, null);
             }
         }
         return ActionResult.OK_JSON;

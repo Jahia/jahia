@@ -78,7 +78,7 @@ public class StartWorkflowAction extends Action {
                                                                                      resource.getNode().getSession().getWorkspace().getName(),
                                                                                      "live");
         map.put("publicationInfos", infoList);
-        workflowService.startProcess(resource.getNode(), workflowDefinitionKey, providerKey, map);
+        workflowService.startProcessAsJob(Arrays.asList(resource.getNode().getIdentifier()), session, workflowDefinitionKey, providerKey, map, null);
         return ActionResult.OK_JSON;
     }
 

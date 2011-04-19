@@ -35,8 +35,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Label;
@@ -109,6 +108,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
 
     private void init() {
         setBorders(false);
+        removeAll();
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
@@ -158,12 +158,18 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             Button b = new Button(historyItem.<String>get("displayName"));
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent ce) {
-                                    EngineContainer container = new EnginePanel();
+                                    EnginePanel container = new EnginePanel();
 
                                     new WorkflowActionDialog(parent.getRunningWorkflow(), task, linker,
                                             parent.getRunningWorkflow().getCustomWorkflowInfo(), container);
                                     container.showEngine();
-
+                                    container.addListener(Events.Close,new Listener<BaseEvent>() {
+                                        public void handleEvent(BaseEvent be) {
+                                            engine.show();
+                                            init();
+                                            layout(true);
+                                        }
+                                    });
                                     engine.hide();
                                 }
                             });

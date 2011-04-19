@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -86,6 +87,7 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
 		if (GXT.isIE) {
 			linker.refresh(Linker.REFRESH_MAIN);
 		}
+        fireEvent(Events.Close);
     }
 
     protected void onRender(Element parent, int pos) {

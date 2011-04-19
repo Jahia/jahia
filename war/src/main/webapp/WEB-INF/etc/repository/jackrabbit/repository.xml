@@ -81,7 +81,7 @@
             <param name="resultFetchSize" value="100"/>
 
             <!-- The maxClauseCount setting will need to be increased to perform queries on large sub-trees -->
-            <param name="maxClauseCount" value="4000" />
+            <param name="maxClauseCount" value="65000" />
 
             <!-- Increase the cache size if the doc number cache hits are below 90% -->
             <!--param name="cacheSize" value="100000" /-->

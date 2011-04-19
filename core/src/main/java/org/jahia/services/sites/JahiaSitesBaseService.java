@@ -881,13 +881,15 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         }
         for (String s : site.getLanguages()) {
             if (!languages.contains(s)) {
-                n.checkout();
+                session.checkout(n);
                 Node translator = n.addNode("translator-" + s, "jnt:role");
                 Value[] values = new Value[]{
                         session.getValueFactory().createValue(session.getNode("/permissions/editMode/editModeAccess"), true),
                         session.getValueFactory().createValue(session.getNode("/permissions/editMode/editSelector/sitemapSelector"), true),
                         session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:versionManagement_default"), true),
-                        session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:write_default/jcr:modifyProperties_default/jcr:modifyProperties_default_" + s), true)
+                        session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:write_default/jcr:modifyProperties_default/jcr:modifyProperties_default_" + s), true),
+                        session.getValueFactory().createValue(session.getNode("/permissions/workflow-tasks/start-one-step-review"), true),
+                        session.getValueFactory().createValue(session.getNode("/permissions/workflow-tasks/start-two-steps-review"), true)
                 };
 
                 translator.setProperty("j:permissions", values);

@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -57,10 +58,13 @@ public class PublishAllActionItem extends PublishActionItem {
         } else {
             gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
             if (gwtJahiaNode != null) {
+                GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
+
+                setEnabled(GWTJahiaPublicationInfo.canPublish(gwtJahiaNode, info, JahiaGWTParameters.getLanguage()));
+
                 updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName() + " - " +
                             JahiaGWTParameters.getLanguageDisplayName());
             }
         }
     }
-
 }

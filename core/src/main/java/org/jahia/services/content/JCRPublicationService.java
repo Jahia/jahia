@@ -1014,7 +1014,7 @@ public class JCRPublicationService extends JahiaService {
 
         // todo : performance problem on permission check
 //        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
-        info.setCanPublish(true);
+        info.setCanPublish(canPublish(node, languages));
 
         if (includesReferences || includesSubnodes) {
             if (includesReferences) {
@@ -1053,6 +1053,36 @@ public class JCRPublicationService extends JahiaService {
             }
         }
         return info;
+    }
+
+    private boolean canPublish(JCRNodeWrapper node, Set<String> languages) {
+        boolean b;
+        b = node.hasPermission("jcr:all_default");
+        if (b) {
+            return b;
+        }
+        b = node.hasPermission("jcr:write_default");
+        if (b) {
+            return b;
+        }
+        b = node.hasPermission("jcr:modifyProperties_default");
+        if (b) {
+            return b;
+        }
+        b = node.hasPermission("jcr:modifyProperties_default_" + languages.iterator().next());
+        if (b) {
+            return b;
+        }
+        b = node.hasPermission("jcr:addChildNodes_default");
+        if (b) {
+            return b;
+        }
+        b = node.hasPermission("jcr:removeNode_default");
+        if (b) {
+            return b;
+        }
+        b = node.hasPermission("jcr:removeChildNodes_default");
+        return b;
     }
 
     private void getReferences(JCRNodeWrapper node, Set<String> languages, boolean includesReferences,

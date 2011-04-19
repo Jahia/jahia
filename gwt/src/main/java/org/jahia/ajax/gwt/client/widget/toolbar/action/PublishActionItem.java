@@ -122,10 +122,14 @@ public class PublishActionItem extends BaseActionItem {
             gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
             if (gwtJahiaNode != null) {
                 wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType("publish"));
-                if (wf != null && !wf.getAvailableTasks().isEmpty()) {
-                    wf.getAvailableTasks().get(0).getDisplayName();
-                    setEnabled(true);
-                    updateTitle(wf.getAvailableTasks().get(0).getDisplayName() + " : " + gwtJahiaNode.getName());
+                if (wf != null) {
+                    if (!wf.getAvailableTasks().isEmpty()) {
+                        setEnabled(true);
+                        updateTitle(wf.getAvailableTasks().get(0).getDisplayName() + " : " + gwtJahiaNode.getName());
+                    } else {
+                        setEnabled(false);
+                        updateTitle(Messages.get("label.workflow.started", "Workflow started") + " : " +wf.getDefinition().getDisplayName());
+                    }
                 } else {
                     wf = null;
                     GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();

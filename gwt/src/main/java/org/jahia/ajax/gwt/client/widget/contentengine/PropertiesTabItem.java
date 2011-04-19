@@ -34,7 +34,9 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -161,6 +163,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 }
 
                 propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType);
+                propertiesEditor.setLocale(language);
                 propertiesEditor.setMixin(engine.getMixin());
                 propertiesEditor.setInitializersValues(engine.getInitializersValues());
                 // todo : handle translation permission for i18n fields ?

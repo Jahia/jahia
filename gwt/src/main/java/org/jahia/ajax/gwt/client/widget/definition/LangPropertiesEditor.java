@@ -41,7 +41,10 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FlowData;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
@@ -51,7 +54,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -60,7 +62,6 @@ import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
 import java.util.*;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -176,6 +177,7 @@ public class LangPropertiesEditor extends LayoutContainer {
 
                 //create and update properties editor
                 langPropertiesEditor = new PropertiesEditor(nodeTypes, properties, dataType);
+                langPropertiesEditor.setLocale(locale);
                 langPropertiesEditor.setMixin(mixin);
                 langPropertiesEditor.setInitializersValues(initializersValues);
                 langPropertiesEditor.setNonI18NWriteable(false);

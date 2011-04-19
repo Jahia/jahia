@@ -39,10 +39,12 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -77,6 +79,7 @@ public class PropertiesEditor extends FormPanel {
     private Set<String> addedTypes = new HashSet<String>();
     private Set<String> removedTypes = new HashSet<String>();
     private Set<String> externalMixin = new HashSet<String>();
+    private String locale = "";
 
     public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties,
                             List<String> datatype) {
@@ -277,7 +280,7 @@ public class PropertiesEditor extends FormPanel {
                     field.setName(f.getName());
                     field.setFieldLabel(f.getFieldLabel());
                 }
-                field.setId(nodeType.getName().replace(":","-") + "_" + field.getName().replace(":","-"));
+                field.setId(nodeType.getName().replace(":","-") + "_" + field.getName().replace(":","-") + locale);
                 field.setWidth("98%");
                 field.setStyleAttribute("padding-left", "0");
                 fields.put(field.getName(), field);
@@ -621,5 +624,9 @@ public class PropertiesEditor extends FormPanel {
     @Override
     public String toString() {
         return nodeTypes.toString();
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

@@ -34,11 +34,16 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
@@ -94,7 +99,10 @@ public class TranslateContentEngine extends Window {
     protected void init() {
         setLayout(new FitLayout());
         setBodyBorder(false);
-        setSize(1024, 600);
+        int windowHeight=com.google.gwt.user.client.Window.getClientHeight()-10;
+        int windowWidth=com.google.gwt.user.client.Window.getClientWidth()-10;
+
+        setSize(windowWidth, windowHeight);
         setClosable(true);
         setResizable(true);
         setModal(true);
@@ -106,8 +114,8 @@ public class TranslateContentEngine extends Window {
         sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false, srcLanguage);
         targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage);
 
-        panel.add(sourceLangPropertiesEditor, new BorderLayoutData(Style.LayoutRegion.WEST, 506));
-        panel.add(targetLangPropertiesEditor, new BorderLayoutData(Style.LayoutRegion.EAST, 506));
+        panel.add(sourceLangPropertiesEditor, new BorderLayoutData(Style.LayoutRegion.WEST, windowWidth/2));
+        panel.add(targetLangPropertiesEditor, new BorderLayoutData(Style.LayoutRegion.EAST, windowWidth/2));
 
         add(panel);
 

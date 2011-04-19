@@ -16,7 +16,7 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <c:if test="${createdBy.string ne ' guest '}">
-    <jcr:node var="userNode" path="${functions:lookupUser(createdBy.string).localPath"/>
+    <jcr:node var="userNode" path="${functions:lookupUser(createdBy.string).localPath}"/>
     <c:forEach items="${userNode.properties}" var="property">
         <c:if test="${property.name == 'j:firstName'}"><c:set var="firstname" value="${property.string}"/></c:if>
         <c:if test="${property.name == 'j:lastName'}"><c:set var="lastname" value="${property.string}"/></c:if>

@@ -32,11 +32,12 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.TabItem;
@@ -54,7 +55,9 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
-import org.jahia.ajax.gwt.client.widget.edit.*;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeTreeGridDragSource;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -182,8 +185,13 @@ public class PagesTabItem extends SidePanelTabItem {
         @Override
         protected void showFeedback(DNDEvent e) {
             super.showFeedback(e);
+            List<GWTJahiaNode> nodes = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
             e.getStatus().setData("type", status);
-            if (activeItem != null) {
+            boolean isAllowed = false;
+            for (String f : folderTypes) {
+                isAllowed |= nodes.get(0).getInheritedNodeTypes().contains(f);
+            }
+            if (activeItem != null && isAllowed) {
                 GWTJahiaNode activeNode = (GWTJahiaNode) activeItem.getModel();
                 GWTJahiaNode parent = pageTree.getTreeStore().getParent(activeNode);
 
@@ -214,12 +222,14 @@ public class PagesTabItem extends SidePanelTabItem {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.TEMPLATETREE_TYPE);
                 } else {
                     e.getStatus().setStatus(false);
+                    e.setCancelled(true);
                 }
             } else {
                 e.getStatus().setData(EditModeDNDListener.TARGET_NODE, null);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, null);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, null);
                 e.getStatus().setStatus(false);
+                e.setCancelled(true);
             }
         }
 
@@ -286,5 +296,6 @@ public class PagesTabItem extends SidePanelTabItem {
     public void setPaths(List<String> paths) {
         this.paths = paths;
     }
+
 
 }

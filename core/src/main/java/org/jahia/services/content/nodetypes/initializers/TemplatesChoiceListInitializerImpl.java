@@ -192,23 +192,25 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             for (String s : nodeTypeList) {
                 SortedSet<View> viewsSet = RenderService.getInstance().getViewsSet(
                         NodeTypeRegistry.getInstance().getNodeType(s));
-                if(views.isEmpty()) {
-                    views.addAll(viewsSet);
-                } else {
-                    Set<View> toBeRemoved = new LinkedHashSet<View>();
-                    for (View view : views) {
-                        boolean found = false;
-                        for (View view1 : viewsSet) {
-                            if(view1.getKey().equals(view.getKey())) {
-                                found = true;
-                                break;
+                if (!viewsSet.isEmpty()) {
+                    if (views.isEmpty()) {
+                        views.addAll(viewsSet);
+                    } else {
+                        Set<View> toBeRemoved = new LinkedHashSet<View>();
+                        for (View view : views) {
+                            boolean found = false;
+                            for (View view1 : viewsSet) {
+                                if (view1.getKey().equals(view.getKey())) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                toBeRemoved.add(view);
                             }
                         }
-                        if(!found){
-                            toBeRemoved.add(view);
-                        }
+                        views.removeAll(toBeRemoved);
                     }
-                    views.removeAll(toBeRemoved);
                 }
             }
 

@@ -94,29 +94,25 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition workflow,
                                 final Linker linker, CustomWorkflow custom, EngineContainer container) {
-        this(linker, custom, container);
+        this(linker, custom, container, title);
         this.nodePath = nodePath;
-        this.title = title;
         initStartWorkflowDialog(workflow);
     }
 
     public WorkflowActionDialog(final GWTJahiaWorkflow workflow, final GWTJahiaWorkflowTask task, final Linker linker,
                                 CustomWorkflow custom, EngineContainer container) {
-        this(linker, custom, container);
+        this(linker, custom, container, (workflow.getVariables().get("jcr:title") != null && workflow.getVariables().get("jcr:title").getValues().size() == 1) ? workflow.getVariables().get("jcr:title").getValues().get(0).getString() : null);
         this.workflow = workflow;
-        GWTJahiaNodeProperty prop = workflow.getVariables().get("jcr:title");
-        if (prop != null && prop.getValues().size() == 1) {
-            title = prop.getValues().get(0).getString();
-        }
         initExecuteActionDialog(task);
     }
 
-    private WorkflowActionDialog(Linker linker, CustomWorkflow custom, EngineContainer container) {
+    private WorkflowActionDialog(Linker linker, CustomWorkflow custom, EngineContainer container, String title) {
         super();
         contentManagement = JahiaContentManagementService.App.getInstance();
         contentDefinition = JahiaContentDefinitionService.App.getInstance();
         this.linker = linker;
         this.custom = custom;
+        this.title = title;
         tabPanel = new TabPanel();
         setLayout(new FitLayout());
         add(tabPanel);
@@ -129,8 +125,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         comments = new ArrayList<String>();
 
         this.container = container;
-        String header = title;
-        container.setEngine(this, header, bar, this.linker);
+        container.setEngine(this, title, bar, this.linker);
     }
 
     public EngineContainer getContainer() {

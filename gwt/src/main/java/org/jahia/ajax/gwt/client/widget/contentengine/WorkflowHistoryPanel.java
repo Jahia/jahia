@@ -227,6 +227,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                                 Window window = new Window();
                                                 window.setSize(800,600);
                                                 window.setUrl(url);
+                                                window.setPosition(engine.getPosition(true).x+50,engine.getPosition(true).y+50);
                                                 window.show();
                                             }
 

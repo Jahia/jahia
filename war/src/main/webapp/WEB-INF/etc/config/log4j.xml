@@ -143,6 +143,10 @@
         <priority value="error"/>
     </category>
 
+    <category name="org.jbpm.pvm.internal.svc.DefaultCommandService">
+        <priority value="error"/>
+    </category>
+
     <category name="EventListener">
         <priority value="error"/>
     </category>

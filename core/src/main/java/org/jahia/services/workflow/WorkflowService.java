@@ -222,20 +222,23 @@ public class WorkflowService {
 
                 Collection<WorkflowRule> rules = getWorkflowRules(node, null);
                 for (WorkflowRule rule : rules) {
-                    if (rule.getProviderKey().equals(definition.getProvider()) && rule.getWorkflowDefinitionKey().equals(definition.getKey())) {
-                        Map<String,String> perms = workflowPermissions.get(rule.getWorkflowDefinitionKey());
+                    if (rule.getProviderKey().equals(definition.getProvider()) &&
+                        rule.getWorkflowDefinitionKey().equals(definition.getKey())) {
+                        Map<String, String> perms = workflowPermissions.get(rule.getWorkflowDefinitionKey());
                         if (perms != null) {
                             String permName = perms.get(activityName);
                             if (permName != null) {
                                 if (permName.indexOf("$") > -1) {
                                     Workflow w = getWorkflow(definition.getProvider(), processId, null);
-                                    for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
-                                        if (entry.getValue() instanceof List) {
-                                            List variable = (List) entry.getValue();
-                                            for (Object workflowVariable : variable) {
-                                                if (workflowVariable instanceof WorkflowVariable) {
-                                                    String v = ((WorkflowVariable)workflowVariable).getValue();
-                                                    permName = permName.replace("$"+entry.getKey(), v);
+                                    if (w != null) {
+                                        for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
+                                            if (entry.getValue() instanceof List) {
+                                                List variable = (List) entry.getValue();
+                                                for (Object workflowVariable : variable) {
+                                                    if (workflowVariable instanceof WorkflowVariable) {
+                                                        String v = ((WorkflowVariable) workflowVariable).getValue();
+                                                        permName = permName.replace("$" + entry.getKey(), v);
+                                                    }
                                                 }
                                             }
                                         }
@@ -254,7 +257,7 @@ public class WorkflowService {
                                                 Node roleNode = prop.getParent();
                                                 s.add(roleNode.getName());
                                             }
-                                            path = StringUtils.substringBeforeLast(path,"/");
+                                            path = StringUtils.substringBeforeLast(path, "/");
                                         }
                                     } catch (PathNotFoundException e) {
                                         logger.warn("Unable to find the node for the permission " + permName);
@@ -270,7 +273,8 @@ public class WorkflowService {
                                                         JahiaUser jahiaUser = userService.lookupUser(principalName);
                                                         principals.add(jahiaUser);
                                                     } else if (principal.charAt(0) == 'g') {
-                                                        JahiaGroup group = groupService.lookupGroup(site.getID(), principalName);
+                                                        JahiaGroup group = groupService.lookupGroup(site.getID(),
+                                                                principalName);
                                                         principals.add(group);
                                                     }
                                                 }
@@ -278,9 +282,9 @@ public class WorkflowService {
                                         }
                                     }
                                 } catch (RepositoryException e) {
-                                    logger.error(e.getMessage(),e);
+                                    logger.error(e.getMessage(), e);
                                 } catch (BeansException e) {
-                                    logger.error(e.getMessage(),e);
+                                    logger.error(e.getMessage(), e);
                                 }
                             }
                         }

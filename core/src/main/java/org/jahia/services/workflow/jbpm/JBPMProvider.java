@@ -320,7 +320,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
     public Workflow getWorkflow(String processId, Locale locale) {
         ProcessInstance pi = executionService.findProcessInstanceById(processId);
+        if(pi!=null) {
         return convertToWorkflow(pi, locale);
+        } else {
+            return null;
+        }
     }
 
     public Set<WorkflowAction> getAvailableActions(String processId, Locale locale) {

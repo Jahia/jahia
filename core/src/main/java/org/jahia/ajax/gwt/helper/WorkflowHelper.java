@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryIt
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -278,9 +279,12 @@ public class WorkflowHelper {
 
     public List<GWTJahiaWorkflowComment> getWorkflowComments(GWTJahiaWorkflow workflow, Locale locale) {
         Workflow wf = service.getWorkflow(workflow.getProvider(), workflow.getId(), locale);
+        List<GWTJahiaWorkflowComment> gwtComments = new ArrayList<GWTJahiaWorkflowComment>();
+        if(wf==null) {
+            return gwtComments;
+        }
         List<WorkflowComment> comments = wf.getComments();
 
-        List<GWTJahiaWorkflowComment> gwtComments = new ArrayList<GWTJahiaWorkflowComment>();
         if (comments == null) {
             return gwtComments;
         }
@@ -374,7 +378,9 @@ public class WorkflowHelper {
                 gwtWorkflows.add(gwtWfHistory);
 
                 final Workflow wf = WorkflowService.getInstance().getWorkflow(gwtWfHistory.getProvider(), gwtWfHistory.getProcessId(), locale);
-                gwtWfHistory.setRunningWorkflow(getGWTJahiaWorkflow(wf));
+                if(wf!=null) {
+                    gwtWfHistory.setRunningWorkflow(getGWTJahiaWorkflow(wf));
+                }
             }
             gwtWfHistory.getAvailableTasks().add(getGWTJahiaWorkflowTask(task));
         }
@@ -388,7 +394,7 @@ public class WorkflowHelper {
                 gwtWorkflows.add(gwtWfHistory);
                 gwtWfHistory.setRunningWorkflow(getGWTJahiaWorkflow(wf));
                 try {
-                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByIdentifier(
+                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(org.jahia.api.Constants.EDIT_WORKSPACE,locale).getNodeByIdentifier(
                             gwtWfHistory.getNodeId());
                     gwtWfHistory.set("nodeWrapper", ((NavigationHelper)SpringContextSingleton.getInstance().getContext().getBeansOfType(NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
                 } catch (RepositoryException e) {

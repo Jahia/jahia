@@ -126,7 +126,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewIconStatusActionItem"/>
         </property>
-        <property name="title" value="label.showACLStatus"/>
+        <property name="titleKey" value="label.showACLStatus"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
@@ -141,7 +141,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewIconStatusActionItem"/>
         </property>
-        <property name="title" value="label.showPublicationStatus"/>
+        <property name="titleKey" value="label.showPublicationStatus"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
@@ -157,7 +157,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewWorkflowStatusActionItem"/>
         </property>
-        <property name="title" value="label.showWorkflowStatus"/>
+        <property name="titleKey" value="label.showWorkflowStatus"/>
         <property name="icon" value="workflowAction"/>
     </bean>
 

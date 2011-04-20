@@ -261,7 +261,7 @@
                 <hashTree/>
               </hashTree>
             </hashTree>
-            <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Add users to site-privileged group" enabled="true">
+            <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Add users to site-privileged group" enabled="false">
               <boolProp name="LoopController.continue_forever">true</boolProp>
               <stringProp name="LoopController.loops">${NumberOfUsers}</stringProp>
             </LoopController>
@@ -364,11 +364,16 @@
 if (prev.isSuccessful()) {
     String baseDir = FileServer.getFileServer().getBaseDir();
     String edit = vars.get(&quot;EDIT_SITEMAP&quot;);
+    String context = vars.get(&quot;CONTEXT&quot;);
+    edit = edit.replaceAll(context + &quot;/cms/&quot;, &quot;\n&quot;+CONTEXT+&quot;/cms/&quot;);
     edit = edit.replaceAll(&quot;    &quot;, &quot;&quot;);
     edit = edit.replaceAll(&quot;\n\n\n\n&quot;, &quot;\n&quot;);
     edit = edit.replaceAll(&quot;\n\n\n&quot;, &quot;\n&quot;);
     edit = edit.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
     edit = edit.replaceAll(&quot;/edit/&quot;, &quot;/render/&quot;);
+    // removes empty lines
+    edit =  org.apache.commons.lang.StringUtils.strip(edit);
+    
     String path = vars.get(&quot;PATH&quot;);
     try {
         File p = new File(baseDir, path);
@@ -376,6 +381,10 @@ if (prev.isSuccessful()) {
             p.mkdirs();
         }
         File f = new File(baseDir, path + &quot;/editSitemaps.txt&quot;);
+        // delete previous file
+        if (f.exists()) {
+            f.delete();
+        }
         BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
         out.write(edit+&quot;\n&quot;);
         out.close();
@@ -439,10 +448,15 @@ if (prev.isSuccessful()) {
     String baseDir = FileServer.getFileServer().getBaseDir();
     log.info(&quot;Base dir = &quot; + baseDir);
     String live = vars.get(&quot;LIVE_SITEMAP&quot;);
+    String context = vars.get(&quot;CONTEXT&quot;);
+    live = live.replaceAll(context + &quot;/cms/&quot;, &quot;\n&quot;+CONTEXT+&quot;/cms/&quot;);
     live = live.replaceAll(&quot;    &quot;, &quot;&quot;);
     live = live.replaceAll(&quot;\n\n\n\n&quot;, &quot;\n&quot;);
     live = live.replaceAll(&quot;\n\n\n&quot;, &quot;\n&quot;);
     live = live.replaceAll(&quot;\n\n&quot;, &quot;\n&quot;);
+    // removes empty lines
+    live =  org.apache.commons.lang.StringUtils.strip(live);
+
     String path = vars.get(&quot;PATH&quot;);
     try {
         File p = new File(baseDir, path);
@@ -450,6 +464,10 @@ if (prev.isSuccessful()) {
             p.mkdirs();
         }
         File f = new File(baseDir, path + &quot;/liveSitemaps.txt&quot;);
+        // delete previous file
+        if (f.exists()) {
+            f.delete();
+        }
         BufferedWriter out = new BufferedWriter(new FileWriter(f,true));
         out.write(live+&quot;\n&quot;);
         out.close();

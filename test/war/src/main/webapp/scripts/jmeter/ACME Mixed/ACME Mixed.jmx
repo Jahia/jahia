@@ -64,7 +64,7 @@
           </elementProp>
           <elementProp name="serverHost" elementType="Argument">
             <stringProp name="Argument.name">serverHost</stringProp>
-            <stringProp name="Argument.value">${__P(ip,10.8.37.157)}</stringProp>
+            <stringProp name="Argument.value">${__P(ip,10.0.1.15)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="serverPort" elementType="Argument">
@@ -77,6 +77,36 @@
             <stringProp name="Argument.value">jmeterpage</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="nbEditReader" elementType="Argument">
+            <stringProp name="Argument.name">nbEditReader</stringProp>
+            <stringProp name="Argument.value">50</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="nbLiveReader" elementType="Argument">
+            <stringProp name="Argument.name">nbLiveReader</stringProp>
+            <stringProp name="Argument.value">400</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="nbLiveGuestReader" elementType="Argument">
+            <stringProp name="Argument.name">nbLiveGuestReader</stringProp>
+            <stringProp name="Argument.value">400</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="nbPageAdder" elementType="Argument">
+            <stringProp name="Argument.name">nbPageAdder</stringProp>
+            <stringProp name="Argument.value">10</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="nbSearcher" elementType="Argument">
+            <stringProp name="Argument.name">nbSearcher</stringProp>
+            <stringProp name="Argument.value">50</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="nbAdvancedSearcher" elementType="Argument">
+            <stringProp name="Argument.name">nbAdvancedSearcher</stringProp>
+            <stringProp name="Argument.value">50</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -87,7 +117,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">50</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${nbEditReader}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">30</stringProp>
         <longProp name="ThreadGroup.start_time">1238679268000</longProp>
         <longProp name="ThreadGroup.end_time">1238679268000</longProp>
@@ -330,7 +360,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">400</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${nbLiveReader}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">30</stringProp>
         <longProp name="ThreadGroup.start_time">1238679268000</longProp>
         <longProp name="ThreadGroup.end_time">1238679268000</longProp>
@@ -572,7 +602,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">400</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${nbLiveGuestReader}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">120</stringProp>
         <longProp name="ThreadGroup.start_time">1238679268000</longProp>
         <longProp name="ThreadGroup.end_time">1238679268000</longProp>
@@ -760,7 +790,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${nbPageAdder}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">10</stringProp>
         <longProp name="ThreadGroup.start_time">1297332494000</longProp>
         <longProp name="ThreadGroup.end_time">1297332494000</longProp>
@@ -1928,7 +1958,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">50</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${nbSearcher}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">30</stringProp>
         <longProp name="ThreadGroup.start_time">1300360716000</longProp>
         <longProp name="ThreadGroup.end_time">1300360716000</longProp>
@@ -2156,7 +2186,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">${__jexl(vars.LOOPS*10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">50</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${nbAdvancedSearcher}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">30</stringProp>
         <longProp name="ThreadGroup.start_time">1300360716000</longProp>
         <longProp name="ThreadGroup.end_time">1300360716000</longProp>

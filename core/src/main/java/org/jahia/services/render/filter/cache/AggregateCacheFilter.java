@@ -60,6 +60,7 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.*;
@@ -198,7 +199,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getValue();
         String cachedContent = (String) cacheEntry.getObject();
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
-                (Map<String, Object>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"));
+                (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"));
         setResources(renderContext, cacheEntry);
 
         if (renderContext.getMainResource() == resource) {
@@ -285,28 +286,28 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 Set<String> depNodeWrappers = resource.getDependencies();
                 for (String path : depNodeWrappers) {
                     Element element1 = dependenciesCache.get(path);
-                    Set<String> dependencies;
+                    Set<String> dependencies = new LinkedHashSet<String>();
                     if (element1 != null) {
                         dependencies = (Set<String>) element1.getValue();
-                    } else {
-                        dependencies = new LinkedHashSet<String>();
                     }
-                    dependencies.add(perUserKey);
-                    dependenciesCache.put(new Element(path, dependencies));
+                    Set<String> newDependencies = new LinkedHashSet<String>();
+                    newDependencies.addAll(dependencies);
+                    newDependencies.add(perUserKey);
+                    dependenciesCache.put(new Element(path, newDependencies));
                 }
                 resource.getDependencies().clear();
                 final Cache regexpDependenciesCache = cacheProvider.getRegexpDependenciesCache();
                 Set<String> regexpDepNodeWrappers = resource.getRegexpDependencies();
                 for (String regexp : regexpDepNodeWrappers) {
                     Element element1 = regexpDependenciesCache.get(regexp);
-                    Set<String> dependencies;
+                    Set<String> dependencies = new LinkedHashSet<String>();
                     if (element1 != null) {
                         dependencies = (Set<String>) element1.getValue();
-                    } else {
-                        dependencies = new LinkedHashSet<String>();
                     }
-                    dependencies.add(perUserKey);
-                    regexpDependenciesCache.put(new Element(regexp, dependencies));
+                    Set<String> newDependencies = new LinkedHashSet<String>();
+                    newDependencies.addAll(dependencies);
+                    newDependencies.add(perUserKey);
+                    regexpDependenciesCache.put(new Element(regexp, newDependencies));
                 }
                 resource.getRegexpDependencies().clear();
 
@@ -332,8 +333,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 // We will remove container content here has we do not want to store them twice in memory
                 OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
                 String output = outputDocument.toString();
-                Map<String, Set<String>> assets = new HashMap<String, Set<String>>();
-                Map<String, Map<String, String>> assetsOptions = new HashMap<String, Map<String, String>>();
+                HashMap<String, Set<String>> assets = new HashMap<String, Set<String>>();
+                HashMap<String, Map<String, String>> assetsOptions = new HashMap<String, Map<String, String>>();
                 source = new Source(output);
                 List<StartTag> esiResourceTags = source.getAllStartTags("esi:resource");
                 for (StartTag esiResourceTag : esiResourceTags) {
@@ -387,7 +388,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (resource.getFormInputs() != null) {
                     cacheEntry.setProperty(FORM_TOKEN, resource.getFormInputs());
                 }
-                Map<String, Object> moduleParams=null;
+                LinkedHashMap<String, Object> moduleParams=null;
                 for (String property : moduleParamsProperties.keySet()) {
                     if (resource.getNode().hasProperty(property)) {
                         if (moduleParams == null) {
@@ -459,7 +460,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String,Object> moduleParams,String areaIdentifier) {
+    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String,Serializable> moduleParams,String areaIdentifier) {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
@@ -515,7 +516,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                          segment.getElement().getEndTag().getEndTagType() + " with " + content);
                         }*/
                         if (!cachedContent.equals(content)) {
-                            String aggregatedContent = aggregateContent(cache, content, renderContext,(Map<String, Object>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"));
+                            String aggregatedContent = aggregateContent(cache, content, renderContext,(Map<String, Serializable>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"));
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                     aggregatedContent);
                         } else {
@@ -563,7 +564,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     private void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
-                                 String cacheKey, Map<String, Object> moduleParams, String areaIdentifier) {
+                                 String cacheKey, Map<String, Serializable> moduleParams, String areaIdentifier) {
         // if missing data call RenderService after creating the right resource
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
@@ -593,7 +594,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"),
                     keyAttrbs.get("context"));
             if (moduleParams != null) {
-                for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {
+                for (Map.Entry<String, Serializable> entry : moduleParams.entrySet()) {
                     resource.getModuleParams().put(entry.getKey(), entry.getValue());
                 }
             }

@@ -72,7 +72,7 @@ public class CacheEntry<V> implements Serializable {
     // "normal", "edit" or "debug" (see ProcessingContext defined modes)
 
     /** the properties table. */
-    protected Map<String, Object> properties = new HashMap<String, Object>();
+    protected Map<String, Serializable> properties = new HashMap<String, Serializable>();
 
     /** the entry's expiration date. */
     protected Date expirationDate;
@@ -124,7 +124,7 @@ public class CacheEntry<V> implements Serializable {
      * @param key  the property's key
      * @param value the property's value
      */
-    public void setProperty (final String key, final Object value) {
+    public void setProperty (final String key, final Serializable value) {
         if (key == null)
             return;
         properties.put (key, value);
@@ -167,7 +167,7 @@ public class CacheEntry<V> implements Serializable {
      *
      * @return  the properties <code>Map</code> instance
      */
-    public Map<String, Object> getExtendedProperties () {
+    public Map<String, Serializable> getExtendedProperties () {
         return properties;
     }
 
@@ -177,7 +177,7 @@ public class CacheEntry<V> implements Serializable {
      *
      * @param newProperties the new properties
      */
-    public void setExtendedProperties (final Map<String, Object> newProperties) {
+    public void setExtendedProperties (final Map<String, Serializable> newProperties) {
         if (newProperties == null)
             return;
         properties = newProperties;

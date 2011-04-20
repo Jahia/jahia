@@ -38,6 +38,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.RepositoryException;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -66,7 +67,7 @@ public class Resource {
 
     private List<Option> options;
     private ExtendedNodeType resourceNodeType;
-    private Map<String, Object> moduleParams = new HashMap<String, Object>();
+    private Map<String, Serializable> moduleParams = new HashMap<String, Serializable>();
     private HashMap<String,Map<String,List<String>>> formInputs;
     private Set<String> regexpDependencies;
 
@@ -183,7 +184,7 @@ public class Resource {
         return missingResources;
     }
 
-    public Map<String, Object> getModuleParams() {
+    public Map<String, Serializable> getModuleParams() {
         return moduleParams;
     }
 

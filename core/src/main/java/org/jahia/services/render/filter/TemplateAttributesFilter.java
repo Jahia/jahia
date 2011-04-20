@@ -34,7 +34,6 @@ package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -47,9 +46,9 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Module filter for parameter resolution.
@@ -66,8 +65,8 @@ public class TemplateAttributesFilter extends AbstractFilter {
 
         // Resolve params
         Map<String, Object> params = new HashMap<String, Object>();
-        Map<String, Object> moduleParams = resource.getModuleParams();
-        for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {
+        Map<String, Serializable> moduleParams = resource.getModuleParams();
+        for (Map.Entry<String, Serializable> entry : moduleParams.entrySet()) {
             String key = entry.getKey();
             params.put(key, entry.getValue());
         }
@@ -92,7 +91,7 @@ public class TemplateAttributesFilter extends AbstractFilter {
 
 
 
-    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams,
+    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Serializable> moduleParams,
                                     ExtendedNodeType mixin) throws RepositoryException {
         Map<String, ExtendedPropertyDefinition> props = mixin.getDeclaredPropertyDefinitionsAsMap();
         for (String key : props.keySet()) {
@@ -100,7 +99,7 @@ public class TemplateAttributesFilter extends AbstractFilter {
         }
     }
 
-    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams,
+    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Serializable> moduleParams,
                                     String key) throws RepositoryException {
         if (!key.equals("*")) {
             String pkey = StringUtils.substringAfter(key, ":");

@@ -70,7 +70,7 @@
         <war.plugin.version>2.1-beta-1</war.plugin.version>
         <enforcer.plugin.version>1.0</enforcer.plugin.version>
         <compiler.plugin.version>2.3.2</compiler.plugin.version>
-        <buildnumber.plugin.version>1.0-beta-4</buildnumber.plugin.version>
+        <buildnumber.plugin.version>1.0</buildnumber.plugin.version>
         <source.plugin.version>2.1.2</source.plugin.version>
         <release.plugin.version>2.1</release.plugin.version>
         <project.info.reports.plugin.version>2.2</project.info.reports.plugin.version>

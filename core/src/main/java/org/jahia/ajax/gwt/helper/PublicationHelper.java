@@ -109,7 +109,7 @@ public class PublicationHelper {
             HashMap<String, GWTJahiaPublicationInfo> infos = new HashMap<String, GWTJahiaPublicationInfo>();
             PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, true, true, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
             for (String language : languages) {
-                GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getUuid(), pubInfo.getRoot().getStatus(), pubInfo.getRoot().isCanPublish());
+                GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getUuid(), pubInfo.getRoot().getStatus(), pubInfo.getRoot().isCanPublish(language));
                 if (pubInfo.getRoot().isLocked()  ) {
 //                gwtInfo.setLocked(true);
                 }
@@ -229,7 +229,7 @@ public class PublicationHelper {
     private GWTJahiaPublicationInfo convert(OrderedMap all, PublicationInfoNode root, List<String> mainPaths,
                                             WorkflowRule lastRule, PublicationInfoNode node, List<PublicationInfo> references,
                                             JCRSessionWrapper currentUserSession, String language) {
-        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getUuid(), node.getStatus(), node.isCanPublish());
+        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getUuid(), node.getStatus(), node.isCanPublish(language));
         try {
             JCRNodeWrapper jcrNode = currentUserSession.getNodeByUUID(node.getUuid());
             if (jcrNode.hasProperty("jcr:title")) {

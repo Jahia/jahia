@@ -53,7 +53,6 @@ public class PublicationInfo implements Serializable {
     public static final int MANDATORY_LANGUAGE_VALID = 10;
 
     private transient List<String> allUuids;
-    private transient List<String> allPublisheableUuids;
 
 
     private PublicationInfoNode root;
@@ -94,25 +93,6 @@ public class PublicationInfo implements Serializable {
             allUuids.add(node.getUuid());
         }
         return allUuids;
-    }
-
-    public List<String> getAllPublishableUuids() {
-        if (allPublisheableUuids != null) {
-            return allPublisheableUuids;
-        }
-        allPublisheableUuids = new ArrayList<String>();
-        List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
-        nodes.add(root);
-        for (int i=0; i<nodes.size(); i++) {
-            final PublicationInfoNode node = nodes.get(i);
-            for (PublicationInfoNode infoNode : node.getChildren()) {
-                if (infoNode.isCanPublish() && !nodes.contains(infoNode)) {
-                    nodes.add(infoNode);
-                }
-            }
-            allPublisheableUuids.add(node.getUuid());
-        }
-        return allPublisheableUuids;
     }
 
     public List<PublicationInfo> getAllReferences() {

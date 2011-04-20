@@ -1,8 +1,10 @@
 package org.jahia.services.content;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author toto
@@ -17,13 +19,14 @@ public class PublicationInfoNode implements Serializable {
     private String path;
     private int status;
     private boolean locked;
-    private boolean canPublish;
+    private Map<String,Boolean> canPublish;
     private List<PublicationInfoNode> child = new LinkedList<PublicationInfoNode>();
     private List<PublicationInfo> references = new LinkedList<PublicationInfo>();
     private List<String> pruned;
 
     public PublicationInfoNode() {
         super();
+        canPublish = new HashMap<String, Boolean>(3);
     }
 
     public PublicationInfoNode(String uuid, String path) {
@@ -61,12 +64,13 @@ public class PublicationInfoNode implements Serializable {
         this.locked = locked;
     }
 
-    public boolean isCanPublish() {
-        return canPublish;
+    public boolean isCanPublish(String language) {
+        Boolean aBoolean = canPublish.get(language);
+        return aBoolean !=null?aBoolean:false;
     }
 
-    public void setCanPublish(boolean canPublish) {
-        this.canPublish = canPublish;
+    public void setCanPublish(boolean canPublish,String language) {
+        this.canPublish.put(language,canPublish);
     }
 
     public List<PublicationInfoNode> getChildren() {

@@ -959,7 +959,9 @@ public class JCRPublicationService extends JahiaService {
                 }
                 // Conflict , a node exists in live !
                 info.setStatus(PublicationInfo.CONFLICT);
-                info.setCanPublish(false);
+                for (String language : languages) {
+                    info.setCanPublish(false,language);
+                }
                 return info;
             } catch (ItemNotFoundException e) {
             } catch (PathNotFoundException e) {
@@ -1014,7 +1016,9 @@ public class JCRPublicationService extends JahiaService {
 
         // todo : performance problem on permission check
 //        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
-        info.setCanPublish(canPublish(node, languages));
+        for (String language : languages) {
+            info.setCanPublish(canPublish(node, language),language);
+        }
 
         if (includesReferences || includesSubnodes) {
             if (includesReferences) {
@@ -1055,7 +1059,7 @@ public class JCRPublicationService extends JahiaService {
         return info;
     }
 
-    private boolean canPublish(JCRNodeWrapper node, Set<String> languages) {
+    private boolean canPublish(JCRNodeWrapper node, String language) {
         boolean b;
         b = node.hasPermission("jcr:all_default");
         if (b) {
@@ -1069,7 +1073,7 @@ public class JCRPublicationService extends JahiaService {
         if (b) {
             return b;
         }
-        b = node.hasPermission("jcr:modifyProperties_default_" + languages.iterator().next());
+        b = node.hasPermission("jcr:modifyProperties_default_" + language);
         if (b) {
             return b;
         }

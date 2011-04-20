@@ -145,7 +145,7 @@ public class WorkflowServiceTest {
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
+        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map, null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
@@ -174,7 +174,7 @@ public class WorkflowServiceTest {
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
+        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
@@ -213,7 +213,7 @@ public class WorkflowServiceTest {
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
+        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
@@ -250,7 +250,7 @@ public class WorkflowServiceTest {
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
+        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
@@ -292,7 +292,7 @@ public class WorkflowServiceTest {
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,map);
+        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER,map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
@@ -406,7 +406,7 @@ public class WorkflowServiceTest {
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
+        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
@@ -459,7 +459,7 @@ public class WorkflowServiceTest {
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
+        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
@@ -498,7 +498,7 @@ public class WorkflowServiceTest {
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
+        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();

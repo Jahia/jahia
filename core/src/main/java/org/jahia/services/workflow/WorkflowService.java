@@ -417,7 +417,7 @@ public class WorkflowService {
         ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
     }
 
-    public void startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
+    public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
                              Map<String, Object> args, List<String> comments) throws RepositoryException {
         args.put("nodeId", nodeIds.iterator().next());
         args.put("nodeIds", nodeIds);
@@ -436,6 +436,7 @@ public class WorkflowService {
                 addComment(processId, provider, s, session.getUser().getUserKey());
             }
         }
+        return processId;
     }
 
     public synchronized void addProcessId(JCRNodeWrapper stageNode, String provider, String processId)

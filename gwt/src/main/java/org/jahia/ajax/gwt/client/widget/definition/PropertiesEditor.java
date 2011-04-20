@@ -280,7 +280,7 @@ public class PropertiesEditor extends FormPanel {
                     field.setName(f.getName());
                     field.setFieldLabel(f.getFieldLabel());
                 }
-                field.setId(nodeType.getName().replace(":","-") + "_" + field.getName().replace(":","-") + locale);
+                field.setId(nodeType.getName().replace(":","-") + "_" + field.getName().replace(":","-") + locale + (isWriteable?"-true":"-false"));
                 field.setWidth("98%");
                 field.setStyleAttribute("padding-left", "0");
                 fields.put(field.getName(), field);

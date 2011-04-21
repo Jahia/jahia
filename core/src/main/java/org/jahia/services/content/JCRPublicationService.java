@@ -1016,8 +1016,12 @@ public class JCRPublicationService extends JahiaService {
 
         // todo : performance problem on permission check
 //        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
-        for (String language : languages) {
-            info.setCanPublish(canPublish(node, language),language);
+        if(languages == null || languages.isEmpty()) {
+            info.setCanPublish(true,"");
+        } else {
+            for (String language : languages) {
+                info.setCanPublish(canPublish(node, language),language);
+            }
         }
 
         if (includesReferences || includesSubnodes) {

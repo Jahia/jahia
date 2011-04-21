@@ -105,11 +105,13 @@
             </c:when>
             <c:otherwise>
                 <c:if test="${hasChildren}">
-                    <template:include view="simple">
-                        <template:param name="base" value="${menuItem.identifier}"/>
-                        <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
-                        <template:param name="omitFormatting" value="true"/>
-                    </template:include>
+                    <li>
+                        <template:include view="simple">
+                            <template:param name="base" value="${menuItem.identifier}"/>
+                            <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
+                            <template:param name="omitFormatting" value="true"/>
+                        </template:include>
+                    </li>
                 </c:if>
             </c:otherwise>
         </c:choose>

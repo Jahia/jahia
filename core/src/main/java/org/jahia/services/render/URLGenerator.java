@@ -252,7 +252,9 @@ public class URLGenerator {
         if (languages == null) {
             languages = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
                 public Object transform(Object lang) {
-                    return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() + ".html";
+                    return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() +
+                            ("default".equals(resource.getTemplate()) ? "" : "." + resource.getTemplate())
+                            + ".html";
                 }
             });
         }

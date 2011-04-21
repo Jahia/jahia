@@ -112,6 +112,7 @@
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Edit content" />
                 <j:translation_de jcr:language="de" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content editieren" />
                 <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Éditer contenu" />
+                <language-switcher jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag" />
                 <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
                 <tabularList jcr:primaryType="jnt:tabularList">
                   <content jcr:primaryType="jnt:contentList">
@@ -177,6 +178,7 @@
             <custom-rows-960gs-col1 jcr:primaryType="jnt:contentList">
               <view-content icon="/templateSets/templates-system/templates/files/icons/view-content.png" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="View content" />
+                <language-switcher jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag" />
                 <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
                 <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
               </view-content>
@@ -452,6 +454,7 @@
             <custom-rows-960gs-1-col2 jcr:primaryType="jnt:contentList">
               <content-folder icon="/templateSets/templates-system/templates/files/icons/folder-content.png" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content Folder" />
+                <language-switcher jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag" />
                 <mainResourceDisplay j:canDeleteInContribution="true" j:canOrderInContribution="true" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" j:mainResourceView="table" jcr:mixinTypes="jmix:contributeMode" jcr:primaryType="jnt:mainResourceDisplay" />
                 <pager displayPager="true" jcr:primaryType="jnt:pager" pageSize="10" />
               </content-folder>

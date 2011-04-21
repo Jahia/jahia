@@ -475,7 +475,7 @@ public class ConflictResolver {
 
         public boolean apply() throws RepositoryException {
             if (sourceNode.getNode(newName).isVersioned() || targetNode.hasNode(newName)) {
-                if (targetNode.hasNode(newName) && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+                if (targetNode.hasNode(newName) && (nextSibling == null || targetNode.hasNode(nextSibling)) && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
                     targetNode.orderBefore(newName, nextSibling);
                     targetNode.getSession().save();
                 }

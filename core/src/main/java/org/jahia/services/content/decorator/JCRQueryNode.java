@@ -59,7 +59,7 @@ public class JCRQueryNode extends JCRNodeDecorator {
         super(node);
     }
 
-    public NodeIterator getNodes() {
+    /*public NodeIterator getNodes() {
         try {
             final Query q = getSession().getWorkspace().getQueryManager().getQuery(getRealNode());
             final QueryResult qr = q.execute();
@@ -84,7 +84,7 @@ public class JCRQueryNode extends JCRNodeDecorator {
             logger.debug("Cannot execute query", e);
         }
         return new NodeIteratorImpl(new ArrayList<JCRNodeWrapper>().iterator(), 0);
-    }
+    }*/
 
 
 }

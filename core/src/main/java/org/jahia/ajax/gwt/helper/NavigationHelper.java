@@ -38,6 +38,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
+import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.render.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -155,7 +157,15 @@ public class NavigationHelper {
     private void getMatchingChilds(List<String> nodeTypes, List<String> mimeTypes, List<String> nameFilters,
                                    List<String> fields, JCRNodeWrapper node, List<GWTJahiaNode> gwtNodeChildren,
                                    boolean checkSubChild) throws RepositoryException, GWTJahiaServiceException {
-        final NodeIterator nodesIterator = node.getNodes();
+        final NodeIterator nodesIterator;
+        if(node instanceof JCRQueryNode) {
+            final Query q = node.getSession().getWorkspace().getQueryManager().getQuery(node.getRealNode());
+            List<GWTJahiaNode> gwtJahiaNodes = executeQuery(q, nodeTypes, mimeTypes, nameFilters, fields);
+            gwtNodeChildren.addAll(gwtJahiaNodes);
+            return;
+        } else {
+            nodesIterator = node.getNodes();
+        }
 
         boolean hasOrderableChildren = node.getPrimaryNodeType().hasOrderableChildNodes();
 

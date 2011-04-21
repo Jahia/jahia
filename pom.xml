@@ -23,7 +23,7 @@
         <url>http://www.jahia.org</url>
     </organization>
     <!--logo>/images/jahia.gif</logo-->
-    <description>Jahia Full Package</description>
+    <description>Jahia Base Package</description>
     <url>http://www.jahia.org</url>
     <properties>
         <!-- general encoding -->
@@ -479,7 +479,6 @@
         <module>gwt</module>
         <module>modules</module>
         <module>war</module>
-        <module>package</module>
     </modules>
 
     <distributionManagement>

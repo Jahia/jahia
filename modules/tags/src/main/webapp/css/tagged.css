@@ -4,7 +4,7 @@
 .bodywrapper span.taggeditem {
     background:transparent url(img/page-tag.gif) no-repeat scroll 0 70%;
     display:inline;
-    margin-right:8px;
+    margin-left:8px;
     padding:5px 0 5px 18px;
 }
 .bodywrapper .tagged  {
@@ -12,4 +12,10 @@
 }
 .bodywrapper .tagged form {
     margin:0.5em 0;
+}
+
+a.delete {
+background: url("/icons/delete.png") no-repeat scroll 0 0 transparent;
+display: inline;
+padding-right: 18px;
 }

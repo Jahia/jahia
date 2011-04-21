@@ -16,16 +16,30 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="pagetagging.css"/>
 <template:addResources type="css" resources="tagged.css"/>
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:set var="bindedComponent"
+       value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
-    <div class="tagthispage">
+    <div id="tagThisPage${bindedComponent.identifier}" class="tagthispage">
 
         <jcr:nodeProperty node="${bindedComponent}" name="j:tags" var="assignedTags"/>
         <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
+        <c:url var="postUrl" value="${url.base}${bindedComponent.path}"/>
+        <script type="text/javascript">
+            function deleteTag(tag) {
+                $.post("${postUrl}.removeTag.do", {"tag":tag}, function(result) {
+                    $("#tag-" + tag).hide();
+                    if(result.size == "0"){
+                        var spanNotYetTag = $('<span><fmt:message key="label.tags.notag"/></span>').attr('class', 'notaggeditem${bindedComponent.identifier}');
+                        $("#jahia-tags-${bindedComponent.identifier}").append(spanNotYetTag)
+                    }
+                }, "json");
+                return false;
+            }
+        </script>
         <jsp:useBean id="filteredTags" class="java.util.LinkedHashMap"/>
         <c:forEach items="${assignedTags}" var="tag" varStatus="status">
             <c:if test="${not empty tag.node}">
-                <c:set target="${filteredTags}" property="${tag.node.name}" value="${tag.node.name}"/>
+                <c:set target="${filteredTags}" property="${tag.node.identifier}" value="${tag.node.name}"/>
             </c:if>
         </c:forEach>
         <div class="tagged">
@@ -34,11 +48,16 @@
                 <c:choose>
                     <c:when test="${not empty filteredTags}">
                         <c:forEach items="${filteredTags}" var="tag" varStatus="status">
-                            <span class="taggeditem">${fn:escapeXml(tag.value)}</span>${!status.last ? separator : ''}
+                            <div id="tag-${tag.value}" style="display:inline;">
+                                <span class="taggeditem">${fn:escapeXml(tag.value)}</span>
+                                <a class="delete" onclick="deleteTag('${tag.value}')"
+                                   href="#"></a>${!status.last ? separator : ''}
+                            </div>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <span class="notaggeditem${bindedComponent.identifier}"><fmt:message key="label.tags.notag"/></span>
+                        <span class="notaggeditem${bindedComponent.identifier}"><fmt:message
+                                key="label.tags.notag"/></span>
                     </c:otherwise>
                 </c:choose>
             </span>

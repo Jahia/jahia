@@ -28,25 +28,24 @@
             var newTag = tagForm.elements['j:newTag'];
             if (newTag.value.length > 0) {
                 var tagContainer = jQuery('#jahia-tags-' + uuid);
-                if(jQuery(".notaggeditem"+uuid).length>0){
+                if(jQuery(".notaggeditem"+uuid).length>0  && $(".notaggeditem" + uuid).is(":visible")){
                     jQuery(".notaggeditem"+uuid).hide();
                     separator = '';
                 }
                 if (tagContainer.find("span:contains('" + newTag.value + "')").length == 0) {
                     jQuery.post(tagForm.action, jQuery(tagForm).serialize(), function (data) {
-                        if (separator.length > 0 && jQuery('#jahia-tags-' + uuid + ' > span').length > 0) {
-                            tagContainer.append(separator);
+                        var tagToAdd = newTag.value;
+                        var tagDiv = $('<div></div>').attr('id', 'tag-' + tagToAdd).attr('style', 'display:inline');;
+                        var tagDisplay = jQuery('<span class="taggeditem">' + tagToAdd + '</span>');
+                        var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag(\'' + tagToAdd + '\')').attr('class', 'delete').attr('href', '#');
+                        tagContainer.append(tagDiv);
+                        if (separator.length > 0) {
+                            tagDiv.append(separator);
                         }
-                        var tagDisplay = jQuery('<span class="taggeditem">' + newTag.value + '</span>');
-                        tagDisplay.hide();
-                        if(jQuery(".notaggeditem"+uuid).length>0){
-                            jQuery(".notaggeditem"+uuid).replaceWith(tagDisplay);
-                        } else {
-                            tagContainer.append(tagDisplay);
-                        }
-                        tagDisplay.fadeIn('fast');
+                        tagDiv.append(tagDisplay);
+                        tagDiv.append(tagLinkDelete);
                         newTag.value = '';
-                    });
+                    },"json");
                 }
             }
         }

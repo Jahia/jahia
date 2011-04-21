@@ -188,7 +188,7 @@
                 </c:if>
             </c:otherwise>
         </c:choose>
-        <span><fmt:message key="label.goto"/>: </span> <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/home.html'/>"><img src="<c:url value='/icons/siteManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteHomepage"/></a>
+        <span><fmt:message key="label.goto"/>: </span> <a href="<c:url value='${url.base}${currentNode.resolveSite.home.path}.html'/>"><img src="<c:url value='/icons/siteManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteHomepage"/></a>
         <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/contents.html'/>"><img src="<c:url value='/icons/content-manager-1616.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteContent"/></a>
         <a href="<c:url value='${url.base}${currentNode.resolveSite.path}/files.html'/>"><img src="<c:url value='/icons/files-manager-1616.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.siteFiles"/></a>
         <a href="<c:url value='${url.logout}'/>"><img src="<c:url value='/icons/logout.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.logout"/></a>

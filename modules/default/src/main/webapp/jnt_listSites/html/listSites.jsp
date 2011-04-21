@@ -25,29 +25,30 @@
     </div>
 </c:if>
 
-<c:choose>
-    <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
-        <c:set var="page" value="/contents"/>
-    </c:when>
-    <c:when test="${currentNode.properties.typeOfContent.string eq 'files'}">
-        <c:set var="page" value="/files"/>
-    </c:when>
-    <c:otherwise>
-        <c:set var="page" value="/home"/>
-    </c:otherwise>
-</c:choose>
 <c:if test="${currentResource.workspace ne 'live'}">
 
     <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') order by site.[jcr:created] desc" limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
     <ul class="list-sites">
         <c:forEach items="${result.nodes}" var="node">
-            <jcr:node var="home" path="${node.path}/home"/>
-            <c:if test="${jcr:hasPermission(home,'editModeAccess') || jcr:hasPermission(home,'contributeModeAccess') || home.properties['j:published'].boolean}">
+
+            <c:choose>
+                <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
+                    <c:set var="page" value="/contents"/>
+                </c:when>
+                <c:when test="${currentNode.properties.typeOfContent.string eq 'files'}">
+                    <c:set var="page" value="/files"/>
+                </c:when>
+                <c:otherwise>
+                    <c:set var="page" value="/${node.home.name}"/>
+                </c:otherwise>
+            </c:choose>
+
+            <c:if test="${not empty node.home and (jcr:hasPermission(node.home,'editModeAccess') || jcr:hasPermission(node.home,'contributeModeAccess') || node.home.properties['j:published'].boolean)}">
                 <li class="listsiteicon">${node.displayableName}
-                    <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(home,'editModeAccess')}">
+                    <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node.home,'editModeAccess')}">
                         <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseEdit}${node.path}${page}.html'/>"><fmt:message key="label.editMode"/></a>
                     </c:if>
-                    <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(home,'contributeModeAccess')}">
+                    <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(node.home,'contributeModeAccess')}">
                         <c:url value='/icons/contribute.png' var="icon"/>
                         <c:if test="${currentNode.properties.typeOfContent.string eq 'contents'}">
                             <c:url value='/icons/content-manager-1616.png' var="icon"/>

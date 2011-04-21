@@ -64,7 +64,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -1048,6 +1047,14 @@ public class NavigationHelper {
                     Locale locale = LanguageCodeConverters.languageCodeToLocale(node.getProperty(GWTJahiaNode.DEFAULT_LANGUAGE).getString());
                     n.set(GWTJahiaNode.DEFAULT_LANGUAGE, languages.getCurrentLang(locale));
                 }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.HOMEPAGE_PATH) && (node instanceof JCRSiteNode)) {
+            try {
+                n.set(GWTJahiaNode.HOMEPAGE_PATH, ((JCRSiteNode) node).getHome().getPath());
             } catch (RepositoryException e) {
                 logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
             }

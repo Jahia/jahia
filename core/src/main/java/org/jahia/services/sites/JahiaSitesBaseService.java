@@ -400,7 +400,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
-        JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, null);
+        JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, "/sites/"+siteKey);
 
         if (selectTmplSet != null) {
             site.setTemplatePackageName(selectTmplSet);
@@ -584,6 +584,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                             session.checkout(nodeWrapper);
                             JCRNodeWrapper page = nodeWrapper.addNode("home", "jnt:page");
                             page.setProperty("jcr:title", "Welcome to " + site.getServerName());
+                            page.setProperty("j:isHomePage", true);
                             session.save();
                         }
                     } catch (RepositoryException e) {

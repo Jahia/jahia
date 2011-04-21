@@ -45,8 +45,12 @@ package org.jahia.services.sites;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.RepositoryException;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.*;
@@ -109,6 +113,7 @@ public class JahiaSite implements Serializable {
      * <jsp:useBean...> tag in JSP
      */
     public JahiaSite() {
+
     }
 
     /**
@@ -408,6 +413,11 @@ public class JahiaSite implements Serializable {
     public void setJCRLocalPath(String JCRLocalPath) {
         this.JCRLocalPath = JCRLocalPath;
     }
+
+    public JCRNodeWrapper getNode() throws RepositoryException {
+        return JCRSessionFactory.getInstance().getCurrentUserSession().getNode(getJCRLocalPath());
+    }
+
 
     /**
      * Returns the corresponding JCR node identifier or <code>null</code> if the

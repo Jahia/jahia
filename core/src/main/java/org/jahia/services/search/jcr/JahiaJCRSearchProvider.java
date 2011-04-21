@@ -296,7 +296,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             }
 
             if (!isFileSearch(params)) {
-                query.append("/*[fn:name() = 'home' or fn:name() = 'files' or fn:name() = 'contents']");
+                query.append("/*[@j:isHomePage='true' or fn:name() = 'files' or fn:name() = 'contents']");
             }
 
             query.append("//element(*,").append(getNodeType(params))

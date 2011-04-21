@@ -42,7 +42,7 @@
             <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
             <ul class="gotomanager">
                 <c:forEach items="${result.nodes}" var="node">
-                    <jcr:node var="home" path="${node.path}/home"/>
+                    <jcr:node var="home" path="${node.home.path}"/>
                     <c:if test="${jcr:hasPermission(home,'fileManager')}">
                         <li><img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; ">${fn:escapeXml(node.displayableName)}&nbsp;<a

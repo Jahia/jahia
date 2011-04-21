@@ -33,7 +33,7 @@
 
 <c:if test="${empty currentResource.moduleParams.base}">
     <c:if test="${empty baseline or baseline.string eq 'home'}">
-        <jcr:node var="current" path="${currentNode.resolveSite.path}/home"/>
+        <c:set var="current" value="${currentNode.resolveSite.home}"/>
     </c:if>
     <c:if test="${baseline.string eq 'currentPage'}">
         <c:set var="current" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}" />

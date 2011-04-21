@@ -35,7 +35,7 @@
             <c:set var="listLimit" value="${-1}"/>
         </c:if>
         <c:if test="${empty currentNode.properties['j:basenode'].node.path}">
-            <c:set var="path" value="${renderContext.site.path}/home"/>
+            <c:set var="path" value="${renderContext.site.home.path}"/>
         </c:if>
         <c:if test="${!empty currentNode.properties['j:basenode'].node.path}">
             <c:set var="path" value="${currentNode.properties['j:basenode'].node.path}"/>

@@ -6,7 +6,7 @@
               jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5" j:siteType="templatesSet">
 
     <home jcr:mixinTypes="jmix:sitemap"
-          j:displayInMenu="primary"
+          j:displayInMenu="primary" j:isHomePage="true"
           jcr:primaryType="jnt:page" changefreq="monthly"
           j:templateNode="/templatesSet/templates/base/home" priority="0.5">
     </home>

@@ -570,6 +570,7 @@ extends = jnt:content
  orderable
  - jcr:title (string) i18n mandatory boost=2.0
  - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
+ - j:isHomePage (boolean)
  + * (nt:base) = nt:base version
  + * (jmix:navMenuItem)
 

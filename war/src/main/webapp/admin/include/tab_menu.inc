@@ -85,7 +85,7 @@
         <li class="dex-TabBarItem tabExit">
             <div>
                 <div>
-                    <c:url var="editUrl" value="/cms/edit/default/${theSite.defaultLanguage}/sites/${theSite.siteKey}/home.html"/>
+                    <c:url var="editUrl" value="/cms/edit/default/${theSite.defaultLanguage}${theSite.node.home.path}.html"/>
                     <span class="tab-icon ico-edit-mode"><a href="${editUrl}"
                                                        title="<fmt:message key='org.jahia.admin.exit.label'/>" ><fmt:message key="org.jahia.admin.exit.label"/></a></span>
                 </div>

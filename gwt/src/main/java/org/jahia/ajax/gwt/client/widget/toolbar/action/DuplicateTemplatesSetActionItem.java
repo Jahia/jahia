@@ -24,7 +24,7 @@ public class DuplicateTemplatesSetActionItem extends BaseActionItem {
                     JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
                     JahiaGWTParameters.setSite(result, linker);
                     ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
-                    ((EditLinker) linker).onMainSelection(result.getPath()+"/home", null, null);
+                    ((EditLinker) linker).onMainSelection(result.getPath(), null, null);
                     SiteSwitcherActionItem.refreshAllSitesList(linker);
                 }
 

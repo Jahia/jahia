@@ -56,10 +56,8 @@ import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
@@ -119,7 +117,7 @@ public class WelcomeServlet extends HttpServlet {
 
     protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
             request.getSession(true);
-            JahiaSite site = resolveSite(request);
+            final JCRSiteNode site = resolveSite(request);
             String redirect = null;
             if (site == null) {
                 redirect = request.getContextPath() + "/administration";
@@ -127,55 +125,49 @@ public class WelcomeServlet extends HttpServlet {
                 String language = resolveLanguage(request, site);
                 String base;
 
-                final String jcrPath = "/sites/" + site.getSiteKey() + "/home";
-
                 String pathInfo = request.getPathInfo();
                 if (pathInfo != null && "/edit".equals(pathInfo)) {
                 	// edit mode was requested
 					base = request.getContextPath() + Edit.getEditServletPath() + "/"
-					        + Constants.EDIT_WORKSPACE + "/" + language;
+					        + Constants.EDIT_WORKSPACE + "/" + language + site.getHome().getPath();
                 } else {
-	                try {
-	                    JCRStoreService.getInstance().getSessionFactory()
-	                            .getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(jcrPath);
-	                    base = request.getContextPath() + Render.getRenderServletPath() + "/"
-	                            + Constants.LIVE_WORKSPACE + "/" + language;
-	                } catch (PathNotFoundException e) {
-	                    try {
-	                        JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession()
-	                                .getNode(jcrPath);
-	                        base = request.getContextPath() + Edit.getEditServletPath() + "/"
-	                                + Constants.EDIT_WORKSPACE + "/" + language;
-	                    } catch (PathNotFoundException e2) {
-	                        JCRTemplate.getInstance().doExecuteWithSystemSession(
-	                                new JCRCallback<Object>() {
-	                                    public Object doInJCR(JCRSessionWrapper session)
-	                                            throws RepositoryException {
-	                                        session.getNode(jcrPath);
-	                                        throw new AccessDeniedException();
-	                                    }
-	                                });
+                    if (site.getHome() != null) {
+                        base = request.getContextPath() + Render.getRenderServletPath() + "/"
+                                + Constants.LIVE_WORKSPACE + "/" + language + site.getHome().getPath();
+                    } else {
+                        JCRSiteNode defSite = null;
+                        try {
+                            defSite = (JCRSiteNode)
+                                    JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(site.getPath());
+                        } catch (PathNotFoundException e) {
+                            throw new AccessDeniedException();
+                        }
+                        if (defSite.getHome() != null) {
+                            base = request.getContextPath() + Edit.getEditServletPath() + "/"
+                                    + Constants.EDIT_WORKSPACE + "/" + language + defSite.getHome().getPath();
+                        } else {
 	                        throw new AccessDeniedException();
 	                    }
 	                }
                 }
 
-                redirect = base + jcrPath + ".html";
+                redirect = base + ".html";
             }
 
             response.sendRedirect(response.encodeRedirectURL(redirect));
     }
 
-    protected JahiaSite resolveSite(HttpServletRequest request) throws JahiaException {
+    protected JCRSiteNode resolveSite(HttpServletRequest request) throws JahiaException, RepositoryException {
         JahiaSitesService siteService = JahiaSitesBaseService.getInstance();
         JahiaSite resolvedSite = !URLGenerator.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
         if (resolvedSite == null) {
             resolvedSite = siteService.getDefaultSite();
         }
-        return resolvedSite;
+        return (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
+                .getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(resolvedSite.getJCRLocalPath());
     }
     
-    protected String resolveLanguage(HttpServletRequest request, final JahiaSite site)
+    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site)
             throws JahiaException {
         final List<Locale> newLocaleList = new ArrayList<Locale>();
         List<Locale> siteLanguages = Collections.emptyList();
@@ -213,14 +205,14 @@ public class WelcomeServlet extends HttpServlet {
         return language;
     }
 
-    private void addLocale(final JahiaSite site, final List<Locale> newLocaleList, final Locale curLocale) {
+    private void addLocale(final JCRSiteNode site, final List<Locale> newLocaleList, final Locale curLocale) {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(null,
                     Constants.LIVE_WORKSPACE,curLocale,new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         if(site!=null) {
-                            session.getNode(site.getJCRLocalPath()+"/home");
+                            site.getHome();
                             if (!newLocaleList.contains(curLocale)) {
                                 newLocaleList.add(curLocale);
                             }

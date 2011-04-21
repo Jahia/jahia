@@ -42,6 +42,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.util.*;
@@ -54,6 +55,8 @@ import java.util.*;
  */
 public class JCRSiteNode extends JCRNodeDecorator {
     private static final Logger logger = LoggerFactory.getLogger(JCRSiteNode.class);
+
+    private JCRNodeWrapper home;
 
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
@@ -285,6 +288,19 @@ public class JCRSiteNode extends JCRNodeDecorator {
             logger.error("Cannot get site property",e);
         }
         return null;
+    }
+
+    public JCRNodeWrapper getHome() throws RepositoryException {
+        if (home == null) {
+            NodeIterator ni = getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                if (next.hasProperty("j:isHomePage") && next.getProperty("j:isHomePage").getBoolean()) {
+                    return (home = next);
+                }
+            }
+        }
+        return home;
     }
 
     /**

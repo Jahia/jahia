@@ -1,2 +1,0 @@
-[InternetShortcut]
-URL=http://localhost:${tomcat.httpPort}${jahia.war.contextPath}

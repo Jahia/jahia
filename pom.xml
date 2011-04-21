@@ -5,7 +5,7 @@
     <artifactId>jahia-root</artifactId>
     <name>Jahia Project Root</name>
     <groupId>org.jahia.server</groupId>
-    <version>6.5-RELEASETEST1</version>
+    <version>6.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--
@@ -101,9 +101,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:http://10.8.37.111/svn/jahia/tags/JAHIA_6_5_RELEASETEST1</connection>
-        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/tags/JAHIA_6_5_RELEASETEST1</developerConnection>
-        <url>http://10.8.37.111/svn/jahia/tags/JAHIA_6_5_RELEASETEST1</url>
+        <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk</connection>
+        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk</developerConnection>
+        <url>http://10.8.37.111/svn/jahia/trunk</url>
     </scm>
     <developers>
         <developer>

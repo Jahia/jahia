@@ -426,7 +426,10 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            return targetNode.getNode(oldName).rename(newName);
+            if (targetNode.hasNode(oldName) && !targetNode.getNode(oldName).isVersioned()) {
+                return targetNode.getNode(oldName).rename(newName);
+            }
+            return true;
         }
 
         @Override
@@ -599,7 +602,7 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (!targetNode.hasNode(name)) {
+            if (!targetNode.hasNode(name) || !targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
                 return true;
             }
             while (orderBeforeName != null && !targetNode.hasNode(orderBeforeName)) {

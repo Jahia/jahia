@@ -540,11 +540,11 @@ public class JCRPublicationService extends JahiaService {
                             if (!resolver.getUnresolvedDifferences().isEmpty()) {
                                 logger.warn("Unresolved conflicts : " + resolver.getUnresolvedDifferences());
                             }
-                            destinationVersionManager
-                                    .doneMerge(failed.getPath(), sourceVersionManager.getBaseVersion(path));
                         } catch (RepositoryException e) {
                             logger.error("Error when merging differences",e);
                         }
+                        destinationVersionManager
+                                .doneMerge(failed.getPath(), sourceVersionManager.getBaseVersion(path));
                     }
 //                    if (!sourceSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
                     recurseCheckpoint(destinationSession, destinationNode, uuids,

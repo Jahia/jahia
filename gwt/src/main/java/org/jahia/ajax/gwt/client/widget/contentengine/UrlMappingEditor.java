@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -75,7 +76,7 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
  */
 public class UrlMappingEditor extends LayoutContainer {
     private GWTJahiaNode node;
-
+    private boolean editable;
     private String locale;
 
     private ListStore<GWTJahiaUrlMapping> store;
@@ -84,10 +85,11 @@ public class UrlMappingEditor extends LayoutContainer {
      * 
      * @param node
      */
-    public UrlMappingEditor(GWTJahiaNode node, String locale) {
+    public UrlMappingEditor(GWTJahiaNode node, String locale, boolean editable) {
         super(new FitLayout());
         this.locale = locale;
         this.node = node;
+        this.editable = editable;
         setBorders(false);
         store = new ListStore<GWTJahiaUrlMapping>();
         JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale,
@@ -133,12 +135,29 @@ public class UrlMappingEditor extends LayoutContainer {
         column.setEditor(ce);
         configs.add(column);
 
-        final CheckColumnConfig defaultColumn = new CheckColumnConfig("default", Messages.get("label.urlmapping.default", "Default"), 70);
-        defaultColumn.setEditor(new CellEditor(new CheckBox()));
-        configs.add(defaultColumn);
+        final CheckColumnConfig defaultColumn;
+        final CheckColumnConfig activeColumn;
+        if (editable) {
+            defaultColumn = new CheckColumnConfig("default", Messages.get("label.urlmapping.default", "Default"), 70);
+            defaultColumn.setEditor(new CellEditor(new CheckBox()));
+            activeColumn = new CheckColumnConfig("active", Messages.get("label.urlmapping.active", "Active"), 55);
+            activeColumn.setEditor(new CellEditor(new CheckBox()));
+        } else {
+            defaultColumn = new CheckColumnConfig("default", Messages.get("label.urlmapping.default", "Default"), 70){
+                protected String getCheckState(ModelData model, String property, int rowIndex,
+                                               int colIndex) {
+                    return "-disabled";
+                }
+            };
+            activeColumn = new CheckColumnConfig("active", Messages.get("label.urlmapping.active", "Active"), 55){
+                protected String getCheckState(ModelData model, String property, int rowIndex,
+                                               int colIndex) {
+                    return "-disabled";
+                }
+            };
+        }
 
-        CheckColumnConfig activeColumn = new CheckColumnConfig("active", Messages.get("label.urlmapping.active", "Active"), 55);
-        activeColumn.setEditor(new CellEditor(new CheckBox()));
+        configs.add(defaultColumn);
         configs.add(activeColumn);
 
         column = new ColumnConfig("actions", "", 100);
@@ -154,6 +173,7 @@ public class UrlMappingEditor extends LayoutContainer {
                             }
                         });
                 button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
+                button.setEnabled(editable);
                 return button;
             }
         });
@@ -177,7 +197,9 @@ public class UrlMappingEditor extends LayoutContainer {
         grid.setBorders(true);
         grid.addPlugin(defaultColumn);
         grid.addPlugin(activeColumn);
-        grid.addPlugin(re);
+        if (editable) {
+            grid.addPlugin(re);
+        }
 
         store.addStoreListener(new StoreListener<GWTJahiaUrlMapping>() {
             @Override
@@ -210,6 +232,7 @@ public class UrlMappingEditor extends LayoutContainer {
             }
         });
         add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
+        add.setEnabled(editable);
         toolBar.add(add);
 
         ContentPanel cp = new ContentPanel(new FitLayout());

@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
@@ -95,7 +96,8 @@ public class SeoTabItem extends EditEngineTabItem {
     private UrlMappingEditor getEditor(NodeHolder engine, AsyncTabItem tab, String locale) {
         UrlMappingEditor editor = editorsByLanguage.get(locale);
         if (editor == null) {
-            editor = new UrlMappingEditor(engine.getNode(), locale);
+            boolean editable = (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !engine.getNode().isLocked()));
+            editor = new UrlMappingEditor(engine.getNode(), locale, editable);
             editor.setVisible(false);
             editorsByLanguage.put(locale, editor);
             tab.add(editor);

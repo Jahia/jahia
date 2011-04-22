@@ -193,3 +193,5 @@
  - field (string, choicelist[sortableFieldnames]) indexed=no
 
 [jnt:categorizing] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent
+
+[jnt:displayCurrentLanguage] > jnt:content, jmix:siteComponent

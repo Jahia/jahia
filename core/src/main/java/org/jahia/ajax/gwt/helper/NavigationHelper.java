@@ -38,10 +38,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
-import org.jahia.services.content.decorator.JCRQueryNode;
-import org.jahia.services.render.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -53,13 +49,20 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import javax.jcr.*;
@@ -1054,7 +1057,9 @@ public class NavigationHelper {
 
         if (fields.contains(GWTJahiaNode.HOMEPAGE_PATH) && (node instanceof JCRSiteNode)) {
             try {
-                n.set(GWTJahiaNode.HOMEPAGE_PATH, ((JCRSiteNode) node).getHome().getPath());
+                if (((JCRSiteNode) node).getHome() != null) {
+                 n.set(GWTJahiaNode.HOMEPAGE_PATH, ((JCRSiteNode) node).getHome().getPath());
+                }
             } catch (RepositoryException e) {
                 logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
             }

@@ -699,16 +699,12 @@ public class WorkflowService {
 
     private void recurseOnRules(List<WorkflowRule> results, Node n)
             throws RepositoryException {
-        String defPath = null;
         try {
             Set<String> foundTypes = new HashSet<String>();
             while (true) {
                 if (n.hasNode(WORKFLOWRULES_NODE_NAME)) {
                     Node wfRules = n.getNode(WORKFLOWRULES_NODE_NAME);
                     NodeIterator rules = wfRules.getNodes();
-                    if (defPath == null) {
-                        defPath = n.getPath();
-                    }
                     while (rules.hasNext()) {
                         Node rule = rules.nextNode();
                         final String wfName = rule.getProperty("j:workflow").getString();
@@ -719,13 +715,13 @@ public class WorkflowService {
                             continue;
                         }
                         foundTypes.add(wftype);
-                        results.add(new WorkflowRule(defPath, prov, name));
+                        results.add(new WorkflowRule(n.getPath(), prov, name));
                         if (rule.hasProperty("j:inherit") && !rule.getProperty("j:inherit").getBoolean()) {
                             return;
                         }
                     }
                 }
-                if ("/".equals(defPath)) {
+                if ("/".equals(n.getPath())) {
                     break;
                 }
                 n = n.getParent();

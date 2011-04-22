@@ -359,6 +359,11 @@ public class ManageUsers extends AbstractAdministrationModule {
             userMessage = getMessage("org.jahia.admin.userMessage.specifyUserName.label");
             return false;
         }
+        String email = request.getParameter("manage-user-property#j:email").trim();
+        if(!"".equals(email) && !email.matches("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")){
+            userMessage = getMessage("org.jahia.admin.userMessage.emailFormatIsIncorrect.label");
+            return false;
+        }
         // The following test is really disputable because we should can enter
         // as well accentueted char and any internationalized char.
         else if (!ServicesRegistry.getInstance().getJahiaUserManagerService()
@@ -541,6 +546,11 @@ public class ManageUsers extends AbstractAdministrationModule {
 
         // jahia_db usr processing
         if ("update".equals(request.getParameter("actionType").trim())) {
+            return false;
+        }
+        String email = request.getParameter("manage-user-property#j:email").trim();
+        if(!"".equals(email) && !email.matches("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")){
+            userMessage = getMessage("org.jahia.admin.userMessage.emailFormatIsIncorrect.label");
             return false;
         }
         String passwd = request.getParameter("passwd");

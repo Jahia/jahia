@@ -35,16 +35,20 @@
                 }
                 if (tagContainer.find("span:contains('" + newTag.value + "')").length == 0) {
                     jQuery.post(tagForm.action, jQuery(tagForm).serialize(), function (data) {
-                        var tagToAdd = newTag.value;
-                        var tagDiv = $('<div></div>').attr('id', 'tag-' + tagToAdd.replace(regExp, "-")).attr('style', 'display:inline');;
-                        var tagDisplay = jQuery('<span class="taggeditem">' + tagToAdd + '</span>');
-                        var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag(\'' + tagToAdd + '\')').attr('class', 'delete').attr('href', '#');
-                        tagContainer.append(tagDiv);
-                        if (separator.length > 0) {
-                            tagDiv.append(separator);
+                        var tagToAdds = newTag.value.split(',');
+                        for (i =0; i< tagToAdds.length; i++){
+                            if(tagToAdds[i].trim() != "" && tagToAdds[i] != null){
+                                var tagDiv = $('<div></div>').attr('id', 'tag-' + tagToAdds[i].trim().replace(regExp, "-")).attr('style', 'display:inline');
+                                var tagDisplay = jQuery('<span class="taggeditem">' + tagToAdds[i].trim() + '</span>');
+                                var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag(\'' + tagToAdds[i].trim() + '\')').attr('class', 'delete').attr('href', '#');
+                                tagContainer.append(tagDiv);
+                                if (separator.length > 0) {
+                                    tagDiv.append(separator);
+                                }
+                                tagDiv.append(tagDisplay);
+                                tagDiv.append(tagLinkDelete);
+                            }
                         }
-                        tagDiv.append(tagDisplay);
-                        tagDiv.append(tagLinkDelete);
                         newTag.value = '';
                     },"json");
                 }

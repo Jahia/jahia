@@ -25,6 +25,7 @@
     <template:addResources type="javascript" resources="thickbox-compressed.js"/>
     <script type="text/javascript">
         function addNewTag(tagForm, uuid, separator) {
+            var regExp = /\s/g;
             var newTag = tagForm.elements['j:newTag'];
             if (newTag.value.length > 0) {
                 var tagContainer = jQuery('#jahia-tags-' + uuid);
@@ -35,7 +36,7 @@
                 if (tagContainer.find("span:contains('" + newTag.value + "')").length == 0) {
                     jQuery.post(tagForm.action, jQuery(tagForm).serialize(), function (data) {
                         var tagToAdd = newTag.value;
-                        var tagDiv = $('<div></div>').attr('id', 'tag-' + tagToAdd).attr('style', 'display:inline');;
+                        var tagDiv = $('<div></div>').attr('id', 'tag-' + tagToAdd.replace(regExp, "-")).attr('style', 'display:inline');;
                         var tagDisplay = jQuery('<span class="taggeditem">' + tagToAdd + '</span>');
                         var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag(\'' + tagToAdd + '\')').attr('class', 'delete').attr('href', '#');
                         tagContainer.append(tagDiv);

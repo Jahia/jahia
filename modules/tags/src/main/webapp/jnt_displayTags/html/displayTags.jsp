@@ -27,6 +27,8 @@
         <script type="text/javascript">
             function deleteTag(tag) {
                 $.post("${postUrl}.removeTag.do", {"tag":tag}, function(result) {
+				var regExp = /\s/g;
+				tag = tag.replace(regExp, "-");
                     $("#tag-" + tag).hide();
                     if(result.size == "0"){
                         var spanNotYetTag = $('<span><fmt:message key="label.tags.notag"/></span>').attr('class', 'notaggeditem${bindedComponent.identifier}');
@@ -48,7 +50,7 @@
                 <c:choose>
                     <c:when test="${not empty filteredTags}">
                         <c:forEach items="${filteredTags}" var="tag" varStatus="status">
-                            <div id="tag-${tag.value}" style="display:inline;">
+                            <div id="tag-${fn:replace(tag.value,' ','-')}" style="display:inline;">
                                 <span class="taggeditem">${fn:escapeXml(tag.value)}</span>
                                 <a class="delete" onclick="deleteTag('${tag.value}')"
                                    href="#"></a>${!status.last ? separator : ''}

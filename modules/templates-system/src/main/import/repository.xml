@@ -491,7 +491,7 @@
         </content-template>
       </templates>
       <files jcr:primaryType="jnt:folder" />
-      <categories jcr:primaryType="jnt:category" />
+      <categories jcr:primaryType="jnt:category" jcr:title="Categories"/>
       <contents jcr:primaryType="jnt:contentFolder">
         <profile-page-items jcr:primaryType="jnt:contentFolder">
           <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items" />

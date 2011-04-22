@@ -1112,7 +1112,10 @@ public class NavigationHelper {
             if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
                 n.setReferencedNode(getGWTJahiaNode((JCRNodeWrapper) node.getProperty("j:node").getNode()));
             }
-        } catch (RepositoryException e) {
+        } catch (ItemNotFoundException e) {
+            logger.debug(e.getMessage(), e);
+        }
+        catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
 

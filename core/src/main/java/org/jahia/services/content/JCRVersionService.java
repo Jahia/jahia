@@ -366,12 +366,14 @@ public class JCRVersionService extends JahiaService {
     }
 
     public static Version findVersionByLabel(VersionHistory vh, String label) throws RepositoryException {
-        if (vh.hasVersionLabel(label)) {
-            VersionIterator allVersions = vh.getAllVersions();
-            while (allVersions.hasNext()) {
-                Version version = allVersions.nextVersion();
-                if (Arrays.asList(vh.getVersionLabels(version)).contains(label)) {
-                    return version;
+        if (label != null && !"".equals(label.trim())) {
+            if (vh.hasVersionLabel(label.trim())) {
+                VersionIterator allVersions = vh.getAllVersions();
+                while (allVersions.hasNext()) {
+                    Version version = allVersions.nextVersion();
+                    if (Arrays.asList(vh.getVersionLabels(version)).contains(label.trim())) {
+                        return version;
+                    }
                 }
             }
         }

@@ -299,6 +299,9 @@ public class JCRSiteNode extends JCRNodeDecorator {
                     return (home = next);
                 }
             }
+            if (hasNode("home")) {
+                home = getNode("home");
+            }
         }
         return home;
     }

@@ -170,6 +170,9 @@ public class PrincipalViewHelper implements Serializable {
             final Object[] args = {p, size};
             try {
                 authUserText.append((String) m.invoke(this, args));
+                if(i<selectBoxFieldsMethod.size()-1) {
+                    authUserText.append("|");
+                }
             } catch (java.lang.reflect.InvocationTargetException ite) {
                 logger.error("Internal class error !", ite);
             } catch (java.lang.IllegalAccessException iae) {
@@ -337,14 +340,14 @@ public class PrincipalViewHelper implements Serializable {
             } else {
                 final String firstname = user.getProperty("j:firstName");
                 final String lastname = user.getProperty("j:lastName");
-                if (firstname != null) {
-                    properties.append(firstname);
-                    if (firstname.length() < size) {
+                if (lastname != null && !"".equals(lastname.trim())) {
+                    properties.append(lastname);
+                    if (lastname.length() < size) {
                         properties.append(" ");
                     }
                 }
-                if (lastname != null) {
-                    properties.append(lastname);
+                if (firstname != null && !"".equals(firstname.trim())) {
+                    properties.append(firstname);
                 }
                 if ("".equals(properties.toString())) {
                     String email = user.getProperty("j:email");

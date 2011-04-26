@@ -107,7 +107,7 @@ int stretcherToOpen   = 0;
             <!-- -->
         </td>
 <%
-    Integer userNameWidth=new Integer(20);
+    Integer userNameWidth=new Integer(30);
     request.getSession().setAttribute("userNameWidth",userNameWidth);
 %>
         <td>
@@ -119,18 +119,11 @@ int stretcherToOpen   = 0;
                         <table class="text" width="100%" border="0" cellspacing="0" cellpadding="0">
                             <tr>
                                 <td>
-                                <span class="dex-PushButton">
-                                    <span class="first-child">
-                                        <a class="sort"
-                                           href="javascript:sortSelectBox(document.mainForm.selectedUsers, false, /.{2}/);"
-                                           title="<fmt:message key='label.sortByProvider'/>"><fmt:message key="label.sortByProvider"/></a>
-                                    </span>
-                                </span>
 
                                 <span class="dex-PushButton">
                                     <span class="first-child">
                                         <a class="sort"
-                                           href="javascript:sortSelectBox(document.mainForm.selectedUsers, false, /.{8}/);"
+                                           href="javascript:sortSelectBox(document.mainForm.selectedUsers, false, /\|(.*)/g);"
                                            title="<fmt:message key='org.jahia.admin.users.ManageUsers.sortByUserName.label'/>"><fmt:message key="org.jahia.admin.users.ManageUsers.sortByUserName.label"/></a>
                                     </span>
                                 </span>
@@ -138,8 +131,8 @@ int stretcherToOpen   = 0;
                                 <span class="dex-PushButton">
                                     <span class="first-child">
                                         <a class="sort"
-                                           href='<%= "javascript:sortSelectBox(document.mainForm.selectedUsers, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>'
-                                           title="<fmt:message key='label.sortByProperty'/>"><fmt:message key="label.sortByProperty"/></a>
+                                           href="javascript:sortSelectBox(document.mainForm.selectedUsers, false, /(.*)\|/g);"
+                                           title="<fmt:message key='label.sortByLastname'/>"><fmt:message key="label.sortByLastname"/></a>
                                     </span>
                                 </span>
 
@@ -148,7 +141,7 @@ int stretcherToOpen   = 0;
                         </table>
                         <%
                         Set resultSet = (Set)request.getAttribute( "resultList" );
-                        String[] textPattern = {"Principal", "Provider, 6", "Name, "+userNameWidth, "Properties, 30"};
+                        String[] textPattern = {"Name, "+userNameWidth, "Properties, 30"};
                         PrincipalViewHelper principalViewHelper = new PrincipalViewHelper(textPattern);
                         %>
                         <select ondblclick="javascript:handleKey(event);"

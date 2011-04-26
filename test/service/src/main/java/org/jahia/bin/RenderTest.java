@@ -132,7 +132,7 @@ public class RenderTest {
     private List<String> getUuids(List<PublicationInfo> publicationInfo) {
         List<String> uuids = new LinkedList<String>();
         for (PublicationInfo info : publicationInfo) {
-            uuids.addAll(info.getAllPublishableUuids());
+            uuids.addAll(info.getAllUuids());
         }
         return uuids;
     }

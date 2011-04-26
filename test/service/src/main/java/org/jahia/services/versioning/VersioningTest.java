@@ -251,7 +251,7 @@ public class VersioningTest {
             label = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar.getInstance().getTime());
             uuids = new LinkedList<String>();
             for (PublicationInfo info : publicationInfo) {
-                uuids.addAll(info.getAllPublishableUuids());
+                uuids.addAll(info.getAllUuids());
             }
             jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
             Thread.sleep(5000);
@@ -266,7 +266,7 @@ public class VersioningTest {
     private List<String> getUuids(List<PublicationInfo> publicationInfo) {
         List<String> uuids = new LinkedList<String>();
         for (PublicationInfo info : publicationInfo) {
-            uuids.addAll(info.getAllPublishableUuids());
+            uuids.addAll(info.getAllUuids());
         }
         return uuids;
     }

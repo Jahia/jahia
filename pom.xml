@@ -33,6 +33,8 @@
         <jahia.package.version>${project.version}</jahia.package.version>
         <jahia.project.structure.version>2</jahia.project.structure.version>
 
+        <jahia.archivers.version>2.2</jahia.archivers.version>
+        <jahia.configurators.version>2.16</jahia.configurators.version>
         <jahia.deployers.version>2.1</jahia.deployers.version>
 
         <jahia.war.classifier />

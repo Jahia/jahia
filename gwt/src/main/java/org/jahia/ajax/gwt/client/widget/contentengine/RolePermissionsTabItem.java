@@ -253,15 +253,17 @@ public class RolePermissionsTabItem extends EditEngineTabItem {
     }
 
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
-        List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>(selection.size());
-        for (GWTJahiaNode gwtJahiaNode : selection) {
-            values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode, GWTJahiaNodePropertyType.WEAKREFERENCE));
+        if (selection != null) {
+            List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>(selection.size());
+            for (GWTJahiaNode gwtJahiaNode : selection) {
+                values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode, GWTJahiaNodePropertyType.WEAKREFERENCE));
+            }
+            GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+            gwtJahiaNodeProperty.setMultiple(true);
+            gwtJahiaNodeProperty.setValues(values);
+            gwtJahiaNodeProperty.setName("j:permissions");
+            changedProperties.add(gwtJahiaNodeProperty);
         }
-        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-        gwtJahiaNodeProperty.setMultiple(true);
-        gwtJahiaNodeProperty.setValues(values);
-        gwtJahiaNodeProperty.setName("j:permissions");
-        changedProperties.add(gwtJahiaNodeProperty);
     }
 
 

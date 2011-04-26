@@ -182,7 +182,6 @@
                 <ref bean="repository.sites"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
-                <ref bean="repository.users"/>
             </list>
         </property>
         <!-- tabs -->

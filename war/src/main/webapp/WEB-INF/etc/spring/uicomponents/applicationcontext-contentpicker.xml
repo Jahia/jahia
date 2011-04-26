@@ -97,7 +97,6 @@
                 <ref bean="repository.sites"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
-                <ref bean="repository.users"/>
                 <ref bean="repository.templateFiles"/>
             </list>
         </property>
@@ -212,7 +211,6 @@
                 <ref bean="repository.sites"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
-                <ref bean="repository.users"/>
                 <ref bean="repository.templateFiles"/>
             </list>
         </property>
@@ -309,7 +307,6 @@
                 <ref bean="repository.sites"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
-                <ref bean="repository.users"/>
                 <ref bean="repository.templateFiles"/>
             </list>
         </property>

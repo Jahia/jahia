@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -55,6 +56,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
@@ -62,10 +64,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -165,6 +164,18 @@ public class CategoriesTabItem extends EditEngineTabItem {
         });
 
         catStore = new TreeStore<GWTJahiaNode>(catLoader);
+        catStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+            public int compare(Object o1, Object o2) {
+                if (o1 instanceof String && o2 instanceof String) {
+                    String s1 = (String) o1;
+                    String s2 = (String) o2;
+                    return Collator.getInstance().localeCompare(s1,s2);
+                } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
+                    return ((Comparable) o1).compareTo(o2);
+                }
+                return 0;
+            }
+        }));
     }
 
     private Component createSelectedCategoriesPanel(NodeHolder engine) {

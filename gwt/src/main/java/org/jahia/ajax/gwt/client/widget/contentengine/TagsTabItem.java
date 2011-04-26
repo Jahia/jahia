@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -59,6 +60,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
@@ -134,7 +136,18 @@ public class TagsTabItem extends EditEngineTabItem {
                 });
 
                 tagStore = new TreeStore<GWTJahiaNode>(tagLoader);
-
+                tagStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+                    public int compare(Object o1, Object o2) {
+                        if (o1 instanceof String && o2 instanceof String) {
+                            String s1 = (String) o1;
+                            String s2 = (String) o2;
+                            return Collator.getInstance().localeCompare(s1, s2);
+                        } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
+                            return ((Comparable) o1).compareTo(o2);
+                        }
+                        return 0;
+                    }
+                }));
                 ColumnConfig columnConfig;
                 columnConfig = new ColumnConfig("name", Messages.get("label.name"), 500);
                 columnConfig.setFixed(true);

@@ -2742,12 +2742,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return result;
         }
 
-        if (isNodeType(Constants.JAHIANT_TRANSLATION) && !propertyName.equals("jcr:language")) {
-            result = getParent().getApplicablePropertyDefinition(propertyName);
-            applicablePropertyDefinition.put(propertyName, result);
-            return result;
-        }
-
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
         Iterator<ExtendedNodeType> iterator = getNodeTypesIterator();
         while (iterator.hasNext()) {
@@ -2760,6 +2754,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             types.add(type);
         }
+
+        if (isNodeType(Constants.JAHIANT_TRANSLATION) && !propertyName.equals("jcr:language")) {
+            result = getParent().getApplicablePropertyDefinition(propertyName);
+            if (result!=null) {
+                applicablePropertyDefinition.put(propertyName, result);
+                return result;
+            }
+        }
+
         for (ExtendedNodeType type : types) {
             for (ExtendedPropertyDefinition epd : type.getUnstructuredPropertyDefinitions().values()) {
                 // check type .. ?

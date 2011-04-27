@@ -141,7 +141,15 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
         String content = originalValue.getString();
 
         if (definition.isInternationalized()) {
-            name += "_" + node.getSession().getLocale();
+            Locale locale = node.getSession().getLocale();
+            if(locale==null) {
+                // This might happen under publication
+                if(node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                    name += "_" + node.getProperty("jcr:language").getString();
+                }
+            } else {
+                name += "_" + locale;
+            }
         }
 
         final Map<String, Long> refs = new HashMap<String, Long>();
@@ -268,11 +276,17 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
 
         final ExtendedPropertyDefinition definition = (ExtendedPropertyDefinition) property.getDefinition();
         String name = definition.getName();
+        JCRNodeWrapper parent = property.getParent();
         if (definition.isInternationalized()) {
-            name += "_" + property.getSession().getLocale();
+            Locale locale = property.getSession().getLocale();
+            if(locale==null) {
+                // This might happen under publication
+                name += "_" + parent.getProperty("jcr:language").getString();
+            } else {
+                name += "_" + locale;
+            }
         }
 
-        JCRNodeWrapper parent = property.getParent();
         if (parent.isNodeType(Constants.JAHIANT_TRANSLATION)) {
             parent = parent.getParent();
         }

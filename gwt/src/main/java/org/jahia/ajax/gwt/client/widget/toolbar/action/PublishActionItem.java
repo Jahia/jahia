@@ -120,7 +120,7 @@ public class PublishActionItem extends BaseActionItem {
             updateTitle(Messages.get("label.publish.selected.items"));
         } else {
             gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
-            if (gwtJahiaNode != null) {
+            if (gwtJahiaNode != null && gwtJahiaNode.getWorkflowInfo() != null) {
                 wf = gwtJahiaNode.getWorkflowInfo().getActiveWorkflows().get(new GWTJahiaWorkflowType("publish"));
                 if (wf != null) {
                     if (!wf.getAvailableTasks().isEmpty()) {

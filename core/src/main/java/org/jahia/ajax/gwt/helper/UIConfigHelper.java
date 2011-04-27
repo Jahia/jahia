@@ -258,6 +258,8 @@ public class UIConfigHelper {
                 gwtConfig.setHideLeftPanel(config.isHideLeftPanel());
                 gwtConfig.setFilters(config.getFilters());
                 gwtConfig.setMimeTypes(config.getMimeTypes());
+                gwtConfig.setHiddenRegex(config.getHiddenRegex());
+                gwtConfig.setHiddenTypes(config.getHiddenTypes());
                 gwtConfig.setDefaultView(config.getDefaultView());
                 gwtConfig.setEnableFileDoubleClick(config.isEnableFileDoubleClick());
                 gwtConfig.setAllowsMultipleSelection(config.isAllowsMultipleSelection());

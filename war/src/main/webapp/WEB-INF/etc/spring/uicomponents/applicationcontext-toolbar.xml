@@ -161,6 +161,13 @@
         <property name="icon" value="workflowAction"/>
     </bean>
 
+    <bean id="Toolbar.Item.ViewHiddenTypes" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewHiddenTypesActionItem"/>
+        </property>
+        <property name="titleKey" value="label.viewHiddenTypes"/>
+        <property name="icon" value="viewHiddenTypes"/>
+    </bean>
 
     <!-- show compare mode-->
     <bean id="Toolbar.Item.ShowCompareEngine" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">

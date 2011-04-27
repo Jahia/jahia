@@ -62,6 +62,9 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private List<String> filters;
     private List<String> mimeTypes;
 
+    private List<String> hiddenTypes = new ArrayList<String>();
+    private String hiddenRegex;
+
     private String defaultView;
     private boolean enableFileDoubleClick = true;
     private boolean allowsMultipleSelection = true;
@@ -302,5 +305,21 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
 	public void setManagerEngineTabs(List<GWTEngineTab> managerEngineTabs) {
     	this.managerEngineTabs = managerEngineTabs;
+    }
+
+    public List<String> getHiddenTypes() {
+        return hiddenTypes;
+    }
+
+    public void setHiddenTypes(List<String> hiddenTypes) {
+        this.hiddenTypes = hiddenTypes;
+    }
+
+    public String getHiddenRegex() {
+        return hiddenRegex;
+    }
+
+    public void setHiddenRegex(String hiddenRegex) {
+        this.hiddenRegex = hiddenRegex;
     }
 }

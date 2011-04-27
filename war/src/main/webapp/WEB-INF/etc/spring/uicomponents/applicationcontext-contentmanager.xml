@@ -35,7 +35,20 @@
                 <ref bean="Engine.Tab.Usages"/>
             </list>
         </property>
-
+        <property name="hiddenRegex" value="^j:.*"/>
+        <property name="hiddenTypes">
+            <list>
+                <value>rep:system</value>
+                <value>jnt:referencesKeeper</value>
+                <value>jnt:portletDefinitions</value>
+                <value>jnt:acl</value>
+                <value>jnt:workflowRules</value>
+                <value>jnt:permission</value>
+                <value>jnt:roles</value>
+                <value>jnt:passwordPolicy</value>
+                <value>jnt:passwordHistory</value>
+            </list>
+        </property>
     </bean>
 
     <!-- file manager -->
@@ -674,6 +687,7 @@
                                     <ref bean="Toolbar.Item.ListView"/>
                                     <ref bean="Toolbar.Item.ThumbsView"/>
                                     <ref bean="Toolbar.Item.Detailedview"/>
+                                    <ref bean="Toolbar.Item.ViewHiddenTypes"/>
                                 </list>
                             </property>
                         </bean>

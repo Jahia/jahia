@@ -68,7 +68,7 @@ public class RepositoryTab extends ContentPanel {
     private TreeStore<GWTJahiaNode> store;
     private ContentRepositoryTabs folderTreeContainer;
     private TreeGrid<GWTJahiaNode> m_tree;
-
+    private GWTJahiaNodeTreeFactory factory;
     /**
      * Constructor
      *
@@ -86,12 +86,14 @@ public class RepositoryTab extends ContentPanel {
         getHeader().setIcon(ToolbarIconProvider.getInstance().getIcon(repo.getKey()));
 
         // tree component
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getPaths());
+        factory = new GWTJahiaNodeTreeFactory(repository.getPaths());
         factory.setNodeTypes(config.getFolderTypes());
         factory.setMimeTypes(config.getMimeTypes());
         factory.setFilters(config.getFilters());
         factory.setFields(config.getTreeColumnKeys());
         factory.setSelectedPath(selectedPaths);
+        factory.setHiddenTypes(config.getHiddenTypes());
+        factory.setHiddenRegex(config.getHiddenRegex());
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();
@@ -129,6 +131,7 @@ public class RepositoryTab extends ContentPanel {
      * init
      */
     public void init() {
+        factory.setDisplayHiddenTypes(getLinker()!=null&&getLinker().isDisplayHiddenTypes());
         loader.load();
 
         TreeGridDragSource source = new TreeGridDragSource(m_tree) {
@@ -220,6 +223,7 @@ public class RepositoryTab extends ContentPanel {
     public void refresh() {
 //        init = true;
         store.removeAll();
+        factory.setDisplayHiddenTypes(getLinker()!=null&&getLinker().isDisplayHiddenTypes());
         loader.load();
     }
 

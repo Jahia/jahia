@@ -163,6 +163,10 @@ public class WelcomeServlet extends HttpServlet {
         if (resolvedSite == null) {
             resolvedSite = siteService.getDefaultSite();
         }
+        // Fallback on system site
+        if (resolvedSite == null) {
+            resolvedSite = siteService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+        }
         return (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
                 .getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(resolvedSite.getJCRLocalPath());
     }

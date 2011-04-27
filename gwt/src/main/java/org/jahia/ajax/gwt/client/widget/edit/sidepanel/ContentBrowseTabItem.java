@@ -53,8 +53,6 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.Arrays;
-
 /**
  * Side panel tab item for browsing the content repository.
  * User: toto
@@ -81,8 +79,12 @@ class ContentBrowseTabItem extends BrowseTabItem {
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 if (gwtJahiaFolder != null) {
                     Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
-                    JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, config.getTableColumnKeys(), false, -1, -1, listAsyncCallback);
+                    try {
+                        JahiaContentManagementService.App.getInstance()
+                                .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, config.getTableColumnKeys(), false, -1, -1, false, null, null, listAsyncCallback);
+                    } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
                 } else {
                     contentContainer.unmask();
                 }

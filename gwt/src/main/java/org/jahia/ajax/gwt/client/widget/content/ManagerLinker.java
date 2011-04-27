@@ -68,6 +68,7 @@ public class ManagerLinker implements Linker {
     private GWTManagerConfiguration config;
     protected static final String PICKER = "picker";
     protected static final String MANAGER = "manager";
+    private boolean displayHiddenTypes = false;
 
     public ManagerLinker(GWTManagerConfiguration configuration) {
         this.config = configuration;
@@ -387,4 +388,14 @@ public class ManagerLinker implements Linker {
         setLocale(locale);
         refresh();
     }
+
+    public boolean isDisplayHiddenTypes() {
+        return displayHiddenTypes;
+    }
+
+    public void setDisplayHiddenTypes(boolean displayHiddenTypes) {
+        this.displayHiddenTypes = displayHiddenTypes;
+    }
+
+
 }

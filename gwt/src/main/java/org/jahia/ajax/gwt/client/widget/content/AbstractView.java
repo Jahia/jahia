@@ -1,7 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -42,10 +41,14 @@ public abstract class AbstractView extends TopRightComponent {
             protected void load(Object config, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children with type " + configuration.getNodeTypes() + " of " +
                         root.getPath());
-                JahiaContentManagementService.App.getInstance().lsLoad(root,
-                        configuration.getAllNodeTypes(),
-                        configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
-                        false, -1, -1, listAsyncCallback);
+                try {
+                    JahiaContentManagementService.App.getInstance().lsLoad(root,
+                            configuration.getAllNodeTypes(),
+                            configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
+                            false, -1, -1,getLinker().isDisplayHiddenTypes() , configuration.getHiddenTypes(), configuration.getHiddenRegex(), listAsyncCallback);
+                } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             }
         };
 

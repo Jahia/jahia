@@ -60,6 +60,9 @@ public class ManagerConfiguration implements Serializable {
     private List<String> filters = new ArrayList<String>();
     private List<String> mimeTypes = new ArrayList<String>();
 
+    private List<String> hiddenTypes = new ArrayList<String>();
+    private String hiddenRegex;
+
     private String defaultView;
     private boolean enableFileDoubleClick = true;
     private boolean allowsMultipleSelection = true;
@@ -274,4 +277,19 @@ public class ManagerConfiguration implements Serializable {
         this.requiredPermission = requiredPermission;
     }
 
+    public List<String> getHiddenTypes() {
+        return hiddenTypes;
+    }
+
+    public void setHiddenTypes(List<String> hiddenTypes) {
+        this.hiddenTypes = hiddenTypes;
+    }
+
+    public String getHiddenRegex() {
+        return hiddenRegex;
+    }
+
+    public void setHiddenRegex(String hiddenRegex) {
+        this.hiddenRegex = hiddenRegex;
+    }
 }

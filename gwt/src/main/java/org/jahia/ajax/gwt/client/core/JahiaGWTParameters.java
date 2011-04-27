@@ -32,14 +32,11 @@
 
 package org.jahia.ajax.gwt.client.core;
 
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.google.gwt.i18n.client.Dictionary;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
 
 import java.util.ArrayList;
@@ -291,7 +288,7 @@ public class JahiaGWTParameters {
 
     public static void refreshSitesList() {
         JahiaContentManagementService
-                .App.getInstance().getRoot(Arrays.asList(sitesLocation), Arrays.asList("jnt:virtualsite"), null, null,GWTJahiaNode.DEFAULT_SITE_FIELDS,null,null, false,new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                .App.getInstance().getRoot(Arrays.asList(sitesLocation), Arrays.asList("jnt:virtualsite"), null, null,GWTJahiaNode.DEFAULT_SITE_FIELDS,null,null, false, false, null, null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> sites) {
                 sitesMap.clear();
                 for (GWTJahiaNode site : sites) {

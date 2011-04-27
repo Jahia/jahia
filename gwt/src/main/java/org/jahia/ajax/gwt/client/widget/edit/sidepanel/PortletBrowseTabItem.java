@@ -50,7 +50,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -85,8 +84,12 @@ class PortletBrowseTabItem extends BrowseTabItem {
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 if (gwtJahiaFolder != null) {
                     Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
-                    JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.PORTLET_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS), false, -1, -1, listAsyncCallback);
+                    try {
+                        JahiaContentManagementService.App.getInstance()
+                                .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.PORTLET_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS), false, -1, -1, false, null, null, listAsyncCallback);
+                    } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
                 } else {
                     contentContainer.unmask();
                 }

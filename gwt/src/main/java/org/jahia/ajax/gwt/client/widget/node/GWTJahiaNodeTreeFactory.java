@@ -74,6 +74,9 @@ public class GWTJahiaNodeTreeFactory {
     protected GWTJahiaNodeTreeLoader loader;
     protected TreeStore<GWTJahiaNode> store;
     private boolean checkSubchilds = false;
+    private List<String> hiddenTypes = new ArrayList<String>();
+    private String hiddenRegex;
+    private boolean displayHiddenTypes = false;
 
     public GWTJahiaNodeTreeFactory(final List<String> paths) {
         this(paths, GWTJahiaNode.DEFAULT_FIELDS);
@@ -175,6 +178,18 @@ public class GWTJahiaNodeTreeFactory {
 
     public void setSaveOpenPath(boolean saveOpenPath) {
         this.saveOpenPath = saveOpenPath;
+    }
+
+    public void setDisplayHiddenTypes(boolean displayHiddenTypes) {
+        this.displayHiddenTypes = displayHiddenTypes;
+    }
+
+    public void setHiddenRegex(String hiddenRegex) {
+        this.hiddenRegex = hiddenRegex;
+    }
+
+    public void setHiddenTypes(List<String> hiddenTypes) {
+        this.hiddenTypes = hiddenTypes;
     }
 
     /**
@@ -294,7 +309,7 @@ public class GWTJahiaNodeTreeFactory {
             if (currentPage == null) {
                 JahiaContentManagementService.App.getInstance()
                         .getRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedPath, openPath,checkSubchilds,
-                                listAsyncCallback);
+                                displayHiddenTypes, hiddenTypes, hiddenRegex, listAsyncCallback);
             } else {
                 GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) currentPage;
                 if (gwtJahiaNode.isExpandOnLoad()) {
@@ -304,18 +319,22 @@ public class GWTJahiaNodeTreeFactory {
                     }
                     listAsyncCallback.onSuccess(list);
                 } else {
-                    JahiaContentManagementService.App.getInstance()
-                            .lsLoad(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds, -1, -1,
-                                    new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
-                                        public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
-                                            listAsyncCallback.onSuccess(result.getData());
-                                        }
+                    try {
+                        JahiaContentManagementService.App.getInstance()
+                                .lsLoad(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds, -1, -1, displayHiddenTypes,
+                                        hiddenTypes, hiddenRegex, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+                                            public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
+                                                listAsyncCallback.onSuccess(result.getData());
+                                            }
 
-                                        @Override public void onApplicationFailure(Throwable caught) {
-                                            listAsyncCallback.onFailure(caught);
-                                        }
+                                            @Override public void onApplicationFailure(Throwable caught) {
+                                                listAsyncCallback.onFailure(caught);
+                                            }
 
-                                    });
+                                        });
+                    } catch (org.jahia.ajax.gwt.client.service.GWTJahiaServiceException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
                 }
             }
         }

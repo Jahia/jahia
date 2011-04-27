@@ -111,7 +111,7 @@ import java.util.*;
  */
 public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
 
-	private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
 
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
@@ -267,13 +267,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     getRequest(), name);
             config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
 
-            List<GWTJahiaNode> sites = getRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, false);
+            List<GWTJahiaNode> sites = getRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, false, false, null, null);
             String permission = name.equals("editmode") ? "editModeAccess" : "studioModeAccess";
             Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
             for (GWTJahiaNode site : sites) {
                 if (session.getNodeByUUID(site.getUUID()).hasPermission(permission)) {
-                sitesMap.put(site.getSiteUUID(), site);
-            }
+                    sitesMap.put(site.getSiteUUID(), site);
+                }
             }
             config.setSitesMap(sitesMap);
 
@@ -296,11 +296,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public BasePagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
-                                                     List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset)
+                                                     List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex)
             throws GWTJahiaServiceException {
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : navigation
-                .ls(parentNode, nodeTypes, mimeTypes, filters, fields, checkSubChild, retrieveCurrentSession())) {
+                .ls(parentNode, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession())) {
             if (n.isMatchFilters()) {
                 filteredList.add(n);
             }
@@ -334,7 +334,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
                                       List<String> filters, List<String> fields, List<String> selectedNodes,
-                                      List<String> openPaths, boolean checkSubChild) throws GWTJahiaServiceException {
+                                      List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(paths.toString());
         }
@@ -342,10 +342,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (logger.isDebugEnabled()) {
             logger.debug("retrieving open paths for " + paths + " :\n" + openPaths);
         }
-
-        return navigation
-                .retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
-                        retrieveCurrentSession(), getLocale(), checkSubChild);
+        return navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
+                        retrieveCurrentSession(), getLocale(), checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
     }
 
     public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {
@@ -1188,9 +1186,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException {
-    	logger.info("Deploying templates {} to the target {}", templatesPath, sitePath);
+        logger.info("Deploying templates {} to the target {}", templatesPath, sitePath);
         contentManager.deployTemplates(templatesPath, sitePath, retrieveCurrentSession());
-    	logger.info("...template deployment done.");
+        logger.info("...template deployment done.");
     }
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType) throws GWTJahiaServiceException {
@@ -1833,54 +1831,54 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return returnedSites;
     }
 
-	public boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings)
-	        throws GWTJahiaServiceException {
-		
-    	String theUrl = props.get("remoteUrl");
-    	while (theUrl.endsWith("/")) {
-    		theUrl = theUrl.substring(0, theUrl.length() - 1);
-    	}
-    	if (!theUrl.startsWith("http://") && !theUrl.startsWith("https://")) {
-    		theUrl = "http://" + theUrl;
-    	}
-    	props.put("remoteUrl", theUrl);
-    	
-    	String thePath = props.get("remotePath");
-    	while (thePath.endsWith("/")) {
-    		thePath = thePath.substring(0, thePath.length() - 1);
-    	}
-    	props.put("remotePath", thePath);
-		
-		if (validateConnectionSettings) {
-			publication.validateConnection(props, retrieveCurrentSession());
-		}
+    public boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings)
+            throws GWTJahiaServiceException {
 
-		List<GWTJahiaNodeProperty> gwtProps = new ArrayList<GWTJahiaNodeProperty>();
-		gwtProps.add(new GWTJahiaNodeProperty("remoteUrl", props.get("remoteUrl")));
-		gwtProps.add(new GWTJahiaNodeProperty("remotePath", props.get("remotePath")));
-		gwtProps.add(new GWTJahiaNodeProperty("remoteUser", props.get("remoteUser")));
-		gwtProps.add(new GWTJahiaNodeProperty("remotePassword", encryptPassword(props
-		        .get("remotePassword"))));
-		gwtProps.add(new GWTJahiaNodeProperty("node", props.get("node")));
-		gwtProps.add(new GWTJahiaNodeProperty("schedule", props.get("schedule")));
+        String theUrl = props.get("remoteUrl");
+        while (theUrl.endsWith("/")) {
+            theUrl = theUrl.substring(0, theUrl.length() - 1);
+        }
+        if (!theUrl.startsWith("http://") && !theUrl.startsWith("https://")) {
+            theUrl = "http://" + theUrl;
+        }
+        props.put("remoteUrl", theUrl);
 
-		createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName, 255),
-		        "jnt:remotePublication", null, null, gwtProps,
-		        new HashMap<String, List<GWTJahiaNodeProperty>>());
+        String thePath = props.get("remotePath");
+        while (thePath.endsWith("/")) {
+            thePath = thePath.substring(0, thePath.length() - 1);
+        }
+        props.put("remotePath", thePath);
 
-		return true;
-	}
+        if (validateConnectionSettings) {
+            publication.validateConnection(props, retrieveCurrentSession());
+        }
 
-	private String encryptPassword(String pwd) {
-		return StringUtils.isNotEmpty(pwd) ? EncryptionUtils.passwordBaseEncrypt(pwd) : StringUtils.EMPTY;
-	}
+        List<GWTJahiaNodeProperty> gwtProps = new ArrayList<GWTJahiaNodeProperty>();
+        gwtProps.add(new GWTJahiaNodeProperty("remoteUrl", props.get("remoteUrl")));
+        gwtProps.add(new GWTJahiaNodeProperty("remotePath", props.get("remotePath")));
+        gwtProps.add(new GWTJahiaNodeProperty("remoteUser", props.get("remoteUser")));
+        gwtProps.add(new GWTJahiaNodeProperty("remotePassword", encryptPassword(props
+                .get("remotePassword"))));
+        gwtProps.add(new GWTJahiaNodeProperty("node", props.get("node")));
+        gwtProps.add(new GWTJahiaNodeProperty("schedule", props.get("schedule")));
 
-	public Integer deleteAllCompletedJobs() throws GWTJahiaServiceException {
-	    return schedulerHelper.deleteAllCompletedJobs();
+        createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName, 255),
+                "jnt:remotePublication", null, null, gwtProps,
+                new HashMap<String, List<GWTJahiaNodeProperty>>());
+
+        return true;
+    }
+
+    private String encryptPassword(String pwd) {
+        return StringUtils.isNotEmpty(pwd) ? EncryptionUtils.passwordBaseEncrypt(pwd) : StringUtils.EMPTY;
+    }
+
+    public Integer deleteAllCompletedJobs() throws GWTJahiaServiceException {
+        return schedulerHelper.deleteAllCompletedJobs();
     }
 
     public String getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel, String workspace,
-                             String locale) throws GWTJahiaServiceException {
+                                         String locale) throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
                 locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale(), false);
         try {

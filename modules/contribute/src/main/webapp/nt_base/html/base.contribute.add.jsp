@@ -49,15 +49,17 @@
         <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
         <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
+        <input type="hidden" name="normalizeNodeName" value="true"/>
         <fieldset>
             <legend>${jcr:label(type,renderContext.mainResourceLocale)}</legend>
+            <label class="left" for="JCRnodeName"><fmt:message key="label.name"/></label>
+            <input type="text" id="JCRnodeName" name="JCRnodeName"/>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
                 <c:if test="${propertyDefinition.name eq 'jcr:title'}">
                     <label class="left"
                            for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
                     <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                            name="${propertyDefinition.name}"/>
-
                 </c:if>
             </c:forEach>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">

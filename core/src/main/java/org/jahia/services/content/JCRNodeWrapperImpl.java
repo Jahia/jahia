@@ -3115,7 +3115,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         }
                     }
                 }
-                return checkI18nAndMandatoryPropertiesForLocale(locale);
+                boolean b = checkI18nAndMandatoryPropertiesForLocale(locale);
+                if(!b && siteNode.isMixLanguagesActive()) {
+                    b = checkI18nAndMandatoryPropertiesForLocale(LanguageCodeConverters.getLocaleFromCode(siteNode.getDefaultLanguage()));
+                }
+                return b;
             } else if (languages != null) {
                 for (String language : languages) {
                     locale = LanguageCodeConverters.getLocaleFromCode(language);

@@ -48,6 +48,9 @@
         <ul>
             <c:forEach items="${tagCloud}" var="tag">
                 <jcr:node var="tagName" uuid="${tag.key}"/>
+                <c:if test="${empty currentNode.properties.resultPage}">
+                    <c:set var="edit" value="${true}"/>
+                </c:if>
                 <c:url var="facetUrl" value="${url.base}${currentNode.properties.resultPage.node.path}.html">
                     <c:param name="src_terms[0].term" value="${tagName.name}"/>
                     <c:param name="src_terms[0].fields.tags" value="true"/>

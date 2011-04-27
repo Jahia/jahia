@@ -103,7 +103,7 @@ public class ContentExport extends Window {
         }
 */
 
-        b = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+        b = new Button(Messages.get("label.close"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }

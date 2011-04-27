@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.extjs.gxt.ui.client.widget.form.Field;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -315,7 +316,7 @@ public class EditContentEngine extends AbstractContentEngine {
             if (item instanceof PropertiesTabItem) {
                 PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                 PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();
-                if (pe != null) {                        
+                if (pe != null) {
                     //properties.addAll(pe.getProperties());
                     node.getNodeTypes().removeAll(pe.getRemovedTypes());
                     node.getNodeTypes().addAll(pe.getAddedTypes());
@@ -347,7 +348,15 @@ public class EditContentEngine extends AbstractContentEngine {
                 // case of contentTabItem
                 if (item instanceof ContentTabItem) {
                     if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                        nodeName = ((ContentTabItem) item).getName().getValue();
+                        Field<String> name = ((ContentTabItem) item).getName();
+                        if(!name.isValid()) {
+                            com.google.gwt.user.client.Window.alert(Messages.get(
+                                "label.error.system.name.mandatory", "System name is mandatory and could not be empty"));
+                            unmask();
+                            ok.setEnabled(true);
+                            return;
+                        }
+                        nodeName = name.getValue();
                         node.setName(nodeName);
                     }
                 }

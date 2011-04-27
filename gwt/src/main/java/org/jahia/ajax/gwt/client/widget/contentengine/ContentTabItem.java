@@ -193,6 +193,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameText = new TextField<String>();
                 nameText.setWidth("250");
                 nameText.setMaxLength(maxLength);
+                nameText.setAllowBlank(false);
                 nameText.setStyleAttribute("padding-left", "0");
 //                nameText.setValue(engine.getNodeName());
                 nameText.setFireChangeEventOnSetValue(true);

@@ -29,7 +29,7 @@
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
 <utility:setBundle basename="JahiaContributeMode" useUILocale="true"/>
 <script type="text/javascript">
-    var contributeCKEditorToolbar = {toolbar: 'User', filebrowserBrowseUrl: null, filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: '${renderContext.URLGenerator.context}/engines/liveimagepicker.jsp?files=<c:url value="${url.files}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}', filebrowserLinkBrowseUrl: '${renderContext.URLGenerator.context}/engines/liveimagepicker.jsp?files=<c:url value="${url.base}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}&type=pages'};
+    var contributeCKEditorToolbar = {toolbar: 'User', filebrowserBrowseUrl: null, filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: '${renderContext.URLGenerator.context}/engines/liveimagepicker.jsp?files=<c:url value="${url.filesPlaceholders}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}', filebrowserLinkBrowseUrl: '${renderContext.URLGenerator.context}/engines/liveimagepicker.jsp?files=<c:url value="${url.basePlaceholders}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}&type=pages'};
 </script>
 <c:set var="animatedTasks" value=""/>
 <c:set var="animatedWFs" value=""/>

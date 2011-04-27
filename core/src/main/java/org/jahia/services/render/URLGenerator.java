@@ -175,11 +175,19 @@ public class URLGenerator {
     }
 
     public String getFiles() {
-        return "/files"+ "/" + resource.getWorkspace();
+        return "/files/" + resource.getWorkspace();
+    }
+
+    public String getFilesPlaceholders() {
+        return "/files/{workspace}";
     }
 
     public String getBase() {
         return base;
+    }
+
+    public String getBasePlaceholders() {
+        return StringUtils.substringBeforeLast(context.getServletPath(),"/")+"/{mode}/{lang}";
     }
 
     public String getLive() {

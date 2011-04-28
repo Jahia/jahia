@@ -48,6 +48,7 @@
             if (typeof wcagCompliant == 'function') {
             	ckeditorInstance.checkWCAGCompliance=wcagCompliant;
             }
+            ckeditorInstance.resetDirty();
         },
         submit : function(settings, original) {
             var id = get_id(original);
@@ -56,8 +57,9 @@
         },
         reset : function(settings, original) {
             var id = get_id(original);
-            original.reset();
             remove_ck(id);
+            $('#' + id).remove();
+            original.reset();
         }
     });
 })(jQuery);

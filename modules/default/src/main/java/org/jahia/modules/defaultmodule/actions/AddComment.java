@@ -62,7 +62,7 @@ public class AddComment extends Action {
             jcrSessionWrapper.save();
         }
         String path = node.getPath() + "/comments";
-        JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper.getNode(path), "jnt:post","");
+        JCRNodeWrapper newNode = createNode(req, parameters, jcrSessionWrapper.getNode(path), "jnt:post","", false);
         jcrSessionWrapper.save();
         return new ActionResult(HttpServletResponse.SC_OK, newNode.getPath(), Render.serializeNodeToJSON(newNode));
     }

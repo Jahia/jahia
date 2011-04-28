@@ -114,10 +114,13 @@ public class DefaultPostAction extends Action {
             if (parameters.containsKey(Render.NODE_NAME)) {
                 nodeName = (String) ((List) parameters.get(Render.NODE_NAME)).get(0);
             }
+            boolean forceCreation = false;
             if (!"*".equals(lastPath)) {
                 nodeName = lastPath;
+            } else {
+                forceCreation = true;
             }
-            newNode = createNode(req, parameters, node, nodeType, nodeName);
+            newNode = createNode(req, parameters, node, nodeType, nodeName, forceCreation);
             final FileUpload fileUpload = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
             if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
                 final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();

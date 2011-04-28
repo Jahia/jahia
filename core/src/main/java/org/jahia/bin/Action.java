@@ -100,9 +100,10 @@ public abstract class Action {
     private String requiredWorkspace;
 
     protected JCRNodeWrapper createNode(HttpServletRequest req, Map<String, List<String>> parameters,
-                                        JCRNodeWrapper node, String nodeType, String nodeName)
+                                        JCRNodeWrapper node, String nodeType, String nodeName, boolean forceCreation)
             throws RepositoryException {
         JCRNodeWrapper newNode;
+        boolean isNodeNameToBeNormalized = ServletRequestUtils.getBooleanParameter(req, Render.NORMALIZE_NODE_NAME, false);
         if (StringUtils.isBlank(nodeName)) {
             String nodeNameProperty = "jcr:title";
             if (parameters.get(Render.NODE_NAME_PROPERTY) != null) {
@@ -113,10 +114,15 @@ public abstract class Action {
             } else {
                 nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
             }
+            if (isNodeNameToBeNormalized) {
+                nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
+            }
             nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);
-        }
-        if (ServletRequestUtils.getBooleanParameter(req, Render.NORMALIZE_NODE_NAME, false)) {
+        } else if (isNodeNameToBeNormalized) {
             nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
+        }
+        if(forceCreation) {
+            nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);
         }
         try {
             newNode = node.getNode(nodeName);

@@ -6,6 +6,14 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
+<c:choose>
+<c:when test="${!empty title.string}">
+    <c:set var="title" value="${title.string}"/>
+</c:when>
+<c:otherwise>
+    <c:set var="title"><fmt:message key="backToPreviousPage"/></c:set>
+</c:otherwise>
+</c:choose>
 <div class="backToParent">
    <c:if test="${!empty jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}">
 		<c:url value='${url.base}${jcr:getParentOfType(renderContext.mainResource.node, "jnt:page").path}.html' var="action"/>
@@ -13,5 +21,5 @@
     <c:if test="${empty jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}">
         <c:set var="action">javascript:history.back()</c:set>
     </c:if>
-    <a class="returnLink" href="${action}" title='<fmt:message key="backToPreviousPage"/>'>${title.string}</a>
+    <a class="returnLink" href="${action}" title='<fmt:message key="backToPreviousPage"/>'>${title}</a>
 </div>

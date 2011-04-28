@@ -106,6 +106,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void setLock(List<String> paths, boolean locked, AsyncCallback async);
 
+    void clearAllLocks(String path, boolean processChildNodes, AsyncCallback async);
+
     void deletePaths(List<String> path, AsyncCallback async);
 
     void getAbsolutePath(String path, AsyncCallback<String> async);

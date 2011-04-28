@@ -474,6 +474,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.setLock(paths, locked, retrieveCurrentSession());
     }
 
+    public void clearAllLocks(String path, boolean processChildNodes) throws GWTJahiaServiceException {
+        contentManager.clearAllLocks(path, processChildNodes, retrieveCurrentSession());
+    }
+
     public void deletePaths(List<String> paths) throws GWTJahiaServiceException {
         contentManager.deletePaths(paths, getUser(), retrieveCurrentSession());
     }

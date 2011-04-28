@@ -62,6 +62,8 @@
                         <ref bean="Toolbar.Item.FilePreview"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
 
@@ -178,6 +180,8 @@
                         <ref bean="Toolbar.Item.FilePreview"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
                         <ref bean="Toolbar.Item.Rename"/>
@@ -278,6 +282,8 @@
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
                         <ref bean="Toolbar.Item.Rename"/>

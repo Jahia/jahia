@@ -85,6 +85,8 @@
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Lock"/>
                                     <ref bean="Toolbar.Item.Unlock"/>
+                                    <ref bean="Toolbar.Item.ClearLock"/>
+                                    <ref bean="Toolbar.Item.ClearAllLocks"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.OpenInContentManager"/>
                                 </list>
@@ -185,6 +187,8 @@
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
                     </list>
                 </property>
@@ -497,6 +501,8 @@
                                     <ref bean="Toolbar.Item.Import"/>
                                     <ref bean="Toolbar.Item.Lock"/>
                                     <ref bean="Toolbar.Item.Unlock"/>
+                                    <ref bean="Toolbar.Item.ClearLock"/>
+                                    <ref bean="Toolbar.Item.ClearAllLocks"/>
                                 </list>
                             </property>
                         </bean>

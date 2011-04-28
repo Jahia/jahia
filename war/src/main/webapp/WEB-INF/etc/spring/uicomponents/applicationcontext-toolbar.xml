@@ -720,6 +720,30 @@
         <property name="icon" value="unlock"/>
     </bean>
 
+    <bean id="Toolbar.Item.ClearLock" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ClearAllLocksActionItem"/>
+        </property>
+        <property name="titleKey" value="label.clearLock"/>
+        <property name="icon" value="unlock"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.RootUserVisibility"/>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.ClearAllLocks" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ClearAllLocksActionItem">
+                <property name="doSubNodes" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.clearAllLocks"/>
+        <property name="icon" value="unlock"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.RootUserVisibility"/>
+        </property>
+    </bean>
+
     <!-- new edit mode buttons: edit -->
     <bean id="Toolbar.Item.EditContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

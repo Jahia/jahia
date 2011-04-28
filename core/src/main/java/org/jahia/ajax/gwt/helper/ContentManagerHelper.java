@@ -343,32 +343,32 @@ public class ContentManagerHelper {
     public void checkWriteable(List<String> paths, JahiaUser user, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {
-        List<String> missedPaths = new ArrayList<String>();
-        for (String aNode : paths) {
-            JCRNodeWrapper node;
-            try {
-                node = currentUserSession.getNode(aNode);
-            } catch (RepositoryException e) {
-                logger.error(e.toString(), e);
-                missedPaths.add(new StringBuilder(aNode).append(" could not be accessed : ")
-                        .append(e.toString()).toString());
-                continue;
+            List<String> missedPaths = new ArrayList<String>();
+            for (String aNode : paths) {
+                JCRNodeWrapper node;
+                try {
+                    node = currentUserSession.getNode(aNode);
+                } catch (RepositoryException e) {
+                    logger.error(e.toString(), e);
+                    missedPaths.add(new StringBuilder(aNode).append(" could not be accessed : ")
+                            .append(e.toString()).toString());
+                    continue;
+                }
+                if (!node.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
+                    missedPaths.add(new StringBuilder("User ").append(user.getUsername()).append(" has no write access to ")
+                            .append(node.getName()).toString());
+                } else if (node.isLocked() && !node.getLockOwner().equals(user.getUsername())) {
+                    missedPaths.add(new StringBuilder(node.getName()).append(" is locked by ")
+                            .append(user.getUsername()).toString());
+                }
             }
-            if (!node.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
-                missedPaths.add(new StringBuilder("User ").append(user.getUsername()).append(" has no write access to ")
-                        .append(node.getName()).toString());
-            } else if (node.isLocked() && !node.getLockOwner().equals(user.getUsername())) {
-                missedPaths.add(new StringBuilder(node.getName()).append(" is locked by ")
-                        .append(user.getUsername()).toString());
+            if (missedPaths.size() > 0) {
+                StringBuilder errors = new StringBuilder("The following files could not be cut:");
+                for (String err : missedPaths) {
+                    errors.append("\n").append(err);
+                }
+                throw new GWTJahiaServiceException(errors.toString());
             }
-        }
-        if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder("The following files could not be cut:");
-            for (String err : missedPaths) {
-                errors.append("\n").append(err);
-            }
-            throw new GWTJahiaServiceException(errors.toString());
-        }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);
         }
@@ -481,13 +481,13 @@ public class ContentManagerHelper {
             JCRNodeWrapper nodeToDelete = null;
             try {
                 nodeToDelete = currentUserSession.getNode(path);
-            if (!user.isRoot() && nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(user.getUsername())) {
-                missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
-                        .append(nodeToDelete.getLockOwner()).toString());
-            }
-            if (!nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
-                missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
-            } else if (!getRecursedLocksAndFileUsages(nodeToDelete, missedPaths, user.getUsername())) {
+                if (!user.isRoot() && nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(user.getUsername())) {
+                    missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
+                            .append(nodeToDelete.getLockOwner()).toString());
+                }
+                if (!nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
+                    missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
+                } else if (!getRecursedLocksAndFileUsages(nodeToDelete, missedPaths, user.getUsername())) {
                     if (!nodeToDelete.getParent().isCheckedOut()) {
                         nodeToDelete.getParent().checkout();
                     }
@@ -498,15 +498,15 @@ public class ContentManagerHelper {
             } catch (PathNotFoundException e) {
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ")
                         .append(e.toString()).toString());
-                } catch (AccessDeniedException e) {
+            } catch (AccessDeniedException e) {
                 missedPaths.add(new StringBuilder(nodeToDelete != null ? nodeToDelete.getPath() : "").append(" - ACCESS DENIED").toString());
-                } catch (ReferentialIntegrityException e) {
+            } catch (ReferentialIntegrityException e) {
                 missedPaths.add(new StringBuilder(nodeToDelete != null ? nodeToDelete.getPath() : "").append(" - is in use").toString());
-                } catch (RepositoryException e) {
-                    logger.error("error", e);
+            } catch (RepositoryException e) {
+                logger.error("error", e);
                 throw new GWTJahiaServiceException(e);
-                }
             }
+        }
         if (missedPaths.size() > 0) {
             StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted", currentUserSession.getLocale()));
             for (String err : missedPaths) {
@@ -754,14 +754,33 @@ public class ContentManagerHelper {
                     return true;
                 }
             }
-        if (nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(username)) {
-            lockedNodes.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
-                    .append(nodeToDelete.getLockOwner()).toString());
-        }
+            if (nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(username)) {
+                lockedNodes.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
+                        .append(nodeToDelete.getLockOwner()).toString());
+            }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
         return !lockedNodes.isEmpty();
+    }
+
+    public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+        try {
+            JCRNodeWrapper node = currentUserSession.getNode(path);
+            if (currentUserSession.getUser().isRoot()) {
+                node.clearAllLocks();
+                for (NodeIterator iterator = node.getNodes(); iterator.hasNext() && processChildNodes;) {
+                    JCRNodeWrapper child = (JCRNodeWrapper) iterator.next();
+                    clearAllLocks(child.getPath(),processChildNodes,currentUserSession);
+                }
+            } else {
+                logger.error("Error when clearing all locks on node " + node.getPath());
+                throw new GWTJahiaServiceException("Error when clearing all locks on node " + path + " with user " + currentUserSession.getUser().getUserKey());
+            }
+        } catch (RepositoryException e) {
+            logger.error("Repository error when clearing all locks on node " + path);
+            throw new GWTJahiaServiceException("Error when clearing all locks on node " + path + " with user " + currentUserSession.getUser().getUserKey());
+        }
     }
 
     public void setLock(List<String> paths, boolean toLock, JCRSessionWrapper currentUserSession)
@@ -783,8 +802,8 @@ public class ContentManagerHelper {
         }
         for (JCRNodeWrapper node : nodes) {
             try {
-            if (!node.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
-                missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
+                if (!node.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
+                    missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
                 } else if (node.getLockedLocales().contains(currentUserSession.getLocale())) {
                     if (!toLock) {
                         try {
@@ -794,22 +813,22 @@ public class ContentManagerHelper {
                             missedPaths
                                     .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                         }
-                } else {
+                    } else {
                         String lockOwner = node.getLockOwner();
                         if (lockOwner != null && !lockOwner.equals(user.getUsername())) {
                             missedPaths.add(new StringBuilder(node.getName()).append(": locked by ").append(lockOwner).toString());
+                        }
                     }
-                }
-            } else {
+                } else {
                     if (toLock) {
                         if (!node.lockAndStoreToken("user")) {
                             missedPaths
                                     .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                         }
-                } else {
-                    // already unlocked
+                    } else {
+                        // already unlocked
+                    }
                 }
-            }
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths
@@ -1047,56 +1066,56 @@ public class ContentManagerHelper {
         JCRNodeWrapper referencedNode = null;
         try {
             referencedNode = currentUserSession.getNode(path);
-        if (referencedNode != null) {
-            if (!user.isRoot() && referencedNode.isLocked() && !referencedNode.getLockOwner().equals(user.getUsername())) {
-                missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - locked by ").append(
-                        referencedNode.getLockOwner()).toString());
-            }
-            if (!referencedNode.hasPermission(Privilege.JCR_REMOVE_NODE)) {
-                missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - ACCESS DENIED").toString());
-            } else if (!getRecursedLocksAndFileUsages(referencedNode, missedPaths, user.getUsername())) {
-                try {
-                    String referenceToRemove = referencedNode.getIdentifier();
-                    PropertyIterator r = referencedNode.getWeakReferences();
-                    while (r.hasNext()) {
-                        JCRPropertyWrapper reference = (JCRPropertyWrapper) r.next();
-                        if (!reference.getPath().startsWith("/referencesKeeper")) {
-                            if (!reference.getDefinition().isMandatory()) {
-                                if (reference.getDefinition().isMultiple()) {
-                                    Value[] values = reference.getValues();
-                                    if (values.length > 1) {
-                                        Value[] valuesCopy = new Value[values.length - 1];
-                                        int i = 0;
-                                        for (Value value : values) {
-                                            if (!value.getString().equals(referenceToRemove)) {
-                                                valuesCopy[i++] = value;
+            if (referencedNode != null) {
+                if (!user.isRoot() && referencedNode.isLocked() && !referencedNode.getLockOwner().equals(user.getUsername())) {
+                    missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - locked by ").append(
+                            referencedNode.getLockOwner()).toString());
+                }
+                if (!referencedNode.hasPermission(Privilege.JCR_REMOVE_NODE)) {
+                    missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - ACCESS DENIED").toString());
+                } else if (!getRecursedLocksAndFileUsages(referencedNode, missedPaths, user.getUsername())) {
+                    try {
+                        String referenceToRemove = referencedNode.getIdentifier();
+                        PropertyIterator r = referencedNode.getWeakReferences();
+                        while (r.hasNext()) {
+                            JCRPropertyWrapper reference = (JCRPropertyWrapper) r.next();
+                            if (!reference.getPath().startsWith("/referencesKeeper")) {
+                                if (!reference.getDefinition().isMandatory()) {
+                                    if (reference.getDefinition().isMultiple()) {
+                                        Value[] values = reference.getValues();
+                                        if (values.length > 1) {
+                                            Value[] valuesCopy = new Value[values.length - 1];
+                                            int i = 0;
+                                            for (Value value : values) {
+                                                if (!value.getString().equals(referenceToRemove)) {
+                                                    valuesCopy[i++] = value;
+                                                }
                                             }
+                                            reference.setValue(valuesCopy);
+                                        } else {
+                                            reference.remove();
                                         }
-                                        reference.setValue(valuesCopy);
                                     } else {
                                         reference.remove();
                                     }
                                 } else {
-                                    reference.remove();
+                                    missedPaths.add(new StringBuilder(referencedNode.getPath()).append(
+                                            " - is use in a mandatory property of ").append(
+                                            reference.getParent().getPath()).toString());
                                 }
-                            } else {
-                                missedPaths.add(new StringBuilder(referencedNode.getPath()).append(
-                                        " - is use in a mandatory property of ").append(
-                                        reference.getParent().getPath()).toString());
                             }
                         }
+                        currentUserSession.save();
+                    } catch (AccessDeniedException e) {
+                        missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - ACCESS DENIED").toString());
+                    } catch (ReferentialIntegrityException e) {
+                        missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - is in use").toString());
+                    } catch (RepositoryException e) {
+                        logger.error("error", e);
+                        missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - UNSUPPORTED").toString());
                     }
-                    currentUserSession.save();
-                } catch (AccessDeniedException e) {
-                    missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - ACCESS DENIED").toString());
-                } catch (ReferentialIntegrityException e) {
-                    missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - is in use").toString());
-                } catch (RepositoryException e) {
-                    logger.error("error", e);
-                    missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - UNSUPPORTED").toString());
                 }
             }
-        }
         } catch (RepositoryException e) {
             missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(
                     e.toString()).toString());

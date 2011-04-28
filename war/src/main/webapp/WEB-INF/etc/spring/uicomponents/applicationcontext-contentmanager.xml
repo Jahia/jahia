@@ -143,6 +143,8 @@
                         <ref bean="Toolbar.Item.FilePreview"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
                         <ref bean="Toolbar.Item.Rename"/>
@@ -739,6 +741,8 @@
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
                         <ref bean="Toolbar.Item.Export"/>
@@ -780,7 +784,7 @@
         <!-- table columns-->
         <property name="treeColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>displayName,*,label.title</value>
+                <value>name,*,label.title</value>
             </list>
         </property>
 
@@ -799,7 +803,7 @@
                 </bean>
                 <value>index,23</value>
                 <value>icon,40,empty</value>
-                <value>displayName,240,label.title</value>
+                <value>name,240,label.title</value>
                 <value>locked,60,label.lock</value>
                 <value>primaryTypeLabel,140,label.type</value>
                 <value>mix:created.jcr:created,100</value>
@@ -886,6 +890,8 @@
                         <ref bean="Toolbar.Item.NewContent"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                     </list>
@@ -1040,6 +1046,8 @@
                         <ref bean="Toolbar.Item.NewPage"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Copy"/>

@@ -275,9 +275,9 @@
                                     <ref bean="Toolbar.Item.NewExternalLink"/>
                                     <ref bean="Toolbar.Item.NavMenuText"/>
                                     <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>

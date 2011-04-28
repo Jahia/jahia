@@ -134,7 +134,8 @@ public class WelcomeServlet extends HttpServlet {
         final JCRSiteNode site = resolveSite(request);
         String redirect = null;
         if (site == null) {
-            redirect = request.getContextPath() + "/administration";
+            userRedirect(request, response, context);
+            return;
         } else {
             String language = resolveLanguage(request, site);
             String base;

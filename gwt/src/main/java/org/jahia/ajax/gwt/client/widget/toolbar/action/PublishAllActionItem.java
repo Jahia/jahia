@@ -57,7 +57,7 @@ public class PublishAllActionItem extends PublishActionItem {
             updateTitle(Messages.get("label.publish.all.selected.items"));
         } else {
             gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
-            if (gwtJahiaNode != null) {
+            if (gwtJahiaNode != null && gwtJahiaNode.getAggregatedPublicationInfos() != null) {
                 GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
 
                 setEnabled(GWTJahiaPublicationInfo.canPublish(gwtJahiaNode, info, JahiaGWTParameters.getLanguage()));

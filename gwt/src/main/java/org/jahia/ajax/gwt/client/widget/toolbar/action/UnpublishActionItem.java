@@ -90,10 +90,12 @@ public class UnpublishActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         GWTJahiaNode gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
-        if (gwtJahiaNode != null) {
+        if (gwtJahiaNode != null && gwtJahiaNode.getAggregatedPublicationInfos() != null) {
             GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
             setEnabled(!info.isLocked() && info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED));
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName() + " - " + JahiaGWTParameters.getLanguageDisplayName());
+        } else {
+            setEnabled(false);
         }
     }
 }

@@ -78,4 +78,7 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
 
     void addValues(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
+    Value getRealValue() throws ValueFormatException,RepositoryException;
+
+    Value[] getRealValues() throws ValueFormatException,RepositoryException;
 }

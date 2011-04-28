@@ -493,7 +493,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
                         nodePath = session.getNodeByUUID(uuid).getPath();
                     } catch (ItemNotFoundException infe) {
                         logger.warn("Cannot find referenced item : "+uuid);
-                        nodePath = "/#";
+                        return "#";
                     }
                     value = originalValue.replace(path, nodePath + ext);
                     if (isCmsContext) {

@@ -239,23 +239,23 @@ public class ConflictResolver {
             }
             if (!node.hasProperty(propName)) {
                 if (prop1.isMultiple()) {
-                    Value[] values = prop1.getValues();
+                    Value[] values = prop1.getRealValues();
                     for (Value value : values) {
                         diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), addPath(basePath,propName),value));
                     }
                 } else {
                     diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(),
-                            addPath(basePath, propName),prop1.getValue(), null));
+                            addPath(basePath, propName),prop1.getRealValue(), null));
                 }
             } else {
-                Property prop2 = node.getProperty(propName);
+                JCRPropertyWrapper prop2 = node.getProperty(propName);
 
                 if (prop1.isMultiple() != prop2.isMultiple()) {
                     throw new RepositoryException();
                 } else {
                     if (prop1.isMultiple()) {
-                        List<Value> vs1 = Arrays.asList(prop1.getValues());
-                        List<Value> vs2 = Arrays.asList(prop2.getValues());
+                        List<Value> vs1 = Arrays.asList(prop1.getRealValues());
+                        List<Value> vs2 = Arrays.asList(prop2.getRealValues());
 
                         Map<String, Value> added = new HashMap<String,Value>();
                         for (Value value : vs2) {
@@ -281,9 +281,9 @@ public class ConflictResolver {
                                     addPath(basePath, propName), value));
                         }
                     } else {
-                        if (!equalsValue(prop1.getValue(),prop2.getValue())) {
+                        if (!equalsValue(prop1.getRealValue(),prop2.getRealValue())) {
                             diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(),
-                                    addPath(basePath, propName), prop1.getValue(), prop2.getValue()));
+                                    addPath(basePath, propName), prop1.getRealValue(), prop2.getRealValue()));
                         }
                     }
                 }
@@ -303,12 +303,12 @@ public class ConflictResolver {
             }
             if (!frozenNode.hasProperty(propName)) {
                 if (prop2.isMultiple()) {
-                    Value[] values = prop2.getValues();
+                    Value[] values = prop2.getRealValues();
                     for (Value value : values) {
                         diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), addPath(basePath, prop2.getName()), value));
                     }
                 } else {
-                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), addPath(basePath, prop2.getName()), null, prop2.getValue()));
+                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), addPath(basePath, prop2.getName()), null, prop2.getRealValue()));
                 }
             }
 
@@ -674,7 +674,7 @@ public class ConflictResolver {
             if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
                 targetNode.addMixin(newValue.getString());
             } else if (targetNode.hasProperty(name)) {
-                List<Value> values = new ArrayList<Value>(Arrays.asList(targetNode.getProperty(name).getValues()));
+                List<Value> values = new ArrayList<Value>(Arrays.asList(targetNode.getProperty(name).getRealValues()));
                 values.add(newValue);
                 targetNode.setProperty(name, values.toArray(new Value[values.size()]));
             } else {
@@ -732,7 +732,7 @@ public class ConflictResolver {
                 targetNode.checkout();
             }
 
-            List<Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getValues());
+            List<Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
             List<Value> newValues = new ArrayList<Value>();
             for (Value value : oldValues) {
                 if (!equalsValue(value, oldValue)) {
@@ -806,7 +806,7 @@ public class ConflictResolver {
                 if (newValue == null) {
                     targetNode.getProperty(propertyName).remove();
                 } else {
-                    targetNode.setProperty(propertyName, newValue);
+                    targetNode.getRealNode().setProperty(propertyName, newValue);
                 }
                 return true;
             } else {
@@ -857,7 +857,7 @@ public class ConflictResolver {
                         return false;
                 }
 
-                targetNode.setProperty(propertyName, v);
+                targetNode.getRealNode().setProperty(propertyName, v);
                 return true;
             }
         }

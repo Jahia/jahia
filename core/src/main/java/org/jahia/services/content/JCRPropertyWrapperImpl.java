@@ -413,4 +413,19 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     public boolean isMultiple() throws RepositoryException {
         return property.isMultiple();
     }
+
+    public Value getRealValue() throws ValueFormatException, RepositoryException {
+        return new JCRValueWrapperImpl(property.getValue(), getDefinition(), getSession());
+    }
+
+    public Value[] getRealValues() throws ValueFormatException, RepositoryException {
+        Value[] values = property.getValues();
+
+        Value[] wrappedValues = new Value[values.length];
+        for (int i = 0; i < values.length; i++) {
+            Value value = values[i];
+            wrappedValues[i] = new JCRValueWrapperImpl(value, getDefinition(), getSession());
+        }
+        return wrappedValues;
+    }
 }

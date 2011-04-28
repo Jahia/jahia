@@ -767,11 +767,14 @@ public class NavigationHelper {
         n = new GWTJahiaNode();
         n.setUUID(uuid);
         n.setName(node.getName());
-        n.setDisplayName(JCRContentUtils.unescapeLocalNodeName(node.getName()));
         if (node.getPath().equals("/")) {
             n.setDisplayName("root");
             n.setName("root");
+        } else {
+            n.setDisplayName(WordUtils.abbreviate(JCRContentUtils.unescapeLocalNodeName(node.getDisplayableName()),70,90,"..."));
         }
+        n.setNormalizedName(removeDiacritics(n.getName()));
+        
         n.setDescription(description);
         n.setPath(node.getPath());
         n.setUrl(node.getUrl());
@@ -1102,10 +1105,6 @@ public class NavigationHelper {
                 }
             }
         }
-        if (!node.getPath().equals("/")) {
-            n.setDisplayName(WordUtils.abbreviate(JCRContentUtils.unescapeLocalNodeName(node.getDisplayableName()),70,90,"..."));
-        }
-        n.setNormalizedName(removeDiacritics(n.getName()));
 
         // versions
         if (fields.contains(GWTJahiaNode.VERSIONS) && node.isVersioned()) {

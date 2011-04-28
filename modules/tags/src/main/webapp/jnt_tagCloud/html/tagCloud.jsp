@@ -28,6 +28,7 @@
             test="${not empty currentNode.properties['jcr:title'] && not empty currentNode.properties['jcr:title'].string}"
             var="titleProvided">${fn:escapeXml(currentNode.properties['jcr:title'].string)}</c:if><c:if
             test="${not titleProvided}"><fmt:message key="tags"/></c:if></h3>
+        <c:if test="${edit && empty currentNode.properties.resultPage}"><p><fmt:message key="warn.no.searchResultPage"/></p></c:if>
 
     <query:definition var="listQuery" scope="request">
         <query:selector nodeTypeName="nt:base"/>

@@ -151,13 +151,13 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
                             <li>[]</li>
                         </c:if>
                         <c:forEach items="${property.values}" var="value">
-                            <li><%@include file="/modules/default/nt_base/raw/value.jspf" %></li>
+                            <li><%@include file="value.jspf" %></li>
                         </c:forEach>
                     </ul>
                 </c:if>
                 <c:if test="${!multiple}">
                     <c:set var="value" value="${property.value}"/>
-                    <%@include file="/modules/default/nt_base/raw/value.jspf" %>
+                    <%@include file="value.jspf" %>
                 </c:if>
                 </li>
             </c:forEach>

@@ -70,7 +70,7 @@
 <template:addResources>
 <script>
     $(document).ready(function() {
-        $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('<c:url value="${url.base}${param['path'] == null ? renderContext.mainResource.node.path : param['path']}"/>', {
+        $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('<c:url value="${url.base}${param['path'] == null ? renderContext.mainResource.node.path : param['path']}"><c:param name="contributePost" value="true"/></c:url>', {
             type : 'ajaxupload',
             onblur : 'ignore',
             submit : 'OK',

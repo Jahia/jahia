@@ -92,8 +92,8 @@ public class WelcomeServlet extends HttpServlet {
             if (request.getRequestURI().endsWith("/start")) {
                 userRedirect(request, response, getServletContext());
             } else {
-		        defaultRedirect(request, response, getServletContext());
-		    }
+                defaultRedirect(request, response, getServletContext());
+            }
         } catch (Exception e) {
             List<ErrorHandler> handlers = ServicesRegistry.getInstance()
                     .getJahiaTemplateManagerService().getErrorHandler();
@@ -109,52 +109,67 @@ public class WelcomeServlet extends HttpServlet {
     protected void userRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
         if (!JahiaUserManagerService.isGuest(user)) {
-            response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/cms/render/live/en" + user.getLocalPath() + ".html"));
+            redirect(request.getContextPath() + "/cms/render/live/en" + user.getLocalPath() + ".html", response);
         } else {
             throw new AccessDeniedException();
         }
     }
 
-    protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
-            request.getSession(true);
-            final JCRSiteNode site = resolveSite(request);
-            String redirect = null;
-            if (site == null) {
-                redirect = request.getContextPath() + "/administration";
+    protected void redirect(String url, HttpServletResponse response) throws IOException {
+        String targetUrl = response.encodeRedirectURL(url);
+        if (targetUrl.contains(";jsessionid")) {
+            if (targetUrl.contains("?")) {
+                targetUrl = StringUtils.substringBefore(targetUrl, ";jsessionid=") + "?"
+                        + StringUtils.substringAfter(targetUrl, "?");
             } else {
-                String language = resolveLanguage(request, site);
-                String base;
+                targetUrl = StringUtils.substringBefore(targetUrl, ";jsessionid=");
+            }
+        }
+        response.sendRedirect(targetUrl);
+    }
 
-                String pathInfo = request.getPathInfo();
-                if (pathInfo != null && "/edit".equals(pathInfo)) {
-                	// edit mode was requested
-					base = request.getContextPath() + Edit.getEditServletPath() + "/"
-					        + Constants.EDIT_WORKSPACE + "/" + language + site.getHome().getPath();
+    protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response,
+            ServletContext context) throws Exception {
+        request.getSession(true);
+        final JCRSiteNode site = resolveSite(request);
+        String redirect = null;
+        if (site == null) {
+            redirect = request.getContextPath() + "/administration";
+        } else {
+            String language = resolveLanguage(request, site);
+            String base;
+
+            String pathInfo = request.getPathInfo();
+            if (pathInfo != null && "/edit".equals(pathInfo)) {
+                // edit mode was requested
+                base = request.getContextPath() + Edit.getEditServletPath() + "/"
+                        + Constants.EDIT_WORKSPACE + "/" + language + site.getHome().getPath();
+            } else {
+                if (site.getHome() != null) {
+                    base = request.getContextPath() + Render.getRenderServletPath() + "/"
+                            + Constants.LIVE_WORKSPACE + "/" + language + site.getHome().getPath();
                 } else {
-                    if (site.getHome() != null) {
-                        base = request.getContextPath() + Render.getRenderServletPath() + "/"
-                                + Constants.LIVE_WORKSPACE + "/" + language + site.getHome().getPath();
+                    JCRSiteNode defSite = null;
+                    try {
+                        defSite = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
+                                .getCurrentUserSession().getNode(site.getPath());
+                    } catch (PathNotFoundException e) {
+                        throw new AccessDeniedException();
+                    }
+                    if (defSite.getHome() != null) {
+                        base = request.getContextPath() + Edit.getEditServletPath() + "/"
+                                + Constants.EDIT_WORKSPACE + "/" + language
+                                + defSite.getHome().getPath();
                     } else {
-                        JCRSiteNode defSite = null;
-                        try {
-                            defSite = (JCRSiteNode)
-                                    JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(site.getPath());
-                        } catch (PathNotFoundException e) {
-                            throw new AccessDeniedException();
-                        }
-                        if (defSite.getHome() != null) {
-                            base = request.getContextPath() + Edit.getEditServletPath() + "/"
-                                    + Constants.EDIT_WORKSPACE + "/" + language + defSite.getHome().getPath();
-                        } else {
-	                        throw new AccessDeniedException();
-	                    }
-	                }
+                        throw new AccessDeniedException();
+                    }
                 }
-
-                redirect = base + ".html";
             }
 
-            response.sendRedirect(response.encodeRedirectURL(redirect));
+            redirect = base + ".html";
+        }
+
+        redirect(redirect, response);
     }
 
     protected JCRSiteNode resolveSite(HttpServletRequest request) throws JahiaException, RepositoryException {
@@ -163,12 +178,8 @@ public class WelcomeServlet extends HttpServlet {
         if (resolvedSite == null) {
             resolvedSite = siteService.getDefaultSite();
         }
-        // Fallback on system site
-        if (resolvedSite == null) {
-            resolvedSite = siteService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
-        }
-        return (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
-                .getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(resolvedSite.getJCRLocalPath());
+        return resolvedSite != null ? (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
+                .getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(resolvedSite.getJCRLocalPath()) : null;
     }
     
     protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site)

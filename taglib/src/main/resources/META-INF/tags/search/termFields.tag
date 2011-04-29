@@ -18,7 +18,8 @@
 <c:set var="value" value="${functions:default(value, 'siteContent')}"/>
 <c:set var="formId" value='<%= request.getAttribute("org.jahia.tags.search.form.formId") %>'/>
 <c:set var="termIndex" value="${searchTermFieldIndexes[formId]}"/>
-<c:set var="selectionOptions" value="${functions:default(fn:replace(selectionOptions, ' ', ''), 'siteContent,files')}"/>
+<c:set var="selectionOptions" value="${fn:replace(selectionOptions, ' ', '')}"/>
+<c:set var="selectionOptions" value="${functions:default(selectionOptions, 'siteContent,files')}"/>
 <c:if test="${display}">
     <c:if test="${appearance == 'select'}">
         <c:set var="key" value="src_terms[${termIndex}].fields.custom"/>

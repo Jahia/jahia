@@ -13,7 +13,8 @@
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided." %>
 <utility:useConstants var="jcr" className="org.jahia.api.Constants" scope="application"/>
-<c:set var="selectionOptions" value="${functions:default(fn:replace(selectionOptions, ' ', ''), 'any,nt:file,nt:folder')}"/>
+<c:set var="selectionOptions" value="${fn:replace(selectionOptions, ' ', '')}"/>
+<c:set var="selectionOptions" value="${functions:default(selectionOptions, 'any,nt:file,nt:folder')}"/>
 <c:set var="value" value="${functions:default(param.src_nodeType, value)}"/>
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:if test="${display}">

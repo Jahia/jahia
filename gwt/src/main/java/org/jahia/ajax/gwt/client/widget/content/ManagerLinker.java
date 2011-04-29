@@ -69,6 +69,7 @@ public class ManagerLinker implements Linker {
     protected static final String PICKER = "picker";
     protected static final String MANAGER = "manager";
     private boolean displayHiddenTypes = false;
+    private boolean displayHiddenProperties = false;
 
     public ManagerLinker(GWTManagerConfiguration configuration) {
         this.config = configuration;
@@ -397,5 +398,11 @@ public class ManagerLinker implements Linker {
         this.displayHiddenTypes = displayHiddenTypes;
     }
 
+    public boolean isDisplayHiddenProperties() {
+        return displayHiddenProperties;
+    }
 
+    public void setDisplayHiddenProperties(boolean displayHiddenProperties) {
+        this.displayHiddenProperties = displayHiddenProperties;
+    }
 }

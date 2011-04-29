@@ -81,6 +81,16 @@ public class PropertiesEditor extends FormPanel {
     private Set<String> externalMixin = new HashSet<String>();
     private String locale = "";
 
+    public boolean isDisplayHiddenProperties() {
+        return displayHiddenProperties;
+    }
+
+    public void setDisplayHiddenProperties(boolean displayHiddenProperties) {
+        this.displayHiddenProperties = displayHiddenProperties;
+    }
+
+    private boolean displayHiddenProperties = false;
+
     public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties,
                             List<String> datatype) {
         super();
@@ -219,7 +229,7 @@ public class PropertiesEditor extends FormPanel {
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
             GWTJahiaFieldInitializer fieldInitializer = initializersValues != null ?
                     initializersValues.get(definition.getOverrideDeclaringNodeType() + "." + definition.getName()) : null;
-            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer != null ? fieldInitializer.getDisplayValues() : null);
+            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer != null ? fieldInitializer.getDisplayValues() : null, displayHiddenProperties);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (field != null) {
                 if (fieldSet == null || fieldSetGrouping &&
@@ -475,7 +485,7 @@ public class PropertiesEditor extends FormPanel {
                 boolean i18nProp = (definition instanceof GWTJahiaPropertyDefinition &&
                         ((GWTJahiaPropertyDefinition) definition).isInternationalized());
                 if ((includeI18N && i18nProp) || (includeNonI18N && !i18nProp)) {
-                    if ((definition.isHidden() && originalProperties.get(definition.getName()) != null) ||
+                    if (((definition.isHidden() || !displayHiddenProperties) && originalProperties.get(definition.getName()) != null) ||
                             (dataType != null && (dataType.isEmpty() || dataType.contains(definition.getDataType())))) {
                         if (!definition.isProtected()) {
                             Field<?> f = fields.get(definition.getName());

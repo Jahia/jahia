@@ -68,4 +68,6 @@ public interface Linker {
 
     public GWTConfiguration getConfig();
 
+    public boolean isDisplayHiddenProperties();
+
 }

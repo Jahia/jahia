@@ -169,6 +169,15 @@
         <property name="icon" value="viewHiddenTypes"/>
     </bean>
 
+    <bean id="Toolbar.Item.ViewHiddenProperties" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewHiddenPropertiesActionItem"/>
+        </property>
+        <property name="titleKey" value="label.viewHiddenProperties"/>
+        <property name="icon" value="viewHiddenProperties"/>
+    </bean>
+
+
     <!-- show compare mode-->
     <bean id="Toolbar.Item.ShowCompareEngine" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="titleKey" value="label.compare.with.published.engine"/>

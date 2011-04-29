@@ -258,4 +258,8 @@ public class EditLinker implements Linker {
         m.layout();
         mainModule.getContainer().setVScrollPosition(mainAreaVScrollPosition);
     }
+
+    public boolean isDisplayHiddenProperties() {
+        return false;
+    }
 }

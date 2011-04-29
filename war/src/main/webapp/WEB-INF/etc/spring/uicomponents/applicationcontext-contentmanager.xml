@@ -690,6 +690,7 @@
                                     <ref bean="Toolbar.Item.ThumbsView"/>
                                     <ref bean="Toolbar.Item.Detailedview"/>
                                     <ref bean="Toolbar.Item.ViewHiddenTypes"/>
+                                    <ref bean="Toolbar.Item.ViewHiddenProperties"/>
                                 </list>
                             </property>
                         </bean>

@@ -181,6 +181,10 @@ public class SidePanelTabItem implements Serializable {
         public EditLinker getEditLinker() {
         	return editLinker;
         }
+
+        public boolean isDisplayHiddenProperties() {
+            return false;
+        }
     }
 
 

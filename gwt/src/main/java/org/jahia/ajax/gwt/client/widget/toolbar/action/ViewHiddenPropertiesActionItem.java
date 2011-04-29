@@ -11,7 +11,7 @@ import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
  * Time: 16:03
  * To change this template use File | Settings | File Templates.
  */
-public class ViewHiddenPropertiessActionItem extends BaseActionItem {
+public class ViewHiddenPropertiesActionItem extends BaseActionItem {
 
     @Override public MenuItem createMenuItem() {
         return new CheckMenuItem();
@@ -19,7 +19,7 @@ public class ViewHiddenPropertiessActionItem extends BaseActionItem {
 
     public void onComponentSelection() {
         if (linker instanceof ManagerLinker) {
-            ((ManagerLinker) linker).setDisplayHiddenTypes(((CheckMenuItem)getMenuItem()).isChecked());
+            ((ManagerLinker) linker).setDisplayHiddenProperties(((CheckMenuItem) getMenuItem()).isChecked());
             ((ManagerLinker) linker).refresh();
         }
     }

@@ -73,9 +73,9 @@ public class FormFieldCreator {
      * @return
      */
     public static Field<?> createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
-                                       List<GWTJahiaValueDisplayBean> initializerValues) {
+                                       List<GWTJahiaValueDisplayBean> initializerValues, boolean displayHiddenProperty) {
         Field<?> field = null;
-        if (definition.isHidden()) {
+        if (definition.isHidden() && !displayHiddenProperty) {
             return null;
         }
         if (definition.getName().equals("*")) {

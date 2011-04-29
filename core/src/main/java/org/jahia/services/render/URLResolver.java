@@ -385,7 +385,7 @@ public class URLResolver {
                     workspace, new JCRCallback<String>() {
                         public String doInJCR(JCRSessionWrapper session)
                                 throws RepositoryException {
-                            String nodePath = path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path;
+                            String nodePath = JCRContentUtils.escapeNodePath(path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path);
                             JCRNodeWrapper node = null;
                             while (true) {
                                 try {
@@ -471,7 +471,7 @@ public class URLResolver {
                             throws RepositoryException {
                         String ext = null;
                         String tpl = null;
-                        String nodePath = path;
+                        String nodePath = JCRContentUtils.escapeNodePath(path);
                         JCRNodeWrapper node;
                         while (true) {
                             int i = nodePath.lastIndexOf('.');

@@ -10,11 +10,13 @@ import javax.jcr.query.InvalidQueryException;
 public class JahiaQueryImpl extends QueryImpl {
 
     private Constraint constraint = null;
+    private String statement = null;    
 
     public JahiaQueryImpl(SessionContext sessionContext, SearchIndex index,
                           PropertyTypeRegistry propReg, String statement, String language,
                           QueryNodeFactory factory) throws InvalidQueryException {
         super(sessionContext, index, propReg, statement, language, factory);
+        this.statement = statement;
     }
 
     public Constraint getConstraint() {
@@ -23,6 +25,11 @@ public class JahiaQueryImpl extends QueryImpl {
 
     public void setConstraint(Constraint constraint) {
         this.constraint = constraint;
+    }
+
+    @Override
+    public boolean needsSystemTree() {
+        return statement.contains("jcr:system");
     }
 
 }

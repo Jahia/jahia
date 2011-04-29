@@ -34,7 +34,6 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
-import org.jahia.services.content.nodetypes.SelectorType;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -106,7 +105,7 @@ public class ReferencesHelper {
                         JCRNodeWrapper node = session.getNode(uuid);
                         update(paths, session, node.getIdentifier());
                     } else {
-                        JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                        session.getNodeByUUID(uuid);
                         // node was existing and is not in import, use old uuid
                         update(paths, session, uuid);
                     }
@@ -212,12 +211,12 @@ public class ReferencesHelper {
                 }
                 newValues[newValues.length-1] =  session.getValueFactory().createValue(value, propertyDefinition.getRequiredType() );
                 if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
-                    n.checkout();
+                    session.checkout(n);
                     n.setProperty(pName, newValues);
                 }
             } else {
                 if (!n.hasProperty(pName) || !value.equals(n.getProperty(pName).getString())) {
-                    n.checkout();
+                    session.checkout(n);
                     n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
                 }
             }

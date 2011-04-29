@@ -24,7 +24,7 @@
 <c:set var="templateForTree" value="${currentNode.properties.templateForLink.string}" scope="request"/>
 <ul id="tree${currentNode.identifier}" class="filetree">
     <c:forEach var="node" items="${jcr:getChildrenOfType(pageNode,nodeTypeForTree)}">
-        <template:module node="${node}" view="hidden.tree"/>
+        <template:module node="${node}" view="hidden.tree" editable="false"/>
     </c:forEach>
 </ul>
 <c:remove var="nodeTypeForTree" scope="request"/>

@@ -210,17 +210,20 @@ public interface JahiaContentManagementService extends RemoteService {
     /**
      * Unpublish the specified path and its subnodes.
      *
-     * @param path the path to unpublish, will not unpublish the references
+     * @param uuids the list of node uuids to publish, will not auto publish the parents
      */
-    public void unpublish(List<String> path) throws GWTJahiaServiceException;
+    public void unpublish(List<String> uuids) throws GWTJahiaServiceException;
 
     /**
      * Get the publication status information for multiple pathes.
      *
+     *
      * @param uuids path to get publication info from
+     * @param checkForUnpublication
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      */
-    public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree) throws GWTJahiaServiceException;
+    public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree,
+                                                            boolean checkForUnpublication) throws GWTJahiaServiceException;
 
 
     public String getHighlighted(String original, String amendment) throws GWTJahiaServiceException;

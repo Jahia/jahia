@@ -204,18 +204,19 @@ public interface JahiaContentManagementServiceAsync {
     /**
      * Unpublish the specified path and its subnodes.
      *
-     * @param path  the path to unpublish, will not unpublish the references
+     * @param uuids the list of node uuids to publish
      * @param async Local implementation of callback to react on return for asynchronous call to unpublish
      */
-    void unpublish(List<String> path, AsyncCallback async);
+    void unpublish(List<String> uuids, AsyncCallback async);
 
     /**
      * Get the publication status information for a particular path.
      *
      * @param uuids uuids to get publication info from
+     * @param checkForUnpublication
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
-    void getPublicationInfo(List<String> uuids, boolean allSubTree, AsyncCallback<List<GWTJahiaPublicationInfo>> async);
+    void getPublicationInfo(List<String> uuids, boolean allSubTree, boolean checkForUnpublication, AsyncCallback<List<GWTJahiaPublicationInfo>> async);
 
     /**
      * Get higthligthed

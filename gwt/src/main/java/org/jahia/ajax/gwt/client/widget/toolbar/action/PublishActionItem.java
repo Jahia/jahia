@@ -77,8 +77,7 @@ public class PublishActionItem extends BaseActionItem {
                     uuids.add(gwtJahiaNode.getUUID());
                 }
                 linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
-                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree,
-                        new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
+                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, false, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
                             public void onSuccess(List<GWTJahiaPublicationInfo> result) {
                                 linker.loaded();
                                 PublicationWorkflow.create(result, linker);

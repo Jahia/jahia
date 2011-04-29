@@ -1082,15 +1082,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Unpublish the specified path and its subnodes.
      *
-     * @param paths the path to unpublish, will not unpublish the references
+     * @param uuids the list of node uuids to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
-    public void unpublish(List<String> paths) throws GWTJahiaServiceException {
+    public void unpublish(List<String> uuids) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();
         JCRSessionWrapper session = retrieveCurrentSession();
-        for (String s : paths) {
+        for (String s : uuids) {
             try {
-                JCRNodeWrapper node = session.getNode(s);
+                JCRNodeWrapper node = session.getNodeByIdentifier(s);
                 publication.unpublish(node.getIdentifier(), Collections.singleton(session.getLocale().toString()),
                         session.getUser());
             } catch (RepositoryException e) {
@@ -1103,15 +1103,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Get the publication status information for multiple pathes.
      *
+     *
      * @param uuids path to get publication info from
+     * @param checkForUnpublication
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree)
+    public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree,
+                                                            boolean checkForUnpublication)
             throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession();
         List<GWTJahiaPublicationInfo> all = publication
-                .getFullPublicationInfos(uuids, Collections.singleton(session.getLocale().toString()), session, allSubTree);
+                .getFullPublicationInfos(uuids, Collections.singleton(session.getLocale().toString()), session, allSubTree,
+                        checkForUnpublication);
 
         return all;
     }

@@ -52,7 +52,6 @@ import org.jbpm.api.JbpmException;
 import org.junit.*;
 import org.slf4j.Logger;
 
-import javax.jcr.PropertyType;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -144,7 +143,7 @@ public class WorkflowServiceTest {
         assertNotNull("Worflow should not be null", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live", false));
         processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map, null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
@@ -173,7 +172,7 @@ public class WorkflowServiceTest {
         assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live", false));
         processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
@@ -212,7 +211,7 @@ public class WorkflowServiceTest {
         assertNotNull("Workflow should not be null", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live", false));
         processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
@@ -249,7 +248,7 @@ public class WorkflowServiceTest {
         assertNotNull("Workflow should not be null", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live", false));
         processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
@@ -291,7 +290,7 @@ public class WorkflowServiceTest {
         assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live", false));
         processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER,map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
@@ -405,7 +404,7 @@ public class WorkflowServiceTest {
         assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live", false));
         processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
@@ -458,7 +457,7 @@ public class WorkflowServiceTest {
         assertNotNull("Unable to find workflow process '1 Step Publication Process'", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live", false));
         processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
@@ -497,7 +496,7 @@ public class WorkflowServiceTest {
         assertNotNull("Unable to find workflow process '1 Step Publication Process'", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live", false));
         processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map,null);
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);

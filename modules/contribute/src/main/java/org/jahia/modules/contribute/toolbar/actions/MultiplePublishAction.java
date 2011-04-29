@@ -75,7 +75,8 @@ public class MultiplePublishAction extends Action {
         Set<String> locales = new LinkedHashSet<String>(Arrays.asList(
                 renderContext.getMainResourceLocale().toString()));
 
-        List<GWTJahiaPublicationInfo> pubInfos = publicationHelper.getFullPublicationInfos(uuids, locales, session, false);
+        List<GWTJahiaPublicationInfo> pubInfos = publicationHelper.getFullPublicationInfos(uuids, locales, session, false,
+                false);
         Map<PublicationWorkflow, WorkflowDefinition> workflows = publicationHelper.createPublicationWorkflows(pubInfos);
 
         for (Map.Entry<PublicationWorkflow, WorkflowDefinition> entry : workflows.entrySet()) {

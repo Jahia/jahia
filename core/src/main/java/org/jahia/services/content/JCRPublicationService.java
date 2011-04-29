@@ -298,7 +298,7 @@ public class JCRPublicationService extends JahiaService {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Publishing node {}", jcrNodeWrapper.getPath());
                 }
-                if (jcrNodeWrapper.isNodeType("jmix:publication") && (!jcrNodeWrapper.hasProperty("j:published") ||
+                if ((jcrNodeWrapper.isNodeType("jmix:publication") || jcrNodeWrapper.isNodeType(JAHIANT_TRANSLATION)) && (!jcrNodeWrapper.hasProperty("j:published") ||
                         !jcrNodeWrapper.getProperty("j:published").getBoolean())) {
                     if (!sourceVersionManager.isCheckedOut(jcrNodeWrapper.getPath())) {
                         sourceVersionManager.checkout(jcrNodeWrapper.getPath());
@@ -790,20 +790,37 @@ public class JCRPublicationService extends JahiaService {
      * @param languages
      * @throws javax.jcr.RepositoryException
      */
-    public void unpublish(String uuid, Set<String> languages) throws RepositoryException {
-        JCRSessionWrapper sourceSession = getSessionFactory().getCurrentUserSession();
-        JCRSessionWrapper destinationSession = getSessionFactory().getCurrentUserSession(LIVE_WORKSPACE);
-        JCRNodeWrapper node = sourceSession.getNodeByUUID(uuid);
-        VersionManager vm = sourceSession.getWorkspace().getVersionManager();
-        if (!vm.isCheckedOut(node.getPath())) {
-            vm.checkout(node.getPath());
+    public void unpublish(final String uuid, final Set<String> languages) throws RepositoryException {
+        final String username;
+        final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
+        if (user != null) {
+            username = user.getUsername();
+        } else {
+            username = null;
         }
-        unpublish(node, languages);
-        sourceSession.save();
+        JCRTemplate.getInstance().doExecute(true, username, EDIT_WORKSPACE, null, new JCRCallback<Object>() {
+            public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
 
-        JCRNodeWrapper destNode = destinationSession.getNode(node.getCorrespondingNodePath(LIVE_WORKSPACE));
-        unpublish(destNode, languages);
-        destinationSession.save();
+                JCRNodeWrapper node = sourceSession.getNodeByIdentifier(uuid);
+                VersionManager vm = sourceSession.getWorkspace().getVersionManager();
+                if (!vm.isCheckedOut(node.getPath())) {
+                    vm.checkout(node.getPath());
+                }
+                unpublish(node, languages);
+                sourceSession.save();
+                return null;
+            }
+        });
+
+        JCRTemplate.getInstance().doExecute(true, username, LIVE_WORKSPACE, new JCRCallback<Object>() {
+            public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
+                JCRNodeWrapper destNode = destinationSession.getNodeByIdentifier(uuid);
+                unpublish(destNode, languages);
+                destinationSession.save();
+                return null;
+            }
+        });
+
     }
 
     private void unpublish(JCRNodeWrapper node, Set<String> languages) throws RepositoryException {
@@ -836,7 +853,7 @@ public class JCRPublicationService extends JahiaService {
     public List<PublicationInfo> getPublicationInfos(List<String> uuids, Set<String> languages,
                                                      boolean includesReferences, boolean includesSubnodes,
                                                      boolean allsubtree, final String sourceWorkspace,
-                                                     final String destinationWorkspace) throws RepositoryException {
+                                                     final String destinationWorkspace, boolean checkForUnpublication) throws RepositoryException {
         List<PublicationInfo> infos = new ArrayList<PublicationInfo>();
 
         List<String> allUuids = new ArrayList<String>();
@@ -848,6 +865,9 @@ public class JCRPublicationService extends JahiaService {
                                 sourceWorkspace, destinationWorkspace);
                 for (PublicationInfo publicationInfo : publicationInfos) {
                     if (publicationInfo.needPublication(null)) {
+                        infos.add(publicationInfo);
+                        allUuids.addAll(publicationInfo.getAllUuids());
+                    } else if (checkForUnpublication && publicationInfo.isUnpublicationPossible(null)) {
                         infos.add(publicationInfo);
                         allUuids.addAll(publicationInfo.getAllUuids());
                     }

@@ -158,4 +158,17 @@ public class PublicationInfo implements Serializable {
         return false;
     }
 
+    public boolean isUnpublicationPossible(String language) {
+        Set<Integer> treeStatus = getTreeStatus(language);
+        if (treeStatus.contains(PUBLISHED)) {
+            return true;
+        }
+        for (PublicationInfo info : getAllReferences()) {
+            final Set<Integer> subTreeStatus = info.getTreeStatus(language);
+            if (subTreeStatus.contains(PUBLISHED)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -151,7 +151,8 @@ public class PublicationHelper {
     public Map<String, List<GWTJahiaPublicationInfo>> getFullPublicationInfosByLanguage(List<String> uuids, Set<String> languages,
                                                             JCRSessionWrapper currentUserSession, boolean allSubTree) throws GWTJahiaServiceException {
         
-        List<GWTJahiaPublicationInfo> all = getFullPublicationInfos(uuids, languages, currentUserSession, allSubTree);
+        List<GWTJahiaPublicationInfo> all = getFullPublicationInfos(uuids, languages, currentUserSession, allSubTree,
+                false);
         
         Map<String, List<GWTJahiaPublicationInfo>> res = new HashMap<String, List<GWTJahiaPublicationInfo>>();
 
@@ -167,9 +168,11 @@ public class PublicationHelper {
     
     
     public List<GWTJahiaPublicationInfo> getFullPublicationInfos(List<String> uuids, Set<String> languages,
-                                                            JCRSessionWrapper currentUserSession, boolean allSubTree) throws GWTJahiaServiceException {
+                                                                 JCRSessionWrapper currentUserSession,
+                                                                 boolean allSubTree, boolean checkForUnpublication) throws GWTJahiaServiceException {
         try {
-            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
+            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE,
+                    checkForUnpublication);
             LinkedHashMap<String, GWTJahiaPublicationInfo> res = new LinkedHashMap();
             for (String language : languages) {
                 final List<GWTJahiaPublicationInfo> infoList = convert(infos, currentUserSession, language);
@@ -177,7 +180,7 @@ public class PublicationHelper {
                 String lastTitle = null;
                 Locale l = new Locale(language);
                 for (GWTJahiaPublicationInfo info : infoList) {
-                    if (info.getStatus() > 1) {
+                    if (info.getStatus() > 1 || (checkForUnpublication && info.getStatus() == 1)) {
                         res.put(language + "/" + info.getUuid(), info);
                         if (lastGroup == null || !info.getWorkflowGroup().equals(lastGroup)) {
                             lastGroup = info.getWorkflowGroup();

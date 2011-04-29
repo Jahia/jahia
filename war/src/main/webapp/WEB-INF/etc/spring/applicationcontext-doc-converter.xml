@@ -15,7 +15,14 @@
     </bean>
 
     <bean name="localOfficeManagerFactory" class="org.jahia.services.transform.LocalOfficeManagerFactory" lazy-init="true">
+        <!-- Linux -->
         <property name="officeHome" value="/usr/lib/openoffice"/>
+        <!-- Windows 
+        <property name="officeHome" value="c:/Program Files (x86)/OpenOffice.org 3"/>
+        -->
+        <!-- Mac OSX 
+        <property name="officeHome" value="/Applications/OpenOffice.org.app/Contents"/>
+        -->
     </bean>
 
     <bean name="remoteOfficeManagerFactory" class="org.jahia.services.transform.RemoteOfficeManagerFactory" lazy-init="true">

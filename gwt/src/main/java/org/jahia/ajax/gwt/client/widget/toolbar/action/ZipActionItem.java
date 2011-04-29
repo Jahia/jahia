@@ -111,6 +111,7 @@ public class ZipActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection(){
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isParentWriteable() && !lh.isSecondarySelection() && !lh.getSingleSelection().isNodeType("jnt:virtualsite"));
+        Boolean isContentType = lh.getSingleSelection().isNodeType("jnt:file") || lh.getSingleSelection().isNodeType("jnt:folder");
+        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isParentWriteable() && !lh.isSecondarySelection() && isContentType );
     }
 }

@@ -34,8 +34,8 @@
 <c:if test="${currentResource.workspace ne 'live'}">
 
     <form name="myform" method="post">
-        <input type="hidden" name="nodeType" value="jnt:task">
-        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${currentNode.path}.tasklist'/>">
+        <input type="hidden" name="jcrNodeType" value="jnt:task">
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${currentNode.path}.tasklist'/>">
         <input type="hidden" name="state">
     </form>
 

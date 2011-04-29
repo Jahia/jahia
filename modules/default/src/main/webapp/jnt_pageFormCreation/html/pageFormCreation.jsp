@@ -15,13 +15,13 @@
 
 <template:tokenizedForm>
 <form class="pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/*" name="${formid}">
-    <input type="hidden" name="nodeType" value="jnt:page">
-    <input type="hidden" name="normalizeNodeName" value="true"/>
-    <input type="hidden" name="autoAssignRole" value="owner"/>
+    <input type="hidden" name="jcrNodeType" value="jnt:page">
+    <input type="hidden" name="jcrNormalizeNodeName" value="true"/>
+    <input type="hidden" name="jcrAutoAssignRole" value="owner"/>
     <input type="hidden" name="jcr:mixinTypes" value="jmix:hasTemplateNode"/>
     <input type="hidden" name="j:templateNode" value="${currentNode.properties['templateNode'].string}"/>
     <c:if test="${currentNode.properties.stayOnPage.boolean}">
-        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
     </c:if>
     <h3>${fn:escapeXml(currentNode.displayableName)}</h3>
     <fieldset>

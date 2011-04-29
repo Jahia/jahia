@@ -101,30 +101,30 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(Render.class);
 
     // Here we define the constants for the reserved keywords for post methods
-    public static final String NODE_TYPE = "nodeType";
-    public static final String NODE_NAME = "JCRnodeName";
-    public static final String NODE_NAME_PROPERTY = "nodeNameProperty";
-    public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
-    public static final String REDIRECT_TO = "redirectTo";
-    public static final String REDIRECT_HTTP_RESPONSE_CODE = "redirectResponseCode";
-    public static final String METHOD_TO_CALL = "methodToCall";
-    public static final String AUTO_CHECKIN = "autoCheckin";
-    public static final String CAPTCHA = "captcha";
-    public static final String TARGETDIRECTORY = "targetDirectory";
-    public static final String TARGETNAME = "targetName";
-    public static final String NORMALIZE_NODE_NAME = "normalizeNodeName";
-    public static final String VERSION = "version";
-    public static final String SUBMIT = "submit";
-    public static final String AUTO_ASSIGN_ROLE = "autoAssignRole";
-    public static final String ALIAS_USER = "alias";
-    public static final String PARENT_TYPE = "parentType";
-    public static final String RETURN_CONTENTTYPE = "returnContentType";
-    public static final String RESOURCE_ID = "resourceID";
-    public static final String REMOVE_MIXIN = "removeMixin";
-    public static final String COOKIE_VALUE = "cookieValue";
-    public static final String COOKIE_NAME = "cookieName";
-    public static final String COOKIE_PATH = "cookiePath";
-    public static final String CONTRIBUTE_POST = "contributePost";
+    public static final String NODE_TYPE = "jcrNodeType";
+    public static final String NODE_NAME = "jcrNodeName";
+    public static final String NODE_NAME_PROPERTY = "jcrNodeNameProperty";
+    public static final String NEW_NODE_OUTPUT_FORMAT = "jcrNewNodeOutputFormat";
+    public static final String REDIRECT_TO = "jcrRedirectTo";
+    public static final String REDIRECT_HTTP_RESPONSE_CODE = "jcrRedirectResponseCode";
+    public static final String METHOD_TO_CALL = "jcrMethodToCall";
+    public static final String AUTO_CHECKIN = "jcrAutoCheckin";
+    public static final String CAPTCHA = "jcrCaptcha";
+    public static final String TARGETDIRECTORY = "jcrTargetDirectory";
+    public static final String TARGETNAME = "jcrTargetName";
+    public static final String NORMALIZE_NODE_NAME = "jcrNormalizeNodeName";
+    public static final String VERSION = "jcrVersion";
+    public static final String SUBMIT = "jcrSubmit";
+    public static final String AUTO_ASSIGN_ROLE = "jcrAutoAssignRole";
+    public static final String ALIAS_USER = "jcrAlias";
+    public static final String PARENT_TYPE = "jcrParentType";
+    public static final String RETURN_CONTENTTYPE = "jcrReturnContentType";
+    public static final String RESOURCE_ID = "jcrResourceID";
+    public static final String REMOVE_MIXIN = "jcrRemoveMixin";
+    public static final String COOKIE_VALUE = "jcrCookieValue";
+    public static final String COOKIE_NAME = "jcrCookieName";
+    public static final String COOKIE_PATH = "jcrCookiePath";
+    public static final String CONTRIBUTE_POST = "jcrContributePost";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));

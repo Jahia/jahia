@@ -57,6 +57,6 @@
             <li><input onchange="$('#updateVisibility').ajaxSubmit();" type="checkbox" name="j:publicProperties" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} /> <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/></li>
         </c:if>
     </c:forTokens>
-        <input type="hidden" name="methodToCall" value="put" />
+        <input type="hidden" name="jcrMethodToCall" value="put" />
             </ul>
     </form>

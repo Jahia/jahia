@@ -67,7 +67,7 @@
             tooltip : contributionI18n['edit'],
             target:$(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'),
             callback : function (data, status,original) {
-                var datas = {'methodToCall':'put'};
+                var datas = {'jcrMethodToCall':'put'};
                 var callableUrl = $(original).attr('jcr:url');
                 datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
                 $.post($(original).attr('jcr:url'), datas, function(result) {

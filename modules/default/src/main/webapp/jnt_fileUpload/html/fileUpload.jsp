@@ -48,10 +48,10 @@
                 dropZone: $('#file_upload_container'),
                 beforeSend: function (event, files, index, xhr, handler, callBack) {
                     handler.formData = {
-                        nodeType:"jnt:file",
-                        returnContentType:"json",
-                        redirectTo:"<c:url value='${url.base}${renderContext.mainResource.node.path}'/>",
-                        newNodeOutputFormat:"${renderContext.mainResource.template}.html"
+                        'jcrNodeType':"jnt:file",
+                        'jcrReturnContentType':"json",
+                        'jcrRedirectTo':"<c:url value='${url.base}${renderContext.mainResource.node.path}'/>",
+                        'jcrNewNodeOutputFormat':"${renderContext.mainResource.template}.html"
                     };
                     callBack();
                 },

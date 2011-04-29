@@ -57,10 +57,10 @@
                 <input type="hidden" name="outcome" id="outcome"/>
             </c:when>
             <c:otherwise>
-                <input type="hidden" name="nodeType" value="${type.name}"/>
-                <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
+                <input type="hidden" name="jcrNodeType" value="${type.name}"/>
+                <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
                 <%-- Define the output format for the newly created node by default html or by redirectTo--%>
-                <input type="hidden" name="newNodeOutputFormat" value="html"/>
+                <input type="hidden" name="jcrNewNodeOutputFormat" value="html"/>
             </c:otherwise>
         </c:choose>
         <fieldset>

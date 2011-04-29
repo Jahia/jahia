@@ -45,15 +45,15 @@
     </c:if>
 
     <form action="${formAction}" method="post" ${formID} ${enctype}>
-        <input type="hidden" name="nodeType" value="${type.name}"/>
-        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
+        <input type="hidden" name="jcrNodeType" value="${type.name}"/>
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
         <%-- Define the output format for the newly created node by default html or by redirectTo--%>
-        <input type="hidden" name="newNodeOutputFormat" value="html"/>
-        <input type="hidden" name="normalizeNodeName" value="true"/>
+        <input type="hidden" name="jcrNewNodeOutputFormat" value="html"/>
+        <input type="hidden" name="jcrNormalizeNodeName" value="true"/>
         <fieldset>
             <legend>${jcr:label(type,renderContext.mainResourceLocale)}</legend>
             <label class="left" for="JCRnodeName"><fmt:message key="label.name"/></label>
-            <input type="text" id="JCRnodeName" name="JCRnodeName"/>
+            <input type="text" id="JCRnodeName" name="jcrNodeName"/>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
                 <c:if test="${propertyDefinition.name eq 'jcr:title'}">
                     <label class="left"
@@ -111,7 +111,7 @@
             <c:if test="${resourceNodeType eq 'jnt:folder'}">
                 <p class="field"><label class="left"
                                         for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
-                    <input type="text" id="${scriptTypeName}jnt_folder" name="JCRnodeName"/>
+                    <input type="text" id="${scriptTypeName}jnt_folder" name="jcrNodeName"/>
                     <c:if test="${currentResource.properties['j:editableInContribution'].boolean}">
                         <input type="hidden" name="jcr:mixinTypes" value="jmix:contributeMode"/>
                         <input type="hidden" name="j:editableInContribution" value="true"/>
@@ -125,7 +125,7 @@
                 <p class="field">
                     <label class="left"
                            for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
-                    <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>
+                    <input type="hidden" name="jcrTargetDirectory" value="${currentNode.path}"/>
                     <input type="file" name="file"/>
 
                 </p>

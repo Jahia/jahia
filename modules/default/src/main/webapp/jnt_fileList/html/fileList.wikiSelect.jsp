@@ -45,7 +45,7 @@
                         </c:url>
                         <form action="<c:url value='${url.base}${subchild.path}'/>" method="post"
                               id="jahia-wiki-item-delete-${subchild.UUID}">
-                            <input type="hidden" name="methodToCall" value="delete"/>
+                            <input type="hidden" name="jcrMethodToCall" value="delete"/>
                             <button><fmt:message key="label.delete"/></button>
                             <script type="text/javascript">
                                 $(document).ready(function() {

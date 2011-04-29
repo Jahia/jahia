@@ -41,7 +41,7 @@
                     <c:if test="${jcr:hasPermission(subchild,'jcr:removeNode')}">
                         <form action="<c:url value='${url.base}${subchild.path}'/>" method="post"
                               id="jahia-blog-item-delete-${subchild.UUID}">
-                            <input type="hidden" name="methodToCall" value="delete"/>
+                            <input type="hidden" name="jcrMethodToCall" value="delete"/>
                             <button><fmt:message key="label.delete"/></button>
                             <script type="text/javascript">
                                 <c:url var="urlPath" value="${url.base}${currentNode.path}.html.ajax">

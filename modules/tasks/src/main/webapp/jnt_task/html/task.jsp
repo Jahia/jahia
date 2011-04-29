@@ -14,7 +14,7 @@
 
 <div class="Form taskFormConsult"><!--start Form -->
     <form method="post" name="myform" action="<c:url value='${url.base}${currentNode.path}'/>">
-        <input type="hidden" name="nodeType" value="jnt:task">
+        <input type="hidden" name="jcrNodeType" value="jnt:task">
         <input type="hidden" name="state">
 
 

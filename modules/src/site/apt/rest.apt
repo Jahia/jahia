@@ -78,30 +78,30 @@ Basic Jahia REST API
 *---------------------------+-------------+----------------------------------------------------------------------+
 |Name                       |Mandatory    |Description                                                           |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|nodeType                   | yes         | Define the type of node you want to create.                          |
+|jcrNodeType                   | yes         | Define the type of node you want to create.                          |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|JCRnodeName                   | no          | If defined we will create a node with this name (or use it as a      |
+|jcrNodeName                   | no          | If defined we will create a node with this name (or use it as a      |
 |                           |             | prefix for the name. If not define you can call :                    |
 |                           |             | /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH/*                        |
 |                           |             | To create a subnode at the specified path using the nodetype for     |
 |                           |             | name.                                                                |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|newNodeOutputFormat        | no          | Define at which format the newly create dnode will be returned, HTML |
+|jcrNewNodeOutputFormat        | no          | Define at which format the newly create dnode will be returned, HTML |
 |                           |             | by default, JSON is another possible value, or any type of output    |
 |                           |             | you have define in  your templates.                                  |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|redirectTo                 | no          | If defined will redirect to the specified URL instead of the newly   |
+|jcrRedirectTo                 | no          | If defined will redirect to the specified URL instead of the newly   |
 |                           |             | created node.                                                        |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|methodToCall               | no          | For HTML form to override the method called, this allow to delete    |
+|jcrMethodToCall               | no          | For HTML form to override the method called, this allow to delete    |
 |                           |             | content with a simple POST form instead of send a DELETE HTTP request|
 *---------------------------+-------------+----------------------------------------------------------------------+
-|autoCheckin                | no          | Allow to force versioning of the newly created content.              |
+|jcrAutoCheckin                | no          | Allow to force versioning of the newly created content.              |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|targetDirectory            |no           | If you have multipart form, this will be the                         |
+|jcrTargetDirectory            |no           | If you have multipart form, this will be the                         |
 |                           |             | location where the content is uploaded                               |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|version                    |no           | If "true" activate the versionning on the posted content             |
+|jcrVersion                    |no           | If "true" activate the versionning on the posted content             |
 |                           |             | (works only for files)                                               |
 *---------------------------+-------------+----------------------------------------------------------------------+
 |jcr:mixinTypes             |no           | Allow you to set a mixin on the new node                             |
@@ -148,10 +148,10 @@ Basic Jahia REST API
 
 +-----------------------------------------
 <form action="<c:url value='${url.base}${currentNode.path}/*'/>" method="post">
-    <input type="hidden" name="nodeType" value="jnt:post"/>
-    <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
-    <%-- Define the output format for the newly created node by default html or by redirectTo--%>
-    <input type="hidden" name="newNodeOutputFormat" value="html"/>
+    <input type="hidden" name="jcrNodeType" value="jnt:post"/>
+    <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
+    <%-- Define the output format for the newly created node by default html or by jcrRedirectTo--%>
+    <input type="hidden" name="jcrNewNodeOutputFormat" value="html"/>
     <fieldset>
         <p class="field">
             <input value="<c:if test="${not empty currentNode.children}"> Re:</c:if>${currentNode.propertiesAsString['threadSubject']}" type="text" size="35" id="forum_site" name="jcr:title"
@@ -172,17 +172,17 @@ Basic Jahia REST API
 +-----------------------------------------
 
    This will create a new comments in a thread of a forum. And after submission we want to redisplay the curren thread,
-   this is why we used the redirectTo parameter.
+   this is why we used the jcrRedirectTo parameter.
 
 *** Delete Example
 
 +-----------------------------------------
     <form action="<c:url value='${url.base}${currentNode.path}'/>" method="post"
           id="jahia-forum-post-delete-${currentNode.UUID}">
-        <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
-            <%-- Define the output format for the newly created node by default html or by redirectTo--%>
-        <input type="hidden" name="newNodeOutputFormat" value="html"/>
-        <input type="hidden" name="methodToCall" value="delete"/>
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
+            <%-- Define the output format for the newly created node by default html or by jcrRedirectTo--%>
+        <input type="hidden" name="jcrNewNodeOutputFormat" value="html"/>
+        <input type="hidden" name="jcrMethodToCall" value="delete"/>
     </form>
 
     <a title="<fmt:message key='delete.post'/>" href="#"

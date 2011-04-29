@@ -38,14 +38,12 @@
 
     <template:tokenizedForm>
         <form action="<c:url value='${url.base}${bindedComponent.path}.addComment.do'/>" method="post" id="newCommentForm">
-
-            <input type="hidden" name="nodeType" value="jnt:post"/>
-            <input type="hidden" name="redirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
-            <input type="hidden" name="newNodeOutputFormat" value="html"/>
-            <input type="hidden" name="resourceID" value="${currentNode.identifier}"/>
+            <input type="hidden" name="jcrNodeType" value="jnt:post"/>
+            <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>"/>
+            <input type="hidden" name="jcrNewNodeOutputFormat" value="html"/>
+            <input type="hidden" name="jcrResourceID" value="${currentNode.identifier}"/>
 
             <div id="formGenericComment">
-
                 <fieldset>
                     <c:if test="${not renderContext.loggedIn}">
                         <p class="field">
@@ -74,7 +72,7 @@
                     <c:if test="${not renderContext.loggedIn}">
                         <p class="field">
                             <label class="left" for="captcha"><template:captcha/></label>
-                            <input type="text" id="captcha" name="captcha"/>
+                            <input type="text" id="captcha" name="jcrCaptcha"/>
                         </p>
                     </c:if>
 
@@ -83,7 +81,7 @@
                                tabindex="3"  ${disabled}/>
 
                         <input type="submit" value="<fmt:message key='label.submit'/>" class="button"
-                               tabindex="4"  ${disabled}/>
+                               tabindex="4"  ${disabled} onclick=""/>
                     </p>
                 </fieldset>
             </div>

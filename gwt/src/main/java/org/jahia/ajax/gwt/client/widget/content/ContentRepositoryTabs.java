@@ -210,11 +210,11 @@ public class ContentRepositoryTabs extends LeftComponent {
     private void renameSearch(GWTJahiaNode selection) {
         if (selection != null) {
             if (selection.isLocked()) {
-                Window.alert(selection.getDisplayName() + " is locked");
+                Window.alert(selection.getName() + " is locked");
                 return;
             }
-            String newName = Window.prompt("Enter the new name for " + (selection.isFile().booleanValue() ? "file " : "folder ") + selection.getDisplayName(), selection.getDisplayName());
-            if (newName != null && newName.length() > 0 && !newName.equals(selection.getDisplayName())) {
+            String newName = Window.prompt("Enter the new name for " + (selection.isFile().booleanValue() ? "file " : "folder ") + selection.getName(), selection.getName());
+            if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                 service.rename(selection.getPath(), newName, new BaseAsyncCallback() {
                     public void onApplicationFailure(Throwable throwable) {
                         Window.alert("Rename failed\n\n" + throwable.getLocalizedMessage());

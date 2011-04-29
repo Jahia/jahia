@@ -104,15 +104,10 @@
         </property>
 
         <!-- table columns-->
-        <property name="treeColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>displayName</value>
-            </list>
-        </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>
-                <value>displayName,*,label.name</value>
+                <value>name,*,label.name</value>
                 <value>size,140,label.size</value>
             </list>
         </property>
@@ -220,15 +215,10 @@
         </property>
 
         <!-- table columns-->
-        <property name="treeColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>displayName</value>
-            </list>
-        </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>
-                <value>displayName,*,label.name</value>
+                <value>name,*,label.name</value>
                 <value>size,140,label.size</value>
             </list>
         </property>
@@ -318,15 +308,10 @@
         </property>
 
         <!-- table columns-->
-        <property name="treeColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>displayName</value>
-            </list>
-        </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>
-                <value>displayName,*,label.name</value>
+                <value>name,*,label.name</value>
             </list>
         </property>
     </bean>

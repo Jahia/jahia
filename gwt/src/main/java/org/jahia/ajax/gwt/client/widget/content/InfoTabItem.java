@@ -74,7 +74,7 @@ public class InfoTabItem extends EditEngineTabItem {
                 if (preview != null) {
                     g.setWidget(0, 0, new Image(preview));
                 }
-                String name = selectedNode.getDisplayName();
+                String name = selectedNode.getName();
                 if (name != null) {
                     flowPanel.add(new HTML("<b>" + Messages.get("label.name") + ":</b> " + name));
                 }

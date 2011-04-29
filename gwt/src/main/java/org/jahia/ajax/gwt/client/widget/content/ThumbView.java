@@ -82,7 +82,7 @@ public class ThumbView extends AbstractView {
         StoreFilterField<GWTJahiaNode> field = new StoreFilterField<GWTJahiaNode>() {
             @Override
             protected boolean doSelect(Store<GWTJahiaNode> store, GWTJahiaNode parent, GWTJahiaNode record, String property, String filter) {
-                String name = record.getDisplayName().toLowerCase();
+                String name = record.getName().toLowerCase();
                 return name.indexOf(filter.toLowerCase()) != -1;
             }
 

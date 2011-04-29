@@ -53,13 +53,13 @@ public class RenameActionItem extends BaseActionItem {
         final GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
         if (selection != null) {
             if (selection.isLocked()) {
-                Window.alert(selection.getDisplayName() + " is locked");
+                Window.alert(selection.getName() + " is locked");
                 return;
             }
             linker.loading(Messages.get("statusbar.renaming.label"));
-            String newName = Window.prompt(Messages.get("confirm.newName.label") + ": " + selection.getDisplayName(),
-                    selection.getDisplayName());
-            if (newName != null && newName.length() > 0 && !newName.equals(selection.getDisplayName())) {
+            String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(),
+                    selection.getName());
+            if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                 final boolean folder = !selection.isFile();
                 JahiaContentManagementService.App.getInstance()
                         .rename(selection.getPath(), newName, new BaseAsyncCallback() {

@@ -766,7 +766,7 @@ public class NavigationHelper {
 
         n = new GWTJahiaNode();
         n.setUUID(uuid);
-        n.setName(node.getName());
+        n.setName(JCRContentUtils.unescapeLocalNodeName(node.getName()));
         if (node.getPath().equals("/")) {
             n.setDisplayName("root");
             n.setName("root");

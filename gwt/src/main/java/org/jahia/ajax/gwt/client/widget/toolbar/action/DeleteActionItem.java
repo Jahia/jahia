@@ -105,12 +105,12 @@ public class DeleteActionItem extends BaseActionItem {
                                         message = Messages.getWithArgs(
                                                 "message.remove.single.page.confirm",
                                                 "Do you really want to remove the selected PAGE {0}?",
-                                                new String[]{lh.getSingleSelection().getDisplayName()});
+                                                new String[]{lh.getSingleSelection().getName()});
                                     } else {
                                         message = Messages.getWithArgs(
                                                 "message.remove.single.confirm",
                                                 "Do you really want to remove the selected resource {0}?",
-                                                new String[]{lh.getSingleSelection().getDisplayName()});
+                                                new String[]{lh.getSingleSelection().getName()});
                                     }
                                 }
                                 if (l.size() > 1) {
@@ -121,7 +121,7 @@ public class DeleteActionItem extends BaseActionItem {
                                             message += "<br/>...";
                                             break;
                                         }
-                                        message += "<br/>" + node.getDisplayName();
+                                        message += "<br/>" + node.getName();
                                         i++;
                                     }
                                 }

@@ -991,12 +991,12 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">jcr:title</stringProp>
                   </elementProp>
-                  <elementProp name="nodeType" elementType="HTTPArgument">
+                  <elementProp name="jcrNodeType" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">jnt:page</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">nodeType</stringProp>
+                    <stringProp name="Argument.name">jcrNodeType</stringProp>
                   </elementProp>
                 </collectionProp>
               </elementProp>
@@ -1026,12 +1026,12 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">jcr:title</stringProp>
                   </elementProp>
-                  <elementProp name="nodeType" elementType="HTTPArgument">
+                  <elementProp name="jcrNodeType" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">jnt:contentList</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">nodeType</stringProp>
+                    <stringProp name="Argument.name">jcrNodeType</stringProp>
                   </elementProp>
                 </collectionProp>
               </elementProp>
@@ -1061,12 +1061,12 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">jcr:title</stringProp>
                   </elementProp>
-                  <elementProp name="nodeType" elementType="HTTPArgument">
+                  <elementProp name="jcrNodeType" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">jnt:mainContent</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">nodeType</stringProp>
+                    <stringProp name="Argument.name">jcrNodeType</stringProp>
                   </elementProp>
                   <elementProp name="body" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -1221,12 +1221,12 @@
               <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create level 1 page" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                   <collectionProp name="Arguments.arguments">
-                    <elementProp name="nodeType" elementType="HTTPArgument">
+                    <elementProp name="jcrNodeType" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">jnt:page</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">nodeType</stringProp>
+                      <stringProp name="Argument.name">jcrNodeType</stringProp>
                     </elementProp>
                     <elementProp name="jcr:title" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -1270,12 +1270,12 @@
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       <stringProp name="Argument.name">jcr:title</stringProp>
                     </elementProp>
-                    <elementProp name="nodeType" elementType="HTTPArgument">
+                    <elementProp name="jcrNodeType" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">jnt:contentList</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">nodeType</stringProp>
+                      <stringProp name="Argument.name">jcrNodeType</stringProp>
                     </elementProp>
                   </collectionProp>
                 </elementProp>
@@ -1305,12 +1305,12 @@
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       <stringProp name="Argument.name">jcr:title</stringProp>
                     </elementProp>
-                    <elementProp name="nodeType" elementType="HTTPArgument">
+                    <elementProp name="jcrNodeType" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">jnt:mainContent</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">nodeType</stringProp>
+                      <stringProp name="Argument.name">jcrNodeType</stringProp>
                     </elementProp>
                     <elementProp name="body" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -1460,12 +1460,12 @@
                 <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create level 2 page" enabled="true">
                   <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                     <collectionProp name="Arguments.arguments">
-                      <elementProp name="nodeType" elementType="HTTPArgument">
+                      <elementProp name="jcrNodeType" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
                         <stringProp name="Argument.value">jnt:page</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">nodeType</stringProp>
+                        <stringProp name="Argument.name">jcrNodeType</stringProp>
                       </elementProp>
                       <elementProp name="jcr:title" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -1509,12 +1509,12 @@
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                         <stringProp name="Argument.name">jcr:title</stringProp>
                       </elementProp>
-                      <elementProp name="nodeType" elementType="HTTPArgument">
+                      <elementProp name="jcrNodeType" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
                         <stringProp name="Argument.value">jnt:contentList</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">nodeType</stringProp>
+                        <stringProp name="Argument.name">jcrNodeType</stringProp>
                       </elementProp>
                     </collectionProp>
                   </elementProp>
@@ -1544,12 +1544,12 @@
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                         <stringProp name="Argument.name">jcr:title</stringProp>
                       </elementProp>
-                      <elementProp name="nodeType" elementType="HTTPArgument">
+                      <elementProp name="jcrNodeType" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
                         <stringProp name="Argument.value">jnt:mainContent</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">nodeType</stringProp>
+                        <stringProp name="Argument.name">jcrNodeType</stringProp>
                       </elementProp>
                       <elementProp name="body" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -1699,12 +1699,12 @@
                   <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create level 3 page" enabled="true">
                     <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                       <collectionProp name="Arguments.arguments">
-                        <elementProp name="nodeType" elementType="HTTPArgument">
+                        <elementProp name="jcrNodeType" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
                           <stringProp name="Argument.value">jnt:page</stringProp>
                           <stringProp name="Argument.metadata">=</stringProp>
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                          <stringProp name="Argument.name">nodeType</stringProp>
+                          <stringProp name="Argument.name">jcrNodeType</stringProp>
                         </elementProp>
                         <elementProp name="jcr:title" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -1748,12 +1748,12 @@
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
                           <stringProp name="Argument.name">jcr:title</stringProp>
                         </elementProp>
-                        <elementProp name="nodeType" elementType="HTTPArgument">
+                        <elementProp name="jcrNodeType" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
                           <stringProp name="Argument.value">jnt:contentList</stringProp>
                           <stringProp name="Argument.metadata">=</stringProp>
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                          <stringProp name="Argument.name">nodeType</stringProp>
+                          <stringProp name="Argument.name">jcrNodeType</stringProp>
                         </elementProp>
                       </collectionProp>
                     </elementProp>
@@ -1783,12 +1783,12 @@
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
                           <stringProp name="Argument.name">jcr:title</stringProp>
                         </elementProp>
-                        <elementProp name="nodeType" elementType="HTTPArgument">
+                        <elementProp name="jcrNodeType" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
                           <stringProp name="Argument.value">jnt:mainContent</stringProp>
                           <stringProp name="Argument.metadata">=</stringProp>
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                          <stringProp name="Argument.name">nodeType</stringProp>
+                          <stringProp name="Argument.name">jcrNodeType</stringProp>
                         </elementProp>
                         <elementProp name="body" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -2015,12 +2015,12 @@
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <stringProp name="Argument.name">src_terms[0].fields.tags</stringProp>
                 </elementProp>
-                <elementProp name="methodToCall" elementType="HTTPArgument">
+                <elementProp name="jcrMethodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.value">get</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  <stringProp name="Argument.name">methodToCall</stringProp>
+                  <stringProp name="Argument.name">jcrMethodToCall</stringProp>
                 </elementProp>
                 <elementProp name="src_terms[0].fields.siteContent" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2243,12 +2243,12 @@
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <stringProp name="Argument.name">src_terms[0].fields.tags</stringProp>
                 </elementProp>
-                <elementProp name="methodToCall" elementType="HTTPArgument">
+                <elementProp name="jcrMethodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.value">get</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  <stringProp name="Argument.name">methodToCall</stringProp>
+                  <stringProp name="Argument.name">jcrMethodToCall</stringProp>
                 </elementProp>
                 <elementProp name="src_terms[0].fields.siteContent" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>

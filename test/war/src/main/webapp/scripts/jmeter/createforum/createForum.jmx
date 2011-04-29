@@ -132,9 +132,6 @@
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-            <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-            <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-            <stringProp name="HTTPSampler.mimetype"></stringProp>
             <boolProp name="HTTPSampler.monitor">false</boolProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSampler>
@@ -155,9 +152,6 @@
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-            <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-            <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-            <stringProp name="HTTPSampler.mimetype"></stringProp>
             <boolProp name="HTTPSampler.monitor">false</boolProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSampler>
@@ -193,9 +187,6 @@
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
               <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-              <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-              <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-              <stringProp name="HTTPSampler.mimetype"></stringProp>
               <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
@@ -227,12 +218,12 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">jcr:title</stringProp>
                   </elementProp>
-                  <elementProp name="nodeType" elementType="HTTPArgument">
+                  <elementProp name="jcrNodeType" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">jnt:page</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">nodeType</stringProp>
+                    <stringProp name="Argument.name">jcrNodeType</stringProp>
                   </elementProp>
                 </collectionProp>
               </elementProp>
@@ -248,9 +239,6 @@
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
               <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-              <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-              <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-              <stringProp name="HTTPSampler.mimetype"></stringProp>
               <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
@@ -286,9 +274,6 @@
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
               <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-              <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-              <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-              <stringProp name="HTTPSampler.mimetype"></stringProp>
               <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
@@ -311,12 +296,12 @@
               <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="create boardIndex" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                   <collectionProp name="Arguments.arguments">
-                    <elementProp name="nodeType" elementType="HTTPArgument">
+                    <elementProp name="jcrNodeType" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">jnt:boardIndex</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">nodeType</stringProp>
+                      <stringProp name="Argument.name">jcrNodeType</stringProp>
                     </elementProp>
                     <elementProp name="boardSubject" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -332,12 +317,12 @@
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       <stringProp name="Argument.name">boardDescription</stringProp>
                     </elementProp>
-                    <elementProp name="JCRnodeName" elementType="HTTPArgument">
+                    <elementProp name="jcrNodeName" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">boardSubject${COUNTER_BOARDINDEX}</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">JCRnodeName</stringProp>
+                      <stringProp name="Argument.name">jcrNodeName</stringProp>
                     </elementProp>
                   </collectionProp>
                 </elementProp>
@@ -353,9 +338,6 @@
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                 <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-                <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-                <stringProp name="HTTPSampler.mimetype"></stringProp>
                 <boolProp name="HTTPSampler.monitor">false</boolProp>
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSampler>
@@ -391,9 +373,6 @@
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                 <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-                <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-                <stringProp name="HTTPSampler.mimetype"></stringProp>
                 <boolProp name="HTTPSampler.monitor">false</boolProp>
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSampler>
@@ -416,12 +395,12 @@
                 <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create Topic" enabled="true">
                   <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                     <collectionProp name="Arguments.arguments">
-                      <elementProp name="nodeType" elementType="HTTPArgument">
+                      <elementProp name="jcrNodeType" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
                         <stringProp name="Argument.value">jnt:topic</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">nodeType</stringProp>
+                        <stringProp name="Argument.name">jcrNodeType</stringProp>
                       </elementProp>
                       <elementProp name="topicSubject" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -430,12 +409,12 @@
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                         <stringProp name="Argument.name">topicSubject</stringProp>
                       </elementProp>
-                      <elementProp name="JCRnodeName" elementType="HTTPArgument">
+                      <elementProp name="jcrNodeName" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
                         <stringProp name="Argument.value">jmeterTopic${COUNTER_TOPIC}</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                        <stringProp name="Argument.name">JCRnodeName</stringProp>
+                        <stringProp name="Argument.name">jcrNodeName</stringProp>
                       </elementProp>
                     </collectionProp>
                   </elementProp>
@@ -451,9 +430,6 @@
                   <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                   <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                   <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                  <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-                  <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-                  <stringProp name="HTTPSampler.mimetype"></stringProp>
                   <boolProp name="HTTPSampler.monitor">false</boolProp>
                   <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                 </HTTPSampler>
@@ -489,9 +465,6 @@
                   <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                   <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                   <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                  <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-                  <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-                  <stringProp name="HTTPSampler.mimetype"></stringProp>
                   <boolProp name="HTTPSampler.monitor">false</boolProp>
                   <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                 </HTTPSampler>
@@ -514,12 +487,12 @@
                   <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create Thread" enabled="true">
                     <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                       <collectionProp name="Arguments.arguments">
-                        <elementProp name="nodeType" elementType="HTTPArgument">
+                        <elementProp name="jcrNodeType" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
                           <stringProp name="Argument.value">jnt:thread</stringProp>
                           <stringProp name="Argument.metadata">=</stringProp>
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                          <stringProp name="Argument.name">nodeType</stringProp>
+                          <stringProp name="Argument.name">jcrNodeType</stringProp>
                         </elementProp>
                         <elementProp name="threadSubject" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -528,12 +501,12 @@
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
                           <stringProp name="Argument.name">threadSubject</stringProp>
                         </elementProp>
-                        <elementProp name="JCRnodeName" elementType="HTTPArgument">
+                        <elementProp name="jcrNodeName" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
                           <stringProp name="Argument.value">jmeterThread${COUNTER_THREAD}</stringProp>
                           <stringProp name="Argument.metadata">=</stringProp>
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                          <stringProp name="Argument.name">JCRnodeName</stringProp>
+                          <stringProp name="Argument.name">jcrNodeName</stringProp>
                         </elementProp>
                       </collectionProp>
                     </elementProp>
@@ -549,9 +522,6 @@
                     <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                     <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                     <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                    <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-                    <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-                    <stringProp name="HTTPSampler.mimetype"></stringProp>
                     <boolProp name="HTTPSampler.monitor">false</boolProp>
                     <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                   </HTTPSampler>
@@ -574,12 +544,12 @@
                   <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create Post" enabled="true">
                     <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
                       <collectionProp name="Arguments.arguments">
-                        <elementProp name="nodeType" elementType="HTTPArgument">
+                        <elementProp name="jcrNodeType" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
                           <stringProp name="Argument.value">jnt:post</stringProp>
                           <stringProp name="Argument.metadata">=</stringProp>
                           <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                          <stringProp name="Argument.name">nodeType</stringProp>
+                          <stringProp name="Argument.name">jcrNodeType</stringProp>
                         </elementProp>
                         <elementProp name="jcr:title" elementType="HTTPArgument">
                           <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -609,9 +579,6 @@
                     <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                     <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                     <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                    <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-                    <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-                    <stringProp name="HTTPSampler.mimetype"></stringProp>
                     <boolProp name="HTTPSampler.monitor">false</boolProp>
                     <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                   </HTTPSampler>

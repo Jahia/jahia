@@ -210,19 +210,19 @@
             <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create Home Wiki Page" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                 <collectionProp name="Arguments.arguments">
-                  <elementProp name="JCRnodeName" elementType="HTTPArgument">
+                  <elementProp name="jcrNodeName" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">${username}_blog</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">JCRnodeName</stringProp>
+                    <stringProp name="Argument.name">jcrNodeName</stringProp>
                   </elementProp>
-                  <elementProp name="nodeType" elementType="HTTPArgument">
+                  <elementProp name="jcrNodeType" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">jnt:page</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">nodeType</stringProp>
+                    <stringProp name="Argument.name">jcrNodeType</stringProp>
                   </elementProp>
                   <elementProp name="j:templateNode" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -273,19 +273,19 @@
               <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create Wiki page" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                   <collectionProp name="Arguments.arguments">
-                    <elementProp name="autoCheckin" elementType="HTTPArgument">
+                    <elementProp name="jcrAutoCheckin" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">true</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">autoCheckin</stringProp>
+                      <stringProp name="Argument.name">jcrAutoCheckin</stringProp>
                     </elementProp>
-                    <elementProp name="nodeType" elementType="HTTPArgument">
+                    <elementProp name="jcrNodeType" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">jnt:wikiPage</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">nodeType</stringProp>
+                      <stringProp name="Argument.name">jcrNodeType</stringProp>
                     </elementProp>
                     <elementProp name="jcr:title" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -322,19 +322,19 @@
               <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Review content" enabled="true">
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                   <collectionProp name="Arguments.arguments">
-                    <elementProp name="autoCheckin" elementType="HTTPArgument">
+                    <elementProp name="jcrAutoCheckin" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">true</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">autoCheckin</stringProp>
+                      <stringProp name="Argument.name">jcrAutoCheckin</stringProp>
                     </elementProp>
-                    <elementProp name="nodeType" elementType="HTTPArgument">
+                    <elementProp name="jcrNodeType" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">jnt:wikiPage</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                      <stringProp name="Argument.name">nodeType</stringProp>
+                      <stringProp name="Argument.name">jcrNodeType</stringProp>
                     </elementProp>
                     <elementProp name="text" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>

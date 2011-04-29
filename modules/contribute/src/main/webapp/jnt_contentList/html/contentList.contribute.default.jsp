@@ -40,9 +40,7 @@
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
 <utils:setBundle basename="JahiaContributeMode" useUILocale="true"/>
-<script type="text/javascript">
-    var contributeCKEditorToolbar = {toolbar: 'User', filebrowserBrowseUrl: null, filebrowserFlashBrowseUrl: null, filebrowserImageBrowseUrl: '${renderContext.URLGenerator.context}/engines/liveimagepicker.jsp?files=<c:url value="${url.filesPlaceholders}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}', filebrowserLinkBrowseUrl: '${renderContext.URLGenerator.context}/engines/liveimagepicker.jsp?files=<c:url value="${url.basePlaceholders}"/>&base=<c:url value="${url.base}"/>&root=${renderContext.site.path}&type=pages'};
-</script>
+<%@include file="../../include/contributeCKEditorToolbar.jspf" %>
 <div id="${currentNode.UUID}">
     <template:include templateType="html" view="hidden.header"/>
     <c:set var="animatedTasks" value=""/>

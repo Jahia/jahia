@@ -32,13 +32,13 @@
 
  */
 /*
- * Based on the work, done by JÃ¸rn Zaefferer in: Async Treeview 0.1
+ * Based on the work, done by Jörn Zaefferer in: Async Treeview 0.1
  *   
  * Async Treeview 0.1 - Lazy-loading extension for Treeview
  * 
  * http://bassistance.de/jquery-plugins/jquery-plugin-treeview/
  *
- * Copyright (c) 2007 JÃ¸rn Zaefferer
+ * Copyright (c) 2007 Jörn Zaefferer
  *
  * Dual licensed under the MIT and GPL licenses:
  *   http://www.opensource.org/licenses/mit-license.php

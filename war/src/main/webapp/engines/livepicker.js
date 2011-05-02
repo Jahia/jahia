@@ -10,12 +10,12 @@ var files = getUrlParam('files');
 var root = getUrlParam('root');
 var type = getUrlParam('type');
 if (type == '') {
-    type = 'files';
+    type = 'content';
 }
 $(document).ready(function() {
     var queryString = "nodeTypes=" +
-      encodeURIComponent(type == 'pages' ? 'jnt:page' : (type == 'images' ? 'nt:folder,jmix:image,jnt:virtualsite' : 'nt:folder,nt:file,jnt:virtualsite')) +
-      "&selectableNodeTypes=" + encodeURIComponent(type == 'pages' ? 'jnt:page' : (type == 'images' ? 'jmix:image' : 'nt:file'));
+      encodeURIComponent(type == 'pages' ? 'jnt:page' : (type == 'images' ? 'nt:folder,jmix:image,jnt:virtualsite' : (type == 'files' ? 'nt:folder,nt:file,jnt:virtualsite' : 'jnt:content,jnt:page,jnt:virtualsite'))) +
+      "&selectableNodeTypes=" + encodeURIComponent(type == 'pages' ? 'jnt:page' : (type == 'images' ? 'jmix:image' : (type == 'files' ? 'nt:file' : 'jnt:content,jnt:page')));
     queryString = queryString.length > 0 ? "?" + queryString : "";
     $("#imagepicker-treeItemSelectorTree").treeview($.extend({
 		urlBase: base,

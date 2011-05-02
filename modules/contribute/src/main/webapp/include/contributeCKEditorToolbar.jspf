@@ -5,6 +5,7 @@
     <c:param name="files" value="${urlFilesPlaceholders}"/>
     <c:param name="base" value="${urlBase}"/>
     <c:param name="root" value="${renderContext.site.path}"/>
+    <c:param name="type" value="files"/>
 </c:url>
 <c:url var="filebrowserImageBrowseUrl" value="/engines/livepicker.jsp">
     <c:param name="files" value="${urlFilesPlaceholders}"/>
@@ -16,7 +17,6 @@
     <c:param name="files" value="${urlBasePlaceholders}"/>
     <c:param name="base" value="${urlBase}"/>
     <c:param name="root" value="${renderContext.site.path}"/>
-    <c:param name="type" value="pages"/>
 </c:url>
 <template:addResources>
 <script type="text/javascript">

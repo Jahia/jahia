@@ -70,7 +70,7 @@
   <c:if test="${not empty fieldNodeType}">
       <c:set var="fieldPropertyType" value="${fieldNodeType.propertyDefinitionsAsMap[currentFacetName]}"/>
   </c:if>
-  <c:set var="mappedLabel" value="<%=ChoiceListRendererService.getInstance().getRenderers().get((String)jspContext.findAttribute("fieldRenderer")).getStringRendering((RenderContext) jspContext.findAttribute("renderContext"), (ExtendedPropertyDefinition) jspContext.findAttribute("fieldPropertyType"), jspContext.findAttribute("facetValueName"))%>"/>
+  <c:set var="mappedLabel" value='<%=ChoiceListRendererService.getInstance().getRenderers().get((String)jspContext.findAttribute("fieldRenderer")).getStringRendering((RenderContext) jspContext.findAttribute("renderContext"), (ExtendedPropertyDefinition) jspContext.findAttribute("fieldPropertyType"), jspContext.findAttribute("facetValueName"))%>'/>
 </c:if>
 <c:set var="mappedLabel" value="${empty mappedLabel ? facetValueName : mappedLabel}"/>
 <c:if test="${display}">

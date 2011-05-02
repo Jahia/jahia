@@ -1,0 +1,1 @@
+CKEDITOR.plugins.setLang('acheck','en',{acheck:{title:'Check Accessibility'}});

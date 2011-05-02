@@ -65,6 +65,8 @@ CKEDITOR.lang['de'] =
 	common :
 	{
 		browseServer	: 'Server durchsuchen',
+		browseServerFiles:'Dateien',
+		browseServerPages:'Content',
 		url				: 'URL',
 		protocol		: 'Protokoll',
 		upload			: 'Hochladen',

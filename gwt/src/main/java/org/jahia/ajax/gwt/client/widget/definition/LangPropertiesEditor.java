@@ -196,7 +196,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                 Map<String, Field<?>> fieldsMap = langPropertiesEditor.getFieldsMap();
                 for (GWTJahiaNodeProperty property : previousNon18nProperties) {
                     FormFieldCreator.fillValue(fieldsMap.get(property.getName()),
-                            langPropertiesEditor.getGWTJahiaItemDefinition(property), property);
+                            langPropertiesEditor.getGWTJahiaItemDefinition(property), property, null);
                 }
             }
 

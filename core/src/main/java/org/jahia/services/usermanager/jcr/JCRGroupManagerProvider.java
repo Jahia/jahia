@@ -432,18 +432,16 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         List<String> groups = new ArrayList<String>();
                         try {
                             recurseOnGroups(session, groups, principalId);
-                            if (principal instanceof JahiaUser) {
-                                if (!principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
-                                    groups.add(JahiaGroupManagerService.USERS_GROUPNAME);
-                                }
-                                groups.add(JahiaGroupManagerService.GUEST_GROUPNAME);
-                            }
                         } catch (JahiaException e) {
-                            logger.error("Error retrieving membership for user ", e);
+                            logger.warn("Error retrieving membership for user ", e);
                         }
-                        if (finalObjectCache != null) {
-                            finalObjectCache.put(principalId, groups);
+                        if (principal instanceof JahiaUser) {
+                            if (!principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+                                groups.add(JahiaGroupManagerService.USERS_GROUPNAME);
+                            }
+                            groups.add(JahiaGroupManagerService.GUEST_GROUPNAME);
                         }
+                        finalObjectCache.put(principalId, groups);
                         return groups;
                     }
 

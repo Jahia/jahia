@@ -174,8 +174,9 @@
                 <ul>        
             </c:if>
             <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
+                <c:set var="facetDrillDownUrl" value="${facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName])}"/>
                 <c:url var="facetUrl" value="${url.mainResource}">
-                    <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
+                    <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facetDrillDownUrl)}"/>
                 </c:url>
                 <li><a href="${facetUrl}"><facet:facetValueLabel currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/></a> (${facetValue.value})<br/></li>
             </c:if>

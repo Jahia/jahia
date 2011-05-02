@@ -70,4 +70,13 @@
         <set type="response-header" name="Cache-Control">public, max-age=2678400</set> 
     </rule>
     <!-- end of client-side caching -->
+    
+    <!-- Jahia tools -->
+    <rule enabled="true">
+        <name>Jahia tools</name>
+        <note>Redirects to Jahia Tools overview page</note>
+        <from>^/tools(/)?$</from>
+        <to type="redirect">/tools/index.jsp</to>
+    </rule>
+    
 </urlrewrite>

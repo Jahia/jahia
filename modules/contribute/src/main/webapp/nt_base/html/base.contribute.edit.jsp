@@ -120,12 +120,13 @@
                     <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
                         <c:choose>
                             <c:when test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
+                                <c:set var="pickerTypeImage" value="${propertyDefinition.selectorOptions.type == 'image'}"/>
                                 <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
                                      jcr:url="<c:url value='${url.base}${currentNode.path}'/>"
                                      jeditabletreeselector:baseURL="<c:url value='${url.base}'/>"
                                      jeditabletreeselector:root="${renderContext.site.path}"
-                                     jeditabletreeselector:nodetypes="nt:folder,nt:file,jnt:virtualsite"
-                                     jeditabletreeselector:selectablenodetypes="nt:file"
+                                     jeditabletreeselector:nodetypes="${pickerTypeImage ? 'nt:folder,jmix:image,jnt:virtualsite' : 'nt:folder,nt:file,jnt:virtualsite'}"
+                                     jeditabletreeselector:selectablenodetypes="${pickerTypeImage ? 'jmix:image' : 'nt:file'}"
                                      jeditabletreeselector:selectorLabel="<fmt:message key='label.show.file.picker'/>"
                                 jeditabletreeselector:preview="true" jeditabletreeselector:previewPath="<c:url value='${url.files}'/>">
                                     <span><fmt:message key="label.select.file"/></span>

@@ -55,12 +55,24 @@
                 $('#addNewContent').append($('.FormContribute'))
             }
         }</c:set>
+<c:if test="${propertyDefinition.selectorOptions.type == 'image'}">
+<ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                 displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
+        label="${fileLabel}"
+        nodeTypes="nt:folder,jmix:image,jnt:virtualsite"
+        selectableNodeTypes="jmix:image"
+        onSelect="${onSelect}"
+        onClose="${onClose}"
+        fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
+</c:if>
+<c:if test="${propertyDefinition.selectorOptions.type != 'image'}">
 <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                  displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
         label="${fileLabel}"
         onSelect="${onSelect}"
         onClose="${onClose}"
         fancyboxOptions="${fancyboxOptions}" treeviewOptions="{preview:true,previewPath:'${previewPath}'}"/>
+</c:if>
 <span><fmt:message key="label.or"/></span>
 <div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
     <span><fmt:message key="add.file"/></span>

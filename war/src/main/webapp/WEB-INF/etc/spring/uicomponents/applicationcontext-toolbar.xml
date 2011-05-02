@@ -318,6 +318,7 @@
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
                 <property name="permission" value="studioModeAccess"/>
+                <property name="contextNodePath" value="/templateSets"/>
             </bean>
         </property>
     </bean>
@@ -339,11 +340,6 @@
                     <property name="value" value=""/>
                 </bean>
             </list>
-        </property>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="studioModeAccess"/>
-            </bean>
         </property>
     </bean>
 

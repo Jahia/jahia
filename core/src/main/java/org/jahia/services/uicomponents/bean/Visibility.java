@@ -38,6 +38,8 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -55,6 +57,7 @@ public class Visibility {
     private String needAuthentication;
     private String userAgent;
     private String value;
+    private String contextNodePath;
 
     public String getPermission() {
         return permission;
@@ -88,6 +91,14 @@ public class Visibility {
         this.value = value;
     }
 
+    public String getContextNodePath() {
+        return contextNodePath;
+    }
+
+    public void setContextNodePath(String contextNodePath) {
+        this.contextNodePath = contextNodePath;
+    }
+
     public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
         if (value != null) {
             if (logger.isDebugEnabled()) logger.debug("Value: " + value);
@@ -95,43 +106,50 @@ public class Visibility {
         } else {
             try {
                 // check attributes
-                    // check logging
-                    boolean isLogged = isLogged(jahiaUser);
-                    if (!isLogged) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Logging: false");
-                        }
-                        return false;
-                    }
+                // check logging
+                boolean isLogged = isLogged(jahiaUser);
+                if (!isLogged) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Logging: true");
+                        logger.debug("Logging: false");
                     }
+                    return false;
+                }
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Logging: true");
+                }
 
-                    if (!isAllowed(contextNode)) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("SitePermission:: false");
-                        }
-                        return false;
+                try {
+                    if (contextNodePath != null) {
+                        contextNode = contextNode.getSession().getNode(contextNodePath);
                     }
+                } catch (PathNotFoundException e) {
+                    return false;
+                }
+
+                if (!isAllowed(contextNode)) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("SitePermission: true");
+                        logger.debug("SitePermission:: false");
                     }
+                    return false;
+                }
+                if (logger.isDebugEnabled()) {
+                    logger.debug("SitePermission: true");
+                }
 
-                    if (!isAllowedUserAgent(request)) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("UserAgent: false");
-                        }
-                        return false;
-                    }
+                if (!isAllowedUserAgent(request)) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("UserAgent: true");
+                        logger.debug("UserAgent: false");
                     }
+                    return false;
+                }
+                if (logger.isDebugEnabled()) {
+                    logger.debug("UserAgent: true");
+                }
 
 
+                if (logger.isDebugEnabled()) logger.debug("Permissions: true");
 
-                    if (logger.isDebugEnabled()) logger.debug("Permissions: true");
-
-                    return true;
+                return true;
             } catch (final Exception e) {
                 logger.error("Error in getRealValue", e);
                 return true;
@@ -149,7 +167,7 @@ public class Visibility {
             try {
                 return node.hasPermission(permission);
             } catch (Exception e) {
-                logger.error("Cannot check permission "+permission, e);
+                logger.error("Cannot check permission " + permission, e);
             }
         }
         return true;

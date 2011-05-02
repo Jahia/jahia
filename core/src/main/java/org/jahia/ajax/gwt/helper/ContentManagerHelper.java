@@ -778,7 +778,7 @@ public class ContentManagerHelper {
                 throw new GWTJahiaServiceException("Error when clearing all locks on node " + path + " with user " + currentUserSession.getUser().getUserKey());
             }
         } catch (RepositoryException e) {
-            logger.error("Repository error when clearing all locks on node " + path);
+            logger.error("Repository error when clearing all locks on node " + path,e);
             throw new GWTJahiaServiceException("Error when clearing all locks on node " + path + " with user " + currentUserSession.getUser().getUserKey());
         }
     }

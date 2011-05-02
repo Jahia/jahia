@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
@@ -635,7 +636,13 @@ public class UIConfigHelper {
         if (key == null || key.length() == 0) {
             return key;
         }
-        String value = new JahiaResourceBundle(locale, site != null ? site.getTemplatePackageName() : null).get(key, null);
+        String baseName = null;
+        if (key.contains("@")) {
+            baseName = StringUtils.substringAfter(key, "@");
+            key = StringUtils.substringBefore(key, "@");
+        }
+        
+        String value = new JahiaResourceBundle(baseName, locale, site != null ? site.getTemplatePackageName() : null).get(key, null);
         if (value == null || value.length() == 0) {
             value = JahiaResourceBundle.getJahiaInternalResource(key, locale);
         }

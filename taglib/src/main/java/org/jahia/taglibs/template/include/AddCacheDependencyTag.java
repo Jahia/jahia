@@ -32,6 +32,7 @@
 
 package org.jahia.taglibs.template.include;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
@@ -60,7 +61,11 @@ public class AddCacheDependencyTag extends TagSupport {
     }
 
     public void setPath(String path) {
-        this.stringDependency = path;
+        if(path.endsWith("/")) {
+            this.stringDependency = StringUtils.substringBeforeLast(path,"/");
+        } else {
+            this.stringDependency = path;
+        }
     }
 
     public void setFlushOnPathMatchingRegexp(String flushOnPathMatchingRegexp) {

@@ -179,7 +179,9 @@ public class PublicationWorkflow implements CustomWorkflow {
                             container = new EnginePanel();
                         }
                         EngineContainer cards = new EngineCards(container, linker);
-
+                        if (infosListByWorflowGroup.entrySet().isEmpty()) {
+                            new PublicationStatusWindow(linker, null, null, cards);
+                        }
                         for (Map.Entry<String, List<GWTJahiaPublicationInfo>> entry : infosListByWorflowGroup.entrySet()) {
                             final List<GWTJahiaPublicationInfo> infoList = entry.getValue();
 

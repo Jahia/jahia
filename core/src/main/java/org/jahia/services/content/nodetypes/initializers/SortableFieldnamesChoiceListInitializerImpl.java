@@ -200,6 +200,11 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
             throws RepositoryException {
         return JCRContentUtils.getDisplayLabel(propertyWrapper, context.getMainResource().getLocale(), propertyWrapper.getParent().getPrimaryNodeType());
     }
+    
+    public String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef,
+            Object propertyValue) throws RepositoryException {
+        return JCRContentUtils.getDisplayLabel(propertyValue, context.getMainResource().getLocale(), propDef.getDeclaringNodeType());
+    }    
 
     public void setExcludedNodeTypes(Set<String> excludedNodeTypes) {
         this.excludedNodeTypes = excludedNodeTypes;

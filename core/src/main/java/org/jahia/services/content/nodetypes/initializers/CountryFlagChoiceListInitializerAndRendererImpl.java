@@ -76,40 +76,53 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         return new ArrayList<ChoiceListValue>();
     }
 
-    public Map<String, Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
-            throws RepositoryException {
+    public Map<String, Object> getObjectRendering(RenderContext context,
+            JCRPropertyWrapper propertyWrapper) throws RepositoryException {
+        return getObjectRendering(context, null, propertyWrapper.getValue().getString());
+    }
+
+    public Map<String, Object> getObjectRendering(RenderContext context,
+            ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException {
         Map<String, Object> map = new HashMap<String, Object>();
-        final String displayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
-                context.getMainResource().getLocale());
-        final String enDisplayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
-                Locale.ENGLISH);
-        String flagPath = "/css/images/flags/shadow/flag_" + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
+        final String displayName = new Locale("en", propertyValue.toString())
+                .getDisplayCountry(context.getMainResource().getLocale());
+        final String enDisplayName = new Locale("en", propertyValue.toString())
+                .getDisplayCountry(Locale.ENGLISH);
+        String flagPath = "/css/images/flags/shadow/flag_"
+                + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
         File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
         if (!f.exists()) {
             flagPath = "/css/blank.gif";
         }
         map.put("displayName", displayName);
-        map.put("flag", context.getRequest().getContextPath()+flagPath);
+        map.put("flag", context.getRequest().getContextPath() + flagPath);
         return map;
     }
 
     public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
             throws RepositoryException {
         String value;
-        if(propertyWrapper.isMultiple()) {
+        if (propertyWrapper.isMultiple()) {
             value = propertyWrapper.getValues()[0].getString();
         } else {
             value = propertyWrapper.getValue().getString();
         }
-        final String displayName = new Locale("en", value).getDisplayCountry(
-                context.getMainResource().getLocale());
-        final String enDisplayName = new Locale("en", value).getDisplayCountry(
-                Locale.ENGLISH);
-        String flagPath = "/css/images/flags/shadow/flag_" + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
+        return getStringRendering(context, null, value);
+    }
+
+    public String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef,
+            Object propertyValue) throws RepositoryException {
+        String value = propertyValue.toString();
+        final String displayName = new Locale("en", value).getDisplayCountry(context
+                .getMainResource().getLocale());
+        final String enDisplayName = new Locale("en", value).getDisplayCountry(Locale.ENGLISH);
+        String flagPath = "/css/images/flags/shadow/flag_"
+                + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
         File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
         if (!f.exists()) {
             flagPath = "/css/blank.gif";
         }
-        return "<img src=\""+context.getRequest().getContextPath()+flagPath+"\">&nbsp;<span>"+displayName+"</span>";
+        return "<img src=\"" + context.getRequest().getContextPath() + flagPath + "\">&nbsp;<span>"
+                + displayName + "</span>";
     }
 }

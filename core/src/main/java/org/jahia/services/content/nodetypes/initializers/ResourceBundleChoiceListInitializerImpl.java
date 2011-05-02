@@ -81,14 +81,21 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
 
     public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
             throws RepositoryException {
-        
-        String propValue = propertyWrapper.getValue().getString();
-        
-        JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getMainResource().getLocale(),
-                getTemplatePackageName((ExtendedPropertyDefinition) propertyWrapper.getDefinition()));
+        return getStringRendering(context,
+                (ExtendedPropertyDefinition) propertyWrapper.getDefinition(), propertyWrapper
+                        .getValue().getString());
+    }
+    
+    public String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef,
+            Object propertyValue) throws RepositoryException {
 
-        return rb.get(((ExtendedPropertyDefinition) propertyWrapper.getDefinition()).getResourceBundleKey()
-                + "." + propValue.replace(':', '_'), propValue);
+        String propValue = propertyValue.toString();
+
+        JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getMainResource()
+                .getLocale(), getTemplatePackageName(propDef));
+
+        return rb
+                .get(propDef.getResourceBundleKey() + "." + propValue.replace(':', '_'), propValue);
     }
 
     private String getTemplatePackageName(ExtendedPropertyDefinition definition) {

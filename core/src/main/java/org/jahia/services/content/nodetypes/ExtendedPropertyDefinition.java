@@ -32,7 +32,6 @@
 
 package org.jahia.services.content.nodetypes;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.nodetype.InvalidConstraintException;
 import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;

@@ -32,6 +32,8 @@
     <jsp:useBean id="facetLabels" class="java.util.HashMap" scope="request"/>
     <jsp:useBean id="facetValueLabels" class="java.util.HashMap" scope="request"/>    
     <jsp:useBean id="facetValueFormats" class="java.util.HashMap" scope="request"/>    
+    <jsp:useBean id="facetValueRenderers" class="java.util.HashMap" scope="request"/>    
+    <jsp:useBean id="facetValueNodeTypes" class="java.util.HashMap" scope="request"/>
     
     <query:definition var="listQuery" scope="request">
         <query:selector nodeTypeName="jnt:content"/>
@@ -43,6 +45,10 @@
             <c:set var="facetNodeTypeName" value="${fn:substringBefore(currentField.string, ';')}"/>
             <c:set var="facetPropertyName" value="${fn:substringAfter(currentField.string, ';')}"/>
             <jcr:nodeType name="${facetNodeTypeName}" var="facetNodeType"/>
+            <c:if test="${not empty facetNodeType}">
+                <c:set target="${facetValueNodeTypes}" property="${facetPropertyName}" value="${facetNodeType}" />
+            </c:if>
+            
             <jcr:nodeProperty node="${facet}" name="mincount" var="minCount"/>
             <c:set var="minCountParam" value=""/>            
             <c:if test="${not empty minCount.string}">
@@ -56,12 +62,20 @@
             
             <c:choose>
                 <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet')}">
-                    <c:if test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">                
-                        <jcr:nodeProperty node="${facet}" name="labelFormat" var="currentFacetValueFormat"/>
-                        <c:if test="${not empty currentFacetValueFormat.string}">
-                            <c:set target="${facetValueFormats}" property="${facetPropertyName}" value="${currentFacetValueFormat.string}"/>
-                        </c:if>                                                                            
-                    </c:if>            
+                    <c:choose>
+                        <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">
+                            <jcr:nodeProperty node="${facet}" name="labelFormat" var="currentFacetValueFormat" />
+                            <c:if test="${not empty currentFacetValueFormat.string}">
+                                <c:set target="${facetValueFormats}" property="${facetPropertyName}" value="${currentFacetValueFormat.string}" />
+                            </c:if>
+                        </c:when>
+                        <c:otherwise>
+                            <jcr:nodeProperty node="${facet}" name="labelRenderer" var="currentFacetValueRenderer" />
+                            <c:if test="${not empty currentFacetValueRenderer.string}">
+                                <c:set target="${facetValueRenderers}" property="${facetPropertyName}" value="${currentFacetValueRenderer.string}" />
+                            </c:if>                        
+                        </c:otherwise>
+                    </c:choose>
                     <c:if test="${not empty currentField and not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
                         <c:set var="facetQuery" value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}${minCountParam}"/>
                         <c:set var="facetPrefix" value="${jcr:isNodeType(facet, 'jnt:dateFacet') ? 'date.' : ''}"/>

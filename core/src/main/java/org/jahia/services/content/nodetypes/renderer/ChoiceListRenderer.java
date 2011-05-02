@@ -34,6 +34,7 @@ package org.jahia.services.content.nodetypes.renderer;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.RepositoryException;
 import java.util.Map;
@@ -48,4 +49,6 @@ import java.util.Map;
 public interface ChoiceListRenderer {
     Map<String,Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper) throws RepositoryException;
     String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper) throws RepositoryException;
+    Map<String,Object> getObjectRendering(RenderContext context, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException;
+    String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException;    
 }

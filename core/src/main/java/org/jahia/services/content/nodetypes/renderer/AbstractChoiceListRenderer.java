@@ -38,6 +38,7 @@ import java.util.Map;
 import javax.jcr.RepositoryException;
 
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.render.RenderContext;
 
 /**
@@ -57,4 +58,13 @@ public abstract class AbstractChoiceListRenderer implements ChoiceListRenderer {
         return map;
     }
 
+    /* (non-Javadoc)
+     * @see org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer#getObjectRendering(org.jahia.services.render.RenderContext, org.jahia.services.content.nodetypes.ExtendedPropertyDefinition, java.lang.Object)
+     */    
+    public Map<String, Object> getObjectRendering(RenderContext context, ExtendedPropertyDefinition propDef, Object propertyValue)
+            throws RepositoryException {
+        Map<String, Object> map = new HashMap<String, Object>(1);
+        map.put("displayName", getStringRendering(context, propDef, propertyValue));
+        return map;
+    }
 }

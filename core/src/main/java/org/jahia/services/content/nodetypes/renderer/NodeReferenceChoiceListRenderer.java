@@ -43,6 +43,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.render.RenderContext;
 
 /**
@@ -75,5 +76,19 @@ public class NodeReferenceChoiceListRenderer extends AbstractChoiceListRenderer 
             }
         }
         return StringUtils.join(displayValues, ", ");
+    }
+
+    public String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef,
+            Object propertyValue) throws RepositoryException {
+        String displayValue = "";
+        JCRNodeWrapper node = (JCRNodeWrapper) propertyValue;
+        if (node != null) {
+            String title = null;
+            if (node.hasProperty(Constants.JCR_TITLE)) {
+                title = node.getProperty(Constants.JCR_TITLE).getString();
+            }
+            displayValue = StringUtils.isNotEmpty(title) ? title : node.getName();
+        }
+        return displayValue;
     }
 }

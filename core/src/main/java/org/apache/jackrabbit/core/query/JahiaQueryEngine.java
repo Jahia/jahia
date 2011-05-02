@@ -1,19 +1,24 @@
 package org.apache.jackrabbit.core.query;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.core.query.lucene.FacetRow;
 import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 import javax.jcr.query.qom.*;
+
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,4 +97,42 @@ public class JahiaQueryEngine extends QueryEngine {
         }
         return result;
     }
+
+    @Override
+    protected Map<String, PropertyValue> getColumnMap(String selector, NodeType type)
+            throws RepositoryException {
+        return super.getColumnMap(selector, NodeTypeRegistry.getInstance().getNodeType(type.getName()));
+    }
+
+    @Override
+    protected Map<String, PropertyValue> getColumnMap(Column[] columns,
+            Map<String, NodeType> selectors) throws RepositoryException {
+        Map<String, PropertyValue> map =
+            new LinkedHashMap<String, PropertyValue>();
+        if (columns != null && columns.length > 0) {
+            for (int i = 0; i < columns.length; i++) {
+                String name = columns[i].getColumnName();
+                if (name != null) {
+                    map.put(name, qomFactory.propertyValue(
+                            columns[i].getSelectorName(),
+                            columns[i].getPropertyName()));
+                } else if (!StringUtils.isEmpty(columns[i].getPropertyName())) {
+                    map.put(columns[i].getSelectorName() + "." + columns[i].getPropertyName(),
+                            qomFactory.propertyValue(columns[i].getSelectorName(),
+                                    columns[i].getPropertyName()));                    
+                } else {
+                    String selector = columns[i].getSelectorName();
+                    map.putAll(getColumnMap(selector, selectors.get(selector)));
+                }
+            }
+        } else {
+            for (Map.Entry<String, NodeType> selector : selectors.entrySet()) {
+                map.putAll(getColumnMap(
+                        selector.getKey(), selector.getValue()));
+            }
+        }
+        return map;
+    }
+    
+
 }

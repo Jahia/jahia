@@ -411,7 +411,7 @@ public class Find extends BaseFindController {
         
         try {
             String[] columns = result.getColumnNames();
-            boolean serializeRows = columns.length > 0 && !columns[0].contains(".");
+            boolean serializeRows = columns.length > 0 && !columns[0].contains("*");
 
             Set<String> alreadyIncludedIdentifiers = new HashSet<String>();
             Map<String, String> alreadyIncludedPropertyValues = null;
@@ -424,7 +424,6 @@ public class Find extends BaseFindController {
                 int resultCount = 0;
                 while (rows.hasNext()) {
                     Row row = rows.nextRow();
-                    String path = row.getPath();
                     JSONObject serializedRow = serializeRow(row, columns, depth, escape, alreadyIncludedIdentifiers, propertyMatchRegexp, alreadyIncludedPropertyValues);
                     if (serializedRow != null) {
                         results.put(serializedRow);
@@ -438,7 +437,6 @@ public class Find extends BaseFindController {
                 int resultCount = 0;
                 while (nodes.hasNext()) {
                     Node nextNode = nodes.nextNode();
-                    String path = nextNode.getPath();
                     JSONObject serializedNode = serializeNode(nextNode, depth, escape, propertyMatchRegexp, alreadyIncludedPropertyValues);
                     if (serializedNode != null) {
                         results.put(serializedNode);

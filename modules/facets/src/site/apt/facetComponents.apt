@@ -15,7 +15,9 @@ Facet module and components
   
   Now you need to bind the component to the area, which displays the list or the query results. Click on the <<Click this to link>> button.
   Release the mouse button (no drag&drop) and move the mouse pointer (should display a chain icon) to the <<Maincontent area>> and click 
-  on the area. Now you should see the message <<facets - Linked to: maincontent>> in the component.
+  on the area. Now you should see the message <<facets - Linked to: maincontent>> in the component. Notice that when you drop the component in
+  edit mode, the component will show that it is automatically bound to "main resource". But in order to make the facet component work, it should
+  not be bound to the main resource, but to the resulting list component, so you need to change the automatic bonding. 
   
 [./images/facets/linkfacets.png] Link (bind) facets component to mainarea, which will display the list  
   

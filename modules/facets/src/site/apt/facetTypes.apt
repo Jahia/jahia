@@ -83,6 +83,10 @@ Facet types and their parameters
 
   The default value is <<<false>>>. 
 
+** labelRenderer
+
+  Sometimes the values of a field may be simple keys, which are meaningless to the end user. For that you can register {{{../../core/initializers_renderers/renderers.html}ChoiceListRenderer}} implementations
+  into Jahia. Set the key to the ChoiceListRenderer implementation into the labelRenderer field in order to display nice labels.   
 
 * Date Faceting
 

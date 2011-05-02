@@ -5,11 +5,9 @@
 <%@ page import="java.util.Set" %>
 <%@ page import="java.lang.management.ThreadInfo" %>
 <%--
-  Created by IntelliJ IDEA.
   User: loom
   Date: Nov 12, 2008
   Time: 3:41:07 PM
-  To change this template use File | Settings | File Templates.
 --%>
 <html>
 <head><title>Current thread dump</title></head>

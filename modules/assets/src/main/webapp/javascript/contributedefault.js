@@ -33,7 +33,7 @@ $(window).unload( function() {
 
 function initEditFields(id) {
     $(".edit" + id).editable(function (value, settings) {
-        var data = {'methodToCall':'put'};
+        var data = {'jcrMethodToCall':'put'};
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
         $.post($(this).attr('jcr:url'), data, null, "json");
@@ -48,7 +48,7 @@ function initEditFields(id) {
 
     $(".ckeditorEdit" + id).editable(function (value, settings) {
         var submitId = $(this).attr('jcr:id');
-        var data = {'methodToCall':'put'};
+        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         $.post($(this).attr('jcr:url'), data, null, "json");
         return(value);
@@ -70,7 +70,7 @@ function initEditFields(id) {
 
     $(".dateEdit" + id).editable(function (value, settings) {
         var submitId = $(this).attr('jcr:id');
-        var data = {'methodToCall':'put'};
+        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         $.post($(this).attr('jcr:url'), data, function(result) {
         }, "json");
@@ -86,7 +86,7 @@ function initEditFields(id) {
 
     $(".dateTimeEdit" + id).editable(function (value, settings) {
         var submitId = $(this).attr('jcr:id');
-        var data = {'methodToCall':'put'};
+        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         $.post($(this).attr('jcr:url'), data, function(result) {
         }, "json");
@@ -102,7 +102,7 @@ function initEditFields(id) {
 
     $(".choicelistEdit" + id).editable(function (value, settings) {
         var submitId = $(this).attr('jcr:id').replace("_", ":");
-        var data = {'methodToCall':'put'};
+        var data = {'jcrMethodToCall':'put'};
         data[submitId] = value;
         $.post($(this).attr('jcr:url'), data, null, "json");
         return eval("values=" + $(this).attr('jcr:options'))[value];
@@ -126,7 +126,7 @@ function initEditFields(id) {
         tooltip : contributionI18n['edit'],
         target:$(".file" + id).attr('jcr:url')+"?contributePost=true",
         callback : function (data, status,original) {
-            var datas = {'methodToCall':'put'};
+            var datas = {'jcrMethodToCall':'put'};
             var callableUrl = $(original).attr('jcr:url');
             datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
             $.post($(original).attr('jcr:url'), datas, function(result) {
@@ -137,7 +137,7 @@ function initEditFields(id) {
 
 
     $(".fileSelector" + id).editable(function (value, settings) {
-        var data = {'methodToCall':'put'};
+        var data = {'jcrMethodToCall':'put'};
         var submitId = $(this).attr('jcr:id');
         data[submitId] = value;
         var callableUrl = $(this).attr('jcr:url');
@@ -263,7 +263,7 @@ function invert(source, target, urlbase, callbackId, callbackUrl,callbackJS) {
 }
 
 function deleteNode(source, urlbase, callbackId, callbackUrl,callbackJS) {
-    $.post(urlbase + source, {"methodToCall":"delete"},
+    $.post(urlbase + source, {"jcrMethodToCall":"delete"},
         function(result) {
             jreplace(callbackId, callbackUrl,null, callbackJS);
         },

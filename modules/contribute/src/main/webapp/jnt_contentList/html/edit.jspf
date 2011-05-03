@@ -1,4 +1,4 @@
-<c:set var="locked" value="${child.locked and child.lockOwner ne currentUser.username}" />
+<c:set var="locked" value="${child.locked and child.lockOwner ne currentUser.username}"/>
 <div class="listEditToolbar">
     <input type="checkbox" name="${child.identifier}" ${locked ? 'disabled=true':''}/>
 
@@ -32,6 +32,12 @@
                             $('#editbtn-${child.identifier}').show();
                             lockedPath['<c:url value="${url.base}${child.path}"/>'] = 'unlocked';
                         }
+	    	            var editors = CKEDITOR.instances;
+	    	            for(var i in editors) {
+	    		            try {
+	    			            CKEDITOR.instances[i].destroy();
+	    		            } catch (de) {}
+	    		        }
                         jreplace('edit-${child.identifier}', '<c:url value="${url.base}${child.path}.html.ajax"/>',null, '');
                     }, 'json')">
             <span class="icon-contribute icon-preview"></span><fmt:message key="label.quit"/>&nbsp;</button>
@@ -50,7 +56,8 @@
     </c:if>
     <c:if test="${locked ne 'true'}">
         <c:if test="${(areaResource.properties['j:canDeleteInContribution'].boolean or currentNode.properties['j:canDeleteInContribution'].boolean)}">
-            <button id="delbtn-${child.identifier}" onclick="var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
+            <button id="delbtn-${child.identifier}"
+                    onclick="var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
                 <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
         </c:if>
 

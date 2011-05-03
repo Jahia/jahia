@@ -79,7 +79,7 @@
                             </c:if>
                             <img src="${icon}" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseContribute}${node.path}${page}.html'/>"><fmt:message key="label.contribute"/></a>
                         </c:if>
-                        <c:if test="${currentNode.properties.live.boolean && home.properties['j:published'].boolean}">
+                        <c:if test="${currentNode.properties.live.boolean && node.home.properties['j:published'].boolean}">
                             <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseLive}${node.path}${page}.html'/>"><fmt:message key="label.live"/></a>
                         </c:if>
                     </li>

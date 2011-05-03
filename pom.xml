@@ -508,6 +508,11 @@
                     <artifactId>maven-war-plugin</artifactId>
                     <version>${war.plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.jahia.server</groupId>
+                    <artifactId>maven-jahia-plugin</artifactId>
+                    <version>${jahia.plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>

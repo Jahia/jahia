@@ -8,10 +8,7 @@
 <%@ include file="/admin/include/header.inc" %>
 
 <%
-    String url = request.getRequestURI();
-    if(url.charAt(url.length()-1) == '/')
-        url = url.substring(0, url.length() - 1);
-
+    String url = JahiaAdministration.composeActionURL(request,response,null,null);
 %>
 <div id="topTitle">
     <h1>Jahia</h1>

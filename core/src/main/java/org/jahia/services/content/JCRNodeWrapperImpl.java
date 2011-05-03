@@ -857,47 +857,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         throw new PathNotFoundException(s);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isVisible() {
-        try {
-            Property hidden = objectNode.getProperty("j:hidden");
-            return hidden == null || !hidden.getBoolean();
-        } catch (RepositoryException e) {
-            return true;
-        }
-    }
-
-    /**
-     * Returns a lazy map for accessing node properties with string values.
-     *
-     * @return a lazy map for accessing node properties with string values
-     */
-    @SuppressWarnings("unchecked")
-/*    public Map<String, String> getPropertiesAsString() {
-        if (propertiesAsString == null) {
-            Map<String, String> res = Collections.emptyMap();
-            res = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
-                public Object transform(Object input) {
-                    String name = (String) input;
-                    try {
-                        if (hasProperty(name)) {
-                            Property p = getProperty(name);
-                            return p.getString();
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error("Repository error while retrieving property " + name, e);
-                    }
-                    return null;
-                }
-            });
-            propertiesAsString = res;
-        }
-
-        return propertiesAsString;
-    }*/
-
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
             Map<String, String> res = new HashMap<String, String>();
             PropertyIterator pi = getProperties();

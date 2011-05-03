@@ -52,6 +52,7 @@ public class GWTJahiaNodeACE implements Serializable {
     private String inheritedFrom;
     private Map<String, Boolean> permissions;
     private Map<String, Boolean> inheritedPermissions;
+    private boolean hidden = false;
 
     public GWTJahiaNodeACE() {
     }
@@ -112,6 +113,14 @@ public class GWTJahiaNodeACE implements Serializable {
         this.inheritedPermissions = inheritedPermissions;
     }
 
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
     public GWTJahiaNodeACE cloneObject() {
         GWTJahiaNodeACE clone = new GWTJahiaNodeACE();
         clone.setPrincipal(principal);
@@ -131,6 +140,8 @@ public class GWTJahiaNodeACE implements Serializable {
             permsClone.put(s, inheritedPermissions.get(s));
         }
         clone.setInheritedPermissions(permsClone);
+
+        clone.setHidden(hidden);
         return clone;
     }
 

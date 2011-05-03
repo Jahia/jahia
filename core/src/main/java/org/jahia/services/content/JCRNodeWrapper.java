@@ -420,13 +420,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     Map<String, String> getThumbnailUrls();
 
     /**
-     * Check the j:hidden property which controls whether the node is visible or not
-     *
-     * @return true if the node is visible
-     */
-    boolean isVisible();
-
-    /**
      * Returns a map of all property names of this node accessible through the current <code>Session</code> with the value as String.
      *
      * @return a map of all property names and its String values

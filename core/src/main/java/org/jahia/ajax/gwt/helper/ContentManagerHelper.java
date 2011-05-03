@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.tika.io.IOUtils;
@@ -635,6 +636,12 @@ public class ContentManagerHelper {
                 map.put(principal, ace);
                 ace.setPrincipalType(principal.charAt(0));
                 ace.setPrincipal(principal.substring(2));
+                if (ace.getPrincipalType() == 'g') {
+                    JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(ace.getPrincipal());
+                    if (g != null) {
+                        ace.setHidden(g.isHidden());
+                    }
+                }
 
                 List<String[]> st = m.get(principal);
                 Map<String, Boolean> perms = new HashMap<String, Boolean>();

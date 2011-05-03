@@ -174,10 +174,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getThumbnailUrls();
     }
 
-    public boolean isVisible() {
-        return node.isVisible();
-    }
-
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
         return node.getPropertiesAsString();
     }

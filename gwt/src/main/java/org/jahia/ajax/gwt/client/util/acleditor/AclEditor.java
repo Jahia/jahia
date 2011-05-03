@@ -145,10 +145,8 @@ public class AclEditor {
                 Image html ;
                 if (ace.getPrincipalType() == 'u') {
                     html = StandardIconsProvider.STANDARD_ICONS.user().createImage();
-                } else if (ace.getPrincipalType() == 'g') {
-                    html = StandardIconsProvider.STANDARD_ICONS.group().createImage();
                 } else {
-                    html = StandardIconsProvider.STANDARD_ICONS.role().createImage();
+                    html = StandardIconsProvider.STANDARD_ICONS.group().createImage();
                 }
                 return html;
             }
@@ -584,6 +582,9 @@ public class AclEditor {
 //        if (ace.getPermissions().isEmpty() && !ace.getInheritedPermissions().isEmpty() && acl.isBreakAllInheritance()) {
 //            return;
 //        }
+        if (ace.isHidden()) {
+            return;
+        }
         BaseModelData value = new BaseModelData();//Object[3 + available.size()];
         value.set("principal", ace.getPrincipal());
 

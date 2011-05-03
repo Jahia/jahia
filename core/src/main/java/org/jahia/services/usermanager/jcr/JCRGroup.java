@@ -57,12 +57,13 @@ import java.util.*;
  *        Created : 8 juil. 2009
  */
 public class JCRGroup extends JahiaGroup implements JCRPrincipal {
+    public static final String J_HIDDEN = "j:hidden";
+    public static final String J_EXTERNAL = "j:external";
+    public static final String J_EXTERNAL_SOURCE = "j:externalSource";
+
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroup.class);
     private String nodeUuid;
     private boolean external;
-    static final String J_HIDDEN = "j:hidden";
-    public static final String J_EXTERNAL = "j:external";
-    public static final String J_EXTERNAL_SOURCE = "j:externalSource";
     private static final String PROVIDER_NAME = "jcr";
     private Properties properties = null;
 

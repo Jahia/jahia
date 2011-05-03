@@ -196,7 +196,7 @@ public class NavigationHelper {
                     hiddenType = true;
                 }
             }
-            boolean matchVisibilityFilter = childNode.isVisible()&&!hiddenType;
+            boolean matchVisibilityFilter = !hiddenType;
             boolean matchNodeType = matchesNodeType(childNode, nodeTypes);
             if (logger.isDebugEnabled()) {
                 logger.debug("----------");
@@ -694,8 +694,7 @@ public class NavigationHelper {
                     n = n.getParent();
                 }
                 if (!n.isNodeType(Constants.NT_FROZENNODE) &&
-                        (CollectionUtils.isEmpty(nodeTypesToApply) || matchesNodeType(n, nodeTypesToApply)) &&
-                        n.isVisible()) {
+                        (CollectionUtils.isEmpty(nodeTypesToApply) || matchesNodeType(n, nodeTypesToApply))) {
                     // use for pickers
                     boolean hasNodes = false;
                     try {

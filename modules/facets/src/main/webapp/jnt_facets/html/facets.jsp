@@ -151,7 +151,7 @@
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
     <div class="facets">
         <%@include file="activeFacets.jspf"%>
-        <c:if test="${result.facetValueExisting}">
+        <c:if test="${facet:isUnappliedFacetExisting(result, activeFacetsVars[activeFacetMapVarName])}">
             <h4><fmt:message key="facets.SelectFilter"/></h4> <br/>
         </c:if>            
         <c:forEach items="${result.facetFields}" var="currentFacet">

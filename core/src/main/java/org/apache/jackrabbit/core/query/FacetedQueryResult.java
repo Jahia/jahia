@@ -45,28 +45,4 @@ public class FacetedQueryResult extends JahiaSimpleQueryResult implements QueryR
     public FacetField getFacetDate(String name) {
         return facetRow.getFacetDate(name);
     }
-    
-    public boolean isFacetValueExisting() {
-        for (FacetField facetField : getFacetFields()) {
-            if (facetField.getValueCount() > 0) {
-                return true;                
-            }
-        }
-        for (FacetField facetField : getFacetDates()) {
-            if (facetField.getValueCount() > 0) {
-                return true;                
-            }
-        }
-        for (FacetField facetField : getLimitingFacets()) {
-            if (facetField.getValueCount() > 0) {
-                return true;                
-            }
-        }        
-        for (long valueCount : getFacetQuery().values()) {
-            if (valueCount > 0) {
-                return true;                
-            }
-        }                
-        return false;
-    }
 }

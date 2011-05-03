@@ -266,11 +266,6 @@ public class QueryResultWrapper implements QueryResult {
         return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getLimitingFacets()
                 : null;
     }
-    
-    public boolean isFacetValueExisting() {
-        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).isFacetValueExisting()
-                : false;
-    }
 
     public String[] getSelectorNames() throws RepositoryException {
         return result.getSelectorNames();

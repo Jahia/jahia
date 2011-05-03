@@ -95,4 +95,26 @@
             ${facet:decodeFacetUrlParam(param[facetParamVarName])}
         </example>
     </function>
+    
+    <function>
+        <description>Return true if there will be an unapplied facet. Useful to decide whether a title should be displayed.</description>
+        <name>isUnappliedFacetExisting</name>
+        <function-class>org.jahia.taglibs.facet.Functions</function-class>
+        <function-signature>boolean isUnappliedFacetExisting(org.jahia.services.query.QueryResultWrapper, java.util.Map)
+        </function-signature>
+        <example>
+            ${facet:isUnappliedFacetExisting(result, activeFacetsVars[activeFacetMapVarName]))}
+        </example>
+    </function>    
+    
+    <function>
+        <description>Return true if there will be an unapplied facet value. Useful to decide whether a title should be displayed.</description>
+        <name>isUnappliedFacetValueExisting</name>
+        <function-class>org.jahia.taglibs.facet.Functions</function-class>
+        <function-signature>boolean isUnappliedFacetValueExisting(org.apache.solr.client.solrj.response.FacetField, java.util.Map)
+        </function-signature>
+        <example>
+            ${facet:isUnappliedFacetValueExisting(currentFacet, activeFacetsVars[activeFacetMapVarName]))}
+        </example>
+    </function>    
  </taglib>    

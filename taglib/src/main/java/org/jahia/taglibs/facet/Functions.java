@@ -32,23 +32,18 @@
 
 package org.jahia.taglibs.facet;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
 
 import javax.jcr.nodetype.PropertyDefinition;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.utils.Url;
-import org.slf4j.Logger;
 import org.apache.solr.client.solrj.response.FacetField;
 
 /**
@@ -58,8 +53,6 @@ import org.apache.solr.client.solrj.response.FacetField;
  */
 public class Functions {
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Functions.class);    
-    
     private static final String FACET_PARAM_DELIM = "###";
     private static final String FACET_DELIM = "|||";
     
@@ -226,5 +219,64 @@ public class Functions {
      */
     public static String decodeFacetUrlParam(String inputString) {
         return Url.decodeUrlParam(inputString);
+    }
+    
+    /**
+     * Check whether there is an unapplied facet existing in the query. Useful in order to determine 
+     * whether a title/label should be displayed or not.
+     * @param result the Jahia QueryResultWrapper object holding query results 
+     * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
+     * @return true if unapplied facet exists otherwise false
+     */
+    public static boolean isUnappliedFacetExisting(QueryResultWrapper result,
+            Map<String, List<KeyValue>> appliedFacets) {
+        if (result.getFacetFields() != null) {
+            for (FacetField facetField : result.getFacetFields()) {
+                if (facetField.getValueCount() > 0) {
+                    for (FacetField.Count facetCount : facetField.getValues()) {
+                        if (!isFacetValueApplied(facetCount, appliedFacets)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        if (result.getFacetDates() != null) {
+            for (FacetField facetField : result.getFacetDates()) {
+                if (facetField.getValueCount() > 0) {
+                    for (FacetField.Count facetCount : facetField.getValues()) {
+                        if (!isFacetValueApplied(facetCount, appliedFacets)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        if (result.getFacetQuery() != null) {
+            for (Map.Entry<String, Long> facetCount : result.getFacetQuery().entrySet()) {
+                if (!isFacetValueApplied(facetCount, appliedFacets)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Check whether there is an unapplied facet value existing in the facet. Useful in order to determine 
+     * whether a title/label should be displayed or not.
+     * @param facetField the FacetField object holding all facet values for the facet field 
+     * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
+     * @return true if unapplied facet value exists otherwise false
+     */    
+    public static boolean isUnappliedFacetValueExisting(FacetField facetField, Map<String, List<KeyValue>> appliedFacets) {
+        if (facetField.getValueCount() > 0) {
+            for (FacetField.Count facetCount : facetField.getValues()) {
+                if (!isFacetValueApplied(facetCount, appliedFacets)) {
+                    return true;                    
+                }
+            }                
+        }         
+        return false;
     }
 }

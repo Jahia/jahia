@@ -33,6 +33,8 @@
 package org.jahia.services.content.decorator;
 
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRNodeWrapperImpl;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
@@ -43,6 +45,7 @@ import javax.jcr.Node;
  * @author toto
  */
 public class JCRReferenceNode extends JCRNodeDecorator {
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFrozenNode.class);
 
     public JCRReferenceNode(JCRNodeWrapper node) {
         super(node);
@@ -56,4 +59,16 @@ public class JCRReferenceNode extends JCRNodeDecorator {
         setProperty("j:node", node);
     }
 
+    @Override
+    public String getDisplayableName() {
+        String name = super.getDisplayableName();
+        try {
+            if (getNode() != null) {
+                name = ((JCRNodeWrapper) getNode()).getDisplayableName();
+            }
+        } catch (RepositoryException e) {
+            logger.warn("JCRReferenceNode : error while trying to display reference " + this.getPath());
+        }
+        return name;
+    }
 }

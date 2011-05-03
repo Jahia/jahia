@@ -13,6 +13,8 @@ CKEDITOR.editorConfig = function( config )
     config.filebrowserWindowWidth = '810';
     config.filebrowserWindowHeight = '650';
     config.filebrowserLinkWindowHeight = '800';
+    config.filebrowserWindowFeatures = 'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes';
+    config.filebrowserWindowName = 'JahiaFileBrowser'; 
     config.filebrowserBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?site=' + config.siteUuid;
     config.filebrowserImageBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?type=imagepicker&site=' + config.siteUuid;
     config.filebrowserFlashBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?mime=application%2Fx-shockwave-flash%2Cvideo%2Fx-flv&site=' + config.siteUuid;

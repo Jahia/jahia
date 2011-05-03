@@ -228,8 +228,9 @@ public class WelcomeServlet extends HttpServlet {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         if(site!=null) {
-                            site.getHome();
-                            if (!newLocaleList.contains(curLocale)) {
+                            JCRSiteNode nodeByIdentifier = (JCRSiteNode) session.getNodeByIdentifier(site.getIdentifier());
+                            JCRNodeWrapper home = nodeByIdentifier.getHome();
+                            if (home!=null && !newLocaleList.contains(curLocale)) {
                                 newLocaleList.add(curLocale);
                             }
                         }

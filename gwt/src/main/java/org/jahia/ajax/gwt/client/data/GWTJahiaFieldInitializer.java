@@ -44,7 +44,6 @@ public class GWTJahiaFieldInitializer implements Serializable {
     private static final long serialVersionUID = -8594607579678260363L;
     private List<String> dependentProperties;
     private List<GWTJahiaValueDisplayBean> displayValues;
-    private String defaultProperty;
     
     public GWTJahiaFieldInitializer() {
         super();
@@ -67,13 +66,5 @@ public class GWTJahiaFieldInitializer implements Serializable {
     }
     public void setDisplayValues(List<GWTJahiaValueDisplayBean> displayValues) {
         this.displayValues = displayValues;
-    }
-
-    public String getDefaultProperty() {
-        return defaultProperty;
-    }
-
-    public void setDefaultProperty(String defaultProperty) {
-        this.defaultProperty = defaultProperty;
     }
 }

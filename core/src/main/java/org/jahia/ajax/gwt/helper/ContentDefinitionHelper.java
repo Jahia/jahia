@@ -701,9 +701,6 @@ public class ContentDefinitionHelper {
                 }
             }
             initializer = new GWTJahiaFieldInitializer(displayBeans, dependentProperties);
-            if (map.containsKey("defaultProperty")) {
-                initializer.setDefaultProperty(map.get("defaultProperty"));
-            }
         }
         return initializer;
     }

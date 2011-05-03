@@ -340,7 +340,6 @@
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden
  - j:view (string, choicelist[templates,resourceBundle]) nofulltext
- - j:defaultTemplate (boolean) = false
  + * (jnt:template)
  + * (jnt:content)
 
@@ -356,6 +355,7 @@
 
 [jnt:contentTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:content,jnt:contentList,jnt:folder,jnt:file,jnt:user,jnt:group,jnt:virtualsite',resourceBundle]) multiple
+ - j:defaultTemplate (boolean) = false
  - j:priority (long)
 
 [jmix:mockupStyle] mixin
@@ -569,7 +569,7 @@ extends = jnt:content
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
  orderable
  - jcr:title (string) i18n mandatory boost=2.0
- - j:templateNode (weakreference,choicelist[defaultProperty=j:defaultTemplate,templatesNode]) mandatory < jnt:template
+ - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
  - j:isHomePage (boolean) hidden
  + * (nt:base) = nt:base version
  + * (jmix:navMenuItem)

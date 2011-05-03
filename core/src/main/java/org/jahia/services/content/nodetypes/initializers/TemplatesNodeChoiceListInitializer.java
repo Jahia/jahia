@@ -46,7 +46,10 @@ import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -111,18 +114,10 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 }
 
                 ok &= node.hasPermission("template-"+templateNode.getName());
-                Map<String, String> map = epd.getSelectorOptions();
-                if (ok) {
-                    ChoiceListValue value = new ChoiceListValue(templateNode.getName(), new HashMap<String, Object>(), session.getValueFactory().createValue(templateNode.getIdentifier(),
-                            PropertyType.WEAKREFERENCE));
-                    if (map.containsKey("defaultProperty")) {
-                        String defaultProperty = map.get("defaultProperty");
-                        if (templateNode.hasProperty(defaultProperty)) {
-                            value.addProperty(defaultProperty,templateNode.getProperty(defaultProperty).getValue().getBoolean());
-                        }
-                    }
 
-                    vs.add(value);
+                if (ok) {
+                    vs.add(new ChoiceListValue(templateNode.getName(), null, session.getValueFactory().createValue(templateNode.getIdentifier(),
+                            PropertyType.WEAKREFERENCE)));
                 }
             }
         } catch (RepositoryException e) {

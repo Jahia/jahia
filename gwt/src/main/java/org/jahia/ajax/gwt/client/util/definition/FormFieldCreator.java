@@ -41,7 +41,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -70,11 +69,11 @@ public class FormFieldCreator {
      *
      * @param definition
      * @param property
-     * @param initializer
+     * @param initializerValues
      * @return
      */
     public static Field<?> createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
-                                       GWTJahiaFieldInitializer initializer, boolean displayHiddenProperty) {
+                                       List<GWTJahiaValueDisplayBean> initializerValues, boolean displayHiddenProperty) {
         Field<?> field = null;
         if (definition.isHidden() && !displayHiddenProperty) {
             return null;
@@ -156,8 +155,8 @@ public class FormFieldCreator {
 
                 case GWTJahiaNodeSelectorType.CHOICELIST:
                     ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
-                    if (initializer != null) {
-                        store.add(initializer.getDisplayValues());
+                    if (initializerValues != null) {
+                        store.add(initializerValues);
                     } else if (propDefinition.getValueConstraints() != null) {
                         for (String s : propDefinition.getValueConstraints()) {
                             store.add(new GWTJahiaValueDisplayBean(s, s));
@@ -221,7 +220,7 @@ public class FormFieldCreator {
         }
         setModifiers(field, definition);
         if (property != null) {
-            fillValue(field, definition, property, initializer);
+            fillValue(field, definition, property);
         }
         return field;
     }
@@ -310,15 +309,8 @@ public class FormFieldCreator {
      * @param definition
      * @param property
      */
-    public static void fillValue(final Field field, GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property, GWTJahiaFieldInitializer initializer) {
+    public static void fillValue(final Field field, GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property) {
         List<GWTJahiaNodePropertyValue> values = property.getValues();
-        if (initializer != null && values.size() == 0 && initializer.getDefaultProperty() != null) {
-            for (GWTJahiaValueDisplayBean v : initializer.getDisplayValues()) {
-                if (v.get(initializer.getDefaultProperty()) != null && (Boolean) v.get(initializer.getDefaultProperty())) {
-                    values = Arrays.asList(new GWTJahiaNodePropertyValue(v.getValue()));
-                }
-            }
-        }
         if (values.size() == 0) {
             return;
         }
@@ -436,7 +428,7 @@ public class FormFieldCreator {
             '<tpl for=".">',
             '<div class="x-combo-list-item">',
             '<tpl if="image != &quot;&quot;">',
-            '<img src="{image}"/> ',
+                '<img src="{image}"/> ',
             '</tpl>',
             '{display}</div>',
             '</tpl>'

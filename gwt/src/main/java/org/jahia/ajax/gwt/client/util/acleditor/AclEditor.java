@@ -579,9 +579,9 @@ public class AclEditor {
      * @param available
      */
     private void addTableItem(ListStore<ModelData> store, GWTJahiaNodeACE ace, List<String> available) {
-//        if (ace.getPermissions().isEmpty() && !ace.getInheritedPermissions().isEmpty() && acl.isBreakAllInheritance()) {
-//            return;
-//        }
+        if (ace.getPermissions().isEmpty() && !ace.getInheritedPermissions().isEmpty() && acl.isBreakAllInheritance()) {
+            return;
+        }
         if (ace.isHidden()) {
             return;
         }

@@ -350,7 +350,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
         for (String path : paths) {
             try {
-                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, fields, retrieveCurrentSession());
+                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, fields, retrieveCurrentSession(getWorkspace(),getLocale(),true));
                 list.add(gwtJahiaNode);
             } catch (GWTJahiaServiceException e) {
                 logger.debug(e.getMessage(), e);

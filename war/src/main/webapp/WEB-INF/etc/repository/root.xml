@@ -247,7 +247,7 @@
                      j:privilegedAccess="true"/>
 
         <publisher jcr:primaryType="jnt:role"
-                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/contributeMode/contributeModeAccess /permissions/workflow-tasks/one-step-review /permissions/workflow-tasks/two-steps-final-review /permissions/workflow-tasks/one-step-unpublish"
+                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/publish /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/contributeMode/contributeModeAccess /permissions/workflow-tasks/one-step-review /permissions/workflow-tasks/two-steps-final-review /permissions/workflow-tasks/one-step-unpublish"
                    j:privilegedAccess="true"
                 />
 

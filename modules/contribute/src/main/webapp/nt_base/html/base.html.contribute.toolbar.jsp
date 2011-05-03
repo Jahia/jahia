@@ -154,11 +154,17 @@
                 key="label.preview"/></a>
         <a href="<c:url value='${url.edit}'/>"><img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.editMode"/></a>
         <span> </span>
-        <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="<c:url value='/icons/delete.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
+        <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
+            <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="<c:url value='/icons/delete.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.delete"/></a>
+        </c:if>
         <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><img src="<c:url value='/icons/copy.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.copy"/></a>
-        <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img src="<c:url value='/icons/cut.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.cut"/></a>
-        <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes();"><img src="<c:url value='/icons/publish.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.publication"/></a>
+        <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
+            <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img src="<c:url value='/icons/cut.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.cut"/></a>
+        </c:if>
+        <c:if test="${jcr:hasPermission(currentNode, 'publish')}">
+            <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes();"><img src="<c:url value='/icons/publish.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.publication"/></a>
+        </c:if>
         <a href="#" id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><img src="<c:url value='/icons/clipboard.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.clipboard.reset"/></a>
         <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><img src="<c:url value='/icons/clipboard.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message

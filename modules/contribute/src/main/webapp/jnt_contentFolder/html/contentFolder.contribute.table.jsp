@@ -129,6 +129,6 @@
 </div>
 
 
-<c:if test="${not renderContext.ajaxRequest}">
+<c:if test="${not renderContext.ajaxRequest and jcr:hasPermission(currentNode, 'jcr:addChildNodes_default')}">
     <%@include file="../../jnt_contentList/html/addcontent.jspf" %>
 </c:if>

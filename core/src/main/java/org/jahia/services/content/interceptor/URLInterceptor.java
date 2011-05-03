@@ -43,13 +43,14 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
+import org.jahia.utils.WebUtils;
 import org.springframework.beans.factory.InitializingBean;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -369,7 +370,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
             return originalValue;
         }
 
-        final String path = "/" + pathPart;
+        final String path = "/" + WebUtils.urlDecode(pathPart);
 
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null, new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -439,7 +440,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
                 if (ext != null) {
                     link += "." + ext;
                 }
-                value = value.replace(path, link);
+                value = WebUtils.urlDecode(value).replace(path, link);
                 if (logger.isDebugEnabled()) {
                     logger.debug("After replaceRefsByPlaceholders : "+value);
                 }

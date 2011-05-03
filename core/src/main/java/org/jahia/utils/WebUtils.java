@@ -34,11 +34,14 @@ package org.jahia.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.settings.SettingsBean;
 
 /**
  * Miscellaneous request/response handling methods.
@@ -94,6 +97,21 @@ public final class WebUtils {
                 "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 295075800000L);
+    }
+    
+    /**
+     * Decodes a <code>application/x-www-form-urlencoded</code> string using the character encoding, configured in jahia.properties.
+     * 
+     * @param url
+     *            the string to be decoded
+     * @return the decoded string
+     */
+    public static String urlDecode(String url) {
+        try {
+            return URLDecoder.decode(url, SettingsBean.getInstance().getCharacterEncoding());
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     /**

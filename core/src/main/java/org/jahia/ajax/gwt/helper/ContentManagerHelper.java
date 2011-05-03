@@ -886,7 +886,7 @@ public class ContentManagerHelper {
         try {
             JCRNodeWrapper parent = currentUserSession.getNode(location);
             switch (operation) {
-                case 3:
+                case 2:
                     JCRNodeWrapper node = (JCRNodeWrapper) parent.getNode(newName);
                     if (node == null) {
                         throw new GWTJahiaServiceException(

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 
 <head>
@@ -8,7 +9,7 @@
 </head>
 <body>
 <div id="WebApp">
-    ${wrappedContent}
+     <template:area path="pagecontent"/>
 </div>
 
 </body>

@@ -200,7 +200,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                         for (View view : views) {
                             boolean found = false;
                             for (View view1 : viewsSet) {
-                                if (view1.getKey().equals(view.getKey())) {
+                                if (view1.getKey().equals(view.getKey()) ||
+                                    (StringUtils.isEmpty(param) && view1.getProperties().get("type") != null)) {
                                     found = true;
                                     break;
                                 }

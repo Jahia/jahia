@@ -644,6 +644,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     public boolean matchPermission(Set<String> permissions, String role, Session s) throws RepositoryException {
         Set<Privilege> permsInRole = getPermissionsInRole(role, s);
+        logger.debug("Checking role " +role);
 
         for (Privilege privilege : permsInRole) {
             String privilegeName = privilege.getName();
@@ -667,6 +668,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     private boolean checkPrivilege(Set<String> permissions, String privilegeName) {
         if (permissions.contains(privilegeName)) {
+            logger.debug("Found privilege " +privilegeName);
             permissions.remove(privilegeName);
             if (permissions.isEmpty()) {
                 return true;

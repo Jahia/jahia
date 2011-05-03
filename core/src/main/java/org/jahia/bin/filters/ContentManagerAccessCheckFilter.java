@@ -79,7 +79,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
     private static final Logger logger = LoggerFactory
             .getLogger(ContentManagerAccessCheckFilter.class);
 
-    private String defaultContentManager = "contentmanager";
+    private String defaultContentManager = "repositoryexplorer";
 
     private String defaultContentPicker = "filepicker";
 

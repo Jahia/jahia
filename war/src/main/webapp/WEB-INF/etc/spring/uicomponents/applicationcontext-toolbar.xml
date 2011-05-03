@@ -416,22 +416,22 @@
     </bean>
 
     <!-- Content Manager -->
-    <bean id="Toolbar.Item.ContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.RepositoryExplorer" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
         <property name="titleKey" value="label.repositoryExplorer"/>
-        <property name="icon" value="contentManager"/>
+        <property name="icon" value="repositoryExplorer"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="contentManager"/>
+                <property name="permission" value="repositoryExplorer"/>
             </bean>
         </property>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=contentmanager&amp;site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=repositoryexplorer&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -446,15 +446,15 @@
     </bean>
 
     <bean id="Toolbar.Item.OpenInContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-          parent="Toolbar.Item.ContentManager">
+          parent="Toolbar.Item.RepositoryExplorer">
         <property name="titleKey" value="label.openInContentManager"/>
-        <property name="icon" value="contentManager"/>
+        <property name="icon" value="repositoryExplorer"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value"
-                              value="$context/engines/manager.jsp?conf=contentmanager&amp;site=$siteuuid&amp;selectedPaths=$nodepath"/>
+                              value="$context/engines/manager.jsp?conf=repositoryexplorer&amp;site=$siteuuid&amp;selectedPaths=$nodepath"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>

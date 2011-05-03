@@ -2,18 +2,11 @@ package org.jahia.services.content.impl.jackrabbit;
 
 import org.apache.jackrabbit.core.config.*;
 import org.apache.jackrabbit.core.data.DataStore;
-import org.apache.jackrabbit.core.data.DataStoreFactory;
 import org.apache.jackrabbit.core.fs.FileSystem;
-import org.apache.jackrabbit.core.fs.FileSystemFactory;
 import org.apache.jackrabbit.core.query.QueryHandler;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;
-import org.apache.jackrabbit.core.query.QueryHandlerFactory;
 import org.apache.jackrabbit.core.util.RepositoryLockMechanism;
-import org.apache.jackrabbit.core.util.RepositoryLockMechanismFactory;
 import org.apache.jackrabbit.core.util.db.ConnectionFactory;
-import org.jahia.services.uicomponents.bean.contentmanager.Repository;
-import org.jahia.settings.SettingsBean;
-import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 import javax.jcr.RepositoryException;

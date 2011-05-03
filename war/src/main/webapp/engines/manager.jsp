@@ -11,17 +11,17 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<c:set var="cfg" value="${functions:default(param.conf, 'contentmanager')}"/>
+<c:set var="cfg" value="${functions:default(param.conf, 'repositoryexplorer')}"/>
 <head>
     <fmt:message key="label.${fn:escapeXml(cfg)}" var="title"/>
-    <c:if test="${cfg == 'contentmanager'}">
+    <c:if test="${cfg == 'repositoryexplorer'}">
         <fmt:message key="label.repositoryExplorer" var="title"/>
     </c:if>
     <title>${title}</title>
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
-    <c:if test="${cfg == 'filemanager' || cfg == 'contentmanager' || cfg == 'editorialcontentmanager'}">
+    <c:if test="${cfg == 'filemanager' || cfg == 'repositoryexplorer' || cfg == 'editorialcontentmanager'}">
         <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.css"/>
         <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.js'/>"></script>
         <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.js'/>"></script>

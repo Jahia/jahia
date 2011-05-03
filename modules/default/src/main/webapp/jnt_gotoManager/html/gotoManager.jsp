@@ -29,9 +29,9 @@
             <c:set var="multisite" value="true"/>
         </c:if>
         <c:if test="${gotoType eq 'united content'}">
-            <c:set var="conf" value="contentmanager"/>
+            <c:set var="conf" value="repositoryexplorer"/>
             <c:set var="label" value="label.repositoryExplorer"/>
-            <c:set var="icon" value="contentManager"/>
+            <c:set var="icon" value="repositoryExplorer"/>
         </c:if>
         <c:if test="${gotoType eq 'roles'}">
             <c:set var="conf" value="rolesmanager"/>

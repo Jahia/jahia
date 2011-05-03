@@ -1,12 +1,8 @@
 package org.apache.jackrabbit.core.query;
 
-import org.apache.jackrabbit.core.query.lucene.FacetHandler;
 import org.apache.jackrabbit.core.query.lucene.FacetRow;
-import org.apache.jackrabbit.core.query.lucene.join.SimpleQueryResult;
 import org.apache.solr.client.solrj.response.FacetField;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
 import java.util.List;
@@ -48,5 +44,29 @@ public class FacetedQueryResult extends JahiaSimpleQueryResult implements QueryR
 
     public FacetField getFacetDate(String name) {
         return facetRow.getFacetDate(name);
+    }
+    
+    public boolean isFacetValueExisting() {
+        for (FacetField facetField : getFacetFields()) {
+            if (facetField.getValueCount() > 0) {
+                return true;                
+            }
+        }
+        for (FacetField facetField : getFacetDates()) {
+            if (facetField.getValueCount() > 0) {
+                return true;                
+            }
+        }
+        for (FacetField facetField : getLimitingFacets()) {
+            if (facetField.getValueCount() > 0) {
+                return true;                
+            }
+        }        
+        for (long valueCount : getFacetQuery().values()) {
+            if (valueCount > 0) {
+                return true;                
+            }
+        }                
+        return false;
     }
 }

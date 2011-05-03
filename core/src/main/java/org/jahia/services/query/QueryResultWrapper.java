@@ -34,7 +34,6 @@ package org.jahia.services.query;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.jcr.ItemNotFoundException;
@@ -266,6 +265,11 @@ public class QueryResultWrapper implements QueryResult {
     public List<FacetField> getLimitingFacets() {
         return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).getLimitingFacets()
                 : null;
+    }
+    
+    public boolean isFacetValueExisting() {
+        return result instanceof FacetedQueryResult ? ((FacetedQueryResult) result).isFacetValueExisting()
+                : false;
     }
 
     public String[] getSelectorNames() throws RepositoryException {

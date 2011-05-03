@@ -149,10 +149,11 @@
         </c:forEach>
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
-    <c:if test="${(result.facetFields[0].valueCount gt 0) or (result.facetDates[0].valueCount gt 0)}">
     <div class="facets">
         <%@include file="activeFacets.jspf"%>
-        <h4><fmt:message key="facets.SelectFilter"/></h4> <br/>            
+        <c:if test="${result.facetValueExisting}">
+            <h4><fmt:message key="facets.SelectFilter"/></h4> <br/>
+        </c:if>            
         <c:forEach items="${result.facetFields}" var="currentFacet">
             <%@include file="facetDisplay.jspf"%>
         </c:forEach>
@@ -186,7 +187,6 @@
             </div>
         </c:if>                     
     </div>
-        </c:if>
 </c:if>
 <c:if test="${renderContext.editMode}">
     <fmt:message key="facets.facetsSet"/> :

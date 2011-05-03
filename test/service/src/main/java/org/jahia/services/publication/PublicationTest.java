@@ -921,7 +921,7 @@ public class PublicationTest {
         englishEditSession.checkout(englishEditSession.getNodeByIdentifier(englishEditSiteHomeNodeIdentifier));
         englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/page1", SITECONTENT_ROOT_NODE + "/home/page1_renamed");
         englishEditSession.save();
-        jcrService.publishByMainId(englishEditSiteHomeNodeIdentifier, Constants.EDIT_WORKSPACE,
+        jcrService.publishByMainId(englishEditPage1NodeIdentifier, Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, false, null);
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1_renamed",
                 "Page 1 should have be published !");
@@ -933,7 +933,7 @@ public class PublicationTest {
         englishEditSession.checkout(englishEditSession.getNodeByIdentifier(englishEditSiteHomeNodeIdentifier));
         englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/page1_renamed", SITECONTENT_ROOT_NODE + "/home/page1");
         englishEditSession.save();
-        jcrService.publishByMainId(englishEditSiteHomeNodeIdentifier, Constants.EDIT_WORKSPACE,
+        jcrService.publishByMainId(englishEditPage1NodeIdentifier, Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, false, null);
         getCleanSession();
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1",

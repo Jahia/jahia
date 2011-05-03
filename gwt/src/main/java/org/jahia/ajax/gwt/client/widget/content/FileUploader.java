@@ -322,7 +322,7 @@ public class FileUploader extends Window {
         // 1= rename-to
         choose.add(Messages.get("label.rename", "Rename") + " auto");
         // 2 = overwrite
-        choose.add(Messages.get("confirm.overwrite.label", "Overwrite"));
+        // choose.add(Messages.get("confirm.overwrite.label", "Overwrite"));
         // 4 = add new version
         choose.add(Messages.get("confirm.addNewVersion.label","Add a new version"));
         choose.setHideLabel(true);

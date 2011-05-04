@@ -15,7 +15,12 @@
 
 <template:tokenizedForm>
 <form class="pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/*" name="${formid}">
-    <input type="hidden" name="jcrNodeType" value="jnt:page">
+    <c:if test="${currentNode.properties.i18npages.boolean}">
+        <input type="hidden" name="jcrNodeType" value="jnt:page">
+    </c:if>
+    <c:if test="${not currentNode.properties.i18npages.boolean}">
+        <input type="hidden" name="jcrNodeType" value="jnt:noni18npage">
+    </c:if>
     <input type="hidden" name="jcrNormalizeNodeName" value="true"/>
     <input type="hidden" name="jcrAutoAssignRole" value="owner"/>
     <input type="hidden" name="jcr:mixinTypes" value="jmix:hasTemplateNode"/>

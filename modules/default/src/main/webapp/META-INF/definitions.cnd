@@ -122,6 +122,7 @@
  - useDescription (boolean) = false
  - class (string)
  - stayOnPage (boolean) = false
+ - i18npages (boolean) = true
 
 [jnt:linkList] > jnt:content, jmix:listContent, mix:title, jmix:list
  orderable

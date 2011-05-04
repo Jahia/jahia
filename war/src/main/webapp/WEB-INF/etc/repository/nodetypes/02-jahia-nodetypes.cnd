@@ -574,6 +574,9 @@ extends = jnt:content
  + * (nt:base) = nt:base version
  + * (jmix:navMenuItem)
 
+[jnt:noni18npage] > jnt:page
+- jcr:title (string) mandatory boost=2.0
+
 [jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
 
 [jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list, jmix:renderableList

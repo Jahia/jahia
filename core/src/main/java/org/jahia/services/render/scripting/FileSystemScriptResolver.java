@@ -108,10 +108,10 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     }
 
     private List<ExtendedNodeType> getNodeTypeList(ExtendedNodeType nt) throws NoSuchNodeTypeException {
-        List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>(Arrays.asList(
-                nt.getSupertypes()));
+        List<ExtendedNodeType> extendedNodeTypes = Arrays.asList(nt.getSupertypes());
+        List<ExtendedNodeType> nodeTypeList = new ArrayList<ExtendedNodeType>();
         nodeTypeList.add(nt);
-        Collections.reverse(nodeTypeList);
+        nodeTypeList.addAll(extendedNodeTypes);
         ExtendedNodeType base = NodeTypeRegistry.getInstance().getNodeType("nt:base");
         nodeTypeList.remove(base);
         nodeTypeList.add(base);

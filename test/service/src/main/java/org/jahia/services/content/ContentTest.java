@@ -45,7 +45,6 @@ import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.test.TestHelper;
-import org.jahia.utils.LanguageCodeConverters;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -462,7 +461,7 @@ public class ContentTest {
     @Test
     public void testSearch() throws Exception {
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(null, Locale.ENGLISH);
         JCRStoreProvider provider = JCRSessionFactory.getInstance().getProvider(providerRoot);
         if (!provider.isSearchAvailable()) {
             return;
@@ -599,8 +598,7 @@ public class ContentTest {
      */
     @Test
     public void testReferencing() throws RepositoryException, UnsupportedEncodingException, GWTJahiaServiceException {
-        Locale locale = LanguageCodeConverters.languageCodeToLocale("en");
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(null, locale);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(null, Locale.ENGLISH);
         try {
             JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
             if (!siteNode.isCheckedOut()) {
@@ -751,11 +749,10 @@ public class ContentTest {
         try {
             JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITECONTENT_ROOT_NODE);
             NavigationHelper navigationHelper = (NavigationHelper) SpringContextSingleton.getInstance().getContext().getBean("NavigationHelper");
-            Locale locale = LanguageCodeConverters.languageCodeToLocale("en");
             List<String> paths = new ArrayList<String>();
             paths.add("/mounts");
             List<GWTJahiaNode> rootNodes = navigationHelper.retrieveRoot(paths, null, null, null, null,
-                    null, null, siteNode, session, locale);
+                    null, null, siteNode, session, Locale.ENGLISH);
             List<String> nodeTypes = new ArrayList<String>();
             nodeTypes.add("nt:file");
             nodeTypes.add("nt:folder");

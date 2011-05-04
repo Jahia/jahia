@@ -53,8 +53,21 @@ import java.util.List;
 * Time: 6:57:20 PM
 */
 public class PasteActionItem extends BaseActionItem {
+    private boolean pasteInMainNode;
+
+    public boolean isPasteInMainNode() {
+        return pasteInMainNode;
+    }
+
+    public void setPasteInMainNode(boolean pasteInMainNode) {
+        this.pasteInMainNode = pasteInMainNode;
+    }
+
     public void onComponentSelection() {
         GWTJahiaNode m = linker.getSelectionContext().getSingleSelection();
+        if (pasteInMainNode) {
+            m = linker.getSelectionContext().getMainNode();
+        }
         if (m != null) {
             linker.loading(Messages.get("statusbar.pasting.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
@@ -87,7 +100,13 @@ public class PasteActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        boolean b = lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.isPasteAllowed();
+        boolean b;
+
+        if (pasteInMainNode) {
+            b = lh.getMainNode() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getMainNode());
+        } else {
+            b = lh.getSingleSelection() != null && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.isPasteAllowed();
+        }
 
         if (linker instanceof EditLinker) {
             b = b && checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), ((EditLinker)linker).getSelectedModule().getNodeTypes());

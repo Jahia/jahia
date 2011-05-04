@@ -923,6 +923,16 @@
         <property name="icon" value="paste"/>
     </bean>
 
+    <bean id="Toolbar.Item.PasteInMain" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteActionItem">
+                <property name="pasteInMainNode" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.paste"/>
+        <property name="icon" value="paste"/>
+    </bean>
+
     <bean id="Toolbar.Item.PasteReference" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteReferenceActionItem"/>

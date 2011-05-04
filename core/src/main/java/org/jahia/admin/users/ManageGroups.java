@@ -331,10 +331,6 @@ public class ManageGroups extends AbstractAdministrationModule {
             groupMessage += getMessage("message.successfully.created");
             isError = false;
         }
-        // Lookup for home page settings and set it.
-        if (request.getParameter("setHomePage") != null) {
-            grp.setHomepageID(jahiaSite.getGroupDefaultHomepageDef());
-        }
         return true;
     }
 
@@ -435,11 +431,6 @@ public class ManageGroups extends AbstractAdministrationModule {
         if ("update".equals(request.getParameter("actionType"))) {
             return false;
         }
-
-        // Lookup for home page settings and set it.
-        String homePageParam = request.getParameter("homePageID");
-        int homePageID = homePageParam != null && homePageParam.length() > 0 ? Integer.parseInt(homePageParam) : -1;
-        grp.setHomepageID(homePageID);
 
 //        boolean enforcePasswordPolicyForSite = true;
 //        if (enforcePasswordPolicyForSite) {
@@ -622,12 +613,6 @@ public class ManageGroups extends AbstractAdministrationModule {
             isError = false;
             for (Principal member : getGroupMembers(sourceGroupName, jahiaSite.getID())) {
                 theNewGroup.addMember(member);
-            }
-            // Home page copy
-            JahiaGroup sourceGroup = gMgr.lookupGroup(jahiaSite.getID(), sourceGroupName);
-            int homePageID = sourceGroup.getHomepageID();
-            if (homePageID != -1) {
-                theNewGroup.setHomepageID(homePageID);
             }
         }
         return true;

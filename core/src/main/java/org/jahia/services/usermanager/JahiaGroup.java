@@ -221,25 +221,6 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
 
 
     /**
-     * Returns the group's home page id.
-     * -1 : undefined
-     *
-     * @return int The group homepage id.
-     */
-    public abstract int getHomepageID ();
-
-
-    /**
-     * Set the home page id.
-     *
-     * @param id the group homepage id.
-     *
-     * @return false on error
-     */
-    public abstract boolean setHomepageID (int id);
-
-
-    /**
      * Returns a hashcode for this principal.
      *
      * @return A hashcode for this principal.

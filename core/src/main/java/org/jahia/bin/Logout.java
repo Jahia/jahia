@@ -32,24 +32,28 @@
 
 package org.jahia.bin;
 
-import java.util.Locale;
+import java.util.*;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -60,7 +64,8 @@ import org.springframework.web.servlet.mvc.Controller;
  * Time: 1:47:45 PM
  */
 public class Logout implements Controller {
-
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(Logout.class);
+    private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
     private CookieAuthConfig cookieAuthConfig;
     private URLResolverFactory urlResolverFactory;
 
@@ -114,6 +119,7 @@ public class Logout implements Controller {
             // Remove servlet Dispatcher (hardcoded "/cms")
             url = url.substring(url.indexOf(request.getContextPath()) + request.getContextPath().length());
             url = url.startsWith("/cms") ? url.substring(url.indexOf("/cms") + 4) : url;
+            url = StringUtils.substringBeforeLast(url,"#");
             URLResolver r = urlResolverFactory.createURLResolver(url, request.getServerName(), request);
             boolean redirectToStart = false;
             if (r.getPath().startsWith("/sites/")) {
@@ -124,7 +130,7 @@ public class Logout implements Controller {
                     JCRNodeWrapper n = JCRContentUtils.findDisplayableNode(r.getNode(), context);
                     redirect =
                             request.getContextPath() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE +
-                            "/" + r.getLocale() + n.getPath() + ".html";
+                            "/" + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
                 } catch (Exception e) {
                     redirectToStart = true;
                 }
@@ -158,4 +164,64 @@ public class Logout implements Controller {
         return "/cms/logout";
     }
 
+    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site)
+            throws JahiaException {
+        final List<Locale> newLocaleList = new ArrayList<Locale>();
+        List<Locale> siteLanguages = Collections.emptyList();
+        try {
+            if (site != null) {
+                siteLanguages = site.getLanguagesAsLocales();
+            }
+        } catch (Exception t) {
+            logger.debug("Exception while getting language settings as locales", t);
+        }
+
+        // retrieve the browser locales
+        for (@SuppressWarnings("unchecked") Iterator<Locale> browserLocales = new EnumerationIterator(request.getLocales()); browserLocales
+                .hasNext();) {
+            final Locale curLocale = browserLocales.next();
+            if (siteLanguages.contains(curLocale)) {
+                addLocale(site, newLocaleList, curLocale);
+            } else if (!StringUtils.isEmpty(curLocale.getCountry())) {
+                final Locale langOnlyLocale = new Locale(curLocale.getLanguage());
+                if (siteLanguages.contains(langOnlyLocale)) {
+                    addLocale(site, newLocaleList, langOnlyLocale);
+                }
+            }
+        }
+
+        String language = DEFAULT_LOCALE;
+        if (!newLocaleList.isEmpty()) {
+            language = newLocaleList.get(0).toString();
+        } else if (site!=null){
+            language = site.getDefaultLanguage();
+        } else if (!StringUtils.isEmpty(SettingsBean.getInstance().getDefaultLanguageCode())) {
+            language = SettingsBean.getInstance().getDefaultLanguageCode();
+        }
+        return language;
+    }
+
+    private void addLocale(final JCRSiteNode site, final List<Locale> newLocaleList, final Locale curLocale) {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null,
+                    Constants.LIVE_WORKSPACE,curLocale,new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        if(site!=null) {
+                            JCRSiteNode nodeByIdentifier = (JCRSiteNode) session.getNodeByIdentifier(site.getIdentifier());
+                            JCRNodeWrapper home = nodeByIdentifier.getHome();
+                            if (home!=null && !newLocaleList.contains(curLocale)) {
+                                newLocaleList.add(curLocale);
+                            }
+                        }
+                    } catch (RepositoryException e) {
+                        logger.debug("This site does not have a published home in language "+curLocale,e);
+                    }
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 }

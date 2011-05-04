@@ -81,7 +81,7 @@ public class WelcomeServlet extends HttpServlet {
      */
     private static final long serialVersionUID = -2055161334153523152L;
     
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ProcessingContext.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(WelcomeServlet.class);
     
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
 

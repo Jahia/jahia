@@ -137,6 +137,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private CacheHelper cacheHelper;
     private SchedulerHelper schedulerHelper;
     private UIConfigHelper uiConfigHelper;
+    private NameGenerationHelper nameGenerationHelper;
 
     public void setGoogleDocsServiceFactory(GoogleDocsServiceFactory googleDocsServiceFactory) {
         this.googleDocsServiceFactory = googleDocsServiceFactory;
@@ -226,8 +227,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.uiConfigHelper = uiConfigHelper;
     }
 
+    public void setNameGenerationHelper(NameGenerationHelper nameGenerationHelper) {
+        this.nameGenerationHelper = nameGenerationHelper;
+    }
 
-    // ------------------------ INTERFACE METHODS ------------------------
+// ------------------------ INTERFACE METHODS ------------------------
 
 
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
@@ -1297,9 +1301,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     nodeType, null, parent, getUILocale()));
 
             result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getUILocale()));
-
-            String defaultName = JCRContentUtils.generateNodeName(nodeType.getLabel(LanguageCodeConverters.languageCodeToLocale(defaultLanguage)), 32);
-            result.setDefaultName(contentManager.findAvailableName(parent, defaultName));
+            result.setDefaultName(nameGenerationHelper.getName(parent, defaultLanguage, nodeType));
             return result;
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);

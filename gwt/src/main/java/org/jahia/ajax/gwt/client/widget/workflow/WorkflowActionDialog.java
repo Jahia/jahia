@@ -409,7 +409,6 @@ public class WorkflowActionDialog extends LayoutContainer {
                     if (propertiesEditor != null) {
                         nodeProperties = propertiesEditor.getProperties();
                     }
-                    container.closeEngine();
                     final String status = Messages.get("label.workflow.task", "Executing workflow task");
                     Info.display(status, status);
                     WorkInProgressActionItem.setStatus(status);
@@ -418,11 +417,13 @@ public class WorkflowActionDialog extends LayoutContainer {
                             WorkInProgressActionItem.removeStatus(status);
                             Info.display("Workflow executed", "Workflow executed");
                             linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
+                            container.closeEngine();
                         }
 
                         public void onApplicationFailure(Throwable caught) {
                             WorkInProgressActionItem.removeStatus(status);
                             Info.display("Workflow failed", "Workflow failed");
+                            container.closeEngine();
                         }
                     });
                 }

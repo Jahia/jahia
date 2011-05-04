@@ -239,15 +239,7 @@ public class WorkflowHelper {
     public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
                                       JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
         HashMap<String, Object> map = getVariablesMap(properties);
-        try {
-            service.assignAndCompleteTaskAsJob(task.getId(), task.getProvider(), outcome.getName(), map, session.getUser());
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-            throw new GWTJahiaServiceException(e.getMessage());
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
+        service.assignAndCompleteTask(task.getId(), task.getProvider(), outcome.getName(), map, session.getUser());
     }
 
     private HashMap<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties) {

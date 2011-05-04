@@ -24,45 +24,63 @@
 
 <template:addResources type="javascript" resources="swfobject.js"/>
 <template:addResources type="css" resources="flash.css"/>
-	    <div id="flashcontent${currentNode.UUID}">
-            <div class="flashcontent"><!--START FLASH -->
-                <strong><fmt:message key="label.flashplayer.info"/></strong><br />
-                <a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="<c:url value='${url.currentModule}/images/160x41_Get_Flash_Player.jpg'/>" alt="get flash player" /></a>
-			</div>
-	    </div>
-        <script type="text/javascript">
-            var so = new SWFObject("${flashSource.node.url}", "${nameFlash.string}", "${widthFlash.long}", "${heightFlash.long}", "${flashPlayer.string}", "${bgcolorFlash.string}");
-                    <c:if test="${not empty wmodeFlash.string}">
-                          so.addParam("wmode", "${wmodeFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty idFlash.string}">
-                          so.addParam("id", "${idFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty swliveconnectFlash.string}">
-                          so.addParam("swliveconnect", "${swliveconnectFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty playFlash.string}">
-                          so.addParam("wmode", "${playFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty menuFlash.string}">
-                          so.addParam("menu", "${menuFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty scaleFlash.string}">
-                          so.addParam("scale", "${scaleFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty qualityFlash.string}">
-                          so.addParam("quality", "${qualityFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty alignFlash.string}">
-                          so.addParam("align", "${alignFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty salignFlash.string}">
-                          so.addParam("salign", "${salignFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty baseFlash.string}">
-                          so.addParam("base", "${baseFlash.string}");
-                    </c:if>
-                    <c:if test="${not empty flashvarsFlash.string}">
-                          so.addParam("flashvars", "${flashvarsFlash.string}");
-                    </c:if>
-                  so.write("flashcontent${currentNode.UUID}");</script>
+
+<script type="text/javascript">
+    swfobject.registerObject("flashcontent${currentNode.UUID}", "${flashPlayer.string}");
+</script>
+<object id="flashcontent${currentNode.UUID}" width="${widthFlash.long}" height="${heightFlash.long}"
+        data="${flashSource.node.url}">
+
+    <c:if test="${not empty wmodeFlash.string}">
+        <param name="wmode" value="${wmodeFlash}"/>
+    </c:if>
+    <c:if test="${not empty idFlash.string}">
+        <param name="id" value="${idFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty swliveconnectFlash.string}">
+        <param name="swliveconnect" value="${swliveconnectFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty wmodeFlash.string}">
+        <param name="wmode" value="${wmodeFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty loopFlash.string}">
+        <param name="loop" value="${loopFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty playFlash.string}">
+        <param name="play" value="${playFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty menuFlash.string}">
+        <param name="menu" value="${menuFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty scaleFlash.string}">
+        <param name="scale" value="${scaleFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty qualityFlash.string}">
+        <param name="quality" value="${qualityFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty alignFlash.string}">
+        <param name="align" value="${alignFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty salignFlash.string}">
+        <param name="salign" value="${salignFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty baseFlash.string}">
+        <param name="base" value="${baseFlash.string}"/>
+    </c:if>
+    <c:if test="${not empty flashvarsFlash.string}">
+        <param name="flashvars" value="${flashvarsFlash.string}"/>
+    </c:if>
+    <!--[if !IE]>-->
+    <object type="application/x-shockwave-flash" data="${flashSource.node.url}" width="${widthFlash.long}"
+            height="${heightFlash.long}">
+        <!--<![endif]-->
+        <div class="flashcontent">
+            <strong><fmt:message key="label.flashplayer.info"/></strong><br/>
+            <a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img
+                    src="<c:url value='${url.currentModule}/images/160x41_Get_Flash_Player.jpg'/>"
+                    alt="get flash player"/></a>
+        </div>
+        <!--[if !IE]>-->
+    </object>
+    <!--<![endif]-->
+</object>

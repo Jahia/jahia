@@ -58,7 +58,7 @@
  - flashSource (weakreference, picker[type='file'])
  - width (string) analyzer='keyword' nofulltext
  - height (string) analyzer='keyword' nofulltext
- - flashPlayer (string) = '9' analyzer='keyword' nofulltext
+ - flashPlayer (string) = '9.0.0' analyzer='keyword' nofulltext
  - id (string) analyzer='keyword' nofulltext
  - name (string)
  - swliveconnect (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true', 'false'

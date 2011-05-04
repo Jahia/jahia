@@ -274,9 +274,8 @@ public class ExtendedNodeType implements NodeType {
     }
 
     void addSubType(ExtendedNodeType subType) {
-        if (!declaredSubtypes.contains(subType)) {
-            declaredSubtypes.add(subType);
-        }
+        declaredSubtypes.remove(subType);
+        declaredSubtypes.add(subType);
     }
 
     public NodeTypeIterator getDeclaredSubtypes() {

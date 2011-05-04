@@ -266,7 +266,7 @@ public class RenderTest {
         createPost.addRequestHeader("x-requested-with", "XMLHttpRequest");
         createPost.addRequestHeader("accept", "application/json");
         // here we voluntarily don't set the node name to test automatic name creation.
-        createPost.addParameter("nodeType", "jnt:mainContent");
+        createPost.addParameter("jcrNodeType", "jnt:mainContent");
         createPost.addParameter("jcr:title", MAIN_CONTENT_TITLE + "1");
         createPost.addParameter("body", MAIN_CONTENT_BODY + "1");
 

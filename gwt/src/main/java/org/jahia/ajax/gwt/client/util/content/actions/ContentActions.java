@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -54,10 +53,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -258,31 +254,32 @@ public class ContentActions {
      *
      * @param linker
      * @param nodeTypes
+     * @param includeSubTypes
      */
-    public static void showContentWizard(final Linker linker, final String nodeTypes) {
-        showContentWizard(linker, nodeTypes, linker.getSelectionContext().getSingleSelection(),false);
+    public static void showContentWizard(final Linker linker, final String nodeTypes, boolean includeSubTypes) {
+        showContentWizard(linker, nodeTypes, linker.getSelectionContext().getSingleSelection(), includeSubTypes, false);
     }
 
-    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, final boolean displayStudioElement) {
+    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, boolean includeSubTypes, final boolean displayStudioElement) {
         if (parent != null && !parent.isFile()) {
-            JahiaContentDefinitionService.App.getInstance().getSubNodetypes(nodeTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
-                        public void onApplicationFailure(Throwable caught) {
-                            MessageBox.alert(Messages.get("label.error", "Error"),
-                                    "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),
-                                    null);
-                        }
+            JahiaContentDefinitionService.App.getInstance().getSubNodetypes(nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, includeSubTypes, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+                public void onApplicationFailure(Throwable caught) {
+                    MessageBox.alert(Messages.get("label.error", "Error"),
+                            "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),
+                            null);
+                }
 
-                        public void onSuccess(
-                                Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
-                            if (result.size() == 1 && result.values().iterator().next().size() == 1) {
-                                EngineLoader.showCreateEngine(linker, parent,
-                                        result.values().iterator().next().iterator().next(), new HashMap<String, GWTJahiaNodeProperty>(),
-                                        null, false);
-                            } else {
-                                new ContentTypeWindow(linker, parent, result, false).show();
-                            }
-                        }
-                    });
+                public void onSuccess(
+                        Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
+                    if (result.size() == 1 && result.values().iterator().next().size() == 1) {
+                        EngineLoader.showCreateEngine(linker, parent,
+                                result.values().iterator().next().iterator().next(), new HashMap<String, GWTJahiaNodeProperty>(),
+                                null, false);
+                    } else {
+                        new ContentTypeWindow(linker, parent, result, false).show();
+                    }
+                }
+            });
         }
     }
 

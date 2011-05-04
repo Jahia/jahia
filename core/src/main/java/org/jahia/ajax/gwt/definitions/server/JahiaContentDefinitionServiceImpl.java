@@ -74,8 +74,8 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(String baseTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
-        return contentDefinition.getSubNodetypes(baseTypes, new HashMap<String, Object>(), getUILocale(), displayStudioElement);
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
+        return contentDefinition.getSubNodetypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
     }
 
     public GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)

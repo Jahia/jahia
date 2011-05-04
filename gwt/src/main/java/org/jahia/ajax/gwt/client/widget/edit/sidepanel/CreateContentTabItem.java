@@ -44,6 +44,7 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +68,7 @@ class CreateContentTabItem extends SidePanelTabItem {
         contentTypeTree = new ContentTypeTree(null);
 
         JahiaContentDefinitionService.App.getInstance()
-                .getSubNodetypes(baseType,displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+                .getSubNodetypes(baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                     public void onApplicationFailure(Throwable caught) {
                         MessageBox.alert(Messages.get("label.error", "Error"),
                                 "Unable to load content definitions. Cause: " + caught.getLocalizedMessage(), null);

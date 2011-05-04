@@ -41,9 +41,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
@@ -106,7 +104,7 @@ public class PlaceholderModule extends Module {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
                         if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
                             ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode,
-                                    mainModule.getConfig().getName().equals("studiomode"));
+                                    true, mainModule.getConfig().getName().equals("studiomode"));
                         }
                     }
                 });

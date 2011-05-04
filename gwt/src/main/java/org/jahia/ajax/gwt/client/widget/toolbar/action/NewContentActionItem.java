@@ -60,6 +60,7 @@ public class NewContentActionItem extends BaseActionItem  {
     private boolean useEngine = true;
     private String label;
     private boolean useMainNode = false;
+    private boolean includeSubTypes = true;
 
     public void setNodeTypes(String nodeTypes) {
         this.nodeTypes = nodeTypes;
@@ -67,6 +68,10 @@ public class NewContentActionItem extends BaseActionItem  {
 
     public void setParentTypes(String parentType) {
         this.parentTypes = parentType;
+    }
+
+    public void setIncludeSubTypes(boolean includeSubTypes) {
+        this.includeSubTypes = includeSubTypes;
     }
 
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -90,9 +95,9 @@ public class NewContentActionItem extends BaseActionItem  {
             }
 
             if (nodeTypes.length() > 0) {
-                ContentActions.showContentWizard(linker, nodeTypes);
+                ContentActions.showContentWizard(linker, nodeTypes, includeSubTypes);
             } else {
-                ContentActions.showContentWizard(linker, null);
+                ContentActions.showContentWizard(linker, null, includeSubTypes);
             }
         } else {
             ContentActions.createNode(linker,getGwtToolbarItem().getTitle(),nodeTypes, useMainNode);

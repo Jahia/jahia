@@ -42,9 +42,6 @@ import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
@@ -277,10 +274,10 @@ public class ContentDefinitionHelper {
                     continue;
                 }
                 if (upperLimit != null) {
-                    prop.setMaxValue((upperInclusive ? upperLimit : --upperLimit).toString());
+                    prop.setMaxValue(Double.toString(upperInclusive ? upperLimit : --upperLimit));
                 }
                 if (lowerLimit != null) {
-                    prop.setMinValue((lowerInclusive ? lowerLimit : ++lowerLimit).toString());
+                    prop.setMinValue(Double.toString(lowerInclusive ? lowerLimit : ++lowerLimit));
                 }
             }
         }
@@ -381,8 +378,8 @@ public class ContentDefinitionHelper {
      *         created in the specified parent node (if the baseType parameter
      *         is null)
      */
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(String baseTypes, Map<String, Object> ctx,
-                                                                         Locale uiLocale, boolean displayStudioElement) {
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(List<String> baseTypes, Map<String, Object> ctx,
+                                                                         Locale uiLocale, boolean includeSubTypes, boolean displayStudioElement) {
         Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
         NodeTypeRegistry registry = NodeTypeRegistry.getInstance();
         try {
@@ -398,17 +395,17 @@ public class ContentDefinitionHelper {
             if (baseTypes == null) {
                 types = new ArrayList<String>();
             } else {
-                types = Arrays.asList(baseTypes.split(" "));
+                types = baseTypes;
             }
 
 
             Set<ExtendedNodeType> nodeTypes = new HashSet<ExtendedNodeType>();
             if (baseTypes != null) {
                 for (String type : types) {
-                    recurseAdd(registry.getNodeType(type), types, contentTypes, nodeTypes);
+                    recurseAdd(registry.getNodeType(type), types, contentTypes, nodeTypes, includeSubTypes);
                 }
             } else {
-                recurseAdd(content, types, contentTypes, nodeTypes);
+                recurseAdd(content, types, contentTypes, nodeTypes, includeSubTypes);
             }
 
             typeIterator = content.getDeclaredSubtypes();
@@ -451,18 +448,19 @@ public class ContentDefinitionHelper {
     }
 
     private void recurseAdd(ExtendedNodeType req, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes,
-                            Collection<ExtendedNodeType> result) {
+                            Collection<ExtendedNodeType> result, boolean includeSubTypes) {
         boolean excludeNonDroppable = false;
         if (req.getName().equals("jmix:droppableContent") || contentTypes.keySet().contains(req.getName())) {
             excludeNonDroppable = true;
         }
 
         add(req, baseTypes, contentTypes, result, excludeNonDroppable);
-
+        if (includeSubTypes) {
         NodeTypeIterator subtypes = req.getSubtypes();
-        while (subtypes.hasNext()) {
-            ExtendedNodeType subtype = (ExtendedNodeType) subtypes.next();
-            add(subtype, baseTypes, contentTypes, result, excludeNonDroppable);
+            while (subtypes.hasNext()) {
+                ExtendedNodeType subtype = (ExtendedNodeType) subtypes.next();
+                add(subtype, baseTypes, contentTypes, result, excludeNonDroppable);
+            }
         }
     }
 

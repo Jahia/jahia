@@ -184,7 +184,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             if (J_EXTERNAL.equals(key)) {
                 external = Boolean.valueOf(value);
             }
-            
+
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
@@ -254,7 +254,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      *
      * @return int The group homepage id.
      */
-    public int getHomepageID() {        
+    public int getHomepageID() {
         return -1;
     }
 
@@ -285,60 +285,66 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      * @return members of this group
      */
     protected Set<Principal> getMembersMap() {
-        try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Set<Principal>>() {
-                public Set<Principal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    final Node node = getNode(session);
-                    return getMembersMap(node);
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving group member map", e);
+        if (mMembers == null) {
+            try {
+                return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Set<Principal>>() {
+                    public Set<Principal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        final Node node = getNode(session);
+                        return getMembersMap(node);
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Error while retrieving group member map", e);
+            }
         }
-        return new HashSet<Principal>();
+        return new HashSet<Principal>(mMembers);
     }
 
     private Set<Principal> getMembersMap(Node node) throws RepositoryException {
-        Set<Principal> principalMap = new HashSet<Principal>();
-        Node members = node.getNode("j:members");
-        NodeIterator iterator = members.getNodes();
-        while (iterator.hasNext()) {
-            Node member = (Node) iterator.next();
-            if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
-                if (!member.hasProperty("j:member")) {
-                    logger.warn("Missing member property, ignoring group member " + member.getName() + "...");
-                    continue;
-                }
-                Property memberProperty = member.getProperty("j:member");
-                Node memberNode = null;
-                try {
-                    memberNode = memberProperty.getNode();
-                } catch (ItemNotFoundException infe) {
-                    logger.warn("Couldn't find group member " + member.getName() + "(uuid=" + memberProperty.getString() + "), ignoring...");
-                }
-                if (memberNode != null) {
-                    if (memberNode.isNodeType(Constants.JAHIANT_USER)) {
-                        JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
-                        if (jahiaUser != null) {
-                            principalMap.add(jahiaUser);
+        if (mMembers == null) {
+            Set<Principal> principalMap = new HashSet<Principal>();
+            Node members = node.getNode("j:members");
+            NodeIterator iterator = members.getNodes();
+            while (iterator.hasNext()) {
+                Node member = (Node) iterator.next();
+                if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
+                    if (!member.hasProperty("j:member")) {
+                        logger.warn("Missing member property, ignoring group member " + member.getName() + "...");
+                        continue;
+                    }
+                    Property memberProperty = member.getProperty("j:member");
+                    Node memberNode = null;
+                    try {
+                        memberNode = memberProperty.getNode();
+                    } catch (ItemNotFoundException infe) {
+                        logger.warn("Couldn't find group member " + member.getName() + "(uuid=" + memberProperty.getString() + "), ignoring...");
+                    }
+                    if (memberNode != null) {
+                        if (memberNode.isNodeType(Constants.JAHIANT_USER)) {
+                            JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
+                            if (jahiaUser != null) {
+                                principalMap.add(jahiaUser);
+                            } else {
+                                logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
+                                        + "'");
+                            }
                         } else {
-                            logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
-                                    + "'");
-                        }
-                    } else {
-                        String s = member.getName().replace("___", ":");
-                        JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
-                        if (g != null) {
-                            principalMap.add(g);
-                        } else {
-                            logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
-                                    + "'");
+                            String s = member.getName().replace("___", ":");
+                            JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
+                            if (g != null) {
+                                principalMap.add(g);
+                            } else {
+                                logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
+                                        + "'");
+                            }
                         }
                     }
                 }
             }
+            mMembers = principalMap;
+            preloadedGroups = true;
         }
-        return principalMap;
+        return new HashSet<Principal>(mMembers);
     }
 
     /**

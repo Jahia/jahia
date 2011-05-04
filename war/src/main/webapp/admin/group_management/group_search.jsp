@@ -151,7 +151,7 @@ int stretcherToOpen   = 1;
                         </table>
                         <%
                             Set<Principal> resultSet = (Set<Principal>)request.getAttribute( "resultList" );
-                            String[] textPattern = {"Principal", "Provider, 6", "Name, "+userNameWidth, "Properties, 20"};
+                            String[] textPattern = {"Name, "+userNameWidth, "Properties, 20"};
                             PrincipalViewHelper principalViewHelper = new PrincipalViewHelper(textPattern);
                         %>
                         <select ondblclick="javascript:handleKey(event);"

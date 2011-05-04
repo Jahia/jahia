@@ -207,7 +207,7 @@
                                                 </table>
                                                 <%
                                                     Set groupMembersSet = (Set) request.getAttribute("groupMembers");
-                                                    String[] textPattern = {"Principal", "Provider, 6", "Name, 15", "Properties, 20"};
+                                                    String[] textPattern = {"Name, 30", "Properties, 20"};
                                                     PrincipalViewHelper principalViewHelper = new PrincipalViewHelper(textPattern); %>
                                                 <select class="fontfix" name="selectMember" size="25"
                                                         style="width:435px;" multiple="multiple"

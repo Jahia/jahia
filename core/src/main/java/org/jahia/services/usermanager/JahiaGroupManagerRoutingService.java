@@ -68,7 +68,6 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
     private Map<String, JahiaGroupManagerProvider> providersTable = null;
     private SortedSet<JahiaGroupManagerProvider> sortedProviders = null;
     private JahiaGroupManagerProvider defaultProviderInstance = null;
-    private Map<Integer, JahiaUser> adminUser = new HashMap<Integer, JahiaUser>();
 
 
 // -------------------------- STATIC METHODS --------------------------
@@ -545,5 +544,10 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
 		defaultProvider.setDefaultProvider(true);
 		defaultProvider.setGroupManagerService(this);
 		registerProvider(defaultProvider);
+    }
+    
+    @Override
+    public JahiaGroupManagerProvider getProvider(String name) {
+        return providersTable.get(name);
     }
 }

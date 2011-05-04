@@ -163,6 +163,13 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      */
     public abstract List<? extends JahiaGroupManagerProvider> getProviderList ();
 
+    /**
+     * Returns a {@link JahiaGroupManagerProvider} for the specified name.
+     *
+     * @return a {@link JahiaGroupManagerProvider} for the specified name
+     */
+    public abstract JahiaGroupManagerProvider getProvider(String name);
+
     //-------------------------------------------------------------------------
     /**
      * Return the list of groups to shich the specified user has access.

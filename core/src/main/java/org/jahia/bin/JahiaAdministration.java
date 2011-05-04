@@ -662,11 +662,8 @@ public class JahiaAdministration extends HttpServlet {
             if (theSite != null && !StringUtils.isEmpty(theSite.getSiteKey())) {
 
                 JahiaGroup theGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(theSite.getID());
-                if (theGroup == null) {
-                    return false; // group might have been deleted
-                }
-                if (theGroup.isMember(theUser) ||
-                        (hasServerPermission("administrationAccess"))) {
+                if (hasSitePermission("administrationAccess",theSite.getSiteKey()) ||
+                        hasServerPermission("administrationAccess") || (theGroup!=null && theGroup.isMember(theUser))) {
                     // check if the user is a super admin or not...
                     JahiaGroup superAdminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(SUPERADMIN_SITE_ID);
                     if (superAdminGroup.isMember(theUser)) {

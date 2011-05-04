@@ -199,10 +199,6 @@
             <start-one-step-review jcr:primaryType="jnt:permission"/>
             <one-step-review jcr:primaryType="jnt:permission"/>
 
-            <start-two-steps-review jcr:primaryType="jnt:permission"/>
-            <two-steps-first-review jcr:primaryType="jnt:permission"/>
-            <two-steps-final-review jcr:primaryType="jnt:permission"/>
-
             <start-one-step-unpublish jcr:primaryType="jnt:permission"/>
             <one-step-unpublish jcr:primaryType="jnt:permission"/>
         </workflow-tasks>
@@ -238,16 +234,16 @@
                     />
 
         <editor jcr:primaryType="jnt:role"
-                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/templates /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/workflow-tasks/start-one-step-review /permissions/workflow-tasks/start-two-step-review /permissions/workflow-tasks/start-one-step-unpublish /permissions/wysiwyg-editor-toolbar/full"
+                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/templates /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/workflow-tasks/start-one-step-review /permissions/workflow-tasks/start-one-step-unpublish /permissions/wysiwyg-editor-toolbar/full"
                 j:privilegedAccess="true"
                 />
 
         <contributor jcr:primaryType="jnt:role"
-                     j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/contributeMode /permissions/workflow-tasks/start-one-step-review /permissions/workflow-tasks/start-two-steps-review /permissions/workflow-tasks/start-one-step-unpublish"
+                     j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/contributeMode /permissions/workflow-tasks/start-one-step-review /permissions/workflow-tasks/start-one-step-unpublish"
                      j:privilegedAccess="true"/>
 
         <publisher jcr:primaryType="jnt:role"
-                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/publish /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/contributeMode/contributeModeAccess /permissions/workflow-tasks/one-step-review /permissions/workflow-tasks/two-steps-final-review /permissions/workflow-tasks/one-step-unpublish"
+                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/publish /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/contributeMode/contributeModeAccess /permissions/workflow-tasks/one-step-review /permissions/workflow-tasks/one-step-unpublish"
                    j:privilegedAccess="true"
                 />
 

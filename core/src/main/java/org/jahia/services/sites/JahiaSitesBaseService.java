@@ -557,10 +557,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                     session.save();
                 }
                 File initialZip = null;
-                String initialZipName = null;
                 if ("fileImport".equals(firstImport)) {
                     initialZip = fileImport;
-                    initialZipName = fileImportName;
                 }
 
                 // create the default homepage...
@@ -884,14 +882,15 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             if (!languages.contains(s)) {
                 session.checkout(n);
                 Node translator = n.addNode("translator-" + s, "jnt:role");
-                Value[] values = new Value[]{
-                        session.getValueFactory().createValue(session.getNode("/permissions/editMode/editModeAccess"), true),
-                        session.getValueFactory().createValue(session.getNode("/permissions/editMode/editSelector/sitemapSelector"), true),
-                        session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:versionManagement_default"), true),
-                        session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:write_default/jcr:modifyProperties_default/jcr:modifyProperties_default_" + s), true),
-                        session.getValueFactory().createValue(session.getNode("/permissions/workflow-tasks/start-one-step-review"), true),
-                        session.getValueFactory().createValue(session.getNode("/permissions/workflow-tasks/start-two-steps-review"), true)
-                };
+                List<Value> perms = new LinkedList<Value>();
+                perms.add(session.getValueFactory().createValue(session.getNode("/permissions/editMode/editModeAccess"), true));
+                perms.add(session.getValueFactory().createValue(session.getNode("/permissions/editMode/editSelector/sitemapSelector"), true));
+                perms.add(session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:versionManagement_default"), true));
+                perms.add(session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:write_default/jcr:modifyProperties_default/jcr:modifyProperties_default_" + s), true));
+                for (NodeIterator iterator = session.getNode("/permissions/workflow-tasks").getNodes("start-*-review"); iterator.hasNext();) {
+                    perms.add(session.getValueFactory().createValue(iterator.nextNode(), true));
+                }
+                Value[] values = perms.toArray(new Value[] {});
 
                 translator.setProperty("j:permissions", values);
                 translator.setProperty("j:privilegedAccess", true);

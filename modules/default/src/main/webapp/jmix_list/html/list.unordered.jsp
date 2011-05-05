@@ -33,10 +33,7 @@
     <c:otherwise>
         <ul class="${currentNode.properties['j:className'].string}">
             <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
-                <template:module var="result" node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/>
-				<c:if test="${not functions:matches('[ \\\\n]*', functions:removeCacheTags(result))}">
-                <li>${result}</li>
-				</c:if>
+                <li><template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/></li>
             </c:forEach>
             <c:if test="${moduleMap.editable and renderContext.editMode}">
                 <li><template:module path="*"/></li>

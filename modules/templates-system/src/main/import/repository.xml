@@ -307,7 +307,7 @@
                         <user-base-layout-col3 jcr:primaryType="jnt:contentList">
                             <work-with-jahia j:skin="skins.box8" j:style="grey" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Work with Jahia" />
-                                <admin-links j:classname="admin-links" j:skin="skins.custom" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:skinnable jmix:listOrdered jmix:customSkin" jcr:primaryType="jnt:contentList">
+                                <admin-links j:className="simple" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:listOrdered" jcr:primaryType="jnt:contentList">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="admin-links" />
                                     <gotoAdmin j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/admin/administrationAccess" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoAdmin" />
                                     <gotoStudio j:requireLoggedUser="false" j:requirePrivilegedUser="false" j:requiredPermissions="/permissions/studioMode/studioModeAccess" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:gotoStudio" />

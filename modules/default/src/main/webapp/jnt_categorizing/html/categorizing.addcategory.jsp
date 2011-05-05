@@ -58,13 +58,13 @@
                     catDiv.append(separator);
                     catDiv.append(catDisplay);
                     catDiv.append(catLinkDelete);
-                    $("#category").val();
+                    $("#category").val("");
+                    $('#categorySubmit').hide();
                 }, "json");
             } else {
                 return false;
             }
         }
-
     </script>
     <c:if test="${renderContext.user.name != 'guest'}">
         <label><fmt:message key="label.add.categories"/></label>
@@ -73,9 +73,9 @@
         <fmt:message key="label.select.category" var="categoryLabel"/>
         <ui:treeItemSelector fieldId="categorytoadd"  valueType="identifier"
                              nodeTypes="jnt:category" selectableNodeTypes="jnt:category" displayIncludeChildren="false"
-                             root="${jcr:getSystemSitePath()}/categories" label="${categoryLabel}" displayFieldId="category"/>
+                             root="${jcr:getSystemSitePath()}/categories" label="${categoryLabel}" displayFieldId="category" onSelect="function(uuid, path, title) {$('#categorytoadd').val(uuid);$('#category').val(title);$('#categorySubmit').show();return false;}"/>
         <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"
-               onclick="addCategory('${bindedComponent.identifier}', '${separator}')">
+               onclick="addCategory('${bindedComponent.identifier}', '${separator}')" id="categorySubmit" style="display:none;">
     </c:if>
 </c:if>
 

@@ -666,7 +666,7 @@ public class JahiaAdministration extends HttpServlet {
 
         try {
             JahiaUser theUser = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
-            if (theUser == null) {
+            if (JahiaUserManagerService.isGuest(theUser)) {
                 return false;
             }
             JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);

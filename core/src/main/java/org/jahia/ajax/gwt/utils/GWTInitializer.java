@@ -97,6 +97,7 @@ public class GWTInitializer {
         }
 
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");
+        buf.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">");
         addCss(buf, request);
 
         // creat parameters map

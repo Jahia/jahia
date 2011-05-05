@@ -15,13 +15,14 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
 </head>
 <body>
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 <div class="bodywrapper">
-	<template:area path="page"/>
+    <template:area path="page"/>
 </div>
 </body>
 </html>

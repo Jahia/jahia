@@ -10,6 +10,7 @@ orderable
 - label (string) i18n indexed=no
 - field (string, choicelist[choicelistfacets]) indexed=no
 - mincount (long) = 1 indexed=no
+- labelRenderer (string) indexed=no
 
 [jnt:fieldFacet] > jnt:facet
 - sort (string, choicelist[resourceBundle]) indexed=no < true,false 
@@ -17,7 +18,6 @@ orderable
 - limit (long) = 100 indexed=no
 - offset (long) = 0 indexed=no
 - missing (boolean) indexed=no
-- labelRenderer (string) indexed=no
 
 [jnt:dateFacet] > jnt:facet
 - start (string) mandatory indexed=no

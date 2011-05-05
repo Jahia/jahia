@@ -40,6 +40,11 @@ Facet types and their parameters
   The default value in the Solr backend is 0, whereas when using the Jahia user interface, the default will be 1, which means that facet 
   values resulting in no hits will not be returned and displayed.
   
+** labelRenderer
+
+  Sometimes the values of a field may be simple keys, which are meaningless to the end user. For that you can register {{{../../core/initializers_renderers/renderers.html}ChoiceListRenderer}} implementations
+  into Jahia. Set the key to the ChoiceListRenderer implementation into the labelRenderer field in order to display nice labels.  
+  
 * Field Value Faceting
 
   In Solr the fields had to be defined in a schema. With Jahia there is no need to create a Solr schema, because Jahia already defines nodetypes and
@@ -81,12 +86,7 @@ Facet types and their parameters
   Set to <<<true>>> this parameter indicates that in addition to the term based constraints of a facet field, a count of all matching results which 
   have no value for the field should be computed
 
-  The default value is <<<false>>>. 
-
-** labelRenderer
-
-  Sometimes the values of a field may be simple keys, which are meaningless to the end user. For that you can register {{{../../core/initializers_renderers/renderers.html}ChoiceListRenderer}} implementations
-  into Jahia. Set the key to the ChoiceListRenderer implementation into the labelRenderer field in order to display nice labels.   
+  The default value is <<<false>>>.    
 
 * Date Faceting
 

@@ -411,7 +411,7 @@ public class Find extends BaseFindController {
         
         try {
             String[] columns = result.getColumnNames();
-            boolean serializeRows = columns.length > 0 && !columns[0].contains("*");
+            boolean serializeRows = !Boolean.parseBoolean(request.getParameter("getNodes")) && columns.length > 0 && !columns[0].contains("*");
 
             Set<String> alreadyIncludedIdentifiers = new HashSet<String>();
             Map<String, String> alreadyIncludedPropertyValues = null;

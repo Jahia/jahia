@@ -214,6 +214,7 @@ public class FindTest {
         method.addParameter("propertyMatchRegexp", "{$q}.*");
         method.addParameter("removeDuplicatePropValues", "true");
         method.addParameter("depthLimit", "1");
+        method.addParameter("getNodes", "true");
 
         // Provide custom retry handler is necessary
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
@@ -251,6 +252,7 @@ public class FindTest {
         method.addParameter("propertyMatchRegexp", "{$q}.*");
         method.addParameter("removeDuplicatePropValues", "true");
         method.addParameter("depthLimit", "1");
+        method.addParameter("getNodes", "true");
 
         // Provide custom retry handler is necessary
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,

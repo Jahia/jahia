@@ -45,6 +45,10 @@
 
             <c:if test="${not empty node.home and (jcr:hasPermission(node.home,'editModeAccess') || jcr:hasPermission(node.home,'contributeModeAccess') || node.home.properties['j:published'].boolean)}">
                 <li class="listsiteicon">${node.displayableName}
+                    <c:set var="siteid" value="${node.properties['j:siteId'].long}"/>
+                    <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node.home,'administrationAccess')}">
+                        <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='/administration/?do=change&changesite=${siteId}#sites'/>"><fmt:message key="label.administration"/></a>
+                    </c:if>
                     <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node.home,'editModeAccess')}">
                         <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseEdit}${node.path}${page}.html'/>"><fmt:message key="label.editMode"/></a>
                     </c:if>

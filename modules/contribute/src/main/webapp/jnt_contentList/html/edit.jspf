@@ -45,7 +45,7 @@
     <c:if test="${moduleMap.orderedList != 'true' and (areaResource.properties['j:canOrderInContribution'].boolean or currentNode.properties['j:canOrderInContribution'].boolean) and jcr:hasOrderableChildNodes(currentNode)}">
         <c:if test="${not status.first}">
             <button id="moveUp-${currentNode.identifier}-${status.index}"
-                    onclick="var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();';invert('${child.path}','${previousChild.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
+                    onclick="var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';invert('${child.path}','${previousChild.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
                 <span class="icon-contribute icon-moveup"></span><fmt:message key="label.move.up"/></button>
         </c:if>
         <c:if test="${not status.last}">
@@ -57,7 +57,7 @@
     <c:if test="${locked ne 'true'}">
         <c:if test="${(areaResource.properties['j:canDeleteInContribution'].boolean or currentNode.properties['j:canDeleteInContribution'].boolean)}">
             <button id="delbtn-${child.identifier}"
-                    onclick="var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
+                    onclick="var callback = '$(\'.addContentContributeDiv\').each(function(index,value){animatedcollapse.addDiv($(this).attr(\'id\'), \'fade=1,speed=700,group=tasks\');});animatedcollapse.reinit();if (navigator.userAgent.indexOf(\'MSIE\') > 0) {location.reload();}';deleteNode('${child.path}', '<c:url value="${url.base}"/>', '${currentNode.UUID}', '<c:url value="${url.mainResource}.ajax?jarea=${areaResource.identifier}"/>',callback)">
                 <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
         </c:if>
 

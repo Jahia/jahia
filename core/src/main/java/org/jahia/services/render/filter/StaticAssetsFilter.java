@@ -155,7 +155,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
             List<Element> headElementList = source.getAllElements(HTMLElementName.HEAD);
             for (Element element : headElementList) {
-                String templateContent = getResolvedTemplate(); 
+                String templateContent = getResolvedTemplate();
                 if (templateContent != null) {
                     final EndTag headEndTag = element.getEndTag();
                     ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);
@@ -176,6 +176,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 "\n" + AggregateCacheFilter.removeEsiTags(staticsAsset) + "\n<");
                     }
                 }
+                if (renderContext.getRequest().getHeader("user-agent").contains("MSIE")) {
+                    int idx = element.getBegin() + element.toString().indexOf(">");
+                    String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">";
+                    outputDocument.replace(idx,idx + 1,str);
+                }
+
             }
             out = outputDocument.toString();
         }

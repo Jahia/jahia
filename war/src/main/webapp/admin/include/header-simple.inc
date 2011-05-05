@@ -49,6 +49,7 @@
     int stretcherToOpen = 1;
 %>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=8"/>
     <title><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <c:if test="${not empty sessionScope['org.jahia.usermanager.jahiauser'] && sessionScope['org.jahia.usermanager.jahiauser'].username != 'guest'}">

@@ -13,6 +13,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <c:set var="cfg" value="${functions:default(param.conf, 'repositoryexplorer')}"/>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=8"/>
     <fmt:message key="label.${fn:escapeXml(cfg)}" var="title"/>
     <c:if test="${cfg == 'repositoryexplorer'}">
         <fmt:message key="label.repositoryExplorer" var="title"/>

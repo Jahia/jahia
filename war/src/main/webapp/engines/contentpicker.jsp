@@ -9,6 +9,7 @@
 <c:set var="config" value="${functions:default(param.type, 'filepicker')}"/>
 <html>
 	<head>
+        <meta http-equiv="X-UA-Compatible" content="IE=8"/>
 		<title><fmt:message key="org.jahia.admin.sitepermissions.permission.engines.importexport.ManageContentPicker.label"/></title>
         <internal:gwtGenerateDictionary/>
 		<internal:gwtInit standalone="true"/>

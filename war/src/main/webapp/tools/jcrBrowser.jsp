@@ -140,8 +140,9 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
     <c:if test="${showProperties}">
         <ul>
         <c:set var="properties" value="${node.properties}"/>
-        <c:if test="${fn:length(properties) == 0}"><li>No properties present</li></c:if>
-        <c:if test="${fn:length(properties) > 0}">
+        <c:set var="propCount" value="${fn:length(node.properties)}"/>
+        <c:if test="${propCount == 0}"><li>No properties present</li></c:if>
+        <c:if test="${propCount > 0}">
             <c:forEach items="${properties}" var="property">
                 <li>
                 <strong>${fn:escapeXml(property.name)}:&nbsp;</strong>

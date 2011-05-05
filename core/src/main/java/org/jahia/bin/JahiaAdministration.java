@@ -66,6 +66,7 @@ import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.MenuItem;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.params.AdminParamBean;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
@@ -363,14 +364,25 @@ public class JahiaAdministration extends HttpServlet {
                     displayMenu(request, response, session);
                 } else {
                     logger.debug("session login not valid.");
-                    displayLogin(request, response, session);
+                    if (JahiaUserManagerService.isGuest((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER))) {
+                        displayLogin(request, response, session);
+                    } else {
+                        throw new JahiaForbiddenAccessException();
+                    }
                 }
         } catch (Exception e) {
+            if (e instanceof JahiaForbiddenAccessException) {
+                throw (JahiaForbiddenAccessException) e;
+            }
             logger.error("Error during " + operation + " operation of a new element we must flush all caches to ensure integrity between database and viewing", e);
             if (isValidLoginSession(session)) {
                 displayMenu(request, response, session);
             } else {
-                displayLogin(request, response, session);
+                if (JahiaUserManagerService.isGuest((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER))) {
+                    displayLogin(request, response, session);
+                } else {
+                    throw new JahiaForbiddenAccessException();
+                }
             }
         }
     } // end userRequestDispatcher

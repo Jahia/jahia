@@ -169,6 +169,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return renderMapping;
     }
 
+    public boolean isSeoRulesEnabled() {
+        return seoRulesEnabled;
+    }
+
     protected boolean needsReloading() throws IOException {
         if (confReloadCheckIntervalSeconds > -1 && configurationResources != null
                 && configurationResources.length > 0) {

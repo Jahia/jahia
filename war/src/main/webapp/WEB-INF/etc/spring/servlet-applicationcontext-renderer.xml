@@ -81,6 +81,7 @@
                     <bean name="org.jahia.bin.Logout" class="org.jahia.bin.Logout">
                         <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
                         <property name="urlResolverFactory" ref="urlResolverFactory" />
+                        <property name="urlRewriteService" ref="UrlRewriteService" />
                     </bean>
                 </entry>
                 <entry key="/captcha">

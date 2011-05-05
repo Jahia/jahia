@@ -32,9 +32,9 @@
 
 package org.jahia.bin;
 
+import java.io.IOException;
 import java.util.*;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -50,10 +50,12 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.*;
+import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -64,17 +66,88 @@ import org.springframework.web.servlet.mvc.Controller;
  * Time: 1:47:45 PM
  */
 public class Logout implements Controller {
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(Logout.class);
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
-    private CookieAuthConfig cookieAuthConfig;
-    private URLResolverFactory urlResolverFactory;
+    private static final transient Logger logger = LoggerFactory.getLogger(Logout.class);
+    
+    public static String getLogoutServletPath() {
+        // TODO move this into configuration
+        return "/cms/logout";
+    }
+    
+    protected CookieAuthConfig cookieAuthConfig;
+    
+    protected URLResolverFactory urlResolverFactory;
 
-    public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
-        this.cookieAuthConfig = cookieAuthConfig;
+    protected UrlRewriteService urlRewriteService;
+
+    private void addLocale(final JCRSiteNode site, final List<Locale> newLocaleList, final Locale curLocale) {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null,
+                    Constants.LIVE_WORKSPACE,curLocale,new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        if(site!=null) {
+                            JCRSiteNode nodeByIdentifier = (JCRSiteNode) session.getNodeByIdentifier(site.getIdentifier());
+                            JCRNodeWrapper home = nodeByIdentifier.getHome();
+                            if (home!=null && !newLocaleList.contains(curLocale)) {
+                                newLocaleList.add(curLocale);
+                            }
+                        }
+                    } catch (RepositoryException e) {
+                        logger.debug("This site does not have a published home in language "+curLocale,e);
+                    }
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
-    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
-        this.urlResolverFactory = urlResolverFactory;
+    protected void doRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String redirect = request.getParameter("redirect");
+        if (redirect == null) {
+            redirect = request.getHeader("referer");
+            if (StringUtils.isNotEmpty(redirect) && (redirect.startsWith("http://") || redirect.startsWith("https://") && redirect.length() > 8 )) {
+                redirect = redirect.startsWith("http://") ? StringUtils.substringAfter(redirect, "http://") : StringUtils.substringAfter(redirect, "https://");
+                redirect = redirect.contains("/") ? "/" + StringUtils.substringAfter(redirect, "/") : null; 
+            } else {
+                redirect = null;
+            }
+        }
+        if (StringUtils.isNotEmpty(redirect)) {
+            String prefix = request.getContextPath() + "/cms/";
+            if (redirect.startsWith(prefix)) {
+                if (!urlRewriteService.isSeoRulesEnabled()) {
+                    String url = "/" + StringUtils.substringAfter(redirect, prefix);
+                    url = StringUtils.substringBefore(url, ";jsessionid");
+                    url = StringUtils.substringBefore(url, "?");
+                    url = StringUtils.substringBefore(url, "#");
+
+                    try {
+                        URLResolver r = urlResolverFactory.createURLResolver(url, request.getServerName(), request);
+                        if (r.getPath().startsWith("/sites/")) {
+                                RenderContext context = new RenderContext(request, response, ServicesRegistry
+                                        .getInstance().getJahiaUserManagerService()
+                                        .lookupUserByKey(JahiaUserManagerService.GUEST_USERNAME));
+                                JCRNodeWrapper n = JCRContentUtils.findDisplayableNode(r.getNode(), context);
+                                redirect = request.getContextPath() + Render.getRenderServletPath() + "/"
+                                        + Constants.LIVE_WORKSPACE + "/"
+                                        + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
+                        } else {
+                            redirect = request.getContextPath() + "/start";
+                        }
+                    } catch (Exception e) {
+                        redirect = request.getContextPath() + "/start";
+                    }
+                } else {
+                    // TODO handle the case when SEO rules are enabled
+                    redirect = null;
+                }
+            }
+        }
+
+        response.sendRedirect(response.encodeRedirectURL(StringUtils.defaultIfEmpty(redirect, StringUtils.defaultIfEmpty(request.getContextPath(), "/"))));
     }
 
     /**
@@ -102,54 +175,18 @@ public class Logout implements Controller {
         request.getSession().setAttribute(ProcessingContext.SESSION_LOCALE, locale);
 
         String redirectActiveStr = request.getParameter("redirectActive");
-        boolean redirectActive = true;
-        if (redirectActiveStr != null) {
-            redirectActive = Boolean.parseBoolean(redirectActiveStr);
+        if (redirectActiveStr == null || Boolean.parseBoolean(redirectActiveStr)) {
+            doRedirect(request, response);
         }
-        if (redirectActive) {
-            String redirect = request.getParameter("redirect");
-            if (redirect == null) {
-                redirect = request.getHeader("referer");
-                if (redirect == null) {
-                    redirect = "";
-                }
-            }
-            String url = request.getServerName().startsWith(request.getContextPath()) ? redirect.substring(
-                    redirect.indexOf(request.getContextPath())) : redirect;
-            // Remove servlet Dispatcher (hardcoded "/cms")
-            url = url.substring(url.indexOf(request.getContextPath()) + request.getContextPath().length());
-            url = url.startsWith("/cms") ? url.substring(url.indexOf("/cms") + 4) : url;
-            url = StringUtils.substringBeforeLast(url,"#");
-            URLResolver r = urlResolverFactory.createURLResolver(url, request.getServerName(), request);
-            boolean redirectToStart = false;
-            if (r.getPath().startsWith("/sites/")) {
-                try {
-                    RenderContext context = new RenderContext(request, response,
-                            ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
-                                    JahiaUserManagerService.GUEST_USERNAME));
-                    JCRNodeWrapper n = JCRContentUtils.findDisplayableNode(r.getNode(), context);
-                    redirect =
-                            request.getContextPath() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE +
-                            "/" + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
-                } catch (Exception e) {
-                    redirectToStart = true;
-                }
-            } else if (!r.getUrlPathInfo().equals("/administration")) {
-                redirectToStart = true;
-            }
-            if (redirectToStart) {
-                redirect = request.getContextPath() + "/start";
-            }
-            response.sendRedirect(StringUtils.isEmpty(redirect) ? "/" : redirect);
-        }
+        
         return null;
     }
 
-    private void removeAuthCookie(HttpServletRequest request, HttpServletResponse response) {
+    protected void removeAuthCookie(HttpServletRequest request, HttpServletResponse response) {
         // now let's destroy the cookie authentication if there was one
         // set for this user.
         JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
-        String cookieAuthKey = curUser.getProperty(cookieAuthConfig.getUserPropertyName());
+        String cookieAuthKey = JahiaUserManagerService.isNotGuest(curUser) ? curUser.getProperty(cookieAuthConfig.getUserPropertyName()) : null;
         if (cookieAuthKey != null) {
             Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
             authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
@@ -157,11 +194,6 @@ public class Logout implements Controller {
             response.addCookie(authCookie);
             curUser.removeProperty(cookieAuthConfig.getUserPropertyName());
         }
-    }
-
-    public static String getLogoutServletPath() {
-        // TODO move this into configuration
-        return "/cms/logout";
     }
 
     protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site)
@@ -201,27 +233,15 @@ public class Logout implements Controller {
         return language;
     }
 
-    private void addLocale(final JCRSiteNode site, final List<Locale> newLocaleList, final Locale curLocale) {
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                    Constants.LIVE_WORKSPACE,curLocale,new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        if(site!=null) {
-                            JCRSiteNode nodeByIdentifier = (JCRSiteNode) session.getNodeByIdentifier(site.getIdentifier());
-                            JCRNodeWrapper home = nodeByIdentifier.getHome();
-                            if (home!=null && !newLocaleList.contains(curLocale)) {
-                                newLocaleList.add(curLocale);
-                            }
-                        }
-                    } catch (RepositoryException e) {
-                        logger.debug("This site does not have a published home in language "+curLocale,e);
-                    }
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
+    public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
+        this.cookieAuthConfig = cookieAuthConfig;
+    }
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
+    }
+
+    public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
+        this.urlRewriteService = urlRewriteService;
     }
 }

@@ -48,7 +48,7 @@
                             <c:otherwise>
                                 <c:set var="res" value="${renderContext.ajaxRequest and not empty renderContext.ajaxResource ? renderContext.ajaxResource.node.path : renderContext.mainResource.node.path}"/>
                                 <li>
-                                    <a onclick="jreplace('tabs${currentNode.name}', '<c:url value="${url.base}${currentNode.path}.html"/>',{displayTab:'${subList.name}',mainResource:'${res}.html'});"><span>${subList.displayableName}</span></a>
+                                    <a onclick="jreplace('tabs${currentNode.name}', '<c:url value="${url.base}${currentNode.path}.html.ajax"/>',{displayTab:'${subList.name}',mainResource:'${res}.html'},null,true);"><span>${subList.displayableName}</span></a>
                                 </li>
                             </c:otherwise>
                         </c:choose>

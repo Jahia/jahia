@@ -79,9 +79,10 @@
  */
 
 (function($){
-    $.fn.reloadCSS = function (options){
+    $.fn.reloadCSS = function (options,originalId){
         var opts = $.extend(true,{}, $.fn.reloadCSS.defaults, options);
         var _this = this;
+        var origId = originalId;
 
         function getVoidUrl(url){
 
@@ -106,9 +107,10 @@
                 var href = $this.attr('href');
                 var media = $this.attr('media');
                 if($this.attr('tagName')=='LINK'){
-					if ($('link[href="/jahia/modules/default/css/contentlist.css"]').length == 0) {
-                        $('head:first').append('<link id="staticAssetcss'+$('link').length+'" href="'+href+'" type="text/css" rel="stylesheet" media="'+media+'"/>');
+					if ($('head:first link[href="'+href+'"]').length == 0) {
+                        $('head:first link:first').before('<link id="staticAssetcss'+$('link').length+'" href="'+href+'" type="text/css" rel="stylesheet" media="'+media+'"/>');
                     }
+                    $('#'+origId+' link[href="'+href+'"]').remove();
 					/*
                     $.get(getVoidUrl($this.attr('href')),[],function(css){
                         // IE needs remove and insert, no simple ajax load in container
@@ -161,11 +163,15 @@ function replace(id, url, callback) {
     http.send(null);
 }
 
-function jreplace(id,url,params,callback) {
+function jreplace(id,url,params,callback,replaceIdContent) {
     $.get(url,params,function(data){
-        $("#"+id).html(data);
+        if(replaceIdContent != 'undefined' && replaceIdContent) {
+            $("#"+id).replaceWith(data);
+        } else {
+            $("#"+id).html(data);
+        }
         var links = $("#"+id+ " link");
-        links.reloadCSS({preventCache:false});
+        links.reloadCSS({preventCache:false},id);
         if (typeof callback != 'undefined') {
             eval(callback);
         }

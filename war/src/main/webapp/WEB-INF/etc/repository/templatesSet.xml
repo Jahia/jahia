@@ -2,13 +2,11 @@
 <templatesSet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
               xmlns:jcr="http://www.jcp.org/jcr/1.0"
               xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
-              xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap"
-              jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5" j:siteType="templatesSet">
+              xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
+              jcr:primaryType="jnt:virtualsite" j:installedModules="templates-web" j:siteType="templatesSet">
 
-    <home jcr:mixinTypes="jmix:sitemap"
-          j:displayInMenu="primary" j:isHomePage="true"
-          jcr:primaryType="jnt:page" changefreq="monthly"
-          j:templateNode="/templatesSet/templates/base/home" priority="0.5">
+    <home j:displayInMenu="primary" j:isHomePage="true"
+          jcr:primaryType="jnt:page" j:templateNode="/templatesSet/templates/base/home">
     </home>
 
 

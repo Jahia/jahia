@@ -2,8 +2,8 @@
 <templatesSet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
               xmlns:jcr="http://www.jcp.org/jcr/1.0"
               xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
-              xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap"
-              jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5"
+              xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
+              jcr:primaryType="jnt:virtualsite" j:installedModules="templates-web"
               j:siteType="profileModule" j:dependencies="templates-system">
     <portlets jcr:primaryType="jnt:portletFolder"/>
     <files jcr:primaryType="jnt:folder"/>

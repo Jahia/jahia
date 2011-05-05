@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -32,7 +33,10 @@
     <c:otherwise>
         <ul class="${currentNode.properties['j:className'].string}">
             <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
-                <li><template:module node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/></li>
+                <template:module var="result" node="${subchild}" view="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/>
+				<c:if test="${not functions:matches('[ \\\\n]*', functions:removeCacheTags(result))}">
+                <li>${result}</li>
+				</c:if>
             </c:forEach>
             <c:if test="${moduleMap.editable and renderContext.editMode}">
                 <li><template:module path="*"/></li>

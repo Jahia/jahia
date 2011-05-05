@@ -41,11 +41,13 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RangeIterator;
 import javax.servlet.jsp.JspTagException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Custom functions, which are exposed into the template scope.
@@ -54,17 +56,17 @@ import java.util.*;
  */
 public class Functions {
 
-	public static String attributes(Map<String, Object> attributes) {
-		StringBuilder out = new StringBuilder();
+    public static String attributes(Map<String, Object> attributes) {
+        StringBuilder out = new StringBuilder();
 
-		for (Map.Entry<String, Object> attr : attributes.entrySet()) {
-			out.append(attr.getKey()).append("=\"")
-			        .append(attr.getValue() != null ? attr.getValue().toString() : "")
-			        .append("\" ");
-		}
+        for (Map.Entry<String, Object> attr : attributes.entrySet()) {
+            out.append(attr.getKey()).append("=\"")
+                    .append(attr.getValue() != null ? attr.getValue().toString() : "")
+                    .append("\" ");
+        }
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 
     public static Object defaultValue(Object value, Object defaultValue) {
         return (value != null && (!(value instanceof String) || (((String) value)
@@ -128,13 +130,13 @@ public class Functions {
         final String[] fullString = initString.split(separator);
         StringBuilder finalString = new StringBuilder();
         String tmpString = initString;
-        for (String s:fullString) {
+        for (String s : fullString) {
             if (tmpString.contains(s)) {
                 finalString.append(s);
                 if (finalString.length() > 0) {
                     finalString.append(separator);
                 }
-                tmpString = tmpString.replaceAll(s,"");
+                tmpString = tmpString.replaceAll(s, "");
             }
         }
         return finalString.toString();
@@ -149,7 +151,7 @@ public class Functions {
      * Checks if the provided target object can be found in the source. The
      * search is done, depending on the source parameter type. It can be either
      * {@link String}, {@link Collection} or an array of objects.
-     * 
+     *
      * @param source the source to search in
      * @param target the object to search for
      * @return <code>true</code> if the target object is present in the source
@@ -169,7 +171,7 @@ public class Functions {
 
         return found;
     }
-    
+
     public static long length(Object obj) throws JspTagException {
         return (obj != null && obj instanceof RangeIterator) ? JCRContentUtils.size((RangeIterator) obj)
                 : org.apache.taglibs.standard.functions.Functions.length(obj);
@@ -200,7 +202,7 @@ public class Functions {
     /**
      * Checks if the current object is iterable so that it can be used in an c:forEach
      * tag.
-     * 
+     *
      * @param object the object to be checked if it is iterable
      * @return if the current object is iterable return true otherwise false
      */
@@ -224,12 +226,10 @@ public class Functions {
 
     /**
      * Looks up the user by the specified user key (with provider prefix) or username.
-     * 
-     * @param user
-     *            the key or the name of the user to perform lookup for
+     *
+     * @param user the key or the name of the user to perform lookup for
      * @return the user for the specified user key or name or <code>null</code> if the corresponding user cannot be found
-     * @throws IllegalArgumentException
-     *             in case the specified user key is <code>null</code>
+     * @throws IllegalArgumentException in case the specified user key is <code>null</code>
      */
     public static JahiaUser lookupUser(String user) throws IllegalArgumentException {
         if (user == null) {
@@ -239,4 +239,13 @@ public class Functions {
                 .lookupUserByKey(user) : ServicesRegistry.getInstance()
                 .getJahiaUserManagerService().lookupUser(user);
     }
+
+    public static String removeCacheTags(String txt) {
+        return AggregateCacheFilter.removeEsiTags(txt);
+    }
+
+    public static boolean matches(String pattern, String str) {
+        return Pattern.compile(pattern).matcher(str).matches();
+    }
+
 }

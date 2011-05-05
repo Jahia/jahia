@@ -57,6 +57,21 @@
     </function>
     
     <function>
+        <description>Remove all cache tags from string.
+        </description>
+        <name>removeCacheTags</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String removeCacheTags(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>Test whether a string matches a regular expression.
+        </description>
+        <name>matches</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>boolean matches(java.lang.String, java.lang.String)</function-signature>
+    </function>
+
+    <function>
         <description>
             Escapes the characters in a String using JavaScript String rules.
             Escapes any values it finds into their JavaScript String form.

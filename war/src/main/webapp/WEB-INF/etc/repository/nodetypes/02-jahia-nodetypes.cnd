@@ -53,6 +53,9 @@
 [jmix:originWS] mixin
   - j:originWS (string) protected nofulltext hidden
 
+[jmix:deletedChildren] mixin
+  - j:deletedChildren (string) multiple hidden
+
 [jmix:tagged] mixin
  extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = classification

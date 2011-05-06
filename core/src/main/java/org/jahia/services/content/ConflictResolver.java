@@ -58,7 +58,7 @@ public class ConflictResolver {
 
 
     private static List<String> ignore = Arrays.asList(Constants.JCR_UUID, Constants.JCR_PRIMARYTYPE, Constants.JCR_MIXINTYPES, Constants.JCR_FROZENUUID, Constants.JCR_FROZENPRIMARYTYPE, Constants.JCR_FROZENMIXINTYPES,
-            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS, Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, Constants.LOCKTOKEN, Constants.LOCKTYPES, "jcr:lockOwner", "jcr:lockIsDeep");
+            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS, Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, Constants.LOCKTOKEN, Constants.LOCKTYPES, "jcr:lockOwner", "jcr:lockIsDeep", "j:deletedChildren");
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ConflictResolver.class);
     // Constants.JCR_LASTMODIFIED, "jcr:lastModifiedBy",
     // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");
@@ -502,7 +502,6 @@ public class ConflictResolver {
             ChildAddedDiff that = (ChildAddedDiff) o;
 
             if (newName != null ? !newName.equals(that.newName) : that.newName != null) return false;
-            if (nextSibling != null ? !nextSibling.equals(that.nextSibling) : that.nextSibling != null) return false;
             if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
 
             return true;
@@ -512,7 +511,6 @@ public class ConflictResolver {
         public int hashCode() {
             int result = uuid != null ? uuid.hashCode() : 0;
             result = 31 * result + (newName != null ? newName.hashCode() : 0);
-            result = 31 * result + (nextSibling != null ? nextSibling.hashCode() : 0);
             return result;
         }
 

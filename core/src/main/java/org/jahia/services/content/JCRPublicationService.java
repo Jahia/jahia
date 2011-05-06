@@ -334,6 +334,24 @@ public class JCRPublicationService extends JahiaService {
 //                prunedDestPath.add(node.getPath());
 //            }
 
+            List<String> toDelete = new ArrayList<String>();
+            for (JCRNodeWrapper nodeWrapper : toPublish) {
+                if (nodeWrapper.hasProperty("j:deletedChildren")) {
+                    JCRPropertyWrapper property = nodeWrapper.getProperty("j:deletedChildren");
+                    Value[] values = property.getValues();
+                    for (Value value : values) {
+                        toDelete.add(value.getString());
+                    }
+                    property.remove();
+                    nodeWrapper.removeMixin("jmix:deletedChildren");
+                }
+            }
+            for (String s : toDelete) {
+                JCRNodeWrapper node = destinationSession.getNodeByIdentifier(s);
+                node.remove();
+            }
+            destinationSession.save();
+
             mergeToDestinationWorkspace(toPublish, uuidsToPublish, sourceNode.getSession(), destinationSession,
                     calendar);
 //        } catch (PathNotFoundException e) {
@@ -951,6 +969,21 @@ public class JCRPublicationService extends JahiaService {
         if (JCRContentUtils.isNotJcrUuid(uuid)) {
             info.setStatus(PublicationInfo.PUBLISHED);
             return info;
+        }
+
+        if (node.hasProperty("j:deletedChildren")) {
+            JCRPropertyWrapper p = node.getProperty("j:deletedChildren");
+            Value[] values = p.getValues();
+            for (Value value : values) {
+                try {
+                    JCRNodeWrapper deletedNode = destinationSession.getNodeByUUID(value.getString());
+                    PublicationInfoNode deletedInfo = new PublicationInfoNode(deletedNode.getIdentifier(), deletedNode.getPath());
+                    deletedInfo.setStatus(PublicationInfo.DELETED);
+                    info.addChild(deletedInfo);
+                } catch (ItemNotFoundException e) {
+                    logger.warn("Cannot find deleted subnode of "+node.getPath() + " : " + value.getString());
+                }
+            }
         }
 
         JCRNodeWrapper publishedNode = null;

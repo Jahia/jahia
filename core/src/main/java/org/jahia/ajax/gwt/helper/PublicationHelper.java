@@ -234,26 +234,31 @@ public class PublicationHelper {
                                             JCRSessionWrapper currentUserSession, String language) {
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getUuid(), node.getStatus(), node.isCanPublish(language));
         try {
-            JCRNodeWrapper jcrNode = currentUserSession.getNodeByUUID(node.getUuid());
+            JCRNodeWrapper jcrNode;
+            if (node.getStatus() == PublicationInfo.DELETED) {
+                JCRSessionWrapper liveSession = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession("live", currentUserSession.getLocale(), currentUserSession.getFallbackLocale());
+                jcrNode = liveSession.getNodeByUUID(node.getUuid());
+            } else {
+                jcrNode = currentUserSession.getNodeByUUID(node.getUuid());
+                if (lastRule == null || jcrNode.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
+                    WorkflowRule rule = workflowService.getWorkflowRuleForAction(jcrNode, null, "publish", null);
+                    if (rule != null) {
+                        if (!rule.equals(lastRule)) {
+                            if (workflowService.getWorkflowRuleForAction(jcrNode, currentUserSession.getUser() , "publish", null) != null) {
+                                lastRule = rule;
+                            } else {
+                                lastRule = null;
+                            }
+                        }
+                    }
+                }
+            }
             if (jcrNode.hasProperty("jcr:title")) {
                 gwtInfo.setTitle(jcrNode.getProperty("jcr:title").getString());
             } else {
                 gwtInfo.setTitle(jcrNode.getName());
             }
             gwtInfo.setNodetype(jcrNode.getPrimaryNodeType().getLabel(currentUserSession.getLocale()));
-
-            if (lastRule == null || jcrNode.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
-                WorkflowRule rule = workflowService.getWorkflowRuleForAction(jcrNode, null, "publish", null);
-                if (rule != null) {
-                    if (!rule.equals(lastRule)) {
-                        if (workflowService.getWorkflowRuleForAction(jcrNode, currentUserSession.getUser() , "publish", null) != null) {
-                            lastRule = rule;
-                        } else {
-                            lastRule = null;
-                        }
-                    }
-                }
-            }
         } catch (RepositoryException e1) {
             gwtInfo.setTitle(node.getPath());
         }

@@ -51,6 +51,7 @@ public class PublicationInfo implements Serializable {
     public static final int LIVE_ONLY = 8;
     public static final int CONFLICT = 9;
     public static final int MANDATORY_LANGUAGE_VALID = 10;
+    public static final int DELETED = 11;
 
     private transient List<String> allUuids;
 

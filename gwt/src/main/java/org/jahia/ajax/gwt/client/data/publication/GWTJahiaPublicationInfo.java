@@ -58,7 +58,8 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public static final int LIVE_ONLY = 8;
     public static final int CONFLICT = 9;
     public static final int MANDATORY_LANGUAGE_VALID = 10;
-    
+    public static final int DELETED = 11;
+
     public static Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
 
     static {
@@ -71,6 +72,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         statusToLabel.put(GWTJahiaPublicationInfo.LIVE_ONLY,"liveonly");
         statusToLabel.put(GWTJahiaPublicationInfo.CONFLICT,"conflict");
         statusToLabel.put(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID,"mandatorylanguagevalid");
+        statusToLabel.put(GWTJahiaPublicationInfo.DELETED,"deleted");
     }
 
     public GWTJahiaPublicationInfo() {

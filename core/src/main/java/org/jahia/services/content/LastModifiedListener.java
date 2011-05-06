@@ -109,8 +109,7 @@ public class LastModifiedListener extends DefaultEventListener {
 //                            if(!path.contains("j:translation")) {
 //                                nodes.add(StringUtils.substringBeforeLast(path,"/"));
 //                            }
-                        }
-                        else {
+                        } else {
                             nodes.add(StringUtils.substringBeforeLast(path,"/"));
                         }
                     }

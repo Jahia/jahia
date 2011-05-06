@@ -760,9 +760,11 @@
     <!-- new edit mode buttons: delete -->
     <bean id="Toolbar.Item.Delete" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
+                <property name="referenceTitleKey" value="label.remove"/>
+            </bean>
         </property>
-        <property name="titleKey" value="label.remove"/>
+        <property name="titleKey" value="label.delete"/>
         <property name="icon" value="delete"/>
     </bean>
 

@@ -62,10 +62,15 @@ import java.util.List;
 public class DeleteActionItem extends BaseActionItem {
     public DeleteActionItem() {
     }
+    private String referenceTitleKey;
+
+    public void setReferenceTitleKey(String referenceTitleKey) {
+        this.referenceTitleKey = referenceTitleKey;
+    }
 
     public void onComponentSelection() {
         GWT.runAsync(new RunAsyncCallback() {
-            public void onFailure(Throwable reason) {                
+            public void onFailure(Throwable reason) {
             }
 
             public void onSuccess() {
@@ -193,10 +198,23 @@ public class DeleteActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
+        List<GWTJahiaNode> selection = lh.getMultipleSelection();
+        if (selection != null && selection.size() > 0) {
+            for (GWTJahiaNode n : selection) {
+                if (n.getInheritedNodeTypes().contains("jmix:nodeReference")) {
+                     updateTitle(Messages.get(referenceTitleKey,referenceTitleKey));
+                } else {
+                    updateTitle(getGwtToolbarItem().getTitle());
+                    break;
+                }
+            }
+        }
         setEnabled(lh.getMultipleSelection() != null
                 && lh.getMultipleSelection().size() > 0
                 && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && !lh.isSecondarySelection()
                 && !lh.isLocked());
     }
+
+
 }

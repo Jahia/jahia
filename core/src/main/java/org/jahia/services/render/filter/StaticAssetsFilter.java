@@ -128,6 +128,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             if (renderContext.isEditMode() && resource.getContextConfiguration().equals("page")) {
                 // Add static div for edit mode
                 List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
+
+                renderContext.addStaticAsset("javascript",renderContext.getRequest().getContextPath()+"/modules/assets/javascript/jquery.js");
+                renderContext.addStaticAsset("javascript",renderContext.getRequest().getContextPath()+"/modules/assets/javascript/jquery.Jcrop.js");
+
                 if (bodyElementList.size() > 0) {
                     Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
 

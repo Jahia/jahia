@@ -37,7 +37,8 @@
                     <c:choose>
                         <c:when test="${jcr:isNodeType(referedNode, 'jmix:thumbnail')}">
                             <div class="item">
-                                <img src="${referedNode.thumbnailUrls['thumbnail']}" alt=""/><br/>
+                                <c:url value="${referedNode.thumbnailUrls['thumbnail']}" var="imgUrl" />
+                                <img src="${imgUrl}" alt=""/><br/>
 
                                 <h3>${referedNode.name}</h3>
                             </div>

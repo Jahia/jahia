@@ -29,7 +29,8 @@
                 <c:if test="${!renderContext.editMode}">
                     <c:choose>
                         <c:when test="${jcr:isNodeType(image, 'jmix:thumbnail')}">
-                            <img src="${image.url}" alt="">
+                            <c:url value="${image.url}" var="imgUrl" />
+                            <img src="${imgUrl}" alt="">
                         </c:when>
                     </c:choose>
                 </c:if>

@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<templatesSet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
+<templateSets jcr:primaryType="jnt:templateSets"
+              xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
               xmlns:jcr="http://www.jcp.org/jcr/1.0"
               xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
-              xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
-              jcr:primaryType="nt:virtualsite">
+              xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
+    <SITEKEY_PLACEHOLDER jcr:primaryType="jnt:virtualsite">
+        <home j:displayInMenu="primary" j:isHomePage="true"
+              jcr:primaryType="jnt:page" j:templateNode="/templatesSet/templates/base/home">
+        </home>
 
-    <home j:displayInMenu="primary" j:isHomePage="true"
-          jcr:primaryType="jnt:page" j:templateNode="/templatesSet/templates/base/home">
-    </home>
-
-
-    <portlets jcr:primaryType="jnt:portletFolder"/>
-    <files jcr:primaryType="jnt:folder"/>
-    <contents jcr:primaryType="jnt:contentFolder"/>
-    <templates jcr:primaryType="jnt:templatesFolder">
-        <files jcr:primaryType="jnt:folder">
-            <themes jcr:primaryType="jnt:folder">
-                <default jcr:primaryType="jnt:folder">
-
-                </default>
-            </themes>
-        </files>
+        <portlets jcr:primaryType="jnt:portletFolder"/>
+        <files jcr:primaryType="jnt:folder"/>
         <contents jcr:primaryType="jnt:contentFolder"/>
+        <templates jcr:primaryType="jnt:templatesFolder">
+            <files jcr:primaryType="jnt:folder">
+                <themes jcr:primaryType="jnt:folder">
+                    <default jcr:primaryType="jnt:folder">
 
-        <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="SITEKEY_PLACEHOLDER" jcr:primaryType="jnt:template" j:theme="/templatesSet/files/themes/default">
-            <home jcr:primaryType="jnt:pageTemplate"/>
+                    </default>
+                </themes>
+            </files>
+            <contents jcr:primaryType="jnt:contentFolder"/>
 
-            <simple jcr:primaryType="jnt:pageTemplate"/>
-        </base>
+            <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="SITEKEY_PLACEHOLDER" jcr:primaryType="jnt:template" j:theme="/templatesSet/files/themes/default">
+                <home jcr:primaryType="jnt:pageTemplate"/>
 
-        <content-template j:applyOn="jnt:content" j:hiddenTemplate="true" j:priority="1" j:view="SITEKEY_PLACEHOLDER" jcr:primaryType="jnt:contentTemplate">
-            <pagecontent jcr:primaryType="jnt:contentList">
-                <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
-            </pagecontent>
-        </content-template>
-    </templates>
+                <simple jcr:primaryType="jnt:pageTemplate"/>
+            </base>
 
-</templatesSet>
+            <content-template j:applyOn="jnt:content" j:hiddenTemplate="true" j:priority="1" j:view="SITEKEY_PLACEHOLDER" jcr:primaryType="jnt:contentTemplate">
+                <pagecontent jcr:primaryType="jnt:contentList">
+                    <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
+                </pagecontent>
+            </content-template>
+        </templates>
+
+    </SITEKEY_PLACEHOLDER>
+</templateSets>

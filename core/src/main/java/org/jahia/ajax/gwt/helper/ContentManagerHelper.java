@@ -946,7 +946,7 @@ public class ContentManagerHelper {
                 String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
                 HashMap<String, String> replacements = new HashMap<String, String>();
                 replacements.put("SITEKEY_PLACEHOLDER", shortName);
-                JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session, replacements);
+                JCRContentUtils.importSkeletons(skeletons, "/templateSets" , session, replacements);
 //                if (isTemplatesSet) {
 //                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
 //                }

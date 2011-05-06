@@ -1203,9 +1203,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         logger.info("...template deployment done.");
     }
 
-    public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, String dependencies) throws GWTJahiaServiceException {
+    public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType) throws GWTJahiaServiceException {
         try {
-            return contentManager.createTemplateSet(key, baseSet, siteType, dependencies, retrieveCurrentSession());
+            return contentManager.createTemplateSet(key, baseSet, siteType, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("", e);
             throw new GWTJahiaServiceException(e.toString());

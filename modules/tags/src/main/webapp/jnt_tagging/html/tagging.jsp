@@ -81,8 +81,7 @@
                     return format(item);
                 },
                 extraParams: {
-                    query : "/jcr:root${renderContext.site.path}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
-                    language : "xpath",
+                    query : "select * from [jnt:tag] as tags where isdescendantnode(tags,'${renderContext.site.path}/tags') and contains(tags.[j:nodename],'{$q}*')",
                     escapeColon : "false",
                     propertyMatchRegexp : "{$q}.*",
                     removeDuplicatePropValues : "false"

@@ -51,7 +51,9 @@
                varStatus="status">
         <%-- only editorial contents are contribuable --%>
         <c:if test="${functions:isNodeType(child,'jmix:editorialContent')}">
-            <%@include file="edit.jspf" %>
+            <c:if test="${jcr:hasPermission(currentNode, 'jcr:modifyProperties_default')}">
+                <%@include file="edit.jspf"%>
+            </c:if>
             <%--<%@include file="workflow.jspf" %>--%>
             <div id="edit-${child.identifier}">
                 <template:module node="${child}"/>
@@ -66,6 +68,8 @@
     <template:include templateType="html" view="hidden.footer"/>
 
 </div>
-<c:if test="${not renderContext.ajaxRequest}">
+<div class="clear"></div>
+
+<c:if test="${not renderContext.ajaxRequest and jcr:hasPermission(currentNode, 'jcr:addChildNodes_default')}">
     <%@include file="addcontent.jspf" %>
 </c:if>

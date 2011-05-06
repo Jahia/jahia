@@ -36,8 +36,14 @@
     <tr>
         <th width="5%" align="center">
             <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
-                <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="<c:url value='${url.currentModule}/images/icons/folder_up.png'/>"></a></th>
-            </c:if>
+            <a title="parent" href="<c:url value='${url.base}${currentNode.parent.path}.html'/>"><img height="16"
+                                                                                                      width="16"
+                                                                                                      border="0"
+                                                                                                      style="cursor: pointer;"
+                                                                                                      title="parent"
+                                                                                                      alt="parent"
+                                                                                                      src="<c:url value='${url.currentModule}/images/icons/folder_up.png'/>"></a>
+        </c:if>
         </th>
         <th width="5%"><fmt:message key="label.type"/></th>
         <th width="35%"><fmt:message key="label.title"/></th>
@@ -55,29 +61,31 @@
         <tr class="evenLine">
             <td align="center">
             </td>
-            <td >
+            <td>
                 <c:if test="${jcr:isNodeType(child, 'jnt:folder')}">
-                    <img  height="24" width="24" border="0" style="cursor: pointer;" src="<c:url value='${url.currentModule}/images/icons/folder-files.png'/>"/>
+                    <img height="24" width="24" border="0" style="cursor: pointer;"
+                         src="<c:url value='${url.currentModule}/images/icons/folder-files.png'/>"/>
                 </c:if>
                 <c:if test="${!jcr:isNodeType(child, 'jnt:folder')}">
                     ${fn:escapeXml(child.fileContent.contentType)}
                 </c:if>
             </td>
-            <td>                <c:if test="${jcr:isNodeType(child, 'jnt:folder')}">
-                <a href="<c:url value='${url.base}${child.path}.html'/>"><c:if test="${!empty child.properties['jcr:title'].string}">
-        ${fn:escapeXml(child.properties['jcr:title'].string)}
-    </c:if>
-        <c:if test="${empty child.properties['jcr:title'].string}">
-        ${fn:escapeXml(child.name)}
-    </c:if></a>
+            <td><c:if test="${jcr:isNodeType(child, 'jnt:folder')}">
+                <a href="<c:url value='${url.base}${child.path}.html'/>"><c:if
+                        test="${!empty child.properties['jcr:title'].string}">
+                    ${fn:escapeXml(child.properties['jcr:title'].string)}
                 </c:if>
+                    <c:if test="${empty child.properties['jcr:title'].string}">
+                        ${fn:escapeXml(child.name)}
+                    </c:if></a>
+            </c:if>
                 <c:if test="${!jcr:isNodeType(child, 'jnt:folder')}">
                     <a href="${child.url}"><c:if test="${!empty child.properties['jcr:title'].string}">
-            ${fn:escapeXml(child.properties['jcr:title'].string)}
-        </c:if>
-            <c:if test="${empty child.properties['jcr:title'].string}">
-            ${fn:escapeXml(child.name)}
-        </c:if></a>
+                        ${fn:escapeXml(child.properties['jcr:title'].string)}
+                    </c:if>
+                        <c:if test="${empty child.properties['jcr:title'].string}">
+                            ${fn:escapeXml(child.name)}
+                        </c:if></a>
                 </c:if>
 
             </td>
@@ -90,7 +98,8 @@
             <td>
                 <fmt:formatDate value="${child.properties['j:lastPublished'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
             </td>
-            <td><%@include file="workflow.jspf" %>
+            <td>
+                <%@include file="workflow.jspf" %>
             </td>
             <td>
                 <c:if test="${child.locked}">
@@ -102,7 +111,9 @@
                     <%--
                             <a title="Editer" href="#"><img height="16" width="16" border="0" style="cursor: pointer;" title="Editer" alt="Editer" src="${url.currentModule}/images/icons/edit.png"></a>&nbsp;
                     --%>
-                <%@include file="edit.jspf" %>
+                <c:if test="${jcr:hasPermission(currentNode, 'jcr:modifyProperties_default')}">
+                    <%@include file="edit.jspf" %>
+                </c:if>
             </td>
         </tr>
     </c:forEach>
@@ -110,38 +121,39 @@
 </table>
 <div class="addcontent">
 
-            <c:if test="${not renderContext.ajaxRequest}">
-                <%-- include add nodes forms --%>
-                <c:set var="types" value="jnt:folder,jnt:file"/>
-                <h3 class="titleaddnewcontent">
-                    <img title="" alt="" src="<c:url value='${url.currentModule}/images/add.png'/>"/><fmt:message
-                        key="label.add.new.content"/>
-                </h3>
-                <script language="JavaScript">
-                    <c:forTokens items="${types}" delims="," var="type" varStatus="status">
-                    animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
-                    </c:forTokens>
-                    animatedcollapse.init();
-                </script>
-                <c:if test="${types != null}">
-                    <div class="listEditToolbar">
-                        <c:forTokens items="${types}" delims="," var="type" varStatus="status">
-                            <jcr:nodeType name="${type}" var="nodeType"/>
-                            <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
-                                    class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
-                            </button>
-                        </c:forTokens>
-                    </div>
-                    <c:url var="myUrl" value="${url.current}"/>
-                    <c:forTokens items="${types}" delims="," var="type" varStatus="status">
-                        <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
-                            <template:module node="${currentNode}" view="contribute.add">
-                                <template:param name="resourceNodeType" value="${type}"/>
-                                <template:param name="currentListURL" value="${myUrl}"/>
-                            </template:module>
-                        </div>
-                    </c:forTokens>
-                </c:if>
-            </c:if>
+    <c:if test="${not renderContext.ajaxRequest and jcr:hasPermission(currentNode, 'jcr:addChildNodes_default')}">
+        <%-- include add nodes forms --%>
+        <c:set var="types" value="jnt:folder,jnt:file"/>
+        <h3 class="titleaddnewcontent">
+            <img title="" alt="" src="<c:url value='${url.currentModule}/images/add.png'/>"/><fmt:message
+                key="label.add.new.content"/>
+        </h3>
+        <script language="JavaScript">
+            <c:forTokens items="${types}" delims="," var="type" varStatus="status">
+            animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}',
+                    'fade=1,speed=700,group=newContent');
+            </c:forTokens>
+            animatedcollapse.init();
+        </script>
+        <c:if test="${types != null}">
+            <div class="listEditToolbar">
+                <c:forTokens items="${types}" delims="," var="type" varStatus="status">
+                    <jcr:nodeType name="${type}" var="nodeType"/>
+                    <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
+                            class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
+                    </button>
+                </c:forTokens>
+            </div>
+            <c:url var="myUrl" value="${url.current}"/>
+            <c:forTokens items="${types}" delims="," var="type" varStatus="status">
+                <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
+                    <template:module node="${currentNode}" view="contribute.add">
+                        <template:param name="resourceNodeType" value="${type}"/>
+                        <template:param name="currentListURL" value="${myUrl}"/>
+                    </template:module>
+                </div>
+            </c:forTokens>
+        </c:if>
+    </c:if>
 
 </div>

@@ -3,7 +3,7 @@
               xmlns:jcr="http://www.jcp.org/jcr/1.0"
               xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
               xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
-              jcr:primaryType="jnt:virtualsite" j:installedModules="templates-web" j:siteType="templatesSet">
+              jcr:primaryType="nt:virtualsite">
 
     <home j:displayInMenu="primary" j:isHomePage="true"
           jcr:primaryType="jnt:page" j:templateNode="/templatesSet/templates/base/home">

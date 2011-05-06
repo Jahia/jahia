@@ -3,8 +3,7 @@
               xmlns:jcr="http://www.jcp.org/jcr/1.0"
               xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
               xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
-              jcr:primaryType="jnt:virtualsite" j:installedModules="templates-web"
-              j:siteType="profileModule" j:dependencies="templates-system">
+              jcr:primaryType="nt:virtualsite">
     <portlets jcr:primaryType="jnt:portletFolder"/>
     <files jcr:primaryType="jnt:folder"/>
     <contents jcr:primaryType="jnt:contentFolder">
@@ -27,7 +26,7 @@
         </files>
         <contents jcr:primaryType="jnt:contentFolder"/>
         <user-SITEKEY_PLACEHOLDER j:applyOn="jnt:user" j:defaultTemplate="false" j:hiddenTemplate="false"
-                                  jcr:primaryType="jnt:contentTemplate" j:priority="10">
+                                  jcr:primaryType="jnt:contentTemplate" j:priority="10" j:dependencies="templates-system">
             <pagecontent jcr:primaryType="jnt:contentList">
             </pagecontent>
         </user-SITEKEY_PLACEHOLDER>

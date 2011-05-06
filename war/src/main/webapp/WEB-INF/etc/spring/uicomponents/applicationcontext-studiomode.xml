@@ -39,6 +39,7 @@
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTemplatesSetActionItem">
                                                 <property name="siteType" value="profileModule"/>
+                                                <property name="dependencies" value="templates-system"/>
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newProfileModule"/>

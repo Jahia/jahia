@@ -3,11 +3,11 @@
               xmlns:jcr="http://www.jcp.org/jcr/1.0"
               xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
               xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
-              jcr:primaryType="jnt:virtualsite" j:installedModules="templates-web" j:siteType="module">
+              jcr:primaryType="nt:virtualsite">
     <portlets jcr:primaryType="jnt:portletFolder"/>
     <files jcr:primaryType="jnt:folder"/>
     <contents jcr:primaryType="jnt:contentFolder"/>
-    <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base/user-base">
+    <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base">
         <files jcr:primaryType="jnt:folder">
             <themes jcr:primaryType="jnt:folder">
                 <default jcr:primaryType="jnt:folder">

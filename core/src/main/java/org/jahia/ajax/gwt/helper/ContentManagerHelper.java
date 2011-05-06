@@ -930,7 +930,7 @@ public class ContentManagerHelper {
         }
     }
 
-    public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public GWTJahiaNode createTemplateSet(String key, String baseSet, String siteType, String dependencies, JCRSessionWrapper session) throws GWTJahiaServiceException {
         String shortName = JCRContentUtils.generateNodeName(key, 50);
         if (baseSet == null) {
 
@@ -942,7 +942,9 @@ public class ContentManagerHelper {
                 templateSet.setProperty("j:siteType", siteType);
                 templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
                 templateSet.setProperty("j:title",key);
-
+                if (dependencies != null) {
+                    templateSet.setProperty("j:dependencies","".equals(dependencies) ? new String[0] : dependencies.split(" "));
+                }
                 String skeletons = MODULE_SKELETONS.replace("${type}", siteType);
                 HashMap<String, String> replacements = new HashMap<String, String>();
                 replacements.put("SITEKEY_PLACEHOLDER", shortName);

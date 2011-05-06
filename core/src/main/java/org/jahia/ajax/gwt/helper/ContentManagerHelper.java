@@ -35,6 +35,8 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +66,7 @@ import org.quartz.JobDetail;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
+import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
 import java.io.*;
 import java.util.*;
@@ -470,6 +473,21 @@ public class ContentManagerHelper {
                 ref.setProperty("j:node", node.getUUID());
             }
         } else {
+            JCRSiteNode sourceSite = node.getResolveSite();
+            JCRSiteNode targetSite = targetNode.getResolveSite();
+            if (!sourceSite.equals(targetSite)) {
+                JCRSessionWrapper session = node.getSession();
+                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where isdescendantnode(t, ['"+sourceSite.getPath() + "/templates'])", Query.JCR_SQL2);
+                NodeIterator ni = q.execute().getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                    try {
+                        session.getUuidMapping().put(next.getIdentifier(), session.getNode(targetSite.getPath() + StringUtils.substringAfter(next.getPath(), sourceSite.getPath())).getIdentifier());
+                    } catch (RepositoryException e) {
+                        logger.debug("No matching template for copy",e);
+                    }
+                }
+            }
             node.copy(targetNode, name, true);
         }
         return targetNode.getNode(name);

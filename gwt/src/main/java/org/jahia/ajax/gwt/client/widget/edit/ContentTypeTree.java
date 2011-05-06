@@ -151,7 +151,11 @@ public class ContentTypeTree extends LayoutContainer {
         return treeGrid;
     }
 
-	public StoreFilterField<GWTJahiaNodeType> getFilter() {
+    public TreeStore<GWTJahiaNodeType> getStore() {
+        return store;
+    }
+
+    public StoreFilterField<GWTJahiaNodeType> getFilter() {
     	return filter;
     }
 

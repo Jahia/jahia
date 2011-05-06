@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -67,17 +68,8 @@ class CreateContentTabItem extends SidePanelTabItem {
 
         contentTypeTree = new ContentTypeTree(null);
 
-        JahiaContentDefinitionService.App.getInstance()
-                .getSubNodetypes(baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
-                    public void onApplicationFailure(Throwable caught) {
-                        MessageBox.alert(Messages.get("label.error", "Error"),
-                                "Unable to load content definitions. Cause: " + caught.getLocalizedMessage(), null);
-                    }
+        refresh(Linker.REFRESH_DEFINITIONS);
 
-                    public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
-                        contentTypeTree.filldataStore(result);
-                    }
-                });
         tab.add(contentTypeTree);
         gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
         return tab;
@@ -96,5 +88,24 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     public void setBaseType(String baseType) {
         this.baseType = baseType;
+    }
+
+    @Override
+    public void refresh(int flag) {
+        if ((flag & Linker.REFRESH_DEFINITIONS) != 0) {
+            contentTypeTree.getStore().removeAll();
+
+            JahiaContentDefinitionService.App.getInstance()
+                    .getSubNodetypes(baseType != null ? Arrays.asList(baseType.split(" ")) : null, true, displayStudioElement, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+                        public void onApplicationFailure(Throwable caught) {
+                            MessageBox.alert(Messages.get("label.error", "Error"),
+                                    "Unable to load content definitions. Cause: " + caught.getLocalizedMessage(), null);
+                        }
+
+                        public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
+                            contentTypeTree.filldataStore(result);
+                        }
+                    });
+        }
     }
 }

@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
@@ -100,7 +101,7 @@ public class SidePanel extends ContentPanel {
 
         head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                refresh(EditLinker.REFRESH_ALL);
+                refresh(EditLinker.REFRESH_ALL + Linker.REFRESH_DEFINITIONS);
                 DeployTemplatesActionItem.refreshAllMenus(editLinker);
             }
         }));

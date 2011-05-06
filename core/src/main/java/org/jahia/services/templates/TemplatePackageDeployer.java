@@ -166,6 +166,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                                     || timestamps.get(file.getPath()) != file.lastModified()) {
                                 timestamps.put(file.getPath(), file.lastModified());
                                 logger.debug("Detected modified resource {}", file.getPath());
+                                remaining.add(deployedFolder);
                                 reloadSpringContext = true;
                             }
                         }
@@ -180,6 +181,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                                     || timestamps.get(file.getPath()) != file.lastModified()) {
                                 timestamps.put(file.getPath(), file.lastModified());
                                 logger.debug("Detected modified resource {}", file.getPath());
+                                remaining.add(deployedFolder);
                                 reloadSpringContext = true;
                             }
                         }

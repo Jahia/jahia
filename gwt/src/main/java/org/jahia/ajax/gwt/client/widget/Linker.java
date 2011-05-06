@@ -52,6 +52,8 @@ public interface Linker {
     public final static int REFRESH_WORKFLOW = 4;
     public final static int REFRESH_FOLDERS = 8;
 
+    public final static int REFRESH_DEFINITIONS = 256;
+
     public void loaded();
 
     public void loading(String resource);

@@ -766,11 +766,15 @@ public class NavigationHelper {
         n = new GWTJahiaNode();
         n.setUUID(uuid);
         n.setName(JCRContentUtils.unescapeLocalNodeName(node.getName()));
-        if (node.getPath().equals("/")) {
-            n.setDisplayName("root");
-            n.setName("root");
-        } else {
-            n.setDisplayName(WordUtils.abbreviate(JCRContentUtils.unescapeLocalNodeName(node.getDisplayableName()),70,90,"..."));
+        try {
+            if (node.getPath().equals("/")) {
+                n.setDisplayName("root");
+                n.setName("root");
+            } else {
+                n.setDisplayName(WordUtils.abbreviate(JCRContentUtils.unescapeLocalNodeName(node.getDisplayableName()),70,90,"..."));
+            }
+        } catch (Exception e) {
+            logger.error("Error when getting name", e);
         }
         n.setNormalizedName(removeDiacritics(n.getName()));
         

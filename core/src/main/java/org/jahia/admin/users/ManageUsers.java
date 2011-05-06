@@ -548,8 +548,9 @@ public class ManageUsers extends AbstractAdministrationModule {
         if ("update".equals(request.getParameter("actionType").trim())) {
             return false;
         }
-        String email = request.getParameter("manage-user-property#j:email").trim();
-        if(!"".equals(email) && !email.matches("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")){
+        String email = request.getParameter("manage-user-property#j:email");
+        email = email != null ? email.trim() : null;
+        if(StringUtils.isNotEmpty(email) && !email.matches("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")){
             userMessage = getMessage("org.jahia.admin.userMessage.emailFormatIsIncorrect.label");
             return false;
         }

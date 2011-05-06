@@ -386,9 +386,12 @@ public class EditContentEngine extends AbstractContentEngine {
                 orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
                 removedTypes, new BaseAsyncCallback<Object>() {
                     public void onApplicationFailure(Throwable throwable) {
-                        com.google.gwt.user.client.Window.alert(Messages.get(
-                                "saved_prop_failed", "Properties save failed\n\n")
-                                + throwable.getLocalizedMessage());
+                        String message = throwable.getMessage();
+                        if (message.contains("Invalid link")) {
+                            message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
+                        }
+                        com.google.gwt.user.client.Window.alert(Messages.get("label.error.invalidlink", "Properties save failed") + "\n\n"
+                                + message);
                         Log.error("failed", throwable);
                         unmask();
                         ok.setEnabled(true);

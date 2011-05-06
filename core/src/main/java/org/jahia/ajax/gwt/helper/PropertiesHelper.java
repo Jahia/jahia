@@ -245,8 +245,7 @@ public class PropertiesHelper {
                 setProperties(objectNode, newProps);
                 objectNode.saveSession();
             } catch (RepositoryException e) {
-                logger.error("error", e);
-                throw new GWTJahiaServiceException("Could not save file " + objectNode.getName());
+                throw new GWTJahiaServiceException("Could not save node " + objectNode.getName() + ", " + e.getMessage());
             }
         }
     }

@@ -421,7 +421,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
                         value = DOC_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, dmsContext);
                     }
                 } catch (PathNotFoundException e) {
-                    throw new ConstraintViolationException("Invalid link", e);
+                    throw new ConstraintViolationException("Invalid link : " + path, e);
                 }
                 String id = reference.getIdentifier();
                 if (!newRefs.containsKey(id)) {

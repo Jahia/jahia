@@ -295,7 +295,12 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
         final AsyncCallback<GWTJahiaNode> callback = new BaseAsyncCallback<GWTJahiaNode>() {
             public void onApplicationFailure(Throwable throwable) {
-                Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n" + throwable.getLocalizedMessage());
+                String message = throwable.getMessage();
+                if (message.contains("Invalid link")) {
+                    message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
+                }
+                com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
+                        + message);
                 Log.error("failed", throwable);
                 unmask();
                 setButtonsEnabled(true);

@@ -45,7 +45,7 @@ import javax.jcr.Node;
  * @author toto
  */
 public class JCRReferenceNode extends JCRNodeDecorator {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFrozenNode.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRReferenceNode.class);
 
     public JCRReferenceNode(JCRNodeWrapper node) {
         super(node);

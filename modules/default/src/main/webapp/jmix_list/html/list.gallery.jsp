@@ -12,23 +12,28 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.js,jquery.fancybox.js,jquery.fancybox.load.js"/>
-<template:addResources type="css" resources="jquery.fancybox.css"/>
-
+<c:if test="${not renderContext.editMode}">
+    <template:addResources type="javascript" resources="jquery.js,jquery.fancybox.js,jquery.fancybox.load.js"/>
+    <template:addResources type="css" resources="jquery.fancybox.css"/>
+</c:if>
 <template:include view="hidden.header"/>
 <p>
-    <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status">
-        <jcr:node var="child" uuid="${child.properties['j:node'].string}"/>
-        <c:if test="${jcr:isNodeType(child, 'jmix:thumbnail')}">
-            <%--<a class="zoom" rel="group" title="${child.properties['j:node'].node.name}" href="#item${status.count}">--%>
-
-            <a class="zoom" rel="group" title="${child.name}" href="${child.url}">
-                <img src="${url.context}/repository/default${child.path}/thumbnail" alt="">
-            </a>
-
-            <%--<div style="display:none" id="item${status.count}">--%>
-            <%--<template:module node="${child}" />--%>
-            <%--</div>--%>
+    <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status">
+        <c:if test="${jcr:isNodeType(subchild, 'jmix:nodeReference')}">
+            <jcr:node var="referedNode" uuid="${subchild.properties['j:node'].string}"/>
+            <c:if test="${jcr:isNodeType(referedNode, 'jmix:thumbnail')}">
+                <c:choose>
+                    <c:when test="${not renderContext.editMode}">
+                        <a class="zoom" rel="group" title="${referedNode.name}" href="${referedNode.url}?r=1">
+                            <img src="${referedNode.thumbnailUrls['thumbnail']}" alt=""/>
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <template:module node="${subchild}" view="${moduleMap.subNodesView}"
+                                         editable="${moduleMap.editable}"/>
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
         </c:if>
     </c:forEach>
 </p>

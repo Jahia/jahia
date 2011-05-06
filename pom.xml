@@ -361,30 +361,6 @@
             </build>
         </profile>
         <profile>
-            <id>do-attach-sources</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>${source.plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>do-attach-javadocs</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -550,6 +526,20 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${source.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
                 <version>${buildnumber.plugin.version}</version>
@@ -583,7 +573,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>installer,windows-installer,qa-build,test,do-attach-sources,do-attach-javadocs</releaseProfiles>
+                    <releaseProfiles>installer,windows-installer,qa-build,test,do-attach-javadocs</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

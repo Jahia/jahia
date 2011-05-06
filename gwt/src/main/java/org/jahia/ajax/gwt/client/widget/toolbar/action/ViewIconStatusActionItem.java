@@ -34,6 +34,10 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.DOM;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 /**
@@ -44,13 +48,35 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
  * 
  */
 public class ViewIconStatusActionItem extends BaseActionItem {
+    private String type;
+    private boolean checked;
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
 
     @Override public MenuItem createMenuItem() {
         return new CheckMenuItem();
     }
 
     @Override public void onComponentSelection() {
-        ((EditLinker)linker).getMainModule().setInfoLayer(getGwtToolbarItem().getProperties().get("type").getValue(), ((CheckMenuItem)getMenuItem()).isChecked());
+        ((EditLinker)linker).getMainModule().setInfoLayer(type, ((CheckMenuItem)getMenuItem()).isChecked());
     }
 
+    @Override
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
+        super.init(gwtToolbarItem, linker);
+        if (checked) {
+            ((CheckMenuItem)getMenuItem()).setChecked(true);
+            Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                public void execute() {
+                    ((EditLinker) linker).getMainModule().setInfoLayer(type, true);
+                }
+            });
+        }
+    }
 }

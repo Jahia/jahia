@@ -80,35 +80,20 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
 
                         menu.removeAll();
                         if (pages != null) {
+                            if (pages.size() > 1)
                             for (final GWTJahiaNode page : pages) {
                                 MenuItem item = new MenuItem(page.getDisplayName());
-                                item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                                    @Override
-                                    public void componentSelected(MenuEvent ce) {
-                                        LinkerSelectionContext lh = linker.getSelectionContext();
-                                        GWTJahiaNode target = lh.getSingleSelection();
-                                        if (target != null) {
-                                            JahiaContentManagementService.App.getInstance().pasteReferences(
-                                                    Arrays.asList(target.getPath()), page.getPath()+"/"+targetName.getValue(), null,
-                                                    new BaseAsyncCallback() {
-                                                        public void onApplicationFailure(Throwable caught) {
-                                                            Info.display("Portal Components",
-                                                                    "Error while making your component available for users in their portal page.");
-                                                        }
-
-                                                        public void onSuccess(Object result) {
-                                                            Info.display("Portal Components",
-                                                                    "Your components is now available for users in their portal page.");
-                                                        }
-                                                    });
-                                        }
-                                    }
-                                });
+                                addSelectionListener(page, item, linker);
                                 menu.add(item);
+                            } else if (pages.size() == 1) {
+                                GWTJahiaNode page = pages.get(0);
+                                addSelectionListener(page,getContextMenuItem(),linker);
                             }
                         }
-                        if(menu.getItemCount()>0) {
-                            setSubMenu(menu);
+                        if(pages != null && pages.size() > 0) {
+                            if (menu.getItemCount() > 0) {
+                                setSubMenu(menu);
+                            }
                             setEnabled(true);
                             menuItemsCount = true;
                         } else {
@@ -121,6 +106,31 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
 
                     }
                 });
+    }
+
+    private void addSelectionListener(final GWTJahiaNode page, MenuItem item, final Linker linker) {
+        item.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                LinkerSelectionContext lh = linker.getSelectionContext();
+                GWTJahiaNode target = lh.getSingleSelection();
+                if (target != null) {
+                    JahiaContentManagementService.App.getInstance().pasteReferences(
+                            Arrays.asList(target.getPath()), page.getPath()+"/"+targetName.getValue(), null,
+                            new BaseAsyncCallback() {
+                                public void onApplicationFailure(Throwable caught) {
+                                    Info.display("Portal Components",
+                                            "Error while making your component available for users in their portal page.");
+                                }
+
+                                public void onSuccess(Object result) {
+                                    Info.display("Portal Components",
+                                            "Your components is now available for users in their portal page.");
+                                }
+                            });
+                }
+            }
+        });
     }
 
     public void handleNewLinkerSelection() {

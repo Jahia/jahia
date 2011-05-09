@@ -1092,15 +1092,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void unpublish(List<String> uuids) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();
         JCRSessionWrapper session = retrieveCurrentSession();
-        for (String s : uuids) {
-            try {
-                JCRNodeWrapper node = session.getNodeByIdentifier(s);
-                publication.unpublish(node.getIdentifier(), Collections.singleton(session.getLocale().toString()),
-                        session.getUser());
-            } catch (RepositoryException e) {
-                throw new GWTJahiaServiceException(e.getMessage());
-            }
-        }
+        publication.unpublish(uuids, Collections.singleton(session.getLocale().toString()),
+                session.getUser());
         logger.debug("-->" + (System.currentTimeMillis() - l));
     }
 

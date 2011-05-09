@@ -298,8 +298,8 @@ public class JCRPublicationService extends JahiaService {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Publishing node {}", jcrNodeWrapper.getPath());
                 }
-                if ((jcrNodeWrapper.isNodeType("jmix:publication") || jcrNodeWrapper.isNodeType(JAHIANT_TRANSLATION)) && (!jcrNodeWrapper.hasProperty("j:published") ||
-                        !jcrNodeWrapper.getProperty("j:published").getBoolean())) {
+                if (!jcrNodeWrapper.hasProperty("j:published") ||
+                        !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
                     if (!sourceVersionManager.isCheckedOut(jcrNodeWrapper.getPath())) {
                         sourceVersionManager.checkout(jcrNodeWrapper.getPath());
                     }
@@ -804,11 +804,11 @@ public class JCRPublicationService extends JahiaService {
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
-     * @param uuid      uuid of the node to unpublish
+     * @param uuids      uuids of the node to unpublish
      * @param languages
      * @throws javax.jcr.RepositoryException
      */
-    public void unpublish(final String uuid, final Set<String> languages) throws RepositoryException {
+    public void unpublish(final List<String> uuids, final Set<String> languages) throws RepositoryException {
         final String username;
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
@@ -818,23 +818,31 @@ public class JCRPublicationService extends JahiaService {
         }
         JCRTemplate.getInstance().doExecute(true, username, EDIT_WORKSPACE, null, new JCRCallback<Object>() {
             public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-
-                JCRNodeWrapper node = sourceSession.getNodeByIdentifier(uuid);
-                VersionManager vm = sourceSession.getWorkspace().getVersionManager();
-                if (!vm.isCheckedOut(node.getPath())) {
-                    vm.checkout(node.getPath());
+                boolean first = true;
+                for (String uuid : uuids) {
+                    JCRNodeWrapper node = sourceSession.getNodeByIdentifier(uuid);
+                    VersionManager vm = sourceSession.getWorkspace().getVersionManager();
+                    if (!vm.isCheckedOut(node.getPath())) {
+                        vm.checkout(node.getPath());
+                    }
+                    if (first && !node.isNodeType("jmix:publication")) {
+                        node.addMixin("jmix:publication");
+                        first = false;
+                    }
+                    unpublish(node, languages);
+                    sourceSession.save();
                 }
-                unpublish(node, languages);
-                sourceSession.save();
                 return null;
             }
         });
 
         JCRTemplate.getInstance().doExecute(true, username, LIVE_WORKSPACE, new JCRCallback<Object>() {
             public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
-                JCRNodeWrapper destNode = destinationSession.getNodeByIdentifier(uuid);
-                unpublish(destNode, languages);
-                destinationSession.save();
+                for (String uuid : uuids) {
+                    JCRNodeWrapper destNode = destinationSession.getNodeByIdentifier(uuid);
+                    unpublish(destNode, languages);
+                    destinationSession.save();
+                }
                 return null;
             }
         });
@@ -842,13 +850,7 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void unpublish(JCRNodeWrapper node, Set<String> languages) throws RepositoryException {
-        if (!node.isCheckedOut()) {
-            node.checkout();
-        }
         node.setProperty("j:published", false);
-        if (!node.isNodeType("jmix:publication")) {
-            node.addMixin("jmix:publication");
-        }
         NodeIterator ni = node.getNodes("j:translation*");
         while (ni.hasNext()) {
             JCRNodeWrapper i18n = (JCRNodeWrapper) ni.next();

@@ -171,7 +171,7 @@ public class PublicationHelper {
                                                                  JCRSessionWrapper currentUserSession,
                                                                  boolean allSubTree, boolean checkForUnpublication) throws GWTJahiaServiceException {
         try {
-            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE,
+            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, !checkForUnpublication, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE,
                     checkForUnpublication);
             LinkedHashMap<String, GWTJahiaPublicationInfo> res = new LinkedHashMap();
             for (String language : languages) {
@@ -409,15 +409,15 @@ public class PublicationHelper {
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
-     * @param uuid      path of the node to unpublish
+     * @param uuids     uuids of the nodes to unpublish
      * @param languages Set of languages to unpublish if null unpublish all languages
      * @param user      the user for obtaining the jcr session
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public void unpublish(String uuid, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
+    public void unpublish(List<String> uuids, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
         try {
-            publicationService.unpublish(uuid, languages);
+            publicationService.unpublish(uuids, languages);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());

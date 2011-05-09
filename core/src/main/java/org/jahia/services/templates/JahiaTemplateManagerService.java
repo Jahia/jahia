@@ -459,50 +459,54 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         JCRTemplate.getInstance()
                 .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        HashMap<String, List<String>> references = new HashMap<String, List<String>>();
-
-                        JCRNodeWrapper originalNode = session.getNode(templatesPath);
-                        JCRNodeWrapper destinationNode = session.getNode(sitePath);
-
-                        String moduleName = null;
-//                        if (originalNode.hasProperty("j:siteType") && !originalNode.getProperty("j:siteType").getString().equals("templatesSet")) {
-                            moduleName = originalNode.getName();
-//                        }
-                        List<String> newNodes = new ArrayList<String>();
-                        synchro(originalNode, destinationNode, session, moduleName, references, newNodes);
-
-                        ReferencesHelper.resolveCrossReferences(session, references);
-                        session.save();
-
-                        synchronized (this) {
-                        for (String newNode : newNodes) {
-                            JCRPublicationService.getInstance().publishByMainId(newNode, "default", "live", null, true, null);
-                        }
-
-                        JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getIdentifier(), "default", "live", null, true, null);
-                        }
-
-                        JCRPropertyWrapper installedModules = destinationNode.getProperty("j:installedModules");
-                        Value[] values = installedModules.getValues();
-                        for (Value value : values) {
-                            if (value.getString().equals(originalNode.getName())) {
-                                return null;
-                            }
-                        }
-                        destinationNode.checkout();
-                        installedModules.addValue(originalNode.getName());
-                        session.save();
-                        try {
-                            List<String> modules = siteService.getSiteByKey(destinationNode.getName()).getInstalledModules();
-                            if (!modules.contains(originalNode.getName())) {
-                                modules.add(originalNode.getName());
-                            }
-                        } catch (JahiaException e) {
-                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                        }
+                        deployTemplates(templatesPath, sitePath, session);
                         return null;
                     }
                 });
+    }
+
+    public void deployTemplates(final String templatesPath, final String sitePath, JCRSessionWrapper session) throws RepositoryException {
+        HashMap<String, List<String>> references = new HashMap<String, List<String>>();
+
+        JCRNodeWrapper originalNode = session.getNode(templatesPath);
+        JCRNodeWrapper destinationNode = session.getNode(sitePath);
+
+        String moduleName = null;
+//                        if (originalNode.hasProperty("j:siteType") && !originalNode.getProperty("j:siteType").getString().equals("templatesSet")) {
+            moduleName = originalNode.getName();
+//                        }
+        List<String> newNodes = new ArrayList<String>();
+        synchro(originalNode, destinationNode, session, moduleName, references, newNodes);
+
+        ReferencesHelper.resolveCrossReferences(session, references);
+        session.save();
+
+        synchronized (this) {
+        for (String newNode : newNodes) {
+            JCRPublicationService.getInstance().publishByMainId(newNode, "default", "live", null, true, null);
+        }
+
+        JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getIdentifier(), "default", "live", null, true, null);
+        }
+
+        JCRPropertyWrapper installedModules = destinationNode.getProperty("j:installedModules");
+        Value[] values = installedModules.getValues();
+        for (Value value : values) {
+            if (value.getString().equals(originalNode.getName())) {
+                return;
+            }
+        }
+        destinationNode.checkout();
+        installedModules.addValue(originalNode.getName());
+        session.save();
+        try {
+            List<String> modules = siteService.getSiteByKey(destinationNode.getName()).getInstalledModules();
+            if (!modules.contains(originalNode.getName())) {
+                modules.add(originalNode.getName());
+            }
+        } catch (JahiaException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,

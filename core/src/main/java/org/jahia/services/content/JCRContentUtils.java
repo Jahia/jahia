@@ -657,8 +657,8 @@ public final class JCRContentUtils {
         return matchingParent;
     }
 
-    public static Node getPathFolder(Node root, String name, String options, String nodeType) throws RepositoryException {
-        Node result = root;
+    public static JCRNodeWrapper getPathFolder(JCRNodeWrapper root, String name, String options, String nodeType) throws RepositoryException {
+        JCRNodeWrapper result = root;
         if (options.contains("initials")) {
             String s = "" + Character.toUpperCase(name.charAt(0));
             if (!result.hasNode(s)) {

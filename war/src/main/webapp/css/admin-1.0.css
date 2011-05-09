@@ -81,7 +81,7 @@ select[multiple], select.principalList {
     left:0;
     height:27px;
     width:100%;
-    background: #063996 url(images/andromeda/bg-body_login.png) no-repeat top right;
+    background: #063996 url(images/andromeda/admin-bg.png) no-repeat top right;
 }
 /* Container structure */
 #mainAdminLayout {

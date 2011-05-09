@@ -206,9 +206,9 @@ public class JCRPublicationService extends JahiaService {
         LinkedHashSet<String> allIds = new LinkedHashSet<String>();
 
         for (PublicationInfo publicationInfo : publicationInfos) {
-            allIds.addAll(publicationInfo.getAllUuids());
+            allIds.addAll(publicationInfo.getAllUuids(false));
             for (PublicationInfo subtree : publicationInfo.getAllReferences()) {
-                allIds.addAll(subtree.getAllUuids());
+                allIds.addAll(subtree.getAllUuids(false));
             }
         }
         publish(new ArrayList<String>(allIds), sourceWorkspace, destinationWorkspace, comments);

@@ -13,7 +13,7 @@
 </head>
 <body class="login">
     <div id="adminLogin">
-    <h2 class="loginlogo_beta"></h2>
+    <h2 class="loginlogo"></h2>
         <br class="clearFloat" />
         <h3 class="loginIcon"><fmt:message key="label.error.maintenance.title"/></h3>
         <p><fmt:message key="label.error.maintenance.description"/></p>

@@ -20,7 +20,7 @@
 </head>
 <body onload="document.loginForm.username.focus()" class="login">
     <div id="adminLogin">
-    <h2 class="loginlogo_beta"></h2>
+    <h2 class="loginlogo"></h2>
         <ui:loginArea>
             <h3 class="loginIcon"><fmt:message key="label.login"/></h3>
             <br class="clearFloat" />

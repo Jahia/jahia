@@ -16,7 +16,7 @@
 </head>
 <body class="login" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
     <div id="adminLogin">
-    <h2 class="loginlogo_beta"></h2>
+    <h2 class="loginlogo"></h2>
             <br class="clearFloat" />
             <h3 class="loginIcon"><fmt:message key="label.error.400.title"/></h3>
         	<p><fmt:message key="label.error.400.description"/><br/><c:out value="${not empty requestScope['org.jahia.exception'] ? requestScope['org.jahia.exception'].message : requestScope['javax.servlet.error.message']}"/></p>

@@ -19,7 +19,7 @@
 </head>
 <body class="login" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
     <div id="adminLogin">
-    <h2 class="loginlogo_beta"></h2>
+    <h2 class="loginlogo"></h2>
             <br class="clearFloat" />
             <h3 class="loginIcon"><fmt:message key="label.error"/></h3>
         <p><fmt:message key="label.error.500.description"/></p>

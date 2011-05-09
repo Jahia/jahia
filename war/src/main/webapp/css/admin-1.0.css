@@ -35,7 +35,7 @@ body {
     margin: 20px;
 }
 body.login, #bodyLogin {
-    background:url(images/andromeda/bg-body_beta.jpg) no-repeat 50% 50%;
+    background:url(images/andromeda/bg-body_login.jpg) no-repeat 50% 50%;
     background-color: #000;
     margin:0 auto;
     text-align:center
@@ -81,7 +81,7 @@ select[multiple], select.principalList {
     left:0;
     height:27px;
     width:100%;
-    background: #063996 url(images/andromeda/admin-bg.png) no-repeat top right;
+    background: #063996 url(images/andromeda/bg-body_login.png) no-repeat top right;
 }
 /* Container structure */
 #mainAdminLayout {
@@ -99,34 +99,12 @@ select[multiple], select.principalList {
 #mainLoginLayout {
 
 }
-h2.loginlogo_beta{
+h2.loginlogo{
     width:300px;
     height:80px;
     display:block;
-    background:url(images/andromeda/logo_jahia_beta.png) no-repeat top left ;
+    background:url(images/andromeda/logo_jahia_login.png) no-repeat top left ;
 	margin-bottom:10px;
-}
-h2.loginlogo{
-    width:340px;
-    height:145px;
-    display:block;
-    background:url(images/andromeda/logo_jahia.png) no-repeat 50% 50% ;
-    position:absolute;
-    top:50px;
-    z-index:100;
-    left:50%;
-    margin-left:-170px;
-}
-h2.loginlogo_community{
-    width:340px;
-    height:145px;
-    display:block;
-    background:url(images/andromeda/logo_jahia_community.png) no-repeat 50% 50% ;
-    position:absolute;
-    top:70px;
-    z-index:101;
-    left:50%;
-    margin-left:-170px;
 }
 #adminLogin {
     clear:both;

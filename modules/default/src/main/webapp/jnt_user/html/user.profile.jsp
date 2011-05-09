@@ -23,7 +23,7 @@
             <img class='user-profile-img' src="<c:url value='${url.currentModule}/images/usersmall.png'/>" alt="" border="0" width="32"
                  height="32"/>
         </c:if>
-          <h5>${fn:escapeXml(empty firstname and empty lastname?currentNode.name:firstname)}&nbsp;${fn:escapeXml(lastname)}</h5>
+          <h5>${fn:escapeXml(empty firstname and empty lastname ? currentNode.name : firstname)}&nbsp;${fn:escapeXml(lastname)}</h5>
           <p>${fn:escapeXml(function)}</p>
           <div class="clear"></div>
 </div>

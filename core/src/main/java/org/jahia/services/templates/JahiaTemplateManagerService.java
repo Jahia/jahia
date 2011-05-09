@@ -465,9 +465,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         JCRNodeWrapper destinationNode = session.getNode(sitePath);
 
                         String moduleName = null;
-                        if (originalNode.hasProperty("j:siteType") && !originalNode.getProperty("j:siteType").getString().equals("templatesSet")) {
+//                        if (originalNode.hasProperty("j:siteType") && !originalNode.getProperty("j:siteType").getString().equals("templatesSet")) {
                             moduleName = originalNode.getName();
-                        }
+//                        }
                         List<String> newNodes = new ArrayList<String>();
                         synchro(originalNode, destinationNode, session, moduleName, references, newNodes);
 
@@ -554,9 +554,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         List<String> names = new ArrayList<String>();
 
         if (doUpdate) {
-            if (source.hasProperty("jcr:language") && (!destinationNode.hasProperty("jcr:language") ||
-                    (!destinationNode.getProperty("jcr:language").getString().equals(source.getProperty("jcr:language").getString())))) {
-                destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
+            if (source.hasProperty(Constants.JCR_LANGUAGE) && (!destinationNode.hasProperty(Constants.JCR_LANGUAGE) ||
+                    (!destinationNode.getProperty(Constants.JCR_LANGUAGE).getString().equals(source.getProperty(Constants.JCR_LANGUAGE).getString())))) {
+                destinationNode.setProperty(Constants.JCR_LANGUAGE, source.getProperty(Constants.JCR_LANGUAGE).getString());
             }
 
             PropertyIterator props = source.getProperties();
@@ -597,7 +597,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             while (pi.hasNext()) {
                 JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
                 if (!oldChild.getDefinition().isProtected()) {
-                    if (!names.contains(oldChild.getName()) && !oldChild.getName().equals("j:published") && !oldChild.getName().equals("j:moduleTemplate")) {
+                    if (!names.contains(oldChild.getName()) && !oldChild.getName().equals("j:published") && !oldChild.getName().equals(Constants.JAHIA_MODULE_TEMPLATE) && !oldChild.getName().equals("j:sourceTemplate")) {
                         oldChild.remove();
                     }
                 }
@@ -637,19 +637,32 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                 boolean currentModule = false;
                 boolean newNode = false;
-                JCRNodeWrapper node;
+                JCRNodeWrapper node = null;
                 if (currentDestination.hasNode(child.getName())) {
                     node = currentDestination.getNode(child.getName());
-                    currentModule = (!node.hasProperty("j:moduleTemplate") && moduleName == null) || (node.hasProperty("j:moduleTemplate") && node.getProperty("j:moduleTemplate").getString().equals(moduleName));
+                    currentModule = (!node.hasProperty(Constants.JAHIA_MODULE_TEMPLATE) && moduleName == null) || (node.hasProperty(Constants.JAHIA_MODULE_TEMPLATE) && node.getProperty(Constants.JAHIA_MODULE_TEMPLATE).getString().equals(moduleName));
                 } else {
-                    node = currentDestination.addNode(child.getName(), child.getPrimaryNodeTypeName());
-                    newNode = true;
-                    if (!inTemplatesFolder) {
-                        newNodes.add(node.getIdentifier());
+                    // Handle template move
+                    PropertyIterator ref = child.getWeakReferences(Constants.JAHIA_SOURCE_TEMPLATE);
+                    while (ref.hasNext()) {
+                        JCRPropertyWrapper next = (JCRPropertyWrapper) ref.next();
+                        if (next.getPath().startsWith(destinationNode.getAncestor(3).getPath())) {
+                            session.move(next.getParent().getPath(), currentDestination.getPath() + "/" + child.getName());
+                            node = currentDestination.getNode(child.getName());
+                            break;
+                        }
                     }
-                    if (moduleName != null && node.isNodeType("jnt:template")) {
-                        node.setProperty("j:moduleTemplate", moduleName);
-                        currentModule = true;
+                    if (node == null) {
+                        node = currentDestination.addNode(child.getName(), child.getPrimaryNodeTypeName());
+                        newNode = true;
+                        if (!inTemplatesFolder) {
+                            newNodes.add(node.getIdentifier());
+                        }
+                        if (moduleName != null && node.isNodeType("jnt:template")) {
+                            node.setProperty(Constants.JAHIA_MODULE_TEMPLATE, moduleName);
+                            node.setProperty(Constants.JAHIA_SOURCE_TEMPLATE, child);
+                            currentModule = true;
+                        }
                     }
                 }
                 if (isTemplateNode) {
@@ -666,9 +679,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 JCRNodeWrapper oldDestChild = (JCRNodeWrapper) ni.next();
                 if (!names.contains(oldDestChild.getName()) &&
                         ((!oldDestChild.isNodeType("jnt:template")) ||
-                                (!oldDestChild.hasProperty("j:moduleTemplate") && moduleName == null) ||
-                                (oldDestChild.hasProperty("j:moduleTemplate") && oldDestChild.getProperty("j:moduleTemplate").getString().equals(moduleName)))) {
+                                (!oldDestChild.hasProperty(Constants.JAHIA_MODULE_TEMPLATE) && moduleName == null) ||
+                                (oldDestChild.hasProperty(Constants.JAHIA_MODULE_TEMPLATE) && oldDestChild.getProperty(Constants.JAHIA_MODULE_TEMPLATE).getString().equals(moduleName)))) {
                     logger.debug(oldDestChild.getPath());
+                    if (oldDestChild.hasProperty("j:sourceTemplate")) {
+                        try {
+                            oldDestChild.getProperty("j:sourceTemplate").getNode();
+                            // Do not delete if source still exists somewhere
+                            continue;
+                        } catch (ItemNotFoundException e) {
+                        }
+                    }
                     oldDestChild.remove();
                 }
             }

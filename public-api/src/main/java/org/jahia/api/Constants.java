@@ -238,9 +238,12 @@ public class Constants {
     public static final String JAHIA_LOCKTYPES = "j:lockTypes";
     public static final String JAHIA_LOCKTOKEN = "j:locktoken";
 
+    public static final String JAHIA_SOURCE_TEMPLATE = "j:sourceTemplate";
+    public static final String JAHIA_MODULE_TEMPLATE = "j:moduleTemplate";
+
     public static final List<String> forbiddenPropertiesToCopy = Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
-            JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, JAHIA_LOCKTYPES, JAHIA_LOCKTOKEN);
+            JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, JAHIA_LOCKTYPES, JAHIA_LOCKTOKEN, JAHIA_SOURCE_TEMPLATE);
 
     public static final List<String> forbiddenMixinToCopy = Arrays.asList(JAHIAMIX_WORKFLOW);
     public static final String JCR_LASTLOGINDATE = "lastLoginDate";

@@ -342,6 +342,7 @@
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden
+ - j:sourceTemplate (weakreference) hidden
  - j:view (string, choicelist[templates,resourceBundle]) nofulltext
  + * (jnt:template)
  + * (jnt:content)

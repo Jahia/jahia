@@ -461,7 +461,7 @@ else { %>
                                                    href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
                                               </span>
                                             </span>
-                    </td>
+                    </td> 
 
                 </tr>
             </table>

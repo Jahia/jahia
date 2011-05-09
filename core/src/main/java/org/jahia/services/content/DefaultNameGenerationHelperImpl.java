@@ -30,11 +30,12 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.helper;
+package org.jahia.services.content;
 
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.utils.LanguageCodeConverters;
+
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +44,32 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
  * @since : JAHIA 6.1
  *        Created : 5/4/11
  */
-public interface NameGenerationHelper {
-    String getName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType)
-            throws GWTJahiaServiceException;
+public class DefaultNameGenerationHelperImpl implements NameGenerationHelper {
+    private Set<String> randomizedNames;
+
+    public String generatNodeName(JCRNodeWrapper parent, String nodeType) {
+        String defaultName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
+        if (getRandomizedNames() != null && getRandomizedNames().contains(nodeType)) {
+            defaultName += Math.round(Math.random() * 1000000);
+        }
+        return JCRContentUtils.findAvailableNodeName(parent, defaultName);
+    }    
+    
+    public String generatNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType)
+            {
+        String defaultName = JCRContentUtils.generateNodeName(nodeType.getLabel(
+                LanguageCodeConverters.languageCodeToLocale(defaultLanguage)), 32);
+        if (getRandomizedNames()!=null && getRandomizedNames().contains(nodeType.getName())) {
+            defaultName += Math.round(Math.random() * 1000000);
+        }
+        return JCRContentUtils.findAvailableNodeName(parent, defaultName);
+    }
+
+    public void setRandomizedNames(Set<String> randomizedNames) {
+        this.randomizedNames = randomizedNames;
+    }
+
+    public Set<String> getRandomizedNames() {
+        return randomizedNames;
+    }
 }

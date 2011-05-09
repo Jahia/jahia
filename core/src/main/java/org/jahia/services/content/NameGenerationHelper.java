@@ -30,16 +30,9 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.helper;
+package org.jahia.services.content;
 
-import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.utils.LanguageCodeConverters;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,26 +41,7 @@ import java.util.List;
  * @since : JAHIA 6.1
  *        Created : 5/4/11
  */
-public class DefaultNameGenerationHelperImpl implements NameGenerationHelper {
-    private transient static Logger logger = Logger.getLogger(DefaultNameGenerationHelperImpl.class);
-    private ContentManagerHelper contentManager;
-    private List<String> randomizedNames;
-
-    public String getName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType)
-            throws GWTJahiaServiceException {
-        String defaultName = JCRContentUtils.generateNodeName(nodeType.getLabel(
-                LanguageCodeConverters.languageCodeToLocale(defaultLanguage)), 32);
-        if (randomizedNames!=null && randomizedNames.contains(nodeType.getName())) {
-            defaultName += Math.round(Math.random() * 1000000);
-        }
-        return contentManager.findAvailableName(parent, defaultName);
-    }
-
-    public void setContentManager(ContentManagerHelper contentManager) {
-        this.contentManager = contentManager;
-    }
-
-    public void setRandomizedNames(List<String> randomizedNames) {
-        this.randomizedNames = randomizedNames;
-    }
+public interface NameGenerationHelper {
+    String generatNodeName(JCRNodeWrapper parent, String nodeType);
+    String generatNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType);
 }

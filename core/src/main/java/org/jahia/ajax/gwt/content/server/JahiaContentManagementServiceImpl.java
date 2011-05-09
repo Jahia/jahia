@@ -137,7 +137,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private CacheHelper cacheHelper;
     private SchedulerHelper schedulerHelper;
     private UIConfigHelper uiConfigHelper;
-    private NameGenerationHelper nameGenerationHelper;
+    private JCRContentUtils jcrContentUtils;
 
     public void setGoogleDocsServiceFactory(GoogleDocsServiceFactory googleDocsServiceFactory) {
         this.googleDocsServiceFactory = googleDocsServiceFactory;
@@ -227,8 +227,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.uiConfigHelper = uiConfigHelper;
     }
 
-    public void setNameGenerationHelper(NameGenerationHelper nameGenerationHelper) {
-        this.nameGenerationHelper = nameGenerationHelper;
+    /**
+     * @param jcrContentUtils the jcrContentUtils to set
+     */
+    public void setJCRContentUtils(JCRContentUtils jcrContentUtils) {
+        this.jcrContentUtils = jcrContentUtils;
     }
 
 // ------------------------ INTERFACE METHODS ------------------------
@@ -1056,7 +1059,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryForUser() throws GWTJahiaServiceException {
         List<GWTJahiaWorkflowHistoryItem> res = workflow.getWorkflowHistoryForUser(getUser(), getLocale());
 
-        JCRSessionWrapper session = retrieveCurrentSession();
+//        JCRSessionWrapper session = retrieveCurrentSession();
 
 //        for (GWTJahiaWorkflowHistoryItem jahiaWorkflow : res) {
 //            try {
@@ -1294,7 +1297,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     nodeType, null, parent, getUILocale()));
 
             result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getUILocale()));
-            result.setDefaultName(nameGenerationHelper.getName(parent, defaultLanguage, nodeType));
+            result.setDefaultName(jcrContentUtils.generateNodeName(parent, defaultLanguage, nodeType));
             return result;
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);

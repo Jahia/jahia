@@ -55,18 +55,7 @@
         <property name="schedulerHelper" ref="SchedulerHelper"/>
         <property name="uiConfigHelper" ref="UiConfigHelper"/>
         <property name="image" ref="ImageHelper"/>
-        <property name="nameGenerationHelper">
-            <bean class="org.jahia.ajax.gwt.helper.DefaultNameGenerationHelperImpl">
-                <property name="contentManager" ref="ContentManagerHelper"/>
-                <property name="randomizedNames">
-                    <list value-type="java.lang.String">
-                        <value>jnt:absoluteArea</value>
-                        <value>jnt:levelAbsoluteArea</value>
-                        <value>jnt:area</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
+        <property name="JCRContentUtils" ref="JCRContentUtils"/>
         <!--
         <property name="googleDocsExportFormats" ref="GoogleDocsExportFormats"/>
         <property name="googleDocsServiceFactory" ref="GoogleDocsServiceFactory"/>

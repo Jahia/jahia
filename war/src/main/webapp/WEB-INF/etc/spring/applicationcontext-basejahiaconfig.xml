@@ -100,6 +100,18 @@
             </map>
         </constructor-arg>
         <constructor-arg index="1" ref="fileExtensionIcons"/>
+        
+        <property name="nameGenerationHelper">
+            <bean id="defaultNameGenerationHelper" class="org.jahia.services.content.DefaultNameGenerationHelperImpl">
+                <property name="randomizedNames">
+                    <set value-type="java.lang.String">
+                        <value>jnt:absoluteArea</value>
+                        <value>jnt:levelAbsoluteArea</value>
+                        <value>jnt:area</value>
+                    </set>
+                </property>
+            </bean>
+        </property>
     </bean>
 
     <bean id="fileExtensionIcons" class="org.springframework.beans.factory.config.MapFactoryBean">

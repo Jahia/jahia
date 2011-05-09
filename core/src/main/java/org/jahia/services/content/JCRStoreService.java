@@ -35,6 +35,7 @@ package org.jahia.services.content;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -178,6 +179,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     public void deployExternalUser(JahiaUser jahiaUser) throws RepositoryException {
         JCRStoreProvider provider = sessionFactory.getMountPoints().get("/");
         provider.deployExternalUser(jahiaUser);
+        ServicesRegistry.getInstance().getJahiaUserManagerService().updateCache(jahiaUser);
     }
 
     public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {

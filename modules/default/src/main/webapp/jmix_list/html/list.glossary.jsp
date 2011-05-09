@@ -23,7 +23,12 @@
 <c:if test="${!empty param.letter}">
     <c:set var="selectedLetter" value="${param.letter}"/>
 </c:if>
-<c:set var="glossaryPath" value="${renderContext.mainResource.node.path}"/>
+<c:if test="${currentNode.properties.useMainResource.boolean}">
+    <c:set var="glossaryPath" value="${renderContext.mainResource.node.path}"/>
+</c:if>
+<c:if test="${!currentNode.properties.useMainResource.boolean}">
+    <c:set var="glossaryPath" value="${currentNode.path}"/>
+</c:if>
 <c:if test="${!empty param.glossaryPath}">
     <c:set var="glossaryPath" value="${param.glossaryPath}"/>
 </c:if>

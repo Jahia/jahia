@@ -10,6 +10,7 @@
  extends = jmix:list
  itemtype = layout
  - field (string, choicelist[sortableFieldnames]) indexed=no
+ - useMainResource (boolean)
 
 [jmix:sendAsNewsletter] mixin
  extends = jnt:page
@@ -190,9 +191,6 @@
 
 [jnt:fileUpload] > jnt:content, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
  - target (weakreference)
-
- [jnt:glossary] >   jnt:content, jmix:siteComponent, jmix:bindedComponent
- - field (string, choicelist[sortableFieldnames]) indexed=no
 
 [jnt:categorizing] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent
 

@@ -42,6 +42,7 @@ import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.*;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -440,20 +441,17 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                         NodeIterator ni = qr.getNodes();
 
                         while (ni.hasNext()) {
-                            Node sitesFolder = ni.nextNode();
+                            JCRNodeWrapper sitesFolder = (JCRNodeWrapper) ni.nextNode();
                             String options = "";
                             if (sitesFolder.hasProperty("j:virtualsitesFolderConfig")) {
                                 options = sitesFolder.getProperty("j:virtualsitesFolderConfig").getString();
                             }
 
-                            Node f = JCRContentUtils.getPathFolder(sitesFolder, siteKey1, options, "jnt:virtualsitesFolder");
+                            JCRNodeWrapper f = JCRContentUtils.getPathFolder(sitesFolder, siteKey1, options, "jnt:virtualsitesFolder");
                             try {
                                 f.getNode(siteKey1);
                             } catch (PathNotFoundException e) {
-                                //                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
-
-                                JCRNodeWrapper defaultSite = session.getNode("/templateSets/" + templatePackage);
-                                defaultSite.copy(session.getNode(SITES_JCR_PATH), siteKey1, false);
+                                JCRNodeWrapper siteNode = f.addNode(siteKey1, "jnt:virtualsite");
 
                                 if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
                                     String skeletons = sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString();
@@ -464,7 +462,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                     }
                                 }
 
-                                Node siteNode = f.getNode(siteKey1);
                                 siteNode.setProperty("j:title", finalSite.getTitle());
                                 siteNode.setProperty("j:description", finalSite.getDescr());
                                 siteNode.setProperty("j:serverName", finalSite.getServerName());
@@ -476,6 +473,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                                         .size()]));
                                 siteNode.setProperty("j:templatesSet", templatePackage);
                                 siteNode.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(templatePackage)} );
+
+                                ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployTemplates("/templateSets/" + templatePackage, "/sites/"+siteKey1, session);
                             }
                         }
 

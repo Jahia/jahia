@@ -32,21 +32,16 @@
  */
 package org.jahia.services.usermanager;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
 
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 4/13/11
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 4/13/11
  */
 public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule {
-    private transient static Logger logger = Logger.getLogger(DefaultJahiaUserSplittingRuleImpl.class);
 
     private String usersRootNode;
 

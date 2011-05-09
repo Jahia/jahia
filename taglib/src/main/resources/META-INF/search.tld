@@ -101,6 +101,15 @@
             <rtexprvalue>false</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description>
+                Attribute to pass in the list of hits, otherwise the tag must be nested under the results-tag.
+            </description>
+            <name>hits</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.List</type>
+        </attribute>        
     </tag>
 
     <tag>

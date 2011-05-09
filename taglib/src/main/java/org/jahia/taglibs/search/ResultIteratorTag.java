@@ -52,6 +52,7 @@ public class ResultIteratorTag extends LoopTagSupport {
     private static final String DEF_VAR = "hit";
 
     private Iterator<Hit<?>> resultIterator;
+    private List<Hit<?>> hits;
 
     /**
      * Initializes an instance of this class.
@@ -80,17 +81,17 @@ public class ResultIteratorTag extends LoopTagSupport {
         if (end != -1 && begin > end) {
             throw new JspTagException("'begin' > 'end'");
         }
+        List<Hit<?>> results = getHits();
+        if (results == null) {
+            ResultsTag parent = (ResultsTag) findAncestorWithClass(this, ResultsTag.class);
+            if (null == parent) {
+                throw new JspTagException("Parent tag not found. This tag ("
+                        + this.getClass().getName() + ") must be nested inside the "
+                        + ResultsTag.class.getName());
+            }
 
-        ResultsTag parent = (ResultsTag) findAncestorWithClass(this,
-                ResultsTag.class);
-        if (null == parent) {
-            throw new JspTagException("Parent tag not found. This tag ("
-                    + this.getClass().getName()
-                    + ") must be nested inside the "
-                    + ResultsTag.class.getName());
+            results = parent.getHits();
         }
-
-        List<Hit<?>> results = parent.getHits();
         if (results == null || results.size() <= begin) {
             results = Collections.emptyList();
         }
@@ -122,5 +123,13 @@ public class ResultIteratorTag extends LoopTagSupport {
         this.stepSpecified = true;
         this.step = step;
         validateStep();
+    }
+
+    public List<Hit<?>> getHits() {
+        return hits;
+    }
+
+    public void setHits(List<Hit<?>> hits) {
+        this.hits = hits;
     }
 }

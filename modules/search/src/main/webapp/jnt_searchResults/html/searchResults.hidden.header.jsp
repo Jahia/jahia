@@ -13,7 +13,24 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<s:results var="resultsHits">
-    <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
-    <c:set target="${moduleMap}" property="displaySearchParams" value="true"/>
-</s:results>
+<c:set var="hitsName" value="hits_${currentNode.identifier}"/>
+<c:set var="hitsCountName" value="hitsCount_${currentNode.identifier}"/>
+<c:choose>
+    <c:when test='${empty searchMap[hitsName] }'>
+        <s:results var="resultsHits">
+            <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
+            <c:set target="${moduleMap}" property="resultsHits" value="${resultsHits}" />
+            <c:set target="${moduleMap}" property="displaySearchParams" value="true" />
+            <c:if test='${searchMap == null}'>
+                <jsp:useBean id="searchMap" class="java.util.HashMap" scope="request"/>
+            </c:if>
+            <c:set target="${searchMap}" property="${hitsName}" value="${resultsHits}"/>
+            <c:set target="${searchMap}" property="${hitsCountName}" value="${count}"/>
+        </s:results>
+    </c:when>
+    <c:otherwise>
+        <c:set target="${moduleMap}" property="listTotalSize" value="${searchMap[hitsCountName]}" />
+        <c:set target="${moduleMap}" property="resultsHits" value="${searchMap[hitsName]}" />
+        <c:set target="${moduleMap}" property="displaySearchParams" value="true" />
+    </c:otherwise>
+</c:choose>

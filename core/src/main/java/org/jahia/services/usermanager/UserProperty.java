@@ -30,12 +30,14 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.services.usermanager;
+package org.jahia.services.usermanager;
 
 import java.io.Serializable;
 
 public class UserProperty implements Serializable {
 
+    private static final long serialVersionUID = -4066934002153945776L;
+    
     public static final String CHECKBOX = "checkbox";
     public static final String SELECT_BOX = "selectbox";
     public static final String TEXT_FIELD = "textfield";

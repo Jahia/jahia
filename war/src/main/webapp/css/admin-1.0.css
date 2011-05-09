@@ -36,7 +36,7 @@ body {
 }
 body.login, #bodyLogin {
     background:url(images/andromeda/bg-body_login.jpg) no-repeat 50% 50%;
-    background-color: #000;
+    background-color: #fff;
     margin:0 auto;
     text-align:center
 }

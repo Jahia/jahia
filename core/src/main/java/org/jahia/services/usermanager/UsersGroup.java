@@ -63,17 +63,16 @@ public class UsersGroup extends JCRGroup {
     public Set<Principal> getRecursiveUserMembers() {
         Set<Principal> users = new HashSet<Principal> ();
 
-        List<Principal> userList = null;
-        try {
-            userList = ServicesRegistry.getInstance().
-                          getJahiaSiteUserManagerService().getMembers(
-                getSiteID());
-            JahiaUser guest = ServicesRegistry.getInstance().
-                    getJahiaSiteUserManagerService().getMember(mSiteID, JahiaUserManagerService.GUEST_USERNAME);
-            userList.remove(guest);
-        } catch (JahiaException ex) {
-            UsersGroup.logger.error("Error while trying to retrieve full user list for site " + getSiteID(), ex);
+        List<Principal> userList = new LinkedList<Principal>();
+        JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance()
+                .getJahiaUserManagerService();
+        List<String> l = jahiaUserManagerService.getUserList();
+        for (String s : l) {
+            userList.add(jahiaUserManagerService.lookupUserByKey(s));
         }
+        JahiaUser guest = jahiaUserManagerService
+                .lookupUser(JahiaUserManagerService.GUEST_USERNAME);
+        userList.remove(guest);
         if (userList != null) {
             users.addAll(userList);
         }

@@ -44,8 +44,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaSiteUserManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 
 
 /**

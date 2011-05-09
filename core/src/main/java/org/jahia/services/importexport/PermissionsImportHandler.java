@@ -41,7 +41,6 @@ import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -56,7 +55,6 @@ public class PermissionsImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PermissionsImportHandler.class);
     private JahiaUserManagerService u;
     private JahiaGroupManagerService g;
-    private JahiaSiteUserManagerService su;
     private JahiaSitesService siteService;
     private int siteId;
     private String prefix;
@@ -71,7 +69,6 @@ public class PermissionsImportHandler extends DefaultHandler {
         this.siteId = siteId;
         u = ServicesRegistry.getInstance().getJahiaUserManagerService();
         g = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        su = ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
         siteService = ServicesRegistry.getInstance().getJahiaSitesService();
     }
 

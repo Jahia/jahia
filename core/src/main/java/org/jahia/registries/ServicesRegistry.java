@@ -54,7 +54,6 @@ import org.jahia.services.search.SearchService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -95,8 +94,6 @@ public class ServicesRegistry {
     private static final String JAHIA_USER_MANAGER_SERVICE = "JahiaUserManagerService";
     private static final String JAHIA_GROUP_MANAGER_SERVICE =
             "JahiaGroupManagerService";
-    private static final String JAHIA_SITE_USER_MANAGER_SERVICE =
-            "JahiaSiteUserManagerService";
 
     // Jahia FileWatcher Service
     private static final String JAHIA_FILE_WATCHER_SERVICE = "JahiaFileWatcherService";
@@ -226,13 +223,6 @@ public class ServicesRegistry {
      */
     public JahiaSitesService getJahiaSitesService() {
         return (JahiaSitesService) getService(JAHIA_SITES_SERVICE);
-    }
-
-    /**
-     * Return a reference on the DB Site User Manager service
-     */
-    public JahiaSiteUserManagerService getJahiaSiteUserManagerService() {
-        return (JahiaSiteUserManagerService) getService(JAHIA_SITE_USER_MANAGER_SERVICE);
     }
 
     /**

@@ -33,6 +33,4 @@
         <property name="priority" value="1"/>
     </bean>
     
-    <bean id="JahiaSiteUserManagerService" class="org.jahia.services.usermanager.JahiaSiteUserManagerDBService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
-    
 </beans>

@@ -347,13 +347,12 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
         // user could be external database user, let's look him up...
         if ((JahiaGroupManagerService.GUEST_GROUPNAME.equals (mGroupname)) ||
                 (JahiaGroupManagerService.USERS_GROUPNAME.equals (mGroupname))) {
-            List<Principal> userList = null;
-            try {
-                userList = ServicesRegistry.getInstance().
-                              getJahiaSiteUserManagerService().getMembers(
-                    getSiteID());
-            } catch (JahiaException ex) {
-                logger.error("Error while trying to retrieve full user list for site " + getSiteID(), ex);
+            List<Principal> userList = new LinkedList<Principal>();
+            JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance()
+                    .getJahiaUserManagerService();
+            List<String> l = jahiaUserManagerService.getUserList();
+            for (String s : l) {
+                userList.add(jahiaUserManagerService.lookupUserByKey(s));
             }
             if (userList != null) {
                 users.addAll(userList);

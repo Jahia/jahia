@@ -33,7 +33,6 @@
  package org.jahia.services.usermanager;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.jcr.JCRGroup;
 
@@ -42,15 +41,11 @@ import java.util.*;
 import java.security.Principal;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 13 mars 2006
  * Time: 16:44:20
- * 
  */
 public class GuestGroup extends JCRGroup {
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(GuestGroup.class);
 
     public GuestGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
         super(nodeWrapper, siteID);
@@ -63,12 +58,12 @@ public class GuestGroup extends JCRGroup {
     public Set<Principal> getRecursiveUserMembers() {
         Set<Principal> users = new HashSet<Principal> ();
 
-        List<Principal> userList = null;
-        try {
-            userList = ServicesRegistry.getInstance().
-                          getJahiaSiteUserManagerService().getMembers(getSiteID());
-        } catch (JahiaException ex) {
-            logger.error("Error while trying to retrieve full user list for site " + getSiteID(), ex);
+        List<Principal> userList = new LinkedList<Principal>();
+        JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance()
+                .getJahiaUserManagerService();
+        List<String> l = jahiaUserManagerService.getUserList();
+        for (String s : l) {
+            userList.add(jahiaUserManagerService.lookupUserByKey(s));
         }
         if (userList != null) {
             users.addAll(userList);

@@ -52,6 +52,7 @@ public class PublishAllActionItem extends PublishActionItem {
     }
 
     public void handleNewLinkerSelection() {
+        setEnabled(false);
         if (linker.getSelectionContext().getMultipleSelection().size() > 1) {
             setEnabled(true);
             updateTitle(Messages.get("label.publish.all.selected.items"));

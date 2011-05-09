@@ -446,7 +446,14 @@ else { %>
                     <td>
                         :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                     </td>
-
+                    <td>&nbsp;</td>
+                 </tr><tr>
+                 	<td>
+                 		<fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/>&nbsp;
+                 	</td>
+                   <td>
+                 			:&nbsp;<input name="importpath" size="<%=inputSize%>">
+                    </td>
                     <td>
                                             <span class="dex-PushButton">
                                               <span class="first-child">

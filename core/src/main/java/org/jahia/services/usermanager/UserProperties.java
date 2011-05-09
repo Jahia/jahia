@@ -65,6 +65,7 @@ public class UserProperties implements Serializable {
     private Map<String, UserProperty> properties = new HashMap<String, UserProperty>();
 
     public UserProperties() {
+        super();
     }
 
     /**
@@ -149,10 +150,11 @@ public class UserProperties implements Serializable {
 
     public String getProperty(String name) {
         UserProperty userProperty = properties.get(name);
-        if (userProperty == null) {
-            return null;
-        }
-        return userProperty.getValue();
+        return userProperty != null ? userProperty.getValue() : null;
+    }
+
+    public boolean hasProperty(String name) {
+        return properties.containsKey(name);
     }
 
     public void setProperty(String name, String value)

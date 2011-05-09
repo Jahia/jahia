@@ -36,6 +36,8 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 import org.jahia.utils.EncryptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 
 import java.security.Principal;
@@ -54,6 +56,9 @@ import java.util.Set;
  * @version 2.0
  */
 public abstract class JahiaUserManagerService extends JahiaService {
+
+    public static Logger LOGGER = LoggerFactory.getLogger(JahiaUserManagerService.class);
+
     /**
      * Guest user unique identification name.
      * Each usermanager should create this special user, who is assigned

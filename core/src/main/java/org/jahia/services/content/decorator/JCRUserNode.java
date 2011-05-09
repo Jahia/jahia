@@ -43,7 +43,11 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.usermanager.JahiaExternalUser;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.UserProperties;
+import org.jahia.services.usermanager.UserPropertyReadOnlyException;
 import org.jahia.services.usermanager.jcr.JCRUser;
 
 import javax.jcr.*;
@@ -85,12 +89,12 @@ public class JCRUserNode extends JCRNodeDecorator {
     @Override
     public PropertyIterator getProperties() throws RepositoryException {
         if (user == null) {
-            user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
+            user = lookupUser();
         }
         if (user == null || user instanceof JCRUser) {
             return new FilteredPropertyIterator(super.getProperties());
         } else {
-            return new UserPropertyIterator(node);
+            return new UserPropertyIterator(node, new FilteredPropertyIterator(super.getProperties()));
         }
     }
 
@@ -103,16 +107,15 @@ public class JCRUserNode extends JCRNodeDecorator {
             throw new PathNotFoundException(s);
         }
         if (user == null) {
-            user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
+            user = lookupUser();
         }
-        if (user == null) {
-            return super.getProperty(s);
-        }
-        if (user instanceof JCRUser) {
+        if (user == null || user instanceof JCRUser) {
             return super.getProperty(s);
         } else {
-            String property = user.getProperty(s);
-            if (null == property) return super.getProperty(s);
+            String property = (user instanceof JahiaExternalUser) ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
+            if (null == property) {
+                return super.getProperty(s);
+            }
             return new JCRPropertyWrapperImpl(node, new JCRUserProperty(s, property), node.getSession(), node.getJCRProvider(),
                     propertyDefinitionMap.get(s) != null ? propertyDefinitionMap.get(s) : unstructuredPropertyDefinitions.get(PropertyType.STRING));
         }
@@ -125,9 +128,10 @@ public class JCRUserNode extends JCRNodeDecorator {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
         if (user == null) {
-            user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
+            user = lookupUser();
         }
         Set entries ;
         if (user == null || user instanceof JCRUser) {
@@ -151,20 +155,24 @@ public class JCRUserNode extends JCRNodeDecorator {
             return super.setProperty(s, value);
         }
         if (user == null) {
-            user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(node.getName());
+            user = lookupUser();
         }
-        if (user == null) {
-            return super.setProperty(s, value);
-        }
-        if (user instanceof JCRUser) {
+        if (user == null || user instanceof JCRUser) {
             return super.setProperty(s, value);
         } else {
-            String property = user.getProperty(s);
-            if (property != null) {
+            if (user instanceof JahiaExternalUser
+                    && ((JahiaExternalUser) user).getExternalProperties().hasProperty(s)
+                    || !(user instanceof JahiaExternalUser) && user.getProperty(s) != null) {
                 throw new AccessDeniedException("Cannot update external property");
-            } else {
-                return super.setProperty(s,value);
             }
+            JCRPropertyWrapper prop = super.setProperty(s,value);
+            try {
+                user.getUserProperties().setProperty(s, value);
+            } catch (UserPropertyReadOnlyException e) {
+                logger.warn("Cannot set read-only property {} for user {}", s, user.getUserKey());
+                
+            }
+            return prop;
         }
     }
 
@@ -244,20 +252,26 @@ public class JCRUserNode extends JCRNodeDecorator {
     }
 
     public class UserPropertyIterator implements PropertyIterator {
-        private Properties properties;
+        Map<String, Property> jcrProperties;
+        UserProperties externalProperties;
         private Set<String> stringPropertyNames;
         private Iterator<String> iterator;
         private int index = 0;
         private final JCRNodeWrapper node;
 
-        private UserPropertyIterator(JCRNodeWrapper node) throws RepositoryException {
+        private UserPropertyIterator(JCRNodeWrapper node, PropertyIterator jcrPropertyIterator) throws RepositoryException {
             this.node = node;
-            properties = user.getProperties();
-            stringPropertyNames = new HashSet<String>();
-            for (Object key : properties.keySet()) {
-                if (canGetProperty((String) key)) {
-                    stringPropertyNames.add((String) key);
+            externalProperties = user instanceof JahiaExternalUser ? ((JahiaExternalUser) user).getExternalProperties() : user.getUserProperties();
+            jcrProperties = new HashMap<String, Property>();
+            while(jcrPropertyIterator.hasNext()) {
+                Property prop = jcrPropertyIterator.nextProperty();
+                if (!externalProperties.hasProperty(prop.getName())) {
+                    jcrProperties.put(prop.getName(), prop);
                 }
+            }
+            stringPropertyNames = new HashSet<String>(jcrProperties.keySet());
+            for (Object key : externalProperties.getProperties().keySet()) {
+                stringPropertyNames.add(key.toString());
             }
             iterator = stringPropertyNames.iterator();
         }
@@ -272,12 +286,16 @@ public class JCRUserNode extends JCRNodeDecorator {
         public Property nextProperty() {
             String key = iterator.next();
             index++;
-            Object value = properties.get(key);
-            try {
-                return new JCRPropertyWrapperImpl(node, new JCRUserProperty(key, value), node.getSession(), node.getJCRProvider(),
-                        propertyDefinitionMap.get(key) != null ? propertyDefinitionMap.get(key) : unstructuredPropertyDefinitions.get(PropertyType.STRING));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+            if (externalProperties.hasProperty(key)) {
+                String value = externalProperties.getProperty(key);
+                try {
+                    return new JCRPropertyWrapperImpl(node, new JCRUserProperty(key, value), node.getSession(), node.getJCRProvider(),
+                            propertyDefinitionMap.get(key) != null ? propertyDefinitionMap.get(key) : unstructuredPropertyDefinitions.get(PropertyType.STRING));
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            } else if (jcrProperties.containsKey(key)) {
+                return jcrProperties.get(key);
             }
             throw new NoSuchElementException();
         }
@@ -1419,7 +1437,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * if this item or an item in its subtree is currently the target of a <code>REFERENCE</code>
          * property located in this workspace but outside this item's subtree and the current <code>Session</code>
          * <i>does not</i> have read access to that <code>REFERENCE</code> property or if the current <code>Session</code>
-         * does not have sufficent privileges to remove the item.
+         * does not have sufficient privileges to remove the item.
          * <p/>
          * A <code>ConstraintViolationException</code> will be thrown either immediately
          * or on <code>save</code>, if removing this item would violate a node type or implementation-specific
@@ -1447,7 +1465,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          *                                       if this item or an item in its subtree is currently the target of a <code>REFERENCE</code>
          *                                       property located in this workspace but outside this item's subtree and the current <code>Session</code>
          *                                       <i>does not</i> have read access to that <code>REFERENCE</code> property or if the current <code>Session</code>
-         *                                       does not have sufficent privileges to remove the item.
+         *                                       does not have sufficient privileges to remove the item.
          * @throws javax.jcr.RepositoryException if another error occurs.
          * @see javax.jcr.Session#removeItem(String)
          */
@@ -1455,5 +1473,10 @@ public class JCRUserNode extends JCRNodeDecorator {
                 throws VersionException, LockException, ConstraintViolationException, AccessDeniedException, RepositoryException {
             
         }
+    }
+    
+    protected JahiaUser lookupUser() {
+        return ServicesRegistry.getInstance().getJahiaUserManagerService()
+                .lookupUser(node.getName());
     }
 }

@@ -32,14 +32,10 @@
  */
 package org.jahia.services.usermanager;
 
-import org.apache.log4j.Logger;
-
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 4/13/11
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 4/13/11
  */
 public interface JahiaUserSplittingRule {
 

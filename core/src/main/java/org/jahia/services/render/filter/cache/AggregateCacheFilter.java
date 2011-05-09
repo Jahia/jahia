@@ -199,7 +199,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getValue();
         String cachedContent = (String) cacheEntry.getObject();
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
-                (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"));
+                (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"), new Stack<String>());
         setResources(renderContext, cacheEntry);
 
         if (renderContext.getMainResource() == resource) {
@@ -460,7 +460,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String,Serializable> moduleParams,String areaIdentifier) {
+    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
@@ -515,8 +515,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                             logger.debug("Document replace from : " + segment.getStartTagType() + " to " +
                                          segment.getElement().getEndTag().getEndTagType() + " with " + content);
                         }*/
+
+                        if (cacheKeyStack.contains(cacheKey)) {
+                            continue;
+                        }
+                        cacheKeyStack.push(cacheKey);
+
                         if (!cachedContent.equals(content)) {
-                            String aggregatedContent = aggregateContent(cache, content, renderContext,(Map<String, Serializable>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"));
+                            String aggregatedContent = aggregateContent(cache, content, renderContext,(Map<String, Serializable>) cacheEntry.getProperty("moduleParams"),(String) cacheEntry.getProperty("areaResource"), cacheKeyStack);
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                     aggregatedContent);
                         } else {
@@ -524,6 +530,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                     content);
                         }
                         setResources(renderContext, cacheEntry);
+
+                        cacheKeyStack.pop();
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         logger.debug("Missing content : " + cacheKey);

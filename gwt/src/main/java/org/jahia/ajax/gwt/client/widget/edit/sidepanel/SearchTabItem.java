@@ -116,19 +116,19 @@ class SearchTabItem extends SidePanelTabItem {
             }
         });
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.search());
-        final Button drag = new Button(Messages.get("org.jahia.jcr.edit.drag.label"));
-        new EditModeDragSource(drag) {
-            @Override
-            protected void onDragStart(DNDEvent e) {
-                e.setCancelled(false);
-                e.getStatus().update(searchField.getValue());
-                e.getStatus().setStatus(true);
-                e.setData(searchField);
-                e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.QUERY_SOURCE_TYPE);
-                e.getStatus().setData(EditModeDNDListener.SOURCE_QUERY, getGWTJahiaSearchQuery());
-                super.onDragStart(e);
-            }
-        };
+//        final Button drag = new Button(Messages.get("org.jahia.jcr.edit.drag.label"));
+//        new EditModeDragSource(drag) {
+//            @Override
+//            protected void onDragStart(DNDEvent e) {
+//                e.setCancelled(false);
+//                e.getStatus().update(searchField.getValue());
+//                e.getStatus().setStatus(true);
+//                e.setData(searchField);
+//                e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.QUERY_SOURCE_TYPE);
+//                e.getStatus().setData(EditModeDNDListener.SOURCE_QUERY, getGWTJahiaSearchQuery());
+//                super.onDragStart(e);
+//            }
+//        };
 
         searchForm.add(searchField);
 
@@ -144,7 +144,7 @@ class SearchTabItem extends SidePanelTabItem {
         searchForm.add(defPicker);
 
         searchForm.addButton(ok);
-        searchForm.addButton(drag);
+//        searchForm.addButton(drag);
 
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new RowLayout(Style.Orientation.VERTICAL));

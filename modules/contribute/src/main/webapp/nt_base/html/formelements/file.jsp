@@ -82,12 +82,12 @@
 <template:addResources>
 <script>
     $(document).ready(function() {
-        $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('<c:url value="${url.base}${param['path'] == null ? renderContext.mainResource.node.path : param['path']}"><c:param name="contributePost" value="true"/></c:url>', {
+        $("#file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").editable('<c:url value="${url.base}${param['path'] == null ? renderContext.mainResource.node.path : param['path']}"><c:param name="jcrContributePost" value="true"/></c:url>', {
             type : 'ajaxupload',
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
-            submitdata : {'contributePost':'true'},
+            submitdata : {'jcrContributePost':'true'},
             tooltip : 'Click to edit',
             callback : function (data, status,original) {
                 var id = $(original).attr('jcr:id');

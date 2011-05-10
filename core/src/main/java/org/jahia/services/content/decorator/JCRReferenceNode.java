@@ -33,7 +33,6 @@
 package org.jahia.services.content.decorator;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
@@ -63,7 +62,7 @@ public class JCRReferenceNode extends JCRNodeDecorator {
     public String getDisplayableName() {
         String name = super.getDisplayableName();
         try {
-            if (getNode() != null) {
+            if (getNode() != null && !this.getIdentifier().equals(getNode().getIdentifier())) {
                 name = ((JCRNodeWrapper) getNode()).getDisplayableName();
             }
         } catch (RepositoryException e) {

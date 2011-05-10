@@ -1125,7 +1125,8 @@ public class NavigationHelper {
         // references
         try {
             if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
-                n.setReferencedNode(getGWTJahiaNode((JCRNodeWrapper) node.getProperty("j:node").getNode()));
+                JCRNodeWrapper referencedNode = (JCRNodeWrapper) node.getProperty("j:node").getNode();
+                n.setReferencedNode(n.getUUID().equals(referencedNode.getIdentifier()) ? n : getGWTJahiaNode(referencedNode));
             }
         } catch (ItemNotFoundException e) {
             logger.debug(e.getMessage(), e);

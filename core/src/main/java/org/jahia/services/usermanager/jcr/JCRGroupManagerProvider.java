@@ -433,7 +433,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         try {
                             recurseOnGroups(session, groups, principalId);
                         } catch (JahiaException e) {
-                            logger.warn("Error retrieving membership for user ", e);
+                            logger.warn("Error retrieving membership for user " + principal.getName(), e);
                         }
                         if (principal instanceof JahiaUser) {
                             if (!principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
@@ -472,9 +472,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
 
                 );
             } catch (RepositoryException e) {
-                logger.error("Error retrieving membership for user ", e);
+                logger.error("Error retrieving membership for user " + principal.getName() + ", will return empty list", e);
             } catch (JahiaInitializationException e) {
-                logger.error(e.getMessage(), e);
+                logger.error("Error retrieving membership for user " + principal.getName() + ", will return empty list", e);
             }
         }
         return new ArrayList<String>();

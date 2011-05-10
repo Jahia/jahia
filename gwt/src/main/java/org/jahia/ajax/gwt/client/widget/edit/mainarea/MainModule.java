@@ -515,39 +515,50 @@ public class MainModule extends Module {
             List<Module> modules = ModuleHelper.getModules();
 
             String lastUnpublished = null;
-
-            for (Module m : modules) {
-                if (!m.getPath().endsWith("*")) {
-                    if (m.getNode() != null) {
-                        List<AbstractImagePrototype> images = new ArrayList<AbstractImagePrototype>();
-                        if (activeLayers.containsKey("acl") && m.getNode().isHasAcl()) {
-                            images.add(ToolbarIconProvider.getInstance().getIcon("viewACLStatus"));
-                        }
-                        if (activeLayers.containsKey("publication")) {
-                            GWTJahiaPublicationInfo info = m.getNode().getAggregatedPublicationInfo();
-                            if (lastUnpublished == null || !m.getNode().getPath().startsWith(lastUnpublished)) {
-                                if (info.isLocked()) {
-                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/locked"));
-                                }
-
-                                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                                    lastUnpublished = m.getNode().getPath();
-                                    if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                                        images.add(ToolbarIconProvider.getInstance().getIcon("publication/unpublished"));
-                                    } else {
-                                        images.add(ToolbarIconProvider.getInstance().getIcon("publication/notpublished"));
+            if (modules != null) {
+                for (Module m : modules) {
+                    if (!m.getPath().endsWith("*")) {
+                        if (m.getNode() != null) {
+                            List<AbstractImagePrototype> images = new ArrayList<AbstractImagePrototype>();
+                            if (activeLayers.containsKey("acl") && m.getNode().isHasAcl()) {
+                                images.add(ToolbarIconProvider.getInstance().getIcon(
+                                        "viewACLStatus"));
+                            }
+                            if (activeLayers.containsKey("publication")) {
+                                GWTJahiaPublicationInfo info = m.getNode()
+                                        .getAggregatedPublicationInfo();
+                                if (lastUnpublished == null
+                                        || !m.getNode().getPath().startsWith(lastUnpublished)) {
+                                    if (info.isLocked()) {
+                                        images.add(ToolbarIconProvider.getInstance().getIcon(
+                                                "publication/locked"));
                                     }
-                                } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
-                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/modified"));
-                                } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
-                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/mandatorylanguageunpublishable"));
-                                } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
-                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/mandatorylanguagevalid"));
+
+                                    if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
+                                            || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                                        lastUnpublished = m.getNode().getPath();
+                                        if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                                            images.add(ToolbarIconProvider.getInstance().getIcon(
+                                                    "publication/unpublished"));
+                                        } else {
+                                            images.add(ToolbarIconProvider.getInstance().getIcon(
+                                                    "publication/notpublished"));
+                                        }
+                                    } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
+                                        images.add(ToolbarIconProvider.getInstance().getIcon(
+                                                "publication/modified"));
+                                    } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                                        images.add(ToolbarIconProvider.getInstance().getIcon(
+                                                "publication/mandatorylanguageunpublishable"));
+                                    } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
+                                        images.add(ToolbarIconProvider.getInstance().getIcon(
+                                                "publication/mandatorylanguagevalid"));
+                                    }
                                 }
                             }
-                        }
-                        if (!images.isEmpty()) {
-                            infoLayers.addInfoLayer(m, images, null,true, "1");
+                            if (!images.isEmpty()) {
+                                infoLayers.addInfoLayer(m, images, null, true, "1");
+                            }
                         }
                     }
                 }

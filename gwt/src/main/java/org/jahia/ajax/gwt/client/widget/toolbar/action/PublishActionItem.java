@@ -114,7 +114,8 @@ public class PublishActionItem extends BaseActionItem {
     }
 
     public void handleNewLinkerSelection() {
-        if (linker.getSelectionContext().getMultipleSelection().size() > 1) {
+        if (linker.getSelectionContext().getMultipleSelection() != null
+                && linker.getSelectionContext().getMultipleSelection().size() > 1) {
             setEnabled(true);
             updateTitle(Messages.get("label.publish.selected.items"));
         } else {

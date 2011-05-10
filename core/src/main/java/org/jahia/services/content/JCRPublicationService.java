@@ -298,8 +298,8 @@ public class JCRPublicationService extends JahiaService {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Publishing node {}", jcrNodeWrapper.getPath());
                 }
-                if (!jcrNodeWrapper.hasProperty("j:published") ||
-                        !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
+                if (jcrNodeWrapper.isNodeType("jmix:lastPublished") && (!jcrNodeWrapper.hasProperty("j:published") ||
+                        !jcrNodeWrapper.getProperty("j:published").getBoolean())) {
                     if (!sourceVersionManager.isCheckedOut(jcrNodeWrapper.getPath())) {
                         sourceVersionManager.checkout(jcrNodeWrapper.getPath());
                     }

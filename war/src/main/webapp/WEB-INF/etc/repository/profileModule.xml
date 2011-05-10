@@ -19,7 +19,7 @@
                 </SITEKEY_PLACEHOLDER>
             </profile-page-items>
         </contents>
-        <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base">
+        <templates jcr:primaryType="jnt:templatesFolder" j:rootTemplatePath="/base/user-base">
             <files jcr:primaryType="jnt:folder">
                 <themes jcr:primaryType="jnt:folder">
                     <default jcr:primaryType="jnt:folder">

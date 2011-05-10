@@ -108,13 +108,13 @@ h2.loginlogo{
 }
 #adminLogin {
     clear:both;
-    border: 1px solid #000;
-    background-color: #000;
+    border: 1px solid #eaeaea;
+    background-color: #fff;
     margin:0 auto;
     margin-top: 10px;
     text-align: center;
     width: 300px;
-    color: #fff;
+    color: #000;
     padding:20px;
     font-family:Arial,Verdana,Helvetica,sans-serif;
     font-size:11px !important;
@@ -186,7 +186,7 @@ h1.big {
 
 h3.loginIcon{
     padding: 5px 0 10px 50px;
-    color: #fff;
+    color: #000;
     margin:0 auto 5px auto;
     padding:5px;
     font-size:12px
@@ -1653,6 +1653,7 @@ tr.oddLine {
 .exportlinks {
     padding: 5px;
 }
+
 
 /* icons for shared lang */
 .sharedLanguage{

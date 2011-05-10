@@ -54,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
@@ -64,9 +65,12 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.RowEditor;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 /**
@@ -234,11 +238,21 @@ public class UrlMappingEditor extends LayoutContainer {
         add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
         add.setEnabled(editable);
         toolBar.add(add);
+        if (URL.getServerBaseURL().startsWith("http://localhost:")
+                || URL.getServerBaseURL().startsWith("https://localhost:")) {
+            toolBar.add(new FillToolItem());
+            LabelField warningLabel = new LabelField(Messages.get(
+                    "label.urlmapping.inactiveOnLocalhost",
+                    "URL mapping is inactive for server-name: localhost"));
+            warningLabel.setStyleAttribute("color", "red");
+            toolBar.add(warningLabel);
+        }
 
         ContentPanel cp = new ContentPanel(new FitLayout());
         cp.setHeading(node.getUrl());
        // cp.setHeaderVisible(false);
         cp.setTopComponent(toolBar);
+
         cp.add(grid);
 
 //        FieldSet fs = new FieldSet();

@@ -208,7 +208,7 @@ public class PropertiesEditor extends FormPanel {
                     (excludedItems != null && excludedItems.contains(definition.getName()))) {
                 continue;
             }
-            if (dataType != null && !dataType.isEmpty() && !dataType.contains(definition.getDataType())) {
+            if (remoteField == null && dataType != null && !dataType.isEmpty() && !dataType.contains(definition.getDataType())) {
                 continue;
             }
 

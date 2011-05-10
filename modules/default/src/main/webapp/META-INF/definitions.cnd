@@ -7,7 +7,7 @@
 
 
 [jmix:glossary] > jmix:templateMixin mixin
- extends = jmix:list
+ extends = jmix:list, jnt:area
  itemtype = layout
  - field (string, choicelist[sortableFieldnames]) indexed=no
  - useMainResource (boolean)
@@ -16,12 +16,12 @@
  extends = jnt:page
 
 [jmix:listOrdered] > jmix:templateMixin mixin
- extends = jmix:list
+ extends = jmix:list,jnt:area
  itemtype = layout
 - j:className (string, choicelist[resourceBundle]) < '','simple','filesList'
 
 [jmix:columns] > jmix:templateMixin mixin
- extends = jmix:list
+ extends = jmix:list, jnt:area
  itemtype = layout
 - j:columns (long)
 

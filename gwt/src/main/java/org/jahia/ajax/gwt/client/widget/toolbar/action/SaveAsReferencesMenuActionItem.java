@@ -42,7 +42,9 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
@@ -72,25 +74,33 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
     }
 
     private void initMenu(final Linker linker) {
-        JahiaContentManagementService.App.getInstance().getSitePagesWithTargetAreaName(targetName.getValue(),
+        JahiaContentManagementService.App.getInstance().getPortalNodes(targetName.getValue(),
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
                         pages = result;
                         final Menu menu = new Menu();
 
                         menu.removeAll();
+                        boolean displayMenu = false;
                         if (pages != null) {
-                            if (pages.size() > 1)
-                            for (final GWTJahiaNode page : pages) {
-                                MenuItem item = new MenuItem(page.getDisplayName());
-                                addSelectionListener(page, item, linker);
-                                menu.add(item);
+                            if (pages.size() > 1) {
+                                for (final GWTJahiaNode page : pages) {
+                                    if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
+                                        MenuItem item = new MenuItem(page.getDisplayName());
+                                        addSelectionListener(page, item, linker);
+                                        menu.add(item);
+                                        displayMenu = true;
+                                    }
+                                }
                             } else if (pages.size() == 1) {
                                 GWTJahiaNode page = pages.get(0);
-                                addSelectionListener(page,getContextMenuItem(),linker);
+                                if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
+                                    addSelectionListener(page, getContextMenuItem(), linker);
+                                    displayMenu = true;
+                                }
                             }
                         }
-                        if(pages != null && pages.size() > 0) {
+                        if (displayMenu) {
                             if (menu.getItemCount() > 0) {
                                 setSubMenu(menu);
                             }
@@ -116,7 +126,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                 GWTJahiaNode target = lh.getSingleSelection();
                 if (target != null) {
                     JahiaContentManagementService.App.getInstance().pasteReferences(
-                            Arrays.asList(target.getPath()), page.getPath()+"/"+targetName.getValue(), null,
+                            Arrays.asList(target.getPath()), page.getPath(), null,
                             new BaseAsyncCallback() {
                                 public void onApplicationFailure(Throwable caught) {
                                     Info.display("Portal Components",
@@ -124,8 +134,9 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                                 }
 
                                 public void onSuccess(Object result) {
-                                    Info.display("Portal Components",
-                                            "Your components is now available for users in their portal page.");
+                                    //Info.display("Portal Components",
+                                    //        "Your components is now available for users in their portal page.");
+                                    com.google.gwt.user.client.Window.alert(Messages.get("label.saveAsPortalComponent.success"));
                                 }
                             });
                 }

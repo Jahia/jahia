@@ -301,7 +301,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, AsyncCallback<GWTJahiaFieldInitializer> async);
 
-    void getSitePagesWithTargetAreaName(String targetAreaName, AsyncCallback<List<GWTJahiaNode>> asyncCallback);
+    void getPortalNodes(String targetAreaName, AsyncCallback<List<GWTJahiaNode>> asyncCallback);
 
 	void validateWCAG(Map<String, String> richTexts,
 	        AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);

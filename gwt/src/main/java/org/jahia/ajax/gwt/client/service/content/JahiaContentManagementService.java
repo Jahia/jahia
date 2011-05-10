@@ -342,7 +342,7 @@ public interface JahiaContentManagementService extends RemoteService {
     
     GWTJahiaFieldInitializer getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNode> getSitePagesWithTargetAreaName(String targetAreaName);
+    List<GWTJahiaNode> getPortalNodes(String targetAreaName);
     
 	/**
 	 * Validates the HTML texts against WCAG rules. This method allows to

@@ -1709,7 +1709,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public List<GWTJahiaNode> getSitePagesWithTargetAreaName(String targetAreaName) {
+    public List<GWTJahiaNode> getPortalNodes(String targetAreaName) {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         try {
             Query q = retrieveCurrentSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:contentFolder] as l where localname()='"+targetAreaName+"' and isdescendantnode(l,['"+ JCRContentUtils.getSystemSitePath() + "'])",Query.JCR_SQL2);
@@ -1717,7 +1717,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             NodeIterator nodeIterator = queryResult.getNodes();
             while (nodeIterator.hasNext()) {
                 JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.nextNode();
-                nodes.add(navigation.getGWTJahiaNode(nodeWrapper.getParent()));
+                nodes.add(navigation.getGWTJahiaNode(nodeWrapper));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

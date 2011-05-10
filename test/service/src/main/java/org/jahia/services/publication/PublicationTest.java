@@ -53,6 +53,7 @@ import javax.jcr.RepositoryException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -898,7 +899,7 @@ public class PublicationTest {
 
         // Case 3 : now let's unpublish the node and test it's presence in the live workspace.
         getCleanSession();
-        jcrService.unpublish(englishEditPage1NodeIdentifier, languages);
+        jcrService.unpublish(Collections.singletonList(englishEditPage1NodeIdentifier), languages);
         testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1",
                 "Page 1 should have been unpublished !");
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage1",

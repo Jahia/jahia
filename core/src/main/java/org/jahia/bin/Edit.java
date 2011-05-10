@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  * @see Render
  */
 public class Edit extends Render {
+    private static final long serialVersionUID = -6197445426874881036L;
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(Edit.class);
     public static final String EDIT_MODE = "editmode";
 
@@ -70,5 +71,9 @@ public class Edit extends Render {
             return false;
         }
         return node.hasPermission("editModeAccess");
+    }
+    @Override
+    protected boolean isDisabled() {
+        return settingsBean.isDistantPublicationServerMode();
     }
 }

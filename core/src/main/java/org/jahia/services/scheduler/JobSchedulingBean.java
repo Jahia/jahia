@@ -40,6 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.jahia.settings.SettingsBean;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
@@ -56,116 +57,126 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class JobSchedulingBean implements InitializingBean {
 
-	private transient static Logger logger = LoggerFactory.getLogger(JobSchedulingBean.class);
+    private static Logger logger = LoggerFactory.getLogger(JobSchedulingBean.class);
 
-	private boolean isRamJob;
+    private boolean isRamJob;
 
-	private JobDetail jobDetail;
+    private JobDetail jobDetail;
 
-	private boolean overwriteExisting = false;
+    private Boolean overwriteExisting;
 
-	private SchedulerService schedulerService;
+    private SchedulerService schedulerService;
 
-	private List<Trigger> triggers = new LinkedList<Trigger>();
+    private SettingsBean settingsBean;
 
-	public void afterPropertiesSet() throws Exception {
-		if (jobDetail == null) {
-			logger.info("No JobDetail data was specified. Skip scheduling job.");
-			return;
-		}
+    private List<Trigger> triggers = new LinkedList<Trigger>();
 
-		if (overwriteExisting) {
-			logger.info("Deleting job {}", jobDetail.getFullName());
-			getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
-			if (triggers.size() == 1) {
-				logger.info("Scheduling {} job {}", isRamJob ? "RAM" : "persistent",
-				        jobDetail.getFullName());
-				getScheduler().scheduleJob(jobDetail, triggers.get(0));
-			} else {
-				if (triggers.size() == 0) {
-					logger.info("Job has no triggers configured. Only the JobDetail data will be stored.");
-				}
-				getScheduler().addJob(jobDetail, true);
-				for (Trigger trigger : triggers) {
-					trigger.setJobName(jobDetail.getName());
-					trigger.setJobGroup(jobDetail.getGroup());
-					logger.info("Scheduling {} job {} using trigger {}",
-					        new String[] { isRamJob ? "RAM" : "persistent",
-					                jobDetail.getFullName(), String.valueOf(trigger) });
-					getScheduler().scheduleJob(trigger);
-				}
-			}
-		} else {
-			if (getScheduler().getJobDetail(jobDetail.getName(), jobDetail.getGroup()) == null) {
-				getScheduler().addJob(jobDetail, true);
-			} else {
-				Trigger[] existingTriggers = getScheduler().getTriggersOfJob(jobDetail.getName(),
-				        jobDetail.getGroup());
-				if (existingTriggers != null && existingTriggers.length > 0) {
-					Map<String, Trigger> newTriggers = new HashMap<String, Trigger>();
-					for (Trigger newTrigger : triggers) {
-						newTriggers.put(newTrigger.getFullName(), newTrigger);
-					}
-					boolean doneUnscheduling = false;
-					for (Trigger existingTrigger : existingTriggers) {
-						if (!newTriggers.containsKey(existingTrigger.getFullName())) {
-							logger.info("Removing no longer needed trigger {} for job {}",
-							        String.valueOf(existingTrigger), jobDetail.getFullName());
-							getScheduler().unscheduleJob(existingTrigger.getName(),
-							        existingTrigger.getGroup());
-							doneUnscheduling = true;
-						} else {
-							logger.info("Skip updating existing trigger {} for job {}",
-							        String.valueOf(existingTrigger), jobDetail.getFullName());
-							newTriggers.remove(existingTrigger.getFullName());
-						}
-					}
-					for (Trigger newTrigger : newTriggers.values()) {
-						newTrigger.setJobName(jobDetail.getName());
-						newTrigger.setJobGroup(jobDetail.getGroup());
-						logger.info(
-						        "Scheduling {} job {} using trigger {}",
-						        new String[] { isRamJob ? "RAM" : "persistent",
-						                jobDetail.getFullName(), String.valueOf(newTrigger) });
-						getScheduler().scheduleJob(newTrigger);
-					}
-					if (doneUnscheduling
-					        && newTriggers.isEmpty()
-					        && !STATUS_ADDED
-					                .equals(jobDetail.getJobDataMap().getString(JOB_STATUS))) {
-						jobDetail.getJobDataMap().put(JOB_STATUS, STATUS_ADDED);
-						getScheduler().addJob(jobDetail, true);
-					}
-				}
-			}
-		}
-	}
+    public void afterPropertiesSet() throws Exception {
+        if (overwriteExisting == null) {
+            overwriteExisting = settingsBean.isDevelopmentMode();
+        }
 
-	protected Scheduler getScheduler() {
-		return isRamJob ? schedulerService.getRAMScheduler() : schedulerService.getScheduler();
-	}
+        if (jobDetail == null) {
+            logger.info("No JobDetail data was specified. Skip scheduling job.");
+            return;
+        }
 
-	public void setJobDetail(JobDetail jobDetail) {
-		this.jobDetail = jobDetail;
-	}
+        if (overwriteExisting) {
+            logger.info("Deleting job {}", jobDetail.getFullName());
+            getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
+            if (triggers.size() == 1) {
+                logger.info("Scheduling {} job {}", isRamJob ? "RAM" : "persistent",
+                        jobDetail.getFullName());
+                getScheduler().scheduleJob(jobDetail, triggers.get(0));
+            } else {
+                if (triggers.size() == 0) {
+                    logger.info("Job has no triggers configured. Only the JobDetail data will be stored.");
+                }
+                getScheduler().addJob(jobDetail, true);
+                for (Trigger trigger : triggers) {
+                    trigger.setJobName(jobDetail.getName());
+                    trigger.setJobGroup(jobDetail.getGroup());
+                    logger.info("Scheduling {} job {} using trigger {}",
+                            new String[] { isRamJob ? "RAM" : "persistent",
+                                    jobDetail.getFullName(), String.valueOf(trigger) });
+                    getScheduler().scheduleJob(trigger);
+                }
+            }
+        } else {
+            if (getScheduler().getJobDetail(jobDetail.getName(), jobDetail.getGroup()) == null) {
+                getScheduler().addJob(jobDetail, true);
+            } else {
+                Trigger[] existingTriggers = getScheduler().getTriggersOfJob(jobDetail.getName(),
+                        jobDetail.getGroup());
+                if (existingTriggers != null && existingTriggers.length > 0) {
+                    Map<String, Trigger> newTriggers = new HashMap<String, Trigger>();
+                    for (Trigger newTrigger : triggers) {
+                        newTriggers.put(newTrigger.getFullName(), newTrigger);
+                    }
+                    boolean doneUnscheduling = false;
+                    for (Trigger existingTrigger : existingTriggers) {
+                        if (!newTriggers.containsKey(existingTrigger.getFullName())) {
+                            logger.info("Removing no longer needed trigger {} for job {}",
+                                    String.valueOf(existingTrigger), jobDetail.getFullName());
+                            getScheduler().unscheduleJob(existingTrigger.getName(),
+                                    existingTrigger.getGroup());
+                            doneUnscheduling = true;
+                        } else {
+                            logger.info("Skip updating existing trigger {} for job {}",
+                                    String.valueOf(existingTrigger), jobDetail.getFullName());
+                            newTriggers.remove(existingTrigger.getFullName());
+                        }
+                    }
+                    for (Trigger newTrigger : newTriggers.values()) {
+                        newTrigger.setJobName(jobDetail.getName());
+                        newTrigger.setJobGroup(jobDetail.getGroup());
+                        logger.info(
+                                "Scheduling {} job {} using trigger {}",
+                                new String[] { isRamJob ? "RAM" : "persistent",
+                                        jobDetail.getFullName(), String.valueOf(newTrigger) });
+                        getScheduler().scheduleJob(newTrigger);
+                    }
+                    if (doneUnscheduling
+                            && newTriggers.isEmpty()
+                            && !STATUS_ADDED
+                                    .equals(jobDetail.getJobDataMap().getString(JOB_STATUS))) {
+                        jobDetail.getJobDataMap().put(JOB_STATUS, STATUS_ADDED);
+                        getScheduler().addJob(jobDetail, true);
+                    }
+                }
+            }
+        }
+    }
 
-	public void setOverwriteExisting(boolean overwriteExisting) {
-		this.overwriteExisting = overwriteExisting;
-	}
+    protected Scheduler getScheduler() {
+        return isRamJob ? schedulerService.getRAMScheduler() : schedulerService.getScheduler();
+    }
 
-	public void setRamJob(boolean ramJob) {
-		isRamJob = ramJob;
-	}
+    public void setJobDetail(JobDetail jobDetail) {
+        this.jobDetail = jobDetail;
+    }
 
-	public void setSchedulerService(SchedulerService schedulerService) {
-		this.schedulerService = schedulerService;
-	}
+    public void setOverwriteExisting(boolean overwriteExisting) {
+        this.overwriteExisting = overwriteExisting;
+    }
 
-	public void setTrigger(Trigger trigger) {
-		this.triggers.add(trigger);
-	}
+    public void setRamJob(boolean ramJob) {
+        isRamJob = ramJob;
+    }
 
-	public void setTriggers(List<Trigger> triggers) {
-		this.triggers.addAll(triggers);
-	}
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
+    }
+
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
+    }
+
+    public void setTrigger(Trigger trigger) {
+        this.triggers.add(trigger);
+    }
+
+    public void setTriggers(List<Trigger> triggers) {
+        this.triggers.addAll(triggers);
+    }
 }

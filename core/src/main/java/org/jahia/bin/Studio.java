@@ -33,7 +33,6 @@
 package org.jahia.bin;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -48,8 +47,8 @@ import javax.servlet.http.HttpServletResponse;
  * @see org.jahia.bin.Render
  */
 public class Studio extends Render {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Studio.class);
 
+    private static final long serialVersionUID = -6694346322793374119L;
     public static final String STUDIO_MODE = "studiomode";
 
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
@@ -67,5 +66,10 @@ public class Studio extends Render {
 
     protected boolean hasAccess(JCRNodeWrapper node) {
         return node.hasPermission("studioModeAccess");
+    }
+
+    @Override
+    protected boolean isDisabled() {
+        return settingsBean.isDistantPublicationServerMode();
     }
 }

@@ -80,9 +80,7 @@ import java.util.*;
  * Rendering controller. Resolves the node and the template, and renders it by executing the appropriate script.
  */
 public class Render extends HttpServlet implements Controller, ServletConfigAware {
-    /**
-     * The serialVersionUID.
-     */
+
     private static final long serialVersionUID = 5377039107890340659L;
 
     public static final String METHOD_DELETE = "DELETE";
@@ -135,7 +133,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private Action defaultPostAction;
     private Action defaultDeleteAction = new DefaultDeleteAction();
 
-    private SettingsBean settingsBean;
+    protected SettingsBean settingsBean;
     private RenderService renderService;
     private JCRSessionFactory jcrSessionFactory;
     private URLResolverFactory urlResolverFactory;
@@ -657,12 +655,17 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        if (isDisabled()) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
         String method = req.getMethod();
         if (req.getParameter(METHOD_TO_CALL) != null) {
             method = req.getParameter(METHOD_TO_CALL).toUpperCase();
         }
         if (!isMethodAllowed(method)) {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            return null;
         }
         long startTime = System.currentTimeMillis();
 
@@ -797,6 +800,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
         return null;
+    }
+
+    protected boolean isDisabled() {
+        return false;
     }
 
     private void doAction(HttpServletRequest req, HttpServletResponse resp, URLResolver urlResolver,

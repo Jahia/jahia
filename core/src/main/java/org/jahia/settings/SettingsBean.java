@@ -138,7 +138,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private int cacheMaxGroups = 10000;
 
-    private boolean developmentMode = true;
+    private String operatingMode = "development";
+    private boolean productionMode = false;
+    private boolean distantPublicationServerMode = true;
+    
     // Settings to control servlet response wrapper flushing
     private boolean wrapperBufferFlushingActivated = true;
 
@@ -303,7 +306,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             cacheMaxGroups = getInt("cacheMaxGroups", 10000);
 
-            developmentMode = getBoolean("developmentMode",true);
+            operatingMode = getString("operatingMode", "development");
+            productionMode = !"development".equalsIgnoreCase(operatingMode);
+            distantPublicationServerMode = "distantPublicationServer".equalsIgnoreCase(operatingMode);
 
             wrapperBufferFlushingActivated = getBoolean("wrapperBufferFlushingActivated", true);
 
@@ -676,7 +681,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     public boolean isDevelopmentMode() {
-        return developmentMode;
+        return !productionMode;
     }
 
     /**
@@ -850,5 +855,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 }
             }
         }
+    }
+
+    public String getOperatingMode() {
+        return operatingMode;
+    }
+
+    public boolean isProductionMode() {
+        return productionMode;
+    }
+
+    public boolean isDistantPublicationServerMode() {
+        return distantPublicationServerMode;
     }
 }

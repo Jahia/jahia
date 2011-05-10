@@ -50,11 +50,13 @@
     
     <bean id="jobSchedulingBean" class="org.jahia.services.scheduler.JobSchedulingBean" abstract="true">
         <property name="schedulerService" ref="SchedulerService"/>
+        <property name="settingsBean" ref="settingsBean"/>
         <!--
             Do we first delete the existing JobDetail and Triggers before scheduling the job?
             If set to false (production mode settings), we do not update the JodDetails if exists and only check if the configured trigger are present
             without modifying them.
+            If this property is not set on the bean the value will be detected by the operatingMode value in jahia.properties
+        <property name="overwriteExisting" value="false"/>
         -->
-        <property name="overwriteExisting" value="${developmentMode}"/>
     </bean>    
 </beans>

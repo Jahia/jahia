@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * @see org.jahia.bin.Render
  */
 public class Contribute extends Render {
+    private static final long serialVersionUID = 7621770855694958651L;
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(Contribute.class);
 
     
@@ -72,4 +73,8 @@ public class Contribute extends Render {
         return node.hasPermission("contributeModeAccess");
     }
 
+    @Override
+    protected boolean isDisabled() {
+        return settingsBean.isDistantPublicationServerMode();
+    }
 }

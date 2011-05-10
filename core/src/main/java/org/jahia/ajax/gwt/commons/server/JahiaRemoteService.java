@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.commons.server;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.core.SessionExpirationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -147,6 +148,8 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         try {
             if (!StringUtils.isEmpty(request.getParameter("site"))) {
                 return (JCRSiteNode) retrieveCurrentSession().getNodeByUUID(request.getParameter("site"));
+            } else {
+                return (JCRSiteNode) retrieveCurrentSession().getNode(JCRContentUtils.getSystemSitePath());
             }
         } catch (Exception e) {
             logger.error("Cannot get site",e);

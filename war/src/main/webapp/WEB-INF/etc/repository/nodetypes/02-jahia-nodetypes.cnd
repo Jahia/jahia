@@ -354,6 +354,7 @@
  - j:requirePrivilegedUser (boolean)
  - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'live', 'edit', 'contribute'
  - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) nofulltext multiple
+ - j:contextNodePath (string)
 
 [jnt:pageTemplate] > jnt:template
 

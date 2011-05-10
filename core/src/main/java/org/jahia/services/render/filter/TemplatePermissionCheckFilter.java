@@ -32,6 +32,7 @@
 
 package org.jahia.services.render.filter;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -101,8 +102,19 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                         return permissionNames;
                     }
                 });
+                JCRNodeWrapper contextNode = resource.getNode();
+                if (node.hasProperty("j:contextNodePath")) {
+                    String contextPath = node.getProperty("j:contextNodePath").getString();
+                    if (!StringUtils.isEmpty(contextPath)) {
+                        if (contextPath.startsWith("/")) {
+                            contextNode = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(contextPath);
+                        } else {
+                            contextNode = contextNode.getNode(contextPath);
+                        }
+                    }
+                }
                 for (String perm : perms) {
-                    if (!resource.getNode().hasPermission(perm)) {
+                    if (!contextNode.hasPermission(perm)) {
                         return "";
                     }
                 }

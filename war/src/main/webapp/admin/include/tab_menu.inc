@@ -11,6 +11,7 @@
                     org.jahia.services.preferences.user.UserPreferencesHelper"
         %>
 <%@ page import="org.apache.commons.lang.WordUtils" %>
+<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
 <%
     JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
     JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
@@ -65,17 +66,25 @@
         </li>
         <%  }
         %>
+        <%
+            try {
+                if (JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/templateSets").hasPermission("studioModeAccess")) {
+        %>
         <li class="dex-TabBarItem tabExit">
             <div>
                 <div>
-          <span class="tab-icon ico-studio">
-          	<c:url var="studioUrl" value="/cms/studio/default/${processingContext.UILocale}/templateSets/templates-system/home.html"/>
-            <a href="${studioUrl}"><fmt:message key="org.jahia.admin.exitToStudio.label"/></a>
-          </span>
+                    <span class="tab-icon ico-studio">
+                        <c:url var="studioUrl" value="/cms/studio/default/${processingContext.UILocale}/templateSets/templates-system/home.html"/>
+                        <a href="${studioUrl}"><fmt:message key="org.jahia.admin.exitToStudio.label"/></a>
+                    </span>
                 </div>
             </div>
         </li>
-
+        <%
+                }
+            } catch (Exception e) {
+                }
+        %>
 
         <%
             if (theSite != null) {

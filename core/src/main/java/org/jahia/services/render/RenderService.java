@@ -32,6 +32,7 @@
 
 package org.jahia.services.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.CacheImplementation;
@@ -426,8 +427,19 @@ public class RenderService {
                     return permissionNames;
                 }
             });
+            JCRNodeWrapper contextNode = resource.getNode();
+            if (templateNode.hasProperty("j:contextNodePath")) {
+                String contextPath = templateNode.getProperty("j:contextNodePath").getString();
+                if (!StringUtils.isEmpty(contextPath)) {
+                    if (contextPath.startsWith("/")) {
+                        contextNode = contextNode.getSession().getNode(contextPath);
+                    } else {
+                        contextNode = contextNode.getNode(contextPath);
+                    }
+                }
+            }
             for (String perm : perms) {
-                if (!resource.getNode().hasPermission(perm)) {
+                if (!contextNode.hasPermission(perm)) {
                     return false;
                 }
             }

@@ -130,10 +130,21 @@ public class ContentManagerAccessCheckFilter implements Filter,
             return;
         }
 
-        JCRSiteNode site = getSite(request);
-        if (site == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
+        JCRNodeWrapper site;
+        if (!cfg.equals("repositoryexplorer")) {
+            site = getSite(request);
+            if (site == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+        } else {
+            try {
+                site = JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode();
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
         }
 
         if (requireAuthenticatedUser) {
@@ -198,7 +209,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
         // do nothing
     }
 
-    protected boolean isAllowed(String permission, JCRSiteNode site) {
+    protected boolean isAllowed(String permission, JCRNodeWrapper site) {
         boolean allowed = false;
         try {
             allowed = JahiaControllerUtils

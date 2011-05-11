@@ -161,14 +161,16 @@ public class WelcomeServlet extends HttpServlet {
                         defSite = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
                                 .getCurrentUserSession().getNode(site.getPath());
                     } catch (PathNotFoundException e) {
-                        throw new AccessDeniedException();
+                        redirect(request.getContextPath()+"/start", response);
+                        return;
                     }
                     if (defSite.getHome() != null) {
                         base = request.getContextPath() + Edit.getEditServletPath() + "/"
                                 + Constants.EDIT_WORKSPACE + "/" + language
                                 + defSite.getHome().getPath();
                     } else {
-                        throw new AccessDeniedException();
+                        redirect(request.getContextPath()+"/start", response);
+                        return;
                     }
                 }
             }

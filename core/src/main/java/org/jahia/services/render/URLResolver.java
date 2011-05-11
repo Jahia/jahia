@@ -292,6 +292,10 @@ public class URLResolver {
         return urlPathInfo;
     }
 
+    public String getServletPart() {
+        return servletPart;
+    }
+
     /**
      * Gets the workspace of the request resolved by the URL
      * @return the workspace of the given URL

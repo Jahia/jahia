@@ -120,26 +120,45 @@ public class Logout implements Controller {
             if (redirect.startsWith(prefix)) {
                 if (!urlRewriteService.isSeoRulesEnabled()) {
                     String url = "/" + StringUtils.substringAfter(redirect, prefix);
+                    String hash = StringUtils.substringAfterLast(url, "#");
                     url = StringUtils.substringBefore(url, ";jsessionid");
                     url = StringUtils.substringBefore(url, "?");
                     url = StringUtils.substringBefore(url, "#");
-
-                    try {
-                        URLResolver r = urlResolverFactory.createURLResolver(url, request.getServerName(), request);
-                        if (r.getPath().startsWith("/sites/")) {
-                                RenderContext context = new RenderContext(request, response, ServicesRegistry
-                                        .getInstance().getJahiaUserManagerService()
-                                        .lookupUserByKey(JahiaUserManagerService.GUEST_USERNAME));
-                                JCRNodeWrapper n = JCRContentUtils.findDisplayableNode(r.getNode(), context);
-                                redirect = request.getContextPath() + Render.getRenderServletPath() + "/"
-                                        + Constants.LIVE_WORKSPACE + "/"
-                                        + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
-                        } else {
-                            redirect = request.getContextPath() + "/start";
-                        }
-                    } catch (Exception e) {
-                        redirect = request.getContextPath() + "/start";
+                    if (hash != null && hash.startsWith("/sites/") && url.contains("/sites/")) {
+                        url = StringUtils.substringBefore(url, "/sites/") + StringUtils.substringBefore(hash, ":") + ".html";
                     }
+
+                    List<String> urls = new ArrayList<String>();
+                    urls.add(url);
+                    if (url.startsWith("/edit/")) {
+                        url = "/render/" + StringUtils.substringAfter(url,"/edit/");
+                        urls.add(url);
+                    }
+                    if (url.startsWith("/contribute/")) {
+                        url = "/render/" + StringUtils.substringAfter(url,"/contribute/");
+                        urls.add(url);
+                    }
+                    if (url.startsWith("/render/default/")) {
+                        url = "/render/live/" + StringUtils.substringAfter(url,"/render/default/");
+                        urls.add(url);
+                    }
+                    for (String currentUrl : urls) {
+                        try {
+                            URLResolver r = urlResolverFactory.createURLResolver(currentUrl, request.getServerName(), request);
+                            if (r.getPath().startsWith("/sites/")) {
+                                    JCRNodeWrapper n = r.getNode();
+                                    redirect = prefix + r.getServletPart() + "/" + r.getWorkspace() + "/"
+                                            + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
+                            } else {
+                                redirect = request.getContextPath() + "/";
+                            }
+                            response.sendRedirect(response.encodeRedirectURL(redirect));
+                            return;
+                        } catch (Exception e) {
+                        }
+                    }
+                    response.sendRedirect(response.encodeRedirectURL(prefix + StringUtils.substringAfter(urls.get(0), "/")));
+                    return;
                 } else {
                     // TODO handle the case when SEO rules are enabled
                     redirect = null;
@@ -147,7 +166,7 @@ public class Logout implements Controller {
             }
         }
 
-        response.sendRedirect(response.encodeRedirectURL(StringUtils.defaultIfEmpty(redirect, StringUtils.defaultIfEmpty(request.getContextPath(), "/"))));
+        response.sendRedirect(response.encodeRedirectURL(redirect));
     }
 
     /**
@@ -170,6 +189,10 @@ public class Logout implements Controller {
         Locale locale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_LOCALE);
 
         request.getSession().invalidate();
+
+        JCRSessionFactory.getInstance().closeAllSessions();
+        JCRSessionFactory.getInstance()
+                .setCurrentUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerService.GUEST_USERNAME));
 
         request.getSession().setAttribute(ProcessingContext.SESSION_UI_LOCALE, uiLocale);
         request.getSession().setAttribute(ProcessingContext.SESSION_LOCALE, locale);

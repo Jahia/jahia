@@ -15,9 +15,9 @@
     <form ${functions:attributes(attributes)}>
         <c:set var="redirectTo" value="${functions:default(attributes.redirectTo, requestScope['javax.servlet.error.request_uri'])}"/>
         <c:if test="${not empty redirectTo}">
-            <input type="hidden" name="redirect" value="${requestScope['javax.servlet.error.request_uri']}"/>
+            <input type="hidden" name="redirect" value="${redirectTo}"/>
         </c:if>
-        <c:if test="${redirectTo}">
+        <c:if test="${empty redirectTo}">
             <input type="hidden" name="redirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
         </c:if>
         <input type="hidden" name="<%=LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER%>" value="true"/>

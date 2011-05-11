@@ -291,12 +291,6 @@ public class JCRPublicationService extends JahiaService {
         for (String uuid : uuidsToPublish) {
             toPublish.add(sourceSession.getNodeByUUID(uuid));
         }
-        System.out.println("------------- publish");
-        for (JCRNodeWrapper wrapper : toPublish) {
-            System.out.println(wrapper.getPath());
-        }
-        System.out.println("---------------------");
-        Thread.dumpStack();
         VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
         if (destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {

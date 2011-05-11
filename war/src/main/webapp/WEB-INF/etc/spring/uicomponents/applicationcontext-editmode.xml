@@ -622,15 +622,6 @@
         </property>
     </bean>
 
-    <bean id="compare-engine" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Publish"/>
-                <ref bean="Toolbar.Item.PublishAll"/>
-            </list>
-        </property>
-    </bean>
-
     <bean id="Engine.Tab.Content" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="content"/>
         <property name="titleKey" value="label.engineTab.content"/>

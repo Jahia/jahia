@@ -33,14 +33,11 @@
 package org.jahia.ajax.gwt.client.widget.toolbar;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
@@ -55,14 +52,7 @@ import java.util.List;
 public class ActionToolbarLayoutContainer extends LayoutContainer {
     private List<ActionToolbar> actionToolbars = new ArrayList<ActionToolbar>();
     private Linker linker;
-    private String toolbarName;
     private List<GWTJahiaToolbar> toolbarSet;
-
-    public ActionToolbarLayoutContainer(String toolbarName) {
-        super();
-        this.toolbarName = toolbarName;
-        setLayout(new RowLayout());
-    }
 
     public ActionToolbarLayoutContainer(GWTJahiaToolbar toolbar) {
         super();
@@ -75,31 +65,6 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         super();
         setLayout(new RowLayout());
         this.toolbarSet = toolbarSet;
-    }
-
-    /**
-     * Load toolbar
-     */
-    private void loadToolbars() {
-        // load toolbars
-        JahiaContentManagementService.App.getInstance().getGWTToolbars(toolbarName, new BaseAsyncCallback<GWTJahiaToolbar>() {
-            public void onSuccess(GWTJahiaToolbar gwtJahiaToolbar) {
-                long begin = System.currentTimeMillis();
-                if (gwtJahiaToolbar != null) {
-                    List<GWTJahiaToolbar> toolbarSet = new ArrayList<GWTJahiaToolbar>();
-                    toolbarSet.add(gwtJahiaToolbar);
-                    createToolbarUI(toolbarSet);
-                }
-                afterToolbarLoading();
-                long end = System.currentTimeMillis();
-                layout();
-                Log.info("Toolbar loaded in " + (end - begin) + "ms");
-            }
-
-            public void onApplicationFailure(Throwable throwable) {
-                Log.error("Unable to get toobar due to", throwable);
-            }
-        });
     }
 
     /**
@@ -145,12 +110,6 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
 
     }
 
-    public void insertItem(Component item, int index) {
-        if (actionToolbars != null && !actionToolbars.isEmpty()) {
-            actionToolbars.get(0).insert(item, index);
-        }
-    }
-
     /**
      * Handle module selection
      */
@@ -166,19 +125,10 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         }
     }
 
-    /**
-     * Executed after the load of the toolbar
-     */
-    public void afterToolbarLoading() {
-
-    }
-
     public void initWithLinker(Linker linker) {
         this.linker = linker;
         if (toolbarSet != null) {
             createToolbarUI(toolbarSet);
-        } else if (toolbarName != null) {
-            loadToolbars();
         }
     }
 }

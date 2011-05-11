@@ -33,19 +33,12 @@
 package org.jahia.ajax.gwt.client.widget.content.compare;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
@@ -107,95 +100,54 @@ public class CompareEngine extends Window {
     }
 
     protected void init(boolean displayVersionSelector, boolean displayTwoPanels) {
-        setLayout(new BorderLayout());
+        setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
         setBodyBorder(false);
-        int windowHeight=com.google.gwt.user.client.Window.getClientHeight()-10;
-        int windowWidth=com.google.gwt.user.client.Window.getClientWidth()-10;
-        int halfWindowWidth=windowWidth/2;
+        int windowHeight = com.google.gwt.user.client.Window.getClientHeight() - 10;
+        int windowWidth = com.google.gwt.user.client.Window.getClientWidth() - 10;
         setSize(windowWidth, windowHeight);
         setClosable(true);
         setResizable(true);
         setModal(true);
         setMaximizable(true);
+
         if (node != null) {
             setHeading(Messages.get("label_compare " + node.getPath(), "Compare " + node.getPath()));
         } else {
             setHeading(Messages.get("label_compare " + path, "Compare " + path));
         }
-        ContentPanel panel = new ContentPanel();
-        panel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
-        panel.setWidth("100%");
-        panel.setHeight("100%");
-        panel.setFrame(true);
-        panel.setCollapsible(false);
-        panel.setHeaderVisible(false);
-
         //live version
         if (node != null) {
             leftPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
                     linker, "live", false, displayVersionSelector, this);
         } else {
-            leftPanel = new VersionViewer(uuid, locale, workspace!=null?workspace:"live", false, displayVersionSelector, versionDate, this, versionLabel);
+            leftPanel = new VersionViewer(uuid, locale, workspace != null ? workspace : "live", false, displayVersionSelector, versionDate, this, versionLabel);
         }
 
-        leftPanel.setSize(displayTwoPanels?halfWindowWidth:windowWidth, windowHeight);
-        BorderLayoutData liveLayoutData = new BorderLayoutData(displayTwoPanels?Style.LayoutRegion.WEST:Style.LayoutRegion.CENTER, displayTwoPanels?halfWindowWidth:windowWidth);
-        liveLayoutData.setCollapsible(true);
-        add(leftPanel, liveLayoutData);
-        if(displayTwoPanels) {
-        // staging version
-        VersionViewer rightPanel;
-        if (node != null) {
-            rightPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
-                    linker, displayVersionSelector ? "live" : "default", true, displayVersionSelector, this) {
-                @Override
-                public String getCompareWith() {
-                    return leftPanel.getInnerHTML();
-                }
-            };
-        } else {
-            rightPanel = new VersionViewer(uuid, locale, "default", true, displayVersionSelector, null, this, null) {
-                @Override
-                public String getCompareWith() {
-                    return leftPanel.getInnerHTML();
-                }
-            };
-        }
-        rightPanel.setSize(halfWindowWidth, windowHeight);
-        rightPanel.setScrollMode(Style.Scroll.AUTO);
-        BorderLayoutData stagingLayoutData = new BorderLayoutData(Style.LayoutRegion.CENTER, halfWindowWidth);
-        add(rightPanel, stagingLayoutData);
-        }
-        LayoutContainer buttonsPanel = new LayoutContainer();
-        buttonsPanel.setBorders(false);
-
-        buttonBar = new ButtonBar();
-        buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
-
-        //initFooter();
-
-        buttonsPanel.add(buttonBar);
-        setBottomComponent(buttonsPanel);
-
-        setFooter(true);
-    }
-
-
-    /**
-     * init buttons
-     */
-    protected void initFooter() {
-        Button cancel = new Button(Messages.get("label.cancel"));
-        cancel.setHeight(BUTTON_HEIGHT);
-        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
-        cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                CompareEngine.this.hide();
+        add(leftPanel, new RowData(displayTwoPanels ? 0.5 : 1,1));
+        if (displayTwoPanels) {
+            // staging version
+            VersionViewer rightPanel;
+            if (node != null) {
+                rightPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(),
+                        linker, displayVersionSelector ? "live" : "default", true, displayVersionSelector, this) {
+                    @Override
+                    public String getCompareWith() {
+                        return leftPanel.getInnerHTML();
+                    }
+                };
+            } else {
+                rightPanel = new VersionViewer(uuid, locale, "default", true, displayVersionSelector, null, this, null) {
+                    @Override
+                    public String getCompareWith() {
+                        return leftPanel.getInnerHTML();
+                    }
+                };
             }
-        });
-        buttonBar.add(cancel);
+            add(rightPanel, new RowData(0.5, 1));
+        }
+        layout();
     }
+
 
     @Override
     protected void onHide() {
@@ -209,6 +161,12 @@ public class CompareEngine extends Window {
                 linker.refresh(Linker.REFRESH_ALL);
             }
         }
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        maximize();
     }
 
     public void setRefreshOpener(boolean refreshOpener) {

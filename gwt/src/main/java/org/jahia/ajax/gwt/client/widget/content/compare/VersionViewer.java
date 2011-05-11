@@ -45,13 +45,16 @@ import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.user.client.ui.Frame;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem;
 
 import java.util.Date;
 
@@ -185,22 +188,39 @@ public class VersionViewer extends ContentPanel {
         // case of preview or edit: no version
         if (addButtons && !workspace.equals("live")) {
             // add in the toolbar
-            final Label finalLabel = label[0];
-            final ActionToolbarLayoutContainer headerToolBar = new ActionToolbarLayoutContainer("compare-engine") {
-                public void afterToolbarLoading() {
-                    if (displayVersionSelector) {
-                        insertItem(restoreButton, 0);
-                    }
-                    insertItem(hButton, 0);
-                    insertItem(refresh, 0);
-                    if (displayVersionSelector) {
-                        insertItem(versionComboBox, 0);
-                    }
-                    insertItem(finalLabel, 0);
-                }
-            };
-            headerToolBar.initWithLinker(linker);
-            // add to widget
+            ToolBar headerToolBar = new ToolBar();
+            headerToolBar.add(label[0]);
+            if (displayVersionSelector) {
+                headerToolBar.add(versionComboBox);
+            }
+            headerToolBar.add(refresh);
+            headerToolBar.add(hButton);
+            if (displayVersionSelector) {
+                headerToolBar.add(restoreButton);
+            }
+
+            GWTJahiaToolbarItem gwtJahiaToolbarItem = new GWTJahiaToolbarItem();
+            PublishActionItem actionItem = new PublishActionItem();
+            gwtJahiaToolbarItem.setActionItem(actionItem);
+            gwtJahiaToolbarItem.setTitle(Messages.get("label.publish"));
+            gwtJahiaToolbarItem.setLayout(Constants.LAYOUT_BUTTON_LABEL);
+            gwtJahiaToolbarItem.setDisplayTitle(true);
+            gwtJahiaToolbarItem.setIcon("publish");
+            actionItem.init(gwtJahiaToolbarItem, linker);
+            actionItem.handleNewLinkerSelection();
+            headerToolBar.add(actionItem.getTextToolItem());
+
+            gwtJahiaToolbarItem = new GWTJahiaToolbarItem();
+            actionItem = new PublishAllActionItem();
+            gwtJahiaToolbarItem.setActionItem(actionItem);
+            gwtJahiaToolbarItem.setTitle(Messages.get("label.publishall"));
+            gwtJahiaToolbarItem.setLayout(Constants.LAYOUT_BUTTON_LABEL);
+            gwtJahiaToolbarItem.setDisplayTitle(true);
+            gwtJahiaToolbarItem.setIcon("publishAll");
+            actionItem.init(gwtJahiaToolbarItem, linker);
+            actionItem.handleNewLinkerSelection();
+            headerToolBar.add(actionItem.getTextToolItem());
+
             setTopComponent(headerToolBar);
         } else {
 

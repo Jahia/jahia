@@ -57,6 +57,8 @@ import java.util.List;
  */
 public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
 
+    ThreadLocal<PageConfig> pageConfigThreadLocal = new ThreadLocal<PageConfig>();
+
     public JahiaRenderConfigServiceImpl(ResourceConfig config) {
         super(config);
     }
@@ -105,10 +107,9 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
      * Get a "fake" page that contains ALL portlets (portlet instances)
      */
     public PageConfig getDefaultPage() {
-        ProcessingContext processingContext = Jahia.getThreadParamBean();
-        Object pageConfigObj = processingContext.getAttribute(PAGE_CONFIG_ATTR);
-        if (pageConfigObj == null) {
-            PageConfig pageConfig = new PageConfig();
+        PageConfig pageConfig = pageConfigThreadLocal.get();
+        if (pageConfig == null) {
+            pageConfig = new PageConfig();
             pageConfig.setUri(PortalDriverServlet.DEFAULT_PAGE_URI);
             pageConfig.setName(DEFAULT_PAGE_NAME);
             try {
@@ -127,10 +128,10 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-            processingContext.setAttribute(PAGE_CONFIG_ATTR, pageConfig);
+            pageConfigThreadLocal.set(pageConfig);
             return pageConfig;
         }
-        return (PageConfig) pageConfigObj;
+        return (PageConfig) pageConfig;
     }
 
 

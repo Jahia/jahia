@@ -447,7 +447,6 @@
 
     <modules>
         <module>public-api</module>
-        <module>bridges</module>
         <module>taglib</module>
         <module>core</module>
         <module>gwt</module>

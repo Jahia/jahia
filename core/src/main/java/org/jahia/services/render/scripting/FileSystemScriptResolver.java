@@ -48,6 +48,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class resolves the template to which we will dispatch to, in the web application file system.
@@ -71,8 +72,8 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private static final String PHP_EXTENSION = "php";
     private List<String> scriptExtensionsOrdering;
 
-    private static Map<String, Boolean> resourcesCache = new HashMap<String, Boolean>();
-    private static Map<ExtendedNodeType, SortedSet<View>> viewSetCache = new HashMap<ExtendedNodeType, SortedSet<View>>();
+    private static Map<String, Boolean> resourcesCache = new ConcurrentHashMap<String, Boolean>();
+    private static Map<ExtendedNodeType, SortedSet<View>> viewSetCache = new ConcurrentHashMap<ExtendedNodeType, SortedSet<View>>();
 
     public List<String> getScriptExtensionsOrdering() {
         return scriptExtensionsOrdering;

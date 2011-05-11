@@ -109,9 +109,9 @@ public class LegacyImportHandler extends DefaultHandler {
     private static final String PAGE = "page";
     private static final String LINK = "link";
 
-    public static Set<String> READ_ROLES = new HashSet<String>(Arrays.asList("visitor"));
-    public static Set<String> WRITE_ROLES = new HashSet<String>(Arrays.asList("viewer", "editor", "contributor"));
-    public static Set<String> ADMIN_ROLES = new HashSet<String>(Arrays.asList("publisher", "owner"));
+    public static Set<String> READ_ROLES = new HashSet<String>(Arrays.asList("reader"));
+    public static Set<String> WRITE_ROLES = new HashSet<String>(Arrays.asList("editor", "contributor"));
+    public static Set<String> ADMIN_ROLES = new HashSet<String>(Arrays.asList("reviewer", "owner"));
 
     private String currentNode;
     private int level = 0;

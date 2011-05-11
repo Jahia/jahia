@@ -61,9 +61,9 @@
     <templateSets jcr:primaryType="jnt:templateSets"/>
 
     <j:acl jcr:primaryType="jnt:acl">
-        <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="visitor" j:aceType="GRANT"
+        <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
                        jcr:primaryType="jnt:ace"/>
-        <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="visitor" j:aceType="GRANT"
+        <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="reader" j:aceType="GRANT"
                        jcr:primaryType="jnt:ace"/>
         <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="privileged" j:aceType="GRANT"
                             jcr:primaryType="jnt:ace"/>
@@ -76,7 +76,7 @@
 
     <permissions jcr:primaryType="jnt:permission" jcr:mixinTypes="mix:versionable">
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-            <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor privileged"
+            <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="reader privileged"
                                 j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
         </j:acl>
         <repository-permissions jcr:primaryType="jnt:permission">
@@ -163,7 +163,6 @@
             </editSelector>
 
             <engineTabs jcr:primaryType="jnt:permission">
-                <viewAnalyticsTab jcr:primaryType="jnt:permission"/>
                 <viewCategoriesTab jcr:primaryType="jnt:permission"/>
                 <viewContentTab jcr:primaryType="jnt:permission"/>
                 <viewLayoutTab jcr:primaryType="jnt:permission"/>
@@ -174,7 +173,6 @@
                 <viewTagsTab jcr:primaryType="jnt:permission"/>
                 <viewUsagesTab jcr:primaryType="jnt:permission"/>
                 <viewWorkflowTab jcr:primaryType="jnt:permission"/>
-                <viewPublicationTab jcr:primaryType="jnt:permission"/>
                 <viewHistoryTab jcr:primaryType="jnt:permission"/>
                 <viewVersioningTab jcr:primaryType="jnt:permission"/>
             </engineTabs>
@@ -220,36 +218,39 @@
 
     <roles jcr:primaryType="jnt:roles">
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-            <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="visitor privileged"
+            <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="reader privileged"
                                 j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
         </j:acl>
 
-        <visitor jcr:primaryType="jnt:role"
+        <reader jcr:primaryType="jnt:role"
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live"/>
 
-        <author jcr:primaryType="jnt:role"/>
+        <writer jcr:primaryType="jnt:role"/>
+
+        <owner jcr:primaryType="jnt:role"
+               j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live /permissions/actions"/>
 
         <privileged jcr:primaryType="jnt:role"
                     j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live /permissions/editMode/editSelector/sitemapSelector"
                     />
 
-        <editor jcr:primaryType="jnt:role"
-                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/templates /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/workflow-tasks/start-one-step-review /permissions/workflow-tasks/start-one-step-unpublish /permissions/wysiwyg-editor-toolbar/full"
-                j:privilegedAccess="true"
-                />
-
         <contributor jcr:primaryType="jnt:role"
                      j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/contributeMode /permissions/workflow-tasks/start-one-step-review /permissions/workflow-tasks/start-one-step-unpublish"
                      j:privilegedAccess="true"/>
 
-        <publisher jcr:primaryType="jnt:role"
+        <editor jcr:primaryType="jnt:role"
+                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode/editModeAccess /permissions/editMode/editSelector /permissions/editMode/engineTabs/viewCategoriesTab /permissions/editMode/engineTabs/viewContentTab /permissions/editMode/engineTabs/viewLayoutTab /permissions/editMode/engineTabs/viewMetadataTab /permissions/editMode/engineTabs/viewOptionsTab /permissions/editMode/engineTabs/viewCategoriesTab /permissions/editMode/engineTabs/viewRolesTab /permissions/editMode/engineTabs/viewTagsTab /permissions/editMode/engineTabs/viewSeoTab /permissions/contributeMode /permissions/templates /permissions/managers/fileManager /permissions/managers/portletManager /permissions/workflow-tasks/start-one-step-review /permissions/workflow-tasks/start-one-step-unpublish /permissions/wysiwyg-editor-toolbar/full"
+                j:privilegedAccess="true"
+                />
+
+        <reviewer jcr:primaryType="jnt:role"
                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default /permissions/repository-permissions/publish /permissions/editMode/editModeAccess /permissions/editMode/editSelector/sitemapSelector /permissions/contributeMode/contributeModeAccess /permissions/workflow-tasks/one-step-review /permissions/workflow-tasks/one-step-unpublish"
                    j:privilegedAccess="true"
                 />
 
-        <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
-                            j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/wysiwyg-editor-toolbar /permissions/admin/administrationAccess /permissions/admin/adminSiteLanguages /permissions/admin/adminUrlmapping /permissions/admin/adminHtmlSettings /permissions/admin/adminDocumentation /permissions/admin/adminGroups /permissions/admin/adminAbout /permissions/admin/adminIssueTracking"
-                            j:privilegedAccess="true"
+        <editor-in-chief jcr:primaryType="jnt:role"
+                j:permissions="/permissions/workflow-tasks /permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/publish /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/jobs /permissions/editMode /permissions/wysiwyg-editor-toolbar/light"
+                j:privilegedAccess="true"
                 />
 
         <web-designer jcr:primaryType="jnt:role" j:nodeTypes="jnt:templateSets"
@@ -257,8 +258,12 @@
                             j:privilegedAccess="true"
                 />
 
-        <owner jcr:primaryType="jnt:role"
-               j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live /permissions/actions"/>
+        <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
+                            j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/wysiwyg-editor-toolbar /permissions/admin/administrationAccess /permissions/admin/adminSiteLanguages /permissions/admin/adminUrlmapping /permissions/admin/adminHtmlSettings /permissions/admin/adminDocumentation /permissions/admin/adminGroups /permissions/admin/adminAbout /permissions/admin/adminIssueTracking"
+                            j:privilegedAccess="true"
+                />
+
+
 
     </roles>
 </content>

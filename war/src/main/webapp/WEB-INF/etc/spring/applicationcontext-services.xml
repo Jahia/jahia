@@ -66,7 +66,7 @@
         </property>
         <property name="defaultPortletModeMappings">
             <map>
-                <entry key="view" value="/roles/visitor" />
+                <entry key="view" value="/roles/reader" />
                 <entry key="edit" value="/roles/editor" />
                 <entry key="help" value="/roles/editor" />
             </map>

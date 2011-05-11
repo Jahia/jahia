@@ -36,7 +36,6 @@ import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.data.beans.RequestBean;
 import org.jahia.data.beans.portlets.PortletModeBean;
 import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.exceptions.JahiaException;
@@ -202,7 +201,7 @@ public class PortletModesTag extends TagSupport {
             try {
                 EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(new JCRPortletNode(node));
                 if (entryPointInstance == null) {
-                    logger.error("User " + renderContext.getUser().getName() + " could not load the portlet instance :" + node.getUUID());
+                    logger.error("User " + renderContext.getUser().getName() + " could not load the portlet instance :" + node.getIdentifier());
                 }
 
                 if (entryPointInstance != null) {
@@ -221,7 +220,7 @@ public class PortletModesTag extends TagSupport {
                         } else {
                             int plutoSeperatorPos = defName.lastIndexOf(".");
                             if (plutoSeperatorPos != -1) {
-                                String portletContext = defName.substring(0, plutoSeperatorPos);
+//                                String portletContext = defName.substring(0, plutoSeperatorPos);
                                 String portletDefName = defName.substring(plutoSeperatorPos + ".".length());
                                 defName = portletDefName;
                                 portletWindowID = entryPointInstance.getID();

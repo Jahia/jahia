@@ -34,7 +34,6 @@ package org.jahia.taglibs.utility.i18n;
 
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
-import org.jahia.data.beans.RequestBean;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;

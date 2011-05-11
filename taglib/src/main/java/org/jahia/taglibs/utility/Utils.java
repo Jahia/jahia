@@ -34,10 +34,8 @@ package org.jahia.taglibs.utility;
 
 import java.util.Iterator;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
-import org.jahia.gui.GuiBean;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,41 +165,6 @@ public class Utils {
         }
         // no image in link : remains the same
         return link;
-    }
-
-    /**
-     * Method isBrowserVersion : tests the version of the browser thanks to the guiBean method
-     *
-     * @param gui     the GuiBean used to test
-     * @param version the version to compare to
-     */
-    public static boolean isBrowserVersion(final HttpServletRequest req,
-                                           final GuiBean gui,
-                                           final String version) {
-
-        final String versionUp = version.toUpperCase();
-        if (versionUp.equals("NS")) {
-            return gui.isNS();
-        }
-        if (versionUp.equals("NS4")) {
-            return gui.isNS4();
-        }
-        if (versionUp.equals("NS6")) {
-            return gui.isNS6();
-        }
-        if (versionUp.equals("IE")) {
-            return gui.isIE();
-        }
-        if (versionUp.equals("IE4")) {
-            return gui.isIE4();
-        }
-        if (versionUp.equals("IE5")) {
-            return gui.isIE5();
-        }
-        if (versionUp.equals("IE6")) {
-            return gui.isIE6();
-        }
-        return false;
     }
 
     /**

@@ -24,7 +24,7 @@
     List tpls = (List) request.getAttribute("tmplSets");
     ProcessingContext jParams = null;
     if (jData != null) {
-        jParams = jData.params();
+        jParams = jData.getProcessingContext();
     }
     final boolean isInstall = session.getAttribute(JahiaAdministration.CLASS_NAME + "redirectToJahia") != null;
     final String readmefilePath = response.encodeURL(new StringBuffer().append(request.getContextPath()).append("/html/startup/readme.html").toString());

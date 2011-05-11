@@ -45,8 +45,6 @@
 package org.jahia.data;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.gui.GuiBean;
-import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 
 public class JahiaData {
@@ -54,8 +52,6 @@ public class JahiaData {
     public static final String JAHIA_DATA = "org.jahia.data.JahiaData";
 
     private ProcessingContext jParams;
-
-    private GuiBean guiBean;
 
     /**
      * constructor
@@ -69,7 +65,6 @@ public class JahiaData {
      */
     public JahiaData(ProcessingContext jParams, boolean doBuildData) throws JahiaException {
         this.jParams = jParams;
-        guiBean = new GuiBean(this.getProcessingContext());
     }
 
 
@@ -84,46 +79,10 @@ public class JahiaData {
 
 
     /**
-     * @return an object containing all the page parameters
-     * @deprecated use getProcessingContext instead since we are trying
-     *             to reduce the dependency on request/response pairs.
-     */
-    public ParamBean params() {
-        return getParamBean();
-    }
-
-    /**
      * @return the current processing context.
      */
     public ProcessingContext getProcessingContext() {
         return jParams;
-    }
-
-    /**
-     * returns an object allowing to retrieve paths and to draw links
-     */
-    public GuiBean gui() {
-        return getGui();
-    }
-    // end accessor methods
-
-    /**
-     * getter version of gui()
-     *
-     * @return
-     */
-    public GuiBean getGui() {
-        return guiBean;
-    }
-
-    /**
-     * @return the current ParamBean object if this is what we are really using
-     * @deprecated we strongly recommend using getProcessingContext instead of
-     *             this method, in order to avoid the requirement of the request/response
-     *             pair.
-     */
-    public ParamBean getParamBean() {
-        return (ParamBean) jParams;
     }
 
 

@@ -32,12 +32,17 @@
 
 package org.jahia.taglibs.uicomponents.portlets;
 
-import org.jahia.data.beans.RequestBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.render.RenderContext;
+import org.jahia.settings.SettingsBean;
+import org.jahia.taglibs.utility.Utils;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.data.beans.portlets.WindowStateBean;
 
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
+
 import java.io.IOException;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -107,8 +112,6 @@ public class WindowStatesTag extends TagSupport {
 
     private String namePostFix = "";
     private String name = null;
-    private RequestBean requestBean = null;
-    private ProcessingContext processingContext = null;
     private String resourceBundle = "JahiaInternalResources";
     private String listCSSClass = "windowStates";
     private String currentCSSClass = "current";
@@ -197,8 +200,6 @@ public class WindowStatesTag extends TagSupport {
 
     public int doStartTag () {
 
-        requestBean = (RequestBean) pageContext.findAttribute("currentRequest");
-        processingContext = requestBean.getProcessingContext();
         PortletWindowBean portletWindowBean = (PortletWindowBean) pageContext.
                                               findAttribute(name);
         if (portletWindowBean == null) {
@@ -229,8 +230,6 @@ public class WindowStatesTag extends TagSupport {
         // pooling.
         namePostFix = "";
         name = null;
-        processingContext = null;
-        requestBean = null;
         resourceBundle = "JahiaInternalResources";
         listCSSClass = "windowStates";
         currentCSSClass = "current";
@@ -279,7 +278,7 @@ public class WindowStatesTag extends TagSupport {
 		ResourceBundle res;
 		String resValue = null;
 
-		final Locale locale = processingContext.getLocale();
+		final Locale locale = getLocale();
 		try {
 			res = ResourceBundle.getBundle(resourceBundle, locale);
 			resValue = res.getString(resourceName);
@@ -289,4 +288,20 @@ public class WindowStatesTag extends TagSupport {
 		}
 		return resValue;
 	}
+	
+    private Locale getLocale() {
+        Locale locale = null;
+        RenderContext ctx = Utils.getRenderContext(pageContext);
+        if (ctx != null) {
+            locale = ctx.getMainResourceLocale();
+        }
+
+        if (locale == null) {
+            locale = (Locale) pageContext.getAttribute(ProcessingContext.SESSION_LOCALE,
+                    PageContext.SESSION_SCOPE);
+        }
+
+        return locale != null ? locale : LanguageCodeConverters.languageCodeToLocale(SettingsBean
+                .getInstance().getDefaultLanguageCode());
+    }
 }

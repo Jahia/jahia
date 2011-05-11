@@ -20,7 +20,7 @@
     JahiaSite newJahiaSite = (JahiaSite) session.getAttribute(JahiaAdministration.CLASS_NAME + "newJahiaSite");
     ProcessingContext jParams = null;
     if (jData != null) {
-        jParams = jData.params();
+        jParams = jData.getProcessingContext();
     }
     stretcherToOpen = 0; %>
 <% if (sitesList != null && sitesList.hasNext()) { %>

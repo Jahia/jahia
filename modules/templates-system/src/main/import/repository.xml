@@ -504,7 +504,11 @@
       <contents jcr:primaryType="jnt:contentFolder">
         <profile-page-items jcr:primaryType="jnt:contentFolder">
           <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Profile Page Items"/>
-          <my-settings divClass="user-edit-details" jcr:primaryType="jnt:componentLink" targetTemplate="user-edit-details">
+          <home divClass="user-home" jcr:primaryType="jnt:componentLink" targetTemplate="user-home">
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home"/>
+            <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" jcr:title="Accueil"/>
+          </home>
+		  <my-settings divClass="user-edit-details" jcr:primaryType="jnt:componentLink" targetTemplate="user-edit-details">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Settings"/>
             <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" jcr:title="Mes Informations"/>
           </my-settings>
@@ -524,10 +528,7 @@
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Web Projects"/>
             <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" jcr:title="Mes Projets Web"/>
           </my-web-projects>
-          <home divClass="user-home" jcr:primaryType="jnt:componentLink" targetTemplate="user-home">
-            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Home"/>
-            <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" jcr:title="Accueil"/>
-          </home>
+
         </profile-page-items>
       </contents>
       <portlets jcr:primaryType="jnt:portletFolder"/>

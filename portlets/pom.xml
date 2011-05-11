@@ -14,6 +14,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>bridges</module>
     <module>shared-map-RW</module>
     <module>shared-map-ext-R</module>
   </modules>

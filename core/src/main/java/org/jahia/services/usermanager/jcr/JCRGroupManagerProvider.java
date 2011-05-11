@@ -446,24 +446,29 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     }
 
                     private void recurseOnGroups(JCRSessionWrapper session, List<String> groups, String principalId) throws RepositoryException, JahiaException {
-                        PropertyIterator weakReferences = session.getNodeByUUID(principalId).getWeakReferences();
+                        JCRNodeWrapper node = session.getNodeByUUID(principalId);
+                        PropertyIterator weakReferences = node.getWeakReferences();
                         while (weakReferences.hasNext()) {
-                            Property property = weakReferences.nextProperty();
-                            if (property.getPath().contains("j:members")) {
-                                Node group = property.getParent().getParent().getParent();
-                                if (group.isNodeType("jnt:group")) {
-                                    int siteID = 0;
-                                    try {
-                                        String siteKey = group.getParent().getParent().getName();
-                                        if (!StringUtils.isEmpty(siteKey)) {
-                                            siteID = sitesService.getSiteByKey(siteKey).getID();
+                            try {
+                                Property property = weakReferences.nextProperty();
+                                if (property.getPath().contains("j:members")) {
+                                    Node group = property.getParent().getParent().getParent();
+                                    if (group.isNodeType("jnt:group")) {
+                                        int siteID = 0;
+                                        try {
+                                            String siteKey = group.getParent().getParent().getName();
+                                            if (!StringUtils.isEmpty(siteKey)) {
+                                                siteID = sitesService.getSiteByKey(siteKey).getID();
+                                            }
+                                        } catch (NullPointerException e) {
+                                            siteID = 0;
                                         }
-                                    } catch (NullPointerException e) {
-                                        siteID = 0;
+                                        groups.add(group.getName() + ":" + siteID);
+                                        recurseOnGroups(session, groups, group.getIdentifier());
                                     }
-                                    groups.add(group.getName() + ":" + siteID);
-                                    recurseOnGroups(session, groups, group.getIdentifier());
                                 }
+                            } catch (ItemNotFoundException e) {
+                                logger.warn("Cannot find group for "+node.getPath(),e);
                             }
                         }
                     }

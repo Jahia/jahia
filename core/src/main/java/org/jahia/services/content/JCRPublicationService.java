@@ -347,9 +347,14 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
             for (String s : toDelete) {
-                JCRNodeWrapper node = destinationSession.getNodeByIdentifier(s);
-                node.remove();
+                try {
+                    JCRNodeWrapper node = destinationSession.getNodeByIdentifier(s);
+                    node.remove();
+                } catch (ItemNotFoundException e) {
+                    logger.warn("Already deleted : "+s);
+                }
             }
+            sourceSession.save();
             destinationSession.save();
 
             mergeToDestinationWorkspace(toPublish, uuidsToPublish, sourceNode.getSession(), destinationSession,
@@ -413,7 +418,7 @@ public class JCRPublicationService extends JahiaService {
                 Value[] failed = node.getProperty("jcr:mergeFailed").getValues();
 
                 for (Value value : failed) {
-                    System.out.println("-- failed merge waiting : " + node.getPath() + " / " + value.getString());
+                    logger.warn("-- Failed merge waiting : " + node.getPath() + " / " + value.getString());
                 }
                 continue;
             }

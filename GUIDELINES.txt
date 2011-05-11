@@ -12,19 +12,19 @@ Code style conventions
 - We are based on the Sun coding style conventions : http://java.sun.com/docs/codeconv/ , with a few modifications
 - We allow lines longer than 80 characters
 - We do not allow the usage of tabs as spacers
-- We do NOT put braces on seperate lines, this helps make the code a little more compact. We also put opening and
+- We do NOT put braces on separate lines, this helps make the code a little more compact. We also put opening and
 closing braces even for single-line statements.
 
 Properties files
 ----------------
 - Properties files must ALWAYS be encoded in ISO-8859-1. If they concern resource bundles, they should use the \u
 encoding for non ISO-8859-1 characters as it is the standard. We recommend you edit resources bundles with specialized
-editors such as JetBrains' Intellij IDEA or other resource bundle translation utilities.
+editors such as JetBrains' IntelliJ IDEA or other resource bundle translation utilities.
 
 XML files
 ---------
 - XML files should always validate.
-- Use identation and keep the files easy to read
+- Use indentation and keep the files easy to read
 - Insert comments to help understand the file
 
 Singletons
@@ -36,7 +36,7 @@ don't know how to use Spring, just ask someone who knows :)
 Configuration files
 -------------------
 - Don't hardcode settings in Spring configuration files, refer them from properties files
-- Design in services as "modules", with their seperate configuration file if they are adding a new service, or inside
+- Design in services as "modules", with their separate configuration file if they are adding a new service, or inside
 in an existing one if already has a "classification" (such as users-groups for example).
 - Always document each setting you add. It's ok if you don't do it immediately, but do it before you commit
 - Choose a setting name that makes sense, think about the user of the setting, that needs to understand it
@@ -145,7 +145,7 @@ Exception handling
         }
 This will not log the stack trace of the exception, only the error message.
 - Except in cases you really master and expect, always remount the exception because it might impact the global
-operation and it might need to be handled at a higher level (ie transactions).
+operation and it might need to be handled at a higher level (i.e. transactions).
 - When throwing an exception from an existing exception, always include the source exception in the new exception being
 thrown.
 

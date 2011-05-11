@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<regex-normalize>
+<regex>
+  <pattern> </pattern>
+  <substitution>%20</substitution>
+</regex> 
+<regex>
+  <pattern>\s</pattern>
+  <substitution>%20</substitution>
+</regex> 
+</regex-normalize>

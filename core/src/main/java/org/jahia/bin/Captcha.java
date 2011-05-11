@@ -90,7 +90,7 @@ public class Captcha extends JahiaController {
             String capText = captchaProducer.createText();
     
             // store the text in the session
-            toks.get(token).put("captcha", Arrays.asList(capText));
+            toks.get(token).put("jcrcaptcha", Arrays.asList(capText));
     
             // create the image with the text
             BufferedImage bi = captchaProducer.createImage(capText);

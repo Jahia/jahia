@@ -81,7 +81,7 @@ public class TokenizedFormTag extends BodyTagSupport {
 
             if (hasCaptcha) {
                 // Put random number here, will be replaced by the captcha servlet with the expected value
-                hiddenInputs.put("captcha",Arrays.asList(java.util.UUID.randomUUID().toString()));
+                hiddenInputs.put("jcrcaptcha",Arrays.asList(java.util.UUID.randomUUID().toString()));
             }
 
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(" + id + ")##\"/>");

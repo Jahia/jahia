@@ -213,9 +213,9 @@
                 </bean>
                 <value>icon,40,empty</value>
                 <value>name,*,label.name</value>
-                <value>locked,60,label.lock</value>
-                <value>size,140,label.size</value>
-                <value>mix:lastModified.jcr:lastModified,10</value>
+                <value>locked,40,label.lock</value>
+                <value>size,100,label.size</value>
+                <value>mix:lastModified.jcr:lastModified,100</value>
                 <value>publicationInfo,40</value>
             </list>
         </property>
@@ -322,7 +322,7 @@
         </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>icon,*,imageMenu.label</value>
+                <value>icon,40,imageMenu.label</value>
                 <value>name,*,label.name</value>
                 <!--
                                 <value>locked,60,label.lock</value>
@@ -798,9 +798,9 @@
                 </bean>
                 <value>index,23</value>
                 <value>icon,40,empty</value>
-                <value>name,240,label.title</value>
-                <value>locked,60,label.lock</value>
-                <value>primaryTypeLabel,140,label.type</value>
+                <value>name,*,label.title</value>
+                <value>locked,40,label.lock</value>
+                <value>primaryTypeLabel,100,label.type</value>
                 <value>mix:created.jcr:created,100</value>
                 <value>mix:created.jcr:createdBy,100</value>
             </list>
@@ -947,7 +947,7 @@
                 </bean>
                 <value>index,23</value>
                 <value>icon,40,empty</value>
-                <value>displayName,240,label.title</value>
+                <value>displayName,*,label.title</value>
                 <value>locked,60,label.lock</value>
                 <value>primaryTypeLabel,140,label.type</value>
                 <value>mix:created.jcr:created,100</value>
@@ -1110,7 +1110,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
                 <value>icon,40,empty</value>
-                <value>displayName,350,label.title</value>
+                <value>displayName,*,label.title</value>
                 <value>mix:lastModified.jcr:lastModified,150</value>
                 <value>publicationInfo,40</value>
             </list>

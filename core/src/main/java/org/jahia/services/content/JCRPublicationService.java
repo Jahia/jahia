@@ -291,6 +291,12 @@ public class JCRPublicationService extends JahiaService {
         for (String uuid : uuidsToPublish) {
             toPublish.add(sourceSession.getNodeByUUID(uuid));
         }
+        System.out.println("------------- publish");
+        for (JCRNodeWrapper wrapper : toPublish) {
+            System.out.println(wrapper.getPath());
+        }
+        System.out.println("---------------------");
+        Thread.dumpStack();
         VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
         if (destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
@@ -1164,7 +1170,7 @@ public class JCRPublicationService extends JahiaService {
                 PropertyDefinition definition = p.getDefinition();
                 if (definition != null && (definition.getRequiredType() == PropertyType.REFERENCE ||
                         definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) &&
-                        !p.getName().startsWith("jcr:") && !p.getName().equals("j:templateNode")) {
+                        !p.getName().startsWith("jcr:") && !p.getName().equals("j:templateNode") && !p.getName().equals("j:sourceTemplate")) {
                     if (definition.isMultiple()) {
                         Value[] vs = p.getValues();
                         for (Value v : vs) {

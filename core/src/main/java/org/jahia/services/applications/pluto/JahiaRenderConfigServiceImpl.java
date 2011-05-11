@@ -131,7 +131,7 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
             pageConfigThreadLocal.set(pageConfig);
             return pageConfig;
         }
-        return (PageConfig) pageConfig;
+        return pageConfig;
     }
 
 

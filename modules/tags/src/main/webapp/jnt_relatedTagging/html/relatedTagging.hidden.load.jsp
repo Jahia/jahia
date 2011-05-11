@@ -21,12 +21,17 @@
             	  <c:set var="startQuery" value="1" />			
             </c:if>
     </c:forEach>
-     
-    <c:if test="${startQuery == '1' && not empty type && not empty nbOfResult}">
+    
+    <c:choose> 
+    <c:when test="${startQuery == '1' && not empty type && not empty nbOfResult}">
         <query:definition var="listQuery"
            statement="select * from [${type.string}] as tags where isdescendantnode(tags, '${renderContext.site.path}') and ${statement} order by tags.[jcr:lastModified] desc"
            limit="${nbOfResult.long}"/>
-    </c:if>        
+    </c:when>
+    <c:otherwise>
+        <c:remove var="listQuery"/>
+    </c:otherwise>
+    </c:choose>     
              
     <%-- Set variables to store the result --%>
     <c:set target="${moduleMap}" property="editable" value="false" />

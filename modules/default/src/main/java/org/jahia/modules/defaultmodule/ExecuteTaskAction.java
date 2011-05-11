@@ -67,7 +67,7 @@ public class ExecuteTaskAction extends Action {
         String providerKey = StringUtils.substringBefore(action, ":");
         String outcome = parameters.get("outcome").get(0);
 
-        workflowService.assignAndCompleteTaskAsJob(actionId, providerKey, outcome, getVariablesMap(parameters),
+        workflowService.assignAndCompleteTask(actionId, providerKey, outcome, getVariablesMap(parameters),
                                      renderContext.getUser());
 
         return ActionResult.OK_JSON;

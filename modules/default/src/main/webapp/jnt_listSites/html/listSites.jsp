@@ -34,23 +34,23 @@
                 </c:otherwise>
             </c:choose>
 
-            <c:if test="${not empty node.home and (jcr:hasPermission(node.home,'editModeAccess') || jcr:hasPermission(node.home,'contributeModeAccess') || node.home.properties['j:published'].boolean)}">
+            <c:if test="${not empty node and (jcr:hasPermission(node,'editModeAccess') || jcr:hasPermission(node,'contributeModeAccess') || node.home.properties['j:published'].boolean)}">
                 <li class="listsiteicon">${node.displayableName}
                     <c:set var="siteId" value="${node.properties['j:siteId'].long}"/>
-                    <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node.home,'administrationAccess')}">
+                    <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node,'administrationAccess')}">
                         <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='/administration/?do=change&changesite=${siteId}#sites'/>"><fmt:message key="label.administration"/></a>
                     </c:if>
-                    <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node.home,'editModeAccess')}">
+                    <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node,'editModeAccess')}">
                         <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseEdit}${node.path}${page}.html'/>"><fmt:message key="label.editMode"/></a>
                     </c:if>
-                    <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(node.home,'contributeModeAccess')}">
+                    <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(node,'contributeModeAccess')}">
                         <c:url value='/icons/contribute.png' var="icon"/>
                         <c:if test="${currentNode.properties.typeOfContent.string eq 'contents'}">
                             <c:url value='/icons/content-manager-1616.png' var="icon"/>
                         </c:if>
                         <img src="${icon}" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.baseContribute}${node.path}${page}.html'/>"><fmt:message key="label.contribute"/></a>
                     </c:if>
-                    <c:if test="${currentNode.properties.preview.boolean && jcr:hasPermission(node.home,'jcr:read_default')}">
+                    <c:if test="${currentNode.properties.preview.boolean && jcr:hasPermission(node,'jcr:read_default')}">
                         <img src="<c:url value='/icons/preview.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a href="<c:url value='${url.basePreview}${node.path}${page}.html'/>"><fmt:message key="label.preview"/></a>
                     </c:if>
                     <c:if test="${currentNode.properties.live.boolean && node.home.properties['j:published'].boolean}">

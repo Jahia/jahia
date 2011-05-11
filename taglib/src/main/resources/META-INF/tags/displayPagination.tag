@@ -22,7 +22,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-<c:if test="${not empty moduleMap.paginationActive and moduleMap.totalSize > 0 and moduleMap.nbPages > 1}">
+<c:if test="${not empty moduleMap.paginationActive and moduleMap.totalSize > 0 and moduleMap.nbPages > 0}">
     <c:set target="${moduleMap}" property="usePagination" value="true"/>
     <c:choose>
         <c:when test="${not empty moduleMap.displaySearchParams}">
@@ -52,7 +52,10 @@
         </div>
         <div class="paginationNavigation">
             <label for="pageSizeSelector"><fmt:message key="pagination.itemsPerPage"/>:</label>
-            <select id="pageSizeSelector" onchange="window.location='${basePaginationUrl}begin=${moduleMap.begin}&pagesize='+$('#pageSizeSelector').val();">
+            <c:url value="${basePaginationUrl}" context="/" var="selectSizeUrl">
+                <c:param name="begin" value="${moduleMap.begin}"/>
+            </c:url>
+            <select id="pageSizeSelector" onchange="window.location='${fn:escapeXml(selectSizeUrl)}&amp;pagesize='+$('#pageSizeSelector').val();">
                 <c:if test="${empty nbItemsList}">
                     <c:set var="nbItemsList" value="5,10,25,50,100"/>
                 </c:if>
@@ -62,11 +65,21 @@
             </select>
             &nbsp;
             <c:if test="${moduleMap.currentPage>1}">
-                <a class="previousLink" href="${basePaginationUrl}&begin=${ (moduleMap.currentPage-2) * moduleMap.pageSize }&end=${ (moduleMap.currentPage-1)*moduleMap.pageSize-1}&pagesize=${moduleMap.pageSize}"><fmt:message key="pagination.previous"/></a>
+                <c:url value="${basePaginationUrl}" context="/" var="previousUrl">
+                    <c:param name="begin" value="${(moduleMap.currentPage-2) * moduleMap.pageSize }"/>
+                    <c:param name="end" value="${ (moduleMap.currentPage-1)*moduleMap.pageSize-1}"/>
+                    <c:param name="pagesize" value="${moduleMap.pageSize}"/>
+                </c:url>
+                <a class="previousLink" href="${fn:escapeXml(previousUrl) }"><fmt:message key="pagination.previous"/></a>
             </c:if>
             <c:forEach begin="1" end="${moduleMap.nbPages}" var="i">
                 <c:if test="${i != moduleMap.currentPage}">
-                    <span><a class="paginationPageUrl" href="${basePaginationUrl}&begin=${ (i-1) * moduleMap.pageSize }&end=${ i*moduleMap.pageSize-1}&pagesize=${moduleMap.pageSize}"> ${ i }</a></span>
+                    <c:url value="${basePaginationUrl}" context="/" var="paginationPageUrl">
+                        <c:param name="begin" value="${ (i-1) * moduleMap.pageSize }"/>
+                        <c:param name="end" value="${ i*moduleMap.pageSize-1}"/>
+                        <c:param name="pagesize" value="${moduleMap.pageSize}"/>
+                    </c:url>
+                    <span><a class="paginationPageUrl" href="${fn:escapeXml(paginationPageUrl)}"> ${ i }</a></span>
                 </c:if>
                 <c:if test="${i == moduleMap.currentPage}">
                     <span class="currentPage">${ i }</span>
@@ -74,7 +87,12 @@
             </c:forEach>
 
             <c:if test="${moduleMap.currentPage<moduleMap.nbPages}">
-                <a class="nextLink" href="${basePaginationUrl}&begin=${ moduleMap.currentPage * moduleMap.pageSize }&end=${ (moduleMap.currentPage+1)*moduleMap.pageSize-1}&pagesize=${moduleMap.pageSize}"><fmt:message key="pagination.next"/></a>
+                <c:url value="${basePaginationUrl}" context="/" var="nextUrl">
+                    <c:param name="begin" value="${ moduleMap.currentPage * moduleMap.pageSize }"/>
+                    <c:param name="end" value="${ (moduleMap.currentPage+1)*moduleMap.pageSize-1}"/>
+                    <c:param name="pagesize" value="${moduleMap.pageSize}"/>
+                </c:url>
+                <a class="nextLink" href="${fn:escapeXml(nextUrl)}"><fmt:message key="pagination.next"/></a>
             </c:if>
         </div>
 

@@ -560,6 +560,7 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.DeployPortlets"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
                         <ref bean="Toolbar.Item.Delete"/>
                     </list>
                 </property>
@@ -571,6 +572,7 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.DeployPortlets"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
                         <ref bean="Toolbar.Item.Delete"/>
                     </list>
                 </property>

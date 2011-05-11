@@ -57,6 +57,8 @@ import java.util.List;
  */
 public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
 
+    // todo actually we never clear this threadlocal. We should probably remove it at some point and replace it
+    // with a more "static" configuration that is updated using a JCR listener for portlet object creation/delete.
     ThreadLocal<PageConfig> pageConfigThreadLocal = new ThreadLocal<PageConfig>();
 
     public JahiaRenderConfigServiceImpl(ResourceConfig config) {

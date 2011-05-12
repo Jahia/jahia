@@ -21,7 +21,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-
+<c:set var="facetValueName" value=""/>
 <c:set var="display" value="${functions:default(display, true)}"/>
 
 <c:choose>
@@ -31,11 +31,11 @@
     </c:when>
     <c:otherwise>
         <c:set var="currentFacetName" value="${currentActiveFacet != null ? currentActiveFacet.key : ''}"/>
-        <c:set var="facetValueName" value="${currentActiveFacetValue.key}"/>    
+        <c:set var="facetValueName" value="${currentActiveFacetValue.key}"/>
     </c:otherwise>
 </c:choose>
 <jcr:node var="refNode" uuid="${facetValueName}"/>
-<c:choose>    
+<c:choose>
     <c:when test="${not empty refNode}">        
         <c:set var="mappedLabel" value="${refNode.name}"/>
     </c:when>

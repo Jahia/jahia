@@ -37,7 +37,7 @@
     pageContext.setAttribute("theSite", theSite);
 %>
 <div class="dex-TabBar">
-    <ul class="dex-TabBarItem-wrapper" style="width: 79%;">
+    <ul class="dex-TabBarItem-wrapper" style="width: 80%;">
         <li class="dex-TabBarFirst">
             <div>
                 &nbsp;
@@ -101,13 +101,22 @@
             </div>
         </li>
         <% } %>
+        <li class="dex-TabBarItem tabExit">
+            <div>
+                <div>
+                    <c:url var="editUrl" value="/start"/>
+                    <span class="tab-icon ico-start"><a href="${editUrl}"
+                                                       title="<fmt:message key='label.start'/>" ><fmt:message key='label.start'/></a></span>
+                </div>
+            </div>
+        </li>
         <li class="dex-TabBarRest">
             <div>
                 &nbsp;
             </div>
         </li>
     </ul>
-    <ul class="dex-langbar-wrapper" style="width: 21%;">
+    <ul class="dex-langbar-wrapper" style="width: 20%;">
         <li>
             <c:url value="/cms/logout" var="logoutUrl">
                 <c:param name="redirect" value="${pageContext.request.contextPath}/administration"/>

@@ -999,6 +999,10 @@ li.section a:hover {
     background: url(../icons/editMode.png) no-repeat 0 -1px;
 }
 
+.ico-start {
+    background: url(../icons/start.png) no-repeat 0 -1px;
+}
+
 
 /* Actions icons (Start) */ /* Virtual site */
 .ico-siteAdd {

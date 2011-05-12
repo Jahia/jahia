@@ -12,7 +12,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=8"/>
 		<title><fmt:message key="org.jahia.admin.sitepermissions.permission.engines.importexport.ManageContentPicker.label"/></title>
         <internal:gwtGenerateDictionary/>
-		<internal:gwtInit standalone="true"/>
+		<internal:gwtInit locale="${param.lang}" uilocale="${param.uilang}" />
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker" />
         <c:if test="${config == 'filepicker' || config == 'imagepicker'}">
             <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.css"/>

@@ -20,7 +20,7 @@
     </c:if>
     <title>${title}</title>
     <internal:gwtGenerateDictionary/>
-    <internal:gwtInit standalone="true"/>
+    <internal:gwtInit/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
     <c:if test="${cfg == 'filemanager' || cfg == 'repositoryexplorer' || cfg == 'editorialcontentmanager'}">
         <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.css"/>

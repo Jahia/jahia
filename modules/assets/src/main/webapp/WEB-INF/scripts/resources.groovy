@@ -12,7 +12,7 @@ if (renderContext.editMode && renderContext.mainResource.contextConfiguration ==
 }
 if (renderContext.mainResource.contextConfiguration == 'page') {
   println "<script type=\"text/javascript\">"
-  println "\tvar contextJsParameters={contextPath:\"${contextPath}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}";
+  println "\tvar contextJsParameters={contextPath:\"${contextPath}\",lang:\"${renderContext.mainResourceLocale}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}";
   println "</script>";
 }
 renderContext.staticAssets.each { resource ->

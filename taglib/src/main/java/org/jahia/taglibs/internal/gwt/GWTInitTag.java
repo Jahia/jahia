@@ -32,11 +32,15 @@
 
 package org.jahia.taglibs.internal.gwt;
 
+import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
@@ -51,12 +55,15 @@ public class GWTInitTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(GWTInitTag.class);
     
-    private String modules;
+    private String locale;
+    private String uilocale;
 
-    private boolean standalone = false ;
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
 
-    public void setStandalone(boolean value) {
-        standalone = value ;
+    public void setUilocale(String uilocale) {
+        this.uilocale = uilocale;
     }
 
     /**
@@ -77,20 +84,23 @@ public class GWTInitTag extends AbstractJahiaTag {
     public int doStartTag() {
         try {
             final JspWriter out = pageContext.getOut();
-            out.print(GWTInitializer.getInitString(pageContext, standalone)) ;
+            final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+            final HttpSession session = request.getSession();
 
-            if (StringUtils.isNotEmpty(modules)) {
-                for (String module : StringUtils.split(modules, ',')) {
-                    out.append(GWTIncluder.generateGWTImport(pageContext, module.trim()));
-                }
-            }
+            out.print(GWTInitializer.generateInitializerStructure(request, session,
+                    StringUtils.isEmpty(locale) ? null : LanguageCodeConverters.languageCodeToLocale(locale),
+                    StringUtils.isEmpty(uilocale) ? null : LanguageCodeConverters.languageCodeToLocale(uilocale))) ;
+
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
         return SKIP_BODY;
     }
 
-    public void setModules(String modules) {
-        this.modules = modules;
+    @Override
+    public int doEndTag() throws JspException {
+        locale = null;
+        uilocale = null;
+        return super.doEndTag();
     }
 }

@@ -64,36 +64,22 @@ public class GWTInitializer {
     private final static Logger logger = org.slf4j.LoggerFactory.getLogger(GWTInitializer.class);
     private static List<String> gwtCssStyles;
 
-    public static String getInitString(PageContext pageContext) {
-        return getInitString(pageContext, false);
-    }
-
-    public static String getInitString(PageContext pageContext, boolean standalone) {
-        final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        final HttpSession session = request.getSession();
-        return generateInitializerStructure(request, session);
-    }
-
-    public static String getInitString(ParamBean paramBean) {
-        try {
-            return generateInitializerStructure(paramBean.getRealRequest(), paramBean.getSession());
-        } catch (JahiaSessionExpirationException e) {
-            try {
-                return generateInitializerStructure(paramBean.getRealRequest(), paramBean.getSession(true));
-            } catch (JahiaSessionExpirationException e1) {
-                logger.error("Could not create a new session");
-            }
-        }
-        return "";
-    }
-
     public static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
+        return generateInitializerStructure(request, session, null, null);
+    }
+
+    public static String generateInitializerStructure(HttpServletRequest request, HttpSession session, Locale locale, Locale uilocale) {
         StringBuilder buf = new StringBuilder();
-        Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
-        Locale uilocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale) : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER));
-        Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
+
+        if (uilocale == null) {
+            Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+            uilocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale) : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER));
+        }
         if (locale == null) {
-            locale = Locale.ENGLISH;
+            locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
+            if (locale == null) {
+                locale = Locale.ENGLISH;
+            }
         }
 
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");

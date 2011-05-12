@@ -140,6 +140,9 @@ public class JahiaGWTParameters {
 
     private static native void setNativeLanguage(String newLanguage) /*-{
         $wnd.jahiaGWTParameters.lang  = newLanguage;
+        if ($wnd.contextJsParameters) {
+            $wnd.contextJsParameters.lang = newLanguage;
+        }
     }-*/;
 
 

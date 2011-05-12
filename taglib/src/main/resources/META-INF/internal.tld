@@ -154,12 +154,12 @@
         <tag-class>org.jahia.taglibs.internal.gwt.GWTInitTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>standalone</name>
+            <name>locale</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>modules</name>
+            <name>uilocale</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

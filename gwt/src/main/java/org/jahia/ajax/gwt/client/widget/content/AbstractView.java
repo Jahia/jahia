@@ -60,8 +60,8 @@ public abstract class AbstractView extends TopRightComponent {
                     getLinker().loaded();
                 }
                 if (hiddenSelection != null) {
-                    visibleSelection = new ArrayList<GWTJahiaNode>(hiddenSelection);
-                    visibleSelection.retainAll(store.getModels());
+                    visibleSelection = new ArrayList<GWTJahiaNode>(store.getModels());
+                    visibleSelection.retainAll(hiddenSelection);
                     if (visibleSelection.isEmpty()) {
                         getLinker().onTableItemSelected();
                     } else {

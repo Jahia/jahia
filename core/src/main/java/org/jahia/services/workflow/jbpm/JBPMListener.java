@@ -36,11 +36,9 @@ import org.jahia.services.content.*;
 import org.jbpm.api.Execution;
 import org.jbpm.api.listener.EventListener;
 import org.jbpm.api.listener.EventListenerExecution;
-import org.jbpm.pvm.internal.model.ExecutionImpl;
 
 import javax.jcr.RepositoryException;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,6 +48,9 @@ import java.util.Locale;
  * 
  */
 public class JBPMListener implements EventListener {
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = 665473577321892992L;
+    
     private JBPMProvider provider;
 
     public JBPMListener(JBPMProvider provider) {
@@ -63,19 +64,24 @@ public class JBPMListener implements EventListener {
         final String executionState = execution.getState();
         final String executionId = execution.getId();
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null, new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                for (String id : ids) {
-                    final JCRNodeWrapper node = session.getNodeByUUID(id);
-                    if (Execution.STATE_ACTIVE_ROOT.equals(executionState)) {
-                        provider.getWorkflowService().addProcessId(node, provider.getKey(), executionId);
-        
-                    } else if (Execution.STATE_ENDED.equals(executionState)) {
-                        provider.getWorkflowService().removeProcessId(node, provider.getKey(), executionId);
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null,
+                new JCRCallback<Boolean>() {
+                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        if (ids != null) {
+                            for (String id : ids) {
+                                final JCRNodeWrapper node = session.getNodeByUUID(id);
+                                if (Execution.STATE_ACTIVE_ROOT.equals(executionState)) {
+                                    provider.getWorkflowService().addProcessId(node,
+                                            provider.getKey(), executionId);
+
+                                } else if (Execution.STATE_ENDED.equals(executionState)) {
+                                    provider.getWorkflowService().removeProcessId(node,
+                                            provider.getKey(), executionId);
+                                }
+                            }
+                        }
+                        return true;
                     }
-                }
-                return true;
-            }
-        });
+                });
     }
 }

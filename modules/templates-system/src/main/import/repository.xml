@@ -461,8 +461,8 @@
               <content-folder icon="/templateSets/templates-system/templates/files/icons/folder-content.png" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Content Folder"/>
                 <language-switcher jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag"/>
-                <mainResourceDisplay j:canDeleteInContribution="true" j:canOrderInContribution="true" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" j:mainResourceView="table" jcr:mixinTypes="jmix:contributeMode" jcr:primaryType="jnt:mainResourceDisplay"/>
                 <pager displayPager="true" jcr:primaryType="jnt:pager" pageSize="10"/>
+                <mainResourceDisplay j:canDeleteInContribution="true" j:canOrderInContribution="true" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" j:mainResourceView="table" jcr:mixinTypes="jmix:contributeMode" jcr:primaryType="jnt:mainResourceDisplay"/>
                 <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Dossier de Contenus"/>
               </content-folder>
             </custom-rows-960gs-1-col2>
@@ -486,8 +486,8 @@
             <custom-rows-960gs-1-col2 jcr:primaryType="jnt:contentList">
               <document-folder icon="/templateSets/templates-system/templates/files/icons/folder-files.png" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:style jmix:skinnable" jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Document Folder"/>
-                <mainResourceDisplay j:canDeleteInContribution="true" j:canOrderInContribution="true" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" j:mainResourceView="table" jcr:mixinTypes="jmix:contributeMode" jcr:primaryType="jnt:mainResourceDisplay"/>
                 <pager displayPager="true" jcr:primaryType="jnt:pager" pageSize="10"/>
+                <mainResourceDisplay j:canDeleteInContribution="true" j:canOrderInContribution="true" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" j:mainResourceView="table" jcr:mixinTypes="jmix:contributeMode" jcr:primaryType="jnt:mainResourceDisplay"/>
                 <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Dossier de Fichiers"/>
               </document-folder>
             </custom-rows-960gs-1-col2>

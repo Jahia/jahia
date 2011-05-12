@@ -176,7 +176,7 @@
             diskPersistent="true"
             timeToIdleSeconds="3600"
             timeToLiveSeconds="14400"
-            maxElementsOnDisk="50000"
+            maxElementsOnDisk="150000"
             eternal="false"/>
     <cache
             name="HTMLDependenciesCache"

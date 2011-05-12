@@ -1994,9 +1994,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        JCRNodeWrapper parent = getParent();
         if (!getSession().getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
             try {
+                JCRNodeWrapper parent = getParent();
+                getSession().checkout(parent);
                 getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
                 if (!parent.isNodeType("jmix:deletedChildren")) {
                     parent.addMixin("jmix:deletedChildren");

@@ -109,7 +109,7 @@ h2.loginlogo{
 #adminLogin {
     clear:both;
     border: 1px solid #eaeaea;
-    background-color: #fff;
+	background:url(images/andromeda/bg-form-login.png) repeat top left ;
     margin:0 auto;
     margin-top: 10px;
     text-align: center;
@@ -1415,6 +1415,7 @@ tr.oddLine {
 }
 
 .ico-server-sites {
+
     background-position: 4px -286px;
 }
 

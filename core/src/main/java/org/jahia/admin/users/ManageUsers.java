@@ -354,7 +354,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             // any saving or checks.
             return false;
         }
-        String username = request.getParameter("username").trim().toLowerCase();
+        String username = request.getParameter("username").trim();
         if (username.length() == 0) {
             userMessage = getMessage("org.jahia.admin.userMessage.specifyUserName.label");
             return false;

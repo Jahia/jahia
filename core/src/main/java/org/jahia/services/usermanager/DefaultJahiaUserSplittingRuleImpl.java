@@ -57,14 +57,14 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
             return builder.append(usersRootNode).append("/").append(username).toString();
         }
         int userNameHashcode = Math.abs(username.hashCode());
-        String firstFolder = getFolderName(userNameHashcode);
+        String firstFolder = getFolderName(userNameHashcode).toLowerCase();
         userNameHashcode = Math.round(userNameHashcode/100);
-        String secondFolder = getFolderName(userNameHashcode);
+        String secondFolder = getFolderName(userNameHashcode).toLowerCase();
         userNameHashcode = Math.round(userNameHashcode/100);
-        String thirdFolder = getFolderName(userNameHashcode);
+        String thirdFolder = getFolderName(userNameHashcode).toLowerCase();
         return builder.append(usersRootNode).append("/").append(firstFolder).append("/").append(secondFolder).append(
                 "/").append(thirdFolder).append("/").append(JCRContentUtils.escapeLocalNodeName(
-                username)).toString().toLowerCase();
+                username)).toString();
     }
 
     private String getFolderName(int userNameHashcode) {

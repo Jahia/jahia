@@ -59,9 +59,9 @@ public class Studio extends Render {
         return context;
     }
 
-	public static String getStudioServletPath() {
-	    // TODO move this into configuration
-	    return "/cms/studio";
+    public static String getStudioServletPath() {
+        // TODO move this into configuration
+        return "/cms/studio";
     }
 
     protected boolean hasAccess(JCRNodeWrapper node) {
@@ -70,6 +70,6 @@ public class Studio extends Render {
 
     @Override
     protected boolean isDisabled() {
-        return settingsBean.isDistantPublicationServerMode();
+        return settingsBean.isProductionMode() || settingsBean.isDistantPublicationServerMode();
     }
 }

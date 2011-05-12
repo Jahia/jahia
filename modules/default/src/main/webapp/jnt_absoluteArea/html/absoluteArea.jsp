@@ -10,11 +10,15 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<c:set var="level" value="${currentNode.properties['j:level'].long}" />
+<c:if test="${empty level}" >
+    <c:set var="level" value="${0}"/>
+</c:if>
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
         <div class="absoluteArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <div class="absoluteAreaTemplate">
-                <span>Absolute Area : ${currentNode.name}</span>
+                <span>Absolute Area : ${currentNode.name} - Level ${level}</span>
             </div>
         </div>
     </c:when>
@@ -34,18 +38,13 @@
         <c:if test="${empty listLimit}">
             <c:set var="listLimit" value="${-1}"/>
         </c:if>
-        <c:if test="${empty currentNode.properties['j:basenode'].node.path}">
-            <c:set var="path" value="${renderContext.site.home.path}"/>
-        </c:if>
-        <c:if test="${!empty currentNode.properties['j:basenode'].node.path}">
-            <c:set var="path" value="${currentNode.properties['j:basenode'].node.path}"/>
-        </c:if>
 
-        <template:area view="${currentNode.properties['j:referenceView'].string}"
-                                 path="${path}/${currentNode.name}"
-                                 nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
+        <template:area absolute="true" level="${level}" view="${currentNode.properties['j:referenceView'].string}"
+                       path="${currentNode.name}"
+                       nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
-                <template:param name="subNodesView" value="${currentNode.properties['j:subNodesView'].string}"/>
+                <template:param name="subNodesView"
+                                value="${currentNode.properties['j:subNodesView'].string}"/>
             </c:if>
             <c:if test="${not empty currentNode.properties['j:mockupStyle'].string}">
                 <template:param name="mockupStyle" value="${currentNode.properties['j:mockupStyle'].string}"/>

@@ -94,7 +94,7 @@ public class DispatchingServiceImpl extends DispatchingService {
     public String getAppOutput (int fieldID, String entryPointIDStr, JahiaUser jahiaUser,
                                 HttpServletRequest httpServletRequest,
                                 HttpServletResponse httpServletResponse,
-                                ServletContext servletContext)
+                                ServletContext servletContext, String workspaceName)
         throws JahiaException {
 
         String fieldIDStr = Integer.toString(fieldID);
@@ -143,7 +143,7 @@ public class DispatchingServiceImpl extends DispatchingService {
             // method is called only once.
             if (httpServletRequest.getAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr) == null) {
                 // process the action now
-                renderResult = dispatcher.render(entryPointInstance, entryPointInstance.getID(), jahiaUser, httpServletRequest, httpServletResponse, servletContext);
+                renderResult = dispatcher.render(entryPointInstance, entryPointInstance.getID(), jahiaUser, httpServletRequest, httpServletResponse, servletContext, workspaceName);
                 httpServletRequest.setAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr, renderResult);
             } else {
                 renderResult = (String) httpServletRequest.getAttribute("org.jahia.applications.renderAlreadyProcessed." + entryPointUniqueIDStr);

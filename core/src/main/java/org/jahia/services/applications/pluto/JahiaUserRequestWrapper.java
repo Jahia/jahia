@@ -52,10 +52,12 @@ public class JahiaUserRequestWrapper extends HttpServletRequestWrapper {
 
     private JahiaUser jahiaUser;
     private EntryPointInstance entryPointInstance;
+    private String workspaceName;
 
-    public JahiaUserRequestWrapper(JahiaUser jahiaUser, HttpServletRequest httpServletRequest) {
+    public JahiaUserRequestWrapper(JahiaUser jahiaUser, HttpServletRequest httpServletRequest, String workspaceName) {
         super(httpServletRequest);
         this.jahiaUser = jahiaUser;
+        this.workspaceName = workspaceName;
     }
 
     public String getRemoteUser() {
@@ -75,7 +77,7 @@ public class JahiaUserRequestWrapper extends HttpServletRequestWrapper {
         if (entryPointInstance == null) {
             return false;
         }
-        return entryPointInstance.isUserInRole(jahiaUser, role);
+        return entryPointInstance.isUserInRole(jahiaUser, role, workspaceName);
     }
 
 }

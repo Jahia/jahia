@@ -766,13 +766,15 @@ public final class JCRContentUtils {
      * Used by portlet backends to determine if a user is part of a specific permissionName on a node specified by it's
      * UUID
      *
+     *
+     * @param workspaceName the name of the workspace in which we load the node from.
      * @param permissionName
      * @param nodeUUID
      * @return
      */
-    public static boolean hasPermission(final String permissionName, final String nodeUUID) {
+    public static boolean hasPermission(String workspaceName, final String permissionName, final String nodeUUID) {
         try {
-            JCRSessionWrapper session = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession();
+            JCRSessionWrapper session = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession(workspaceName);
             JCRNodeWrapper node = session.getNodeByIdentifier(nodeUUID);
             return node.hasPermission(permissionName);
         } catch (Exception e) {

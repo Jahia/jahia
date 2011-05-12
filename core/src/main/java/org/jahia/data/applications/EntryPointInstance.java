@@ -126,17 +126,17 @@ public class EntryPointInstance implements Serializable {
         return expirationTime;
     }
 
-    public boolean isUserInRole(JahiaUser user, String role) {
+    public boolean isUserInRole(JahiaUser user, String role, String workspaceName) {
         // This method maps servlet roles on Jahia's groups
-        return JCRContentUtils.hasPermission(ApplicationsManagerServiceImpl.getWebAppQualifiedNodeName(contextName,role),ID);
+        return JCRContentUtils.hasPermission(workspaceName, ApplicationsManagerServiceImpl.getWebAppQualifiedNodeName(contextName,role),ID);
     }
 
-    public boolean isModeAllowed(JahiaUser user, String mode) {
+    public boolean isModeAllowed(JahiaUser user, String mode, String workspaceName) {
         // mode view is mandatory for all user
         if(mode != null && mode.equalsIgnoreCase(PortletMode.VIEW.toString())){
             return true;
         }
-        return JCRContentUtils.hasPermission(ApplicationsManagerServiceImpl.getPortletQualifiedNodeName(contextName, defName,mode),ID);
+        return JCRContentUtils.hasPermission(workspaceName, ApplicationsManagerServiceImpl.getPortletQualifiedNodeName(contextName, defName,mode),ID);
     }
 
     @Override

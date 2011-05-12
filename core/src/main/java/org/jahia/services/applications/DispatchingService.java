@@ -71,13 +71,14 @@ public abstract class DispatchingService extends JahiaService {
      * @param httpServletRequest the request object that will be passed to the portlet
      * @param httpServletResponse
      * @param servletContext
+     * @param workspaceName the workspace name against which to check for mode and various other permissions
      *
      * @throws JahiaException generated if there was a problem dispatching,
      *                        during processing of the application, or when recuperating the application's
      *                        output.
      * @return String containing the output of the application
      */
-    public abstract String getAppOutput (int fieldID, String entryPointIDStr, JahiaUser jahiaUser, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, ServletContext servletContext)
+    public abstract String getAppOutput (int fieldID, String entryPointIDStr, JahiaUser jahiaUser, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, ServletContext servletContext, String workspaceName)
             throws JahiaException;
 
 } // end JahiaApplicationsService

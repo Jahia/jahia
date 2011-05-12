@@ -99,18 +99,8 @@ public class JahiaPortletUtil {
      * @param window
      * @param portalRequest
      */
-    public static void copyJahiaAttributes(EntryPointInstance entryPointInstance, HttpServletRequest httpServletRequest, PortletWindow window, HttpServletRequest portalRequest, boolean canModifySharedMap) {
+    public static void copyJahiaAttributes(EntryPointInstance entryPointInstance, HttpServletRequest httpServletRequest, PortletWindow window, HttpServletRequest portalRequest, boolean canModifySharedMap, String workspaceName) {
         // todo we should only add these if we are dispatching in the same context as Jahia.
-        /*
-        copyAttribute("org.jahia.data.JahiaData", httpServletRequest, portalRequest, window);
-        copyAttribute("currentRequest", httpServletRequest, portalRequest, window);
-        copyAttribute("currentSite", httpServletRequest, portalRequest, window);
-        copyAttribute("currentPage", httpServletRequest, portalRequest, window);
-        copyAttribute("currentUser", httpServletRequest, portalRequest, window);
-        copyAttribute("currentJahia", httpServletRequest, portalRequest, window);
-        copyAttribute("jahia", httpServletRequest, portalRequest, window);
-        copyAttribute("fieldId", httpServletRequest, portalRequest, window);
-        */
         copyAttribute("renderContext", httpServletRequest, portalRequest, window);
         copyAttribute("script", httpServletRequest, portalRequest, window);
         copyAttribute("scriptInfo", httpServletRequest, portalRequest, window);
@@ -122,7 +112,7 @@ public class JahiaPortletUtil {
         portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_EntryPointInstance", entryPointInstance);
 
         // copy  node properties
-        copyNodeProperties(entryPointInstance, window, portalRequest);
+        copyNodeProperties(entryPointInstance, window, portalRequest, workspaceName);
 
         // copy shared map
         copySharedMapFromJahiaToPortlet(httpServletRequest, portalRequest, window, canModifySharedMap);
@@ -180,10 +170,10 @@ public class JahiaPortletUtil {
      * @param window
      * @param portalRequest
      */
-    public static void copyNodeProperties(EntryPointInstance entryPointInstance, PortletWindow window, HttpServletRequest portalRequest) {
+    public static void copyNodeProperties(EntryPointInstance entryPointInstance, PortletWindow window, HttpServletRequest portalRequest, String workspaceName) {
         // porlet properties
         try {
-            Node node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(entryPointInstance.getID());
+            Node node = JCRSessionFactory.getInstance().getCurrentUserSession(workspaceName).getNodeByUUID(entryPointInstance.getID());
             if (node != null) {
                 PropertyIterator propertyIterator = node.getProperties();
                 if (propertyIterator != null) {
@@ -299,7 +289,6 @@ public class JahiaPortletUtil {
     /**
      * Save shared map from portler request to jahia Session
      *
-     * @param jParams
      * @param portalRequest
      */
     public static void copySharedMapFromPortletToJahia(HttpSession session, HttpServletRequest portalRequest, PortletWindow window) {

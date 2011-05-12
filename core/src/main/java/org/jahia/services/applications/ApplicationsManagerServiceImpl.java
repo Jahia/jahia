@@ -772,11 +772,11 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                                           JahiaUser jahiaUser,
                                           HttpServletRequest httpServletRequest,
                                           HttpServletResponse httpServletResponse,
-                                          ServletContext servletContext)
+                                          ServletContext servletContext, String workspaceName)
             throws JahiaException {
         ApplicationBean appBean = getApplicationByContext(entryPointInstance.getContextName());
         ApplicationsManagerProvider appProvider = getProvider(appBean);
-        return appProvider.getPortletWindow(entryPointInstance, windowID, jahiaUser, httpServletRequest, httpServletResponse, servletContext);
+        return appProvider.getPortletWindow(entryPointInstance, windowID, jahiaUser, httpServletRequest, httpServletResponse, servletContext, workspaceName);
 
     }
 

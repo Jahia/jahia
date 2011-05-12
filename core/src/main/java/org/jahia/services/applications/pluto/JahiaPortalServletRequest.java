@@ -51,12 +51,14 @@ public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
     private JahiaUser jahiaUser;
     private EntryPointInstance entryPointInstance;
     private String id;
+    private String workspaceName;
 
-    public JahiaPortalServletRequest(EntryPointInstance entryPointInstance,JahiaUser jahiaUser, HttpServletRequest request, PortletWindow window) {
+    public JahiaPortalServletRequest(EntryPointInstance entryPointInstance,JahiaUser jahiaUser, HttpServletRequest request, PortletWindow window, String workspaceName) {
         super(request);
         this.jahiaUser = jahiaUser;
         this.entryPointInstance = entryPointInstance;
         this.id = window.getId().getStringId();
+        this.workspaceName = workspaceName;
     }
 
     public String getRemoteUser() {
@@ -76,6 +78,6 @@ public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
         if (entryPointInstance == null) {
             return false;
         }
-        return entryPointInstance.isUserInRole(jahiaUser, role);
+        return entryPointInstance.isUserInRole(jahiaUser, role, workspaceName);
     }
 }

@@ -117,7 +117,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
      * @param jcrPortletNode
      * @return
      */
-    public void drawPortlet(JCRPortletNode jcrPortletNode, int windowId, final JspWriter out, ServletContext servletContext) throws JahiaException, IOException {
+    public void drawPortlet(JCRPortletNode jcrPortletNode, int windowId, final JspWriter out, ServletContext servletContext) throws JahiaException, IOException, RepositoryException {
 
         String appID = null;
         try {
@@ -129,7 +129,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
 
         logger.debug("Dispatching to portlet for appID=" + appID + "...");
 
-        String portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(windowId, appID, getRenderContext().getUser(), getRenderContext().getRequest(), getRenderContext().getResponse(), servletContext);
+        String portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(windowId, appID, getRenderContext().getUser(), getRenderContext().getRequest(), getRenderContext().getResponse(), servletContext, jcrPortletNode.getSession().getWorkspace().getName());
 
         // remove <html> tags that can break the page
         if (portletOutput != null) {

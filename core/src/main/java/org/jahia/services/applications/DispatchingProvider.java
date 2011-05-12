@@ -80,7 +80,7 @@ public interface DispatchingProvider {
      */
     public String render (EntryPointInstance entryPointInstance, String windowID, JahiaUser jahiaUser, HttpServletRequest httpServletRequest,
                          HttpServletResponse httpServletResponse,
-                         ServletContext servletContext)
+                         ServletContext servletContext, String workspaceName)
         throws JahiaException;
 
 }

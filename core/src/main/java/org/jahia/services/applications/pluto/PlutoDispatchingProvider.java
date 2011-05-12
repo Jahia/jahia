@@ -87,7 +87,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
     public String render(EntryPointInstance entryPointInstance, String windowID, JahiaUser jahiaUser,
                          HttpServletRequest httpServletRequest,
                          HttpServletResponse httpServletResponse,
-                         ServletContext servletContext) throws JahiaException {
+                         ServletContext servletContext, String workspaceName) throws JahiaException {
         String cacheKey = null;
 //        final ContainerHTMLCache cacheInstance = ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
         // Check if cache is available for this portlet
@@ -101,7 +101,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 //                if (htmlCacheEntry2 != null) return htmlCacheEntry2.getBodyContent();
             }
         }
-        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jahiaUser, httpServletRequest);
+        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jahiaUser, httpServletRequest, workspaceName);
         jahiaContextRequest.setEntryPointInstance(entryPointInstance);
 
         PortalRequestContext portalContext = new PortalRequestContext(servletContext, jahiaContextRequest, httpServletResponse);
@@ -136,11 +136,11 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
         // Create portal servlet request and response to wrap the original
         // HTTP servlet request and response.
-        HttpServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance, jahiaUser, httpServletRequest, window);
+        HttpServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance, jahiaUser, httpServletRequest, window, workspaceName);
 
 
         // copy jahia attibutes nested by the portlet
-        JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, httpServletRequest, window, portalRequest, false);
+        JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, httpServletRequest, window, portalRequest, false, workspaceName);
 
         // wrappe in a portal response
         PortalServletResponse portalResponse = new JahiaPortalServletResponse(httpServletResponse);

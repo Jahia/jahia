@@ -65,7 +65,7 @@ public interface ApplicationsManagerProvider {
                                                    JahiaUser jahiaUser,
                                                    HttpServletRequest httpServletRequest,
                                                    HttpServletResponse httpServletResponse,
-                                                   ServletContext servletContext) throws JahiaException;
+                                                   ServletContext servletContext, String workspaceName) throws JahiaException;
 
     public List<EntryPointDefinition> getAppEntryPointDefinitions(ApplicationBean appBean)
             throws JahiaException;

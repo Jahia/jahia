@@ -436,7 +436,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
         try {
-            return portlet.searchPortlets(match, getRemoteJahiaUser(), getLocale());
+            return portlet.searchPortlets(match, getRemoteJahiaUser(), getLocale(), retrieveCurrentSession());
         } catch (Exception e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -1778,7 +1778,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTJahiaPortletOutputBean result = new GWTJahiaPortletOutputBean();
         try {
             int fieldId = Integer.parseInt(windowID);
-            String portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, getRemoteJahiaUser(), getRequest(), getResponse(), getServletContext());
+            String portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, getRemoteJahiaUser(), getRequest(), getResponse(), getServletContext(), getWorkspace());
             try {
                 JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(entryPointIDStr);
                 String nodeTypeName = node.getPrimaryNodeTypeName();

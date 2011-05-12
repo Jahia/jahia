@@ -90,12 +90,12 @@ public class PortletWindowBean {
      * Get list of supported portlet modes (view,edit,help)
      * @return
      */
-    public List<PortletModeBean> getPortletModeBeans() {
+    public List<PortletModeBean> getPortletModeBeans(String workspaceName) {
         List<PortletModeBean> portletModeBeans = new ArrayList<PortletModeBean>();
         if (entryPointDefinition != null) {
             for (PortletMode curPortletMode : entryPointDefinition.getPortletModes()) {
                 String modeName = curPortletMode.toString();
-                if (modeName != null && entryPointInstance.isModeAllowed(jahiaUser, modeName)) {
+                if (modeName != null && entryPointInstance.isModeAllowed(jahiaUser, modeName, workspaceName)) {
                     PortletModeBean curPortletModeBean = new PortletModeBean(httpServletRequest, this);
                     curPortletModeBean.setName(modeName);
                     portletModeBeans.add(curPortletModeBean);

@@ -187,11 +187,6 @@ public class PortletModesTag extends TagSupport {
 
     public int doStartTag() throws JspException {
 
-        //requestBean = (RequestBean) pageContext.findAttribute("currentRequest");
-        //processingContext = requestBean.getProcessingContext();
-        //guiBean = new GuiBean(processingContext);
-        //htmlToolBox = new HTMLToolBox(guiBean, processingContext);
-
         RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);        
         PortletWindowBean portletWindowBean = null;
         if (name != null) {
@@ -227,7 +222,7 @@ public class PortletModesTag extends TagSupport {
                             }
                         }
                         EntryPointDefinition entryPointDefinition = appBean.getEntryPointDefinitionByName(defName);
-                        PortletWindow window = ServicesRegistry.getInstance().getApplicationsManagerService().getPortletWindow(entryPointInstance, portletWindowID, renderContext.getUser(), renderContext.getRequest(), renderContext.getResponse(), pageContext.getServletContext());
+                        PortletWindow window = ServicesRegistry.getInstance().getApplicationsManagerService().getPortletWindow(entryPointInstance, portletWindowID, renderContext.getUser(), renderContext.getRequest(), renderContext.getResponse(), pageContext.getServletContext(), node.getSession().getWorkspace().getName());
                         portletWindowBean = new PortletWindowBean(renderContext.getUser(), renderContext.getRequest(), window);
                         portletWindowBean.setEntryPointInstance(entryPointInstance);
                         portletWindowBean.setEntryPointDefinition(entryPointDefinition);
@@ -252,7 +247,7 @@ public class PortletModesTag extends TagSupport {
 
             drawPortletModeList(portletWindowBean, namePostFix,
                     resourceBundle, listCSSClass,
-                    currentCSSClass, renderContext.getMainResourceLocale(), out);
+                    currentCSSClass, renderContext.getMainResourceLocale(), renderContext.getMainResource().getWorkspace(), out);
 
         } catch (IOException ioe) {
             logger.error("IO exception while trying to display action menu for object " + name, ioe);
@@ -280,9 +275,10 @@ public class PortletModesTag extends TagSupport {
                                     final String listCSSClass,
                                     final String currentCSSClass,
                                     final Locale locale,
+                                    final String workspaceName,
                                     final JspWriter out)
             throws IOException {
-        final List<PortletModeBean> portletModeBeansIterList = portletWindowBean.getPortletModeBeans();
+        final List<PortletModeBean> portletModeBeansIterList = portletWindowBean.getPortletModeBeans(workspaceName);
         // draw mode links only if there is more than 1 mode
         if (portletModeBeansIterList.size() < 2) {
             return;
@@ -291,7 +287,7 @@ public class PortletModesTag extends TagSupport {
         out.print("<ul class=\"");
         out.print(listCSSClass);
         out.print("\">\n");
-        for (PortletModeBean curPortletModeBean : portletWindowBean.getPortletModeBeans()) {
+        for (PortletModeBean curPortletModeBean : portletWindowBean.getPortletModeBeans(workspaceName)) {
             if (curPortletModeBean.getName().equals(portletWindowBean.
                     getCurrentPortletModeBean().getName())) {
                 out.print("<li class=\"");

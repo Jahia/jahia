@@ -253,7 +253,7 @@ public abstract class ApplicationsManagerService extends JahiaService {
                                                    JahiaUser jahiaUser,
                                                    HttpServletRequest httpServletRequest,
                                                    HttpServletResponse httpServletResponse,
-                                                   ServletContext servletContext)
+                                                   ServletContext servletContext, String workspaceName)
             throws JahiaException;
 
     /**

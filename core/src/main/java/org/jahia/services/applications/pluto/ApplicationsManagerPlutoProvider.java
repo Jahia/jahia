@@ -96,9 +96,9 @@ public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProv
                                           JahiaUser jahiaUser,
                                           HttpServletRequest httpServletRequest,
                                           HttpServletResponse httpServletResponse,
-                                          ServletContext servletContext) throws JahiaException {
+                                          ServletContext servletContext, String workspaceName) throws JahiaException {
 
-        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jahiaUser, httpServletRequest);
+        JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jahiaUser, httpServletRequest, workspaceName);
 
         new PortalRequestContext(servletContext, jahiaContextRequest, httpServletResponse);
 

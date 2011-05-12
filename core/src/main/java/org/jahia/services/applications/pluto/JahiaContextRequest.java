@@ -54,14 +54,16 @@ import java.security.Principal;
 public class JahiaContextRequest extends HttpServletRequestWrapper {
 
     private JahiaUser jahiaUser;
+    private String workspaceName;
     private String pathInfo = null;
     private String queryString = null;
     private String servletPath = null;
     private EntryPointInstance entryPointInstance;
 
-    public JahiaContextRequest(JahiaUser jahiaUser, HttpServletRequest httpServletRequest) throws JahiaException {
+    public JahiaContextRequest(JahiaUser jahiaUser, HttpServletRequest httpServletRequest, String workspaceName) throws JahiaException {
         super(httpServletRequest);
         this.jahiaUser = jahiaUser;
+        this.workspaceName = workspaceName;
         if (Jahia.getServletPath() != null && !Jahia.getServletPath().equals(getServletPath())) {
             setServletPath(Jahia.getServletPath());
             setPathInfo(httpServletRequest.getPathInfo());
@@ -126,6 +128,6 @@ public class JahiaContextRequest extends HttpServletRequestWrapper {
         if (entryPointInstance == null) {
             return false;
         }
-        return entryPointInstance.isUserInRole(jahiaUser, role);
+        return entryPointInstance.isUserInRole(jahiaUser, role, workspaceName);
     }
 }

@@ -71,7 +71,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         try {
-            final JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(renderContext.getUser(), renderContext.getRequest());
+            final JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(renderContext.getUser(), renderContext.getRequest(), renderContext.getMainResource().getWorkspace());
             final HttpServletResponse response = renderContext.getResponse();
             final ServletContext servletContext = Jahia.getStaticServletConfig().getServletContext();
             final PortletContainer container = (PortletContainer) servletContext.getAttribute(AttributeKeys.PORTLET_CONTAINER);
@@ -106,7 +106,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
                 }
 
                 // copy jahia attibutes nested by the portlet
-                JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, renderContext.getRequest(), portletWindow, request, true);
+                JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, renderContext.getRequest(), portletWindow, request, true, renderContext.getMainResource().getWorkspace());
 
 
                 try {

@@ -66,6 +66,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     private String mockupStyle;
 
+    private boolean absolute;
+
+    private int level;
+
     private Template templateNode;
 
     public void setAreaType(String areaType) {
@@ -78,6 +82,14 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     public void setMockupStyle(String mockupStyle) {
         this.mockupStyle = mockupStyle;
+    }
+
+    public void setAbsolute(boolean absolute) {
+        this.absolute = absolute;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     @Override
@@ -141,7 +153,17 @@ public class AreaTag extends ModuleTag implements ParamParent {
             Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
             templateNode = t;
 
-            if (path != null) {
+            if (absolute) {
+                // No more areas in an absolute area
+                renderContext.getRequest().setAttribute("previousTemplate", null);
+                try {
+                    node = (JCRNodeWrapper) renderContext.getMainResource().getNode().getAncestor(level + 3);
+                    node = node.getNode(path);
+                } catch (RepositoryException e) {
+                    path = node.getPath() + "/" + path;
+                    missingResource(renderContext, currentResource, resource);
+                }
+            } else if (path != null) {
                 if (currentResource.getNode().isNodeType("jnt:area") && t != null) {
                     // Skip to next node automatically if you're in an area to avoid loop
                     t = t.next;
@@ -209,6 +231,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
         } finally {
             pageContext.getRequest().setAttribute("previousTemplate", templateNode);
             templateNode = null;
+            level = 0;
+            absolute = false;
             pageContext.getRequest().setAttribute("inArea", o);
 
         }

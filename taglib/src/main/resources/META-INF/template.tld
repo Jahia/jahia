@@ -361,7 +361,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <description>The CSS style name to use for mockup.</description>
             <name>mockupStyle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -393,6 +393,18 @@
         <attribute>
             <description>Number of elements to display.</description>
             <name>listLimit</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set for absolute area</description>
+            <name>absolute</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Ancestor level for absolute area - 0 is Home page, 1 first sub pages, ..</description>
+            <name>level</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

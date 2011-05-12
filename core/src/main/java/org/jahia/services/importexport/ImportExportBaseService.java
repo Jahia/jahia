@@ -542,6 +542,24 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
+        if (sizes.containsKey(SITE_PROPERTIES)) {
+            zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
+            try {
+                while (true) {
+                    ZipEntry zipentry = zis.getNextEntry();
+                    if (zipentry == null) break;
+                    String name = zipentry.getName();
+                    if (name.equals(SITE_PROPERTIES)) {
+                        importSiteProperties(zis, site);
+                        break;
+                    }
+                    zis.closeEntry();
+                }
+            } finally {
+                zis.reallyClose();
+            }
+        }
+
         if (sizes.containsKey(REPOSITORY_XML)) {
             // Import repository content
             zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -628,8 +646,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 ensureDir(jcrStoreService.getSessionFactory().getCurrentUserSession(), name, site);
                             }
                         }
-                    } else if (name.equals(SITE_PROPERTIES)) {
-                        importSiteProperties(zis, site);
                     } else if (name.equals(CATEGORIES_XML)) {
                         catProps = importCategoriesAndGetUuidProps(zis, categoriesImportHandler);
                     } else if (name.equals(DEFINITIONS_CND)) {

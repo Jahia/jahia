@@ -32,6 +32,10 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
+import org.jahia.services.workflow.HistoryWorkflowTask;
+import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowService;
+import org.jbpm.pvm.internal.model.ExecutionImpl;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
@@ -44,6 +48,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -59,6 +64,17 @@ public class Publish implements ExternalActivityBehaviour {
         List<String> uuids = (List<String>) execution.getVariable("nodeIds");
         String workspace = (String) execution.getVariable("workspace");
         String userKey = (String) execution.getVariable("user");
+
+        // try to get some user who did an action on the workflow for the last time
+        try {
+            WorkflowDefinition def = (WorkflowDefinition) execution.getVariable("workflow");
+            List<HistoryWorkflowTask> list = WorkflowService.getInstance().getHistoryWorkflowTasks(((ExecutionImpl) execution).getProcessInstance().getId(), def.getProvider(), Locale.getDefault());
+            if (list.size() > 0) {
+                userKey = list.get(list.size()-1).getUser();
+            }
+        } catch (Exception e) {
+            logger.error("Cannot get last user on the workflow",e);
+        }
 
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();

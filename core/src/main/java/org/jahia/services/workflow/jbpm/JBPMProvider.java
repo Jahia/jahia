@@ -728,27 +728,30 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
 
         WorkflowDefinition def = getHistoryWorkflows(Collections.singletonList(processId), locale).get(0).getWorkflowDefinition();
         for (HistoryWorkflowTask task : historyItems) {
-            ResourceBundle resourceBundle = getResourceBundle(locale, def.getKey());
-            try {
-                task.setDisplayName(
-                        resourceBundle.getString(task.getName().replaceAll(" ", ".").trim().toLowerCase()));
-            } catch (Exception e) {
-                task.setDisplayName(task.getName());
+            ResourceBundle resourceBundle = null;
+            if (locale != null) {
+                resourceBundle = getResourceBundle(locale, def.getKey());
+                try {
+                    task.setDisplayName(
+                            resourceBundle.getString(task.getName().replaceAll(" ", ".").trim().toLowerCase()));
+                } catch (Exception e) {
+                    task.setDisplayName(task.getName());
+                }
             }
-
             String outcome = task.getOutcome();
             if (outcome != null) {
                 String key = task.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
                         outcome.replaceAll(" ", ".").trim().toLowerCase();
-                String displayOutcome;
-                try {
-                    displayOutcome = resourceBundle.getString(key);
-                } catch (Exception e) {
-                    logger.info("Missing ressource : " + key + " in " + resourceBundle);
-                    displayOutcome = outcome;
+                if (locale != null) {
+                    String displayOutcome;
+                    try {
+                        displayOutcome = resourceBundle.getString(key);
+                    } catch (Exception e) {
+                        logger.info("Missing ressource : " + key + " in " + resourceBundle);
+                        displayOutcome = outcome;
+                    }
+                    task.setDisplayOutcome(displayOutcome);
                 }
-
-                task.setDisplayOutcome(displayOutcome);
             }
         }
 

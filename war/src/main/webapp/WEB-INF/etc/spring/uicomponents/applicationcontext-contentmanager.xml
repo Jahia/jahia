@@ -31,7 +31,6 @@
                 <ref bean="Engine.Tab.Categories"/>
                 <ref bean="Engine.Tab.Options"/>
                 <ref bean="Engine.Tab.Roles"/>
-                <ref bean="Engine.Tab.Workflow"/>
                 <ref bean="Engine.Tab.Usages"/>
             </list>
         </property>
@@ -772,7 +771,6 @@
                 <ref bean="Engine.Tab.Categories"/>
                 <ref bean="Engine.Tab.Options"/>
                 <ref bean="Engine.Tab.Roles"/>
-                <ref bean="Engine.Tab.Workflow"/>
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.Versioning"/>
             </list>
@@ -921,7 +919,6 @@
                 <ref bean="Engine.Tab.Categories"/>
                 <ref bean="Engine.Tab.Options"/>
                 <ref bean="Engine.Tab.Roles"/>
-                <ref bean="Engine.Tab.Workflow"/>
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.Versioning"/>
             </list>

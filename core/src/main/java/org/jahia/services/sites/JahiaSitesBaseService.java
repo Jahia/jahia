@@ -1,3 +1,4 @@
+
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
@@ -582,6 +583,11 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                             JCRNodeWrapper page = nodeWrapper.addNode("home", "jnt:page");
                             page.setProperty("jcr:title", "Welcome to " + site.getServerName());
                             page.setProperty("j:isHomePage", true);
+                            session.save();
+                        }
+                        JCRNodeWrapper home = nodeWrapper.getNode("home");
+                        if (!home.hasProperty("jcr:title")) {
+                            home.setProperty("jcr:title", "Welcome to " + site.getServerName());
                             session.save();
                         }
                     } catch (RepositoryException e) {

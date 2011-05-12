@@ -234,7 +234,6 @@
                 <ref bean="Engine.Tab.Categories"/>
                 <ref bean="Engine.Tab.Options"/>
                 <ref bean="Engine.Tab.Roles"/>
-                <ref bean="Engine.Tab.Workflow"/>
                 <ref bean="Engine.Tab.Usages"/>
                 <ref bean="Engine.Tab.History"/>
                 <ref bean="Engine.Tab.Versioning"/>
@@ -782,21 +781,6 @@
         <property name="requiredPermission" value="viewSeoTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.SeoTabItem"/>
-        </property>
-    </bean>
-
-    <bean id="Engine.Tab.Workflow" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="id" value="workflow"/>
-        <property name="titleKey" value="label.engineTab.workflow"/>
-        <property name="requiredPermission" value="viewWorkflowTab"/>
-        <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.WorkflowTabItem">
-                <property name="hideForTypes">
-                    <list>
-                        <value>jnt:category</value>
-                    </list>
-                </property>
-            </bean>
         </property>
     </bean>
 

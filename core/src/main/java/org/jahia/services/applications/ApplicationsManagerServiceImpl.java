@@ -89,6 +89,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * the instance *
      */
     private static ApplicationsManagerServiceImpl instance;
+    public static final String WEBAPPS_PERMISSION_PATH = "/permissions/webapps/";
 
     /**
      * dummy comparator application bean *
@@ -436,10 +437,12 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
                     JCRContentUtils.registerNamespace(session, getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
 
+                    String webappPath = WEBAPPS_PERMISSION_PATH + app.getName();
+
                     // now let's add the web application roles as Jahia permissions, that we will map to Jahia roles
                     // if a default mapping is provided in the service's configuration.
 
-                    String webappRolesPath = "/permissions/webapps/" + app.getName() + "/"+ getWebAppQualifiedNodeName(app.getName(), "roles");
+                    String webappRolesPath = webappPath + "/" + getWebAppQualifiedNodeName(app.getName(), "roles");
                     JCRNodeWrapper webappRolesPermNode = getOrCreatePermissionNode(webappRolesPath, session);
                     session.save();
 
@@ -473,24 +476,22 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
                         JCRContentUtils.registerNamespace(session, getEntryPointPrefix(app.getName(), entryPointDefinition.getName()), getEntryPointNamespaceURI(app.getName(), entryPointDefinition.getName()));
 
+                        String portletsPath = webappPath + "/" + getWebAppQualifiedNodeName(app.getName(), "portlets");
                         // let's add the default portlet permissions
 
-                        String createInstancesPermPath = "/permissions/webapps/" + app.getName() + "/" + getWebAppQualifiedNodeName(app.getName(), "portlets") + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), "createInstance");
+                        String createInstancesPermPath = portletsPath + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), "createInstance");
                         JCRNodeWrapper createInstancesPermNode = getOrCreatePermissionNode(createInstancesPermPath, session);
                         session.save();
                         if (defaultPortletPermissionMappings != null) {
                             String jahiaRolePath = defaultPortletPermissionMappings.get("createInstance");
-                            JCRNodeWrapper permission = getOrCreatePermissionNode(webappRolesPath + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), "createInstance"), session);
-                            session.save();
-
-                            grantPermissionToRole(permission, jahiaRolePath, session);
+                            grantPermissionToRole(createInstancesPermNode, jahiaRolePath, session);
                         }
 
-                        String portletModePath = "/permissions/webapps/" + app.getName() + "/" + getWebAppQualifiedNodeName(app.getName(), "portlets") + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), "modes");
+                        String portletModePath = webappPath + "/" + getWebAppQualifiedNodeName(app.getName(), "portlets") + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), "modes");
                         JCRNodeWrapper portletModePermNode = getOrCreatePermissionNode(portletModePath, session);
                         session.save();
                         for (PortletMode portletMode : entryPointDefinition.getPortletModes()) {
-                            JCRNodeWrapper permission = getOrCreatePermissionNode(webappRolesPath + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), portletMode.toString()), session);
+                            JCRNodeWrapper permission = getOrCreatePermissionNode(portletModePath + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), portletMode.toString()), session);
                             session.save();
 
                             // if a mapping to a Jahia role is defined, let's add it.

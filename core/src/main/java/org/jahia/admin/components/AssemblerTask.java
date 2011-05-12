@@ -32,10 +32,20 @@
 
 package org.jahia.admin.components;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.pluto.util.assemble.Assembler;
 import org.apache.pluto.util.assemble.AssemblerConfig;
 import org.apache.pluto.util.assemble.war.WarAssembler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 /**
  * .
@@ -44,6 +54,9 @@ import java.io.File;
  * Time: 12:31:07
  */
 public class AssemblerTask {
+    
+    private static final Logger logger = LoggerFactory.getLogger(AssemblerTask.class);
+    
     private File webapp;
     private File tempDir;
 
@@ -61,7 +74,16 @@ public class AssemblerTask {
     }
 
     public File execute() throws Exception {
+        long timer = System.currentTimeMillis();
+        logger.info("Got a command to prepare " + getWebapp() + " WAR file to be deployed into the Pluto container");
         validateArgs();
+        
+        if (!needRewriting(getWebapp())) {
+            logger.info("No rewriting is needed for the web.xml. Skipping.");
+            File destFile =  new File(tempDir, getWebapp().getName());
+            FileUtils.copyFile(getWebapp(), destFile, true);
+            return destFile;
+        }
 
 
         final File tempDir = getTempDir();
@@ -72,9 +94,30 @@ public class AssemblerTask {
         WarAssembler assembler = new WarAssembler();
         assembler.assemble(config);
 
-        return new File(tempDir, getWebapp().getName());
+        File destFile = new File(tempDir, getWebapp().getName());
+        
+        logger.info("Done assembling WAR file {} in {} ms.", destFile, (System.currentTimeMillis() - timer));
 
+        return destFile;
+    }
 
+    private boolean needRewriting(File source) throws FileNotFoundException, IOException {
+        final JarInputStream jarIn = new JarInputStream(new FileInputStream(source));
+        String webXml = null;
+        JarEntry jarEntry;
+        try {
+            // Read the source archive entry by entry
+            while ((jarEntry = jarIn.getNextJarEntry()) != null) {
+                if (Assembler.SERVLET_XML.equals(jarEntry.getName())) {
+                    webXml = IOUtils.toString(jarIn);
+                }
+                jarIn.closeEntry();
+            }
+        } finally {
+            jarIn.close();
+        }
+
+        return webXml == null || !webXml.contains(Assembler.DISPATCH_SERVLET_CLASS);
     }
 
     private void validateArgs() throws Exception {

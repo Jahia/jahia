@@ -65,6 +65,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.*;
+import javax.jcr.security.AccessControlException;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
 import javax.jcr.version.*;
@@ -72,7 +73,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.security.AccessControlException;
 import java.util.*;
 
 /**
@@ -277,7 +277,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } catch (AccessControlException e) {
             return false;
         } catch (RepositoryException re) {
-            logger.error("Cannot check perm ", re);
+            logger.error("Cannot check permission " + perm, re);
             return false;
         }
     }

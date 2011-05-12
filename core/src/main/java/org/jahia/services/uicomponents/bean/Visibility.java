@@ -58,6 +58,8 @@ public class Visibility {
     private String userAgent;
     private String value;
     private String contextNodePath;
+    private String inNodePath;
+
 
     public String getPermission() {
         return permission;
@@ -99,6 +101,14 @@ public class Visibility {
         this.contextNodePath = contextNodePath;
     }
 
+    public String getInNodePath() {
+        return inNodePath;
+    }
+
+    public void setInNodePath(String inNodePath) {
+        this.inNodePath = inNodePath;
+    }
+
     public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
         if (value != null) {
             if (logger.isDebugEnabled()) logger.debug("Value: " + value);
@@ -117,7 +127,9 @@ public class Visibility {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Logging: true");
                 }
-
+                if (inNodePath != null && !contextNode.getPath().startsWith(inNodePath)) {
+                    return false;
+                }
                 try {
                     if (contextNodePath != null) {
                         contextNode = contextNode.getSession().getNode(contextNodePath);

@@ -206,11 +206,11 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
+                <ref bean="repository.templateFiles"/>
                 <ref bean="repository.websitefiles"/>
                 <ref bean="repository.sites"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
-                <ref bean="repository.templateFiles"/>
             </list>
         </property>
 

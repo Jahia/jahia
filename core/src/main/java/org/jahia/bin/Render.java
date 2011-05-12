@@ -898,7 +898,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         logger.error(e.getMessage(), e);
                     }
                 } else {
-                    performRedirect(result.getUrl(), urlResolver.getPath(), req, resp, parameters, false);
+                    if (!result.isAbsoluteUrl()) {
+                        performRedirect(result.getUrl(), urlResolver.getPath(), req, resp, parameters, false);
+                    } else {
+                        resp.sendRedirect(resp.encodeRedirectURL(result.getUrl()));
+                    }
                 }
             } else {
                 resp.sendError(result.getResultCode());

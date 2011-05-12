@@ -57,6 +57,8 @@ public class ActionResult {
 
     private String url;
 
+    private boolean absoluteUrl;
+
     public ActionResult(int resultCode) {
         this(resultCode, null);
     }
@@ -66,10 +68,15 @@ public class ActionResult {
     }
 
     public ActionResult(int resultCode, String url, JSONObject json) {
+        this(resultCode, url, false, json);
+    }
+
+    public ActionResult(int resultCode, String url, boolean absoluteUrl, JSONObject json) {
         super();
         this.resultCode = resultCode;
         this.url = url;
         this.json = json;
+        this.absoluteUrl = absoluteUrl;
     }
 
     public JSONObject getJson() {
@@ -82,6 +89,10 @@ public class ActionResult {
 
     public String getUrl() {
         return url;
+    }
+
+    public boolean isAbsoluteUrl() {
+        return absoluteUrl;
     }
 
     public void setJson(JSONObject json) {

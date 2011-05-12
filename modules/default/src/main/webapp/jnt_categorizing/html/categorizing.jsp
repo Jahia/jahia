@@ -32,7 +32,7 @@
             </c:forEach>
 
             function deleteCategory(uuid) {
-                $.ajaxSetup({traditional: true});
+                $.ajaxSetup({traditional: true, cache:false});
                 var newUuids = new Array();
                 for (i = 0; i < uuids.length; i++) {
                     if (uuids[i] != uuid) {

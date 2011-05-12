@@ -23,7 +23,8 @@
         $.ajaxSetup({
             accepts: {
                 script: "application/json"
-            }
+            },
+            cache:false
         })
         /*
          $("#delete-${currentNode.identifier}").button();

@@ -31,7 +31,7 @@
 
         function addCategory(uuid, separator) {
             var catToAddUuid = $("#categorytoadd").val();
-            $.ajaxSetup({ traditional: true });
+            $.ajaxSetup({ traditional: true, cache:false });
             var isAlreadyExist = new Boolean();
             isAlreadyExist = false;
             for (i = 0; i < uuids.length; i++) {

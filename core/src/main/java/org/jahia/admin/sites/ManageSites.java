@@ -285,7 +285,11 @@ public class ManageSites extends AbstractAdministrationModule {
         // set request attributes...
         request.setAttribute("jahiaDisplayMessage", jahiaDisplayMessage);
         request.setAttribute("warningMsg", warningMsg);
-
+        try {
+            request.setAttribute("hasTemplateSets",getTemplatesSets().size() > 1);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
         // redirect...
         JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "sites_management.jsp");
     } // end displayList

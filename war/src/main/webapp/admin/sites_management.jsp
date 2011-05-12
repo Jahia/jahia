@@ -17,6 +17,7 @@
     Iterator sitesList = (Iterator) request.getAttribute("sitesList");
     String warningMsg = (String) request.getAttribute("warningMsg");
     String sub = (String) request.getParameter("sub");
+    boolean hasTemplateSets = Boolean.valueOf(request.getAttribute("hasTemplateSets").toString());
     JahiaSite newJahiaSite = (JahiaSite) session.getAttribute(JahiaAdministration.CLASS_NAME + "newJahiaSite");
     ProcessingContext jParams = null;
     if (jData != null) {
@@ -48,11 +49,11 @@
 
     function sendExportSitesForm() {
         if (document.main.sitebox.length) {
-             for (var i = 0; i < document.main.sitebox.length; i++) {
-                 document.main.sitebox[i].checked = true;
-             }
-         }
-         document.main.action = '<%=request.getContextPath() + Export.getExportServletPath()%>/default/sites_' + '<%= "export_" + new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date()) + ".zip"%>';
+            for (var i = 0; i < document.main.sitebox.length; i++) {
+                document.main.sitebox[i].checked = true;
+            }
+        }
+        document.main.action = '<%=request.getContextPath() + Export.getExportServletPath()%>/default/sites_' + '<%= "export_" + new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date()) + ".zip"%>';
         document.main.submit();
     }
 
@@ -95,12 +96,14 @@
 </div>
 <div class="content-body">
     <div id="operationMenu">
+        <%if (hasTemplateSets) {%>
                     <span class="dex-PushButton">
                       <span class="first-child">
                         <a class="ico-siteAdd"
                            href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/></a>
                       </span>
                     </span>
+        <%}%>
                     <span class="dex-PushButton">
                       <span class="first-child">
                         <a class="ico-export" href="javascript:sendExportSitesForm()" alt="<fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/>"><fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/></a>
@@ -299,24 +302,24 @@
                     <td>
                         :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                     </td>
-                   <td>&nbsp;</td>
-                 </tr><tr>
-                 	<td>
-                 		<fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/>&nbsp;
-                 	</td>
-                   <td>
-                 			:&nbsp;<input name="importpath" size="<%=inputSize%>">
-                    </td>
-                    <td>
+                    <td>&nbsp;</td>
+                </tr><tr>
+                <td>
+                    <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/>&nbsp;
+                </td>
+                <td>
+                    :&nbsp;<input name="importpath" size="<%=inputSize%>">
+                </td>
+                <td>
                         <span class="dex-PushButton">
                             <span class="first-child">
                                 <a class="ico-import"
                                    href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
                             </span>
                         </span>
-                    </td>
+                </td>
 
-                </tr>
+            </tr>
             </table>
         </form>
     </div>
@@ -330,38 +333,38 @@ else { %>
     <h2 class="edit"><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/></h2>
 </div>
 <div id="main">
-<table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
-<tbody>
-<tr>
-    <td style="vertical-align: top;" align="left">
-        <%@include file="/admin/include/tab_menu.inc" %>
-    </td>
-</tr>
-<tr>
-<td style="vertical-align: top;" align="left" height="100%">
+    <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <td style="vertical-align: top;" align="left">
+                <%@include file="/admin/include/tab_menu.inc" %>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top;" align="left" height="100%">
 
 
-<div class="dex-TabPanelBottom">
-<div class="tabContent">
-<jsp:include page="/admin/include/left_menu.jsp">
-    <jsp:param name="mode" value="server"/>
-</jsp:include>
-<div id="content" class="fit">
-<div class="head headtop">
-    <div class="object-title"><fmt:message key="label.virtualSitesManagement"/>
-    </div>
-</div>
+                <div class="dex-TabPanelBottom">
+                    <div class="tabContent">
+                        <jsp:include page="/admin/include/left_menu.jsp">
+                            <jsp:param name="mode" value="server"/>
+                        </jsp:include>
+                        <div id="content" class="fit">
+                            <div class="head headtop">
+                                <div class="object-title"><fmt:message key="label.virtualSitesManagement"/>
+                                </div>
+                            </div>
 
-<!-- adding blank site -->
-<div class="content-body">
-    <div id="operationMenu">
-        <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
-            <tr>
-                <td>
-                    <fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/>&nbsp;
-                </td>
+                            <!-- adding blank site -->
+                            <div class="content-body">
+                                <div id="operationMenu">
+                                    <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
+                                        <tr>
+                                            <td>
+                                                <fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/>&nbsp;
+                                            </td>
 
-                <td>
+                                            <td>
                     <span class="dex-PushButton">
                                           <span class="first-child">
 
@@ -369,42 +372,42 @@ else { %>
                                                href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/></a>
                                           </span>
                                         </span>
-                </td>
-            </tr>
-        </table>
-    </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
 
-    <!-- prepackaged site -->
-    <div class="head headtop">
-        <div class="object-title">
-            <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
+                                <!-- prepackaged site -->
+                                <div class="head headtop">
+                                    <div class="object-title">
+                                        <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
 
-            <fmt:message key="label.virtualSitesManagement.default"/>
+                                        <fmt:message key="label.virtualSitesManagement.default"/>
 
-        </div>
-    </div>
-    <div  class="content-item">
+                                    </div>
+                                </div>
+                                <div  class="content-item">
 
-        <form name="siteImportPrepackaged"
-              action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
-              method="post"
-              enctype="multipart/form-data">
-            <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
-                <tr>
-                    <td>
-                      <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/>&nbsp;
-                    </td>
-                    <td>
-                        &nbsp;<select name="importpath">
-                        <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
-                        <c:forEach var="file" items="${files}">
-                            <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
-                            <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
-                            <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
-                        </c:forEach>
-                    </select>
-                    </td>
-                    <td>
+                                    <form name="siteImportPrepackaged"
+                                          action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
+                                          method="post"
+                                          enctype="multipart/form-data">
+                                        <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
+                                            <tr>
+                                                <td>
+                                                    <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/>&nbsp;
+                                                </td>
+                                                <td>
+                                                    &nbsp;<select name="importpath">
+                                                    <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
+                                                    <c:forEach var="file" items="${files}">
+                                                        <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
+                                                        <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
+                                                        <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
+                                                    </c:forEach>
+                                                </select>
+                                                </td>
+                                                <td>
                                             
                 	                    <span class="dex-PushButton">
                                           <span class="first-child">
@@ -413,70 +416,70 @@ else { %>
                                           </span>
                                         </span>
 
-                    </td>
-                </tr>
-            </table>
-        </form>
-    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </form>
+                                </div>
 
-    <!--   import backup -->
-    <div class="head headtop">
-        <div class="object-title">
-            <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
-        </div>
-    </div>
-    <div  class="content-item">
-        <% if (warningMsg != "" && sub.equals("prepareimport")) { %>
-        <p class="errorbold">
-            <%=warningMsg %>
-        </p>
-        <% } %>
-        <form name="siteImport"
-              action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
-              method="post"
-              enctype="multipart/form-data">
-            <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
-                <tr>
-                    <td>
+                                <!--   import backup -->
+                                <div class="head headtop">
+                                    <div class="object-title">
+                                        <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+                                    </div>
+                                </div>
+                                <div  class="content-item">
+                                    <% if (warningMsg != "" && sub.equals("prepareimport")) { %>
+                                    <p class="errorbold">
+                                        <%=warningMsg %>
+                                    </p>
+                                    <% } %>
+                                    <form name="siteImport"
+                                          action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
+                                          method="post"
+                                          enctype="multipart/form-data">
+                                        <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
+                                            <tr>
+                                                <td>
 
 
 
-                        <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
-                    </td>
-                    <td>
-                        :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                    </td>
-                    <td>&nbsp;</td>
-                 </tr><tr>
-                 	<td>
-                 		<fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/>&nbsp;
-                 	</td>
-                   <td>
-                 			:&nbsp;<input name="importpath" size="<%=inputSize%>">
-                    </td>
-                    <td>
+                                                    <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
+                                                </td>
+                                                <td>
+                                                    :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
+                                                </td>
+                                                <td>&nbsp;</td>
+                                            </tr><tr>
+                                            <td>
+                                                <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileinput"/>&nbsp;
+                                            </td>
+                                            <td>
+                                                :&nbsp;<input name="importpath" size="<%=inputSize%>">
+                                            </td>
+                                            <td>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
                                                 <a class="ico-import"
                                                    href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
                                               </span>
                                             </span>
-                    </td> 
+                                            </td>
 
-                </tr>
-            </table>
-        </form>
-    </div>
+                                        </tr>
+                                        </table>
+                                    </form>
+                                </div>
 
 
-</div>
-        <% } %>
-    </div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <br class="clear"/>
 <div id="actionBar">

@@ -43,6 +43,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 
 import javax.jcr.AccessDeniedException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.util.ArrayList;
@@ -103,15 +104,19 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                     }
                 });
                 JCRNodeWrapper contextNode = resource.getNode();
-                if (node.hasProperty("j:contextNodePath")) {
-                    String contextPath = node.getProperty("j:contextNodePath").getString();
-                    if (!StringUtils.isEmpty(contextPath)) {
-                        if (contextPath.startsWith("/")) {
-                            contextNode = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(contextPath);
-                        } else {
-                            contextNode = contextNode.getNode(contextPath);
+                try {
+                    if (node.hasProperty("j:contextNodePath")) {
+                        String contextPath = node.getProperty("j:contextNodePath").getString();
+                        if (!StringUtils.isEmpty(contextPath)) {
+                            if (contextPath.startsWith("/")) {
+                                contextNode = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(contextPath);
+                            } else {
+                                contextNode = contextNode.getNode(contextPath);
+                            }
                         }
                     }
+                } catch (PathNotFoundException e) {
+                    return "";
                 }
                 for (String perm : perms) {
                     if (!contextNode.hasPermission(perm)) {

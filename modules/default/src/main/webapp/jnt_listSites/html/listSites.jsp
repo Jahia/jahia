@@ -17,6 +17,16 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.js"/>
 <template:addResources type="css" resources="listsites.css"/>
+<c:set var="ajaxRequired" value="${currentResource.workspace eq 'live' and jcr:hasPermission(currentResource.node, 'jcr:read_default')}"/>
+<c:if test="${ajaxRequired}">
+    <div id="listsites${currentNode.identifier}">
+    <script type="text/javascript">
+        $('#listsites${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
+    </script>
+    </div>
+</c:if>
+
+<c:if test="${not ajaxRequired}">
 
     <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') order by site.[jcr:created] desc" limit="${currentNode.properties['numberMaxOfSitesDisplayed'].string}"/>
     <ul class="list-sites">
@@ -60,3 +70,4 @@
             </c:if>
         </c:forEach>
     </ul>
+</c:if>

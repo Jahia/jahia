@@ -124,7 +124,7 @@
             <span style="margin-right: 10px"><a href="${logoutUrl}"><img src="${pageContext.request.contextPath}/icons/logout.png" alt=" " height="16" width="16" align="top"/>&nbsp;<fmt:message key="label.logout"/></a></span>
             <%
                 Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
-                String userLocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale).toString() : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER)).toString();
+                String userLocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale).toString() : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), LanguageCodeConverters.resolveLocaleForGuest(request)).toString();
             %>
             <select name="preferredLanguage" onchange="window.location.href='${pageContext.request.contextPath}/administration?switchUiLocale=' + this.value;">
                 <%

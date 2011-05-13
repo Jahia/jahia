@@ -225,7 +225,7 @@ public final class UserPreferencesHelper {
      *         the list of available locales
      */
     public static Locale getPreferredLocale(JahiaUser user) {
-        return getPreferredLocale(user, Locale.ENGLISH);
+        return getPreferredLocale(user, (Locale) null);
     }
 
     /**

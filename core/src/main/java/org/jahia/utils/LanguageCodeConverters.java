@@ -33,18 +33,12 @@
 package org.jahia.utils;
 
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
+import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Title: Utility class to convert between the different type of language
@@ -257,6 +251,27 @@ public class LanguageCodeConverters {
         }
         Collections.sort(sortedLocaleList, LanguageCodeConverters.getLocaleDisplayNameComparator(currentLocale));
         return sortedLocaleList;
+    }
+
+    public static Locale resolveLocaleForGuest(HttpServletRequest request) {
+        List<Locale> availableBundleLocales = getAvailableBundleLocales();
+        @SuppressWarnings("unchecked")
+        Enumeration<Locale> browserLocales = request.getLocales();
+        Locale resolvedLocale = availableBundleLocales != null && !availableBundleLocales.isEmpty() ? availableBundleLocales.get(0) : Locale.ENGLISH;
+        while (browserLocales != null && browserLocales.hasMoreElements()) {
+        	Locale candidate = browserLocales.nextElement();
+        	if (candidate != null) {
+        		if (availableBundleLocales.contains(candidate)) {
+        			resolvedLocale = candidate;
+        			break;
+        		} else if (StringUtils.isNotEmpty(candidate.getCountry()) && availableBundleLocales.contains(new Locale(candidate.getLanguage()))) {
+        			resolvedLocale = new Locale(candidate.getLanguage());
+        			break;
+        		}
+        	}
+        }
+
+	    return resolvedLocale;
     }
 
     /**

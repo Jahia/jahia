@@ -91,6 +91,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
     private String systemSiteDefaultLanguage = "en";
+    private Set<String> systemSiteLanguages = new HashSet<String>(Arrays.asList("en","fr"));
     private String systemSiteTitle = "System Site";
     private String systemSiteServername = "";
     private String systemSiteTemplateSetName = "templates-system";
@@ -798,6 +799,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 JahiaSite site = addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
                         systemSiteTemplateSetName, "noImport", null, null, false, false, null);
                 site.setMixLanguagesActive(true);
+                site.setLanguages(systemSiteLanguages);
                 updateSite(site);
                 final LinkedHashSet<String> languages = new LinkedHashSet<String>();
                 languages.add(selectedLocale.toString());
@@ -829,6 +831,10 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
     public void setSystemSiteDefaultLanguage(String systemSiteDefaultLanguage) {
         this.systemSiteDefaultLanguage = systemSiteDefaultLanguage;
+    }
+
+    public void setSystemSiteLanguages(Set<String> systemSiteLanguages) {
+        this.systemSiteLanguages = systemSiteLanguages;
     }
 
     public void setSystemSiteServername(String systemSiteServername) {

@@ -58,12 +58,14 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
@@ -109,7 +111,9 @@ public class WelcomeServlet extends HttpServlet {
     protected void userRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
         if (!JahiaUserManagerService.isGuest(user)) {
-            redirect(request.getContextPath() + "/cms/render/live/en" + user.getLocalPath() + ".html", response);
+            JCRSiteNode site = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession("live").getNode(JCRContentUtils.getSystemSitePath());
+            String language = resolveLanguage(request, site, user);
+            redirect(request.getContextPath() + "/cms/render/live/"+language + user.getLocalPath() + ".html", response);
         } else {
             throw new AccessDeniedException();
         }
@@ -137,7 +141,8 @@ public class WelcomeServlet extends HttpServlet {
             userRedirect(request, response, context);
             return;
         } else {
-            String language = resolveLanguage(request, site);
+            JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
+            String language = resolveLanguage(request, site, user);
             String base;
 
             String pathInfo = request.getPathInfo();
@@ -191,7 +196,7 @@ public class WelcomeServlet extends HttpServlet {
                 .getCurrentUserSession(workspace).getNode(resolvedSite.getJCRLocalPath()) : null;
     }
     
-    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site)
+    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JahiaUser user)
             throws JahiaException {
         final List<Locale> newLocaleList = new ArrayList<Locale>();
         List<Locale> siteLanguages = Collections.emptyList();
@@ -201,6 +206,11 @@ public class WelcomeServlet extends HttpServlet {
             }
         } catch (Exception t) {
             logger.debug("Exception while getting language settings as locales", t);
+        }
+
+        Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
+        if (preferredLocale != null) {
+            addLocale(site, newLocaleList, preferredLocale);
         }
 
         // retrieve the browser locales

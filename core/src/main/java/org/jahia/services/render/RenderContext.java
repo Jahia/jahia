@@ -299,7 +299,7 @@ public class RenderContext {
         if (uiLocale == null) {
             Locale locale = null;
             if(JahiaUserManagerService.isNotGuest(getUser())) {
-                locale = UserPreferencesHelper.getPreferredLocale(getUser());
+                locale = UserPreferencesHelper.getPreferredLocale(getUser(), LanguageCodeConverters.resolveLocaleForGuest(request));
             }
             if (locale == null) {
                 locale = getMainResourceLocale();

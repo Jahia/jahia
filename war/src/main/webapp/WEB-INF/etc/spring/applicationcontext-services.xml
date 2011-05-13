@@ -85,6 +85,12 @@
         <property name="systemSiteTitle" value="System Site"/>
         <property name="systemSiteServername" value=""/>
         <property name="systemSiteDefaultLanguage" value="en"/>
+        <property name="systemSiteLanguages" >
+            <set>
+                <value>en</value>
+                <value>fr</value>
+            </set>
+        </property>
         <property name="systemSiteTemplateSetName" value="templates-system"/>
     </bean>
 

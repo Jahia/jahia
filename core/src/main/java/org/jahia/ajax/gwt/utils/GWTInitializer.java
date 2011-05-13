@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.utils;
 
 import org.apache.commons.lang.WordUtils;
+import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.bin.Render;
@@ -73,7 +74,9 @@ public class GWTInitializer {
 
         if (uilocale == null) {
             Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
-            uilocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale) : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER));
+            uilocale = sessionLocale != null ?
+                    UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale) :
+                    UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), LanguageCodeConverters.resolveLocaleForGuest(request));
         }
         if (locale == null) {
             locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);

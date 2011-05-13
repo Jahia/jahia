@@ -33,6 +33,7 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.jahia.bin.Login;
 import org.jahia.params.ProcessingContext;
@@ -138,7 +139,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
             // do a switch to the user's preferred language
             if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
-                Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser);
+                Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
                 JahiaSite site = (JahiaSite) authContext.getRequest().getSession().getAttribute(ProcessingContext.SESSION_SITE);
                 if (site != null) {
                     List<Locale> siteLocales = site.getLanguagesAsLocales();

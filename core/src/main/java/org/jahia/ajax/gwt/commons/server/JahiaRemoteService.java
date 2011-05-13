@@ -176,7 +176,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      */
     protected Locale getUILocale() throws GWTJahiaServiceException {
         Locale sessionLocale = (Locale) getSession().getAttribute(ParamBean.SESSION_UI_LOCALE);
-        Locale locale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser(), sessionLocale) : UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser());
+        Locale locale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser(), sessionLocale) : UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser(), LanguageCodeConverters.resolveLocaleForGuest(request));
         if (locale == null) {
             if(JahiaUserManagerService.isNotGuest(getRemoteJahiaUser())) {
                 locale = UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser());

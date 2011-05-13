@@ -39,7 +39,7 @@
             <c:set var="listLimit" value="${-1}"/>
         </c:if>
 
-        <template:area absolute="true" level="${level}" view="${currentNode.properties['j:referenceView'].string}"
+        <template:area level="${level}" view="${currentNode.properties['j:referenceView'].string}"
                        path="${currentNode.name}"
                        nodeTypes="${nodeTypes}" listLimit="${listLimit}" moduleType="absoluteArea">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">

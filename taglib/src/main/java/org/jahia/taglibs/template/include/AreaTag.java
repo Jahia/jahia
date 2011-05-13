@@ -66,8 +66,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     private String mockupStyle;
 
-    private boolean absolute;
-
     private int level;
 
     private Template templateNode;
@@ -82,10 +80,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     public void setMockupStyle(String mockupStyle) {
         this.mockupStyle = mockupStyle;
-    }
-
-    public void setAbsolute(boolean absolute) {
-        this.absolute = absolute;
     }
 
     public void setLevel(int level) {
@@ -153,7 +147,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
             templateNode = t;
 
-            if (absolute) {
+            if ("absoluteArea".equals(moduleType)) {
                 // No more areas in an absolute area
                 renderContext.getRequest().setAttribute("previousTemplate", null);
                 try {
@@ -232,7 +226,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
             pageContext.getRequest().setAttribute("previousTemplate", templateNode);
             templateNode = null;
             level = 0;
-            absolute = false;
             pageContext.getRequest().setAttribute("inArea", o);
 
         }

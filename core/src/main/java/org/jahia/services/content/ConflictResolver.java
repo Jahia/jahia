@@ -479,7 +479,10 @@ public class ConflictResolver {
         public boolean apply() throws RepositoryException {
             if (sourceNode.getNode(newName).isVersioned() || targetNode.hasNode(newName)) {
                 if (targetNode.hasNode(newName) && (nextSibling == null || targetNode.hasNode(nextSibling)) && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
-                    targetNode.orderBefore(newName, nextSibling);
+                    if (!newName.contains("/") && !nextSibling.contains("/")) {
+                        // todo reorder non-versionable sub nodes
+                        targetNode.orderBefore(newName, nextSibling);
+                    }
                     targetNode.getSession().save();
                 }
                 return true;

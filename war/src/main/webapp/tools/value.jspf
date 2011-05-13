@@ -15,11 +15,11 @@
             <c:url var="urlValue" value="?">
                 <c:param name="uuid" value="${value.node.identifier}"/>
                 <c:param name="showProperties" value="${showProperties}"/>
-                <c:param name="showNodes" value="${showNodes ? 'false' : 'true'}"/>
+                <c:param name="showNodes" value="${showNodes}"/>
                 <c:param name="showActions" value="${showActions}"/>
                 <c:param name="workspace" value="${workspace}"/>
             </c:url>
-            <a href="${urlValue}">${fn:escapeXml(value.string)}</a>        
+            <a href="${urlValue}">${fn:escapeXml(value.node.name)} (${fn:escapeXml(value.string)})</a>        
         </c:if>
         <c:if test="${not valuePresent}">${value.string}</c:if>
     </c:when>

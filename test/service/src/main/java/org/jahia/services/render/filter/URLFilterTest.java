@@ -442,14 +442,11 @@ public class URLFilterTest {
         
         
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/testpage/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
-        try {
-            resolvedNode = urlResolver.getNode();
-            assertEquals(
-                    "Node should not be returned as it is not published yet", "/",
-                    resolvedNode.getPath());
-        } catch (PathNotFoundException e) {            
-        } catch (AccessDeniedException e) {            
-        }
+        resolvedNode = urlResolver.getNode();
+        assertTrue("Wrong node or language returned - all vanity urls are published, not just the one of the published language", pageNode
+                .equals(resolvedNode)
+                && "fr".equals(resolvedNode.getLanguage()));        
+
         languages.clear();
         languages.add("fr");
         ServicesRegistry.getInstance().getJCRPublicationService().publishByMainId(

@@ -207,7 +207,13 @@ public class WorkflowServiceTest {
         map.put("endDate",values);
         final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final WorkflowDefinition workflow = workflowList.iterator().next();
+        WorkflowDefinition workflow = null;
+        for (WorkflowDefinition currentWorkflow : workflowList) {
+            if (!currentWorkflow.getKey().contains("unpublic")) {
+                workflow = currentWorkflow;
+                break;
+            }
+        }
         assertNotNull("Workflow should not be null", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),

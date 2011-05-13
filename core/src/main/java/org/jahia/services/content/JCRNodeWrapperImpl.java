@@ -1997,7 +1997,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!getSession().getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && provider.getMountPoint().equals("/")) {
             try {
                 JCRNodeWrapper parent = getParent();
-                getSession().checkout(parent);
                 getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
                 if (!parent.isNodeType("jmix:deletedChildren")) {
                     parent.addMixin("jmix:deletedChildren");

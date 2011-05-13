@@ -125,7 +125,7 @@ public class PublishActionItem extends BaseActionItem {
                 if (wf != null) {
                     if (!wf.getAvailableTasks().isEmpty()) {
                         setEnabled(true);
-                        updateTitle(wf.getAvailableTasks().get(0).getDisplayName() + " : " + gwtJahiaNode.getName());
+                        updateTitle(wf.getAvailableTasks().get(0).getDisplayName() + " : " + gwtJahiaNode.getDisplayName());
                     } else {
                         setEnabled(false);
                         updateTitle(Messages.get("label.workflow.started", "Workflow started") + " : " +wf.getDefinition().getDisplayName());
@@ -137,7 +137,7 @@ public class PublishActionItem extends BaseActionItem {
                     setEnabled(GWTJahiaPublicationInfo.canPublish(gwtJahiaNode, info,
                             JahiaGWTParameters.getLanguage()));
 
-                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName() + " - " +
+                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
                                 JahiaGWTParameters.getLanguageDisplayName());
                 }
             } else {

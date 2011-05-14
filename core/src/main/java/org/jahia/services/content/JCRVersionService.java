@@ -33,7 +33,6 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -98,7 +97,7 @@ public class JCRVersionService extends JahiaService {
 
         VersionIterator versions = versionHistory.getAllVersions();
         if (versions.hasNext()) {
-            Version v = versions.nextVersion();
+            versions.nextVersion();
             // the first is the root version, which has no properties, so we will ignore it.
         }
         Set<VersionInfo> versionList = new TreeSet<VersionInfo>();
@@ -156,40 +155,44 @@ public class JCRVersionService extends JahiaService {
         Version lastVersion = null;
         Version closestVersion = null;
         if (vi.hasNext()) {
-            Version v = vi.nextVersion();
+            vi.nextVersion();
             // the first is the root version, which has no properties, so we will ignore it.
         }
         String nodeTitle = null;
         StringBuffer propertyString = null;
         while (vi.hasNext()) {
             Version v = vi.nextVersion();
-            Node frozenNode = v.getFrozenNode();
             if (logger.isDebugEnabled()) {
-                propertyString = new StringBuffer();
-                PropertyIterator propertyIterator = frozenNode.getProperties();
-                while (propertyIterator.hasNext()) {
-                    Property property = propertyIterator.nextProperty();
-                    propertyString.append("  ");
-                    propertyString.append(property.getName());
-                    propertyString.append("=");
-                    if (property.isMultiple()) {
-                        for (Value value : property.getValues()) {
-                            propertyString.append(value.getString());
-                            propertyString.append(",");
+                try {
+                    Node frozenNode = v.getFrozenNode();
+                    propertyString = new StringBuffer();
+                    PropertyIterator propertyIterator = frozenNode.getProperties();
+                    while (propertyIterator.hasNext()) {
+                        Property property = propertyIterator.nextProperty();
+                        propertyString.append("  ");
+                        propertyString.append(property.getName());
+                        propertyString.append("=");
+                        if (property.isMultiple()) {
+                            for (Value value : property.getValues()) {
+                                propertyString.append(value.getString());
+                                propertyString.append(",");
+                            }
+                        } else {
+                            propertyString.append(property.getValue().getString());
                         }
-                    } else {
-                        propertyString.append(property.getValue().getString());
+                        propertyString.append("\n");
                     }
-                    propertyString.append("\n");
+                } catch (IllegalStateException e) {
+                    propertyString.append(e.getMessage()).append("\n");
                 }
             }
             Date checkinDate = null;
             boolean checkinDateAvailable = false;
-                if (v.getCreated().getTime().compareTo(versionDate) > 0) {
-                    // this can happen if we have a checkinDate, but try to resolve using the creation date.
-                    closestVersion = lastVersion;
-                    break;
-                }
+            if (v.getCreated().getTime().compareTo(versionDate) > 0) {
+                // this can happen if we have a checkinDate, but try to resolve using the creation date.
+                closestVersion = lastVersion;
+                break;
+            }
             if (logger.isDebugEnabled()) {
                 logger.debug(
                         "Version " + v.getName() + " checkinDateAvailable=" + checkinDateAvailable + " checkinDate=" +

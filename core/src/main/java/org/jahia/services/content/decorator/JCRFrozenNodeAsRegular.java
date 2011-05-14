@@ -431,28 +431,50 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     }
 
     @Override
-    public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        // @todo to be implemented.
-        logger.warn("Method not (yet) implemented, defaulting to calling superclass method !");
-        return super.getAncestor(i);    //To change body of overridden methods use File | Settings | File Templates.
+    public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException,
+            RepositoryException {
+        JCRItemWrapper ancestor = null;
+        Property property = objectNode.getProperty("j:fullpath");
+        if (property != null) {
+            StringBuilder builder = new StringBuilder("/");
+            int counter = 0;
+            for (String pathElement : property.getString().split("/")) {
+                builder.append(pathElement);
+                if (counter++ == i) {
+                    break;
+                }
+                if (builder.length() > 1) {
+                    builder.append("/");
+                }
+            }
+            if (counter < i) {
+                throw new ItemNotFoundException();
+            } else {
+                try {
+                    ancestor = getSession().getNode(builder.toString());
+                } catch (PathNotFoundException nfe) {
+                    throw new ItemNotFoundException("Ancestor not found", nfe);
+                }
+            }
+        }
+        return ancestor;
     }
 
     @Override
     public List<JCRItemWrapper> getAncestors() throws RepositoryException {
         List<JCRItemWrapper> ancestors = new ArrayList<JCRItemWrapper>();
         Property property = objectNode.getProperty("j:fullpath");
-        StringBuilder builder = new StringBuilder("/");
         if (property != null) {
-            String[] strings = property.getString().split("/");
-            for (int i = 0; i < strings.length - 1; i++) {
-                builder.append(strings[i]);
+            StringBuilder builder = new StringBuilder("/");
+            for (String pathElement : property.getString().split("/")) {
+                builder.append(pathElement);
                 try {
                     ancestors.add(getSession().getNode(builder.toString()));
                 } catch (PathNotFoundException nfe) {
                 } catch (AccessDeniedException ade) {
                     return ancestors;
                 }
-                if (i > 0) {
+                if (builder.length() > 1) {
                     builder.append("/");
                 }
             }

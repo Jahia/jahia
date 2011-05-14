@@ -358,13 +358,21 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean, JBPMEve
         final List<WorkflowTask> availableActions = new LinkedList<WorkflowTask>();
         List<Task> taskList = taskService.findPersonalTasks(user.getUserKey());
         for (Task task : taskList) {
-            WorkflowTask action = convertToWorkflowTask(task, locale);
-            availableActions.add(action);
+            try {
+                WorkflowTask action = convertToWorkflowTask(task, locale);
+                availableActions.add(action);
+            } catch (Exception e) {
+                logger.debug("Cannot get task " + task.getName() + "for user", e);
+            }
         }
         taskList = taskService.findGroupTasks(user.getUserKey());
         for (Task task : taskList) {
-            WorkflowTask action = convertToWorkflowTask(task, locale);
-            availableActions.add(action);
+            try {
+                WorkflowTask action = convertToWorkflowTask(task, locale);
+                availableActions.add(action);
+            } catch (Exception e) {
+                logger.debug("Cannot get task " + task.getName() + "for user", e);
+            }
         }
         return availableActions;
     }

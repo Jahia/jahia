@@ -100,7 +100,7 @@ public class DispatchingServiceImpl extends DispatchingService {
         String fieldIDStr = Integer.toString(fieldID);
         String entryPointUniqueIDStr = fieldIDStr + ENTRYPOINT_ID_SEPARATOR + entryPointIDStr;
 
-        EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(entryPointIDStr);
+        EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(entryPointIDStr, workspaceName);
         if (entryPointInstance == null) {
             if(entryPointIDStr != null){
                 logger.error("Couldn't find application entry point with ID=" + entryPointIDStr);

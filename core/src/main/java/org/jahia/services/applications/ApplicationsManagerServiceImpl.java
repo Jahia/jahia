@@ -809,11 +809,11 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      * @throws JahiaException thrown if there was an error communicating with
      *                        the persistence system.
      */
-    public EntryPointInstance getEntryPointInstance(final String epInstanceID) throws JahiaException {
+    public EntryPointInstance getEntryPointInstance(final String epInstanceID, final String workspaceName) throws JahiaException {
         final EntryPointInstance[] entryPointInstanceByID = new EntryPointInstance[]{entryPointCache.get(ENTRY_POINT_INSTANCE + epInstanceID)};
         if (entryPointInstanceByID[0] == null && epInstanceID != null && !"".equals(epInstanceID) && !"<empty>".equals(epInstanceID)) {
             try {
-                JCRSessionWrapper session = jcrTemplate.getSessionFactory().getCurrentUserSession();
+                JCRSessionWrapper session = jcrTemplate.getSessionFactory().getCurrentUserSession(workspaceName);
                 final JCRPortletNode node = (JCRPortletNode) session.getNodeByUUID(epInstanceID);
                 entryPointInstanceByID[0] = getEntryPointInstance(node);
                 entryPointCache.put(ENTRY_POINT_INSTANCE + epInstanceID, entryPointInstanceByID[0]);

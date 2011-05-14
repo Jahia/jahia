@@ -222,12 +222,13 @@ public abstract class ApplicationsManagerService extends JahiaService {
      *
      * @param epInstanceID int the unique identifier for the EntryPointInstance
      *                     object in the persistence system
+     * @param workspaceName the name of the workspace in which to look for the entrypoint instance.
      * @return EntryPointInstance the object if found in the persistance system,
      *         or null otherwise.
      * @throws JahiaException thrown if there was an error communicating with
      *                        the persistence system.
      */
-    public abstract EntryPointInstance getEntryPointInstance(String epInstanceID)
+    public abstract EntryPointInstance getEntryPointInstance(String epInstanceID, String workspaceName)
             throws JahiaException;
 
     /**

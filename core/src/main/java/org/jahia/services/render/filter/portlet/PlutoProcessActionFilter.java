@@ -91,14 +91,14 @@ public class PlutoProcessActionFilter extends AbstractFilter {
 
             // Action window config will only exist if there is an action request.
             if (actionWindowConfig != null) {
-                flushPortletCache(renderContext.getUser(), actionWindowConfig);
+                flushPortletCache(renderContext.getUser(), actionWindowConfig, renderContext.getMainResource().getWorkspace());
                 PortletWindowImpl portletWindow = new PortletWindowImpl(container, actionWindowConfig, portalURL);
                 //if (logger.isDebugEnabled()) {
                 logger.debug("Processing action request for window: "
                         + portletWindow.getId().getStringId());
                 //}
 
-                EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(actionWindowConfig.getMetaInfo());
+                EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(actionWindowConfig.getMetaInfo(), renderContext.getMainResource().getWorkspace());
                 if (entryPointInstance != null) {
                     request.setEntryPointInstance(entryPointInstance);
                 } else {
@@ -107,7 +107,6 @@ public class PlutoProcessActionFilter extends AbstractFilter {
 
                 // copy jahia attibutes nested by the portlet
                 JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, renderContext.getRequest(), portletWindow, request, true, renderContext.getMainResource().getWorkspace());
-
 
                 try {
                     container.doAction(portletWindow, request, renderContext.getResponse());
@@ -160,11 +159,11 @@ public class PlutoProcessActionFilter extends AbstractFilter {
      * @throws org.jahia.exceptions.JahiaException
      *
      */
-    private void flushPortletCache(JahiaUser user, PortletWindowConfig actionWindowConfig) throws JahiaException {
+    private void flushPortletCache(JahiaUser user, PortletWindowConfig actionWindowConfig, String workspaceName) throws JahiaException {
         String cacheKey = null;
         // Check if cache is available for this portlet
         cacheKey = "portlet_instance_" + actionWindowConfig.getMetaInfo();
-        final EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(actionWindowConfig.getMetaInfo());
+        final EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(actionWindowConfig.getMetaInfo(), workspaceName);
         if (entryPointInstance != null && entryPointInstance.getCacheScope() != null && entryPointInstance.getCacheScope().equals(MimeResponse.PRIVATE_SCOPE)) {
             cacheKey += "_" + user.getUserKey();
         }

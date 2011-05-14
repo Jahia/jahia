@@ -38,9 +38,8 @@ import org.apache.pluto.driver.services.impl.resource.ResourceConfig;
 import org.apache.pluto.driver.services.portal.PageConfig;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
-import org.jahia.services.content.JCRSessionFactory;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -110,27 +109,36 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
      */
     public PageConfig getDefaultPage() {
         PageConfig pageConfig = pageConfigThreadLocal.get();
-        if (pageConfig == null) {
-            pageConfig = new PageConfig();
-            pageConfig.setUri(PortalDriverServlet.DEFAULT_PAGE_URI);
-            pageConfig.setName(DEFAULT_PAGE_NAME);
+        if ((pageConfig == null) || (pageConfig.getPortletIds().isEmpty())) {
             try {
-                Query q = createAllPortletsQuery();
-                if (q != null) {
-                    QueryResult qr = q.execute();
-                    NodeIterator ni = qr.getNodes();
-                    List<String> portletIds = new ArrayList<String>();
-                    while (ni.hasNext()) {
-                        JCRPortletNode nodeWrapper = new JCRPortletNode((JCRNodeWrapper) ni.nextNode());
-                        portletIds.add(PortletWindowConfig.fromId(nodeWrapper));
-                    }
-                    pageConfig.setPortletIds(portletIds);
+                pageConfig = JCRTemplate.getInstance().doExecuteWithSystemSessionInSameWorkspaceAndLocale(new JCRCallback<PageConfig>() {
+                    public PageConfig doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        PageConfig pageConfig = new PageConfig();
+                        pageConfig.setUri(PortalDriverServlet.DEFAULT_PAGE_URI);
+                        pageConfig.setName(DEFAULT_PAGE_NAME);
+                        Query q = createAllPortletsQuery(session);
+                        if (q != null) {
+                            QueryResult qr = q.execute();
+                            NodeIterator ni = qr.getNodes();
+                            List<String> portletIds = new ArrayList<String>();
+                            while (ni.hasNext()) {
+                                JCRPortletNode nodeWrapper = new JCRPortletNode((JCRNodeWrapper) ni.nextNode());
+                                portletIds.add(PortletWindowConfig.fromId(nodeWrapper));
+                            }
+                            pageConfig.setPortletIds(portletIds);
 
-                }
+                        }
+                        return pageConfig;
+                    }
+                });
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-            pageConfigThreadLocal.set(pageConfig);
+            if (pageConfig.getPortletIds().isEmpty()) {
+                pageConfigThreadLocal.set(null);
+            } else {
+                pageConfigThreadLocal.set(pageConfig);
+            }
             return pageConfig;
         }
         return pageConfig;
@@ -143,9 +151,9 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
      * @return a Query
      * @throws RepositoryException in case of error
      */
-    private Query createAllPortletsQuery() throws RepositoryException {
+    private Query createAllPortletsQuery(JCRSessionWrapper session) throws RepositoryException {
         String s = "select * from [jnt:portlet]";
-        QueryManager queryManager = sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager();
+        QueryManager queryManager = session.getWorkspace().getQueryManager();
         return queryManager.createQuery(s, Query.JCR_SQL2);
     }
 

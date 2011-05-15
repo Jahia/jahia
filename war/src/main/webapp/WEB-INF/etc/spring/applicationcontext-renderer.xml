@@ -38,7 +38,7 @@
 		<property name="priority" value="-2" />
 		<property name="applyOnModes" value="live,preview" />
 		<property name="applyOnConfigurations" value="page" />
-		<property name="applyOnTemplateTypes" value="html,edit" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
 	</bean>
 	-->
 	<bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">
@@ -50,7 +50,7 @@
 	<bean class="org.jahia.services.render.filter.StaticAssetsFilter">
 		<property name="priority" value="0" />
 		<property name="applyOnConfigurations" value="page" />
-		<property name="applyOnTemplateTypes" value="html,edit" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>
@@ -74,6 +74,8 @@
 			<map>
 				<entry key=".*iPhone.*" value="iphone" />
 				<entry key=".*iPod.*" value="iphone" />
+                <!--entry key=".*iPad.*" value="iphone" /-->
+                <entry key=".*Android.*" value="iphone" />
 			</map>
 		</property>
 	</bean>
@@ -85,7 +87,7 @@
 		class="org.jahia.services.render.filter.URLSystemAttributesAppenderFilter">
 		<property name="priority" value="20" />
 		<property name="applyOnConfigurations" value="page" />
-		<property name="applyOnTemplateTypes" value="html,edit" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
 		<property name="skipOnAjaxRequest" value="true" />
 		<property name="attributesToKeep">
 			<list>
@@ -117,7 +119,7 @@
 	<bean class="org.jahia.services.render.filter.TemplateNodeFilter">
 		<property name="priority" value="22" />
 		<property name="applyOnConfigurations" value="wrappedcontent,page,gwt" />
-		<property name="applyOnTemplateTypes" value="html,edit" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
 	</bean>
 
 	<bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter">

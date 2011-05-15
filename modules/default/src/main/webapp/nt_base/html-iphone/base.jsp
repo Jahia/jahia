@@ -6,10 +6,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<div id="iHeader">
-    <a href="#" id="waBackButton">Back</a>
-    <span id="waHeadTitle"><fmt:message key='iphone.label.home'/></span>
-</div>
-<div id="iGroup">
-    <template:area path="pagecontent"/>
-</div>
+<h1>Warning</h1>
+<p>No mobile templates installed but mobile matching is activated.</p>
+<p>no mobile render set for node : ${currentNode.name}</p>
+<p>for types : ${fn:escapeXml(currentNode.nodeTypes)}</p>

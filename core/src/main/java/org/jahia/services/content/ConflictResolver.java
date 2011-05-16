@@ -505,6 +505,7 @@ public class ConflictResolver {
             ChildAddedDiff that = (ChildAddedDiff) o;
 
             if (newName != null ? !newName.equals(that.newName) : that.newName != null) return false;
+            if (nextSibling != null ? !nextSibling.equals(that.nextSibling) : that.nextSibling != null) return false;
             if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
 
             return true;
@@ -514,6 +515,7 @@ public class ConflictResolver {
         public int hashCode() {
             int result = uuid != null ? uuid.hashCode() : 0;
             result = 31 * result + (newName != null ? newName.hashCode() : 0);
+            result = 31 * result + (nextSibling != null ? nextSibling.hashCode() : 0);
             return result;
         }
 

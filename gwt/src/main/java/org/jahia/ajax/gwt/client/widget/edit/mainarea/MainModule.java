@@ -285,7 +285,6 @@ public class MainModule extends Module {
                 if (newValues.size() > 0) {
                     Element newElem = createAsset(fileType, j, newValues.remove(0));
                     if (newElem != null) {
-                        String lastValue = lastElement.getAttribute(tagAttribute);
                         if (lastElement != null) {
                             head.insertAfter(newElem, lastElement);
                             lastElement = newElem;

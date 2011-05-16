@@ -155,6 +155,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     node = node.getNode(path);
                 } catch (RepositoryException e) {
                     path = node.getPath() + "/" + path;
+                    node = null;
                     missingResource(renderContext, currentResource, resource);
                 }
             } else if (path != null) {

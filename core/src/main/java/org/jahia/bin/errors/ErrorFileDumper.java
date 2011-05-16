@@ -149,34 +149,46 @@ public class ErrorFileDumper {
         }
     }
 
-    static {
-        executorService = Executors.newSingleThreadExecutor(new LowPriorityThreadFactory());
+    private static ExecutorService getExecutorService() {
+        if (isShutdown()) {
+            executorService = Executors.newSingleThreadExecutor(new LowPriorityThreadFactory());
+        }
+        return executorService;
+    }
 
-        // add shutdown hook to properly dispose of executor service.
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                System.out.println("Shutting down error file dumper executor service...");
-                if (executorService != null) {
-                    executorService.shutdown();
-                    try {
-                        if (!executorService.awaitTermination(100L, TimeUnit.MILLISECONDS)) {
-                            List<Runnable> droppedTasks = executorService.shutdownNow();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+    public static void shutdown() {
+        if (isShutdown()) {
+            return;
+        }
+        if (executorService != null) {
+            System.out.println("Shutting down error file dumper executor service...");
+            executorService.shutdown();
+            try {
+                if (!executorService.awaitTermination(100L, TimeUnit.MILLISECONDS)) {
+                    List<Runnable> droppedTasks = executorService.shutdownNow();
                 }
-                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
+            executorService = null;
+        }
+    }
+
+    public static boolean isShutdown() {
+        return (executorService == null);
     }
 
     public static void dumpToFile(Throwable t, HttpServletRequest request) throws IOException {
+
+        if (isShutdown()) {
+            return;
+        }
 
         HttpRequestData requestData = null;
         if (request != null) {
            requestData = new HttpRequestData(request);
         }
-        Future<?> dumperFuture = executorService.submit(new FileDumperRunnable(t, requestData));
+        Future<?> dumperFuture = getExecutorService().submit(new FileDumperRunnable(t, requestData));
     }
 
     private static void performDumpToFile(Throwable t, HttpRequestData httpRequestData) throws IOException {

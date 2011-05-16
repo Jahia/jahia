@@ -32,6 +32,11 @@ public abstract class LoadAverage implements Runnable {
 
     public void stop() {
         running = false;
+        loadCalcThread.interrupt();
+        try {
+            loadCalcThread.join(200);
+        } catch (InterruptedException e) {
+        }
     }
 
     public void run() {
@@ -46,7 +51,6 @@ public abstract class LoadAverage implements Runnable {
             try {
                 Thread.sleep(calcFreqMillis);
             } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
     }

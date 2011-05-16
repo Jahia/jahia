@@ -60,7 +60,9 @@ public class ExceptionAppender extends AppenderSkeleton {
         if (event.getThrowableInformation() != null) {
             try {
                 alreadyDumping = true;
-                ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
+                if (!ErrorFileDumper.isShutdown()) {
+                    ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -70,6 +72,7 @@ public class ExceptionAppender extends AppenderSkeleton {
     }
 
     public void close() {
+        ErrorFileDumper.shutdown();
     }
 
     public boolean requiresLayout() {

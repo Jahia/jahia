@@ -71,6 +71,7 @@ public class ErrorLoggingFilter implements Filter {
 
     public void destroy() {
         // nothing to do
+        ErrorFileDumper.shutdown();
     }
 
     /*
@@ -106,7 +107,9 @@ public class ErrorLoggingFilter implements Filter {
                 return;
             }
 
-            ErrorFileDumper.dumpToFile(t, request);
+            if (!ErrorFileDumper.isShutdown()) {
+                ErrorFileDumper.dumpToFile(t, request);
+            }
         } catch (Throwable throwable) {
             logger.warn("Error creating error file", throwable);
         }

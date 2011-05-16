@@ -146,6 +146,7 @@
 
                         <c:if test="${empty workflowTypes or found}">
                             <jcr:node var="node" uuid="${task.variables.nodeId}"/>
+                            <c:if test="${node != null}">
                             <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'}">
                                 <td class="center" headers="Type">
                                     <img alt="" src="<c:url value='${url.currentModule}/images/workflow.png'/>"/>
@@ -205,6 +206,7 @@
                                     </td>
                                 </tr>
                             </c:if>
+                                </c:if>
                         </c:if>
                     </c:forEach>
                 </c:if>

@@ -362,7 +362,8 @@ public class WorkflowHelper {
                             gwtWfHistory.getNodeId());
                     gwtWfHistory.set("nodeWrapper", ((NavigationHelper)SpringContextSingleton.getInstance().getContext().getBeansOfType(NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
                 } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
+                    logger.warn(e.getMessage(), e);
+                    continue;
                 }
                 gwtWfHistory.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
                 gwtWorkflowsMap.put(task.getProcessId(), gwtWfHistory);
@@ -381,16 +382,17 @@ public class WorkflowHelper {
             GWTJahiaWorkflowHistoryProcess gwtWfHistory = gwtWorkflowsMap.get(wf.getId());
             if (gwtWfHistory == null) {
                 gwtWfHistory = getGWTJahiaHistoryProcess(service.getHistoryWorkflow(wf.getId(), wf.getProvider(), locale));
-                gwtWorkflowsMap.put(wf.getId(), gwtWfHistory);
-                gwtWorkflows.add(gwtWfHistory);
-                gwtWfHistory.setRunningWorkflow(getGWTJahiaWorkflow(wf));
                 try {
                     JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(org.jahia.api.Constants.EDIT_WORKSPACE,locale).getNodeByIdentifier(
                             gwtWfHistory.getNodeId());
                     gwtWfHistory.set("nodeWrapper", ((NavigationHelper)SpringContextSingleton.getInstance().getContext().getBeansOfType(NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
                 } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
+                    logger.warn(e.getMessage(), e);
+                    continue;
                 }
+                gwtWorkflowsMap.put(wf.getId(), gwtWfHistory);
+                gwtWorkflows.add(gwtWfHistory);
+                gwtWfHistory.setRunningWorkflow(getGWTJahiaWorkflow(wf));
                 gwtWfHistory.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
             }
         }

@@ -116,6 +116,7 @@
 
                     <c:if test="${empty workflowTypes or found}">
                         <jcr:node var="node" uuid="${task.variables.nodeId}"/>
+                        <c:if test="${node!=null}">
                         <li>
                             <c:set var="taskTitle"
                                    value="${not empty task.displayName ? task.displayName : task.name} - ${task.variables['jcr:title'][0].value}"/>
@@ -171,6 +172,7 @@
                                 </div>
                             </div>
                         </c:if>
+                            </c:if>
                     </c:if>
                 </c:forEach>
             </c:if>

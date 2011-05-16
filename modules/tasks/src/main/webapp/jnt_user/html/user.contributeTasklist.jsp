@@ -74,6 +74,7 @@
                             <workflow:tasksForNode var="wfTasks" user="${renderContext.user}"/>
                             <c:forEach items="${wfTasks}" var="task" varStatus="status">
                                 <jcr:node var="node" uuid="${task.variables.nodeId}"/>
+                                <c:if test="${node!=null}">
                                 <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'}">
                                     <td class="center" headers="Type">
                                         <img alt="" src="<c:url value='${url.currentModule}/images/workflow.png'/>"/>
@@ -138,6 +139,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                </c:if>
                                 </c:if>
                             </c:forEach>
                             </tbody>

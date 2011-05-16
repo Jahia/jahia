@@ -120,7 +120,7 @@ public class ModuleDropTarget extends DropTarget {
                 String[] allowedTypes = nodetypes.split(" ");
                 boolean typeAllowed = false;
                 for (String t : allowedTypes) {
-                    if (t.equals(type.getName()) || type.getSuperTypes().contains(t)) {
+                    if (!type.isMixin() && (t.equals(type.getName()) || type.getSuperTypes().contains(t))) {
                         typeAllowed = true;
                         break;
                     }

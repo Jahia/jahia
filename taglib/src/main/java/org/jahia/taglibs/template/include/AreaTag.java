@@ -66,7 +66,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     private String mockupStyle;
 
-    private int level;
+    private Integer level;
 
     private Template templateNode;
 
@@ -82,7 +82,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         this.mockupStyle = mockupStyle;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 
@@ -151,7 +151,11 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 // No more areas in an absolute area
                 renderContext.getRequest().setAttribute("previousTemplate", null);
                 try {
-                    node = (JCRNodeWrapper) renderContext.getMainResource().getNode().getAncestor(level + 3);
+                    if (level != null) {
+                        node = (JCRNodeWrapper) renderContext.getMainResource().getNode().getAncestor(level + 3);
+                    } else {
+                        node = renderContext.getMainResource().getNode().getResolveSite().getHome();
+                    }
                     node = node.getNode(path);
                 } catch (RepositoryException e) {
                     path = node.getPath() + "/" + path;
@@ -226,7 +230,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         } finally {
             pageContext.getRequest().setAttribute("previousTemplate", templateNode);
             templateNode = null;
-            level = 0;
+            level = null;
             pageContext.getRequest().setAttribute("inArea", o);
 
         }

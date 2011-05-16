@@ -535,9 +535,6 @@ public class WorkflowHelper {
             try {
                 JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,
                         locale).getNodeByIdentifier(gwtWfHistory.getNodeId());
-                gwtWfHistory.set("nodeWrapper",
-                        ((NavigationHelper) SpringContextSingleton.getInstance().getContext().getBeansOfType(
-                                NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
             } catch (RepositoryException e) {
                 logger.warn(e.getMessage(), e);
                 continue;

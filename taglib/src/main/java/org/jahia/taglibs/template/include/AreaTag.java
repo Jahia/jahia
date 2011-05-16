@@ -151,10 +151,13 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 // No more areas in an absolute area
                 renderContext.getRequest().setAttribute("previousTemplate", null);
                 try {
-                    if (level != null) {
-                        node = (JCRNodeWrapper) renderContext.getMainResource().getNode().getAncestor(level + 3);
+                    JCRNodeWrapper main = renderContext.getMainResource().getNode();
+                    if (level != null && main.getDepth() >= level + 3) {
+                        node = (JCRNodeWrapper) main.getAncestor(level + 3);
+                    } else if (level == null) {
+                        node = main.getResolveSite().getHome();
                     } else {
-                        node = renderContext.getMainResource().getNode().getResolveSite().getHome();
+                        return;
                     }
                     node = node.getNode(path);
                 } catch (RepositoryException e) {

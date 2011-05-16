@@ -82,6 +82,9 @@
                     reload();
                 }, "json");
             }
+            else {
+                window.alert("<fmt:message key="label.workflow.started"/>");
+            }
         }
 
         function pasteNodes(contributeParams) {

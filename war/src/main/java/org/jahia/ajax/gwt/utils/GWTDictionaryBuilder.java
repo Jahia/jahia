@@ -67,6 +67,9 @@ public class GWTDictionaryBuilder {
     private static void convert(String bundleName, Locale locale, File targetFolder, String targetFileName, boolean minified)
             throws IOException {
         InputStream is = GWTDictionaryBuilder.class.getClassLoader().getResourceAsStream(bundleName.replace('.', '/') + ".properties");
+        if (is == null) {
+            throw new FileNotFoundException("ERROR : Couldn't find bundle with name " + bundleName.replace('.', '/') + ".properties in class loader, skipping...");
+        }
         ResourceBundle defBundle = new PropertyResourceBundle(is);
         is.close();
 

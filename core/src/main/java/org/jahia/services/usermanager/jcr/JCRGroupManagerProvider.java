@@ -730,14 +730,20 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                             if ("*".equals(propertyValue)) {
                                                 propertyValue = "%";
                                             } else {
-                                                propertyValue = propertyValue + "%";
+                                                if (propertyValue.contains("*")) {
+                                                    propertyValue = propertyValue.replaceAll("\\*", "%");
+                                                } else {
+                                                    propertyValue = propertyValue + "%";
+                                                }
                                             }
                                             if ("*".equals(propertyKey)) {
                                                 query.append(
-                                                        "CONTAINS(g.*,'" + propertyValue.replaceAll("%", "") + "')");
+                                                        "(CONTAINS(g.*,'" + propertyValue.replaceAll("%", "")
+                                                                + "') OR LOWER(u.[j:nodename]) LIKE '")
+                                                    .append(propertyValue.toLowerCase()).append("') ");
                                             } else {
-                                                query.append("g.[" + propertyKey.replaceAll("\\.", "\\\\.") + "]")
-                                                        .append(" LIKE '").append(propertyValue).append("'");
+                                                query.append("LOWER(g.[" + propertyKey.replaceAll("\\.", "\\\\.") + "])")
+                                                        .append(" LIKE '").append(propertyValue.toLowerCase()).append("'");
                                             }
                                             if (objectIterator.hasNext()) {
                                                 query.append(" OR ");

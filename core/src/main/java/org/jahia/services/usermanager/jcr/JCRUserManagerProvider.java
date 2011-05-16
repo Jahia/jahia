@@ -469,7 +469,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                                     + "') OR LOWER(u.[j:nodename]) LIKE '")
                                                     .append(propertyValue.toLowerCase()).append("') ");
                                         } else {
-                                            query.append("LOWER(u.[" + propertyKey + "])").append(
+                                            query.append("LOWER(u.[" + propertyKey.replaceAll("\\.", "\\\\.") + "])").append(
                                                     " LIKE '").append(propertyValue.toLowerCase()).append("'");
                                         }
                                         if (objectIterator.hasNext()) {

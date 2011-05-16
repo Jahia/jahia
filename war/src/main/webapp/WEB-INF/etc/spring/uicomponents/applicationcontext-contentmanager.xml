@@ -172,6 +172,7 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
+                <ref bean="repository.templateFiles"/>
                 <ref bean="repository.websitefiles"/>
                 <ref bean="repository.sites"/>
                 <ref bean="repository.myexternalfiles"/>
@@ -1138,7 +1139,7 @@
                   value="repository.websiteRepository.label"/>
     </bean>
 
-    <bean id="repository.myexternalfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+    <bean id="repository.myexternalfilesPicker" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myExternalRepository"/>
         <property name="paths" value="/mounts"/>
         <property name="titleKey"
@@ -1149,6 +1150,14 @@
             </bean>
         </property>
     </bean>
+
+    <bean id="repository.myexternalfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="myExternalRepository"/>
+        <property name="paths" value="/mounts"/>
+        <property name="titleKey"
+                  value="repository.myExternalRepository.label"/>
+    </bean>
+
 
     <bean id="repository.myportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myPortletRepository"/>
@@ -1204,7 +1213,7 @@
                   value="repository.websiteRepository.label"/>
     </bean>
 
-    <bean id="repository.sites" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+    <bean id="repository.sitesPicker" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sitesRepository"/>
         <property name="paths" value="$sites"/>
         <property name="titleKey"
@@ -1214,6 +1223,13 @@
                 <property name="inNodePath" value="/templateSets"/>
             </bean>
         </property>
+    </bean>
+
+    <bean id="repository.sites" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="sitesRepository"/>
+        <property name="paths" value="$sites"/>
+        <property name="titleKey"
+                  value="repository.siteRepository.label"/>
     </bean>
 
     <bean id="repository.templateContents" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">

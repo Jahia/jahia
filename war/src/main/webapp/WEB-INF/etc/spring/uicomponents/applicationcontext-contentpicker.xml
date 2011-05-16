@@ -95,11 +95,11 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.websitefiles"/>
-                <ref bean="repository.sites"/>
-                <ref bean="repository.myexternalfiles"/>
-                <ref bean="repository.myfiles"/>
                 <ref bean="repository.templateFiles"/>
+                <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.myexternalfilesPicker"/>
+                <ref bean="repository.myfiles"/>
             </list>
         </property>
 
@@ -208,8 +208,8 @@
             <list>
                 <ref bean="repository.templateFiles"/>
                 <ref bean="repository.websitefiles"/>
-                <ref bean="repository.sites"/>
-                <ref bean="repository.myexternalfiles"/>
+                <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.myexternalfilesPicker"/>
                 <ref bean="repository.myfiles"/>
             </list>
         </property>
@@ -299,11 +299,11 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.websitefiles"/>
-                <ref bean="repository.sites"/>
-                <ref bean="repository.myexternalfiles"/>
-                <ref bean="repository.myfiles"/>
                 <ref bean="repository.templateFiles"/>
+                <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.myexternalfilesPicker"/>
+                <ref bean="repository.myfiles"/>
             </list>
         </property>
 
@@ -506,10 +506,10 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.site"/>
-                <ref bean="repository.sites"/>
-                <ref bean="repository.mycontent"/>
                 <ref bean="repository.templateContents"/>
+                <ref bean="repository.site"/>
+                <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.mycontent"/>
             </list>
         </property>
 
@@ -627,7 +627,7 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.sites"/>
+                <ref bean="repository.sitesPicker"/>
             </list>
         </property>
 

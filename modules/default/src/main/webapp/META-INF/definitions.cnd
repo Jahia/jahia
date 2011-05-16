@@ -159,6 +159,8 @@
 
 [jnt:gotoEdit] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
+[jnt:gotoContribute] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
+
 [jnt:gotoAdmin] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
 
 [jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly

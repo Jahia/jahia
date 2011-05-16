@@ -19,32 +19,36 @@
     });
 </script>
 <div id="shortcuts">
-    <h3><a title="Shortcuts" href="#">Shortcuts</a></h3>
+    <h3><a title="Shortcuts" href="#"><fmt:message key="welcome"/></a></h3>
     <ul>
         <c:if test="${renderContext.loggedIn}">
+            <li>
+                <fmt:message key="welcome"/>, <span class="currentUser"><c:choose><c:when test="${not empty currentUser.properties['j:firstName']}">${currentUser.properties['j:firstName']} ${currentUser.properties['j:lastName']}</c:when><c:otherwise>${currentUser.username}</c:otherwise></c:choose><c:if test="${not empty currentAliasUser}">(&nbsp;<fmt:message key="as.user"/>&nbsp;${currentAliasUser.username})</c:if>:</span>
+            </li>
             <li>
                 <a class="loginFormTopLogoutShortcuts"
                    href='${url.logout}'><span><fmt:message
                         key="logout"/></span></a>
             </li>
-            <li>
-                <span class="currentUser"><c:choose><c:when test="${not empty currentUser.properties['j:firstName']}">${currentUser.properties['j:firstName']} ${currentUser.properties['j:lastName']}</c:when><c:otherwise>${currentUser.username}</c:otherwise></c:choose><c:if test="${not empty currentAliasUser}">(&nbsp;<fmt:message key="as.user"/>&nbsp;${currentAliasUser.username})</c:if></span>
-            </li>
             <c:if test="${!empty url.myProfile}">
                 <li class="topshortcuts-mysettings">
-                    <a href="<c:url value='${url.myProfile}'/>"><fmt:message key="userProfile.link"/></a>
+                    <a href="<c:url value='${url.myProfile}'/>"><fmt:message key="mySpace.link"/></a>
                 </li>
             </c:if>
+<%--
             <c:if test="${jcr:hasPermission(renderContext.mainResource.node, 'editModeAccess')}">
                 <li>
                     <a href="${url.edit}"><fmt:message key="edit"/></a>
                 </li>
             </c:if>
+--%>
+<%--
             <c:if test="${jcr:hasPermission(renderContext.mainResource.node, 'contributeModeAccess')}">
                 <li>
                     <a href="${url.contribute}"><fmt:message key="contribute"/></a>
                 </li>
             </c:if>
+--%>
         </c:if>
         <li><a href="#"
                onclick="javascript:window.print();return false">

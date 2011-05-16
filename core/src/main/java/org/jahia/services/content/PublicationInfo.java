@@ -105,6 +105,11 @@ public class PublicationInfo implements Serializable {
     public List<PublicationInfo> getAllReferences() {
         List<PublicationInfo> uuids = new ArrayList<PublicationInfo>();
         List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
+        getAllReferences(uuids, nodes);
+        return uuids;
+    }
+
+    private void getAllReferences(List<PublicationInfo> uuids, List<PublicationInfoNode> nodes) {
         nodes.add(root);
         for (int i=0; i<nodes.size(); i++) {
             final PublicationInfoNode node = nodes.get(i);
@@ -113,9 +118,13 @@ public class PublicationInfo implements Serializable {
                     nodes.add(infoNode);
                 }
             }
+            for (PublicationInfo refInfo : node.getReferences()) {
+                if (!nodes.contains(refInfo.getRoot())) {
+                    refInfo.getAllReferences(uuids, nodes);
+                }
+            }
             uuids.addAll(node.getReferences());
         }
-        return uuids;
     }
 
     public void clearInternalAndPublishedReferences(List<String> uuids) {

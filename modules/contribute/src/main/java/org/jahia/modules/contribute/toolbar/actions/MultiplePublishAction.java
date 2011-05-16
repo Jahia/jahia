@@ -77,6 +77,11 @@ public class MultiplePublishAction extends Action {
 
         List<GWTJahiaPublicationInfo> pubInfos = publicationHelper.getFullPublicationInfos(uuids, locales, session, false,
                 false);
+
+        if (pubInfos.size() == 0) {
+            return ActionResult.BAD_REQUEST;
+        }
+
         Map<PublicationWorkflow, WorkflowDefinition> workflows = publicationHelper.createPublicationWorkflows(pubInfos);
 
         for (Map.Entry<PublicationWorkflow, WorkflowDefinition> entry : workflows.entrySet()) {

@@ -53,6 +53,8 @@
                 $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.deleteNodes.do'/>", {"uuids": uuids}, function(result) {
                     reload();
                 }, "json");
+            } else {
+                window.alert('<fmt:message key="label.noSelection"/>');
             }
         }
 
@@ -62,6 +64,8 @@
                 $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.copy.do'/>", {"uuids": uuids}, function(result) {
                     showClipboard();
                 }, "json");
+            } else {
+                window.alert('<fmt:message key="label.noSelection"/>');
             }
         }
 
@@ -71,6 +75,8 @@
                 $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.cut.do'/>", {"uuids": uuids}, function(result) {
                     showClipboard();
                 }, "json");
+            } else {
+                window.alert('<fmt:message key="label.noSelection"/>');
             }
         }
 
@@ -81,9 +87,8 @@
                     window.alert('<fmt:message key="label.workflow.started"/>');
                     reload();
                 }, "json");
-            }
-            else {
-                window.alert("<fmt:message key="label.workflow.started"/>");
+            } else {
+                window.alert('<fmt:message key="label.noSelection"/>');
             }
         }
 

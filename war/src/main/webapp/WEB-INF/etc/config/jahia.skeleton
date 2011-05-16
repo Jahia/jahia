@@ -25,6 +25,8 @@ jahia.contextPath                                      =
 server                                                 =
 serverVersion                                          =
 serverHome                                             =
+cluster.activated                                      = false
+cluster.node.serverId                                  = jahiaServer1
 # This setting can be used to activate particular profile:
 #  - development
 #  - production
@@ -59,9 +61,6 @@ jahiaWebAppsDiskPath                                   =
 ######################################################################
 ### URL's  ###########################################################
 ######################################################################
-
-jahiaTemplatesHttpPath                                 =
-
 # Provide your custom URL for the WAR deployer, if you use non-standard one  
 jahiaWebAppsDeployerBaseURL                            = http://127.0.0.1:8080/manager/html/
 
@@ -76,6 +75,15 @@ permanentMoveForVanityURL                              = true
 # can become:
 #     http://my.acme.org/cms/home.html
 urlRewriteSeoRulesEnabled                              = false
+# The siteURLPortOverride allows to force the generation of siteURLs to a
+# certain port. This will bypass the request.getServerPort() calls
+# and everything else. If it is set to 0, the port override is inactive,
+# but any other positive value will force the
+# generation of the site URL (notably used in the Exit Administration button)
+# to use the port specified here. Be careful when setting this might cause
+# issues with cookies, or if you plan to access Jahia through multiple
+# front-end machines.
+siteURLPortOverride                                    = 0
 
 ######################################################################
 ### Mail Service Configuration #######################################
@@ -110,25 +118,6 @@ nested.transaction.allowed                             =   @NESTED_TRANSACTION_A
 org.quartz.driverDelegateClass                         =   org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 
 ######################################################################
-### Characters encoding ##############################################
-######################################################################
-# The character encoding (MIME charset) of the response being sent to the client,
-# request character encoding and e-mail charset. 
-characterEncoding                                      =   UTF-8
-
-######################################################################
-### Cache settings ###################################################
-######################################################################
-# caches may use groups that work like categories on cache entries. By default
-# groups are limited in numbers of 20000, with an LRU (least recently used)
-# algorithm for removing a group. When a group is removed, so are all the
-# cache entries. If you see a lot of messages warning that groups were being
-# flushed and that your Jahia installation has sufficient runtime memory,
-# you should set this value higher. In installations with little memory
-# available, you should keep this value as low as possible.
-cacheMaxGroups = 20000
-
-######################################################################
 ### Template set #####################################################
 ######################################################################
 # Default value for template set
@@ -143,16 +132,6 @@ default_templates_set		                        =   templates-intranet
 #    'propagate' - propagates the occurred exception to the higher
 #                  level (normally ends up with a standard error page) 
 templates.modules.onError                             	= compact
-
-######################################################################
-### Filemanager  #####################################################
-######################################################################
-# Configuration of the file manager that uses JCR as a back-end.
-jahiaFileUploadMaxSize                                  =  104857600
-
-######################################################################
-### Templates Observer  ##############################################
-######################################################################
 # Time in milliseconds between checks for the template deployment
 # descriptor changes in order to restart the JahiaTemplateManagerService.
 # Set to -1 to deactivate changes detection completely.
@@ -161,8 +140,17 @@ jahiaFileUploadMaxSize                                  =  104857600
 templates.observer.interval                            =   60000
 
 ######################################################################
+### Filemanager  #####################################################
+######################################################################
+# Configuration of the file manager that uses JCR as a back-end.
+jahiaFileUploadMaxSize                                  =  104857600
+
+######################################################################
 ### Multilingual support   ###########################################
 ######################################################################
+# The character encoding (MIME charset) of the response being sent to the client,
+# request character encoding and e-mail charset. 
+characterEncoding                                      =   UTF-8
 # The fall-back language code after we have tried to resolve the
 # current browsing code from :
 # - the session
@@ -205,25 +193,9 @@ auth.container.enabled                                 = false
 auth.cookie.enabled                                    =   true
 
 ######################################################################
-### URL generator settings ###########################################
+### Custom errorDocument site property  ##############################
 ######################################################################
-# The siteURLPortOverride allows to force the generation of siteURLs to a
-# certain port. This will bypass the request.getServerPort() calls
-# and everything else. If it is set to 0, the port override is inactive,
-# but any other positive value will force the
-# generation of the site URL (notably used in the Exit Administration button)
-# to use the port specified here. Be careful when setting this might cause
-# issues with cookies, or if you plan to access Jahia through multiple
-# front-end machines.
-siteURLPortOverride                                    = 0
-
-######################################################################
-### custom errorDocument site property  ##############################
-######################################################################
-# this setting enable specific error document pages for each site.
-# if you uncomment this setting, you need to create an errors directory
-# with your specific errorDocument jsp pages in the site directory first!
-#
+# This setting enable specific error document pages for each site.
 site.error.enabled 										= true
 
 ######################################################################
@@ -292,8 +264,27 @@ moduleGenerationWaitTime = 10000
 minimumIntervalAfterLastAutoThreadDump = 60000
 
 ######################################################################
-### WebDAV ###########################################################
+### JCR and WebDAV ###################################################
 ######################################################################
+# JCR repository home folder. Can be either a servlet context related resource
+# or an absolute path  
+jahia.jackrabbit.home = WEB-INF/var/repository
+# Set this option to true to force re-indexing of all repository content
+# on the server startup.
+# Note please that re-indexing could take significant time depending on
+# the volume of data.
+jahia.jackrabbit.reindexOnStartup = false
+# Flag indicating if a consistency check should be issued during startup
+# of the JCR repository
+jahia.jackrabbit.consistencyCheck = false
+# Flag indicating if the consistency check should additionally attempt to fix issues
+jahia.jackrabbit.consistencyFix = false
+# Which type of the repository inconsistency handler to use:
+# a) fail - when an inconsistency is encountered in the repository (missing child node),
+#    an error is logged with the info and the repository is shut down 
+# a) log - just log the inconsistency info and continue with the repository startup 
+jahia.jackrabbit.onWorkspaceInconsistency = log
+
 # Disable the directory listing for /repository servlet.
 # (WebDAV client access won't work in such a case)
 repositoryDirectoryListingDisabled = false

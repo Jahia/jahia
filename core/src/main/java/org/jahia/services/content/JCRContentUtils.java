@@ -42,6 +42,7 @@ import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -163,6 +164,30 @@ public final class JCRContentUtils {
     }
 
     /**
+     * Can be used to delete the Jackrabbit indexes folders for version and workspaces to force re-indexing on the next repository startup.
+     * Note please that this method can only be invoked when the repository is not started (offline).
+     * 
+     * @param repositoryHome
+     *            the repository home folder
+     */
+    public static void deleteJackrabbitIndexes(File repositoryHome) {
+        if (repositoryHome == null || !repositoryHome.isDirectory()) {
+            return;
+        }
+        logger.info("Removing JCR repository indexes in repository {}", repositoryHome);
+
+        // Remove index directories to force re-indexing on next startup
+        org.apache.commons.io.FileUtils.deleteQuietly(new File(repositoryHome, "index"));
+        File workspaces = new File(repositoryHome, "workspaces");
+        org.apache.commons.io.FileUtils.deleteQuietly(new File(new File(workspaces,
+                Constants.EDIT_WORKSPACE), "index"));
+        org.apache.commons.io.FileUtils.deleteQuietly(new File(new File(workspaces,
+                Constants.LIVE_WORKSPACE), "index"));
+
+        logger.info("...done removing index folders.");
+    }
+
+    /**
      * Downloads the JCR content to a temporary file. 
      * @param node the JCR node with the file content 
      * @return the target file descriptor
@@ -206,7 +231,7 @@ public final class JCRContentUtils {
         String encodedPrefix = originalPrefix.replace(":", "\\3A");
         return encodedPrefix;
     }
-
+    
     public static String escapeLocalNodeName(String name) {
         StringBuilder buffer = new StringBuilder(name.length() * 2);
         for (int i = 0; i < name.length(); i++) {
@@ -240,7 +265,7 @@ public final class JCRContentUtils {
         }
         return buffer.toString();
     }
-    
+
     /**
      * Returns the next available name for a node, appending if needed numbers.
      * 
@@ -375,7 +400,7 @@ public final class JCRContentUtils {
             throws RepositoryException {
         return node.getName();
     }
-
+    
     /**
      * Returns a node path, composed using only content object keys, i.e.
      * 
@@ -411,8 +436,8 @@ public final class JCRContentUtils {
         }
         
         return path.toString();
-    }
-    
+    }    
+
     public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
         try {
             return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where isdescendantnode(sel,['"+node.getPath()+"'])",
@@ -423,8 +448,8 @@ public final class JCRContentUtils {
             logger.error("Error while retrieving nodes", e);
         }
         return NodeIteratorImpl.EMPTY;
-    }    
-
+    }
+    
     /**
      * Get the node or property display name depending on the locale
      *
@@ -474,8 +499,8 @@ public final class JCRContentUtils {
             }
         }
         return null;
-    }
-    
+    }    
+
     public static String getExpandedName(String name, NamespaceRegistry namespaceRegistry) throws RepositoryException {
         if (!name.startsWith("{")) {
             if (name.contains(":")) {
@@ -487,8 +512,8 @@ public final class JCRContentUtils {
         }
         
         return name;
-    }    
-
+    }
+    
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
         String icon = getIconsFolder(type) + type.getName().replace(':', '_');
         if (check(icon)) {
@@ -502,7 +527,7 @@ public final class JCRContentUtils {
         }
         return null;
     }
-    
+
     public static String getIcon(JCRNodeWrapper f) throws RepositoryException {
         String folder = JCRContentUtils.getIconsFolder(f.getPrimaryNodeType());
         if (f.isFile()) {
@@ -668,7 +693,7 @@ public final class JCRContentUtils {
         }
         return result;
     }
-
+    
     private static ExtendedPropertyDefinition getPropertyDefExtension(
             PropertyDefinition propDef) {
         try {
@@ -680,7 +705,7 @@ public final class JCRContentUtils {
         }
         return null;
     }
-    
+
     public static PropertyDefinition getPropertyDefinition(NodeType type,
             String property) throws RepositoryException {
         PropertyDefinition foundDefintion = null;
@@ -808,6 +833,7 @@ public final class JCRContentUtils {
         importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, new HashMap<String,String>());
     }
 
+    
     /**
      * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
      * 
@@ -843,7 +869,6 @@ public final class JCRContentUtils {
             }
         }
     }
-
     
     /**
      * Performs import of JCR data using provided skeleton locations. This method is used when a new virtual site or a new user is created.
@@ -869,7 +894,7 @@ public final class JCRContentUtils {
             RepositoryException {
         importSkeletons(skeletonLocations, targetPath, session, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, replacements);
     }
-    
+
     /**
      * Returns <code>true</code> if the provided UUID string does not seem like a valid Jackrabbit node UUID. In such a case it comes from a
      * different provide, like VFS.
@@ -930,6 +955,7 @@ public final class JCRContentUtils {
 
     }
 
+
     /**
      * Returns the number of elements in the provided iterator.
      * 
@@ -948,7 +974,6 @@ public final class JCRContentUtils {
 
         return size;
     }
-
 
     /**
      * Utility method to split a JCR path into names. Note that this method supports expanded name notation (using
@@ -1015,6 +1040,7 @@ public final class JCRContentUtils {
         return stringToQueryLiteral(Text.escapeIllegalXpathSearchChars(str));
     }
 
+
     /**
      * Convert a string to a literal, suitable for inclusion
      * in a query. See JSR-283 spec v2.0, Sec. 4.6.6.19.
@@ -1028,7 +1054,6 @@ public final class JCRContentUtils {
         return "'" + str.replaceAll("'", "''") + "'";
     }
 
-
     /**
      * Decode an encoded JCR local name encoded with the encodeJCRLocalName method
      * Note : this implementation is not yet complete as it does not handle the XML
@@ -1041,9 +1066,9 @@ public final class JCRContentUtils {
     }
 
     private Map<String, String> fileExtensionIcons;
-
-    private Map<String, List<String>> mimeTypes;
     
+    private Map<String, List<String>> mimeTypes;
+
     private NameGenerationHelper nameGenerationHelper;
 
     /**
@@ -1061,6 +1086,24 @@ public final class JCRContentUtils {
         this.fileExtensionIcons = UnmodifiableMap.decorate(fileExtensionIcons);
     }
 
+    /**
+     * Generates the node name by using a configurable NameGenerationHelper implementation.
+     * 
+     * @return a node name generated by configurable helper service
+     */    
+    public String generateNodeName(JCRNodeWrapper parent, String nodeType) {
+        return getNameGenerationHelper().generatNodeName(parent, nodeType);
+    }
+
+    /**
+     * Generates the node name by using a configurable NameGenerationHelper implementation.
+     * 
+     * @return a node name generated by configurable helper service
+     */    
+    public String generateNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType) {
+        return getNameGenerationHelper().generatNodeName(parent, defaultLanguage, nodeType);
+    }
+    
     /**
      * Returns a mapping between file extensions and corresponding icons.
      * 
@@ -1081,29 +1124,11 @@ public final class JCRContentUtils {
         return mimeTypes;
     }
 
-    /**
-     * Generates the node name by using a configurable NameGenerationHelper implementation.
-     * 
-     * @return a node name generated by configurable helper service
-     */    
-    public String generateNodeName(JCRNodeWrapper parent, String defaultLanguage, ExtendedNodeType nodeType) {
-        return getNameGenerationHelper().generatNodeName(parent, defaultLanguage, nodeType);
-    }
-    
-    /**
-     * Generates the node name by using a configurable NameGenerationHelper implementation.
-     * 
-     * @return a node name generated by configurable helper service
-     */    
-    public String generateNodeName(JCRNodeWrapper parent, String nodeType) {
-        return getNameGenerationHelper().generatNodeName(parent, nodeType);
-    }
-
     public NameGenerationHelper getNameGenerationHelper() {
         return nameGenerationHelper;
     }
 
     public void setNameGenerationHelper(NameGenerationHelper nameGenerationHelper) {
         this.nameGenerationHelper = nameGenerationHelper;
-    }    
+    }
 }

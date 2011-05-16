@@ -52,6 +52,7 @@ package org.jahia.settings;
 
 import org.apache.commons.collections.FastHashMap;
 import org.slf4j.Logger;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.PathResolver;
 import org.jahia.bin.Jahia;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
@@ -135,8 +136,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int siteURLPortOverride = -1;
 
     private boolean isSiteErrorEnabled;
-
-    private int cacheMaxGroups = 10000;
 
     private String operatingMode = "development";
     private boolean productionMode = false;
@@ -304,8 +303,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             isSiteErrorEnabled = getBoolean("site.error.enabled",false);
 
-            cacheMaxGroups = getInt("cacheMaxGroups", 10000);
-
             operatingMode = getString("operatingMode", "development");
             productionMode = !"development".equalsIgnoreCase(operatingMode);
             distantPublicationServerMode = "distantPublicationServer".equalsIgnoreCase(operatingMode);
@@ -346,6 +343,24 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 // Second get ehcache jgroups configuration for hibernate
                 System.setProperty("cluster.tcp.ehcache.hibernate.nodes.ip_address",getString("cluster.tcp.ehcache.hibernate.nodes.ip_address"));
                 System.setProperty("cluster.tcp.ehcache.hibernate.port",getString("cluster.tcp.ehcache.hibernate.port"));
+            }
+            System.setProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));
+            System.setProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));
+            System.setProperty("jahia.jackrabbit.onWorkspaceInconsistency", getString("jahia.jackrabbit.onWorkspaceInconsistency", "log"));
+            if (getBoolean("jahia.jackrabbit.reindexOnStartup", false)) {
+                Resource repoHome = applicationContext.getResource(getString(
+                        "jahia.jackrabbit.home", "WEB-INF/var/repository"));
+                try {
+                    if (repoHome.exists() && repoHome.getFile() != null) {
+                        JCRContentUtils.deleteJackrabbitIndexes(repoHome.getFile());
+                    } else {
+                        logger.warn("Unable to delete JCR repository index folders in home {}",
+                                repoHome);
+                    }
+                } catch (IOException e) {
+                    logger.error("Unable to delete JCR repository index folders in home "
+                            + repoHome, e);
+                }
             }
         } catch (NullPointerException npe) {
             logger.error("Properties file is not valid...!", npe);
@@ -690,14 +705,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      */
     public boolean getSiteErrorEnabled() {
         return isSiteErrorEnabled;
-    }
-
-    public int getCacheMaxGroups() {
-        return cacheMaxGroups;
-    }
-
-    public void setCacheMaxGroups(int cacheMaxGroups) {
-        this.cacheMaxGroups = cacheMaxGroups;
     }
 
     public boolean isWrapperBufferFlushingActivated() {

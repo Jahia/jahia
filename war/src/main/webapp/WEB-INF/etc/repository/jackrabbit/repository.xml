@@ -58,6 +58,9 @@
             <param name="schemaObjectPrefix" value="jr_${wsp.name}_"/>
             <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
             <param name="schemaCheckEnabled" value="false"/>
+            
+            <param name="consistencyCheck" value="${jahia.jackrabbit.consistencyCheck}"/>
+            <param name="consistencyFix" value="${jahia.jackrabbit.consistencyFix}"/>
 
             <!-- By default the bundle cache size is at 8MB. If you see a lot of messages indicating high miss count as
             in the following example :
@@ -85,6 +88,8 @@
 
             <!-- Increase the cache size if the doc number cache hits are below 90% -->
             <!--param name="cacheSize" value="100000" /-->
+            
+            <param name="onWorkspaceInconsistency" value="${jahia.jackrabbit.onWorkspaceInconsistency}"/>
         </SearchIndex>
 
         <NodeTypeInstanceHandler class="org.apache.jackrabbit.core.JahiaNodeTypeInstanceHandlerFactory">
@@ -127,6 +132,9 @@
 		  <param name="schemaObjectPrefix" value="jr_v_"/>
 		  <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
           <param name="schemaCheckEnabled" value="false"/>
+          
+          <param name="consistencyCheck" value="${jahia.jackrabbit.consistencyCheck}"/>
+          <param name="consistencyFix" value="${jahia.jackrabbit.consistencyFix}"/>
 		</PersistenceManager>
 
 
@@ -141,6 +149,8 @@
             <!-- setting textFilterClasses to empty value disables Jackrabbit document extraction -->
         <param name="textFilterClasses" value=""/>
         <param name="supportHighlighting" value="true"/>
+        
+        <param name="onWorkspaceInconsistency" value="${jahia.jackrabbit.onWorkspaceInconsistency}"/>
     </SearchIndex>
 
 </Repository>

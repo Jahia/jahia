@@ -380,10 +380,7 @@ else { %>
                                 <!-- prepackaged site -->
                                 <div class="head headtop">
                                     <div class="object-title">
-                                        <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
-
-                                        <fmt:message key="label.virtualSitesManagement.default"/>
-
+                                        <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<fmt:message key="label.virtualSitesManagement.default"/>
                                     </div>
                                 </div>
                                 <div  class="content-item">

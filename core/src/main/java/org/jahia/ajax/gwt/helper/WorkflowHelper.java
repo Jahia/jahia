@@ -529,6 +529,21 @@ public class WorkflowHelper {
     public int getNumberOfTasksForUser(JahiaUser user, Locale locale) throws GWTJahiaServiceException {
         int total = 0;
         List<WorkflowTask> tasks = service.getTasksForUser(user, locale);
-        return tasks.size();
+        for (WorkflowTask task : tasks) {
+            GWTJahiaWorkflowHistoryProcess gwtWfHistory = getGWTJahiaHistoryProcess(service.getHistoryWorkflow(
+                    task.getProcessId(), task.getProvider(), locale));
+            try {
+                JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,
+                        locale).getNodeByIdentifier(gwtWfHistory.getNodeId());
+                gwtWfHistory.set("nodeWrapper",
+                        ((NavigationHelper) SpringContextSingleton.getInstance().getContext().getBeansOfType(
+                                NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
+            } catch (RepositoryException e) {
+                logger.warn(e.getMessage(), e);
+                continue;
+            }
+            total++;
+        }
+        return total;
     }
 }

@@ -41,6 +41,7 @@ import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -184,6 +185,15 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     int idx = element.getBegin() + element.toString().indexOf(">");
                     String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">";
                     outputDocument.replace(idx,idx + 1,str);
+                }
+                if (renderContext.isContributionMode() || renderContext.isPreviewMode()) {
+                    for (Element title : element.getAllElements(HTMLElementName.TITLE)) {
+                        int idx = title.getBegin() + title.toString().indexOf(">");
+                        String str = renderContext.isContributionMode()?JahiaResourceBundle.getJahiaInternalResource("label.contribute",renderContext.getUILocale()):
+                                JahiaResourceBundle.getJahiaInternalResource("label.preview",renderContext.getUILocale());
+                        str = "> " + str  + " - ";
+                        outputDocument.replace(idx, idx + 1,str);
+                    }
                 }
 
             }

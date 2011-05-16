@@ -218,8 +218,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         try {
             long msLong = Long.parseLong(msString);
-            if(logger.isDebugEnabled()) {
-                logger.debug("Display version of date : "+ SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(new Date(msLong)));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Display version of date : " + SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(new Date(msLong)));
             }
             return new Date(msLong);
         } catch (NumberFormatException nfe) {
@@ -312,10 +312,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         } else {
             performRedirect(null, null, req, resp, toParameterMapOfListOfString(req), false);
         }
-        if(req.getParameter(COOKIE_NAME)!=null && req.getParameter(COOKIE_VALUE)!=null) {
+        if (req.getParameter(COOKIE_NAME) != null && req.getParameter(COOKIE_VALUE) != null) {
             Cookie cookie = new Cookie(req.getParameter(COOKIE_NAME), req.getParameter(COOKIE_VALUE));
-            cookie.setMaxAge(60*60*24*cookieExpirationInDays);
-            if(req.getParameter(COOKIE_PATH) != null)
+            cookie.setMaxAge(60 * 60 * 24 * cookieExpirationInDays);
+            if (req.getParameter(COOKIE_PATH) != null)
                 cookie.setPath(req.getParameter(COOKIE_PATH));
             else {
                 cookie.setPath("/");
@@ -393,7 +393,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             action = templateService.getActions().get(resource.getResolvedTemplate());
         } else {
             String path = urlResolver.getPath();
-            resource = urlResolver.getResource((path.endsWith("*")?StringUtils.substringBeforeLast(path,"/"):path)+".html");
+            resource = urlResolver.getResource((path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path) + ".html");
             renderContext.setMainResource(resource);
             try {
                 JCRSiteNode site = resource.getNode().getResolveSite();
@@ -448,18 +448,18 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                         requestWith.equals("XMLHttpRequest") || fileUpload.getParameterMap().isEmpty();
                         List<String> uuids = new LinkedList<String>();
                         List<String> files = new ArrayList<String>();
-                        List<String> urls =  new LinkedList<String>();
+                        List<String> urls = new LinkedList<String>();
                         // If target directory is defined or if it is an ajax request then save the file now
                         // otherwise we delay the save of the file to the node creation
                         if (isContributePost || isTargetDirectoryDefined || isAjaxRequest) {
                             JCRSessionWrapper session =
-                                jcrSessionFactory.getCurrentUserSession(workspace, locale);
+                                    jcrSessionFactory.getCurrentUserSession(workspace, locale);
                             String target;
                             if (isTargetDirectoryDefined) {
                                 target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
                             } else if (isContributePost) {
                                 String path = urlResolver.getPath();
-                                path = (path.endsWith("*")?StringUtils.substringBeforeLast(path,"/"):path);
+                                path = (path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path);
                                 JCRNodeWrapper sessionNode = session.getNode(path);
                                 JCRSiteNode siteNode = sessionNode.getResolveSite();
                                 if (siteNode != null) {
@@ -471,26 +471,26 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                     } catch (RepositoryException e) {
                                         JCRNodeWrapper node = session.getNode(s);
                                         session.checkout(node);
-                                        node.addNode(name,"jnt:folder");
+                                        node.addNode(name, "jnt:folder");
                                         session.save();
                                     }
                                 } else {
                                     target = sessionNode.getPath() + "/files";
                                     if (!sessionNode.hasNode("files")) {
                                         session.checkout(sessionNode);
-                                        sessionNode.addNode("files","jnt:folder");
+                                        sessionNode.addNode("files", "jnt:folder");
                                         session.save();
                                     }
                                 }
                             } else {
                                 String path = urlResolver.getPath();
-                                target = (path.endsWith("*")?StringUtils.substringBeforeLast(path,"/"):path);
+                                target = (path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path);
                             }
                             final JCRNodeWrapper targetDirectory = session.getNode(target);
-                            
+
                             boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION) ?
                                     (fileUpload.getParameterValues(VERSION))[0].equals("true") : false;
-                                    
+
                             final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
                             for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
                                 //if node exists, do a checkout before
@@ -597,6 +597,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     /**
      * This method allows you to define where you want to redircet the user after request.
+     *
      * @param url
      * @param path
      * @param req
@@ -643,7 +644,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (!StringUtils.isEmpty(renderedURL)) {
             if (StringUtils.isEmpty(stayOnPage)) {
                 resp.setHeader("Location", renderedURL);
-            } else if(responseCode == HttpServletResponse.SC_SEE_OTHER){
+            } else if (responseCode == HttpServletResponse.SC_SEE_OTHER) {
                 resp.setHeader("Location", renderedURL);
             }
             if (responseCode == HttpServletResponse.SC_FOUND) {
@@ -721,7 +722,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     renderContext.setMainResource(resource);
 
                     JCRSiteNode site = resource.getNode().getResolveSite();
-                    if(site!=null && !site.getLanguagesAsLocales().contains(urlResolver.getLocale()) && renderContext.getEditModeConfigName() !=null && !renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
+                    if (site != null && !site.getLanguagesAsLocales().contains(urlResolver.getLocale()) && renderContext.getEditModeConfigName() != null && !renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
                         throw new PathNotFoundException("This language does not exist on this site");
                     }
                     renderContext.setSite(site);
@@ -811,22 +812,34 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                           Map<String, List<String>> parameters) throws Exception {
         String token = req.getParameter("form-token");
         if (token != null) {
+            final String requestWith = req.getHeader("x-requested-with");
+            boolean isAjaxRequest =
+                    req.getHeader("accept").contains("application/json") && requestWith != null &&
+                            requestWith.equals("XMLHttpRequest");
+
             @SuppressWarnings("unchecked")
-            Map<String,Map<String,List<String>>> toks = (Map<String,Map<String,List<String>>>) req.getSession().getAttribute("form-tokens");
+            Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) req.getSession().getAttribute("form-tokens");
             if (toks != null && toks.containsKey(token)) {
                 Map<String, List<String>> m = toks.get(token);
-                if(m==null) {
+                if (m == null) {
                     Map<String, String[]> formDatas = new HashMap<String, String[]>();
                     Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
                     for (Map.Entry<String, List<String>> params : set) {
                         formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
                     }
-                    req.getSession().setAttribute("formDatas", formDatas);
-                    req.getSession().setAttribute("formError", "Your captcha is invalid");
-                    performRedirect(urlResolver.getRedirectUrl(), urlResolver.getPath(), req, resp, parameters, true);
+                    if (!isAjaxRequest) {
+                        req.getSession().setAttribute("formDatas", formDatas);
+                        req.getSession().setAttribute("formError", "Your captcha is invalid");
+                        performRedirect(urlResolver.getRedirectUrl(), urlResolver.getPath(), req, resp, parameters, true);
+                    } else {
+                        resp.setContentType("application/json");
+                        Map<String,String> res = new HashMap<String,String>();
+                        res.put("status","Your captcha is invalid");
+                        new JSONObject(res).write(resp.getWriter());
+                    }
                     return;
                 }
-                Map<String,List<String>> values = new HashMap<String, List<String>>(m);
+                Map<String, List<String>> values = new HashMap<String, List<String>>(m);
 
                 // Validate form token
                 String formAction = values.remove("form-action").get(0);
@@ -841,17 +854,24 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 for (Map.Entry<String, List<String>> entry : values.entrySet()) {
                     List<String> stringList = entry.getValue();
                     String[] parameterValues = req.getParameterValues(entry.getKey());
-                    if (!CollectionUtils.isEqualCollection(stringList,Arrays.asList(parameterValues))) {
+                    if (!CollectionUtils.isEqualCollection(stringList, Arrays.asList(parameterValues))) {
                         if (entry.getKey().equals("jcrCaptcha")) {
                             Map<String, String[]> formDatas = new HashMap<String, String[]>();
                             Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
                             for (Map.Entry<String, List<String>> params : set) {
                                 formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
                             }
-                            req.getSession().setAttribute("formDatas", formDatas);
-                            req.getSession().setAttribute("formError", "Your captcha is invalid");
-                            performRedirect(renderContext.getMainResource().getNode().getPath(), urlResolver.getPath(), req, resp, parameters,
-                                    true);
+                            if (!isAjaxRequest) {
+                                req.getSession().setAttribute("formDatas", formDatas);
+                                req.getSession().setAttribute("formError", "Your captcha is invalid");
+                                performRedirect(renderContext.getMainResource().getNode().getPath(), urlResolver.getPath(), req, resp, parameters,
+                                        true);
+                            } else {
+                                resp.setContentType("application/json");
+                                Map<String,String> res = new HashMap<String,String>();
+                                res.put("status","Your captcha is invalid");
+                                new JSONObject(res).write(resp.getWriter());
+                            }
                             return;
                         }
                         throw new AccessDeniedException();
@@ -867,7 +887,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 };
             }
         }
-        
+
         if (!(action instanceof SystemAction)) {
             if (action.getRequiredWorkspace() != null
                     && !action.getRequiredWorkspace().equals(urlResolver.getWorkspace())) {
@@ -886,13 +906,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             session = resource.getNode().getSession();
         } else {
             session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
-                urlResolver.getLocale());
+                    urlResolver.getLocale());
         }
         ActionResult result = action.doExecute(req, renderContext, resource, session, parameters, urlResolver);
         if (result != null) {
             if (result.getResultCode() < 300) {
                 resp.setStatus(result.getResultCode());
-                boolean doJson = "json".equals(parameters.get(RETURN_CONTENTTYPE)!=null?parameters.get(RETURN_CONTENTTYPE).get(0):"");
+                boolean doJson = "json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "");
                 if ((req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") || doJson) && result.getJson() != null) {
                     try {
                         resp.setContentType("application/json");

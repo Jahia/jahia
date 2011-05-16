@@ -62,7 +62,7 @@ public class TokenizedFormTag extends BodyTagSupport {
             if (!action.startsWith("/") && !action.contains("://")) {
                 action = StringUtils.substringBeforeLast(((HttpServletRequest)pageContext.getRequest()).getRequestURI(), "/")+ "/" +action;
             }
-            hiddenInputs.put("form-action",Arrays.asList(action));
+            hiddenInputs.put("form-action",Arrays.asList(StringUtils.substringBeforeLast(action,";")));
             hiddenInputs.put("form-method", Arrays.asList(StringUtils.capitalize(formTag.getAttributeValue("method"))));
 
             List<StartTag> inputTags = source.getAllStartTags("input");

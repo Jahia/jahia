@@ -619,7 +619,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
         stringList = parameters.get(REDIRECT_TO);
         String stayOnPage =
-                !CollectionUtils.isEmpty(stringList) && !StringUtils.isBlank(stringList.get(0)) ? stringList.get(0) :
+                !CollectionUtils.isEmpty(stringList) && !StringUtils.isBlank(stringList.get(0)) ? StringUtils.substringBeforeLast(stringList.get(0),";") :
                         "";
 
         if (!StringUtils.isEmpty(stayOnPage)) {
@@ -829,7 +829,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 Map<String,List<String>> values = new HashMap<String, List<String>>(m);
 
                 // Validate form token
-                if (!URLDecoder.decode(req.getRequestURI(), SettingsBean.getInstance().getCharacterEncoding()).equals(values.remove("form-action").get(0))) {
+                String formAction = values.remove("form-action").get(0);
+                String characterEncoding = SettingsBean.getInstance().getCharacterEncoding();
+                if (formAction == null || !URLDecoder.decode(req.getRequestURI(), characterEncoding).equals(
+                        URLDecoder.decode(formAction, characterEncoding))) {
                     throw new AccessDeniedException();
                 }
                 if (!req.getMethod().equalsIgnoreCase(values.remove("form-method").get(0))) {

@@ -580,6 +580,7 @@ extends = jnt:content
 
 [jnt:noni18npage] > jnt:page
 - jcr:title (string) mandatory boost=2.0
+- jcr:description (string)
 
 [jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
 

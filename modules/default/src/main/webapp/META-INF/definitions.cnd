@@ -119,7 +119,7 @@
 
 [jnt:pageFormCreation] > jnt:content, jmix:formContent, mix:title
  - templateNode (weakreference,choicelist[templatesNode='pageTemplate']) mandatory < jnt:template
- - buttonLabel (string)
+ - buttonLabel (string) i18n
  - useDescription (boolean) = false
  - class (string)
  - stayOnPage (boolean) = false

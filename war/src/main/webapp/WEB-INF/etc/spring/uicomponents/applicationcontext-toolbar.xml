@@ -135,7 +135,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewIconStatusActionItem">
                 <property name="type" value="publication"/>
-                <property name="checked" value="true"/>
+                <property name="checked" value="false"/>
             </bean>
         </property>
         <property name="titleKey" value="label.showPublicationStatus"/>

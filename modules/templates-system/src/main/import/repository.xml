@@ -12,7 +12,6 @@
                         <avatar_60 jcr:lastModified="2011-04-01T17:46:22.822+02:00" jcr:lastModifiedBy="root" jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
                     </root.png>
                 </profile>
-                <profile2  jcr:primaryType="jnt:folder"/>
             </files>
         </root>
     </users>

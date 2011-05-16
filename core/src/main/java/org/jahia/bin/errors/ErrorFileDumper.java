@@ -149,11 +149,10 @@ public class ErrorFileDumper {
         }
     }
 
-    private static ExecutorService getExecutorService() {
+    public static void start() {
         if (isShutdown()) {
             executorService = Executors.newSingleThreadExecutor(new LowPriorityThreadFactory());
         }
-        return executorService;
     }
 
     public static void shutdown() {
@@ -179,7 +178,6 @@ public class ErrorFileDumper {
     }
 
     public static void dumpToFile(Throwable t, HttpServletRequest request) throws IOException {
-
         if (isShutdown()) {
             return;
         }
@@ -188,7 +186,7 @@ public class ErrorFileDumper {
         if (request != null) {
            requestData = new HttpRequestData(request);
         }
-        Future<?> dumperFuture = getExecutorService().submit(new FileDumperRunnable(t, requestData));
+        Future<?> dumperFuture = executorService.submit(new FileDumperRunnable(t, requestData));
     }
 
     private static void performDumpToFile(Throwable t, HttpRequestData httpRequestData) throws IOException {

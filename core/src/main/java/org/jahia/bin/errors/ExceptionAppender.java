@@ -50,6 +50,9 @@ public class ExceptionAppender extends AppenderSkeleton {
     private boolean alreadyDumping = false;
 
     public ExceptionAppender() {
+        if (ErrorFileDumper.isShutdown()) {
+            ErrorFileDumper.start();
+        }
     }
 
     @Override

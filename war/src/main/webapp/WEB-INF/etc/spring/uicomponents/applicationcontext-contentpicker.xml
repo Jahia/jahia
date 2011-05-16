@@ -471,6 +471,12 @@
                 <value>nt:folder</value>
             </list>
         </property>
+        <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName</value>
+            </list>
+        </property>
 
         <property name="toolbars">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">

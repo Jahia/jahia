@@ -176,9 +176,9 @@ public class LastModifiedListener extends DefaultEventListener {
             }
         }
 
-        addAutoPublish(n, autoPublished);
+        boolean isAutoPublished = addAutoPublish(n, autoPublished);
 
-        if (type != JCRObservationManager.IMPORT) {
+        if (type != JCRObservationManager.IMPORT || isAutoPublished) {
             if (!n.isCheckedOut()) {
                 n.checkout();
             }
@@ -187,13 +187,16 @@ public class LastModifiedListener extends DefaultEventListener {
         }
     }
 
-    private void addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
+    private boolean addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
         if (autoPublished != null) {
             if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType("jmix:autoPublish")) {
                 autoPublished.add(n.getIdentifier());
+                return true;
             } else if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType(JAHIANT_TRANSLATION) && n.getParent().isNodeType("jmix:autoPublish")) {
                 autoPublished.add(n.getIdentifier());
+                return true;
             }
         }
+        return false;
     }
 }

@@ -113,7 +113,7 @@ public class WelcomeServlet extends HttpServlet {
         if (!JahiaUserManagerService.isGuest(user)) {
             JCRSiteNode site = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession("live").getNode(JCRContentUtils.getSystemSitePath());
             String language = resolveLanguage(request, site, user);
-            redirect(request.getContextPath() + "/cms/render/live/"+language + user.getLocalPath() + ".html", response);
+            redirect(request.getContextPath() + "/cms/render/live/"+language + user.getLocalPath() + ".user-home.html", response);
         } else {
             throw new AccessDeniedException();
         }

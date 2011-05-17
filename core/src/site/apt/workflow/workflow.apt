@@ -1,25 +1,206 @@
 Workflow Integration
 
- Jahia's workflow service uses an external back-end, by default the jBPM workflow implementation, but that can be replaced
- by other implementations if need be. This document will therefore mostly document the default integration.
+ Jahia works with a business process engine to manage its workflows. It is mainly used for publication operation, which usually
+ require user validation and eventual interaction with external systems. However, it is possible to use the process
+ engine for other operations, either operations related to Jahia, or purely business oriented workflow.
 
-* Configuration
+ Jahia is bundled and configured with the jBPM process engine.
 
- The main configuration file for the workflow service is :
+* Using the workflow
 
-+-------------------------
- WEB-INF/etc/spring/workflow/applicationcontext-workflow.xml
-+-------------------------
+  Workflow can be started and executed on a node. Workflow are always tied to a node - it can be a page, user, or any
+  simple node - workflow rules (which workflow can be started) and roles (who can execute the tasks)
+  will be set on these nodes, or on parent nodes, and are inherited on all sub nodes.
 
- The jBPM provider configuration file is the following :
+** Workflow rules
+
+  Workflow rules define which workflow can be started on which node. This can be set in the workflow tab of the edit
+  engine.
+
+[../images/workflow/workflow-engine.png]
+
+  For every workflow type listed on the left, a drop-down menu allows to select (or deselect) a workflow. The "same
+  workflow as parent" checkbox must be unchecked to select a new workflow.
+
+  Once saved, the workflow will be available for the users having the permission to start it.
+
+** {Roles}
+
+  Workflow is about interaction between users - some users can start a workflow, which will require other action by
+  other users. Jahia permissions and roles allow to set up the possible actions for every user and group in the system.
+
+  When declaring a workflow, a mapping between workflow actions and Jahia permissions is defined. In order to start a
+  workflow or being able to assign and execute a task, a user must have the matching permission, via a role.
+  Workflow permissions, like other permissions, are assigned to roles via the roles manager in the administration :
+
+[../images/workflow/roles-manager.png]
+
+  Users and groups are assigned to roles with the Roles tab of the edit engine.
+
+[../images/workflow/roles2.png]
+
+** Starting and executing the workflow
+
+  Once a workflow rule has been set, a user who has the right to start a workflow on a node should see it in the
+  workflow / start workflow menu :
+
+[../images/workflow/workflow-start.png]
+
+  A workflow will probably create tasks that will be assigned to users who have a role matching the required permissions.
+  A user who has waiting task can execute them by opening his dasboard in workflow / Workflow Dashboard :
+
+[../images/workflow/dashboard.png]
+
+* {Using jBPM}
+
+  For more information about jBPM, see {{http://docs.jboss.com/jbpm/v4/userguide/html_single/}} .
+
+** jBPM configuration
+
+   The jBPM provider configuration file is the following :
 
 +-------------------------
  WEB-INF/etc/spring/workflow/applicationcontext-jBPM.xml
 +-------------------------
 
-* Defining new workflows in modules
+   This file contains references to other services, the path used by jBPM to get the process definitions, and location
+   of the jBPM configfile.
 
- As you can see in the jBPM configuration file, we use a wildcard classpath lookup to search for the jPDL workflow
- process definition files. This means that you can simply put in your module in the proper package (by default
- org.jahia.services.workflow) a file with the extension jpdl.xml and it will be picked-up on Jahia's startup and made
- available to use.
+** Declaring a workflow in jBPM
+
+   As you can see in the jBPM configuration file, we use a wildcard classpath lookup to search for the jPDL workflow
+   process definition files. This means that you can simply put in your module in the proper package (by default
+   <<<org.jahia.services.workflow>>>) a file with the extension jpdl.xml and it will be picked-up on Jahia's startup.
+   In order to be fully available in Jahia, the process must be declared in a configuration file - see {workflow declaration}
+
+** jBPM forms
+
+   jBPM allows to associate a form to a task - in Jahia, this form is actually defined by a simple node type. This node
+   type will create the form, and the data will be stored like a standard JCR node in the process engine.
+
+   Here, the "request" task uses the "jnt:translationRequest" as a form :
+
++--------------------
+     <task name="request" form="jnt:translationRequest">
+        ...
++--------------------
+
+   The type jnt:translationRequest is defined in a .cnd file with :
+
++--------------------
+[jnt:translationRequest] > mix:title
+- request (string, richtext)
+- translateTo (string, choicelist[siteLocales])
++--------------------
+
+   The execution of this task will display a form that the user will need to fill. Data entered in this form can later
+   be used in other activities.
+
+** jBPM task assignation
+
+   jBPM needs to know how to assign new tasks to users. Depending on the roles assigned to the node, the task won't be
+   assigned to the same users and groups. jBPM allows embedding system to set an assignement-handler to correctly
+   handle task assignation. Jahia provides an assignement handler, that must be used for every task defined in your
+   process. It can be declared in a jpdl file like the following :
+
++--------------------
+     <task name="request" form="jnt:translationRequest">
+         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
+         ...
+
+     </task>
++--------------------
+
+   {{http://docs.jboss.com/jbpm/v4/userguide/html_single/#task}}
+
+** Using jBPM customs
+
+   At one point of the process, it can be required that the process need to interact with Jahia services. For instance,
+   a publication workflow will probably need to publish some nodes after a validation. There's multiple ways to do this
+   with jBPM, but the simplest way is to create custom activities - a few custom activities are provided with Jahia,
+   to lock/unlock nodes and publish/unpublish nodes. They are located in org.jahia.services.workflow.jbpm.custom.* .
+
+   {{http://docs.jboss.com/jbpm/v4/userguide/html_single/#custom}}
+
+** Internationalize workflow labels
+
+   An optional resource bundle file can be created along with the jpdl file to internationalize the name and labels
+   of the process - the resource bundle must be named with the key of the jBPM process. If the process has the key
+   "translation-workflow", the file need to be named translation-workflow.properties . This file can include
+   resources for process name, actions, and action outcomes.
+
+** Sending mail with jBPM
+
+  Jahia provide some keyword that you can use to define to which people you want to send the mail.
+
++--------------------------------
+<mail name="done">
+   <from users="jahiaSettingsProperty"/>
+   <to users="currentWorkflowStarter"/>
+   <cc users="previousTaskAssignable"/>
+   <subject>Your request for translation has been accepted</subject>
+   <text>Your request for translation has been accepted</text>
+   <transition to="end"/>
+</mail>
++--------------------------------
+
+  <<jahiaSettingsProperty>> will return the mail_from property defined in jahia.properties or the administration center.
+
+  <<currentWorkflowStarter>> refer to the person who have started the workflow.
+
+  <<previousTaskAssignable>> or <<nextTaskAssignable>> refer to the people that can participate to the previous task or
+  the next one in your process flow.
+
+
+* {Workflow declaration}
+
+  Workflow processes need to be deployed into the process engine and declared in Jahia to be used by the site
+  administrator and end-users.
+
+  See "{{Using jBPM}}" for information about how to create and
+  deploy process with the jBPM process engine.
+
+  Once the workflow is available in the process engine, it has to be registered to the workflow service. This can
+  be done by creating a spring bean <<<org.jahia.services.workflow.WorklowTypeRegistration>>>
+
++----------------
+  <bean name="translationWorkflow" class="org.jahia.services.workflow.WorklowTypeRegistration">
+        <property name="type" value="translation"/>
+        <property name="definition" value="translation-workflow"/>
+        <property name="permissions" >
+            <map>
+                <entry key="start" value="/repository-permissions/jcr:all_default/jcr:read_default"/>
+                <entry key="request" value="/repository-permissions/jcr:write_default/jcr:modifyProperties_default_$translateTo"/>
+            </map>
+        </property>
+  </bean>
++----------------
+
+   This can also be done in the code by calling the method <<<registerWorkflowType()>>> in WorkflowService:
+
++----------------
+  public void registerWorkflowType(String type, String definition, Map<String,String> perms)
++----------------
+
+  The following properties / parameters are required :
+
+   * <<type>> : Each workflow need to be associated to a workflow type . Only one workflow per type can be associated to a
+   node - for example, if multiple publication workflow exist, one need to be choosed at a specific level.
+
+   * <<definition>> : The workflow key, as it defined in the workflow provider.
+
+   * <<permissions>> : This is a map defining the mapping between workflow actions and Jahia permissions. The map contains
+   the workflow action as the key, and the permission full path as the value. A user need to be part of a role
+   containing that permission to be able to execute the workflow action (see {{roles}})
+
+
+* Configuring new workflow providers
+
+  Jahia's workflow service uses an external back-end, by default the jBPM workflow implementation, but that can be replaced
+  by other implementations if need be.
+
+  Adding a new provider can be done by implementing the interface org.jahia.services.workflow.WorkflowProvider. The
+  provider must provide a key and need to register to the service at startup. A spring bean can be used to declare and
+  instantiate the new provider. The <<<JBPMProvider>>> , used to connect to the jBPM engine, can be used as an example. The
+  provider is registered via the spring file <<<applicationcontext-jBPM.xml>>> .
+

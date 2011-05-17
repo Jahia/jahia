@@ -1114,6 +1114,11 @@
         </property>
         <property name="titleKey" value="label.cache.flush"/>
         <property name="icon" value="publish"/>
+        <property name="visibility" >
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="permission" value="adminCache"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="Toolbar.Item.FlushAll" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1122,6 +1127,12 @@
         </property>
         <property name="titleKey" value="label.cache.flush.all"/>
         <property name="icon" value="publish"/>
+        <property name="visibility" >
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="permission" value="adminCache"/>
+                <property name="contextNodePath" value="/" />
+            </bean>
+        </property>
     </bean>
     <bean id="Toolbar.Item.NavMenuText" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">

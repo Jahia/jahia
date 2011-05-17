@@ -1641,12 +1641,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return gwtSourceNode;
     }
 
-    public void flush(String path) {
-        cacheHelper.flush(path, true);
+    public void flush(String path) throws GWTJahiaServiceException {
+        try {
+            if (retrieveCurrentSession().getNode(path).hasPermission("adminCache")) {
+                cacheHelper.flush(path, true);
+            }
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
-    public void flushAll() {
-        cacheHelper.flushAll();
+    public void flushAll() throws GWTJahiaServiceException {
+        try {
+            if (retrieveCurrentSession().getRootNode().hasPermission("adminCache")) {
+                cacheHelper.flushAll();
+            }
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
     public List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException {

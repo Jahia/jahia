@@ -279,9 +279,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void synchronizeWithGoogleDocs(String nodeIdentifier) throws GWTJahiaServiceException;
 
-    void flush(String path);
+    void flush(String path) throws GWTJahiaServiceException;
 
-    void flushAll();
+    void flushAll() throws GWTJahiaServiceException;
 
     List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException;
 

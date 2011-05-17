@@ -19,7 +19,7 @@ public abstract ActionResult doExecute(HttpServletRequest req, RenderContext ren
  You can do anything you want in an action, but keep in mind that the shortest time your action take to execute the better end-user
 experience.
 
- So as said previously Actions are called through HTPP POST methods, but as a result of an action you can let the user stay on
+ So as said previously Actions are called through HTTP POST methods, but as a result of an action you can let the user stay on
 its current web page, another web page or send back results as a JSON serialized object. This allows to easily interact with
 framework like JQuery
 

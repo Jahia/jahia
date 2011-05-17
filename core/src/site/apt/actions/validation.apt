@@ -136,6 +136,9 @@ Allowing content creation in live workspace by authenticated or non authenticate
  If your form is designed to be used in live mode (render/live) to allow your users to create content, then you must use the token system of
  Jahia for your forms and enforce the usage of captcha for at least your non authenticated users.
 
+ When Jahia receive data from a tokenzied form, it will execute the action with system user. This ensure that anybody seeing
+ the form will be able to execute the action, even if it requires write access.
+
  First you will need to tokenize your form for that simply wrap your form inside the <<<<template:tokenizedForm>>>> tag
 
 ------------------------------

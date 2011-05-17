@@ -117,8 +117,8 @@ public class ApplicationsManagerServiceTest {
                 "/sites/systemsite/contents");
         assertNotNull(instance);
         assertEquals(definition.getContext() + "." + definition.getName(), instance.getDefName());
-        assertEquals(instance, applicationsManagerService.getEntryPointInstance(instance.getID()));
+        assertEquals(instance, applicationsManagerService.getEntryPointInstance(instance.getID(), "default"));
         applicationsManagerService.removeEntryPointInstance(instance.getID());
-        assertNull(applicationsManagerService.getEntryPointInstance(instance.getID()));
+        assertNull(applicationsManagerService.getEntryPointInstance(instance.getID(), "default"));
     }
 }

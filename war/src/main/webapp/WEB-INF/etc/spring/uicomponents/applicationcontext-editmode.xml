@@ -112,6 +112,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Flush"/>
+                                    <ref bean="Toolbar.Item.FlushSite"/>
                                     <ref bean="Toolbar.Item.FlushAll"/>
                                 </list>
                             </property>

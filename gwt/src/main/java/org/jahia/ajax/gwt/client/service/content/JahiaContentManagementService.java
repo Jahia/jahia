@@ -366,6 +366,8 @@ public interface JahiaContentManagementService extends RemoteService {
     String getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel,
                                   String workspace, String locale) throws GWTJahiaServiceException;
 
+    void flushSite(String siteUUID) throws GWTJahiaServiceException;
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

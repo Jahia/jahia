@@ -1134,6 +1134,20 @@
             </bean>
         </property>
     </bean>
+
+    <bean id="Toolbar.Item.FlushSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FlushSiteActionItem"/>
+        </property>
+        <property name="titleKey" value="label.cache.flush.site"/>
+        <property name="icon" value="publish"/>
+        <property name="visibility" >
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="permission" value="adminCache"/>
+            </bean>
+        </property>
+    </bean>
+
     <bean id="Toolbar.Item.NavMenuText" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">

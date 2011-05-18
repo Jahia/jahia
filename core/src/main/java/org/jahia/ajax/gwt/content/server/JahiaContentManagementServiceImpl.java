@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.google.gwt.core.client.GWT;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
@@ -1658,6 +1659,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    public void flushSite(String siteUUID) throws GWTJahiaServiceException {
+        JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
+        try {
+            JCRNodeWrapper nodeWrapper = sessionWrapper.getNodeByIdentifier(siteUUID);
+            if (nodeWrapper.hasPermission("adminCache")) {
+                cacheHelper.flush(nodeWrapper.getPath(),true);
+            }
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e);
         }
     }
 

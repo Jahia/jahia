@@ -810,7 +810,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private void doAction(HttpServletRequest req, HttpServletResponse resp, URLResolver urlResolver,
                           RenderContext renderContext, Resource resource, Action action,
                           Map<String, List<String>> parameters) throws Exception {
-        String token = req.getParameter("form-token");
+
+        String token = parameters.get("form-token")!=null?parameters.get("form-token").get(0):null;
         if (token != null) {
             final String requestWith = req.getHeader("x-requested-with");
             boolean isAjaxRequest =

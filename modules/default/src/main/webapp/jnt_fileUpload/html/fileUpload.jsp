@@ -24,6 +24,7 @@
     <c:set var="targetNode" value="${currentNode.properties.target.node}"/>
 </c:if>
 <c:if test="${jcr:isAllowedChildNodeType(targetNode, 'jnt:file')}">
+    <template:tokenizedForm>
     <form class="file_upload" id="file_upload${currentNode.identifier}" action="<c:url value='${url.base}${targetNode.path}'/>" method="POST" enctype="multipart/form-data"  accept="application/json">
         <div id="file_upload_container">
             <input type="file" name="file" multiple>
@@ -35,6 +36,7 @@
         </c:url>
 
     </form>
+    </template:tokenizedForm>
     <table id="files${currentNode.identifier}" class="table"></table>
     <script>
         /*global $ */
@@ -51,7 +53,8 @@
                         'jcrNodeType':"jnt:file",
                         'jcrReturnContentType':"json",
                         'jcrRedirectTo':"<c:url value='${url.base}${renderContext.mainResource.node.path}'/>",
-                        'jcrNewNodeOutputFormat':"${renderContext.mainResource.template}.html"
+                        'jcrNewNodeOutputFormat':"${renderContext.mainResource.template}.html",
+                        'form-token': $('#file_upload${currentNode.identifier} : input[name=form-token]').val()
                     };
                     callBack();
                 },

@@ -96,14 +96,12 @@
 </div>
 <div class="content-body">
     <div id="operationMenu">
-        <%if (hasTemplateSets) {%>
                     <span class="dex-PushButton">
                       <span class="first-child">
                         <a class="ico-siteAdd"
                            href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/></a>
                       </span>
                     </span>
-        <%}%>
                     <span class="dex-PushButton">
                       <span class="first-child">
                         <a class="ico-export" href="javascript:sendExportSitesForm()" alt="<fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/>"><fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/></a>
@@ -233,6 +231,8 @@
     </table>
 
     <!-- prepackaged site -->
+    <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
+    <c:if test="${not empty files}">
     <div class="head headtop">
         <div class="object-title">
             <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
@@ -251,7 +251,6 @@
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
-                        <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
                         <c:forEach var="file" items="${files}">
                             <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
                             <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
@@ -273,7 +272,7 @@
             </table>
         </form>
     </div>
-
+    </c:if>
 
     <!--   import backup -->
     <div class="head headtop">
@@ -323,7 +322,6 @@
             </table>
         </form>
     </div>
-
 </div>
 <% }
 else { %>
@@ -355,6 +353,7 @@ else { %>
                                 </div>
                             </div>
 
+                            <%if (hasTemplateSets) {%>
                             <!-- adding blank site -->
                             <div class="content-body">
                                 <div id="operationMenu">
@@ -377,6 +376,8 @@ else { %>
                                     </table>
                                 </div>
 
+                                <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
+                                <c:if test="${not empty files}">
                                 <!-- prepackaged site -->
                                 <div class="head headtop">
                                     <div class="object-title">
@@ -396,7 +397,6 @@ else { %>
                                                 </td>
                                                 <td>
                                                     &nbsp;<select name="importpath">
-                                                    <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
                                                     <c:forEach var="file" items="${files}">
                                                         <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
                                                         <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
@@ -418,7 +418,7 @@ else { %>
                                         </table>
                                     </form>
                                 </div>
-
+                                    </c:if>
                                 <!--   import backup -->
                                 <div class="head headtop">
                                     <div class="object-title">
@@ -467,8 +467,11 @@ else { %>
                                         </table>
                                     </form>
                                 </div>
-
-
+                                <%} else {%>
+                                <div  class="content-item">
+                                    <fmt:message key="org.jahia.admin.site.ManageSites.noTemplatesSets"/>
+                                </div>
+                                <%}%>
                             </div>
                             <% } %>
                         </div>

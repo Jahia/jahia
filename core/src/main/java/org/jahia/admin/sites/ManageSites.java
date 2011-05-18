@@ -286,7 +286,7 @@ public class ManageSites extends AbstractAdministrationModule {
         request.setAttribute("jahiaDisplayMessage", jahiaDisplayMessage);
         request.setAttribute("warningMsg", warningMsg);
         try {
-            request.setAttribute("hasTemplateSets",getTemplatesSets().size() > 1);
+            request.setAttribute("hasTemplateSets",getTemplatesSets().size() > 0);
         } catch (RepositoryException e) {
             e.printStackTrace();
         }
@@ -839,7 +839,8 @@ public class ManageSites extends AbstractAdministrationModule {
                 selectedTmplSet = SettingsBean.getInstance().getPropertiesFile().getProperty("default_templates_set", orderedTemplateSets.firstKey());
             }
 
-            JCRNodeWrapper selectedPackage = selectedTmplSet != null ? orderedTemplateSets.get(selectedTmplSet) : null;
+            JCRNodeWrapper selectedPackage = selectedTmplSet != null && orderedTemplateSets.containsKey(selectedTmplSet) ? orderedTemplateSets.get(selectedTmplSet) : orderedTemplateSets.firstEntry().getValue();
+
             request.setAttribute("selectedTmplSet", selectedTmplSet);
             request.setAttribute("tmplSets", orderedTemplateSets.values());
             request.setAttribute("selectedPackage", selectedPackage);

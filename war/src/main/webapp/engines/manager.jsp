@@ -14,11 +14,9 @@
 <c:set var="cfg" value="${functions:default(param.conf, 'repositoryexplorer')}"/>
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=8"/>
+    <meta name="robots" content="noindex, nofollow"/>
     <fmt:message key="label.${fn:escapeXml(cfg)}" var="title"/>
-    <c:if test="${cfg == 'repositoryexplorer'}">
-        <fmt:message key="label.repositoryExplorer" var="title"/>
-    </c:if>
-    <title>${title}</title>
+    <title>${fn:escapeXml(title)}</title>
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>

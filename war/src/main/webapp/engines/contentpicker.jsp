@@ -10,6 +10,7 @@
 <html>
 	<head>
         <meta http-equiv="X-UA-Compatible" content="IE=8"/>
+        <meta name="robots" content="noindex, nofollow"/>
 		<title><fmt:message key="org.jahia.admin.sitepermissions.permission.engines.importexport.ManageContentPicker.label"/></title>
         <internal:gwtGenerateDictionary/>
 		<internal:gwtInit locale="${param.lang}" uilocale="${param.uilang}" />

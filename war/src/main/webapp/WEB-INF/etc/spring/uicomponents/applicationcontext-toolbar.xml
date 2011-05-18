@@ -409,7 +409,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
-        <property name="titleKey" value="label.repositoryExplorer"/>
+        <property name="titleKey" value="label.repositoryexplorer"/>
         <property name="icon" value="repositoryExplorer"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">

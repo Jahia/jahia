@@ -26,24 +26,20 @@ import java.util.*;
 
 public class TokenizedFormTag extends BodyTagSupport {
 
-    private boolean hasCaptcha = false;
-
-    public void setHasCaptcha(boolean hasCaptcha) {
-        this.hasCaptcha = hasCaptcha;
-    }
-
     @Override
     public int doStartTag() throws JspException {
         String id = java.util.UUID.randomUUID().toString();
-        pageContext.setAttribute("currentFormId", id);
+
+        pageContext.setAttribute("currentFormId", id,PageContext.REQUEST_SCOPE);
 
         return EVAL_BODY_BUFFERED;
     }
 
     @Override
     public int doEndTag() throws JspException {
+        boolean hasCaptcha = (Boolean) pageContext.findAttribute("hasCaptcha");
         try {
-            String id = (String) pageContext.getAttribute("currentFormId");
+            String id = (String) pageContext.findAttribute("currentFormId");
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
                                                                            PageContext.REQUEST_SCOPE);
             JspWriter out = pageContext.getOut();
@@ -99,8 +95,8 @@ public class TokenizedFormTag extends BodyTagSupport {
             e.printStackTrace();
         }
 
-        hasCaptcha = false;
-
+        pageContext.removeAttribute("hasCaptcha",PageContext.REQUEST_SCOPE);
+        pageContext.removeAttribute("currentFormId",PageContext.REQUEST_SCOPE);
         return super.doEndTag();
     }
 

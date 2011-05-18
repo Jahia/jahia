@@ -839,7 +839,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 selectedTmplSet = SettingsBean.getInstance().getPropertiesFile().getProperty("default_templates_set", orderedTemplateSets.firstKey());
             }
 
-            JCRNodeWrapper selectedPackage = selectedTmplSet != null && orderedTemplateSets.containsKey(selectedTmplSet) ? orderedTemplateSets.get(selectedTmplSet) : orderedTemplateSets.firstEntry().getValue();
+            JCRNodeWrapper selectedPackage = selectedTmplSet != null && orderedTemplateSets.containsKey(selectedTmplSet) ? orderedTemplateSets.get(selectedTmplSet) : orderedTemplateSets.get(orderedTemplateSets.firstKey());
 
             request.setAttribute("selectedTmplSet", selectedTmplSet);
             request.setAttribute("tmplSets", orderedTemplateSets.values());

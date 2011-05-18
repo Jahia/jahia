@@ -34,6 +34,7 @@ package org.jahia.services.scheduler;
 
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.registries.ServicesRegistry;
@@ -103,7 +104,7 @@ public abstract class BackgroundJob implements StatefulJob {
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {
         	String userKey = data.getString(JOB_USERKEY);
-        	if (userKey!= null) {
+        	if ((userKey!= null) && (!userKey.equals(JahiaLoginModule.SYSTEM))) {
 	            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY));
 	            if (user != null) {
 	            	sessionFactory.setCurrentUser(user);
@@ -111,7 +112,9 @@ public abstract class BackgroundJob implements StatefulJob {
 	            } else {
 	            	logger.warn("Unable to lookup job user for key {}", userKey);
 	            }
-        	}
+        	} else {
+                logger.debug("Executing job as system user");
+            }
         	String langKey = data.getString(JOB_CURRENT_LOCALE);
         	if (langKey != null) {
         		sessionFactory.setCurrentLocale(LanguageCodeConverters.languageCodeToLocale(langKey));

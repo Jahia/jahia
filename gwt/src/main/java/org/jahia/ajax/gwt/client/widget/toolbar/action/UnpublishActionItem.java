@@ -153,7 +153,7 @@ public class UnpublishActionItem extends BaseActionItem {
             setEnabled(!info.isLocked() && info.isCanPublish() &&
                        (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED ||
                         info.getStatus() == GWTJahiaPublicationInfo.MODIFIED));
-            updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName() + " - " +
+            updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
                         JahiaGWTParameters.getLanguageDisplayName());
         } else {
             setEnabled(false);

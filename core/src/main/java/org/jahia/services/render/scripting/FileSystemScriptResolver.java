@@ -168,6 +168,15 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
                     resourcesCache.put(modulePath, Boolean.TRUE);
                     return modulePath;
                 } else {
+                    if (templateType.contains("-")) {
+                        int lastDash = templateType.lastIndexOf("-");
+                        String simplerTemplateType = templateType.substring(0, lastDash);
+                        String simplerModulePath = currentTemplatePath + "/" + nt.getAlias().replace(':', '_') + "/" + simplerTemplateType + "/" + templatePath;
+                        if (JahiaContextLoaderListener.getServletContext().getResource(simplerModulePath) != null) {
+                            resourcesCache.put(simplerModulePath, Boolean.TRUE);
+                            return simplerModulePath;
+                        }
+                    }
                     resourcesCache.put(modulePath, Boolean.FALSE);
                 }
             } catch (MalformedURLException e) {

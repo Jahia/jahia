@@ -65,13 +65,6 @@ public class UserAgentFilter extends AbstractFilter {
                 if (m.matches()) {
                     String baseType = resource.getTemplateType();
                     resource.setTemplateType(baseType+"-"+entry.getValue());
-                    // todo : opimize a little bit ..
-                    try {
-                        service.resolveScript(resource, context);
-                    } catch (TemplateNotFoundException e) {
-                        logger.debug("Template not found for "+entry.getValue());
-                        resource.setTemplateType(baseType);
-                    }
                 }
             }
         }

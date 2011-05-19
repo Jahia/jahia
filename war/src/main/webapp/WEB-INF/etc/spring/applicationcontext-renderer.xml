@@ -70,12 +70,13 @@
 	<bean class="org.jahia.services.render.filter.UserAgentFilter">
 		<property name="priority" value="6" />
 		<property name="applyOnModes" value="live,preview" />
+		<property name="applyOnConfigurations" value="page" />
 		<property name="userAgentMatchingRules">
 			<map>
-				<!--entry key=".*iPhone.*" value="iphone" /-->
-				<!--entry key=".*iPod.*" value="iphone" /-->
-                <!--entry key=".*iPad.*" value="iphone" /-->
-                <!--entry key=".*Android.*" value="iphone" /-->
+				<entry key=".*iPhone.*" value="iphone" />
+				<entry key=".*iPod.*" value="iphone" />
+                <entry key=".*iPad.*" value="iphone" />
+                <entry key=".*Android.*" value="iphone" />
 			</map>
 		</property>
 	</bean>

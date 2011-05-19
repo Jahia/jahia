@@ -51,11 +51,11 @@
         <div class="paginationPosition"><span><fmt:message key="pagination.pageOf.withTotal"><fmt:param value="${moduleMap.currentPage}"/><fmt:param value="${moduleMap.nbPages}"/><fmt:param value="${moduleMap.totalSize}"/></fmt:message></span>
         </div>
         <div class="paginationNavigation">
-            <label for="pageSizeSelector"><fmt:message key="pagination.itemsPerPage"/>:</label>
+            <label for="pageSizeSelector${currentNode.identifier}"><fmt:message key="pagination.itemsPerPage"/>:</label>
             <c:url value="${basePaginationUrl}" context="/" var="selectSizeUrl">
                 <c:param name="begin" value="${moduleMap.begin}"/>
             </c:url>
-            <select id="pageSizeSelector" onchange="window.location='${fn:escapeXml(selectSizeUrl)}&amp;pagesize='+$('#pageSizeSelector').val();">
+            <select id="pageSizeSelector${currentNode.identifier}" onchange="window.location='${fn:escapeXml(selectSizeUrl)}&amp;pagesize='+$('#pageSizeSelector${currentNode.identifier}').val();">
                 <c:if test="${empty nbItemsList}">
                     <c:set var="nbItemsList" value="5,10,25,50,100"/>
                 </c:if>

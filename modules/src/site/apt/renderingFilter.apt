@@ -10,69 +10,48 @@ Rendering filters
 
 ** Default filters
 
-  Default filter chain is defined in the <<<applicationContext-services.xml>>>, in the <<<filters>>> property of the
-  <<<RenderService>>> bean.
+  Default filter chain is defined in the <<<applicationcontext-renderer.xml>>>
 
   Every filter needs to define a priority, which defines the order in which the filters will be executed.
 
 +-------------------------------
-    <bean id="RenderService" parent="proxyTemplate">
-    ...
-	      <property name="filters" >
-	          <list>
-                    <bean class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
-                        <property name="priority" value="0" />
-                        <property name="applyOnMainResource" value="true"/>
-                    </bean>
-                    <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
-                        <property name="priority" value="5" />
-                    </bean>
-                    <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" >
-                        <property name="priority" value="10" />
-                    </bean>
-                    <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
-                        <property name="priority" value="15" />
-                        <property name="loggingService" ref="loggingService"/>
-                    </bean>
-                    <ref bean="cacheFilter"/>
-                    <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
-                        <property name="priority" value="30" />
-                    </bean>
-                    <bean class="org.jahia.services.render.filter.URLFilter" >
-                        <property name="priority" value="35" />
-                    </bean>
-                    <bean class="org.jahia.services.render.filter.WrapperFilter" >
-                        <property name="priority" value="40" />
-                    </bean>
-                    <bean class="org.jahia.services.render.filter.SkinFilter" >
-                        <property name="priority" value="45" />
-                    </bean>
-                    <bean class="org.jahia.services.render.filter.OptionsFilter" >
-                        <property name="priority" value="50" />
-                    </bean>
-                    <bean class="org.jahia.services.render.filter.TemplateScriptFilter" >
-                        <property name="priority" value="99" />
-                    </bean>
-	          </list>
-	      </property>
-	...
-    </bean>
+   <bean
+		class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
+		<property name="priority" value="-3" />
+		<property name="applyOnConfigurations" value="page" />
+	</bean>
+	<bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">
+		<property name="priority" value="-1" />
+		<property name="applyOnModes" value="live,preview" />
+		<property name="applyOnConfigurations" value="page" />
+		<property name="htmlExternalizationService" ref="HtmlExternalizationService" />
+	</bean>
+	<bean class="org.jahia.services.render.filter.StaticAssetsFilter">
+		<property name="priority" value="0" />
+		<property name="applyOnConfigurations" value="page" />
+		<property name="applyOnTemplateTypes" value="html,edit,html-iphone" />
+        <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
+        <property name="ajaxTemplate" value="/modules/assets/WEB-INF/scripts/ajaxResources.groovy"/>
+        <property name="template" value="/modules/assets/WEB-INF/scripts/resources.groovy"/>
+	</bean>
 +-------------------------------
 
 ** Module filters
 
-  Any template module can define its own filters to be executed.
+  Any module can define its own filters to be executed.
   Filters are defined in a Spring bean definition file in an XML file (with any arbitrary name) in the <<<templates/\<module-name\>/META-INF/spring/>>> folder.
   In order to define module filters, you simply need to provide a list of filter beans. The filters will be added to the render chain
   and executed for every request for all modules.
 
   The priority defines where the filter will be inserted in the render chain.
+  If the priority is > to 16, it will be executed the first time the resource is generated, and then the result will be cached.
+  If the priority is < to 16, it will be reevaluated each time the resource is served. Be careful, this is very consuming in terms of performance.
 
   An {example} of a filter definition for the Jahia Wiki module, located in the the <<<templates/wiki/META-INF/spring/>>> folder, is:
   
 +------------------
-                <bean name="WikiFilter" class="org.jahia.wiki.filter.WikiFilter">
-                    <property name="priority" value="90" />
+                <bean name="WikiFilter" class="org.jahia.modules.wiki.filter.WikiFilter">
+                    <property name="priority" value="90"/>
                     <property name="syntaxFactory" ref="defaultSyntaxFactory"/>
                     <property name="inputSyntax" value="xwiki/2.0"/>
                     <property name="outputSyntax" value="xhtml/1.0"/>
@@ -99,6 +78,8 @@ Rendering filters
 
     * <<<applyOnTemplateTypes>>> - comma-separated list of template type names this filter will be executed for (all others are skipped)
 
+    * <<<applyOnConfigurations>>> – comma-separated list of configuration this filter will be executed for (all others are skipped)
+
     * <<<skipOnModules>>> - comma-separated list of module names this filter won't be executed for
 
     * <<<skipOnNodeTypes>>> - comma-separated list of node type names this filter won't be executed for
@@ -106,6 +87,8 @@ Rendering filters
     * <<<skipOnTemplates>>> - comma-separated list of template names this filter won't be executed for
 
     * <<<skipOnTemplateTypes>>> - comma-separated list of template type names this filter won't be executed for
+
+    * <<<skipOnConfigurations>>> - comma-separated list of configuration this filter won't be executed for (all others are skipped)
 
   More advanced configuration (using regular expressions for matching, NOT conditions or any arbitrary custom condition can be achieved by using filter's <<<conditions>>> property and providing a list of condition beans (instances of classes that implement <<<org.jahia.services.render.filter.AbstractFilter.ExecutionCondition>>>).
   Please, consult the documentation of <<<org.jahia.services.render.filter.AbstractFilter>>> for more details.
@@ -152,18 +135,35 @@ Rendering filters
     }
 +------------------
 
-  An abstract class {<<<org.jahia.services.render.filter.AbstractFilter>>>} can be used as
+  An abstract class {<<<org.jahia.services.render.filter.AbstractFilter>>>} should be used as
   a base class for a new filter, which allows to specify execution conditions for a filter.
-  In your filter extends the <<<AbstractFilter>>> your need to implement the following method:
+  In your filter extends the <<<AbstractFilter>>>, then your can implement the following methods:
 
 +------------------
-    protected abstract String execute(RenderContext renderContext, Resource resource, RenderChain chain)
+     String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception;
++------------------
+  When a resource is called by the end user, we enter in the prepare method.
+  This method allows to put some information in the scope of the request before the generation of the HTML output.
+
++------------------
+    String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception;
 +------------------
+  After the resource rendering (HTML output generation), we enter in the execute method.
+  It allows to modify the generated HTML fragment before to return it to the end user.
+
++------------------
+    void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain);
++------------------
+  Finally, when the fragment is finalized, we enter in the finalize method.
+  It allows to reset some things in the context or to reinitialize some variables.
+  It is usually used by the system.
+  At this step it is no more possible to interact with the generated HTML fragment.
   
   See {{{Conditional} Conditional execution of filters}} for more details on how to configure such filters.
 
-* Default filters
+
+* Provided filters
 
   Jahia provides some simple filters that can be added to the default configuration.
 

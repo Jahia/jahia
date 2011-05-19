@@ -37,7 +37,10 @@ public class TokenizedFormTag extends BodyTagSupport {
 
     @Override
     public int doEndTag() throws JspException {
-        boolean hasCaptcha = (Boolean) pageContext.findAttribute("hasCaptcha");
+        boolean hasCaptcha = false;
+        if (pageContext.findAttribute("hasCaptcha") != null) {
+            hasCaptcha = (Boolean) pageContext.findAttribute("hasCaptcha");
+        }
         try {
             String id = (String) pageContext.findAttribute("currentFormId");
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource",

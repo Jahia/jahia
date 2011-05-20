@@ -5,6 +5,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <template:addResources type="css" resources="gotomanager.css"/>
 <c:set var="gotoType" value="${currentNode.propertiesAsString.type}"/>
+<c:if test="${!renderContext.settings.distantPublicationServerMode}">
 <c:if test="${gotoType != 'roles' || renderContext.enterpriseEdition}">
     <c:if test="${currentResource.workspace eq 'live'}">
         <template:addResources type="javascript" resources="jquery.js"/>
@@ -73,4 +74,5 @@
         </a>
         </c:if>
     </c:if>
+</c:if>
 </c:if>

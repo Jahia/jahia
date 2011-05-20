@@ -35,6 +35,7 @@ package org.jahia.services.uicomponents.bean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class Visibility {
     private String value;
     private String contextNodePath;
     private String inNodePath;
-
+    private String operatingMode;
 
     public String getPermission() {
         return permission;
@@ -109,6 +110,14 @@ public class Visibility {
         this.inNodePath = inNodePath;
     }
 
+    public String getOperatingMode() {
+        return operatingMode;
+    }
+
+    public void setOperatingMode(String operatingMode) {
+        this.operatingMode = operatingMode;
+    }
+
     public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
         if (value != null) {
             if (logger.isDebugEnabled()) logger.debug("Value: " + value);
@@ -154,6 +163,14 @@ public class Visibility {
                     }
                     return false;
                 }
+
+                if (!isAllowedOperatingMode()) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("OperatingMode: false");
+                    }
+                    return false;
+                }
+
                 if (logger.isDebugEnabled()) {
                     logger.debug("UserAgent: true");
                 }
@@ -227,6 +244,13 @@ public class Visibility {
             return matches;
         }
         return true;
+    }
+
+    private boolean isAllowedOperatingMode() {
+        return (operatingMode == null) ||
+                (operatingMode.contains("development") && SettingsBean.getInstance().isDevelopmentMode()) ||
+                (operatingMode.contains("production") && SettingsBean.getInstance().isProductionMode()) ||
+                (operatingMode.contains("distantPublicationServer") && SettingsBean.getInstance().isDistantPublicationServerMode());
     }
 
     private String resolveUserAgent(HttpServletRequest request) {

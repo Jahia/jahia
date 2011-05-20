@@ -158,12 +158,14 @@ public class URLGenerator {
 
         baseLive = Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
         live = baseLive + resourcePath;
-        baseEdit = Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
-        edit = baseEdit + resourcePath;
+        if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
+            baseEdit = Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+            edit = baseEdit + resourcePath;
+            baseContribute = Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+            contribute = baseContribute + resourcePath;
+        }
         basePreview = Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         preview = basePreview + resourcePath;
-        baseContribute = Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
-        contribute = baseContribute + resourcePath;
         find = Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
@@ -207,28 +209,30 @@ public class URLGenerator {
     }
 
     public String getStudio() {
-        if (studio == null) {
-            studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
-            if (context.getSite() != null) {
-                try {
-                    if (context.getSite().hasProperty("j:templatesSet")) {
-                        studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
-                        if (resource.getNode().hasProperty("j:templateNode")) {
-                            try {
-                                studio += StringUtils.substringAfter(resource.getNode().getProperty("j:templateNode").getNode().getPath(), context.getSite().getPath());
-                                studio += ".html";
-                            } catch (RepositoryException e) {
+        if (!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode()) {
+            if (studio == null) {
+                studio = Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
+                if (context.getSite() != null) {
+                    try {
+                        if (context.getSite().hasProperty("j:templatesSet")) {
+                            studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
+                            if (resource.getNode().hasProperty("j:templateNode")) {
+                                try {
+                                    studio += StringUtils.substringAfter(resource.getNode().getProperty("j:templateNode").getNode().getPath(), context.getSite().getPath());
+                                    studio += ".html";
+                                } catch (RepositoryException e) {
+                                    studio += ".html";
+                                }
+                            } else {
                                 studio += ".html";
                             }
-                        } else {
-                            studio += ".html";
                         }
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot get studio url", e);
                     }
-                } catch (RepositoryException e) {
-                    logger.error("Cannot get studio url", e);
+                } else {
+                    studio += ".html";
                 }
-            } else {
-                studio += ".html";
             }
         }
         return studio;

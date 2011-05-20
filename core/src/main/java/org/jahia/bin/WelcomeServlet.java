@@ -147,7 +147,7 @@ public class WelcomeServlet extends HttpServlet {
 
             String pathInfo = request.getPathInfo();
             JCRNodeWrapper home = site.getHome();
-            if (pathInfo != null && "/edit".equals(pathInfo)) {
+            if (pathInfo != null && "/edit".equals(pathInfo) && !SettingsBean.getInstance().isDistantPublicationServerMode()) {
                 // edit mode was requested
                 if(home!=null) {
                     base = request.getContextPath() + Edit.getEditServletPath() + "/"
@@ -160,7 +160,7 @@ public class WelcomeServlet extends HttpServlet {
                 if (home != null) {
                     base = request.getContextPath() + Render.getRenderServletPath() + "/"
                             + Constants.LIVE_WORKSPACE + "/" + language + home.getPath();
-                } else {
+                } else if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
                     JCRSiteNode defSite = null;
                     try {
                         defSite = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
@@ -177,6 +177,9 @@ public class WelcomeServlet extends HttpServlet {
                         redirect(request.getContextPath()+"/start", response);
                         return;
                     }
+                } else {
+                    redirect(request.getContextPath()+"/start", response);
+                    return;
                 }
             }
 

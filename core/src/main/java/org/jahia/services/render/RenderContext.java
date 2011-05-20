@@ -60,6 +60,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
 /**
@@ -376,5 +377,9 @@ public class RenderContext {
     
     public boolean isEnterpriseEdition() {
         return Jahia.isEnterpriseEdition();
+    }
+
+    public SettingsBean getSettings() {
+        return SettingsBean.getInstance();
     }
 }

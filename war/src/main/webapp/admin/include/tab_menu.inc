@@ -12,6 +12,7 @@
         %>
 <%@ page import="org.apache.commons.lang.WordUtils" %>
 <%@ page import="org.jahia.services.content.JCRSessionFactory" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%
     JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
     JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
@@ -68,7 +69,9 @@
         %>
         <%
             try {
-                if (JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/templateSets").hasPermission("studioModeAccess")) {
+                if (JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/templateSets").hasPermission("studioModeAccess")
+                        && !SettingsBean.getInstance().isProductionMode() && !SettingsBean.getInstance().isDistantPublicationServerMode()
+                        ) {
         %>
         <li class="dex-TabBarItem tabExit">
             <div>
@@ -87,8 +90,9 @@
         %>
 
         <%
-            if (theSite != null) {
+            if (theSite != null && !SettingsBean.getInstance().isDistantPublicationServerMode()) {
                 String siteName = theSite.getTitle();
+
         %>
 
         <li class="dex-TabBarItem tabExit">

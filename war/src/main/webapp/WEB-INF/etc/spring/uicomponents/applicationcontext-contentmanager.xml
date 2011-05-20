@@ -1096,7 +1096,6 @@
                 <ref bean="Engine.Tab.Seo"/>
                 <ref bean="Engine.Tab.Roles"/>
                 <ref bean="Engine.Tab.Usages"/>
-                <ref bean="Engine.Tab.Versioning"/>
             </list>
         </property>
 

@@ -56,6 +56,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.contentengine.*;
@@ -193,24 +194,33 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             }
             m_component.setHeading(heading);
             if (selectedNodes.size() == 1) {
-                service.initializeEditEngine(selectedNodes.get(0).getPath(),false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
-                    public void onSuccess(GWTJahiaEditEngineInitBean result) {
-                        types = result.getNodeTypes();
-                        properties = result.getProperties();
-                        language = result.getCurrentLocale();
-                        defaultLanguageCode = result.getDefaultLanguageCode();
+                final GWTJahiaNode node = selectedNodes.get(0);
+                service.initializeEditEngine(node.getPath(), false,
+                        new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+                            public void onSuccess(GWTJahiaEditEngineInitBean result) {
+                                types = result.getNodeTypes();
+                                properties = result.getProperties();
+                                language = result.getCurrentLocale();
+                                defaultLanguageCode = result.getDefaultLanguageCode();
 
-                        mixin = result.getMixin();
-                        initializersValues = result.getInitializersValues();
-                        ok.setEnabled(true);
-                        acl = result.getAcl();
-                        referencesWarnings = result.getReferencesWarnings();
-                        for (TabItem item : tabs.getItems()) {
-                            item.setEnabled(true);
-                        }
-                        fillCurrentTab();
-                    }
-                });
+                                mixin = result.getMixin();
+                                initializersValues = result.getInitializersValues();
+                                ok.setEnabled(true);
+                                acl = result.getAcl();
+                                referencesWarnings = result.getReferencesWarnings();
+                                for (TabItem item : tabs.getItems()) {
+                                    EditEngineTabItem tabItem = (EditEngineTabItem) item.getData("item");
+                                    if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(
+                                            tabItem.getHideForTypes())) &&
+                                        (tabItem.getShowForTypes().isEmpty() || node.isNodeType(
+                                                tabItem.getShowForTypes()))) {
+                                        item.setEnabled(true);
+                                    }
+                                }
+
+                                fillCurrentTab();
+                            }
+                        });
             } else if (selectedNodes.size() > 1) {
                 List<String> paths = new ArrayList<String>();
                 for (GWTJahiaNode node : selectedNodes) {
@@ -413,7 +423,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
             } else {
                 JahiaContentManagementService.App.getInstance()
-                        .saveNode(getNode(), orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties, removedTypes, callback);
+                        .saveNode(getNode(), orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
+                                removedTypes, callback);
             }
         }
 

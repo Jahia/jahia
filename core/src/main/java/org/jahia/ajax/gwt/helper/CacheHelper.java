@@ -71,13 +71,13 @@ public class CacheHelper {
             }
             cacheProvider.invalidate(path);
             cache.remove(element.getKey());
-            if(flushSubtree) {
-                List keys = cache.getKeys();
-                for (Object key : keys) {
-                    if (key.toString().startsWith(path)) {
-                        cacheProvider.invalidate(key.toString());
-                        cache.remove(key);
-                    }
+        }
+        if (flushSubtree) {
+            List keys = cache.getKeys();
+            for (Object key : keys) {
+                if (key.toString().startsWith(path)) {
+                    cacheProvider.invalidate(key.toString());
+                    cache.remove(key);
                 }
             }
         }

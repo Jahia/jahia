@@ -22,59 +22,6 @@ public class XmlService {
 
 	}
 
-	private PageBO createNewPage(ArticleBO articleEn, ArticleBO articleFr, int level, List<PageBO> subPages,
-			Boolean hasVanity, String siteKey) {
-		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR "
-				+ articleFr.getId() + " - Article EN " + articleEn.getId());
-		PageBO page = new PageBO(currentPageIndex, formatForXml(articleEn.getTitle()),
-				formatForXml(articleEn.getContent()), formatForXml(articleFr.getTitle()),
-				formatForXml(articleFr.getContent()), level, subPages, hasVanity, siteKey);
-		currentPageIndex = currentPageIndex + 1;
-		return page;
-	}
-
-	private ArticleBO getArticle(List<ArticleBO> articles, Integer maxArticleIndex) {
-		Random generator = new Random();
-		int index;
-		if (currentPageIndex <= maxArticleIndex) {
-			index = currentPageIndex;
-		} else {
-			index = generator.nextInt(maxArticleIndex);
-		}
-		return (ArticleBO) articles.get(index);
-	}
-
-	private List<PageBO> createSubPages(List<ArticleBO> articles, Integer articleIndex, Integer nbPagesPerLevel,
-			Integer level, Integer maxArticleIndex, Boolean haveVanity, String siteKey) {
-		List<PageBO> listePages = new ArrayList<PageBO>();
-		ArticleBO articleEn;
-		ArticleBO articleFr;
-		listePages.clear();
-		if (level.intValue() > 0) {
-			for (int i = 0; i < nbPagesPerLevel; i++) {
-				articleEn = getArticle(articles, maxArticleIndex);
-				articleFr = getArticle(articles, maxArticleIndex);
-				PageBO page = createNewPage(
-						articleEn,
-						articleFr,
-						level,
-						createSubPages(articles, articleIndex.intValue() + 1, nbPagesPerLevel, level.intValue() - 1,
-								maxArticleIndex, haveVanity, siteKey), haveVanity, siteKey);
-				listePages.add(page);
-			}
-		}
-		return listePages;
-	}
-
-	private String formatForXml(final String s) {
-		String formattedString = StringUtils.replace(s, "&", "&amp;");
-		formattedString = StringUtils.replace(formattedString, "\"", " &quot;");
-		formattedString = StringUtils.replace(formattedString, "<", "&lt;");
-		formattedString = StringUtils.replace(formattedString, ">", "&gt;");
-		formattedString = StringUtils.replace(formattedString, "'", "&#39;");
-		return formattedString;
-	}
-
 	public void createTopPages(ExportBO export, List<ArticleBO> articles) throws IOException {
 		logger.info("Creating top pages");
 		PageBO pageTopLevel = null;
@@ -83,8 +30,7 @@ public class XmlService {
 
 		articleEn = getArticle(articles, export.getMaxArticleIndex());
 		articleFr = getArticle(articles, export.getMaxArticleIndex());
-		PageBO homePage = createNewPage(articleEn, articleFr, export.getNbSubLevels() + 1, null,
-				export.getPagesHaveVanity(), export.getSiteKey());
+		PageBO homePage = createNewPage(export, articleEn, articleFr, export.getNbSubLevels() + 1, null);
 
 		OutputService outService = new OutputService();
 		outService.initOutputFile(export.getOutputFile());
@@ -95,11 +41,12 @@ public class XmlService {
 			articleEn = getArticle(articles, export.getMaxArticleIndex());
 			articleFr = getArticle(articles, export.getMaxArticleIndex());
 			pageTopLevel = createNewPage(
+					export,
 					articleEn,
 					articleFr,
 					export.getNbSubLevels() + 1,
-					createSubPages(articles, currentPageIndex, export.getNbSubPagesPerPage(), export.getNbSubLevels(),
-							export.getMaxArticleIndex(), export.getPagesHaveVanity(), export.getSiteKey()), export.getPagesHaveVanity(), export.getSiteKey());
+					createSubPages(export, articles, currentPageIndex, export.getNbSubLevels(),
+							export.getMaxArticleIndex()));
 			outService.appendPageToFile(export.getOutputFile(), pageTopLevel);
 
 			// path
@@ -118,6 +65,54 @@ public class XmlService {
 		outService.appendStringToFile(export.getOutputFile(), homePage.getFooter());
 	}
 
+	private List<PageBO> createSubPages(ExportBO export, List<ArticleBO> articles, Integer articleIndex, Integer level,
+			Integer maxArticleIndex) {
+		List<PageBO> listePages = new ArrayList<PageBO>();
+		ArticleBO articleEn;
+		ArticleBO articleFr;
+
+		int nbPagesPerLevel = export.getNbSubPagesPerPage();
+
+		listePages.clear();
+		if (level.intValue() > 0) {
+			for (int i = 0; i < nbPagesPerLevel; i++) {
+				articleEn = getArticle(articles, maxArticleIndex);
+				articleFr = getArticle(articles, maxArticleIndex);
+				PageBO page = createNewPage(
+						export,
+						articleEn,
+						articleFr,
+						level,
+						createSubPages(export, articles, articleIndex.intValue() + 1, level.intValue() - 1,
+								maxArticleIndex));
+				listePages.add(page);
+			}
+		}
+		return listePages;
+	}
+
+	private PageBO createNewPage(ExportBO export, ArticleBO articleEn, ArticleBO articleFr, int level,
+			List<PageBO> subPages) {
+		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR "
+				+ articleFr.getId() + " - Article EN " + articleEn.getId());
+		PageBO page = new PageBO(currentPageIndex, formatForXml(articleEn.getTitle()),
+				formatForXml(articleEn.getContent()), formatForXml(articleFr.getTitle()),
+				formatForXml(articleFr.getContent()), level, subPages, export.getPagesHaveVanity(), export.getSiteKey());
+		currentPageIndex = currentPageIndex + 1;
+		return page;
+	}
+
+	private ArticleBO getArticle(List<ArticleBO> articles, Integer maxArticleIndex) {
+		Random generator = new Random();
+		int index;
+		if (currentPageIndex <= maxArticleIndex) {
+			index = currentPageIndex;
+		} else {
+			index = generator.nextInt(maxArticleIndex);
+		}
+		return (ArticleBO) articles.get(index);
+	}
+
 	private List<String> getPagesPath(List<PageBO> pages, String path) {
 		List<String> siteMap = new ArrayList<String>();
 
@@ -132,5 +127,14 @@ public class XmlService {
 		}
 
 		return siteMap;
+	}
+
+	private String formatForXml(final String s) {
+		String formattedString = StringUtils.replace(s, "&", "&amp;");
+		formattedString = StringUtils.replace(formattedString, "\"", " &quot;");
+		formattedString = StringUtils.replace(formattedString, "<", "&lt;");
+		formattedString = StringUtils.replace(formattedString, ">", "&gt;");
+		formattedString = StringUtils.replace(formattedString, "'", "&#39;");
+		return formattedString;
 	}
 }

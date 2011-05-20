@@ -754,12 +754,22 @@ border: 1px solid #eaeaea;
 /******************************************************************************
 *  error
 ******************************************************************************/
-.bodywrapper .error{
-	padding:10px;
-	margin:10px;
+.bodywrapper input.error{
 	background-color:#ffebe8;
 	border:1px solid #cc3300;
-    display:inline-block;
+}
+
+.bodywrapper label.error {
+ clear: both;
+ display: block;
+ margin: 10px 0;
+ padding:10px;
+ padding-left:35px;
+ border:1px solid #cc3300;
+ -webkit-border-radius:10px;
+ -moz-border-radius:10px;
+ border-radius:10px;
+ background:#ffebe8 url(img/error-messages.png) no-repeat 5px 50%;
 }
 /******************************************************************************
 * Links

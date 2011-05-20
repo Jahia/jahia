@@ -13,6 +13,12 @@ import org.jahia.tools.contentgenerator.bo.PageBO;
 import org.jfree.util.Log;
 import org.springframework.util.StringUtils;
 
+/**
+ * XmlService is the class used to process selected articles and generate a tree of page, according to the configuration chose for the export.
+ * This class also send created object to the output service
+ * @author Guillaume Lucazeau
+ *
+ */
 public class XmlService {
 	private static final Logger logger = Logger.getLogger(XmlService.class.getName());
 
@@ -22,6 +28,20 @@ public class XmlService {
 
 	}
 
+	/**
+	 * Main method, create top pages and for each calls the sub pages
+	 * generation. Each time a top page and its sub pages have been generated,
+	 * they are sent to the writer to avoid out of memory error with a big
+	 * number of pages.
+	 * 
+	 * @param export
+	 *            Export BO contains all the parameters chose by the user to
+	 *            configure his/her content generation
+	 * @param articles
+	 *            List of articles selected from database
+	 * @throws IOException
+	 *             Error while writing generated XML to the output file
+	 */
 	public void createTopPages(ExportBO export, List<ArticleBO> articles) throws IOException {
 		logger.info("Creating top pages");
 		PageBO pageTopLevel = null;
@@ -65,6 +85,25 @@ public class XmlService {
 		outService.appendStringToFile(export.getOutputFile(), homePage.getFooter());
 	}
 
+	/**
+	 * Recursive method that will generate all sub pages of a page, and call
+	 * itself as much as necessary to reach the number of levels requested
+	 * 
+	 * @param export
+	 *            Export BO contains all the parameters chose by the user to
+	 *            configure his/her content generation
+	 * @param articles
+	 *            List of articles selected from database
+	 * @param articleIndex
+	 *            Current cursor in the articles table, to avoid random choice
+	 *            as long as some articles have not been selected yet
+	 * @param level
+	 *            Current level in the tree decrease each time, top level ==
+	 *            number of levels requested by the user)
+	 * @param maxArticleIndex
+	 *            Index of the last article
+	 * @return A list of Page BO, containing their sub pages (if they have some)
+	 */
 	private List<PageBO> createSubPages(ExportBO export, List<ArticleBO> articles, Integer articleIndex, Integer level,
 			Integer maxArticleIndex) {
 		List<PageBO> listePages = new ArrayList<PageBO>();
@@ -91,6 +130,24 @@ public class XmlService {
 		return listePages;
 	}
 
+	/**
+	 * Create a new page object
+	 * 
+	 * @param export
+	 *            Export BO contains all the parameters chose by the user to
+	 *            configure his/her content generation
+	 * @param articleEn
+	 *            English article (language is on the Jahia side, article object
+	 *            can contain different language, as it is from the database)
+	 * @param articleFr
+	 *            French article (language is on the Jahia side, article object
+	 *            can contain different language, as it is from the database)
+	 * @param level
+	 *            Current level in the tree
+	 * @param subPages
+	 *            List of sub pages related
+	 * @return
+	 */
 	private PageBO createNewPage(ExportBO export, ArticleBO articleEn, ArticleBO articleFr, int level,
 			List<PageBO> subPages) {
 		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR "
@@ -102,6 +159,16 @@ public class XmlService {
 		return page;
 	}
 
+	/**
+	 * Chooses an article in the list of available articles. As long as not used
+	 * yet articles remain, chooses the next one. When all the articles have
+	 * been used, randomly picks another one.
+	 * 
+	 * @param articles
+	 *            All articles BO available
+	 * @param maxArticleIndex
+	 * @return
+	 */
 	private ArticleBO getArticle(List<ArticleBO> articles, Integer maxArticleIndex) {
 		Random generator = new Random();
 		int index;
@@ -113,6 +180,18 @@ public class XmlService {
 		return (ArticleBO) articles.get(index);
 	}
 
+	/**
+	 * getPagesPathrecursively retrieves absolute paths for each page, from the
+	 * top page. If choosen by the user, a map of this path will be generated.
+	 * It can be used to run performance tests.
+	 * 
+	 * @param pages
+	 *            list of the top pages
+	 * @param path
+	 *            this method is recursive, this is the path generated for the
+	 *            pages above
+	 * @return String containing all the generated paths, one per line
+	 */
 	private List<String> getPagesPath(List<PageBO> pages, String path) {
 		List<String> siteMap = new ArrayList<String>();
 
@@ -129,6 +208,13 @@ public class XmlService {
 		return siteMap;
 	}
 
+	/**
+	 * Convert & \ < > and ' into they HTML equivalent
+	 * 
+	 * @param s
+	 *            XML string to format
+	 * @return formatted XML string
+	 */
 	private String formatForXml(final String s) {
 		String formattedString = StringUtils.replace(s, "&", "&amp;");
 		formattedString = StringUtils.replace(formattedString, "\"", " &quot;");

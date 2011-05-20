@@ -48,8 +48,8 @@ public class XmlService {
 		ArticleBO articleEn = null;
 		ArticleBO articleFr = null;
 
-		articleEn = getArticle(articles, export.getMaxArticleIndex());
-		articleFr = getArticle(articles, export.getMaxArticleIndex());
+		articleEn = getArticle(articles);
+		articleFr = getArticle(articles);
 		PageBO homePage = createNewPage(export, articleEn, articleFr, export.getNbSubLevels() + 1, null);
 
 		OutputService outService = new OutputService();
@@ -58,8 +58,8 @@ public class XmlService {
 		outService.appendStringToFile(export.getOutputFile(), homePage.getHeader());
 
 		for (int i = 1; i <= export.getNbPagesTopLevel().intValue(); i++) {
-			articleEn = getArticle(articles, export.getMaxArticleIndex());
-			articleFr = getArticle(articles, export.getMaxArticleIndex());
+			articleEn = getArticle(articles);
+			articleFr = getArticle(articles);
 			pageTopLevel = createNewPage(
 					export,
 					articleEn,
@@ -115,8 +115,8 @@ public class XmlService {
 		listePages.clear();
 		if (level.intValue() > 0) {
 			for (int i = 0; i < nbPagesPerLevel; i++) {
-				articleEn = getArticle(articles, maxArticleIndex);
-				articleFr = getArticle(articles, maxArticleIndex);
+				articleEn = getArticle(articles);
+				articleFr = getArticle(articles);
 				PageBO page = createNewPage(
 						export,
 						articleEn,
@@ -169,13 +169,14 @@ public class XmlService {
 	 * @param maxArticleIndex
 	 * @return
 	 */
-	private ArticleBO getArticle(List<ArticleBO> articles, Integer maxArticleIndex) {
+	private ArticleBO getArticle(List<ArticleBO> articles) {
 		Random generator = new Random();
+		int maxIndex = articles.size()-1;
 		int index;
-		if (currentPageIndex <= maxArticleIndex) {
+		if (currentPageIndex <= maxIndex) {
 			index = currentPageIndex;
 		} else {
-			index = generator.nextInt(maxArticleIndex);
+			index = generator.nextInt(maxIndex);
 		}
 		return (ArticleBO) articles.get(index);
 	}

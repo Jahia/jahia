@@ -53,6 +53,7 @@ public class ContentGeneratorService {
 		Boolean createMap;
 		File mapFile = null;
 		Boolean pagesHaveVanity = null;
+		String siteKey = null;
 		if (properties == null) {
 			logger.info("Properties not found, default properties used.");
 			nbPagesTopLevel = ContentGeneratorCst.NB_PAGES_TOP_LEVEL_DEFAULT;
@@ -63,6 +64,7 @@ public class ContentGeneratorService {
 
 			createMap = Boolean.FALSE;
 			pagesHaveVanity = ContentGeneratorCst.HAS_VANITY_DEFAULT;
+			siteKey = ContentGeneratorCst.SITE_KEY_DEFAULT;
 		} else {
 			nbPagesTopLevel = Integer.valueOf(properties.getProperty(ContentGeneratorCst.NB_PAGES_TOP_LEVEL));
 			nbSubPagesPerPage = Integer.valueOf(properties.getProperty(ContentGeneratorCst.NB_SUBPAGES_PER_PAGE));
@@ -80,6 +82,7 @@ public class ContentGeneratorService {
 			}
 			String s = properties.getProperty(ContentGeneratorCst.PAGES_HAVE_VANITY_PROPERTY);
 			pagesHaveVanity = new Boolean(s);
+			siteKey = properties.getProperty(ContentGeneratorCst.SITE_KEY);
 		}
 
 		export.setNbPagesTopLevel(nbPagesTopLevel);
@@ -89,6 +92,7 @@ public class ContentGeneratorService {
 		export.setCreateMap(createMap);
 		export.setMapFile(mapFile);
 		export.setPagesHaveVanity(pagesHaveVanity);
+		export.setSiteKey(siteKey);
 
 		Integer totalPages = getTotalNumberOfPagesNeeded(nbPagesTopLevel, nbSubLevels, nbSubPagesPerPage);
 		export.setTotalPages(totalPages);

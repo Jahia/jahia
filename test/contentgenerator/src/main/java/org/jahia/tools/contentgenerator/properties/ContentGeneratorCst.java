@@ -21,6 +21,8 @@ public final class ContentGeneratorCst {
 	
 	public static final String CREATE_MAP_YN_PROPERTY = "jahia_cg_createMapYn";
 	public static final String PAGES_HAVE_VANITY_PROPERTY = "jahia_cg_pagesHaveVanity";
+	
+	public static final String SITE_KEY = "jahia_cg_siteKey";
 
 	/**
 	 * Default properties
@@ -31,6 +33,7 @@ public final class ContentGeneratorCst {
 	public static final String OUTPUT_DIR_DEFAULT = "/home/guillaume";
 	public static final String OUTPUT_FILE_DEFAULT = "jahiaExport.xml";
 	public static final Boolean HAS_VANITY_DEFAULT = Boolean.TRUE;
+	public static final String SITE_KEY_DEFAULT = "ACME";
 
 	/**
 	 * Configuration

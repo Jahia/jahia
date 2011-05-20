@@ -14,6 +14,7 @@ public class PageBO {
 	private List<PageBO> subPages;
 	private PageBO parentPage;
 	private Boolean hasVanity;
+	private String siteKey;
 
 	public Integer getIdPage() {
 		return idPage;
@@ -91,8 +92,16 @@ public class PageBO {
 		this.hasVanity = hasVanity;
 	}
 
+	public String getSiteKey() {
+		return siteKey;
+	}
+
+	public void setSiteKey(String siteKey) {
+		this.siteKey = siteKey;
+	}
+
 	public PageBO(final Integer pId, final String pTitleEn, final String pContentEn, final String pTitleFr,
-			final String pContentFr, final int pLevel, final List<PageBO> pSubPages, Boolean pHasVanity) {
+			final String pContentFr, final int pLevel, final List<PageBO> pSubPages, Boolean pHasVanity, String pSiteKey) {
 		this.idPage = pId;
 		this.titleEn = pTitleEn;
 		this.contentEn = pContentEn;
@@ -102,6 +111,7 @@ public class PageBO {
 		this.subPages = pSubPages;
 		this.uniqueName = "page" + pId.toString();
 		this.hasVanity = pHasVanity;
+		this.siteKey = pSiteKey;
 	}
 
 	public String getHeader() {
@@ -110,7 +120,7 @@ public class PageBO {
 
 		sb.append("	<"
 				+ this.getUniqueName()
-				+ " xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:jnt=\"http://www.jahia.org/jahia/nt/1.0\" xmlns:test=\"http://www.apache.org/jackrabbit/test\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:jmix=\"http://www.jahia.org/jahia/mix/1.0\" xmlns:j=\"http://www.jahia.org/jahia/1.0\" xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:rep=\"internal\" changefreq=\"monthly\" j:templateNode=\"/sites/ACME/templates/base/events\" jcr:created=\"2011-03-29T22:51:16.184+02:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-29T22:51:35.896+02:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"");
+				+ " xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:jnt=\"http://www.jahia.org/jahia/nt/1.0\" xmlns:test=\"http://www.apache.org/jackrabbit/test\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:jmix=\"http://www.jahia.org/jahia/mix/1.0\" xmlns:j=\"http://www.jahia.org/jahia/1.0\" xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:rep=\"internal\" changefreq=\"monthly\" j:templateNode=\"/sites/" + this.getSiteKey() + "/templates/base/events\" jcr:created=\"2011-03-29T22:51:16.184+02:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-29T22:51:35.896+02:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"");
 		if (this.getHasVanity()) {
 			sb.append("jmix:vanityUrlMapped ");
 		}
@@ -130,16 +140,8 @@ public class PageBO {
 				+ this.getContentEn()
 				+ " \" />\n"
 				+ "			</bigText_17>\n"
-				+ "		</listA>\n"
-				+ "		<publications jcr:created=\"2011-03-28T13:00:41.416-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">\n"
-				+ "			<publication_18 j:defaultCategory=\"/sites/systemsite/categories/Marketing /sites/systemsite/categories/us /sites/systemsite/categories/project\" jcr:created=\"2011-03-28T13:00:41.416-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:categorized\" jcr:primaryType=\"jnt:publication\">\n"
-				+ "				<j:translation_fr author=\"Département marketing\" body=\"FRENCH TEXT\" date=\"02/01/2009\" jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\"Comment le groupe ACME construit des hotels prestigieux aux Etats Unis\" source=\"ACME\" />\n"
-				+ "				<j:translation_en author=\"Marketing Department\" body=\"ENGLISH TEXT\" date=\"02/01/2010\" file=\"/sites/ACME/files/PDF/Publications/ACME_WP_BuildingFirstClassHotelUS.pdf\" jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\"How ACME is building First Class Hotel US\" preview=\"/sites/ACME/files/images/generic-pictures/ACME_WP_Cover.jpg\" source=\"ACME\" />\n"
-				+ "			</publication_18>\n"
-				+ "		</publications>\n"
-				+ "		<illustration jcr:created=\"2011-03-28T13:00:41.420-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">\n"
-				+ "			<imageReference j:node=\"/sites/ACME/files/images/banner-sections/publications.jpg\" jcr:created=\"2011-03-28T13:00:41.420-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:imageReference\" />\n"
-				+ "		</illustration>\n");
+				+ "		</listA>\n");
+		
 		if (this.getHasVanity()) {
 			sb.append(" 	<vanityUrlMapping jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrls\">"
 					+ "			<_x0025_2F"

@@ -26,6 +26,8 @@ public class ExportBO {
 	
 	private Boolean pagesHaveVanity;
 	
+	private String siteKey;
+	
 	public File getOutputFile() {
 		return outputFile;
 	}
@@ -114,6 +116,14 @@ public class ExportBO {
 		this.pagesHaveVanity = pagesHaveVanity;
 	}
 
+	public String getSiteKey() {
+		return siteKey;
+	}
+
+	public void setSiteKey(String siteKey) {
+		this.siteKey = siteKey;
+	}
+
 	public ExportBO() {
 		
 	}
@@ -125,6 +135,7 @@ public class ExportBO {
 		sb.append("<!-- sub levels: " + this.getNbSubLevels() + " -->\n");
 		sb.append("<!-- sub pages per page: " + this.getNbSubPagesPerPage() + " -->\n");
 		sb.append("<!-- total pages: " + this.getTotalPages() + " -->\n");
+		sb.append("<!-- site key: " + this.getSiteKey() + " -->\n");
 		return sb.toString();
 	}
 }

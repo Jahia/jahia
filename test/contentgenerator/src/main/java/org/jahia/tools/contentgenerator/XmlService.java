@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
-import org.jahia.tools.contentgenerator.bo.SiteBO;
 import org.jfree.util.Log;
 import org.springframework.util.StringUtils;
 
@@ -24,12 +23,12 @@ public class XmlService {
 	}
 
 	private PageBO createNewPage(ArticleBO articleEn, ArticleBO articleFr, int level, List<PageBO> subPages,
-			Boolean hasVanity) {
+			Boolean hasVanity, String siteKey) {
 		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR "
 				+ articleFr.getId() + " - Article EN " + articleEn.getId());
 		PageBO page = new PageBO(currentPageIndex, formatForXml(articleEn.getTitle()),
 				formatForXml(articleEn.getContent()), formatForXml(articleFr.getTitle()),
-				formatForXml(articleFr.getContent()), level, subPages, hasVanity);
+				formatForXml(articleFr.getContent()), level, subPages, hasVanity, siteKey);
 		currentPageIndex = currentPageIndex + 1;
 		return page;
 	}
@@ -46,7 +45,7 @@ public class XmlService {
 	}
 
 	private List<PageBO> createSubPages(List<ArticleBO> articles, Integer articleIndex, Integer nbPagesPerLevel,
-			Integer level, Integer maxArticleIndex, Boolean haveVanity) {
+			Integer level, Integer maxArticleIndex, Boolean haveVanity, String siteKey) {
 		List<PageBO> listePages = new ArrayList<PageBO>();
 		ArticleBO articleEn;
 		ArticleBO articleFr;
@@ -60,7 +59,7 @@ public class XmlService {
 						articleFr,
 						level,
 						createSubPages(articles, articleIndex.intValue() + 1, nbPagesPerLevel, level.intValue() - 1,
-								maxArticleIndex, haveVanity), haveVanity);
+								maxArticleIndex, haveVanity, siteKey), haveVanity, siteKey);
 				listePages.add(page);
 			}
 		}
@@ -85,7 +84,7 @@ public class XmlService {
 		articleEn = getArticle(articles, export.getMaxArticleIndex());
 		articleFr = getArticle(articles, export.getMaxArticleIndex());
 		PageBO homePage = createNewPage(articleEn, articleFr, export.getNbSubLevels() + 1, null,
-				export.getPagesHaveVanity());
+				export.getPagesHaveVanity(), export.getSiteKey());
 
 		OutputService outService = new OutputService();
 		outService.initOutputFile(export.getOutputFile());
@@ -100,7 +99,7 @@ public class XmlService {
 					articleFr,
 					export.getNbSubLevels() + 1,
 					createSubPages(articles, currentPageIndex, export.getNbSubPagesPerPage(), export.getNbSubLevels(),
-							export.getMaxArticleIndex(), export.getPagesHaveVanity()), export.getPagesHaveVanity());
+							export.getMaxArticleIndex(), export.getPagesHaveVanity(), export.getSiteKey()), export.getPagesHaveVanity(), export.getSiteKey());
 			outService.appendPageToFile(export.getOutputFile(), pageTopLevel);
 
 			// path

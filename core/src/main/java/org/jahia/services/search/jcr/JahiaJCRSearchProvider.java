@@ -317,7 +317,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
     
     private boolean isFileSearch(SearchCriteria params) {
-        return params.getTerms().size() > 0 && !params.getTerms().get(0).getFields().isSiteContent();
+        return params.getTerms().size() > 0 && params.getTerms().get(0).getFields() != null && !params.getTerms().get(0).getFields().isSiteContent() && !params.getTerms().get(0).getFields().isTags();
+
     }
     
     private String getNodeType(SearchCriteria params) {

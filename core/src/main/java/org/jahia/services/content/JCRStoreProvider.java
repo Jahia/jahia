@@ -43,15 +43,19 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRGroup;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -787,6 +791,25 @@ public class JCRStoreProvider {
             session.logout();
         }
     }
+
+    /**
+     * Create an entry in the JCR for an external group.
+     *
+     * @param group        the unique name for the group
+     * @return a reference on a group object on success, or if the group name
+     *         already exists or another error occurred, null is returned.
+     */
+    public void deployExternalGroup(JahiaGroup group) {
+        Properties properties = new Properties();
+        properties.put(JCRGroup.J_EXTERNAL, Boolean.TRUE);
+        properties.put(JCRGroup.J_EXTERNAL_SOURCE, group.getProviderName());
+        JCRGroupManagerProvider groupManager = (JCRGroupManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRGroupManagerProvider");
+        if (groupManager.lookupExternalGroup(group.getName()) == null) {
+            groupManagerService.createGroup(0, group.getName(), properties, true);
+        }
+    }
+
+
 
     public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(user.getUsername());

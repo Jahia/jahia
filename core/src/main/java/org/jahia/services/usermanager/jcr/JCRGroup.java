@@ -224,6 +224,9 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     } else if (principal instanceof JahiaUser) {
                         JCRTemplate.getInstance().getProvider("/").deployExternalUser((JahiaUser) principal);
                         jcrUser = (JCRUser) JCRUserManagerProvider.getInstance().lookupExternalUser((JahiaUser) principal);
+                    } else if (principal instanceof JahiaGroup) {
+                        JCRTemplate.getInstance().getProvider("/").deployExternalGroup((JahiaGroup) principal);
+                        jcrUser = (JCRGroup) JCRGroupManagerProvider.getInstance().lookupExternalGroup(principal.getName());
                     }
                     if (jcrUser != null) {
                         Node node = getNode(session);

@@ -147,22 +147,6 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         }
     }
 
-    /**
-     * Create an entry in the JCR for an external group.
-     *
-     * @param name        the unique name for the group
-     * @param providerKey the group provider key
-     * @return a reference on a group object on success, or if the group name
-     *         already exists or another error occurred, null is returned.
-     */
-    public JCRGroup createExternalGroup(final String name, String providerKey) {
-        Properties properties = new Properties();
-        properties.put(JCRGroup.J_EXTERNAL, Boolean.TRUE);
-        properties.put(JCRGroup.J_EXTERNAL_SOURCE, providerKey);
-
-        return createGroup(0, name, properties, true);
-    }
-
     public boolean deleteGroup(JahiaGroup group) {
         if (group instanceof JCRGroup) {
             final JCRGroup jcrGroup = (JCRGroup) group;

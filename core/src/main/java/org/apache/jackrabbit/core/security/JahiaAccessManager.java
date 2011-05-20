@@ -46,6 +46,7 @@ import org.apache.jackrabbit.spi.commons.conversion.PathResolver;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
 import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -786,25 +787,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 logger.error("Error while retrieving site key" + site, e);
             }
         }
-        /*
+
         JahiaGroup group = groupService.lookupGroup(siteId, groupname);
         if (group == null) {
             group = groupService.lookupGroup(0, groupname);
         }
         return (jahiaUser != null) && (group != null) && group.isMember(jahiaUser);
-        */
-        if (jahiaUser == null) {
-            return false;
-        }
-        String groupKey = groupname + ":" + siteId;
-        String systemGroupKey = groupname + ":0";
-        if (userMembership.contains(groupKey)) {
-            return true;
-        } else if (userMembership.contains(systemGroupKey)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {

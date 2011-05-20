@@ -20,4 +20,11 @@ Core Module
  * {{{./roles/index.html}Roles}} - how to configure and use roles and permissions.
 
  * {{{./security/index.html}Security aspects}} - security considerations, like password encryption, protection of render actions, JSPs and other resources.
- 
+
+ * {{{./notifications/notifications.html}Notifications}}
+
+ * {{{./i18n/i18n.html}Internationalized Web Site}}
+
+ * {{{./definitions/definitions.html}Jahia node types definitions}}
+
+ * {{{./users_batch_creation.html}Create users using a batch}}

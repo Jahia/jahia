@@ -24,7 +24,7 @@ stretcherToOpen   = 0; %>
             <div id="content" class="fit">
               <div class="head">
                 <div class="object-title">
-                  Jahia&nbsp;xCM&nbsp;<%= Jahia.VERSION %>&nbsp;<fmt:message key='<%= "org.jahia.admin.info.LicenceInfo.jahiaEdition." + Jahia.getEdition().toLowerCase() %>'/>,&nbsp;<fmt:message key="org.jahia.admin.build.label"/>&nbsp;<%= Jahia.getBuildNumber() %>
+                  Jahia&nbsp;xCM&nbsp;<%= Jahia.VERSION %>&nbsp;<fmt:message key="org.jahia.admin.build.label"/>&nbsp;<%= Jahia.getBuildNumber() %>
                 </div>
               </div>
               <div class="content-body">

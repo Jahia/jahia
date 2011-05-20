@@ -212,8 +212,12 @@ public class PublicationHelper {
     }
 
     private OrderedMap convert(PublicationInfo pubInfo, PublicationInfoNode root, List<String> mainPaths, JCRSessionWrapper currentUserSession, String language) {
-        PublicationInfoNode node = pubInfo.getRoot();
         OrderedMap gwtInfos = new LinkedMap();
+        return convert(pubInfo, root, mainPaths, currentUserSession, language, gwtInfos);
+    }
+
+    private OrderedMap convert(PublicationInfo pubInfo, PublicationInfoNode root, List<String> mainPaths, JCRSessionWrapper currentUserSession, String language, OrderedMap gwtInfos) {
+        PublicationInfoNode node = pubInfo.getRoot();
         List<PublicationInfo> references = new ArrayList<PublicationInfo>();
 
         convert(gwtInfos, root, mainPaths, null, node, references, currentUserSession, language);
@@ -223,7 +227,7 @@ public class PublicationHelper {
         res.putAll(gwtInfos);
         for (PublicationInfo pi : references) {
             if (!gwtInfos.containsKey(pi.getRoot().getUuid())) {
-                res.putAll(convert(pi, pi.getRoot(), mainPaths, currentUserSession, language));
+                res.putAll(convert(pi, pi.getRoot(), mainPaths, currentUserSession, language, gwtInfos));
             }
         }
         return res;

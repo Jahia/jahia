@@ -1,4 +1,4 @@
-Roles/permissions related business rules
+Jahia 6.5 - Roles/permissions related business rules
 
   Several rules are provided for an event-driven role/permission management in an automated way.
   The list of possible rule consequences (actions) can be found in the <<<WEB-INF/etc/repository/rules/rules.dsl>>>

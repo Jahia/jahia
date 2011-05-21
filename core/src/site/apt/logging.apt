@@ -1,4 +1,4 @@
-Logging service
+Jahia 6.5 - Logging service
 
  Jahia includes a simple yet powerful logging service that can be used to generate traces of system events at a very
  high speed.

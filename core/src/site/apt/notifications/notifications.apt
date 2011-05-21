@@ -1,4 +1,4 @@
-Jahia - Notifications
+Jahia 6.5 - Notifications
 
  For notifications Jahia now uses {{{http://camel.apache.org} Apache Camel}}.
 

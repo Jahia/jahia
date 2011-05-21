@@ -1,4 +1,4 @@
-Jahia - Users batch creation
+Jahia 6.5 - Users batch creation
 
  Jahia allows administrators to import users in batch to create local accounts (meaning you don't use an external repository of users like Active Directory or LDAP).
 

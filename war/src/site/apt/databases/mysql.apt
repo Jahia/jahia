@@ -1,4 +1,4 @@
-MySQL tips for Jahia
+Jahia 6.5 - MySQL tips for Jahia
 
  First Jahia is using InnoDB for its database engine on MySQL so be sure that you have configure your MySQL for InnoDB.
 

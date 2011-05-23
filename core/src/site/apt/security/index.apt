@@ -37,6 +37,25 @@ Jahia 6.5 - Security aspects
 
   Non-public user profile data (user node properties) are not exposed for an unauthorized access. 
 
+** Enabling SSL for logged in users
+
+  There is an option for "forcing" a switch to an SSL (HTTPS protocol) for a user session, from login to logout.
+  This allows sites with higher security concerns to force secured connections for logged in users.
+  
+  In order to enable it, please:
+   
+  [[1]] Rename the file <<<\<jahia-web-app-root\>/WEB-INF/etc/config/urlrewrite-ssl.xml.disable>>> into <<<urlrewrite-ssl.xml>>>
+  
+  [[2]] Go into Jahia Administration UI and flush output HTML caches
+
+  [[3]] Restart you server
+
+  [[4]] Now the login forms will contain a URL, leading to HTTPS and logout links will do a redirect back to HTTP.
+  
+  []
+  
+  The behaviour could be adjusted by changing the URL rewrite rules in the <<<urlrewrite-ssl.xml>>> file.
+
 * Template and action protection
 
 ** Module resources

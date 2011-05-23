@@ -12,5 +12,17 @@
         <to last="true">https://localhost:8443$1/cms/login$2</to>
         -->
     </outbound-rule>
+
+    <outbound-rule enabled="true">
+        <name>Switch to HTTP for logout</name>
+		<!--
+		<condition type="scheme" operator="equal">https</condition>
+		-->
+        <from>^(/[\p{Alnum}\-_]*)?/cms/logout$</from>
+        <to last="true">$1/cms/logout?redirect=http://%{server-name}$1/</to>
+        <!-- localhost dev mode 
+        <to last="true">$1/cms/logout?redirect=http://localhost:8080$1/</to>
+		-->
+    </outbound-rule>
     
 </urlrewrite>

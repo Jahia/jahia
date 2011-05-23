@@ -86,6 +86,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -271,6 +272,8 @@ public class JahiaAdministration extends HttpServlet {
     private static boolean hasSitePermission(String permissionName, final String siteKey) {
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/"+siteKey).hasPermission(permissionName);
+        } catch (PathNotFoundException e) {
+            return false;
         } catch (RepositoryException e) {
             e.printStackTrace();
             return false;
@@ -318,7 +321,7 @@ public class JahiaAdministration extends HttpServlet {
                     AdministrationModulesRegistry modulesRegistry = (AdministrationModulesRegistry) SpringContextSingleton.getInstance().getContext().getBean("administrationModulesRegistry");
                     AdministrationModule currentModule = modulesRegistry.getServerAdministrationModule(operation);
                     if (currentModule != null) {
-                        if (hasServerPermission(currentModule.getPermissionName())) {
+                        if (hasSitePermission(currentModule.getPermissionName(), site.getSiteKey()) || hasServerPermission(currentModule.getPermissionName())) {
                             session.setAttribute(CLASS_NAME + "configJahia", Boolean.TRUE);
                             /** todo clean up this hardcoded mess. Is it even used anymore ? */
                             if ("sharecomponents".equals(operation) && user.isRoot()) {
@@ -580,9 +583,11 @@ public class JahiaAdministration extends HttpServlet {
         try {
             currentSite = ServicesRegistry.getInstance()
                     .getJahiaSitesService().getSite(siteID);
+            JahiaSite newSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(Integer.valueOf(newSiteID));
 
             if ((group != null && group.isMember(theUser))
-                    || (hasServerPermission("administrationAccess"))) {
+                    || (hasServerPermission("administrationAccess"))
+                    || newSite != null && hasSitePermission("administrationAccess", newSite.getSiteKey())) {
                 List<Locale> languageSettingsAsLocales = currentSite
                         .getLanguagesAsLocales();
                 final Locale localeSession = (Locale) session

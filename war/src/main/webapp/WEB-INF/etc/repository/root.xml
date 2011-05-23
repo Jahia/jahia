@@ -259,7 +259,7 @@
                 />
 
         <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite"
-                            j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/wysiwyg-editor-toolbar /permissions/admin/administrationAccess /permissions/admin/adminSiteLanguages /permissions/admin/adminUrlmapping /permissions/admin/adminHtmlSettings /permissions/admin/adminDocumentation /permissions/admin/adminGroups /permissions/admin/adminAbout /permissions/admin/adminIssueTracking"
+                            j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/editMode /permissions/contributeMode /permissions/managers/categoryManager /permissions/managers/editorialContentManager /permissions/managers/fileManager /permissions/managers/portletManager /permissions/managers/siteManager /permissions/managers/tagManager /permissions/wysiwyg-editor-toolbar /permissions/admin/administrationAccess /permissions/admin/adminSiteLanguages /permissions/admin/adminUrlmapping /permissions/admin/adminHtmlSettings /permissions/admin/adminDocumentation /permissions/admin/adminGroups /permissions/admin/adminIssueTracking"
                             j:privilegedAccess="true"
                 />
 

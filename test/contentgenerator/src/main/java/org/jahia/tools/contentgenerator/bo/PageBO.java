@@ -15,6 +15,7 @@ public class PageBO {
 	private PageBO parentPage;
 	private Boolean hasVanity;
 	private String siteKey;
+	private String fileName;
 
 	public Integer getIdPage() {
 		return idPage;
@@ -100,8 +101,16 @@ public class PageBO {
 		this.siteKey = siteKey;
 	}
 
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 	public PageBO(final Integer pId, final String pTitleEn, final String pContentEn, final String pTitleFr,
-			final String pContentFr, final int pLevel, final List<PageBO> pSubPages, Boolean pHasVanity, String pSiteKey) {
+			final String pContentFr, final int pLevel, final List<PageBO> pSubPages, Boolean pHasVanity, String pSiteKey, String pFileName) {
 		this.idPage = pId;
 		this.titleEn = pTitleEn;
 		this.contentEn = pContentEn;
@@ -112,6 +121,7 @@ public class PageBO {
 		this.uniqueName = "page" + pId.toString();
 		this.hasVanity = pHasVanity;
 		this.siteKey = pSiteKey;
+		this.fileName = pFileName;
 	}
 
 	public String getHeader() {
@@ -120,7 +130,9 @@ public class PageBO {
 
 		sb.append("	<"
 				+ this.getUniqueName()
-				+ " xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:jnt=\"http://www.jahia.org/jahia/nt/1.0\" xmlns:test=\"http://www.apache.org/jackrabbit/test\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:jmix=\"http://www.jahia.org/jahia/mix/1.0\" xmlns:j=\"http://www.jahia.org/jahia/1.0\" xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:rep=\"internal\" changefreq=\"monthly\" j:templateNode=\"/sites/" + this.getSiteKey() + "/templates/base/events\" jcr:created=\"2011-03-29T22:51:16.184+02:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-29T22:51:35.896+02:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"");
+				+ " xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:jnt=\"http://www.jahia.org/jahia/nt/1.0\" xmlns:test=\"http://www.apache.org/jackrabbit/test\" xmlns:sv=\"http://www.jcp.org/jcr/sv/1.0\" xmlns:jmix=\"http://www.jahia.org/jahia/mix/1.0\" xmlns:j=\"http://www.jahia.org/jahia/1.0\" xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:rep=\"internal\" changefreq=\"monthly\" j:templateNode=\"/sites/"
+				+ this.getSiteKey()
+				+ "/templates/base/events\" jcr:created=\"2011-03-29T22:51:16.184+02:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-29T22:51:35.896+02:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"");
 		if (this.getHasVanity()) {
 			sb.append("jmix:vanityUrlMapped ");
 		}
@@ -137,11 +149,20 @@ public class PageBO {
 				+ this.getContentFr()
 				+ " \" />"
 				+ "				<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
-				+ this.getContentEn()
-				+ " \" />\n"
-				+ "			</bigText_17>\n"
-				+ "		</listA>\n");
-		
+				+ this.getContentEn() + " \" />\n" + "			</bigText_17>\n");
+
+		if (this.getFileName() != null) {
+			sb.append(" 		<random-file j:lastPublished=\"2011-05-19T16:59:37.556-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"2011-05-19T16:47:00.851-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-05-19T16:56:26.242-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:fileReference\">"
+					+ " 			<j:translation_en j:lastPublished=\"2011-05-19T16:47:14.923-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:language=\"en\" jcr:lastModified=\"2011-05-19T16:47:01.057-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" jcr:title=\"My file\" />"
+					+ "			</random-file>");
+
+			sb.append(" 		<publication j:lastPublished=\"2011-05-19T16:59:37.556-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"2011-05-19T16:59:11.177-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-05-19T16:59:11.266-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:publication\">"
+					+ "				<j:translation_en author=\"Jahia Content Generator\" body=\"&lt;p&gt;  Random publication&lt;/p&gt; \" date=\"01/01/1970\" file=\"/sites/" + this.getSiteKey() + "/files/contributed/" + this.getFileName() + "\" j:lastPublished=\"2011-05-19T17:09:50.163-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:language=\"en\" jcr:lastModified=\"2011-05-19T17:09:35.467-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" jcr:title=\"Random publication\" source=\"Jahia\" />"
+					+ "			</publication>");
+		}
+
+		sb.append("		</listA>\n");
+
 		if (this.getHasVanity()) {
 			sb.append(" 	<vanityUrlMapping jcr:lastModified=\"2011-03-30T15:13:23.004+02:00\" jcr:lastModifiedBy=\"\" jcr:primaryType=\"jnt:vanityUrls\">"
 					+ "			<_x0025_2F"

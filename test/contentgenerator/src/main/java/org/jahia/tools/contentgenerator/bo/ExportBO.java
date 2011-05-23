@@ -1,6 +1,7 @@
 package org.jahia.tools.contentgenerator.bo;
 
 import java.io.File;
+import java.util.List;
 
 public class ExportBO {
 
@@ -27,6 +28,12 @@ public class ExportBO {
 	private Boolean pagesHaveVanity;
 	
 	private String siteKey;
+	
+	private String addFilesToPage;
+	
+	private String filesDirectory;
+	
+	private List<String> fileNames;
 	
 	public File getOutputFile() {
 		return outputFile;
@@ -124,6 +131,30 @@ public class ExportBO {
 		this.siteKey = siteKey;
 	}
 
+	public String getAddFilesToPage() {
+		return addFilesToPage;
+	}
+
+	public void setAddFilesToPage(String addFilesToPage) {
+		this.addFilesToPage = addFilesToPage;
+	}
+
+	public String getFilesDirectory() {
+		return filesDirectory;
+	}
+
+	public void setFilesDirectory(String filesDirectory) {
+		this.filesDirectory = filesDirectory;
+	}
+
+	public List<String> getFileNames() {
+		return fileNames;
+	}
+
+	public void setFileNames(List<String> fileNames) {
+		this.fileNames = fileNames;
+	}
+
 	public ExportBO() {
 		
 	}
@@ -136,6 +167,7 @@ public class ExportBO {
 		sb.append("<!-- sub pages per page: " + this.getNbSubPagesPerPage() + " -->\n");
 		sb.append("<!-- total pages: " + this.getTotalPages() + " -->\n");
 		sb.append("<!-- site key: " + this.getSiteKey() + " -->\n");
+		sb.append("<!-- files added: " + this.getAddFilesToPage() + " -->\n");
 		return sb.toString();
 	}
 }

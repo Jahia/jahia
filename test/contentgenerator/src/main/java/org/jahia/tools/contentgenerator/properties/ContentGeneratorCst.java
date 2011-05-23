@@ -1,5 +1,8 @@
 package org.jahia.tools.contentgenerator.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ContentGeneratorCst {
 
 	/**
@@ -18,11 +21,14 @@ public final class ContentGeneratorCst {
 
 	public static final String OUTPUT_DIR_PROPERTY = "jahia_cg_outputDir";
 	public static final String OUTPUT_FILE_PROPERTY = "jahia_cg_outputFilename";
-	
+
 	public static final String CREATE_MAP_YN_PROPERTY = "jahia_cg_createMapYn";
 	public static final String PAGES_HAVE_VANITY_PROPERTY = "jahia_cg_pagesHaveVanity";
-	
-	public static final String SITE_KEY = "jahia_cg_siteKey";
+
+	public static final String SITE_KEY_PROPERTY = "jahia_cg_siteKey";
+
+	public static final String ADD_FILE_PROPERTY = "jahia_cg_addFile";
+	public static final String FILE_POOL_PROPERTY = "jahia_cg_poolDir";
 
 	/**
 	 * Default properties
@@ -41,7 +47,11 @@ public final class ContentGeneratorCst {
 	public static final String PROPERTIES_FILE_NAME = "jahiaContentGenerator.properties";
 	public static final Integer SQL_RECORDSET_SIZE = Integer.valueOf(5000);
 	public static final Integer MAX_TOTAL_PAGES = Integer.valueOf(200000);
-
+	
+	public static final String VALUE_ALL = "all";
+	public static final String VALUE_NONE = "none";
+	public static final String VALUE_RANDOM = "random";
+	
 	private ContentGeneratorCst() {
 
 	}

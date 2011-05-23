@@ -2,6 +2,7 @@ package org.jahia.tools.contentgenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -38,9 +39,11 @@ public class ContentGeneratorService {
 
 	/**
 	 * Get properties and initialize ExportBO
+	 * 
 	 * @TODO: manage null for each property
+	 * @TODO: check values
 	 * @param properties
-	 * @return
+	 * @return a new export BO containing all the parameters
 	 */
 	private ExportBO initExport(Properties properties) {
 		ExportBO export = new ExportBO();
@@ -54,6 +57,9 @@ public class ContentGeneratorService {
 		File mapFile = null;
 		Boolean pagesHaveVanity = null;
 		String siteKey = null;
+		String addFilesToPage = null;
+		String filesDirectory = null;
+
 		if (properties == null) {
 			logger.info("Properties not found, default properties used.");
 			nbPagesTopLevel = ContentGeneratorCst.NB_PAGES_TOP_LEVEL_DEFAULT;
@@ -65,6 +71,7 @@ public class ContentGeneratorService {
 			createMap = Boolean.FALSE;
 			pagesHaveVanity = ContentGeneratorCst.HAS_VANITY_DEFAULT;
 			siteKey = ContentGeneratorCst.SITE_KEY_DEFAULT;
+			addFilesToPage = ContentGeneratorCst.VALUE_NONE;
 		} else {
 			nbPagesTopLevel = Integer.valueOf(properties.getProperty(ContentGeneratorCst.NB_PAGES_TOP_LEVEL));
 			nbSubPagesPerPage = Integer.valueOf(properties.getProperty(ContentGeneratorCst.NB_SUBPAGES_PER_PAGE));
@@ -82,7 +89,15 @@ public class ContentGeneratorService {
 			}
 			String s = properties.getProperty(ContentGeneratorCst.PAGES_HAVE_VANITY_PROPERTY);
 			pagesHaveVanity = new Boolean(s);
-			siteKey = properties.getProperty(ContentGeneratorCst.SITE_KEY);
+			siteKey = properties.getProperty(ContentGeneratorCst.SITE_KEY_PROPERTY);
+
+			addFilesToPage = properties.getProperty(ContentGeneratorCst.ADD_FILE_PROPERTY);
+
+			filesDirectory = properties.getProperty(ContentGeneratorCst.FILE_POOL_PROPERTY);
+			if (!new File(filesDirectory).exists()) {
+				logger.error("Directory containing files to attach does not exist or is not readable: "
+						+ filesDirectory);
+			}
 		}
 
 		export.setNbPagesTopLevel(nbPagesTopLevel);
@@ -93,6 +108,12 @@ public class ContentGeneratorService {
 		export.setMapFile(mapFile);
 		export.setPagesHaveVanity(pagesHaveVanity);
 		export.setSiteKey(siteKey);
+		export.setAddFilesToPage(addFilesToPage);
+		export.setFilesDirectory(filesDirectory);
+		
+		if (export.getAddFilesToPage() != null && !export.getAddFilesToPage().equals(ContentGeneratorCst.VALUE_NONE)) {
+			export.setFileNames(getFileNamesAvailable(export.getFilesDirectory()));
+		}
 
 		Integer totalPages = getTotalNumberOfPagesNeeded(nbPagesTopLevel, nbSubLevels, nbSubPagesPerPage);
 		export.setTotalPages(totalPages);
@@ -134,7 +155,6 @@ public class ContentGeneratorService {
 	}
 
 	private Integer getTotalNumberOfPagesNeeded(Integer nbPagesTopLevel, Integer nbLevels, Integer nbPagesPerLevel) {
-
 		Double nbPages = new Double(0);
 		for (double d = nbLevels; d > 0; d--) {
 			nbPages += Math.pow(nbPagesPerLevel.doubleValue(), d);
@@ -142,5 +162,25 @@ public class ContentGeneratorService {
 		nbPages = nbPages * nbPagesTopLevel + nbPagesTopLevel;
 
 		return new Integer(nbPages.intValue());
+	}
+
+	/**
+	 * Returns a list of the files that can be used as attachements
+	 * @param filesDirectoryPath
+	 *            directory containing the files that will be uploaded into the
+	 *            Jahia repository and can be used as attachements
+	 * @return list of file names
+	 */
+	private List<String> getFileNamesAvailable(String filesDirectoryPath) {
+		List<String> fileNames = new ArrayList<String>();
+		File filesDir = new File(filesDirectoryPath);
+		File[] files = filesDir.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].isFile()) {
+				logger.debug("\"" + files[i].getName() + "\" added to the list of available files.");
+				fileNames.add(files[i].getName());
+			}
+		}
+		return fileNames;
 	}
 }

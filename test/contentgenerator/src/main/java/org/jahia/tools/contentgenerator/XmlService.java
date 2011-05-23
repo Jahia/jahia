@@ -10,14 +10,17 @@ import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
+import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.jfree.util.Log;
 import org.springframework.util.StringUtils;
 
 /**
- * XmlService is the class used to process selected articles and generate a tree of page, according to the configuration chose for the export.
- * This class also send created object to the output service
+ * XmlService is the class used to process selected articles and generate a tree
+ * of page, according to the configuration chose for the export. This class also
+ * send created object to the output service
+ * 
  * @author Guillaume Lucazeau
- *
+ * 
  */
 public class XmlService {
 	private static final Logger logger = Logger.getLogger(XmlService.class.getName());
@@ -150,11 +153,27 @@ public class XmlService {
 	 */
 	private PageBO createNewPage(ExportBO export, ArticleBO articleEn, ArticleBO articleFr, int level,
 			List<PageBO> subPages) {
+		
+		boolean addFile = false;
+		if (export.getAddFilesToPage().equals(ContentGeneratorCst.VALUE_ALL)) {
+			addFile = true;
+		} else if (export.getAddFilesToPage().equals(ContentGeneratorCst.VALUE_RANDOM)) {
+			Random random  = new Random();			
+			addFile = random.nextBoolean();
+		}
+		
+		String fileName = null;
+		if (addFile) {
+			 fileName = getRandomFileName(export.getFileNames());
+		}
+		
 		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR "
-				+ articleFr.getId() + " - Article EN " + articleEn.getId());
+				+ articleFr.getId() + " - Article EN " + articleEn.getId() + " - file attached "+fileName);
+		
+		
 		PageBO page = new PageBO(currentPageIndex, formatForXml(articleEn.getTitle()),
 				formatForXml(articleEn.getContent()), formatForXml(articleFr.getTitle()),
-				formatForXml(articleFr.getContent()), level, subPages, export.getPagesHaveVanity(), export.getSiteKey());
+				formatForXml(articleFr.getContent()), level, subPages, export.getPagesHaveVanity(), export.getSiteKey(), fileName);
 		currentPageIndex = currentPageIndex + 1;
 		return page;
 	}
@@ -171,7 +190,7 @@ public class XmlService {
 	 */
 	private ArticleBO getArticle(List<ArticleBO> articles) {
 		Random generator = new Random();
-		int maxIndex = articles.size()-1;
+		int maxIndex = articles.size() - 1;
 		int index;
 		if (currentPageIndex <= maxIndex) {
 			index = currentPageIndex;
@@ -179,6 +198,21 @@ public class XmlService {
 			index = generator.nextInt(maxIndex);
 		}
 		return (ArticleBO) articles.get(index);
+	}
+
+	/**
+	 * Returns a file name randomly picked in the list of file names available
+	 * (from the pool directory specified in parameter)
+	 * 
+	 * @param availableFileNames
+	 * @return file name choosen
+	 */
+	private String getRandomFileName(List<String> availableFileNames) {
+		String fileName = null;
+		Random random = new Random();
+		int index = random.nextInt(availableFileNames.size());
+		fileName = availableFileNames.get(index);
+		return fileName;
 	}
 
 	/**

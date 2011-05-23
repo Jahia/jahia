@@ -39,6 +39,7 @@ function doNavigate(what, whereToGo) {
 </head>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
 <c:set var="showProperties" value="${functions:default(param.showProperties, 'false')}"/>
+<c:set var="showReferences" value="${functions:default(param.showReferences, 'false')}"/>
 <c:set var="showNodes" value="${functions:default(param.showNodes, 'true')}"/>
 <c:set var="showActions" value="${functions:default(param.showActions, 'false')}"/>
 <c:set var="workspace" value="${functions:default(param.workspace, 'default')}"/>
@@ -61,6 +62,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
 <c:url var="switchWorkspaceUrl" value="?">
     <c:param name="uuid" value="${node.identifier}"/>
     <c:param name="showProperties" value="${showProperties}"/>
+    <c:param name="showReferences" value="${showReferences}"/>
     <c:param name="showNodes" value="${showNodes}"/>
     <c:param name="showActions" value="${showActions}"/>
     <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
@@ -68,6 +70,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
 <fieldset>
     <form id="navigateForm" action="?" method="get">
         <input type="hidden" name="showProperties" value="${showProperties}"/>
+        <input type="hidden" name="showReferences" value="${showProperties}"/>
         <input type="hidden" name="showNodes" value="${showNodes}"/>
         <input type="hidden" name="showActions" value="${showActions}"/>
         <input type="hidden" name="workspace" value="${workspace}"/>
@@ -113,6 +116,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
         <c:url var="parentUrl" value="?">
             <c:param name="uuid" value="${node.parent.identifier}"/>
             <c:param name="showProperties" value="${showProperties}"/>
+            <c:param name="showReferences" value="${showReferences}"/>
             <c:param name="showNodes" value="${showNodes}"/>
             <c:param name="showActions" value="${showActions}"/>
             <c:param name="workspace" value="${workspace}"/>
@@ -132,6 +136,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
        <c:url var="propsUrl" value="?">
            <c:param name="uuid" value="${node.identifier}"/>
            <c:param name="showProperties" value="${showProperties ? 'false' : 'true'}"/>
+           <c:param name="showReferences" value="${showReferences}"/>
            <c:param name="showNodes" value="${showNodes}"/>
            <c:param name="showActions" value="${showActions}"/>
            <c:param name="workspace" value="${workspace}"/>
@@ -166,9 +171,60 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
         </ul>
     </c:if>
     
+    <c:url var="refsUrl" value="?">
+        <c:param name="uuid" value="${node.identifier}"/>
+        <c:param name="showProperties" value="${showProperties}"/>
+        <c:param name="showReferences" value="${showReferences ? 'false' : 'true'}"/>
+        <c:param name="showNodes" value="${showNodes}"/>
+        <c:param name="showActions" value="${showActions}"/>
+        <c:param name="workspace" value="${workspace}"/>
+    </c:url>
+    <p><strong>References:&nbsp;</strong><a href="${refsUrl}">${showReferences ? 'hide' : 'show'}</a></p>
+    <c:if test="${showReferences}">
+        <ul>
+        <c:set var="refsCount" value="${functions:length(node.references) + functions:length(node.weakReferences)}"/>
+        <c:if test="${refsCount == 0}"><li>No references found</li></c:if>
+        <c:if test="${refsCount > 0}">
+        <c:forEach items="${node.references}" var="ref">
+            <li>
+                <c:if test="${not empty ref}">
+                    <c:set var="refTarget" value="${ref.parent}"/>
+                    <c:url var="refUrl" value="?">
+                        <c:param name="uuid" value="${refTarget.identifier}"/>
+                        <c:param name="showProperties" value="${showProperties}"/>
+                        <c:param name="showReferences" value="${showReferences}"/>
+                        <c:param name="showNodes" value="${showNodes}"/>
+                        <c:param name="showActions" value="${showActions}"/>
+                        <c:param name="workspace" value="${workspace}"/>
+                    </c:url>
+                    <a href="${refUrl}">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})</a>
+                </c:if>
+            </li>
+        </c:forEach>
+        <c:forEach items="${node.weakReferences}" var="ref">
+            <li>
+                <c:if test="${not empty ref}">
+                    <c:set var="refTarget" value="${ref.parent}"/>
+                    <c:url var="refUrl" value="?">
+                        <c:param name="uuid" value="${refTarget.identifier}"/>
+                        <c:param name="showProperties" value="${showProperties}"/>
+                        <c:param name="showReferences" value="${showReferences}"/>
+                        <c:param name="showNodes" value="${showNodes}"/>
+                        <c:param name="showActions" value="${showActions}"/>
+                        <c:param name="workspace" value="${workspace}"/>
+                    </c:url>
+                    <a href="${refUrl}">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})</a>
+                </c:if>
+            </li>
+        </c:forEach>
+        </c:if>
+        </ul>
+    </c:if>
+
     <c:url var="nodesUrl" value="?">
         <c:param name="uuid" value="${node.identifier}"/>
         <c:param name="showProperties" value="${showProperties}"/>
+        <c:param name="showReferences" value="${showReferences}"/>
         <c:param name="showNodes" value="${showNodes ? 'false' : 'true'}"/>
         <c:param name="showActions" value="${showActions}"/>
         <c:param name="workspace" value="${workspace}"/>
@@ -178,6 +234,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
             <c:url var="actionsUrl" value="?">
                 <c:param name="uuid" value="${node.identifier}"/>
                 <c:param name="showProperties" value="${showProperties}"/>
+                <c:param name="showReferences" value="${showReferences}"/>
                 <c:param name="showNodes" value="${showNodes}"/>
                 <c:param name="showActions" value="${showActions ? 'false' : 'true'}"/>
             </c:url>
@@ -199,6 +256,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
                     <c:url var="childUrl" value="?">
                         <c:param name="uuid" value="${child.identifier}"/>
                         <c:param name="showProperties" value="${showProperties}"/>
+                        <c:param name="showReferences" value="${showReferences}"/>
                         <c:param name="showNodes" value="${showNodes}"/>
                         <c:param name="showActions" value="${showActions}"/>
                         <c:param name="workspace" value="${workspace}"/>
@@ -208,6 +266,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
                         <c:url var="deleteUrl" value="?">
                             <c:param name="uuid" value="${node.identifier}"/>
                             <c:param name="showProperties" value="${showProperties}"/>
+                            <c:param name="showReferences" value="${showReferences}"/>
                             <c:param name="showNodes" value="${showNodes}"/>
                             <c:param name="showActions" value="${showActions}"/>
                             <c:param name="workspace" value="${workspace}"/>
@@ -217,6 +276,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
                         <c:url var="renameUrl" value="?">
                             <c:param name="uuid" value="${node.identifier}"/>
                             <c:param name="showProperties" value="${showProperties}"/>
+                            <c:param name="showReferences" value="${showReferences}"/>
                             <c:param name="showNodes" value="${showNodes}"/>
                             <c:param name="showActions" value="${showActions}"/>
                             <c:param name="workspace" value="${workspace}"/>
@@ -248,6 +308,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
 <c:url var="switchWorkspaceUrl" value="?">
     <c:param name="uuid" value="${node.identifier}"/>
     <c:param name="showProperties" value="${showProperties}"/>
+    <c:param name="showReferences" value="${showReferences}"/>
     <c:param name="showNodes" value="${showNodes}"/>
     <c:param name="showActions" value="${showActions}"/>
     <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
@@ -264,6 +325,7 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
 <c:url var="switchWorkspaceUrl" value="?">
     <c:param name="path" value="${param.path}"/>
     <c:param name="showProperties" value="${showProperties}"/>
+    <c:param name="showReferences" value="${showReferences}"/>
     <c:param name="showNodes" value="${showNodes}"/>
     <c:param name="showActions" value="${showActions}"/>
     <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>

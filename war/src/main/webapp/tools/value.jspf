@@ -15,6 +15,7 @@
             <c:url var="urlValue" value="?">
                 <c:param name="uuid" value="${value.node.identifier}"/>
                 <c:param name="showProperties" value="${showProperties}"/>
+                <c:param name="showReferences" value="${showReferences}"/>
                 <c:param name="showNodes" value="${showNodes}"/>
                 <c:param name="showActions" value="${showActions}"/>
                 <c:param name="workspace" value="${workspace}"/>

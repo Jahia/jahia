@@ -176,6 +176,11 @@ public class RenderTest {
         String label = "published_at_" + yyyy_mm_dd_hh_mm_ss.format(GregorianCalendar.getInstance().getTime());
         List<String> uuids = getUuids(publicationInfo);
         jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        }
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
             editSession.checkout(stagedSubPage);
             stagedSubPage.setProperty("jcr:title", "title" + i);
@@ -191,7 +196,7 @@ public class RenderTest {
             uuids = getUuids(publicationInfo);
             jcrVersionService.addVersionLabel(uuids, label, Constants.LIVE_WORKSPACE);
             try {
-                Thread.sleep(5000);
+                Thread.sleep(30000);
             } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -213,15 +218,14 @@ public class RenderTest {
                 return numericStringComparator.compare(o1.getLabel(), o2.getLabel());
             }
         });
-        // As we get information for version only from stagedSubPage we have only 4 version starting from 1
-        int index = 1;
+        int index = 0;
         for (VersionInfo curVersionInfo : liveVersionInfos) {
             Version version = curVersionInfo.getVersion();
             if (version.getCreated() != null && curVersionInfo.getLabel()!=null) {
                 GetMethod versionGet = new GetMethod(
                         "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/live/en" +
                         subPagePublishedNode.getPath() + ".html?v=" +
-                        ((yyyy_mm_dd_hh_mm_ss.parse(curVersionInfo.getLabel().split("_at_")[1]).getTime()+1000l)));
+                        ((yyyy_mm_dd_hh_mm_ss.parse(curVersionInfo.getLabel().split("_at_")[1]).getTime()+5000l)));
                 try {
                     int responseCode = client.executeMethod(versionGet);
                     assertEquals("Response code " + responseCode, 200, responseCode);

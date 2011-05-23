@@ -91,10 +91,10 @@ import org.jahia.utils.DateUtils;
  * This is the default search provider used by Jahia and used the index created by Jahia's main
  * repository, which is based on Apache Jackrabbit. The search request is also done on mounted 
  * external repositories.
- * 
+ *
  * For now the search criteria is converted to XPATH queries, which is despite of the deprecation
  * still the most stable and performance means to use search in Jackrabbit.
- * 
+ *
  * For future versions we may change to either SQL-2 or directly the QueryObejctModel specified
  * in JSR-283.
  *
@@ -104,7 +104,7 @@ import org.jahia.utils.DateUtils;
 public class JahiaJCRSearchProvider implements SearchProvider {
 
     private static Logger logger = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
-    
+
     private TaggingService taggingService = null;
 
     /* (non-Javadoc)
@@ -204,14 +204,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         logger.debug("Error while trying to check for node language", e);
                     }
                 }
-                
+
             }
         } catch (RepositoryException e) {
             logger.debug("Error while trying to check for node language", e);
         }
         return skipNode;
     }
-    
+
     private Hit<?> buildHit(Row row, JCRNodeWrapper node, RenderContext context) throws RepositoryException {
         AbstractHit<?> searchHit = null;
         if (node.isFile() || node.isNodeType(Constants.NT_FOLDER)) {
@@ -247,7 +247,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         } else if (!params.getPagePath().isEmpty()) {
             path = params.getPagePath().getValue().trim();
             includeChildren = params.getPagePath().isIncludeChildren();
-        } 
+        }
         if (path != null) {
             String[] pathTokens = path != null ? StringEscapeUtils
                     .unescapeHtml(path).split("/") : ArrayUtils.EMPTY_STRING_ARRAY;
@@ -315,12 +315,19 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         return xpathQuery;
     }
-    
-    private boolean isFileSearch(SearchCriteria params) {
-        return params.getTerms().size() > 0 && params.getTerms().get(0).getFields() != null && !params.getTerms().get(0).getFields().isSiteContent() && !params.getTerms().get(0).getFields().isTags();
 
+    private boolean isFileSearch(SearchCriteria params) {
+        for (Term term : params.getTerms()) {
+            if (term.getFields() != null
+                    && (term.getFields().isSiteContent() || (!term.getFields().isDescription()
+                    && !term.getFields().isFileContent() && !term.getFields().isFilename()
+                    && !term.getFields().isKeywords() && !term.getFields().isTitle()))) {
+                return false;
+            }
+        }
+        return true;
     }
-    
+
     private String getNodeType(SearchCriteria params) {
         return StringUtils.isEmpty(params.getNodeType()) ? (isFileSearch(params) ? Constants.NT_HIERARCHYNODE
                 : Constants.NT_BASE)
@@ -328,7 +335,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private StringBuilder appendConstraints(SearchCriteria params,
-            StringBuilder query, JCRSessionWrapper session) {
+                                            StringBuilder query, JCRSessionWrapper session) {
         StringBuilder constraints = new StringBuilder(64);
 
         addTermConstraints(params, constraints, session);
@@ -352,7 +359,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private StringBuilder addConstraint(StringBuilder constraints,
-            String operand, String constraint) {
+                                        String operand, String constraint) {
         if (constraints.length() > 0) {
             constraints.append(" ").append(operand).append(" ");
         }
@@ -360,7 +367,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addDateAndAuthorConstraints(SearchCriteria params,
-            StringBuilder constraints) {
+                                             StringBuilder constraints) {
 
         if (params.getCreatedBy() != null && params.getCreatedBy().length() > 0) {
             addConstraint(constraints, "and", "jcr:contains(@jcr:createdBy, "
@@ -372,7 +379,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             addConstraint(constraints, "and",
                     "jcr:contains(@jcr:lastModifiedBy, "
                             + stringToJCRSearchExp(params.getLastModifiedBy()
-                                    .trim()) + ")");
+                            .trim()) + ")");
         }
 
         if (!params.getCreated().isEmpty()
@@ -389,7 +396,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addDateConstraint(StringBuilder constraints,
-            SearchCriteria.DateValue dateValue, String paramName) {
+                                   SearchCriteria.DateValue dateValue, String paramName) {
         Calendar greaterThanDate = Calendar.getInstance();
         Calendar smallerThanDate = null;
 
@@ -438,7 +445,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addFileTypeConstraints(SearchCriteria params,
-            StringBuilder constraints) {
+                                        StringBuilder constraints) {
 
         if (StringUtils.isNotEmpty(params.getFileType())) {
             List<String> mimeTypes = JCRContentUtils.getInstance()
@@ -476,7 +483,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         + name
                         + ","
                         + stringToJCRSearchExp(categoryPath
-                                + Category.PATH_DELIMITER + "%") + ")");
+                        + Category.PATH_DELIMITER + "%") + ")");
             }
         } catch (JahiaException e) {
             logger.warn("Category: " + value + " could not be retrieved", e);
@@ -484,7 +491,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addPropertyConstraints(StringBuilder constraints,
-            List<NodeProperty> properties) {
+                                        List<NodeProperty> properties) {
         for (NodeProperty property : properties) {
             if (!property.isEmpty()) {
                 if (NodeProperty.Type.CATEGORY == property.getType()) {
@@ -492,7 +499,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     for (String value : property.getCategoryValue().getValues()) {
                         addPropertyConstraintCategory(categoryConstraints,
                                 property.getName(), value, property
-                                        .getCategoryValue().isIncludeChildren());
+                                .getCategoryValue().isIncludeChildren());
                     }
                     addConstraint(constraints, "and", categoryConstraints
                             .insert(0, "(").append(")").toString());
@@ -512,7 +519,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                             + property.getName()
                                             + ","
                                             + getSearchExpressionForMatchType(
-                                                    value, property.getMatch())
+                                            value, property.getMatch())
                                             + ")");
                         }
                     }
@@ -541,7 +548,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addTermConstraints(SearchCriteria params,
-            StringBuilder constraints, JCRSessionWrapper session) {
+                                    StringBuilder constraints, JCRSessionWrapper session) {
 
         for (Term textSearch : params.getTerms()) {
 
@@ -551,7 +558,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
                 SearchFields searchFields = textSearch.getFields();
                 StringBuilder textSearchConstraints = new StringBuilder(256);
-                if (searchFields.isSiteContent()) {
+                if (searchFields.isSiteContent() || (!searchFields.isTags() && !searchFields.isFileContent() && !searchFields.isDescription() && !searchFields.isTitle() && !searchFields.isKeywords() && !searchFields.isFilename())) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(., " + searchExpression + ")");
                 }
                 if (searchFields.isFileContent()) {
@@ -573,8 +580,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             "or",
                             "jcr:contains(@j:nodename, "
                                     + (textSearch.getTerm().endsWith("*") ? searchExpression
-                                            : getSearchExpressionForMatchType(textSearch.getTerm()
-                                                    , textSearch.getMatch(), "*")) + ")");
+                                    : getSearchExpressionForMatchType(textSearch.getTerm()
+                                    , textSearch.getMatch(), "*")) + ")");
                 }
                 if (searchFields.isTags() && getTaggingService() != null
                         && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)
@@ -583,12 +590,12 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         JCRNodeWrapper tag = getTaggingService().getTag(textSearch.getTerm(),  params.getSites().getValue() != null ? params.getSites().getValue() : params.getOriginSiteKey(), session);
                         if (tag != null) {
                             addConstraint(textSearchConstraints, "or", "@" + Constants.TAGS + "="
-                                    + stringToJCRSearchExp(tag.getIdentifier()));                            
+                                    + stringToJCRSearchExp(tag.getIdentifier()));
                         }
                     } catch (RepositoryException e) {
                         logger.warn("Error resolving tag for search", e);
                     }
-                }            
+                }
                 if (textSearchConstraints.length() > 0) {
                     addConstraint(constraints, "and", "("
                             + textSearchConstraints.toString() + ")");
@@ -598,7 +605,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addLanguageConstraints(SearchCriteria params,
-            StringBuilder constraints) {
+                                        StringBuilder constraints) {
         StringBuilder languageSearchConstraints = new StringBuilder(256);
         if (!params.getLanguages().isEmpty()) {
             for (String languageCode : params.getLanguages().getValues()) {
@@ -618,14 +625,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     addConstraint(languageSearchConstraints, "or",
                             "@jcr:language = "
                                     + stringToJCRSearchExp(session.getLocale()
-                                            .toString()));
+                                    .toString()));
                 }
             } catch (RepositoryException e) {
             }
         }
         if (languageSearchConstraints.length() > 0) {
             addConstraint(languageSearchConstraints, "or",
-                    "not(@jcr:language)");            
+                    "not(@jcr:language)");
             addConstraint(constraints, "and", "(" + languageSearchConstraints
                     .toString()+ ")");
         }
@@ -635,22 +642,22 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         return mimeType.contains("*") ? "jcr:like(jcr:content/@jcr:mimeType,"
                 + stringToQueryLiteral(StringUtils.replaceChars(mimeType, '*',
-                        '%')) + ")" : "jcr:content/@jcr:mimeType="
+                '%')) + ")" : "jcr:content/@jcr:mimeType="
                 + stringToQueryLiteral(mimeType);
     }
 
     private String getSearchExpressionForMatchType(String term,
-            MatchType matchType) {
+                                                   MatchType matchType) {
         return getSearchExpressionForMatchType(term, matchType, null);
     }
 
     private String getSearchExpressionForMatchType(String term,
-            MatchType matchType, String postfix) {
+                                                   MatchType matchType, String postfix) {
         if (Term.MatchType.AS_IS != matchType) {
             term = QueryParser.escape(term.replaceAll(" AND ", " and ").replaceAll(
                     " OR ", " or ").replaceAll(" NOT ", " not "));
         }
-        
+
         if (MatchType.ANY_WORD == matchType) {
             term = StringUtils.replace(cleanMultipleWhiteSpaces(term), " ",
                     " OR ");
@@ -661,19 +668,19 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             // 'match all') is added to the query string
             term = "* -"
                     + StringUtils.replace(cleanMultipleWhiteSpaces(term), " ",
-                            " -");
+                    " -");
         }
 
         return stringToJCRSearchExp(postfix != null ? term + postfix : term);
     }
-    
+
     private String cleanMultipleWhiteSpaces(String term) {
         return term.replaceAll("\\s{2,}", " ");
     }
-    
+
     /* (non-Javadoc)
-     * @see org.jahia.services.search.SearchProvider#suggest(java.lang.String, java.lang.String, java.util.Locale)
-     */
+    * @see org.jahia.services.search.SearchProvider#suggest(java.lang.String, java.lang.String, java.util.Locale)
+    */
     public Suggestion suggest(String originalQuery, String siteKey, Locale locale) {
         if (StringUtils.isBlank(originalQuery)) {
             return null;
@@ -695,7 +702,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 xpath.append("/sites/").append(siteKey);
             }
             xpath.append("/(rep:spellcheck())");
-            
+
             Query query = qm.createQuery(xpath.toString(), Query.XPATH);
             RowIterator rows = query.execute().getRows();
             if (rows.hasNext()) {
@@ -720,7 +727,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     /**
      * Creates the {@link Query} instance by converting the provided
      * {@link SearchCriteria} bean into XPath query.
-     * 
+     *
      * @param criteria the search criteria to use for the query
      * @param session current JCR session
      * @return the {@link Query} instance created by converting the provided

@@ -547,8 +547,7 @@ public class SearchCriteria implements Serializable {
             }
 
             public boolean isSiteContent() {
-                return siteContent
-                || (!fileContent && !description && !title && !filename && !keywords &&!tags);
+                return siteContent;
             }
 
             public boolean isTags() {

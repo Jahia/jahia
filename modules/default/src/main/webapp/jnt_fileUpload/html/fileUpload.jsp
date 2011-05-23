@@ -54,7 +54,7 @@
                         'jcrReturnContentType':"json",
                         'jcrRedirectTo':"<c:url value='${url.base}${renderContext.mainResource.node.path}'/>",
                         'jcrNewNodeOutputFormat':"${renderContext.mainResource.template}.html",
-                        'form-token': $('#file_upload${currentNode.identifier} : input[name=form-token]').val()
+                        'form-token': $('#file_upload${currentNode.identifier} input[name=form-token]').val()
                     };
                     callBack();
                 },

@@ -9,7 +9,9 @@
     <c:when test="${not empty param[facetParamVarName]}">
         <query:definition var="listQuery" >
             <query:selector nodeTypeName="nt:base"/>
-            <query:childNode path="${currentNode.realNode.path}"/>
+            <c:set var="descendantNode" value="${fn:substringAfter(currentNode.realNode.path,'/sites/')}"/>
+            <c:set var="descendantNode" value="${fn:substringAfter(descendantNode,'/')}"/>
+            <query:descendantNode path="/sites/${renderContext.site.name}/${descendantNode}"/>
         </query:definition>
         <c:set target="${moduleMap}" property="listQuery" value="${listQuery}"/>
     </c:when>

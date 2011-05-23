@@ -517,7 +517,7 @@
                         <custom-rows-960gs-1-col1 jcr:primaryType="jnt:contentList">
                             <facets j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facets" />
-                                <facets jcr:primaryType="jnt:facets">
+                                <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-system/contents">
                                     <fieldFacet facet="tags" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" limit="100" mincount="1" missing="false" offset="0">
                                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" label="Tags" />
                                     </fieldFacet>
@@ -546,7 +546,7 @@
                         <custom-rows-960gs-1-col1 jcr:primaryType="jnt:contentList">
                             <facets j:skin="skins.box8" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Facets" />
-                                <facets jcr:primaryType="jnt:facets">
+                                <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-system/files">
                                     <fieldFacet facet="tags" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" limit="100" mincount="1" missing="false" offset="0">
                                         <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" label="Tags" />
                                     </fieldFacet>

@@ -3,6 +3,7 @@
 
 [jnt:facets] > jnt:content, jmix:queryContent, jmix:bindedComponent
 orderable
+- j:bindedComponent (weakreference)
 + * (jnt:facet)
 
 [jnt:facet] > jnt:content abstract

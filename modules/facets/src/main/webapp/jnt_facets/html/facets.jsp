@@ -36,8 +36,10 @@
     <jsp:useBean id="facetValueNodeTypes" class="java.util.HashMap" scope="request"/>
 
     <query:definition var="listQuery" scope="request">
-        <query:selector nodeTypeName="jnt:content"/>
-        <query:childNode path="${bindedComponent.path}"/>
+        <query:selector nodeTypeName="nt:base"/>
+        <c:set var="descendantNode" value="${fn:substringAfter(bindedComponent.path,'/sites/')}"/>
+        <c:set var="descendantNode" value="${fn:substringAfter(descendantNode,'/')}"/>
+        <query:descendantNode path="/sites/${renderContext.site.name}/${descendantNode}"/>
 
         <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
             <jcr:nodeProperty node="${facet}" name="facet" var="currentFacetGroup"/>

@@ -19,32 +19,36 @@
     <c:if test="${currentResource.workspace ne 'live'}">
         <c:if test="${gotoType eq 'document'}">
             <c:set var="conf" value="filemanager"/>
+            <c:set var="requiredPermission" value="fileManager"/>
             <c:set var="label" value="label.filemanager"/>
             <c:set var="icon" value="treepanel-files-manager-1616"/>
             <c:set var="multisite" value="true"/>
         </c:if>
         <c:if test="${gotoType eq 'content'}">
             <c:set var="conf" value="editorialcontentmanager"/>
+            <c:set var="requiredPermission" value="editorialContentManager"/>
             <c:set var="label" value="label.contentmanager"/>
             <c:set var="icon" value="treepanel-content-manager-1616"/>
             <c:set var="multisite" value="true"/>
         </c:if>
         <c:if test="${gotoType eq 'united content'}">
             <c:set var="conf" value="repositoryexplorer"/>
+            <c:set var="requiredPermission" value="repositoryExplorer"/>
             <c:set var="label" value="label.repositoryexplorer"/>
             <c:set var="icon" value="repositoryExplorer"/>
         </c:if>
         <c:if test="${gotoType eq 'roles'}">
             <c:set var="conf" value="rolesmanager"/>
+            <c:set var="requiredPermission" value="rolesManager"/>
             <c:set var="label" value="label.serverroles"/>
             <c:set var="icon" value="roleManager"/>
         </c:if>
-        <c:if test="${multisite eq 'true'}">
+        <c:if test="${multisite}">
             <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
             <ul class="gotomanager">
                 <c:forEach items="${result.nodes}" var="node">
                     <jcr:node var="home" path="${node.home.path}"/>
-                    <c:if test="${jcr:hasPermission(home,'fileManager')}">
+                    <c:if test="${jcr:hasPermission(home,requiredPermission)}">
                         <li><img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; ">${fn:escapeXml(node.displayableName)}&nbsp;<a
                                 href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}"
@@ -62,7 +66,7 @@
                 </c:forEach>
             </ul>
         </c:if>
-        <c:if test="${multisite ne 'true'}">
+        <c:if test="${!multisite && jcr:hasPermission(currentNode,requiredPermission)}">
             <img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" " role="presentation"
                  style="position:relative; top: 4px; margin-right:2px; "><a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${renderContext.site.identifier}" target="_blank">
             <c:if test="${!empty currentNode.properties['jcr:title']}">

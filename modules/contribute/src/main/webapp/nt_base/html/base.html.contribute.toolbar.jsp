@@ -183,6 +183,7 @@
                 key="label.goto.myTasks"/></a>
         <c:choose>
             <c:when test="${jcr:isNodeType(currentNode, 'jnt:folder') || jcr:isNodeType(currentNode, 'nt:file')}">
+                <c:if test="${jcr:hasPermission(currentNode,'fileManager')}">
                 <c:url var="mgrUrl" value="/engines/manager.jsp">
                     <c:param name="conf" value="filemanager"/>
                     <c:param name="site" value="${renderContext.site.identifier}"/>
@@ -190,10 +191,11 @@
                 </c:url>
                 <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/treepanel-files-manager-1616.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                         key="label.filemanager"/></a>
+                </c:if>
             </c:when>
             <c:otherwise>
                 <c:set var="contentPath" value="${currentNode.resolveSite.path}/contents"/>
-                <c:if test="${fn:startsWith(currentNode.path,contentPath)}">
+                <c:if test="${fn:startsWith(currentNode.path,contentPath) && jcr:hasPermission(currentNode,'editorialContentManager')}">
                 <c:url var="mgrUrl" value="/engines/manager.jsp">
                     <c:param name="conf" value="editorialcontentmanager"/>
                     <c:param name="site" value="${renderContext.site.identifier}"/>

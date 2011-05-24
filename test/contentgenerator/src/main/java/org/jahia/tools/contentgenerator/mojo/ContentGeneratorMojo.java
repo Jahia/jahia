@@ -116,7 +116,7 @@ public class ContentGeneratorMojo extends AbstractMojo {
 	 */
 	private ExportBO initExport() throws MojoExecutionException, MojoFailureException {
 		ExportBO export = new ExportBO();
-		
+
 		/**
 		 * Database
 		 */
@@ -150,7 +150,6 @@ public class ContentGeneratorMojo extends AbstractMojo {
 		} else {
 			DatabaseProperties.TABLE = mysql_table;
 		}
-		
 
 		if (nbPagesOnTopLevel == null) {
 			export.setNbPagesTopLevel(ContentGeneratorCst.NB_PAGES_TOP_LEVEL_DEFAULT);
@@ -176,7 +175,8 @@ public class ContentGeneratorMojo extends AbstractMojo {
 		} else {
 			File fOutputDirectory = new File(outputDirectory);
 			if (!fOutputDirectory.exists()) {
-				throw new MojoExecutionException("Output directory \"" + outputDirectory + "\" does not exist or is not readable");
+				throw new MojoExecutionException("Output directory \"" + outputDirectory
+						+ "\" does not exist or is not readable");
 			}
 
 			if (outputFileName == null) {
@@ -215,15 +215,16 @@ public class ContentGeneratorMojo extends AbstractMojo {
 		} else {
 			export.setAddFilesToPage(addFiles);
 		}
-		
-		if (ContentGeneratorCst.VALUE_ALL.equals(export.getAddFilesToPage()) || ContentGeneratorCst.VALUE_RANDOM.equals(export.getAddFilesToPage())) {
+
+		if (ContentGeneratorCst.VALUE_ALL.equals(export.getAddFilesToPage())
+				|| ContentGeneratorCst.VALUE_RANDOM.equals(export.getAddFilesToPage())) {
 			if (poolDirectory == null) {
 				throw new MojoExecutionException("Pool directory property can not be null");
 			} else {
 				File fPoolDirectory = new File(poolDirectory);
 				if (!fPoolDirectory.exists()) {
-					throw new MojoExecutionException("Directory containing files to include does not exist or is not readable: "
-							+ poolDirectory);
+					throw new MojoExecutionException(
+							"Directory containing files to include does not exist or is not readable: " + poolDirectory);
 				}
 				export.setFilesDirectory(fPoolDirectory);
 				export.setFileNames(getFileNamesAvailable(export.getFilesDirectory()));
@@ -231,6 +232,10 @@ public class ContentGeneratorMojo extends AbstractMojo {
 		}
 
 		Integer totalPages = getTotalNumberOfPagesNeeded(nbPagesOnTopLevel, nbSubLevels, nbPagesPerLevel);
+		if (export.getTotalPages().compareTo(ContentGeneratorCst.MAX_TOTAL_PAGES) > 0) {
+			throw new MojoExecutionException("You asked to generate " + export.getTotalPages()
+					+ " pages, the maximum allowed is " + ContentGeneratorCst.MAX_TOTAL_PAGES);
+		}
 		export.setTotalPages(totalPages);
 
 		return export;

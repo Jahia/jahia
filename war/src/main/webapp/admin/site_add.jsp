@@ -120,7 +120,7 @@
             <td><input type="radio" name="siteAdmin" value="0" id="createNewSiteAdmin"/></td>
             <td><label for="createNewSiteAdmin"><fmt:message key="org.jahia.admin.site.ManageSites.createNewUser.label"/></label></td>
         </tr>
-        <% if ( !newAdminOnly.booleanValue() ){
+        <% if ( false && !newAdminOnly.booleanValue() ){
         %>
         <tr>
             <td><input type="radio" name="siteAdmin" value="1" id="useExistingSiteAdmin"/></td>

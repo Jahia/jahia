@@ -214,7 +214,6 @@ public class XmlService {
 		if (currentFileIndex == availableFileNames.size()) {
 			currentFileIndex = 0;
 		}
-		logger.info("file index used: "+currentFileIndex);
 		fileName = availableFileNames.get(currentFileIndex);
 		currentFileIndex++;
 		return fileName;

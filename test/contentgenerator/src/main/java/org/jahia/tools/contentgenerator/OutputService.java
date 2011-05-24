@@ -10,6 +10,11 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.jahia.tools.contentgenerator.bo.PageBO;
 
+/**
+ * Class used to write data into output files
+ * @author Guillaume Lucazeau
+ *
+ */
 public class OutputService {
 
 	public void initOutputFile(File f) throws IOException {	

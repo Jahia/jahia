@@ -6,13 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
-import org.jfree.util.Log;
-import org.springframework.util.StringUtils;
 
 /**
  * XmlService is the class used to process selected articles and generate a tree
@@ -74,7 +73,7 @@ public class XmlService {
 
 			// path
 			if (export.getCreateMap()) {
-				Log.info("Pages path are being written to the map file");
+				logger.info("Pages path are being written to the map file");
 				List<PageBO> listeTopPage = new ArrayList<PageBO>();
 				listeTopPage.add(pageTopLevel);
 

@@ -1,45 +1,7 @@
 package org.jahia.tools.contentgenerator.properties;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public final class ContentGeneratorCst {
-
-	/**
-	 * Properties name
-	 */
-	public static final String DB_HOST_PROPERTY = "mysql_in_Host";
-	public static final String DB_PORT_PROPERTY = "mysql_in_Port";
-	public static final String DB_LOGIN_PROPERTY = "mysql_in_Login";
-	public static final String DB_PASSWORD_PROPERTY = "mysql_in_Password";
-	public static final String DB_DATABASE_PROPERTY = "mysql_in_Database";
-	public static final String DB_TABLE_PROPERTY = "mysql_in_Table";
-
-	public static final String NB_PAGES_TOP_LEVEL = "jahia_cg_nbPagesOnTopLevel";
-	public static final String NB_SUB_LEVELS = "jahia_cg_nbSubLevels";
-	public static final String NB_SUBPAGES_PER_PAGE = "jahia_cg_nbPagesPerLevel";
-
-	public static final String OUTPUT_DIR_PROPERTY = "jahia_cg_outputDir";
-	public static final String OUTPUT_FILE_PROPERTY = "jahia_cg_outputFilename";
-
-	public static final String CREATE_MAP_YN_PROPERTY = "jahia_cg_createMapYn";
-	public static final String PAGES_HAVE_VANITY_PROPERTY = "jahia_cg_pagesHaveVanity";
-
-	public static final String SITE_KEY_PROPERTY = "jahia_cg_siteKey";
-
-	public static final String ADD_FILE_PROPERTY = "jahia_cg_addFile";
-	public static final String FILE_POOL_PROPERTY = "jahia_cg_poolDir";
-
-	/**
-	 * Default properties
-	 */
-	public static final Integer NB_PAGES_TOP_LEVEL_DEFAULT = Integer.valueOf(5);
-	public static final Integer NB_SUB_LEVELS_DEFAULT = Integer.valueOf(2);
-	public static final Integer NB_SUBPAGES_PER_PAGE_DEFAULT = Integer.valueOf(10);
-	public static final String OUTPUT_DIR_DEFAULT = "/home/guillaume";
-	public static final String OUTPUT_FILE_DEFAULT = "jahiaExport.xml";
-	public static final Boolean HAS_VANITY_DEFAULT = Boolean.TRUE;
-	public static final String SITE_KEY_DEFAULT = "ACME";
 
 	/**
 	 * Configuration
@@ -51,6 +13,20 @@ public final class ContentGeneratorCst {
 	public static final String VALUE_ALL = "all";
 	public static final String VALUE_NONE = "none";
 	public static final String VALUE_RANDOM = "random";
+	
+	/**
+	 * Default value
+	 */
+	public static final String MYSQL_HOST_DEFAULT = "localhost";
+	public static final Integer NB_PAGES_TOP_LEVEL_DEFAULT = Integer.valueOf(1);
+	public static final Integer NB_SUB_LEVELS_DEFAULT = Integer.valueOf(2);
+	public static final Integer NB_SUBPAGES_PER_PAGE_DEFAULT = Integer.valueOf(3);
+	public static final String OUTPUT_FILE_DEFAULT = "jahia-cg.output.xml";
+	public static final String OUTPUT_MAP_DEFAULT = "jahia-cg.output.csv";
+	public static final Boolean HAS_VANITY_DEFAULT = Boolean.TRUE;
+	public static final Boolean CREATE_MAP_DEFAULT = Boolean.FALSE;
+	public static final String SITE_KEY_DEFAULT = "ACME";
+	public static final String ADD_FILE_TO_PAGE_DEFAULT = ContentGeneratorCst.VALUE_NONE;
 	
 	private ContentGeneratorCst() {
 

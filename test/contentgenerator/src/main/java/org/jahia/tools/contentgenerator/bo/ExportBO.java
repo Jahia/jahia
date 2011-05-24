@@ -3,38 +3,44 @@ package org.jahia.tools.contentgenerator.bo;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Contains all the parameters used to configure the export
+ * 
+ * @author Guillaume Lucazeau
+ * 
+ */
 public class ExportBO {
 
 	private File outputFile;
-	
+
 	private String outputDir;
-	
+
 	private String outputFilename;
-	
+
 	private Integer nbPagesTopLevel;
-	
+
 	private Integer nbSubLevels;
-	
+
 	private Integer nbSubPagesPerPage;
-	
-	private Integer totalPages; 
-	
+
+	private Integer totalPages;
+
 	private Integer maxArticleIndex;
-	
+
 	private Boolean createMap;
-	
+
 	private File mapFile;
-	
+
 	private Boolean pagesHaveVanity;
-	
+
 	private String siteKey;
-	
+
 	private String addFilesToPage;
-	
-	private String filesDirectory;
-	
+
+	private File filesDirectory;
+
 	private List<String> fileNames;
-	
+
 	public File getOutputFile() {
 		return outputFile;
 	}
@@ -82,7 +88,7 @@ public class ExportBO {
 	public void setNbSubPagesPerPage(Integer nbSubPagesPerPage) {
 		this.nbSubPagesPerPage = nbSubPagesPerPage;
 	}
-	
+
 	public Integer getTotalPages() {
 		return totalPages;
 	}
@@ -139,11 +145,11 @@ public class ExportBO {
 		this.addFilesToPage = addFilesToPage;
 	}
 
-	public String getFilesDirectory() {
+	public File getFilesDirectory() {
 		return filesDirectory;
 	}
 
-	public void setFilesDirectory(String filesDirectory) {
+	public void setFilesDirectory(File filesDirectory) {
 		this.filesDirectory = filesDirectory;
 	}
 
@@ -156,9 +162,9 @@ public class ExportBO {
 	}
 
 	public ExportBO() {
-		
+
 	}
-	
+
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<!-- export information -->\n");

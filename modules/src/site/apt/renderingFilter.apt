@@ -44,8 +44,8 @@ Rendering filters
   and executed for every request for all modules.
 
   The priority defines where the filter will be inserted in the render chain.
-  If the priority is > to 16, it will be executed the first time the resource is generated, and then the result will be cached.
-  If the priority is < to 16, it will be reevaluated each time the resource is served. Be careful, this is very consuming in terms of performance.
+  If the priority is \> to 16, it will be executed the first time the resource is generated, and then the result will be cached.
+  If the priority is \< to 16, it will be reevaluated each time the resource is served. Be careful, this is very consuming in terms of performance.
 
   An {example} of a filter definition for the Jahia Wiki module, located in the the <<<templates/wiki/META-INF/spring/>>> folder, is:
   

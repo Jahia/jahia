@@ -21,7 +21,7 @@
 <c:set var="ps" value=""/>
 <c:forEach items="${param}" var="p">
     <c:if test="${p.key ne 'displayTab'}">
-    <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
+        <c:set var="ps" value="${ps}&${p.key}=${p.value}" />
     </c:if>
 </c:forEach>
 <div id="tabs${currentNode.name}">
@@ -31,17 +31,17 @@
                 <c:if test="${status.first || displayTab eq subList.name}">
                     <c:set var="displayList" value="${subList}"/>
                 </c:if>
-                <c:set var="tabCssClass" value=''/>
-                <c:if test="${(empty displayTab and status.first) or (displayTab eq subList.name)}">
-                    <c:set var="tabCssClass" value=' class="selected"'/>
-                </c:if>
-                <li><a href="<c:url value='${url.mainResource}?displayTab=${subList.name}${ps}'/>"${tabCssClass}><span>${fn:escapeXml(subList.displayableName)}</span></a></li>
+                <template:module node="${subList}" view="tabularList" editable="false" >
+                    <template:param name="stat" value="${status.first}"/>
+                    <template:param name="displayTab" value="${displayTab}"/>
+                    <template:param name="ps" value="${ps}"/>
+                </template:module>
             </c:forEach>
         </ul>
     </div>
     <c:if test="${not empty displayList}">
         <div class="tabContainer"><!--start tabContainer-->
-            <template:list path="${displayList.path}"/>
+            <template:module path="${displayList.path}" view="default"/>
             <div class="clear"></div>
         </div>
     </c:if>

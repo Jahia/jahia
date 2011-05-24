@@ -54,8 +54,13 @@
         <c:set var="searchPath" value="${renderContext.site.path}"/>
     </c:otherwise>
 </c:choose>
-
-<c:set var="xPathQuery" value="/jcr:root${empty searchPath?renderContext.site.path:searchPath}//element(*, ${empty searchType?'nt:base':searchType})[jcr:contains(.,'{$q}*')]" />
+<c:if test="${empty searchPath}">
+    <c:set var="searchPath"   value="${renderContext.site.path}"/>
+</c:if>
+<c:if test="${empty searchType}">
+    <c:set var="searchType"   value="'nt:base"/>
+</c:if>
+<c:set var="xPathQuery" value="/jcr:root${searchPath}//element(*, ${searchType})[jcr:contains(.,'{$q}*')]" />
 
 <c:url var="findUrl" value="${url.find}"/>
 

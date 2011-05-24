@@ -25,6 +25,8 @@ public class XmlService {
 	private static final Logger logger = Logger.getLogger(XmlService.class.getName());
 
 	private static int currentPageIndex = 0;
+	
+	private static int currentFileIndex = 0;
 
 	public XmlService() {
 
@@ -163,7 +165,7 @@ public class XmlService {
 		
 		String fileName = null;
 		if (addFile) {
-			 fileName = getRandomFileName(export.getFileNames());
+			 fileName = getFileName(export.getFileNames());
 		}
 		
 		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR "
@@ -206,11 +208,15 @@ public class XmlService {
 	 * @param availableFileNames
 	 * @return file name choosen
 	 */
-	private String getRandomFileName(List<String> availableFileNames) {
+	private String getFileName(List<String> availableFileNames) {
 		String fileName = null;
-		Random random = new Random();
-		int index = random.nextInt(availableFileNames.size());
-		fileName = availableFileNames.get(index);
+		
+		if (currentFileIndex == availableFileNames.size()) {
+			currentFileIndex = 0;
+		}
+		logger.info("file index used: "+currentFileIndex);
+		fileName = availableFileNames.get(currentFileIndex);
+		currentFileIndex++;
 		return fileName;
 	}
 

@@ -2,7 +2,7 @@ Jahia 6.5 - Jahia Templates - Reusable components
 
 * What is a Reusable component?
 
-  A reusable component is a piece of content saved in a special location by an authorized author that can be reused esily while building sites or webmastering pages, because reussable components appears directly in Jahia's GUI when manipulating content.
+  A reusable component is a piece of content saved in a special location by an authorized author that can be reused easily while building sites or webmastering pages, because reusable components appears directly in Jahia's GUI when manipulating content.
   For instance, it means that if you decide that a section of a site, a list of objects or a page should be kept for further usage, you can do it.
   In this case, you just have to click on the top level page of the section you want to save as reusable component, then click on the "Save As reusable component" button in the "Edit" menu.
   This will save a copy of your content in a specific folder. Then when you want to create a new content you can reuse this component as a model.
@@ -15,7 +15,7 @@ Jahia 6.5 - Jahia Templates - Reusable components
 
 * Can I modify a reusable component?
 
-  Yes, it is possible, but you must go through the Content Manager to access the reusable components folder where they are saved. The resusable components folder tree is automatically created and maintenained by Jahia, based on the content type of the objet.
+  Yes, it is possible, but you must go through the Content Manager to access the reusable components folder where they are saved. The reusable components folder tree is automatically created and maintained by Jahia, based on the content type of the object.
 
 * If I change a reusable component, does all the content created based on that component will be also updated?
 

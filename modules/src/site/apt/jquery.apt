@@ -1,7 +1,7 @@
-Jahia 6.5 - Jahia Templates - Jquery usages
+Jahia 6.5 - Jahia Templates - jQuery usages
 
-Some of our modules use Jquery as javascript framework.
+  Some of our modules use jQuery as javascript framework.
 
-For development we use the full version of the scripts.
+  For development we use the full version of the scripts.
 
-For production we strongly suggest developers to minified their script files.
+  For production we strongly suggest developers to minified their script files.

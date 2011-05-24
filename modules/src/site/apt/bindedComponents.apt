@@ -79,7 +79,7 @@ BindedComponents
 <template:linker path="*"/>
 +-------------------------------------
 
-  A more advanced example from tagging, that define taht on the bound component we need to add a mixin type :
+  A more advanced example from tagging, that define that on the bound component we need to add a mixin type :
 
 +--------------------------------------
 <template:linker path="*" mixinType="jmix:tagged"/>

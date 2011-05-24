@@ -29,7 +29,7 @@ Basic Jahia REST API
 *----------------+-------------+------------------------------------------------+
 |redirectActive  |no           |If set to "true" or not set, the login servlet  |
 |                |             |will redirect to the home page after successful |
-|                |             |authentification. If you are using AJAX calls   |
+|                |             |authentication. If you are using AJAX calls     |
 |                |             |you should set this to "false".                 |
 *----------------+-------------+------------------------------------------------+
 |doLogin         |yes          |Should always be set to "true" otherwise login  |
@@ -50,7 +50,7 @@ Basic Jahia REST API
 *----------------+-------------+------------------------------------------------+
 |redirectActive  |no           |If set to "true" or not set, the login servlet  |
 |                |             |will redirect to the home page after successful |
-|                |             |authentification. If you are using AJAX calls   |
+|                |             |authentication. If you are using AJAX calls     |
 |                |             |you should set this to "false".                 |
 *----------------+-------------+------------------------------------------------+
 |redirect        |no           |Allows you to specify another URL to redirect   |
@@ -78,30 +78,30 @@ Basic Jahia REST API
 *---------------------------+-------------+----------------------------------------------------------------------+
 |Name                       |Mandatory    |Description                                                           |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|jcrNodeType                   | yes         | Define the type of node you want to create.                          |
+|jcrNodeType                | yes         | Define the type of node you want to create.                          |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|jcrNodeName                   | no          | If defined we will create a node with this name (or use it as a      |
+|jcrNodeName                | no          | If defined we will create a node with this name (or use it as a      |
 |                           |             | prefix for the name. If not define you can call :                    |
 |                           |             | /cms/render/WORKSPACE/LANGUAGE/CONTENT_PATH/*                        |
 |                           |             | To create a subnode at the specified path using the nodetype for     |
 |                           |             | name.                                                                |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|jcrNewNodeOutputFormat        | no          | Define at which format the newly create dnode will be returned, HTML |
+|jcrNewNodeOutputFormat     | no          | Define at which format the newly created node will be returned, HTML |
 |                           |             | by default, JSON is another possible value, or any type of output    |
 |                           |             | you have define in  your templates.                                  |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|jcrRedirectTo                 | no          | If defined will redirect to the specified URL instead of the newly   |
+|jcrRedirectTo              | no          | If defined will redirect to the specified URL instead of the newly   |
 |                           |             | created node.                                                        |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|jcrMethodToCall               | no          | For HTML form to override the method called, this allow to delete    |
+|jcrMethodToCall            | no          | For HTML form to override the method called, this allow to delete    |
 |                           |             | content with a simple POST form instead of send a DELETE HTTP request|
 *---------------------------+-------------+----------------------------------------------------------------------+
-|jcrAutoCheckin                | no          | Allow to force versioning of the newly created content.              |
+|jcrAutoCheckin             | no          | Allow to force versioning of the newly created content.              |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|jcrTargetDirectory            |no           | If you have multipart form, this will be the                         |
+|jcrTargetDirectory         |no           | If you have multipart form, this will be the                         |
 |                           |             | location where the content is uploaded                               |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|jcrVersion                    |no           | If "true" activate the versionning on the posted content             |
+|jcrVersion                 |no           | If "true" activate the versionning on the posted content             |
 |                           |             | (works only for files)                                               |
 *---------------------------+-------------+----------------------------------------------------------------------+
 |jcr:mixinTypes             |no           | Allow you to set a mixin on the new node                             |
@@ -367,7 +367,7 @@ Server:Apache-Coyote/1.1
 *---------------------------+-------------+----------------------------------------------------------------------+
 |wildcardTerm               |no           |If this parameter is specified, it will be used to search for the     |
 |                           |             |value specified in any principal property. If you prefer to search    |
-|                           |             |for specific properties, you must specify them seperately in the HTTP |
+|                           |             |for specific properties, you must specify them separately in the HTTP |
 |                           |             |request parameters. You can use the {$paramName} syntax to reference  |
 |                           |             |other request parameters. For example {$q} will be replaced by the    |
 |                           |             |value of a parameter called "q" if it is found. If it is not found the|
@@ -397,7 +397,7 @@ Server:Apache-Coyote/1.1
 |                           |             |value of a parameter called "q" if it is found. If it is not found the|
 |                           |             |marker will not be replaced. By default the servlet will use all the  |
 |                           |             |other found parameter names, which might not be what you expect. You  |
-|                           |             |should use the includeCriteriaNames to specify which criterias should |
+|                           |             |should use the includeCriteriaNames to specify which criteria should  |
 |                           |             |be used                                                               |
 *---------------------------+-------------+----------------------------------------------------------------------+
 

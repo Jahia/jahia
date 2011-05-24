@@ -232,11 +232,11 @@ public class ContentGeneratorMojo extends AbstractMojo {
 		}
 
 		Integer totalPages = getTotalNumberOfPagesNeeded(nbPagesOnTopLevel, nbSubLevels, nbPagesPerLevel);
+		export.setTotalPages(totalPages);
 		if (export.getTotalPages().compareTo(ContentGeneratorCst.MAX_TOTAL_PAGES) > 0) {
 			throw new MojoExecutionException("You asked to generate " + export.getTotalPages()
 					+ " pages, the maximum allowed is " + ContentGeneratorCst.MAX_TOTAL_PAGES);
 		}
-		export.setTotalPages(totalPages);
 
 		return export;
 	}

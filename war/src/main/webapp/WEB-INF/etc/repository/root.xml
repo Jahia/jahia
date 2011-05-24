@@ -225,7 +225,7 @@
         <reader jcr:primaryType="jnt:role"
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live"/>
 
-        <writer jcr:primaryType="jnt:role"/>
+        <jahiapp-user jcr:primaryType="jnt:role"/>
 
         <owner jcr:primaryType="jnt:role"
                j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/repository-permissions/jcr:all_live /permissions/actions"/>

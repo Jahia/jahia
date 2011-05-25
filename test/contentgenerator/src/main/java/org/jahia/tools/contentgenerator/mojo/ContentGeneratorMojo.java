@@ -144,8 +144,8 @@ public class ContentGeneratorMojo extends AbstractMojo {
 			DatabaseProperties.PASSWORD = mysql_password;
 		}
 
-		if (mysql_password == null) {
-			logger.info("No MySQL table name provided, uses default \"article\"");
+		if (mysql_table == null) {
+			logger.info("No MySQL table name provided, uses default \"" + ContentGeneratorCst.MYSQL_TABLE_DEFAULT + "\"");
 			DatabaseProperties.TABLE = "articles";
 		} else {
 			DatabaseProperties.TABLE = mysql_table;

@@ -7,7 +7,7 @@ public final class ContentGeneratorCst {
 	 * Configuration
 	 */
 	public static final String PROPERTIES_FILE_NAME = "jahiaContentGenerator.properties";
-	public static final Integer SQL_RECORDSET_SIZE = Integer.valueOf(5000);
+	public static final Integer SQL_RECORDSET_SIZE = Integer.valueOf(10000);
 	public static final Integer MAX_TOTAL_PAGES = Integer.valueOf(200000);
 	
 	public static final String VALUE_ALL = "all";
@@ -18,6 +18,8 @@ public final class ContentGeneratorCst {
 	 * Default value
 	 */
 	public static final String MYSQL_HOST_DEFAULT = "localhost";
+	public static final String MYSQL_TABLE_DEFAULT = "articles";
+	
 	public static final Integer NB_PAGES_TOP_LEVEL_DEFAULT = Integer.valueOf(1);
 	public static final Integer NB_SUB_LEVELS_DEFAULT = Integer.valueOf(2);
 	public static final Integer NB_SUBPAGES_PER_PAGE_DEFAULT = Integer.valueOf(3);

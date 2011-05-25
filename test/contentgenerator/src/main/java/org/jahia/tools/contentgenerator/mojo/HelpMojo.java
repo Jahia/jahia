@@ -16,14 +16,16 @@ public class HelpMojo extends AbstractMojo {
 		getLog().info("Jahia 6.5 content generator");
 		getLog().info(" ");
 		getLog().info("Goals:");
+		getLog().info("jahia-cg:help");
 		getLog().info("jahia-cg:generate");
+		getLog().info("");
 		
 		getLog().info("Parameters:");
-		getLog().info("* jahia.cg.mysql.host (optional, default = localhost): database hostname");
+		getLog().info("* jahia.cg.mysql.host (optional, default = " + ContentGeneratorCst.MYSQL_HOST_DEFAULT + ")");
 		getLog().info("* jahia.cg.mysql.login");
 		getLog().info("* jahia.cg.mysql.password");
 		getLog().info("* jahia.cg.mysql_db");
-		getLog().info("* jahia.cg.mysql_table");
+		getLog().info("* jahia.cg.mysql_table (optional, default = " + ContentGeneratorCst.MYSQL_TABLE_DEFAULT + ")");
 		getLog().info(
 				"* jahia.cg.nbPagesOnTopLevel (optional, default = " + ContentGeneratorCst.NB_PAGES_TOP_LEVEL_DEFAULT
 						+ ")");
@@ -46,14 +48,19 @@ public class HelpMojo extends AbstractMojo {
 
 		getLog().info(
 				"* jahia.cg.addFiles (optional, default = " + ContentGeneratorCst.ADD_FILE_TO_PAGE_DEFAULT
-						+ ", other values:" + ContentGeneratorCst.VALUE_ALL + "' " + ContentGeneratorCst.VALUE_RANDOM
+						+ ", other values:" + ContentGeneratorCst.VALUE_ALL + ", " + ContentGeneratorCst.VALUE_RANDOM
 						+ ")");
 		getLog().info(
 				"  Add a <publication> bloc to the generated pages. The content generator will pick all the files available from the pool directory, at least once.");
 		getLog().info("  If there is less files than required, it will process the files list from the beginning.");
 
-		getLog().info("* jahia.cg.poolDirectory (required if jahia.cg.addFiles != " + ContentGeneratorCst.VALUE_NONE);
+		getLog().info("* jahia.cg.poolDirectory (required if jahia.cg.addFiles != " + ContentGeneratorCst.VALUE_NONE + ")");
 
+		getLog().info("");
+		getLog().info("NB:");
+		getLog().info("1. You can not generate more than " + ContentGeneratorCst.MAX_TOTAL_PAGES + " pages");
+		getLog().info("2. The content generator will select " + ContentGeneratorCst.SQL_RECORDSET_SIZE + " articles maximum, and reuse them if you asked for more pages");
+		
 		getLog().info(" ");
 		getLog().info("Generated content with default values:");
 		getLog().info("one-top-page");

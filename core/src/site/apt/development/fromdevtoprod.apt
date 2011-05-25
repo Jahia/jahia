@@ -1,0 +1,326 @@
+Jahia 6.5 - Web project from development to production
+
+ Create a project with the maven archetype :
+
++---------------
+mvn archetype:generate -DarchetypeCatalog=http://maven.jahia.org/maven2
++---------------
+
+ Full web projects in one place (templates and modules)
+
+   Choose jahia-app-archetype (4)
+
+ If you want to split your templates and your functional modules then first create a template project (5) then you will create modules projects as needed.
+
+ Create a template project :
+
+    * moduleName = myCustomTemplateSet
+
+    * jahiaPackageVersion = (name of the jahia version you want to use) (for example 6.5-BETA-3)
+
+    * artifactId = mycustomtemplateset
+
+Content of your project :
+
++----------------------
+|-mycustomtemplateset
+   |---src
+   |-----main
+   |-------import
+   |-------java
+   |-------resources
+   |---------META-INF
+   |-------webapp
+   |---------css
+   |---------icons
+   |---------img
+   |---------javascript
+   |---------jnt_template
+   |-----------html
+   |---------META-INF
+   |-----------spring
+   |---------resources
+   |---------scripts
+   |-----site
+   |-------apt
++------------------------
+
+ In src/main/webapp/resources rename __resourceBundleName__.properties with moduleName.properties (ex:myCustomTemplateSet.properties).
+
+ Now make sure you jahia is running
+
+ Deploy your newly created template set inside your Jahia you should see something like this in the console :
+
++-----------------------------
+2011-05-17 11:17:59,407: INFO  [TemplatePackageDeployer] - Start deploying new template package 'myCustomTemplateSet'
+2011-05-17 11:17:59,410: INFO  [TemplatePackageDeployer] - Deploying classes for module myCustomTemplateSet
+2011-05-17 11:17:59,411: INFO  [TemplatePackageDeployer] - Package 'myCustomTemplateSet' successfully deployed
+2011-05-17 11:17:59,517: INFO  [JackrabbitStoreProvider] - Custom node types registered for myCustomTemplateSet in 94 ms
+2011-05-17 11:17:59,520: INFO  [TemplatePackageRegistry] - Registered myCustomTemplateSet
+2011-05-17 11:17:59,553: INFO  [TemplatePackageApplicationContextLoader] - Reloading Spring application context for Jahia modules
+2011-05-17 11:17:59,855: INFO  [JobSchedulingBean] - Deleting job SitemapJob.SitemapJob
+2011-05-17 11:17:59,856: INFO  [JobSchedulingBean] - Scheduling RAM job SitemapJob.SitemapJob
+2011-05-17 11:17:59,857: INFO  [TemplatePackageApplicationContextLoader] - Jahia modules application context reload completed in 303 ms
+2011-05-17 11:17:59,857: INFO  [TemplatePackageDeployer] - Starting import for the template package 'myCustomTemplateSet' including: [META-INF/import.zip]
+2011-05-17 11:17:59,857: INFO  [TemplatePackageDeployer] - ... importing /home/rincevent/tools/apache-tomcat-6.0.29/webapps/jahia/modules/mycustomtemplateset/META-INF/import.zip into /
+2011-05-17 11:18:00,199: INFO  [ConflictResolver] - compare /templateSets/mycustomtemplateset version : 1.0 with (source) 1.0.0
+2011-05-17 11:18:00,207: INFO  [ConflictResolver] - compare /templateSets/mycustomtemplateset version : 1.1 with (target) 1.2
+2011-05-17 11:18:00,245: INFO  [RulesListener] - Rules executed for default [/templateSets/mycustomtemplateset/templates/content-template/pagecontent/main-resource-display/j:mainResourceView, /templateSets/mycustomtemplateset/templates/files/themes/default, /templateSets/mycustomtemplateset/templates/content-template/pagecontent/main-resource-display] ... and 24 other nodes in 104ms
+2011-05-17 11:18:00,281: INFO  [TemplatePackageDeployer] - ... finished initial import for template package 'myCustomTemplateSet'.
++-----------------------------
+
+ Now go into the administration and modify your template using the studio, add some images/css/javascript as needed see the Jahia Template Development Documentation for more information about this.
+
+ Once your template set looks near its done, export it, update your repository.xml file with the new content.
+
+ Create a site with your template set (go to administration for that).
+
+ From now on you can update your template (if modifying files you need to redeploy your template set) and/or create content on your site.
+
+ When your site is ready to be exported go to administration export the whole site, you will get a zip containing everything to import your site.
+
+ You can now deploy your templates and all necessary modules on another server and then import this file when creating a new site.
+
+ Or you can create another project and store your site in it, then use maven to package it and then deploy it into jahia.
+ Here how to achieve that :
+
+    * Create a new directory at the same level you create your mycustomtemplateset project call it mycustomsite
+
+    * Now create a pom.xml file like this one at the root of your project :
+
++-----------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.jahia.prepackagedsites</groupId>
+        <artifactId>prepackagedSites</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>mycustomsite</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>My Custom Site</name>
+    <packaging>pom</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>ACME</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/mycustomsite.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                            <finalName>myCustomSite</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>users</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/users.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                            <finalName>users</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>systemsite</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/systemsite.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                            <finalName>systemsite</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>root</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/root.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
++--------------------------------------
+
+    * Now create folders src/main, then expand your site zip file inside src/main, you will have several zip files and one property file.
+
+    * Copy the property file in a folder named root
+
+    * Extract the content of systemsite inside a folder named system site
+
+    * Extract the content of users in src/main (users.zip contains a folder already named users)
+
+    * Now we will create the assembly files that will repackage everything together :
+
+        * in src/main/assembly create mycustomsite.xml as this one:
+
++----------------------------
+<assembly>
+    <id>ACME</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}/src/main/myCustomSite</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
++--------------------------------
+
+        * in src/main/assembly create systemsite.xml as this one:
+
++--------------------------------
+<assembly>
+    <id>systemside</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}/src/main/systemsite</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
++-------------------------------
+
+        * in src/main/assembly create users.xml as this one:
+
++---------------------------
+<assembly>
+    <id>users</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}/src/main/users</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
++------------------------------
+
+        * in src/main/assembly create root.xml as this one:
+
++-------------------------------
+<assembly>
+    <id>root</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}/src/main/root</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/target</directory>
+            <includes>
+                <include>myCustomSite.zip</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/target</directory>
+            <includes>
+                <include>users.zip</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/target</directory>
+            <includes>
+                <include>systemsite.zip</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
++-------------------------
+
+ Now your mycustomsite folder should like something like that :
+
++--------------------------
+   |-src
+   |---main
+   |-----assembly
+   |-----myCustomSite
+   |-------content
+   |-----root
+   |-----systemsite
+   |-----users
+   |-------content
++---------------------------
+
+ Now install a production env on your server, do not start your jahia yet.
+
+ Inside Jahia_xCM_EE_v6.5-SNAPSHOT/tomcat/webapps/ROOT/WEB-INF/var/shared_modules copy all necessary modules you might need for your project especially your mycustomtemplateset war file.
+
+ Inside Jahia_xCM_EE_v6.5-SNAPSHOT/tomcat/webapps/ROOT/WEB-INF/var create if missing the following folder : prepackagedSites
+
+ Then copy mycustomsite/target/mycustomsite-1.0-SNAPSHOT.zip inside this prepackagedSites folder
+
+ Now start your jahia, import your site and enjoy
+
+ From now on you can deploy new version of your templateset inside the shared module, then you will have to go to your site administration to deploy your template on your site as their is no studio on production env.
+
+ Of roles and permissions :
+
+ If ever you need some particular permissions and/or roles on your project keep in mind that those are imported with their own file, they are not part of an export and so need to be placed alongside your repository.xml file in your import folder.
+
++---------------------------
+|-content
+|--permissions.xml
+|--repository.xml
+|--roles.xml
++----------------------------
+
+ For example look at the {{{https://github.com/Jahia/JahiApp-Wiki} JahiaApp-Wiki}}

@@ -28,6 +28,16 @@
             <item name="Internationalized Web Site" href="i18n/i18n.html"/>
             <item name="Notifications" href="notifications/notifications.html"/>
             <item name="Users batch creation" href="./users_batch_creation.html"/>
+            <item name="Development">
+                <item name="From Development to Production" href="./development/fromdevtoprod.html"/>
+                <item name="Development Tips" href="./development/devtips.html"/>
+                <item name="Production Tips" href="./development/prodtips.html"/>
+                <item name="How-to create your custom permissions" href="./development/how-to_permissions.html"/>
+                <item name="How-to use the JCR API to create/update/remove content" href="./development/how-to_jcrcontent.html"/>
+                <item name="Jahia And Apache Camel" href="./development/jahiacamel.html"/>
+                <item name="Users Extensions" href="./development/usersextension.html"/>
+            </item>
+            <item name="Versioning" href="./versioning/versioning.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

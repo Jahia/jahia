@@ -5,7 +5,7 @@ Jahia 6.5 - Security aspects
   Provides a brief overview of the security considerations and the ways
   for reducing risks and protecting system and data.  
   
-* User authentication and data
+* {User} authentication and data
 
   In this chapter we describe how the user data is protected and which security-related
   concerns can arise in regard to the user authentication.
@@ -56,7 +56,7 @@ Jahia 6.5 - Security aspects
   
   The behaviour could be adjusted by changing the URL rewrite rules in the <<<urlrewrite-ssl.xml>>> file.
 
-* Template and action protection
+* {Template} and action protection
 
 ** Module resources
 

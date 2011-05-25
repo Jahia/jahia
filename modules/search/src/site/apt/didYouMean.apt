@@ -1,10 +1,4 @@
-Advanced search features
-
-  This module provides support for the following features:
-
-  * {{{mean} Did you mean}} - spell checker based search suggestion functionality.
-
-* Did you {mean}
+Did you mean
 
   The {{{./components.html#results} search results}} component allows enabling the so called "Did you mean" kind of search.
   In this case an eventual typing mistake can be automatically corrected by the search engine based on the language-dependent spell checker dictionary, built for the current virtual site.

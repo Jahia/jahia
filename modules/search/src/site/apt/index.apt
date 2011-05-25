@@ -1,17 +1,26 @@
 Jahia Search Module
 
-* Goals Overview
+* Overview
 
   Module is aimed to provide several ready to use search components as well as the templates to build search forms and result lists.
 
   * Search components
 
-    Brief overview of the {{{./components.html} provided components}} for using Jahia search features.
+  Brief overview of the {{{./components.html} provided components}} for using Jahia search features.
 
   * Building custom search templates
 
-    A "How To" for {{{./forms.html} developing custom search forms}} and displaying search results using Jahia Search JSP Tag Library.
+  A "How To" for {{{./forms.html} developing custom search forms}} and displaying search results using Jahia Search JSP Tag Library.
     
-  * Advanced features
+  * "Did you mean" search
 
-    Description of {{{./advanced.html} advanced search features}} provided by this module.    
+  Description of the {{{./didYouMean.html} "Did you mean"}} kind of searches.
+    
+  * Search index configuration and maintenance 
+
+  A reference for search index {{{./searchIndex.html} configuration and maintenance}}.
+  
+  * Indexing options in content node definitions
+
+  A {{{./cnd.html} summary of the indexing options}}, supported in the Compact Node Type Definition (CND) files
+  that controls the way node properties are treated during indexing and searching.

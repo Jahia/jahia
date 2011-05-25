@@ -22,7 +22,7 @@ Search components
 [./images/simpleSearchArea.png]
 
 
-  Corresponding template: <<</templates/search/jnt_searchResults/html/searchResults.jsp>>>
+  Corresponding template: <<</modules/search/jnt_searchResults/html/searchResults.jsp>>>
   
   For details on creating custom search forms see {{{./forms.html} Building search forms}}.
   
@@ -35,7 +35,7 @@ Search components
 [./images/advancedSearch.png]
 
 
-  Corresponding template: <<</templates/search/jnt_advancedSearchForm/html/advancedSearchForm.jsp>>>
+  Corresponding template: <<</modules/search/jnt_advancedSearchForm/html/advancedSearchForm.jsp>>>
   
 * Search {results}
 
@@ -45,9 +45,9 @@ Search components
   
 [./images/searchResults.png]
 
-  For enabling additional features in search results, like {{{./advanced.html#mean} "Did you mean"}} kind of searches, see {{{./advanced.html} Advanced search features}} section.
+  For enabling additional features in search results, like "Did you mean" kind of searches, see {{{./didYouMean.html} corresponding section}}.
 
-  Corresponding template: <<</templates/search/jnt_searchResults/html/searchResults.jsp>>>
+  Corresponding template: <<</modules/search/jnt_searchResults/html/searchResults.jsp>>>
   
 * JCR {query}
 
@@ -73,4 +73,4 @@ Search components
 
 [./images/jcrQueryResult.png]
 
-  Corresponding templates: <<</templates/default/jnt_query/html/query.hidden.load.jsp>>>, <<</templates/default/jmix_list/html/list.linkList.jsp>>>
+  Corresponding templates: <<</modules/default/jnt_query/html/query.hidden.load.jsp>>>, <<</modules/default/jmix_list/html/list.linkList.jsp>>>

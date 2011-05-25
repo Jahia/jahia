@@ -1,8 +1,8 @@
 Jahia 6.5 - Node types definitions
 
-Jahia is bundled with a set of built-in definitions. The purpose of this document is to explain them.
+  Jahia is bundled with a set of built-in definitions. The purpose of this document is to explain them.
 
-* generic modifiers :
+* Generic modifiers
 
     ** extends :
 
@@ -20,7 +20,7 @@ Jahia is bundled with a set of built-in definitions. The purpose of this documen
 itemtype = template
 -----------------------
 
-* Mixins :
+* Mixins
 
     You can add mixins to any nodetype definition in order to change the way they are display in engines.
 
@@ -44,7 +44,7 @@ itemtype = template
 
         [mix:title]   unify all title of contents. Also provide a description. You can access them with jcr:title and jcr:description properties.
 
-* System, content and files :
+* System, content and files
 
     **Jahia store items using this definitions
 

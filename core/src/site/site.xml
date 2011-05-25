@@ -24,7 +24,11 @@
                 <item name="Validation" href="actions/validation.html"/>
             </item>
             <item name="Query" href="query/index.html"/>
-            <item name="Security aspects" href="security/index.html"/>
+            <item name="Security aspects" href="security/index.html">
+                <item name="User authentication and data" href="security/index.html#User"/>
+                <item name="Template and action protection" href="security/index.html#Template"/>
+                <item name="Miscellaneous" href="security/index.html#Miscellaneous"/>
+            </item>
             <item name="Internationalized Web Site" href="i18n/i18n.html"/>
             <item name="Notifications" href="notifications/notifications.html"/>
             <item name="Users batch creation" href="./users_batch_creation.html"/>

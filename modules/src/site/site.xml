@@ -16,7 +16,7 @@
             <item name="REST API" href="./rest.html" />
             <item name="Auto-completion" href="./autocompletion.html"/>
             <item name="List filters" href="./listFilter.html"/>
-            <item name="Binded components" href="./bindedComponents.html"/>
+            <item name="Bound components" href="./boundComponents.html"/>
             <item name="Module Map" href="./moduleMap.html"/>
             <item name="scriptinfo" href="./scriptinfo.html"/>
         </menu>

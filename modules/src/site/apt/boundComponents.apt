@@ -1,4 +1,4 @@
-BindedComponents
+Jahia 6.5 - BoundComponents
 
   This mechanism allows to define in a module that this module need to be linked to another module to be fully effective.
 
@@ -7,11 +7,11 @@ BindedComponents
 
   This can be extended to allow our calendar to interact with any type of list of content.
 
-  - We will see first how to define a binded component
-  - Then how to refer to the binded element to drive it
+  - We will see first how to define a bound component
+  - Then how to refer to the bound element to drive it
   - How the user can define the bound between two component
 
-* Define a binded component:
+* Define a bound component:
 
   In your <<cnd>> file you definition should inherit the mixin type: <<<<jmix:bindedComponent>>>>. This mixin define a
   simple weakreference as a property.
@@ -42,16 +42,16 @@ BindedComponents
     to a list of news, I will have access to all the news properties to drive the list, and I should choose a date
     property to make my calendar work.
 
-* How to refer to the binded element to drive it
+* How to refer to the bound element to drive it
 
-  In your module files just access to the property <<j:bindedComponent>> to have access to the binded component and
+  In your module files just access to the property <<j:bindedComponent>> to have access to the bound component and
   use it as you would.
 
 
   An example from the calendar module, that fill a map with the number of node per date.
   
 +------------------------------------------------
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:set var="boundComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <c:forEach items="${linked.node.nodes}" var="linkedChild" varStatus="status">
     <fmt:formatDate pattern="yyyy-MM-dd" value="${linkedChild.properties[currentNode.properties.startDateProperty.string].date.time}" var="startDate"/>

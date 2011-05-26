@@ -37,7 +37,7 @@ Jahia 6.5 - How-to create your custom permissions
 </roles>
 +--------------------------
 
-    Please notes how the "j:permissions" need the full path of the permissions even if after that you will use only the name of the permission itself
+    Please note how the "j:permissions" need the full path of the permissions even if after that you will use only the name of the permission itself
 
     *  Now we can test against this permission in our JSP files or using the API directly:
 

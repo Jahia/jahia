@@ -8,7 +8,7 @@ In the context of this session I can create/read/update/delete any content my se
 I can only access content allowed to this user, that exist in this workspace (default or live in Jahia 6.5) in this particular
 language (if no language is provided you can only read non internationalized properties) but you can still access the nodes.
 
- So whenever you wnat to interact with the JCR first of all get a session.
+ So whenever you want to interact with the JCR first of all get a session.
 
  If you are in an Action then you receive this session as a parameter :
 

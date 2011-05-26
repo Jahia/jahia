@@ -2,9 +2,9 @@ Jahia 6.5 - Versioning
 
  Jahia 6.5 came with a versioning system based on the JCR API.
 
- The versioning system have two different behavior, one for files and another one slightly different for content.
+ The versioning system have two different behavior, one for files (binaries) and another one slightly different for other content types.
 
- On files every time you upload a file with the same name we offer you the possibility to create a new version of this
+ On files every time you upload a file with the same name we offer the possibility to create a new version of this
 file so you can always restore an older version or access it.
 
  For content there is no version in the default workspace, versions are only created when publishing this content.

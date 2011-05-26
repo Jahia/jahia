@@ -24,7 +24,7 @@ Jahia 6.5 - Development Tips
 
  Jahia 6.5 use a pipeline of filter to render your page, each component of your page will pass through this pipeline. It is not always easy to understand what is going on when an issue arise.
 
- You should then activate the log for the Rendering system that will show you exactly which filters are applied before and after your component is called. Here how to achive that, modify your tomcat/webapps/ROOT/WEB-INF/etc/config/log4j.xml file by adding the following category at the end of your file before the <root/> tag :
+ You should then activate the log for the Rendering system that will show you exactly which filters are applied before and after your component is called. Here how to achieve that, modify your tomcat/webapps/ROOT/WEB-INF/etc/config/log4j.xml file by adding the following category at the end of your file before the <root/> tag :
 
 +-----------------------------
 <category name="org.jahia.services.render.filter.RenderChain">

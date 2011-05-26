@@ -15,7 +15,7 @@ through their profiles pages you, you will have to customize the profiles templa
 contents/preferences/properties related to a user.
 
  To store some behavioral data about users you will have to implement some Apache Camel log listeners like the Page Hit
-module to store data in an asynchronous way in a DB/Hadoop (FS or DB)/other type of storage. {{{./jahiacamel.html}See the Jahia/Apache Camel documentation}}
+module (available on the Jahia Forge as a code sample) to store data in an asynchronous way in a DB/Hadoop (FS or DB)/other type of storage. {{{./jahiacamel.html}See the Jahia/Apache Camel documentation}}
 
  If you have a limited number of data (less than a 1000 nodes) per user you want to use for personalization then you can store them under sub nodes of the user.
 

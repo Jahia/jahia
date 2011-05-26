@@ -54,7 +54,7 @@
                     reload();
                 }, "json");
             } else {
-                window.alert('<fmt:message key="label.noSelection"/>');
+                window.alert("<fmt:message key="label.noSelection"/>");
             }
         }
 
@@ -65,7 +65,7 @@
                     showClipboard();
                 }, "json");
             } else {
-                window.alert('<fmt:message key="label.noSelection"/>');
+                window.alert("<fmt:message key="label.noSelection"/>");
             }
         }
 
@@ -76,7 +76,7 @@
                     showClipboard();
                 }, "json");
             } else {
-                window.alert('<fmt:message key="label.noSelection"/>');
+                window.alert("<fmt:message key="label.noSelection"/>");
             }
         }
 
@@ -84,11 +84,11 @@
             var uuids = getUuids();
             if (uuids.length > 0) {
                 $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.publishNodes.do'/>", {"uuids": uuids}, function(result) {
-                    window.alert('<fmt:message key="label.workflow.started"/>');
+                    window.alert("<fmt:message key="label.workflow.started"/>");
                     reload();
                 }, "json");
             } else {
-                window.alert('<fmt:message key="label.noSelection"/>');
+                window.alert("<fmt:message key="label.noSelection"/>");
             }
         }
 
@@ -111,7 +111,7 @@
                     $(".titleaddnewcontent").show();
                     $(".pastelink").show();
                     $("#empty-${currentNode.identifier}").show();
-                    $("#clipboard-${currentNode.identifier}").html('<fmt:message key="label.clipboard.contains"/> ' + data.size +
+                    $("#clipboard-${currentNode.identifier}").html("<fmt:message key="label.clipboard.contains"/> " + data.size +
                             ' element(s)</span></a>');
                     $("#clipboard-${currentNode.identifier}").show();
                     $("#clipboardpreview-${currentNode.identifier}").empty();

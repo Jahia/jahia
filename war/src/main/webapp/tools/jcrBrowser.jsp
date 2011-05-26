@@ -67,6 +67,10 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
     <c:param name="showActions" value="${showActions}"/>
     <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
 </c:url>
+<c:url var="mgrUrl" value="/engines/manager.jsp">
+    <c:param name="selectedPaths" value="${currentNode.path}"/>
+    <c:param name="workspace" value="${workspace}"/>
+</c:url>
 <fieldset>
     <form id="navigateForm" action="?" method="get">
         <input type="hidden" name="showProperties" value="${showProperties}"/>
@@ -89,7 +93,9 @@ pageContext.setAttribute("currentNode", pageContext.getAttribute("node"));
     &nbsp;<a href="#go" onclick='var uuid=document.getElementById("goToUuid").value; if (uuid.length > 0) { doNavigate("uuid", uuid); } return false;' title="Got to the node with UUID"><img src="${pageContext.request.contextPath}/icons/search.png" height="16" width="16" title="Got to the node with UUID" border="0" style="vertical-align: middle;"/></a>
 </fieldset>
 <fieldset>
-    <legend><strong>${fn:escapeXml(not empty node.name ? node.name : '<root>')}</strong>&nbsp;- workspace:&nbsp;<strong>${workspace}</strong>&nbsp;(<a href="${switchWorkspaceUrl}">switch to ${workspace == 'default' ? 'live' : 'default'}</a>)</legend>
+    <legend><strong>${fn:escapeXml(not empty node.name ? node.name : '<root>')}</strong>&nbsp;- workspace:&nbsp;<strong>${workspace}</strong>&nbsp;(<a href="${switchWorkspaceUrl}">switch to ${workspace == 'default' ? 'live' : 'default'}</a>)
+        <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; ">Repository Explorer</a>
+    </legend>
     <c:if test="${not empty param.action}">
         <c:choose>
             <c:when test="${param.action == 'delete' && not empty param.target}">

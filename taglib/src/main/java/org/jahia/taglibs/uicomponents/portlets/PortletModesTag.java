@@ -95,6 +95,7 @@ public class PortletModesTag extends TagSupport {
     private String listCSSClass = "portletModes";
     private String currentCSSClass = "current";
     private JCRNodeWrapper node = null;
+    private String var;
 
     /**
      * @jsp:attribute name="name" required="true" rtexprvalue="true"
@@ -266,6 +267,7 @@ public class PortletModesTag extends TagSupport {
         listCSSClass = "portletModes";
         currentCSSClass = "current";
         node = null;
+        var = null;
         return EVAL_PAGE;
     }
 
@@ -283,31 +285,39 @@ public class PortletModesTag extends TagSupport {
         if (portletModeBeansIterList.size() < 2) {
             return;
         }
-
-        out.print("<ul class=\"");
-        out.print(listCSSClass);
-        out.print("\">\n");
+        Map<String,String> modeUrls = new HashMap<String, String>();
+        StringBuilder s = new StringBuilder();
+        s.append("<ul class=\"");
+        s.append(listCSSClass);
+        s.append("\">\n");
         for (PortletModeBean curPortletModeBean : portletWindowBean.getPortletModeBeans(workspaceName)) {
             if (curPortletModeBean.getName().equals(portletWindowBean.
                     getCurrentPortletModeBean().getName())) {
-                out.print("<li class=\"");
-                out.print(currentCSSClass);
-                out.print("\">\n");
+                s.append("<li class=\"");
+                s.append(currentCSSClass);
+                s.append("\">\n");
             } else {
-                out.print("<li>");
+                s.append("<li>");
             }
-            final StringBuffer buff = new StringBuffer();
-            buff.append("<a class=\"").append(curPortletModeBean.getName()).
+            s.append("<a class=\"").append(curPortletModeBean.getName()).
                     append("\" title=\"").append(curPortletModeBean.getName()).
                     append("\" href=\"").append(curPortletModeBean.getURL()).
                     append("\">").append("<span>").append(getResource(locale, resourceBundle,
                     "org.jahia.taglibs.html.portlets.portletmodes." +
                             curPortletModeBean.getName() + ".label" +
                             namePostFix)).append("</span></a>");
-            out.print(buff.toString());
-            out.println("</li>");
+            s.append("</li>");
+            modeUrls.put(getResource(locale, resourceBundle,
+                    "org.jahia.taglibs.html.portlets.portletmodes." +
+                            curPortletModeBean.getName() + ".label" +
+                            namePostFix),curPortletModeBean.getURL());
         }
-        out.println("</ul>");
+        s.append("</ul>");
+        if (var!=null) {
+            pageContext.setAttribute(var,modeUrls);
+        } else {
+            out.print(s.toString());
+        }
     }
 
     public String getResource(Locale locale,
@@ -327,4 +337,11 @@ public class PortletModesTag extends TagSupport {
         return resValue;
     }
 
+    public String getVar() {
+        return var;
+    }
+
+    public void setVar(String var) {
+        this.var = var;
+    }
 }

@@ -162,7 +162,6 @@
                 key="label.live"/></a>
         <a href="<c:url value='${url.preview}'/>" ><img src="<c:url value='/icons/preview.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message
                 key="label.preview"/></a>
-        <a href="<c:url value='${url.edit}'/>"><img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message key="label.editMode"/></a>
         <span> </span>
         <c:if test="${jcr:hasPermission(currentNode, 'jcr:removeChildNodes_default')}">
             <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="<c:url value='/icons/delete.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px; "><fmt:message

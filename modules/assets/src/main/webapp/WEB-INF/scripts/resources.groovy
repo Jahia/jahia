@@ -19,10 +19,10 @@ renderContext.staticAssets.each { resource ->
   resource.each { type ->
     switch ( type.key ) {
       case "css" :
-        type.value.eachWithIndex { css, i -> println "<link id=\"staticAssetCSS${i}\" rel=\"stylesheet\" href=\"${css.value}\" media=\"screen\" type=\"text/css\"/>";  }
+        type.value.eachWithIndex { css, i -> println "<link id=\"staticAssetCSS${i}\" rel=\"stylesheet\" href=\"${css}\" media=\"screen\" type=\"text/css\"/>";  }
         break;
       case "javascript" :
-        type.value.eachWithIndex { javascript, i -> println "<script id=\"staticAssetJavascript${i}\" type=\"text/javascript\" src=\"${javascript.value}\"></script>"; }
+        type.value.eachWithIndex { javascript, i -> println "<script id=\"staticAssetJavascript${i}\" type=\"text/javascript\" src=\"${javascript}\"></script>"; }
         break;
       default:
        type.value.each { inline ->  println "${inline}"; }

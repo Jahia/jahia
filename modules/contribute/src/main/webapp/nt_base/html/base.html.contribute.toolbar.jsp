@@ -4,6 +4,7 @@
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="utils" uri="http://www.jahia.org/tags/utilityLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
@@ -17,6 +18,8 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,jquery.fancybox.js"/>
 <template:addResources type="css" resources="contribute-toolbar.css,jquery.fancybox.css"/>
+<fmt:message key="label.noSelection" var="i18nNoSelection"/>
+<c:set var="i18nNoSelection" value="${functions:escapeJavaScript(i18nNoSelection)}"/>
 <template:addResources>
     <script>
         var contributeParams = new Array();
@@ -54,7 +57,7 @@
                     reload();
                 }, "json");
             } else {
-                window.alert("<fmt:message key="label.noSelection"/>");
+                window.alert("${i18nNoSelection}");
             }
         }
 
@@ -65,7 +68,7 @@
                     showClipboard();
                 }, "json");
             } else {
-                window.alert("<fmt:message key="label.noSelection"/>");
+                window.alert("${i18nNoSelection}");
             }
         }
 
@@ -76,7 +79,7 @@
                     showClipboard();
                 }, "json");
             } else {
-                window.alert("<fmt:message key="label.noSelection"/>");
+                window.alert("${i18nNoSelection}");
             }
         }
 
@@ -84,11 +87,12 @@
             var uuids = getUuids();
             if (uuids.length > 0) {
                 $.post("<c:url value='${url.base}${renderContext.mainResource.node.path}.publishNodes.do'/>", {"uuids": uuids}, function(result) {
-                    window.alert("<fmt:message key="label.workflow.started"/>");
+                	<fmt:message key="label.workflow.started" var="i18nWorkflowStarted"/>
+                    window.alert("${functions:escapeJavaScript(i18nWorkflowStarted)}");
                     reload();
                 }, "json");
             } else {
-                window.alert("<fmt:message key="label.noSelection"/>");
+                window.alert("${i18nNoSelection}");
             }
         }
 

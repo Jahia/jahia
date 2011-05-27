@@ -1,4 +1,4 @@
-Building search forms
+Using search in templates
 
   This section shows the usage of Jahia Search JSP Tag Library in building custom search forms for several use cases.
   Use cases listed in this section:
@@ -10,6 +10,8 @@ Building search forms
   * {{{document} Advanced document search with metadata}}
   
   * {{{results} Displaying search results}}
+  
+  * {{{without} Using search functionality without creating a form}}
 
 * {Simple} search form
 
@@ -162,7 +164,7 @@ Building search forms
 
     For displaying results of the search the <<<\<s:results/\>>>> and <<<\<s:resultIterator/\>>>> pair of tags can be used.
     
-    The  <<<\<s:results/\>>>>  tag parses the search parameters from the current request, executes the search and exposes the results list (<<<java.util.List\<org.jahia.services.search.Hit\<?\>\>>>>)
+    The <<<\<s:results/\>>>> tag parses the search parameters from the current request, executes the search and exposes the results list (<<<java.util.List\<org.jahia.services.search.Hit\<?\>\>>>>)
     and the total hit count into the page scoped variables with names <hits> and <count> (these names can be overridden with the tag attributes: see documentation for Jahia Search tag Library for more details).
     
     The second tag - <<<\<s:resultIterator/\>>>> - is used to iterate over the exposed list of hits as shown in the following example:   
@@ -193,4 +195,43 @@ Building search forms
   </s:results>
 +-------------
 
-    The corresponding screenshot is given in the {{{./components.html#results} Search results}} section.
+  The corresponding screenshot is given in the {{{./components.html#results} Search results}} section.
+
+* Using search functionality {without} creating a form
+
+  There could be cases, where a non-user-interactive search needs to be executed and the results displayed, i.e.
+  without presenting a search form.
+   
+  This is an alternative solution to using low-level <<<\<jcr:sql/\>>>> and <<<\<jcr:xpath/\>>>> tags
+  if one find Search Tag Library easier to use.
+  
+  The following example shows the usage of Search Tag Library API to find and display the list
+  of PDF files, uploaded last week into the file repository of the ACME web project:
+    
++-------------
+1: <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+2: <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+3: <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+4: 
+5: 
+6: <jsp:useBean id="criteria" class="org.jahia.services.search.SearchCriteria" />
+7:
+8: <c:set target="${criteria.filePath}" property="value" value="/sites/ACME/files" />
+9: <c:set target="${criteria.filePath}" property="includeChildren" value="true" />
+10: <c:set target="${criteria}" property="fileType" value="pdf" />
+11: <c:set target="${criteria.created}" property="type" value="LAST_WEEK" />
+12: 
+13: <s:results searchCriteriaBeanName="criteria">
+14:     <s:resultIterator>
+15:         <a href="<c:url value='${hit.link}'/>" title="${fn:escapeXml(hit.title)}">${fn:escapeXml(hit.rawHit.name)}</a><br />
+16:     </s:resultIterator>
+17: </s:results>
++-------------
+
+  In the lines 6 to 11 an instance of the <<<SearchCriteria>>> bean is created and search criteria
+  are specified by setting bean's properties (see Jahia Tag Library Documentation for the reference).
+  
+  And than the search criteria bean is used in the {{{results}already known search results tag}}
+  to execute the search and display its results. This is done by providing an additional attribute
+  <<<searchCriteriaBeanName>>> to the <<<\<s:results/\>>>> tag with the name of the page scope
+  variable containing an instance of the <<<SearchCriteria>>> to be used for search (line 13).

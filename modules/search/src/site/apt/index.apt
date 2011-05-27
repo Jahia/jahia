@@ -4,24 +4,24 @@ Jahia Search Module
 
   Module is aimed to provide several ready to use search components as well as the templates to build search forms and result lists.
 
-  * Search components
+  * {{{./components.html} Search components}}
 
-  Brief overview of the {{{./components.html} provided components}} for using Jahia search features.
+  Brief overview of the provided components for using Jahia search features.
 
-  * Building custom search templates
+  * {{{./forms.html}Using search in templates}}
 
-  A "How To" for {{{./forms.html} developing custom search forms}} and displaying search results using Jahia Search JSP Tag Library.
+  A "How To" for developing custom search forms and displaying search results using Jahia Search JSP Tag Library.
     
-  * "Did you mean" search
+  * {{{./didYouMean.html} "Did you mean" search}}
 
-  Description of the {{{./didYouMean.html} "Did you mean"}} kind of searches.
+  Description of the "Did you mean" kind of searches.
     
   
-  * Indexing options in content node definitions
+  * {{{./cnd.html} Indexing options in content node definitions}}
 
-  A {{{./cnd.html} summary of the indexing options}}, supported in the Compact Node Type Definition (CND) files
+  A summary of the indexing options, supported in the Compact Node Type Definition (CND) files
   that controls the way node properties are treated during indexing and searching.
   
-  * Search index configuration and maintenance 
+  * {{{./searchIndex.html} Search index configuration and maintenance}}
 
-  A reference for search index {{{./searchIndex.html} configuration and maintenance}}.
+  A reference for search index configuration and maintenance.

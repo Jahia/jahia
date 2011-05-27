@@ -72,6 +72,7 @@ import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.render.URLGenerator;
+import org.jahia.services.search.spell.CompositeSpellChecker;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
 import org.jahia.services.sites.JahiaSitesBaseService;
@@ -2039,6 +2040,8 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
             }
 
+            CompositeSpellChecker.updateSpellCheckerIndex();
+            
             redirectAfterAdd(request, response, session);
         }
     }

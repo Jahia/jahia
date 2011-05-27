@@ -16,11 +16,12 @@ Jahia Search Module
 
   Description of the {{{./didYouMean.html} "Did you mean"}} kind of searches.
     
-  * Search index configuration and maintenance 
-
-  A reference for search index {{{./searchIndex.html} configuration and maintenance}}.
   
   * Indexing options in content node definitions
 
   A {{{./cnd.html} summary of the indexing options}}, supported in the Compact Node Type Definition (CND) files
   that controls the way node properties are treated during indexing and searching.
+  
+  * Search index configuration and maintenance 
+
+  A reference for search index {{{./searchIndex.html} configuration and maintenance}}.

@@ -18,7 +18,12 @@
                 <item name="Advanced document search with metadata" href="./forms.html#document"/>
                 <item name="Displaying search results" href="./forms.html#results"/>
             </item>
-            <item name="Did you mean" href="./didYouMean.html"/>
+            <item name="Did you mean" href="./didYouMean.html">
+                <item name="Activation" href="./didYouMean.html#Activation"/>
+                <item name="Suggestions in the search results" href="./didYouMean.html#Suggestions"/>
+                <item name="Index updates" href="./didYouMean.html#Index"/>
+            </item>
+            <item name="Indexing options in CND files" href="./cnd.html"/>
             <item name="Search index configuration and maintenance" href="./searchIndex.html"/>
         </menu>
         <menu ref="modules"/>

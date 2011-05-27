@@ -39,4 +39,6 @@ jahia.jackrabbit.reindexOnStartup = true
   in <<<\<jahia-web-app-dir\>/WEB-INF/etc/config/jahia.properties>>> file and restart the Jahia server.
   This will force Jahia to delete all indexes and re-create them on the server startup. Please, don't forget
   to set the value of the <<<jahia.jackrabbit.reindexOnStartup>>> back to <<<false>>>.      
- 
+
+  In order to rebuild indexes, used in the {{{./didYouMean.html} "Did you mean"}} search suggestion feature, you
+  should trigger the index update as described in the {{{./didYouMean.html#Index}Index updates}} section. 

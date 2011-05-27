@@ -203,7 +203,7 @@ Using search in templates
   without presenting a search form.
    
   This is an alternative solution to using low-level <<<\<jcr:sql/\>>>> and <<<\<jcr:xpath/\>>>> tags
-  if one find Search Tag Library easier to use.
+  from Jahia JCR Tag Library or using tags from Jahia Query Tag Library if one find Search Tag Library easier to use.
   
   The following example shows the usage of Search Tag Library API to find and display the list
   of PDF files, uploaded last week into the file repository of the ACME web project:

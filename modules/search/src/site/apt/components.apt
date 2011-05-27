@@ -12,7 +12,8 @@ Search components
 
 * {Simple} search form
 
-  Can be created in a page using drag & drop from the left-side panel or by selecting a target area and using New Content Wizard. The component name to be selected is <Simple search form>.
+  Can be created in a page using drag & drop from the left-side panel or by selecting a target area and using New Content Wizard (clicking on <Any content> button in the are).
+  The component name to be selected is <Simple search form>.
   
 [./images/simpleSearch.png]
 

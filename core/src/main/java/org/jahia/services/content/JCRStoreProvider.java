@@ -428,6 +428,8 @@ public class JCRStoreProvider {
                         }
                     }
                     session.save();
+                } else {
+                    JahiaPrivilegeRegistry.init(session);
                 }
             } finally {
                 session.logout();

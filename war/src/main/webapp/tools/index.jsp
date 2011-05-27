@@ -4,14 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="tools.css" type="text/css" />
 <title>Jahia Tools</title>
-<style type="text/css">
-body {
-    color:#36393D;
-    font-family: Arial,Helvetica,sans-serif;
-    line-height:160%;
-}
-</style>
 </head>
 <body>
 <h1>Jahia Tools Area</h1>

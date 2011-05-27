@@ -10,7 +10,10 @@
   Time: 3:41:07 PM
 --%>
 <html>
-<head><title>Current thread dump</title></head>
+<head>
+<link rel="stylesheet" href="tools.css" type="text/css" />
+<title>Current thread dump</title>
+</head>
 <body>
     <h1>Thread state information</h1>
     <h2>Deadlocked threads</h2>

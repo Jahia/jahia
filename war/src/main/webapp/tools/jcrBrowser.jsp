@@ -15,21 +15,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="tools.css" type="text/css" />
 <title>JCR Browser</title>
-<style type="text/css">
-body {
-    color:#36393D;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 80%;
-    line-height:160%;
-}
-#goToPath {
-    width: 750px;
-}
-#goToUuid {
-    width: 270px;
-}
-</style>
 <script type="text/javascript">
 function doNavigate(what, whereToGo) {
 	document.getElementById(what).value=whereToGo; 

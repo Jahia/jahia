@@ -31,7 +31,7 @@
             <c:set var="icon" value="treepanel-content-manager-1616"/>
             <c:set var="multisite" value="true"/>
         </c:if>
-        <c:if test="${gotoType eq 'united content'}">
+        <c:if test="${gotoType eq 'unitedContent'}">
             <c:set var="conf" value="repositoryexplorer"/>
             <c:set var="requiredPermission" value="repositoryExplorer"/>
             <c:set var="label" value="label.repositoryexplorer"/>

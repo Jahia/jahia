@@ -4,6 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
     <body>
         <menu ref="parent"/>
+        <menu name="Overview">
+            <item name="Facet types and their parameters" href="./facetTypes.html"/>
+            <item name="Using faceting in the Jahia backend" href="./backendAccess.html"/>
+            <item name="Facet module and components" href="./facetComponents.html"/>
+        </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>
     </body>

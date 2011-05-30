@@ -1,0 +1,14 @@
+Exposing content via OpenSearch API
+
+  Jahia is able to expose the content search functionality via {{{http://www.opensearch.org/} OpenSearch API}}. 
+
+  An OpenSearch descriptor can be added to any page as shown in the following screenshot:
+  
+[./images/addingOpenSearch.png]
+  
+  Then an OpenSearch-capable Web browser can handle addition of that engine into the list of Web browser search engines,
+  of the Jahia OpenSearch provider URL can be used in external tools/application to perform searches.  
+  
+[./images/openSearch.png]
+  
+  

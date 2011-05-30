@@ -7,8 +7,9 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
 <c:set var="descriptorUrl" value="${url.server}${url.templateTypes['xml']}"/>
+<c:set var="title" value="${functions:default(currentNode.propertiesAsString['jcr:title'], 'Jahia search')}"/>
 <template:addResources>
-<link rel="search" type="application/opensearchdescription+xml" href="${fn:escapeXml(descriptorUrl)}" title="${fn:escapeXml(functions:default(currentNode.propertiesAsString['jcr:title'], 'Jahia search'))}" />
+<link rel="search" type="application/opensearchdescription+xml" href="${fn:escapeXml(descriptorUrl)}" title="${fn:escapeXml(title)}" />
 </template:addResources>
 <c:if test="${empty requestScope['org.jahia.modules.search.addOpenSearch']}">
     <template:addResources>

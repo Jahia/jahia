@@ -15,7 +15,10 @@ Jahia Search Module
   * {{{./didYouMean.html} "Did you mean" search}}
 
   Description of the "Did you mean" kind of searches.
-    
+  
+  * {{{./openSearch.html} Exposing content via OpenSearch API}}
+
+  Discovers possibilities to expose the repository content via OpenSearch API. 
   
   * {{{./cnd.html} Indexing options in content node definitions}}
 

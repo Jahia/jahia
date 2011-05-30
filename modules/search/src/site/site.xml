@@ -24,6 +24,7 @@
                 <item name="Suggestions in the search results" href="./didYouMean.html#Suggestions"/>
                 <item name="Index updates" href="./didYouMean.html#Index"/>
             </item>
+            <item name="Exposing content via OpenSearch API" href="./openSearch.html"/>
             <item name="Indexing options in CND files" href="./cnd.html"/>
             <item name="Search index configuration and maintenance" href="./searchIndex.html"/>
         </menu>

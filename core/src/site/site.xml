@@ -42,6 +42,7 @@
                 <item name="Users Extensions" href="./development/usersextension.html"/>
             </item>
             <item name="Versioning" href="./versioning/versioning.html"/>
+            <item name="User Generated Content" href="./ugc/ugc.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

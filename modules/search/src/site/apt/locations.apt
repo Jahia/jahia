@@ -1,0 +1,70 @@
+Searched locations
+
+  The repository location to be searched can be specified explicitly by using
+  either <<<\<s:filePath/\>>>> or <<<\<s:pagePath/\>>>>, i.e.:
+  
++-------------
+<%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+ 
+<s:form method="post">
+   <label for="searchTerm">Start searching our products:</label>
+     <s:term id="searchTerm" match="all_words"/>
+     <s:pagePath value="/sites/global/home/products" includeChildren="true" display="false"/>
+     <input type="submit" value="Search" title="Search"/>
+</s:form>
++-------------
+
+  The example above provides a form for searching a content of the products section.
+  
+  If the search location is not defined explicitly, then the following locations are used:
+  
+  * In case of a content site-level search for e.g. site <<<global>>> with the <<<home>>> as a home page of the site:
+  
+    * <<</sites/global/home>>>
+    
+    * <<</sites/global/files>>>
+    
+    * <<</sites/global/contents>>>
+    
+    []
+
+  * In case of a document site-level search for e.g. site <<<global>>>:
+  
+    * <<</sites/global>>>
+    
+    []
+
+  * In case of a global content (all-sites) search, assuming <<<home>>> is the node name of the home page for simplicity:
+  
+    * <<</sites/*/home>>>
+    
+    * <<</sites/*/files>>>
+    
+    * <<</sites/*/contents>>>
+    
+    []
+    
+    I.e., if the platform has two sites - <<<global>>> and <<<intranet>>> - then the following paths
+    are involved:
+      
+    * <<</sites/global/home>>>
+    
+    * <<</sites/intranet/home>>>
+    
+    * <<</sites/global/files>>>
+    
+    * <<</sites/intranet/files>>>
+    
+    * <<</sites/global/contents>>>
+    
+    * <<</sites/intranet/contents>>>
+    
+    []
+    
+  * In case of a global document (all-sites) search:
+  
+    * <<</sites/*>>>
+    
+    []
+
+  []

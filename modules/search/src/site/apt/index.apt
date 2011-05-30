@@ -24,6 +24,10 @@ Jahia Search Module
 
   A summary of the indexing options, supported in the Compact Node Type Definition (CND) files
   that controls the way node properties are treated during indexing and searching.
+
+  * {{{./locations.html} Searched locations}}
+
+  A list of repository locations, which are used in the search.
   
   * {{{./searchIndex.html} Search index configuration and maintenance}}
 

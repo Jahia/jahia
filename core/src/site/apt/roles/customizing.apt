@@ -36,11 +36,11 @@ Jahia 6.5 - Customizing built-in roles and permissions
   
   As an example here are the views of the edit content engine (tabs) for the user, having the built-in <<<editor>>> role:
   
-[./images/roles/customizing-built-in-editor.png]
+[../images/roles/customizing-built-in-editor.png]
 
   and the same engine for the user with a custom <<<limited-editor>>> role, where the permissions to use/view the tabs where removed:
   
-[./images/roles/customizing-limited-editor.png]
+[../images/roles/customizing-limited-editor.png]
   
 
 * {Modules} roles/permissions

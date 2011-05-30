@@ -49,19 +49,19 @@ public void doSomething() {
 }
 +------------------------
 
-<<<jcrTemplate.doExecuteWithSystemSession(null,Constants.EDIT_WORKSPACE, Locale.ENGLISH,new JCRCallback() \{>>>
+  <<<jcrTemplate.doExecuteWithSystemSession(null,Constants.EDIT_WORKSPACE, Locale.ENGLISH,new JCRCallback() \{>>>
 
   This line indicate that we want to execute a certain callback using a system session (no user in particular,  but JCRTemplate allows to use any type of session), in the EDIT_WORKSPACE and in English.
 
-<<<JCRNodeWrapper node = session.getNode("/sites/mySite/contents/news");>>>
+  <<<JCRNodeWrapper node = session.getNode("/sites/mySite/contents/news");>>>
 
   This read what will be our root node for this process.
 
-<<<JCRNodeWrapper jcrNodeWrapper = node.addNode(nodeTitle, "jnt:news");>>>
+  <<<JCRNodeWrapper jcrNodeWrapper = node.addNode(nodeTitle, "jnt:news");>>>
 
   We add a node under our root node, this node will be of type "jnt:news". As long as we do not save our session this node only exist in our context, nobody knows about it. This create an empty shell for our node, now we have to set some properties on it. This is done by calling setProperty methods on our newly created node.
 
-<<<session.save();>>>
+  <<<session.save();>>>
 
   This save the session and propagate our node to the JCR definitively where it can be read by others from now on.
 

@@ -37,7 +37,7 @@ Jahia 6.5 - Security aspects
 
   Non-public user profile data (user node properties) are not exposed for an unauthorized access. 
 
-** Enabling SSL for logged in users
+** Enabling {SSL} for logged in users
 
   There is an option for "forcing" a switch to an SSL (HTTPS protocol) for a user session, from login to logout.
   This allows sites with higher security concerns to force secured connections for logged in users.

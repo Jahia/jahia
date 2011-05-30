@@ -51,7 +51,7 @@ Jahia 6.5 - Workflow Integration
 
 [../images/workflow/dashboard.png]
 
-* {Using jBPM}
+* {Using} jBPM
 
   For more information about jBPM, see {{http://docs.jboss.com/jbpm/v4/userguide/html_single/}} .
 
@@ -157,7 +157,7 @@ Jahia 6.5 - Workflow Integration
   Workflow processes need to be deployed into the process engine and declared in Jahia to be used by the site
   administrator and end-users.
 
-  See "{{Using jBPM}}" for information about how to create and
+  See "{{{#Using}Using jBPM}}" for information about how to create and
   deploy process with the jBPM process engine.
 
   Once the workflow is available in the process engine, it has to be registered to the workflow service. This can

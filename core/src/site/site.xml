@@ -30,20 +30,29 @@
                 <item name="Miscellaneous" href="security/index.html#Miscellaneous"/>
             </item>
             <item name="Internationalized Web Site" href="i18n/i18n.html"/>
+            <item name="Node types definitions" href="./definitions/definitions.html"/>
             <item name="Notifications" href="notifications/notifications.html"/>
             <item name="Users batch creation" href="./users_batch_creation.html"/>
             <item name="Development">
-                <item name="From Development to Production" href="./development/fromdevtoprod.html"/>
-                <item name="Development Tips" href="./development/devtips.html"/>
-                <item name="Production Tips" href="./development/prodtips.html"/>
+                <item name="From development to production" href="./development/fromdevtoprod.html"/>
+                <item name="Development tips" href="./development/devtips.html"/>
+                <item name="Production tips" href="./development/prodtips.html"/>
                 <item name="How-to create your custom permissions" href="./development/how-to_permissions.html"/>
                 <item name="How-to use the JCR API to create/update/remove content" href="./development/how-to_jcrcontent.html"/>
-                <item name="Jahia And Apache Camel" href="./development/jahiacamel.html"/>
-                <item name="Users Extensions" href="./development/usersextension.html"/>
+                <item name="Jahia and Apache Camel" href="./development/jahiacamel.html"/>
+                <item name="Users extensions" href="./development/usersextension.html"/>
             </item>
             <item name="Versioning" href="./versioning/versioning.html"/>
             <item name="User Generated Content" href="./ugc/ugc.html"/>
             <item name="System site" href="./systemsite/systemsite.html"/>
+            <item name="URL rewriting" href="./url/url.html">
+                <item name="URL format" href="./url/url.html#format"/>
+                <item name="Rewriting scope" href="./url/url.html#scope"/>
+                <item name="URL mapping" href="./url/url.html#mapping"/>
+                <item name="SEO URL rewriting" href="./url/url.html#SEO"/>
+                <item name="Controlling browser caching" href="./url/url.html#caching"/>
+                <item name="Forcing secure browsing for logged in users" href="./url/url.html#secure"/>
+            </item>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

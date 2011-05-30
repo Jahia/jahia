@@ -28,3 +28,6 @@ Jahia 6.5 - Core Module
  * {{{./definitions/definitions.html}Jahia node types definitions}}
 
  * {{{./users_batch_creation.html}Create users using a batch}}
+
+ * {{{./url/url.html}URL rewriting}}
+ 

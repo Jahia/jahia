@@ -43,6 +43,7 @@
             </item>
             <item name="Versioning" href="./versioning/versioning.html"/>
             <item name="User Generated Content" href="./ugc/ugc.html"/>
+            <item name="System site" href="./systemsite/systemsite.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

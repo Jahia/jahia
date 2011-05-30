@@ -302,8 +302,12 @@ Content of your project :
 
  Now install a production env on your server, do not start your jahia yet.
 
- Inside Jahia_xCM_EE_v6.5-SNAPSHOT/tomcat/webapps/ROOT/WEB-INF/var/shared_modules deploy all necessary modules you might
- need for your project especially your mycustomtemplateset war file using the deploy module script provided by Jahia.
+ Deploy all necessary modules you might need for your project especially your mycustomtemplateset war file using the
+ deployModule.sh (or deployModule.bat) script provided by Jahia :
+
++----------------
+ deployModule module1.war [module2.war ...] tomcat/webapp/ROOT
++----------------
 
  Inside Jahia_xCM_EE_v6.5-SNAPSHOT/tomcat/webapps/ROOT/WEB-INF/var create if missing the following folder : prepackagedSites
 

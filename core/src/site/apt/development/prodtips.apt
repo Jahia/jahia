@@ -15,4 +15,8 @@ Jahia 6.5 - Production Tips
 
     * Reduce the general level of the ROOT category to at least WARN level (ERROR and FATAL having even less impact on performance), if you have some issue then you can go back to INFO or DEBUG level if needed or asked by our customer services. Anyway Jahia 6.5 will log all your errors in a separate file for each of them so if needed you can at least provide this file to our customer services.
 
-    * When deploying new modules remember to use the deploymodule script.
+    * When deploying new modules remember to use the deployModule script :
+
++----------------
+ deployModule module1.war [module2.war ...] tomcat/webapp/ROOT
++----------------

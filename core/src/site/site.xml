@@ -53,6 +53,7 @@
                 <item name="Controlling browser caching" href="./url/url.html#caching"/>
                 <item name="Forcing secure browsing for logged in users" href="./url/url.html#secure"/>
             </item>
+            <item name="Rendering" href="./render/render.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

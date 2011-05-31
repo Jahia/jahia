@@ -572,7 +572,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>installer,windows-installer,qa-build,test,do-attach-javadocs</releaseProfiles>
+                    <releaseProfiles>installer,windows-installer,qa-build,jahia-test,do-attach-javadocs</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

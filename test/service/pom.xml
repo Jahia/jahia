@@ -179,13 +179,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.modules</groupId>
-            <artifactId>social-service</artifactId>
-            <version>6.5-SNAPSHOT</version>
-            <scope>provided</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-jcr-tests</artifactId>
             <version>${jackrabbit.version}</version>

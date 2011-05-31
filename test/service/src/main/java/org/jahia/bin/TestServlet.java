@@ -158,10 +158,13 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                 // Return the lists of available tests
                 List<String> tests = new LinkedList<String>();
                 tests.addAll(readTests("TestFirst.properties", true));
+                tests.addAll(readTests("TestFirstPack.properties", true));
                 tests.addAll(readTests("TestFirstEE.properties", true));
                 tests.addAll(readTests("Test.properties", true));
+                tests.addAll(readTests("TestPack.properties", true));
                 tests.addAll(readTests("TestEE.properties", true));
                 tests.addAll(readTests("TestLast.properties", true));
+                tests.addAll(readTests("TestLastPack.properties", true));
                 tests.addAll(readTests("TestLastEE.properties", true));
                 for (String c : tests) {
 					pw.println(c);

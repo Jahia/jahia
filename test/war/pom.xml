@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>jahia-test-parent</artifactId>
     <groupId>org.jahia.server</groupId>
-    <version>6.5-SNAPSHOT</version>
+    <version>6.5.0.0</version>
   </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-test</artifactId>
@@ -18,7 +15,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-test-service</artifactId>
-            <version>6.5-SNAPSHOT</version>
+            <version>6.5.0.0</version>
         </dependency>
     </dependencies>
 

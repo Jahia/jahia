@@ -56,7 +56,8 @@ public class HelpMojo extends AbstractMojo {
 		getLog().info("  If there is less files than required, it will process the files list from the beginning.");
 
 		getLog().info("* jahia.cg.poolDirectory (required if jahia.cg.addFiles != " + ContentGeneratorCst.VALUE_NONE + ")");
-
+		getLog().info("* jahia.cg.numberOfFilesToGenerate required for file generation. Files will be generated in poolDirectory path.");
+		
 		getLog().info("");
 		getLog().info("NB:");
 		getLog().info("1. You can not generate more than " + ContentGeneratorCst.MAX_TOTAL_PAGES + " pages");
@@ -68,8 +69,14 @@ public class HelpMojo extends AbstractMojo {
 		getLog().info("   |-- sub-page-1");
 		getLog().info("   |   |-- sub-page-1-1");
 		getLog().info("   |   |-- sub-page-1-2");
+		getLog().info("   |   |-- sub-page-1-3");
 		getLog().info("   |-- sub-page-2");
-		getLog().info("       |-- sub-page-2-1");
-		getLog().info("       |-- sub-page-2-2");
+		getLog().info("   |   |-- sub-page-2-1");
+		getLog().info("   |   |-- sub-page-2-2");
+		getLog().info("   |   |-- sub-page-2-3");
+		getLog().info("   |-- sub-page-3");
+		getLog().info("       |-- sub-page-3-1");
+		getLog().info("       |-- sub-page-3-2");
+		getLog().info("       |-- sub-page-3-3");
 	}
 }

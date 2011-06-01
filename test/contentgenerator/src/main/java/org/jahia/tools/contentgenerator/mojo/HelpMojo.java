@@ -17,7 +17,8 @@ public class HelpMojo extends AbstractMojo {
 		getLog().info(" ");
 		getLog().info("Goals:");
 		getLog().info("jahia-cg:help");
-		getLog().info("jahia-cg:generate");
+		getLog().info("jahia-cg:generate-content");
+		getLog().info("jahia-cg:generate-files");
 		getLog().info("");
 		
 		getLog().info("Parameters:");

@@ -47,5 +47,4 @@ public class OutputService {
 			appendStringToFile(f, path);
 		}		
 	}
-
 }

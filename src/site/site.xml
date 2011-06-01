@@ -1,18 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd" name="Crazy Jane">
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd" name="Jahia 6.5">
     <bannerLeft>
         <name>Jahia 6.5</name>
         <src>images/logo-top.png</src>
         <href>./index.html</href>
     </bannerLeft>
     <skin>
-    <groupId>org.jahia</groupId>
-  	<artifactId>site-skin-beta</artifactId>
-  	<version>6.5-SNAPSHOT</version>
+        <groupId>org.jahia</groupId>
+      	<artifactId>site-skin-beta</artifactId>
+      	<version>6.5-SNAPSHOT</version>
   	</skin>
     <body>
+        <menu name="Overview">
+            <item name="Home" href="./index.html"/>
+        </menu>
+        <menu name="Developing with Jahia">
+            <item name="Prerequisites" href="./development/prerequisites.html">
+                <item name="Tools" href="./development/prerequisites.html#Tools"/>
+                <item name="Jahia runtime" href="./development/prerequisites.html#Jahia"/>
+                <item name="Configure the Maven Jahia Plugin" href="./development/prerequisites.html#Plugin"/>
+            </item>
+            <item name="Setting up Eclipse" href="./development/eclipse.html"/>
+            <item name="Creating new Jahia Web Project">
+                <item name="Using command-line" href="./development/module.html"/>
+                <item name="Using Eclipse" href="./development/moduleEclipse.html"/>
+            </item>
+            <item name="Working with Jahia codebase">
+                <item name="Using command-line" href="./development/codebase.html"/>
+                <item name="Using Eclipse" href="./development/codebaseEclipse.html"/>
+            </item>
+        </menu>
+        <menu name="Databases">
+            <item name="MySQL" href="./databases/mysql.html"/>
+        </menu>
         <menu ref="modules"/>
     </body>
 </project>

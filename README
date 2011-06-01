@@ -68,7 +68,7 @@
        As there are problems with JSP compilation on path with spaces on Windows environments, it is
        recommended you specify a default location for your local repository
        that DOESN'T CONTAIN ANY SPACES IN THE PATH, for example:
-         C:/java/m2repository
+         C:/development/m2repository
 
     6. When you use a new Tomcat server make sure you give it enough memory and adjust its options.
        This can be increase by editing bin/catalina.sh and add the following lines:

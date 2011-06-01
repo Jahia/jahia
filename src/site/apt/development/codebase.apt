@@ -1,0 +1,32 @@
+Working with Jahia codebase (command-line)
+
+  This chapter provides a step-by-step tutorial on how to checkout Jahia codebase from SVN, build it and deploy
+  to a target application server, assuming that all the {{{./prerequisites.html}prerequisites}} are already fulfilled,
+  including the SVN client installation and {{{./prerequisites.html#Plugin}configuration of the Maven Jahia Plugin}}
+  for target application server and DB schema.
+  
+  If you have installed and {{{./eclipse.html}set up Eclipse IDE}} you can
+  {{{./codebaseEclipse.html}work with Jahia codebase using Eclipse}}.
+  
+  [[1]] Checkout the Jahia source code:
+
++-----------------------
+svn co http://subversion.jahia.org/svn/jahia/trunk jahia
++-----------------------
+        
+  [[2]] Open a Command line window and change the <<<jahia>>> directory (where the checkout was done to).
+        Execute the following Maven build command to build, deploy and configure Jahia instance:
+
++-----------------------
+mvn clean install jahia:deploy jahia:configure
++-----------------------
+
+  [[3]] After the build is done (10 to 20 minutes, depending on your PC hardware) you can start your application server and launch Jahia using the URL:
+      
++-----------------------
+http://localhost:8080/
++-----------------------
+
+         The default <<<root>>> user password is <<<root1234>>>. 
+   
+  []

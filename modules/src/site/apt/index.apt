@@ -24,9 +24,9 @@ Jahia 6.5 - Modules
 
 	  How to use and develop {{{./areas.html} areas in a module}}.
 
-	* JQuery
+	* jQuery
 
-	  Recommendations about {{{./jquery.html} JQuery usages}}.
+	  Recommendations about {{{./jquery.html} jQuery usages}}.
 
 	* REST API
 

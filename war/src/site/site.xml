@@ -8,9 +8,6 @@
             <item name="Introduction" href="./index.html"/>
             <item name="Apache HTTP Server in Front of Jahia" href="./apachehttpserver.html"/>
         </menu>
-        <menu name="Databases">
-            <item name="MySQL" href="./databases/mysql.html"/>
-        </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>
     </body>

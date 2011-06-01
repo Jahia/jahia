@@ -22,7 +22,7 @@ public class ContentGeneratorService {
 		logger.info("Jahia content generator starts");
 		logger.info(export.getTotalPages() + " pages will be created");
 
-		List<ArticleBO> articles = DatabaseService.getInstance().getArticles(export);
+		List<ArticleBO> articles = DatabaseService.getInstance().selectArticles(export, export.getTotalPages());
 
 		XmlService xmlManager = new XmlService();
 		try {
@@ -49,14 +49,14 @@ public class ContentGeneratorService {
 	 * @throws MojoExecutionException
 	 */
 	public void generateFiles(ExportBO export) throws MojoExecutionException {
-		logger.info("Jahia content generator starts");
+		logger.info("Jahia files generator starts");
 
 		Integer numberOfFilesToGenerate = export.getNumberOfFilesToGenerate();
 		if (numberOfFilesToGenerate == null) {
 			throw new MojoExecutionException("numberOfFilesToGenerate parameter is null");
 		}
 
-		List<ArticleBO> articles = DatabaseService.getInstance().getArticles(export);
+		List<ArticleBO> articles = DatabaseService.getInstance().selectArticles(export, export.getNumberOfFilesToGenerate());
 		int indexArticle = 0;
 		File outputFile;
 

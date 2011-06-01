@@ -321,11 +321,14 @@
                             <aggregate>true</aggregate>
                             <includes>
                                 <include>src/**/*.java</include>
+                                <include>pom.xml</include>
+                                <!--
                                 <include>src/**/*.tag</include>
                                 <include>src/**/*.jsp</include>
                                 <include>src/**/*.jspf</include>
                                 <include>src/**/*.inc</include>
                                 <include>src/main/webapp/WEB-INF/web.xml</include>
+                                 -->
                             </includes>
                             <excludes>
                                 <exclude>src/main/java/compressionFilters/**</exclude>

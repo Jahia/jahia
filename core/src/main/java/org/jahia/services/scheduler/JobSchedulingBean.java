@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -51,7 +51,7 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * Convenient Spring bean to schedule background RAM as well as persistent jobs.
  * 
- * @author Cédric Mailleux
+ * @author Cï¿½dric Mailleux
  * @author Sergiy Shyrkov
  * @since JAHIA 6.5
  */

@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ import java.util.Date;
 /**
  * This is a wrapper for interface {@link javax.jcr.Value} to allow more types of properties.
  *
- * @author Cédric Mailleux
+ * @author Cï¿½dric Mailleux
  * @since 6.1
  */
 public interface JCRValueWrapper extends Value {

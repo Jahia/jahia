@@ -29,7 +29,6 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.tools.jvm;
 
 import static java.lang.management.ManagementFactory.*;

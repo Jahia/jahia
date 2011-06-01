@@ -9,7 +9,7 @@
     </bannerLeft>
     <skin>
         <groupId>org.jahia</groupId>
-      	<artifactId>site-skin-beta</artifactId>
+      	<artifactId>site-skin-jahia-com</artifactId>
       	<version>6.5-SNAPSHOT</version>
   	</skin>
     <body>

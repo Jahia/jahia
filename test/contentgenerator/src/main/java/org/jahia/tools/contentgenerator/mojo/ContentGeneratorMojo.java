@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.jahia.tools.contentgenerator.ContentGeneratorService;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.jahia.tools.contentgenerator.properties.DatabaseProperties;
@@ -18,103 +17,105 @@ import org.jahia.tools.contentgenerator.properties.DatabaseProperties;
  * @author Guillaume Lucazeau
  * 
  */
-public class ContentGeneratorMojo extends AbstractMojo {
-	private static final Logger logger = Logger.getLogger(ContentGeneratorMojo.class.getName());
+public abstract class ContentGeneratorMojo extends AbstractMojo {
+	protected static final Logger logger = Logger.getLogger(ContentGeneratorMojo.class.getName());
 
 	/**
 	 * @parameter expression="${jahia.cg.mysql.host}"
 	 */
-	private String mysql_host;
+	protected String mysql_host;
 
 	/**
+	private static final Logger logger = Logger.getLogger(GeneratePagesMojo.class.getName());
 	 * @parameter expression="${jahia.cg.mysql.login}"
 	 */
 
-	private String mysql_login;
+	protected String mysql_login;
 
 	/**
 	 * @parameter expression="${jahia.cg.mysql.password}"
 	 */
-	private String mysql_password;
+	protected String mysql_password;
 
 	/**
 	 * @parameter expression="${jahia.cg.mysql_db}"
 	 */
-	private String mysql_db;
+	protected String mysql_db;
 
 	/**
 	 * @parameter expression="${jahia.cg.mysql_table}"
 	 */
-	private String mysql_table;
+	protected String mysql_table;
 
 	/**
 	 * @parameter expression="${jahia.cg.nbPagesOnTopLevel}"
 	 */
-	private Integer nbPagesOnTopLevel;
+	protected Integer nbPagesOnTopLevel;
 
 	/**
 	 * @parameter expression="${jahia.cg.nbSubLevels}"
 	 */
-	private Integer nbSubLevels;
+	protected Integer nbSubLevels;
 
 	/**
 	 * @parameter expression="${jahia.cg.nbPagesPerLevel}"
 	 */
-	private Integer nbPagesPerLevel;
+	protected Integer nbPagesPerLevel;
 
 	/**
 	 * @parameter expression="${jahia.cg.outputDirectory}"
 	 */
-	private String outputDirectory;
+	protected String outputDirectory;
 
 	/**
 	 * @parameter expression="${jahia.cg.outputFileName}"
 	 */
-	private String outputFileName;
+	protected String outputFileName;
 
 	/**
 	 * @parameter expression="${jahia.cg.createMapYn}"
 	 */
-	private Boolean createMapYn;
+	protected Boolean createMapYn;
 
 	/**
 	 * @parameter expression=${jahia.cg.ouputMapName}
 	 */
-	private String outputMapName;
+	protected String outputMapName;
 
 	/**
 	 * @parameter expression="${jahia.cg.pagesHaveVanity}"
 	 */
-	private Boolean pagesHaveVanity;
+	protected Boolean pagesHaveVanity;
 
 	/**
 	 * @parameter expression="${jahia.cg.siteKey}"
 	 */
-	private String siteKey;
+	protected String siteKey;
 
 	/**
 	 * @parameter expression="${jahia.cg.addFiles}"
 	 */
-	private String addFiles;
+	protected String addFiles;
 
 	/**
 	 * @parameter expression="${jahia.cg.poolDirectory}"
 	 */
-	private String poolDirectory;
+	protected String poolDirectory;
+	
+	/**
+	 * @parameter expression="${jahia.cg.numberOfFilesToGenerate}"
+	 */
+	protected Integer numberOfFilesToGenerate;
 
 	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		ContentGeneratorService contentGeneratorService = new ContentGeneratorService();
-		ExportBO export = this.initExport();
-		contentGeneratorService.execute(export);
-	}
-
+	public abstract void execute() throws MojoExecutionException, MojoFailureException;
+	
 	/**
 	 * Get properties and initialize ExportBO
 	 * 
 	 * @return a new export BO containing all the parameters
 	 */
-	private ExportBO initExport() throws MojoExecutionException, MojoFailureException {
+	protected ExportBO initExport() throws MojoExecutionException, MojoFailureException {
 		ExportBO export = new ExportBO();
 
 		/**
@@ -230,6 +231,9 @@ public class ContentGeneratorMojo extends AbstractMojo {
 				export.setFileNames(getFileNamesAvailable(export.getFilesDirectory()));
 			}
 		}
+		
+		export.setNumberOfFilesToGenerate(numberOfFilesToGenerate);
+		
 
 		Integer totalPages = getTotalNumberOfPagesNeeded(nbPagesOnTopLevel, nbSubLevels, nbPagesPerLevel);
 		export.setTotalPages(totalPages);
@@ -250,7 +254,7 @@ public class ContentGeneratorMojo extends AbstractMojo {
 	 * @param nbPagesPerLevel
 	 * @return number of pages needed
 	 */
-	private Integer getTotalNumberOfPagesNeeded(Integer nbPagesTopLevel, Integer nbLevels, Integer nbPagesPerLevel) {
+	protected Integer getTotalNumberOfPagesNeeded(Integer nbPagesTopLevel, Integer nbLevels, Integer nbPagesPerLevel) {
 		Double nbPages = new Double(0);
 		for (double d = nbLevels; d > 0; d--) {
 			nbPages += Math.pow(nbPagesPerLevel.doubleValue(), d);
@@ -268,7 +272,7 @@ public class ContentGeneratorMojo extends AbstractMojo {
 	 *            Jahia repository and can be used as attachements
 	 * @return list of file names
 	 */
-	private List<String> getFileNamesAvailable(File filesDirectory) {
+	protected List<String> getFileNamesAvailable(File filesDirectory) {
 		List<String> fileNames = new ArrayList<String>();
 		File[] files = filesDirectory.listFiles();
 		for (int i = 0; i < files.length; i++) {

@@ -1,0 +1,35 @@
+Creating new Jahia Web Project (Eclipse)
+
+  This chapter provides a step-by-step tutorial on how to create and deploy a new Jahia Web Project
+  using Eclipse IDE, assuming that all the {{{./prerequisites.html}prerequisites}} are already fulfilled
+  and Eclipse is already {{{./eclipse.html}set up}}.
+  
+  [[1]] For creating a new Jahia Web project in Eclipse, select <File \> New \> Project...>
+        and choose <Maven \> Maven project> from the tree.
+        
+        Push <Next>.
+
+[../images/development/eclipse-create-project-1.png]
+        
+  [[2]] On the second panel select "<<<svn>>>" as an SCM provider and enter the URL
+        {{{http://subversion.jahia.org/svn/jahia/trunk/}http://subversion.jahia.org/svn/jahia/trunk/}}.
+        
+        Press <Next>.
+        
+[../images/development/eclipse-create-project-2.png]
+        
+  [[3]] Leave the default settings on the next panel as they are and push <Finish>.
+
+  [[4]] The project is created and you can work on it, build it and deploy to target Jahia instance.
+  
+  [[7]] In order to deploy you project to a Jahia instance from Eclipse, you can select you project
+        in the workbench and select <Run \> Run As \> Maven build...> from the Eclipse's top menu.
+        In the <Edit configuration> popup enter <<<clean install jahia:deploy>>> as goals.
+        
+        Click <Run>.
+        
+[../images/development/eclipse-create-project-5.png]
+
+        You project will be built and deployed to the target Jahia instance. 
+
+  []

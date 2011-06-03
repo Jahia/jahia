@@ -71,8 +71,8 @@ public final class DatabaseService {
 		}
 	}
 
-	public List<ArticleBO> getArticles(ExportBO export) {
-		Integer querySize = getRecordSetsSize(export);
+	public List<ArticleBO> selectArticles(ExportBO export, Integer numberOfArticles) {
+		Integer querySize = getRecordSetsSize(export, numberOfArticles);
 		List<Integer> articlesId;
 		List<ArticleBO> articlesContent = new ArrayList<ArticleBO>();
 
@@ -150,10 +150,10 @@ public final class DatabaseService {
 		return articlesList;
 	}
 
-	private Integer getRecordSetsSize(ExportBO export) {
+	private Integer getRecordSetsSize(ExportBO export, Integer numberOfArticles) {
 		Integer totalRecords = null;
-		if (export.getTotalPages().compareTo(ContentGeneratorCst.SQL_RECORDSET_SIZE) < 0) {
-			totalRecords = export.getTotalPages();
+		if (numberOfArticles.compareTo(ContentGeneratorCst.SQL_RECORDSET_SIZE) < 0) {
+			totalRecords = numberOfArticles;
 		} else {
 			totalRecords = ContentGeneratorCst.SQL_RECORDSET_SIZE;
 		}

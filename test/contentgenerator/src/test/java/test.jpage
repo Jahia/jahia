@@ -1,6 +1,0 @@
-int i = 1685595;
-int j = 20000;
-
-float f = i%j;
-float e = i/j;
-System.out.println(i+"="+j+"*"+e+"+"+f);

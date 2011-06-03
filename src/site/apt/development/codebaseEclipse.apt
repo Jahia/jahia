@@ -1,0 +1,36 @@
+Working with Jahia codebase (Eclipse)
+
+  This chapter provides a step-by-step tutorial on how to checkout Jahia codebase from SVN, build it and deploy
+  to a target application server using Eclipse IDE, assuming that all the {{{./prerequisites.html}prerequisites}} are already fulfilled,
+  including the SVN client installation and {{{./prerequisites.html#Plugin}configuration of the Maven Jahia Plugin}}
+  for target application server and DB schema. The {{{./eclipse.html}Eclipse set up}} should be also completed before. 
+  
+  [[1]] For checking out the code from SVN and creating corresponding Maven projects in Eclipse, select <File \> New \> Project...>
+        and choose <Maven \> Check out Maven Projects from SCM> from the tree.
+        
+        Push <Next>.
+
+[../images/development/eclipse-codebase-1.png]
+
+  [[2]] On the second panel select "<<<svn>>>" as an SCM provider and enter the URL
+        {{{http://subversion.jahia.org/svn/jahia/trunk/}http://subversion.jahia.org/svn/jahia/trunk/}}.
+        
+        Press <Next>.
+        
+[../images/development/eclipse-codebase-2.png]
+        
+  [[3]] Leave the default settings on the next panel as they are and push <Finish>.
+
+  [[4]] The project is created and you can work on it, build it and deploy to target Jahia instance.
+  
+  [[5]] In order to deploy you project to a target application server (not running at that point) from Eclipse, you can select the root project
+        in the workbench and select <Run \> Run As \> Maven build...> from the Eclipse's top menu.
+        In the <Edit configuration> popup enter <<<clean install jahia:deploy jahia:configure>>> as goals.
+        
+        Click <Run>.
+        
+[../images/development/eclipse-codebase-3.png]
+
+        You project will be built and deployed to the target application server. 
+
+  []

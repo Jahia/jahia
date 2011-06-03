@@ -40,6 +40,8 @@ public class ExportBO {
 	private File filesDirectory;
 
 	private List<String> fileNames;
+	
+	private Integer numberOfFilesToGenerate;
 
 	public File getOutputFile() {
 		return outputFile;
@@ -159,6 +161,14 @@ public class ExportBO {
 
 	public void setFileNames(List<String> fileNames) {
 		this.fileNames = fileNames;
+	}
+
+	public Integer getNumberOfFilesToGenerate() {
+		return numberOfFilesToGenerate;
+	}
+
+	public void setNumberOfFilesToGenerate(Integer numberOfFilesToGenerate) {
+		this.numberOfFilesToGenerate = numberOfFilesToGenerate;
 	}
 
 	public ExportBO() {

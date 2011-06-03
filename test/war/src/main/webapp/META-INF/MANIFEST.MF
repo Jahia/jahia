@@ -83,5 +83,8 @@ Class-Path: jahia-impl-6.5-SNAPSHOT.jar jahia-api-6.5-SNAPSHOT.jar jcr
  jar ehcache-jgroupsreplication-1.4.jar jcifs-1.2.11.jar casclient-2.1
  .1.jar jahia-ee-gwt-6.5-SNAPSHOT.jar ojdbc5-11.2.0.2.0.jar orai18n-11
  .2.0.2.0.jar sqljdbc-1.2-fixed.jar quartz-oracle-1.8.5.jar quartz-web
- logic-1.8.5.jar
+ logic-1.8.5.jar jahia-impl-6.5.1.0-SNAPSHOT.jar jahia-api-6.5.1.0-SNA
+ PSHOT.jar jahia-gwt-6.5.1.0-SNAPSHOT.jar jahia-taglib-6.5.1.0-SNAPSHO
+ T.jar jahia-ee-impl-6.5.1.0-SNAPSHOT.jar jahia-ee-gwt-6.5.1.0-SNAPSHO
+ T.jar
 

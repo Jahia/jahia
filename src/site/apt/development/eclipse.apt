@@ -1,0 +1,40 @@
+Setting up Eclipse
+
+  This chapter provides a step-by-step tutorial on how to configure Eclipse IDE to be used
+  for Jahia development, assuming that all the {{{./prerequisites.html}prerequisites}} are already fulfilled.
+  
+  [[1]] {{{http://eclipse.org/downloads/}Download}} and install Eclipse IDE.
+        We recommend the <Eclipse IDE for Java EE Developers> package.
+        Note that it can be required to adjust the Eclipse <<<vmargs>>> (<<<eclipse.ini>>> file)
+        to increase the amount of dedicated memory (e.g. "<<<-XX:PermSize=128m -XX:MaxPermSize=384m
+        -Xms384m -Xmx1024m>>>")
+        
+  [[2]] In case you will checkout or manage Jahia source code in SVN, please, install the
+        {{{http://subclipse.tigris.org/}Subclipse plugin}}
+        
+        Subclipse is an Eclipse Team Provider plug-in providing support for Subversion within the Eclipse IDE.
+
+[../images/development/subclipse.png]		
+
+  [[3]] Install the {{{http://m2eclipse.sonatype.org/}m2eclipse}} plugin that provides comprehensive Maven integration for Eclipse.
+        Please, note that due to an issue in the latest released version of the plugin 0.12 ({{{https://issues.sonatype.org/browse/MNGECLIPSE-2757}MNGECLIPSE-2757}})
+        you should install the 0.10.x version of the plugin:
+        
+        * m2eclipse Core Update Site: {{{http://m2eclipse.sonatype.org/sites/archives/m2e-0.10.2.20100623-1649/}http://m2eclipse.sonatype.org/sites/archives/m2e-0.10.2.20100623-1649/}}
+        
+        * m2eclipse Extras Update Site: {{{http://m2eclipse.sonatype.org/sites/archives/m2e-extras-20101029/}http://m2eclipse.sonatype.org/sites/archives/m2e-extras-20101029/}}
+        
+        []
+
+[../images/development/m2eclipse.png]
+
+        Optionally installing the <Maven Integration for WTP>, <Maven SCM Integration>
+		and <Maven SCM handler for Subclipse> from m2clipse extras package.
+        
+[../images/development/m2eclipse-extras.png]
+
+  []
+
+  The Eclipse setup it done. You can continue with the {{{./moduleEclipse.html}creating a new Jahia Web Poject}}. 
+
+  

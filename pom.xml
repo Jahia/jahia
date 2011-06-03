@@ -1,43 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    This file is part of Jahia, next-generation open source CMS:
-    Jahia's next-generation, open source CMS stems from a widely acknowledged vision
-    of enterprise application convergence - web, search, document, social and portal -
-    unified by the simplicity of web content management.
- 
-    For more information, please visit http://www.jahia.com.
- 
-    Copyright (C) 2002-2011 Jahia Solutions Group SA. All rights reserved.
- 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
- 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
- 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- 
-    As a special exception to the terms and conditions of version 2.0 of
-    the GPL (or any later version), you may redistribute this Program in connection
-    with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have received a copy of the text
-    describing the FLOSS exception, and it is also available here:
-    http://www.jahia.com/license
- 
-    Commercial and Supported Versions of the program (dual licensing):
-    alternatively, commercial and supported versions of the program may be used
-    in accordance with the terms and conditions contained in a separate
-    written agreement between you and Jahia Solutions Group SA.
- 
-    If you are unsure which license is appropriate for your use,
-    please contact the sales department at sales@jahia.com.
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
@@ -68,7 +29,7 @@
         <!-- general encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-              
+
         <jahia.package.version>${project.version}</jahia.package.version>
         <jahia.project.structure.version>2</jahia.project.structure.version>
 
@@ -98,7 +59,7 @@
         <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
         <jahia.manifest.vendor.email>info@jahia.org</jahia.manifest.vendor.email>
         <jahia.svn.base.url>http://10.8.37.111/svn/jahia/trunk</jahia.svn.base.url>
-        
+
         <license.plugin.version>1.8.0</license.plugin.version>
         <javadoc.plugin.version>2.7</javadoc.plugin.version>
         <assembly.plugin.version>2.2</assembly.plugin.version>
@@ -116,11 +77,11 @@
         <jar.plugin.version>2.3.1</jar.plugin.version>
         <surefire.plugin.version>2.7.2</surefire.plugin.version>
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
-        
+
         <!-- Jahia Maven plugin version and default settings -->
         <jahia.plugin.version>2.40</jahia.plugin.version>
         <!-- common settings -->
-		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB> 
+		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB>
 		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
         <jahia.deploy.processingServer>true</jahia.deploy.processingServer>
         <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
@@ -372,8 +333,7 @@
                             <excludes>
                                 <exclude>src/main/java/compressionFilters/**</exclude>
                                 <exclude>src/main/java/name/fraser/**</exclude>
-                                <exclude>src/main/java/org/apache/lucene/**</exclude>
-                                <exclude>src/main/java/org/apache/solr/**</exclude>
+                                <exclude>src/main/java/org/apache/**</exclude>
                                 <exclude>src/main/java/EDU/oswego/**</exclude>
                             </excludes>
                             <useDefaultExcludes>true</useDefaultExcludes>
@@ -637,7 +597,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>installer,windows-installer,qa-build,jahia-test,do-attach-javadocs</releaseProfiles>
+                    <releaseProfiles>installer,windows-installer,qa-build,do-attach-javadocs</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>

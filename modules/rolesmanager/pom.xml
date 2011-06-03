@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jahia-ee-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>6.5.0.0</version>
+        <version>6.5.1.0-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>rolesmanager</artifactId>
@@ -15,7 +15,7 @@
         <dependency>
             <artifactId>jahia-ee-gwt</artifactId>
             <groupId>org.jahia.server</groupId>
-            <version>6.5.0.0</version>
+            <version>6.5.1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

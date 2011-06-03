@@ -44,7 +44,7 @@
     <parent>
         <artifactId>jahia-test-parent</artifactId>
         <groupId>org.jahia.server</groupId>
-        <version>6.5.1.0-SNAPSHOT</version>
+        <version>6.5.0.0</version>
     </parent>
     <groupId>org.jahia.server</groupId>
     <artifactId>jahia-test-service</artifactId>
@@ -167,13 +167,13 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.5.1.0-SNAPSHOT</version>
+            <version>6.5.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>6.5.1.0-SNAPSHOT</version>
+            <version>6.5.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

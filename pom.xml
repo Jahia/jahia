@@ -255,6 +255,35 @@
     </pluginRepositories>
 
     <profiles>
+        <profile>
+            <id>docsite</id>
+            <activation>
+                <property>
+                    <name>documentation</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gwt</module>
+                <module>modules</module>
+                <module>war</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>nodocsite</id>
+            <activation>
+                <property>
+                    <name>!documentation</name>
+                </property>
+            </activation>
+            <modules>
+                <module>public-api</module>
+                <module>taglib</module>
+                <module>core</module>
+                <module>gwt</module>
+                <module>modules</module>
+                <module>war</module>
+            </modules>
+        </profile>
 
         <profile>
             <id>code-coverage</id>
@@ -445,35 +474,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>docsite</id>
-            <activation>
-                <property>
-                    <name>documentation</name>
-                </property>
-            </activation>
-            <modules>
-                <module>gwt</module>
-                <module>modules</module>
-                <module>war</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>nodocsite</id>
-            <activation>
-                <property>
-                    <name>!documentation</name>
-                </property>
-            </activation>
-            <modules>
-                <module>public-api</module>
-                <module>taglib</module>
-                <module>core</module>
-                <module>gwt</module>
-                <module>modules</module>
-                <module>war</module>
-            </modules>
         </profile>
     </profiles>
 

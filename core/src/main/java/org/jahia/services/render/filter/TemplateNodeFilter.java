@@ -61,6 +61,8 @@ public class TemplateNodeFilter extends AbstractFilter {
             if (renderContext.getRequest().getAttribute("templateSet") == null) {
                 template = service.resolveTemplate(resource, renderContext);
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
+            } else if (renderContext.getRequest().getAttribute("cachedTemplate") != null) {
+                template = (Template) renderContext.getRequest().getAttribute("cachedTemplate");
             } else {
                 previousTemplate = (Template) renderContext.getRequest().getAttribute("previousTemplate");
                 if (previousTemplate != null) {

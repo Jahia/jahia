@@ -160,6 +160,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             userKeysLinkedList = new LinkedList<String>();
             userKeys.set(userKeysLinkedList);
         }
+        if(userKeysLinkedList.contains(perUserKey)) {
+            return null;
+        }
         userKeysLinkedList.add(0, perUserKey);
         if (cacheable) {
             try {
@@ -598,8 +601,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
             }
             if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
-                renderContext.getRequest().setAttribute("previousTemplate", new Template(keyAttrbs.get(
-                        "templateNodes")));
+                Template templateNodes = new Template(keyAttrbs.get("templateNodes"));
+                renderContext.getRequest().setAttribute("cachedTemplate", templateNodes);
             } else {
                 renderContext.getRequest().removeAttribute("previousTemplate");
                 restoreOldOneIfNeeded = true;

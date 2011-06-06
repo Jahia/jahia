@@ -42,6 +42,7 @@ package org.apache.jackrabbit.core.query.lucene;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.predicate.Predicate;
+import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.query.lucene.join.SelectorRow;
 import org.apache.lucene.analysis.KeywordAnalyzer;
@@ -122,9 +123,13 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             while (node != null) {
                 if (foundIds.add(getId(node, reader))) {  // <-- Added by jahia
                     try {
+                        NodeImpl objectNode = session.getNodeById(node.getNodeId());
+                        if (objectNode.isNodeType("jnt:translation")) {
+                            objectNode = (NodeImpl) objectNode.getParent();
+                        }
                         Row row = new SelectorRow(
                                 columns, evaluator, selector.getSelectorName(),
-                                provider.getNodeWrapper(session.getNodeById(node.getNodeId()), jcrSession),
+                                provider.getNodeWrapper(objectNode, jcrSession),
                                 node.getScore());
                         if (filter.evaluate(row)) {
                             rows.add(row);

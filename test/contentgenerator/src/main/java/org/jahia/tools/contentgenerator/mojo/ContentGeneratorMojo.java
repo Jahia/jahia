@@ -63,12 +63,12 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	protected Integer nbPagesPerLevel;
 
 	/**
-	 * @parameter expression="${jahia.cg.outputDirectory}"
+	 * @parameter expression="${jahia.cg.outputDirectory}" default-value="output"
 	 */
 	protected String outputDirectory;
 
 	/**
-	 * @parameter expression="${jahia.cg.outputFileName}"
+	 * @parameter expression="${jahia.cg.outputFileName}" default-value="jahia-cg-output.xml"
 	 */
 	protected String outputFileName;
 
@@ -176,8 +176,7 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 		} else {
 			File fOutputDirectory = new File(outputDirectory);
 			if (!fOutputDirectory.exists()) {
-				throw new MojoExecutionException("Output directory \"" + outputDirectory
-						+ "\" does not exist or is not readable");
+				fOutputDirectory.mkdirs();
 			}
 
 			if (outputFileName == null) {
@@ -224,8 +223,7 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 			} else {
 				File fPoolDirectory = new File(poolDirectory);
 				if (!fPoolDirectory.exists()) {
-					throw new MojoExecutionException(
-							"Directory containing files to include does not exist or is not readable: " + poolDirectory);
+                    fPoolDirectory.mkdirs();
 				}
 				export.setFilesDirectory(fPoolDirectory);
 				export.setFileNames(getFileNamesAvailable(export.getFilesDirectory()));

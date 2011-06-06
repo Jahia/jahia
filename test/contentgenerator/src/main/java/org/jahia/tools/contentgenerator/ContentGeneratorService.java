@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
+import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 
 public class ContentGeneratorService {
 
@@ -18,7 +19,12 @@ public class ContentGeneratorService {
 	 * 
 	 * @param export
 	 */
-	public void generatePages(ExportBO export) {
+	public void generatePages(ExportBO export) throws MojoExecutionException {
+        if (!ContentGeneratorCst.VALUE_NONE.equals(export.getAddFilesToPage()) && export.getFileNames().isEmpty()) {
+            throw new MojoExecutionException(
+                    "Directory containing files to include is empty, use jahia-cg:generate-files first");
+        }
+
 		logger.info("Jahia content generator starts");
 		logger.info(export.getTotalPages() + " pages will be created");
 

@@ -1,9 +1,6 @@
 package org.jahia.tools.contentgenerator;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,8 +20,8 @@ public class OutputService {
 	}
 	
 	public void appendStringToFile(File f, String s) throws IOException {
-		FileWriter fwriter = new FileWriter(f, true);
-		BufferedWriter fOut = new BufferedWriter(fwriter);
+		OutputStreamWriter fwriter = new OutputStreamWriter(new FileOutputStream(f, true), "UTF-8");
+        BufferedWriter fOut = new BufferedWriter(fwriter);
 		fOut.write(s);
 		fOut.close();
 	}

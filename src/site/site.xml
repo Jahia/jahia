@@ -5,7 +5,7 @@
     <bannerLeft>
         <name>Jahia 6.5</name>
         <src>images/logo-top.png</src>
-        <href>index.html</href>
+        <href>./index.html</href>
     </bannerLeft>
     <skin>
         <groupId>org.jahia</groupId>

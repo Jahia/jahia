@@ -144,7 +144,7 @@ public class PageBO {
 				+ this.getTitleEn()
 				+ "\" />\n"
 				+ "		<listA jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">\n"
-				+ "			<bigText_17 j:view=\"introduction\" jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">\n"
+				+ "			<bigText_17 jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">\n"
 				+ "				<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
 				+ this.getContentFr()
 				+ " \" />"

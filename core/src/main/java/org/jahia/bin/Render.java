@@ -853,8 +853,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 // Validate form token
                 String formAction = values.remove("form-action").get(0);
                 String characterEncoding = SettingsBean.getInstance().getCharacterEncoding();
-                if (formAction == null || !URLDecoder.decode(req.getRequestURI(), characterEncoding).equals(
-                        URLDecoder.decode(formAction, characterEncoding))) {
+                if (formAction == null ||
+                        (!URLDecoder.decode(req.getRequestURI(), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)) &&
+                        !URLDecoder.decode(resp.encodeURL(req.getRequestURI()), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)))
+                        ) {
                     throw new AccessDeniedException();
                 }
                 if (!req.getMethod().equalsIgnoreCase(values.remove("form-method").get(0))) {

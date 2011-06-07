@@ -158,8 +158,9 @@ public class AreaTag extends ModuleTag implements ParamParent {
             if ("absoluteArea".equals(moduleType)) {
                 // No more areas in an absolute area
                 renderContext.getRequest().setAttribute("previousTemplate", null);
+                JCRNodeWrapper main = null;
                 try {
-                    JCRNodeWrapper main = renderContext.getMainResource().getNode();
+                    main = renderContext.getMainResource().getNode();
                     if (level != null && main.getDepth() >= level + 3) {
                         node = (JCRNodeWrapper) main.getAncestor(level + 3);
                     } else if (level == null) {
@@ -167,11 +168,32 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     } else {
                         return;
                     }
+                    if (node == null) {
+                        return;
+                    }
                     node = node.getNode(path);
                 } catch (RepositoryException e) {
-                    path = node.getPath() + "/" + path;
+                    if (node != null) {
+                        path = node.getPath() + "/" + path;
+                    }
                     node = null;
                     missingResource(renderContext, currentResource, resource);
+                } finally {
+                    if (node == null && logger.isDebugEnabled()) {
+                        if (level == null) {
+                            logger.debug(
+                                    "Cannot get a node {}, relative to the home page of site {}"
+                                            + " for main resource {}",
+                                    new String[] {
+                                            path,
+                                            main != null && main.getResolveSite() != null ? main.getResolveSite().getPath() : null,
+                                            main != null ? main.getPath() : null });
+                        } else {
+                            logger.debug(
+                                    "Cannot get a node {}, with level {} for main resource {}",
+                                    new String[] { path, String.valueOf(level), main != null ? main.getPath() : null });
+                        }
+                    }
                 }
             } else if (path != null) {
                 if (currentResource.getNode().isNodeType("jnt:area") && t != null) {

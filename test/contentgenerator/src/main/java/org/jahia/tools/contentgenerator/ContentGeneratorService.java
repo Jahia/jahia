@@ -3,6 +3,7 @@ package org.jahia.tools.contentgenerator;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -13,8 +14,25 @@ import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 
 public class ContentGeneratorService {
 
+	public static ContentGeneratorService instance;
+	
 	private static final Logger logger = Logger.getLogger(ContentGeneratorService.class.getName());
 
+	public static int currentPageIndex = 0;
+	
+	public static int currentFileIndex = 0;
+	
+	private ContentGeneratorService() {
+		
+	}
+	
+	public static ContentGeneratorService getInstance() {
+		if (instance == null) {
+			instance = new ContentGeneratorService();
+		}
+		return instance;
+	}
+	
 	/**
 	 * 
 	 * @param export
@@ -30,9 +48,10 @@ public class ContentGeneratorService {
 
 		List<ArticleBO> articles = DatabaseService.getInstance().selectArticles(export, export.getTotalPages());
 
-		XmlService xmlManager = new XmlService();
+		PageService pageService = new PageService();
+		
 		try {
-			xmlManager.createTopPages(export, articles);
+			pageService.createTopPages(export, articles);
 			logger.info("XML import file available here: " + export.getOutputFile().getAbsolutePath());
 			if (export.getCreateMap()) {
 				logger.info("Paths list available here: " + export.getMapFile().getAbsolutePath());
@@ -83,6 +102,24 @@ public class ContentGeneratorService {
 
 			indexArticle++;
 		}
+	}
+	
+	/**
+	 * Calculates the number of pages needed, used to know how much articles we
+	 * will need
+	 * 
+	 * @param nbPagesTopLevel
+	 * @param nbLevels
+	 * @param nbPagesPerLevel
+	 * @return number of pages needed
+	 */
+	public Integer getTotalNumberOfPagesNeeded(Integer nbPagesTopLevel, Integer nbLevels, Integer nbPagesPerLevel) {
+		Double nbPages = new Double(0);
+		for (double d = nbLevels; d > 0; d--) {
+			nbPages += Math.pow(nbPagesPerLevel.doubleValue(), d);
+		}
+		nbPages = nbPages * nbPagesTopLevel + nbPagesTopLevel;
 
+		return new Integer(nbPages.intValue());
 	}
 }

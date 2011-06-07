@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.jahia.tools.contentgenerator.ContentGeneratorService;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.jahia.tools.contentgenerator.properties.DatabaseProperties;
@@ -117,6 +118,7 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	 */
 	protected ExportBO initExport() throws MojoExecutionException, MojoFailureException {
 		ExportBO export = new ExportBO();
+		ContentGeneratorService contentGeneratorService = ContentGeneratorService.getInstance();
 
 		/**
 		 * Database
@@ -233,7 +235,7 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 		export.setNumberOfFilesToGenerate(numberOfFilesToGenerate);
 		
 
-		Integer totalPages = getTotalNumberOfPagesNeeded(nbPagesOnTopLevel, nbSubLevels, nbPagesPerLevel);
+		Integer totalPages = contentGeneratorService.getTotalNumberOfPagesNeeded(nbPagesOnTopLevel, nbSubLevels, nbPagesPerLevel);
 		export.setTotalPages(totalPages);
 		if (export.getTotalPages().compareTo(ContentGeneratorCst.MAX_TOTAL_PAGES) > 0) {
 			throw new MojoExecutionException("You asked to generate " + export.getTotalPages()
@@ -241,25 +243,6 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 		}
 
 		return export;
-	}
-
-	/**
-	 * Calculates the number of pages needed, used to know how much articles we
-	 * will need
-	 * 
-	 * @param nbPagesTopLevel
-	 * @param nbLevels
-	 * @param nbPagesPerLevel
-	 * @return number of pages needed
-	 */
-	protected Integer getTotalNumberOfPagesNeeded(Integer nbPagesTopLevel, Integer nbLevels, Integer nbPagesPerLevel) {
-		Double nbPages = new Double(0);
-		for (double d = nbLevels; d > 0; d--) {
-			nbPages += Math.pow(nbPagesPerLevel.doubleValue(), d);
-		}
-		nbPages = nbPages * nbPagesTopLevel + nbPagesTopLevel;
-
-		return new Integer(nbPages.intValue());
 	}
 
 	/**

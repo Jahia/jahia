@@ -13,25 +13,22 @@ import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 
-/**
- * XmlService is the class used to process selected articles and generate a tree
- * of page, according to the configuration chose for the export. This class also
- * send created object to the output service
- * 
- * @author Guillaume Lucazeau
- * 
- */
-public class XmlService {
-	private static final Logger logger = Logger.getLogger(XmlService.class.getName());
-
-	private static int currentPageIndex = 0;
+public class PageService {
+	private static final Logger logger = Logger.getLogger(PageService.class.getName());
 	
-	private static int currentFileIndex = 0;
-
-	public XmlService() {
-
+	private static PageService instance;
+	
+	public PageService() {
+		
 	}
-
+	
+	public static PageService getInstance() {
+		if (instance == null) {
+			instance = new PageService();
+		}
+		return instance;
+	}
+	
 	/**
 	 * Main method, create top pages and for each calls the sub pages
 	 * generation. Each time a top page and its sub pages have been generated,
@@ -47,13 +44,15 @@ public class XmlService {
 	 *             Error while writing generated XML to the output file
 	 */
 	public void createTopPages(ExportBO export, List<ArticleBO> articles) throws IOException {
+		ArticleService articleService = ArticleService.getInstance();
+		
 		logger.info("Creating top pages");
 		PageBO pageTopLevel = null;
 		ArticleBO articleEn = null;
 		ArticleBO articleFr = null;
 
-		articleEn = getArticle(articles);
-		articleFr = getArticle(articles);
+		articleEn = articleService.getArticle(articles);
+		articleFr = articleService.getArticle(articles);
 		PageBO homePage = createNewPage(export, articleEn, articleFr, export.getNbSubLevels() + 1, null);
 
 		OutputService outService = new OutputService();
@@ -62,14 +61,14 @@ public class XmlService {
 		outService.appendStringToFile(export.getOutputFile(), homePage.getHeader());
 
 		for (int i = 1; i <= export.getNbPagesTopLevel().intValue(); i++) {
-			articleEn = getArticle(articles);
-			articleFr = getArticle(articles);
+			articleEn = articleService.getArticle(articles);
+			articleFr = articleService.getArticle(articles);
 			pageTopLevel = createNewPage(
 					export,
 					articleEn,
 					articleFr,
 					export.getNbSubLevels() + 1,
-					createSubPages(export, articles, currentPageIndex, export.getNbSubLevels(),
+					createSubPages(export, articles, ContentGeneratorService.currentPageIndex, export.getNbSubLevels(),
 							export.getMaxArticleIndex()));
 			outService.appendPageToFile(export.getOutputFile(), pageTopLevel);
 
@@ -108,8 +107,9 @@ public class XmlService {
 	 *            Index of the last article
 	 * @return A list of Page BO, containing their sub pages (if they have some)
 	 */
-	private List<PageBO> createSubPages(ExportBO export, List<ArticleBO> articles, Integer articleIndex, Integer level,
+	public List<PageBO> createSubPages(ExportBO export, List<ArticleBO> articles, Integer articleIndex, Integer level,
 			Integer maxArticleIndex) {
+		ArticleService articleService = ArticleService.getInstance();
 		List<PageBO> listePages = new ArrayList<PageBO>();
 		ArticleBO articleEn;
 		ArticleBO articleFr;
@@ -119,8 +119,8 @@ public class XmlService {
 		listePages.clear();
 		if (level.intValue() > 0) {
 			for (int i = 0; i < nbPagesPerLevel; i++) {
-				articleEn = getArticle(articles);
-				articleFr = getArticle(articles);
+				articleEn = articleService.getArticle(articles);
+				articleFr = articleService.getArticle(articles);
 				PageBO page = createNewPage(
 						export,
 						articleEn,
@@ -152,7 +152,7 @@ public class XmlService {
 	 *            List of sub pages related
 	 * @return
 	 */
-	private PageBO createNewPage(ExportBO export, ArticleBO articleEn, ArticleBO articleFr, int level,
+	public PageBO createNewPage(ExportBO export, ArticleBO articleEn, ArticleBO articleFr, int level,
 			List<PageBO> subPages) {
 		
 		boolean addFile = false;
@@ -165,60 +165,21 @@ public class XmlService {
 		
 		String fileName = null;
 		if (addFile) {
-			 fileName = getFileName(export.getFileNames());
+			FileService fileService = FileService.getInstance();
+			 fileName = fileService.getFileName(export.getFileNames());
 		}
 		
-		logger.debug("		Creating new page level " + level + " - Page " + currentPageIndex + " - Article FR "
+		logger.debug("		Creating new page level " + level + " - Page " + ContentGeneratorService.currentPageIndex + " - Article FR "
 				+ articleFr.getId() + " - Article EN " + articleEn.getId() + " - file attached "+fileName);
 		
 		
-		PageBO page = new PageBO(currentPageIndex, formatForXml(articleEn.getTitle()),
+		PageBO page = new PageBO(ContentGeneratorService.currentPageIndex, formatForXml(articleEn.getTitle()),
 				formatForXml(articleEn.getContent()), formatForXml(articleFr.getTitle()),
 				formatForXml(articleFr.getContent()), level, subPages, export.getPagesHaveVanity(), export.getSiteKey(), fileName);
-		currentPageIndex = currentPageIndex + 1;
+		ContentGeneratorService.currentPageIndex = ContentGeneratorService.currentPageIndex + 1;
 		return page;
 	}
-
-	/**
-	 * Chooses an article in the list of available articles. As long as not used
-	 * yet articles remain, chooses the next one. When all the articles have
-	 * been used, randomly picks another one.
-	 * 
-	 * @param articles
-	 *            All articles BO available
-	 * @param maxArticleIndex
-	 * @return
-	 */
-	private ArticleBO getArticle(List<ArticleBO> articles) {
-		Random generator = new Random();
-		int maxIndex = articles.size() - 1;
-		int index;
-		if (currentPageIndex <= maxIndex) {
-			index = currentPageIndex;
-		} else {
-			index = generator.nextInt(maxIndex);
-		}
-		return (ArticleBO) articles.get(index);
-	}
-
-	/**
-	 * Returns a file name randomly picked in the list of file names available
-	 * (from the pool directory specified in parameter)
-	 * 
-	 * @param availableFileNames
-	 * @return file name choosen
-	 */
-	private String getFileName(List<String> availableFileNames) {
-		String fileName = null;
-		
-		if (currentFileIndex == availableFileNames.size()) {
-			currentFileIndex = 0;
-		}
-		fileName = availableFileNames.get(currentFileIndex);
-		currentFileIndex++;
-		return fileName;
-	}
-
+	
 	/**
 	 * getPagesPathrecursively retrieves absolute paths for each page, from the
 	 * top page. If choosen by the user, a map of this path will be generated.
@@ -231,7 +192,7 @@ public class XmlService {
 	 *            pages above
 	 * @return String containing all the generated paths, one per line
 	 */
-	private List<String> getPagesPath(List<PageBO> pages, String path) {
+	public List<String> getPagesPath(List<PageBO> pages, String path) {
 		List<String> siteMap = new ArrayList<String>();
 
 		for (Iterator<PageBO> iterator = pages.iterator(); iterator.hasNext();) {
@@ -254,7 +215,7 @@ public class XmlService {
 	 *            XML string to format
 	 * @return formatted XML string
 	 */
-	private String formatForXml(final String s) {
+	public String formatForXml(final String s) {
 		String formattedString = StringUtils.replace(s, "&", "&amp;");
 		formattedString = StringUtils.replace(formattedString, "\"", " &quot;");
 		formattedString = StringUtils.replace(formattedString, "<", "&lt;");

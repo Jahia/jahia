@@ -7,14 +7,13 @@ import org.jahia.tools.contentgenerator.bo.ExportBO;
 
 /**
  * Generates files that can be used as attachments
+ * 
  * @goal generate-files
  */
-public class GenerateFilesMojo extends ContentGeneratorMojo
-{
-    public void execute() throws MojoExecutionException, MojoFailureException
-    {
-		ContentGeneratorService contentGeneratorService = new ContentGeneratorService();
+public class GenerateFilesMojo extends ContentGeneratorMojo {
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		ContentGeneratorService contentGeneratorService = ContentGeneratorService.getInstance();
 		ExportBO export = super.initExport();
 		contentGeneratorService.generateFiles(export);
-    }
+	}
 }

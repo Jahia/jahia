@@ -14,7 +14,7 @@ public class GeneratePagesMojo extends ContentGeneratorMojo {
 	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		ContentGeneratorService contentGeneratorService = new ContentGeneratorService();
+		ContentGeneratorService contentGeneratorService = ContentGeneratorService.getInstance();
 		ExportBO export = super.initExport();
 		contentGeneratorService.generatePages(export);
 	}

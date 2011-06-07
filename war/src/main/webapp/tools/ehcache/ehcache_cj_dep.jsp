@@ -28,27 +28,26 @@
 <c:if test="${empty param.key}">
     <html>
     <head>
-        <link type="text/css" href="css/demo_table.css" rel="stylesheet"/>
-        <script type="text/javascript" src="jquery.min.js" language="JavaScript"></script>
-        <script type="text/javascript" src="jquery.dataTables.min.js" language="JavaScript"></script>
+        <style type="text/css" title="currentStyle">
+            @import "../resources/css/demo_page.css";
+            @import "../resources/css/demo_table_jui.css";
+            @import "../resources/css/le-frog/jquery-ui-1.8.13.custom.css";
+        </style>
+        <script type="text/javascript" src="../resources/jquery.min.js" language="JavaScript"></script>
+        <script type="text/javascript" src="../resources/jquery.dataTables.min.js" language="JavaScript"></script>
         <title>Display content of module cache dependencies</title>
         <script type="text/javascript">
             var myTable = $(document).ready(function() {
                 $('#cacheTable').dataTable({
-                    "bLengthChange": true,
-                    "bFilter": true,
-                    "bSort": true,
-                    "bInfo": false,
-                    "bAutoWidth": true,
-                    "bStateSave" : true,
-                    "aoColumns": [
-                        null,
-                        {
-                            "sType": "html"
-                        }
-                    ],
-                    "sPaginationType": "full_numbers"
-                });
+                            "bLengthChange": true,
+                            "bFilter": true,
+                            "bSort": true,
+                            "bInfo": false,
+                            "bAutoWidth": true,
+                            "bStateSave" : true,
+                            "sPaginationType": "full_numbers",
+                            "bJQueryUI" : true
+                        });
             });
         </script>
     </head>
@@ -71,13 +70,13 @@
         pageContext.setAttribute("keys", keys);
         pageContext.setAttribute("cache", cache);
     %>
-    <body style="background-color: white;">
-    <a href="index.html" title="back to the overview of caches">overview</a>&nbsp;
+    <body id="dt_example">
+    <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
     <a href="?flush=true"
        onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
        title="flush the content of the module output cache">flush</a>&nbsp;
     <div id="keys">
-        <table id="cacheTable">
+        <table id="cacheTable" class="display">
             <thead>
             <tr>
                 <th>Key</th>
@@ -90,7 +89,7 @@
                     final Element element = depCache.getQuiet(attribute);
                     if (element != null) {
                 %>
-                <tr>
+                <tr class="gradeA">
 
                     <td>${key}</td>
                     <td><%
@@ -106,7 +105,6 @@
             </tbody>
         </table>
     </div>
-    <a href="index.html">overview</a>
     </body>
     </html>
 </c:if>

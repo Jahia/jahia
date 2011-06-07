@@ -26,101 +26,6 @@
  *     ../images/ - relative to this CSS file.
  */
 
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * General page setup
- */
-#dt_cacheTable {
-	font: 80%/1.45em "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-	margin: 0;
-	padding: 0;
-	color: #333;
-	background-color: #fff;
-}
-
-
-#dt_cacheTable #container {
-	width: 800px;
-	margin: 30px auto;
-	padding: 0;
-}
-
-
-#dt_cacheTable #footer {
-	margin: 50px auto 0 auto;
-	padding: 0;
-}
-
-#dt_cacheTable #demo {
-	margin: 30px auto 0 auto;
-}
-
-#dt_cacheTable .demo_jui {
-	margin: 30px auto 0 auto;
-}
-
-#dt_cacheTable .big {
-	font-size: 1.3em;
-	font-weight: bold;
-	line-height: 1.6em;
-	color: #4E6CA3;
-}
-
-#dt_cacheTable .spacer {
-	height: 20px;
-	clear: both;
-}
-
-#dt_cacheTable .clear {
-	clear: both;
-}
-
-#dt_cacheTable pre {
-	padding: 15px;
-	background-color: #F5F5F5;
-	border: 1px solid #CCCCCC;
-}
-
-#dt_cacheTable h1 {
-	margin-top: 2em;
-	font-size: 1.3em;
-	font-weight: normal;
-	line-height: 1.6em;
-	color: #4E6CA3;
-	border-bottom: 1px solid #B0BED9;
-	clear: both;
-}
-
-#dt_cacheTable h2 {
-	font-size: 1.2em;
-	font-weight: normal;
-	line-height: 1.6em;
-	color: #4E6CA3;
-	clear: both;
-}
-
-#dt_cacheTable a {
-	color: #0063DC;
-	text-decoration: none;
-}
-
-#dt_cacheTable a:hover {
-	text-decoration: underline;
-}
-
-#dt_cacheTable ul {
-	color: #B0BED9;
-}
-
-.css_right {
-	float: right;
-}
-
-.css_left {
-	float: left;
-}
-
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * DataTables features
  */
@@ -128,21 +33,25 @@
 .dataTables_wrapper {
 	position: relative;
 	min-height: 302px;
-	_height: 302px;
 	clear: both;
+	_height: 302px;
+	zoom: 1; /* Feeling sorry for IE */
 }
 
 .dataTables_processing {
 	position: absolute;
-	top: 0px;
+	top: 50%;
 	left: 50%;
 	width: 250px;
+	height: 30px;
 	margin-left: -125px;
+	margin-top: -15px;
+	padding: 14px 0 2px 0;
 	border: 1px solid #ddd;
 	text-align: center;
 	color: #999;
-	font-size: 11px;
-	padding: 2px 0;
+	font-size: 14px;
+	background-color: white;
 }
 
 .dataTables_length {
@@ -199,8 +108,21 @@
  */
 table.display {
 	margin: 0 auto;
-	width: 100%;
 	clear: both;
+	width: 100%;
+	
+	/* Note Firefox 3.5 and before have a bug with border-collapse
+	 * ( https://bugzilla.mozilla.org/show%5Fbug.cgi?id=155955 ) 
+	 * border-spacing: 0; is one possible option. Conditional-css.com is
+	 * useful for this kind of thing
+	 *
+	 * Further note IE 6/7 has problems when calculating widths with border width.
+	 * It subtracts one px relative to the other browsers from the first column, and
+	 * adds one to the end...
+	 *
+	 * If you want that effect I'd suggest setting a border-top/left on th/td's and 
+	 * then filling in the gaps with other borders.
+	 */
 }
 
 table.display thead th {
@@ -212,7 +134,7 @@ table.display thead th {
 }
 
 table.display tfoot th {
-	padding: 3px 10px;
+	padding: 3px 18px 3px 10px;
 	border-top: 1px solid black;
 	font-weight: bold;
 }
@@ -236,23 +158,23 @@ table.display td.center {
  */
 
 .sorting_asc {
-	background: url('../images/sort_asc.jpg') no-repeat center right;
+	background: url('../images/sort_asc.png') no-repeat center right;
 }
 
 .sorting_desc {
-	background: url('../images/sort_desc.jpg') no-repeat center right;
+	background: url('../images/sort_desc.png') no-repeat center right;
 }
 
 .sorting {
-	background: url('../images/sort_both.jpg') no-repeat center right;
+	background: url('../images/sort_both.png') no-repeat center right;
 }
 
 .sorting_asc_disabled {
-	background: url('../images/sort_asc_disabled.jpg') no-repeat center right;
+	background: url('../images/sort_asc_disabled.png') no-repeat center right;
 }
 
 .sorting_desc_disabled {
-	background: url('../images/sort_desc_disabled.jpg') no-repeat center right;
+	background: url('../images/sort_desc_disabled.png') no-repeat center right;
 }
 
 
@@ -262,17 +184,6 @@ table.display td.center {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * DataTables row classes
  */
-table.display tr.odd.gradeA {
-	background-color: #ddffdd;
-}
-
-table.display tr.even.gradeA {
-	background-color: #eeffee;
-}
-
-
-
-
 table.display tr.odd.gradeA {
 	background-color: #ddffdd;
 }
@@ -321,6 +232,14 @@ tr.even {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Misc
  */
+.dataTables_scroll {
+	clear: both;
+}
+
+.dataTables_scrollBody {
+	*margin-top: -1px;
+}
+
 .top, .bottom {
 	padding: 15px;
 	background-color: #F5F5F5;
@@ -361,7 +280,7 @@ td.details {
 }
 
 
-.cacheTable_alt_pagination div.dataTables_info {
+.example_alt_pagination div.dataTables_info {
 	width: 40%;
 }
 
@@ -548,4 +467,72 @@ tr.even.gradeU td.sorting_3 {
 
 .ex_highlight #example tbody tr.odd:hover, #example tbody tr.odd td.highlighted {
 	background-color: #E6FF99;
+}
+
+.ex_highlight_row #example tr.even:hover {
+	background-color: #ECFFB3;
+}
+
+.ex_highlight_row #example tr.even:hover td.sorting_1 {
+	background-color: #DDFF75;
+}
+
+.ex_highlight_row #example tr.even:hover td.sorting_2 {
+	background-color: #E7FF9E;
+}
+
+.ex_highlight_row #example tr.even:hover td.sorting_3 {
+	background-color: #E2FF89;
+}
+
+.ex_highlight_row #example tr.odd:hover {
+	background-color: #E6FF99;
+}
+
+.ex_highlight_row #example tr.odd:hover td.sorting_1 {
+	background-color: #D6FF5C;
+}
+
+.ex_highlight_row #example tr.odd:hover td.sorting_2 {
+	background-color: #E0FF84;
+}
+
+.ex_highlight_row #example tr.odd:hover td.sorting_3 {
+	background-color: #DBFF70;
+}
+
+
+/*
+ * KeyTable
+ */
+table.KeyTable td {
+	border: 3px solid transparent;
+}
+
+table.KeyTable td.focus {
+	border: 3px solid #3366FF;
+}
+
+table.display tr.gradeA {
+	background-color: #eeffee;
+}
+
+table.display tr.gradeC {
+	background-color: #ddddff;
+}
+
+table.display tr.gradeX {
+	background-color: #ffdddd;
+}
+
+table.display tr.gradeU {
+	background-color: #ddd;
+}
+
+div.box {
+	height: 100px;
+	padding: 10px;
+	overflow: auto;
+	border: 1px solid #8080FF;
+	background-color: #E5E5FF;
 }

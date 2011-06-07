@@ -24,8 +24,17 @@
     <legend>Data</legend>
     <ul>
         <li><a href="jcrBrowser.jsp">JCR repository browser</a></li>
+        <li><a href="modulesBrowser.jsp">Installed modules browser</a></li>
+        <li><a href="definitionsBrowser.jsp">Installed definitions browser</a></li>
         <li><a href="jobadmin.jsp">Background job administration</a></li>
         <li><a href="search.jsp">Search engine management</a></li>
+    </ul>
+</fieldset>
+<fieldset>
+    <legend>Cache</legend>
+    <ul>
+        <li><a href="ehcache/ehcache_cj.jsp">Modules</a></li>
+        <li><a href="ehcache/ehcache_cj_dep.jsp">Dependencies</a></li>
     </ul>
 </fieldset>
 <fieldset>

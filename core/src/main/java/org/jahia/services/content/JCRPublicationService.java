@@ -833,17 +833,24 @@ public class JCRPublicationService extends JahiaService {
             public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
                 boolean first = true;
                 for (String uuid : uuids) {
-                    JCRNodeWrapper node = sourceSession.getNodeByIdentifier(uuid);
-                    VersionManager vm = sourceSession.getWorkspace().getVersionManager();
-                    if (!vm.isCheckedOut(node.getPath())) {
-                        vm.checkout(node.getPath());
+                    try {
+                        JCRNodeWrapper node = sourceSession.getNodeByIdentifier(uuid);
+                        VersionManager vm = sourceSession.getWorkspace().getVersionManager();
+                        if (!vm.isCheckedOut(node.getPath())) {
+                            vm.checkout(node.getPath());
+                        }
+                        if (first && !node.isNodeType("jmix:publication")) {
+                            node.addMixin("jmix:publication");
+                            first = false;
+                        }
+                        unpublish(node, languages);
+                        sourceSession.save();
+                    } catch (ItemNotFoundException e) {
+                        if (logger.isInfoEnabled()) {
+                            logger.info("Node {} does not exist in the default workspace any longer."+
+                                    " Skipping unpublishing it.", uuid);
+                        }
                     }
-                    if (first && !node.isNodeType("jmix:publication")) {
-                        node.addMixin("jmix:publication");
-                        first = false;
-                    }
-                    unpublish(node, languages);
-                    sourceSession.save();
                 }
                 return null;
             }

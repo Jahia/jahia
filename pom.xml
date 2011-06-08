@@ -282,6 +282,7 @@
                 <module>gwt</module>
                 <module>modules</module>
                 <module>war</module>
+                <module>test</module>
             </modules>
         </profile>
 
@@ -420,18 +421,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>jahia-test</id>
-            <activation>
-                <property>
-                    <name>jahia.run.tests</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>test</module>
-            </modules>
         </profile>
         <profile>
             <id>patches</id>

@@ -2,7 +2,10 @@
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="org.jahia.services.content.nodetypes.NodeTypeRegistry" %>
+<%@ page import="javax.jcr.nodetype.NodeType"%>
 <%@ page import="javax.jcr.nodetype.NodeTypeIterator" %>
+<%@ page import="org.apache.commons.collections.IteratorUtils" %>
+<%@ page import="java.util.Comparator"%>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Collections" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -71,7 +74,13 @@
     <c:forEach items="${systemIds}" var="package" varStatus="pstatus">
         <%
             NodeTypeIterator nodeTypes = nodeTypeRegistry.getNodeTypes((String) pageContext.getAttribute("package"));
-            pageContext.setAttribute("nodeTypes", nodeTypes);
+            List ntList = IteratorUtils.toList(nodeTypes);
+            Collections.sort(ntList, new Comparator<NodeType>() {
+                public int compare(NodeType o1, NodeType o2) {
+                    return o1 == o2 ? 0 : o1.getName().compareTo(o2.getName());
+                }
+            });
+            pageContext.setAttribute("nodeTypes", ntList);
         %>
         <tr class="gradeA">
             <td align="center">${pstatus.count}</td>
@@ -86,6 +95,7 @@
                         <li><a href="#${defFileName}" class="defFileLink">${dep.name}</a></li>
                         <div style="display:none;">
                             <div id="${defFileName}">
+                                <h3>${dep.name}</h3>
                                 <c:if test="${functions:length(dep.declaredSupertypes) > 0}">
                                     <p>
                                         Supertypes:

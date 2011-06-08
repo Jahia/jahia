@@ -159,11 +159,6 @@
     		<version>${ant.version}</version>
     	</dependency>
         <dependency>
-            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
-            <artifactId>selenium-java-client-driver</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
             <version>6.5.1.0-SNAPSHOT</version>

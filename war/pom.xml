@@ -1165,7 +1165,6 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${war.plugin.version}</version>
                 <configuration>
-                	<classifier>${jahia.war.classifier}</classifier>
                     <warSourceExcludes>*Resources*.properties</warSourceExcludes>
                     <webResources>
                         <resource>

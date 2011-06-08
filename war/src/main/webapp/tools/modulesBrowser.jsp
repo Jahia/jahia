@@ -1,5 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<?xml version="1.0" encoding="UTF-8" ?>
+<%@ page contentType="text/html;charset=UTF-8" language="java" 
+%><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="org.apache.commons.io.FileUtils" %>
 <%@page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
@@ -29,7 +29,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('.defFileLink').fancybox({
-                        'hideOnContentClick': true,
+                        'hideOnContentClick': false,
                         'scrolling' : 'yes',
                         'width' : 640,
                         'height' : 480,
@@ -66,7 +66,7 @@
     pageContext.setAttribute("availablePackages", availableTemplatePackages);
 %>
 <body id="dt_example">
-<a href="index.jsp" title="back to the overview of caches">overview</a>&nbsp;
+<a href="index.jsp" title="Back to the Jahia Tools overview">Back to the Jahia Tools overview</a>&nbsp;
 <table id="moduleTable" class="display">
     <thead>
     <tr>
@@ -111,9 +111,7 @@
 
                             <div style="display: none;">
                                 <div id="${defFileName}">
-<pre>
-        ${defFileContent}
-</pre>
+                                    <pre>${fn:escapeXml(defFileContent)}</pre>
                                 </div>
                             </div>
                         </li>
@@ -135,9 +133,7 @@
 
                             <div style="display: none;">
                                 <div id="${defFileName}">
-<pre>
-        ${defFileContent}
-</pre>
+                                    <pre>${fn:escapeXml(defFileContent)}</pre>
                                 </div>
                             </div>
                         </li>

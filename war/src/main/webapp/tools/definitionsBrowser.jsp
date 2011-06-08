@@ -1,5 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<?xml version="1.0" encoding="UTF-8" ?>
+<%@ page contentType="text/html;charset=UTF-8" language="java" 
+%><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="org.jahia.services.content.nodetypes.NodeTypeRegistry" %>
 <%@ page import="javax.jcr.nodetype.NodeTypeIterator" %>
@@ -14,7 +14,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Installed Modules Browser</title>
+    <title>Installed Definitions Browser</title>
     <link type="text/css" href="resources/jquery.fancybox-1.3.4.css" rel="stylesheet"/>
     <style type="text/css" title="currentStyle">
         @import "resources/css/demo_page.css";
@@ -58,7 +58,7 @@
     pageContext.setAttribute("systemIds", systemIds);
 %>
 <body id="dt_example">
-<a href="index.jsp" title="back to the overview of caches">overview</a>&nbsp;
+<a href="index.jsp" title="Back to the Jahia Tools overview">Back to the Jahia Tools overview</a>&nbsp;
 <table id="moduleTable" class="display">
     <thead>
     <tr>
@@ -88,7 +88,7 @@
                             <div id="${defFileName}">
                                 <c:if test="${functions:length(dep.declaredSupertypes) > 0}">
                                     <p>
-                                        Supertypes :
+                                        Supertypes:
                                     </p>
                                     <ul>
                                         <c:forEach items="${dep.declaredSupertypes}" var="supertype">
@@ -99,7 +99,7 @@
                                 </c:if>
                                 <c:if test="${functions:length(dep.propertyDefinitions)>0}">
                                     <p>
-                                        Properties :
+                                        Properties:
                                     </p>
                                     <ul>
                                         <c:forEach items="${dep.propertyDefinitions}" var="propDef">
@@ -111,7 +111,7 @@
                                 </c:if>
                                 <c:if test="${functions:length(dep.subtypes)>0}">
                                     <p>
-                                        Sub types :
+                                        Sub types:
                                     </p>
                                     <ul>
                                         <c:forEach items="${dep.subtypes}" var="supertype">
@@ -122,7 +122,7 @@
                                 </c:if>
                                 <c:if test="${functions:length(dep.childNodeDefinitions)>0}">
                                     <p>
-                                        Childs :
+                                        Children:
                                     </p>
                                     <ul>
                                         <c:forEach items="${dep.childNodeDefinitions}" var="supertype">

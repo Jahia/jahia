@@ -416,33 +416,13 @@
         	</activation>
         	<dependencies>
         		<dependency>
-					<groupId>org.jahia.server</groupId>
-                    <artifactId>jahia-test</artifactId>
+					<groupId>org.jahia.test</groupId>
+                    <artifactId>jahia-test-module</artifactId>
                     <version>6.5.1.0-SNAPSHOT</version>
                     <type>war</type>
-                    <scope>runtime</scope>
+                    <scope>test</scope>
         		</dependency>
         	</dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${war.plugin.version}</version>
-                        <configuration>
-                            <overlays>
-                                <overlay>
-                                	<groupId>org.jahia.server</groupId>
-                                    <artifactId>jahia-test</artifactId>
-									<excludes>
-										<exclude>WEB-INF/web.xml</exclude>
-									</excludes>
-                                </overlay>
-                            </overlays>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
         <profile>
             <id>run-jahia</id>
@@ -467,17 +447,21 @@
                         <groupId>org.jahia.server</groupId>
                         <artifactId>maven-jahia-plugin</artifactId>
                         <version>${jahia.plugin.version}</version>
-                        <configuration>
-							<jahia.configure.jahiaRootPassword>root1234</jahia.configure.jahiaRootPassword>                        	
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>deploy</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>deploy</goal>
+                                    <goal>copy-templates</goal>
                                     <goal>configure</goal>
                                 </goals>
+                                <configuration>
+                                    <jahia.configure.jahiaRootPassword>root1234</jahia.configure.jahiaRootPassword>
+                                    <targetServerDirectory>${jahia.deploy.targetServerDirectory}</targetServerDirectory>
+                                    <deployTests>true</deployTests>
+                                    <deployToServer>true</deployToServer>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

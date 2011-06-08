@@ -63,7 +63,7 @@ public class AutoSplittingTest {
 
     private final static String TESTSITE_NAME = "findTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
-    private final static int TEST_NODE_COUNT = 1000;
+    private final static int TEST_NODE_COUNT = 100;
 
     private static final String AUTO_SPLIT_CONFIG = "constant,testNodes;date,date,yyyy;date,date,MM;date,date,ss";
     private static final String AUTO_SPLIT_NODETYPE = "jnt:contentList";

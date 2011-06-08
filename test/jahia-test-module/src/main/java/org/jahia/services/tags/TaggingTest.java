@@ -74,7 +74,7 @@ import static org.junit.Assert.*;
 public class TaggingTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaggingTest.class);
     
-    private static final int TAGS_TO_CREATE = 1000;
+    private static final int TAGS_TO_CREATE = 10;
 
     private final static String TESTSITE_NAME = "taggingTest";
 

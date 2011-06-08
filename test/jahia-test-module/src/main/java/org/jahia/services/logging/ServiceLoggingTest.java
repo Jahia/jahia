@@ -71,7 +71,7 @@ import static org.junit.Assert.*;
  */
 public class ServiceLoggingTest {
     private static transient Logger logger = Logger.getLogger(ServiceLoggingTest.class);
-    private static final int TAGS_TO_CREATE = 100;
+    private static final int TAGS_TO_CREATE = 10;
 
     private int counter = 0;
 

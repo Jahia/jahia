@@ -47,6 +47,11 @@
     <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
         <constructor-arg index="0">
             <map>
+                <entry key="image">
+                    <list>
+                        <value>image/*</value>
+                    </list>
+                </entry>
                 <entry key="pdf">
                     <list>
                         <value>application/pdf</value>

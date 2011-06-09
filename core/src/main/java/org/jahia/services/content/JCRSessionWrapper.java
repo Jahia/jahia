@@ -193,6 +193,7 @@ public class JCRSessionWrapper implements Session {
         if (sessionCacheByIdentifier.containsKey(uuid)) {
             return sessionCacheByIdentifier.get(uuid);
         }
+        RepositoryException originalEx = null;
         for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
             if (!provider.isInitialized()) {
                 logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() +
@@ -230,15 +231,26 @@ public class JCRSessionWrapper implements Session {
                 return wrapper;
             } catch (ItemNotFoundException ee) {
                 // All good
+                originalEx = ee;
             } catch (UnsupportedRepositoryOperationException uso) {
                 logger.debug(
                         "getNodeByUUID unsupported by : " + provider.getKey() + " / " + provider.getClass().getName());
+                originalEx = uso;
             } catch (RepositoryException ex) {
+                originalEx = ex;
                 logger.warn(
                         "repository exception : " + provider.getKey() + " / " + provider.getClass().getName() + " : " +
                                 ex.getMessage());
             }
         }
+        if (originalEx != null) {
+            if (originalEx instanceof ItemNotFoundException) {
+                throw originalEx;
+            } else {
+                throw new ItemNotFoundException(uuid, originalEx);
+            }
+        }
+        
         throw new ItemNotFoundException(uuid);
     }
 

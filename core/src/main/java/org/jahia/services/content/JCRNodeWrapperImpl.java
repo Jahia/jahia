@@ -463,7 +463,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean revokeAllRoles() throws RepositoryException {
         if (objectNode.hasNode("j:acl")) {
             objectNode.getNode("j:acl").remove();
-            objectNode.removeMixin("jmix:accessControlled");
+            if(objectNode.isNodeType("jmix:accessControlled"))
+                objectNode.removeMixin("jmix:accessControlled");
             return true;
         }
         return false;

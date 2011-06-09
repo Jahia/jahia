@@ -134,6 +134,8 @@
     </style>
 </head>
 <body onLoad="javascript:document.logFilterForm.logNameFilter.focus();">
+<img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
+<a href="<c:url value='/tools/index.jsp'/>" style="color:#36393D; font-family: Arial,Helvetica,sans-serif; font-size: 80%; line-height:100%;">to Jahia Tools overview</a>
 
 <%
     String containsFilter = "Contains";

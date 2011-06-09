@@ -3,7 +3,7 @@
 %><c:if test="${param.file}"><%
 response.setContentType("text/plain; charset=ISO-8859-1");
 response.setHeader("Content-Disposition", "attachment; filename=\"system-info-"
-        + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".txt\"");
+        + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date()) + ".txt\"");
 %>System Status Information at <%= new java.util.Date() %><% pageContext.getOut().append("\n"); %>
 <% ErrorFileDumper.outputSystemInfoAll(new PrintWriter(pageContext.getOut())); %></c:if><c:if test="${not param.file}">
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -18,6 +18,10 @@ response.setHeader("Content-Disposition", "attachment; filename=\"system-info-"
 </head>
 <body>
 <h1>System Status Information at <%= new Date() %></h1>
+<a href="?file=true" target="_blank">download as a file</a>
+<br/>
+<img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
+<a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
 <pre>
     <% ErrorFileDumper.outputSystemInfoAll(new PrintWriter(pageContext.getOut())); %>
 </pre>

@@ -61,7 +61,8 @@
     pageContext.setAttribute("systemIds", systemIds);
 %>
 <body id="dt_example">
-<a href="index.jsp" title="Back to the Jahia Tools overview">Back to the Jahia Tools overview</a>&nbsp;
+<img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
+<a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
 <table id="moduleTable" class="display">
     <thead>
     <tr>

@@ -83,7 +83,7 @@ import java.util.regex.Pattern;
  * @since : JAHIA 6.1
  *        Created : 8 janv. 2010
  */
-public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener {
+public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<ApplicationEvent> {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
     private ModuleCacheProvider cacheProvider;
     private ModuleGeneratorQueue generatorQueue;
@@ -812,7 +812,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private void manageThreadDump() {
         boolean createDump = false;
         long minInterval = generatorQueue.getMinimumIntervalAfterLastAutoThreadDump();
-        if (minInterval > -1) {
+        if (minInterval > -1 && (generatorQueue.isThreadDumpToSystemOut() || generatorQueue.isThreadDumpToFile())) {
             long now = System.currentTimeMillis();
             synchronized (threadDumpCheckLock) {
                 if (now > (lastThreadDumpTime + minInterval)) {
@@ -823,7 +823,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         if (createDump) {
             ThreadMonitor tm = new ThreadMonitor();
-            tm.dumpThreadInfo();
+            tm.dumpThreadInfo(generatorQueue.isThreadDumpToSystemOut(), generatorQueue.isThreadDumpToFile());
+            tm = null;
         }
     }
 

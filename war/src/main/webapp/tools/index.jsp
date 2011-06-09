@@ -13,10 +13,12 @@
     <legend>System</legend>
     <ul>
         <li><a href="systemInfo.jsp">System information</a></li>
-        <li><a href="dumpThreads.jsp">Thread state information</a></li>
+        <li><a href="threadDumpMgmt.jsp">Thread state information</a></li>
         <li><a href="log4jAdmin.jsp">Log4j administration</a></li>
         <li><a href="maintenance.jsp">System maintenance</a></li>
+        <%--
         <li><a href="viewsession.jsp">View HTTP session information</a></li>
+        --%>
         <li><a href="precompileServlet">JSP pre-compilation</a></li>
     </ul>
 </fieldset>

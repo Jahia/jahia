@@ -40,10 +40,17 @@
 
 package org.jahia.bin.errors;
 
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Statistics;
+
 import org.apache.commons.collections.iterators.EnumerationIterator;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
@@ -51,12 +58,11 @@ import org.jahia.utils.RequestLoadAverage;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * System information utility.
  * User: loom
  * Date: Jul 16, 2010
  * Time: 4:56:24 PM
@@ -64,13 +70,15 @@ import java.util.concurrent.*;
  */
 public class ErrorFileDumper {
 
+    public static final FastDateFormat DATE_FORMAT_DIRECTORY = FastDateFormat.getInstance("yyyy_MM_dd");
+    
+    public static final FastDateFormat DATE_FORMAT_FILE = FastDateFormat.getInstance("yyyy_MM_dd-HH_mm_ss_SSS");
+    
     private static Throwable lastFileDumpedException = null;
     private static int lastFileDumpedExceptionOccurences = 0;
     private static long exceptionCount = 0L;
 
-    private static Map<String, Set<Throwable>> exceptions = new HashMap<String, Set<Throwable>>();
     private static ExecutorService executorService;
-    private static ThreadMonitor threadMonitorInstance = new ThreadMonitor();
 
     /**
      * A low priority thread factory
@@ -209,30 +217,23 @@ public class ErrorFileDumper {
 
         exceptionCount++;
 
-        final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
-
-        File errorDir = new File(sysTempDir, "jahia-errors");
-        if (!errorDir.exists()) {
-            errorDir.mkdir();
-        }
-        Date now = new Date();
-        SimpleDateFormat directoryDateFormat = new SimpleDateFormat("yyyy_MM_dd");
-        File todaysDirectory = new File(errorDir, directoryDateFormat.format(now));
-        if (!todaysDirectory.exists()) {
-            todaysDirectory.mkdir();
-        }
-        SimpleDateFormat fileDateFormat = new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss_SSS");
-        File errorFile = new File(todaysDirectory,
-                "error-" + fileDateFormat.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
         StringWriter errorWriter =
                 generateErrorReport(httpRequestData, t, lastFileDumpedExceptionOccurences, lastFileDumpedException);
-        FileWriter fileWriter = new FileWriter(errorFile);
-        fileWriter.write(errorWriter.toString());
-        fileWriter.close();
+        File errorFile = getNextErrorFile();
+        FileUtils.writeStringToFile(errorFile, errorWriter.toString(), "UTF-8");
+        errorWriter = null;
         lastFileDumpedException = t;
         lastFileDumpedExceptionOccurences = 1;
         long dumpTotalTime = System.currentTimeMillis() - dumpStartTime;
         System.err.println("Error dumped to file " + errorFile.getAbsolutePath() + " in " + dumpTotalTime + "ms");
+    }
+
+    private static File getNextErrorFile() {
+        Date now = new Date();
+        File todaysDirectory = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-errors"), DATE_FORMAT_DIRECTORY.format(now));
+        todaysDirectory.mkdirs();
+        return new File(todaysDirectory,
+                "error-" + DATE_FORMAT_FILE.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
     }
 
     public static StringWriter generateErrorReport(HttpRequestData requestData, Throwable t, int lastExceptionOccurences,
@@ -298,7 +299,7 @@ public class ErrorFileDumper {
         String stackTraceStr = stackTraceToString(t);
         strOut.println(stackTraceStr);
 
-        outputSystemInfoAll(strOut);
+        outputSystemInfoConsiderLoad(strOut);
 
         strOut.println("");
         strOut.println(
@@ -311,10 +312,21 @@ public class ErrorFileDumper {
     }
 
     public static void outputSystemInfoAll(PrintWriter strOut) {
-        outputSystemInfo(strOut, true, true, true, true, true, true);
+        outputSystemInfo(strOut, true, true, true, true, true, true, true);
+    }
+    
+    public static void outputSystemInfoConsiderLoad(PrintWriter strOut) {
+        boolean highLoad = false;
+        RequestLoadAverage loadAverage = RequestLoadAverage.getInstance();
+        highLoad = loadAverage != null && loadAverage.getOneMinuteLoad() > 10; 
+        outputSystemInfo(strOut, true, true, true, true, !highLoad, !highLoad, true);
     }
     
     public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks) {
+        outputSystemInfo(strOut, systemProperties, jahiaSettings, memory, caches, threads, deadlocks, true);
+    }
+
+    public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
         if (systemProperties) {
             // now let's output the system properties.
             strOut.println();
@@ -372,59 +384,85 @@ public class ErrorFileDumper {
                 strOut.println("Cache status:");
                 strOut.println("--------------");
     
+                // non Ehcaches
                 SortedSet sortedCacheNames = new TreeSet(ServicesRegistry.getInstance().getCacheService().getNames());
                 Iterator cacheNameIte = sortedCacheNames.iterator();
                 DecimalFormat percentFormat = new DecimalFormat("###.##");
                 while (cacheNameIte.hasNext()) {
                     String curCacheName = (String) cacheNameIte.next();
                     Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache(curCacheName);
-                    if (objectCache instanceof Cache) {
+                    if (objectCache instanceof Cache && !(((Cache) objectCache).getCacheImplementation() instanceof org.jahia.services.cache.ehcache.EhCacheImpl)) {
                         Cache curCache = (Cache) objectCache;
                         String efficiencyStr = "0";
                         if (!Double.isNaN(curCache.getCacheEfficiency())) {
                             efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
                         }
-                        strOut.println("name=" + curCacheName + " size=" + curCache.size() + " successful hits=" + curCache.getSuccessHits() +
-                                " total hits=" + curCache.getTotalHits() + " efficiency=" + efficiencyStr + "%");
+                        strOut.println(curCacheName + ": size=" + curCache.size() + ", successful hits=" + curCache.getSuccessHits() +
+                                ", total hits=" + curCache.getTotalHits() + ", efficiency=" + efficiencyStr + "%");
                     }
                 }
     
+                // Ehcaches
+                CacheManager ehcacheManager = ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider")).getCacheManager();
+                String[] ehcacheNames = ehcacheManager.getCacheNames();
+                java.util.Arrays.sort(ehcacheNames);
+                for (String ehcacheName : ehcacheNames) {
+                    net.sf.ehcache.Cache ehcache = ehcacheManager.getCache(ehcacheName);
+                    strOut.append(ehcacheName).append(": ");
+                    if (ehcache.isStatisticsEnabled()) {
+                        Statistics ehcacheStats = ehcache.getStatistics();
+                        String efficiencyStr = "0";
+                        if (ehcacheStats.getCacheHits() + ehcacheStats.getCacheMisses() > 0) {
+                            efficiencyStr = percentFormat.format(ehcacheStats.getCacheHits() * 100f / (ehcacheStats.getCacheHits() + ehcacheStats.getCacheMisses()));
+                        }
+                        strOut.append("size=" + ehcacheStats.getObjectCount()
+                                + ", successful hits=" + ehcacheStats.getCacheHits()
+                                + ", total hits="
+                                + (ehcacheStats.getCacheHits() + ehcacheStats.getCacheMisses())
+                                + ", efficiency=" + efficiencyStr + "%");
+                    } else {
+                        strOut.append("statistics disabled");
+                    }
+                    strOut.println();
+                }
             }
         }
 
-        RequestLoadAverage loadAverage = RequestLoadAverage.getInstance();
-        if (loadAverage != null) {
-            if (loadAverage.getOneMinuteLoad() < 10) {
-                ThreadMonitor threadMonitor = null;
-                if (threads) {
-                    strOut.println();
-                    strOut.println("Thread status:");
-                    strOut.println("--------------");
-                    threadMonitor = new ThreadMonitor();
-                    threadMonitor.generateThreadInfo(strOut);
-                }
+        ThreadMonitor threadMonitor = null;
+        if (threads) {
+            strOut.println();
+            strOut.println("Thread status:");
+            strOut.println("--------------");
+            threadMonitor = new ThreadMonitor();
+            threadMonitor.generateThreadInfo(strOut);
+        }
 
-                if (deadlocks) {
-                    strOut.println();
-                    strOut.println("Deadlock status:");
-                    threadMonitor = threadMonitor != null ? threadMonitor : new ThreadMonitor();
-                    strOut.print(threadMonitor.findDeadlock());
-                }
-            } else {
-                strOut.println();
-                strOut.println("Thread info and deadlock status were not generated because of current request high load.");
-            }
+        if (deadlocks) {
+            strOut.println();
+            strOut.println("Deadlock status:");
+            threadMonitor = threadMonitor != null ? threadMonitor : new ThreadMonitor();
+            String deadlock = threadMonitor.findDeadlock();
+            strOut.println(deadlock != null ? deadlock : "none");
+        }
 
+        if (loadAverage) {
             strOut.println();
             strOut.println("Request load average:");
             strOut.println("---------------------");
-            strOut.println("Over one minute=" + loadAverage.getOneMinuteLoad() + " Over five minute=" + loadAverage.getFiveMinuteLoad() + " Over fifteen minute=" + loadAverage.getFifteenMinuteLoad());
+            RequestLoadAverage info = RequestLoadAverage.getInstance();
+            if (info != null) {
+                strOut.println("Over one minute=" + info.getOneMinuteLoad() + " Over five minute="
+                        + info.getFiveMinuteLoad() + " Over fifteen minute="
+                        + info.getFifteenMinuteLoad());
+            } else {
+                strOut.println("not available");
+            }
             strOut.println();
         }
         
         strOut.flush();
     }
-
+    
     /**
      * Converts an exception stack trace to a string, going doing into all
      * the embedded exceptions too to detail as much as possible the real

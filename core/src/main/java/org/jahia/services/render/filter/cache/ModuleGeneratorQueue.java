@@ -63,6 +63,8 @@ public class ModuleGeneratorQueue implements InitializingBean {
     private Semaphore availableProcessings = null;
     private long minimumIntervalAfterLastAutoThreadDump = 60000; // in milliseconds
     private boolean useLatchOnlyForPages = false;
+    private boolean threadDumpToSystemOut = true;
+    private boolean threadDumpToFile = true;
 
     public Map<String, String> getNotCacheableModule() {
         return notCacheableModule;
@@ -127,5 +129,21 @@ public class ModuleGeneratorQueue implements InitializingBean {
 
     public void setUseLatchOnlyForPages(boolean useLatchOnlyForPages) {
         this.useLatchOnlyForPages = useLatchOnlyForPages;
+    }
+
+    public boolean isThreadDumpToSystemOut() {
+        return threadDumpToSystemOut;
+    }
+
+    public void setThreadDumpToSystemOut(boolean threadDumpToSystemOut) {
+        this.threadDumpToSystemOut = threadDumpToSystemOut;
+    }
+
+    public boolean isThreadDumpToFile() {
+        return threadDumpToFile;
+    }
+
+    public void setThreadDumpToFile(boolean threadDumpToFile) {
+        this.threadDumpToFile = threadDumpToFile;
     }
 }

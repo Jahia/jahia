@@ -46,11 +46,18 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.lang.management.ThreadInfo;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.management.*;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.FastDateFormat;
+import org.jahia.bin.errors.ErrorFileDumper;
+
 import java.io.*;
 
 /**
@@ -58,10 +65,88 @@ import java.io.*;
  * high load is running on the system.
  */
 public class ThreadMonitor {
-    private MBeanServerConnection server;
-    private ThreadMXBean tmbean;
+    
+    private static class ThreadDumpTask extends TimerTask {
+
+        private static void out(String msg) {
+            System.out.println(msg);
+        }
+        private int executionCount;
+        private int numberOfExecutions;
+        private File targetFile;
+        private Timer timer;
+
+        private boolean toSystemOut;
+
+        ThreadDumpTask(Timer timer, int numberOfExecutions, boolean toSystemOut, File targetFile) {
+            super();
+            this.numberOfExecutions = numberOfExecutions;
+            this.targetFile = targetFile;
+            this.timer = timer;
+            this.toSystemOut = toSystemOut;
+            out("Starting thread dump task for " + numberOfExecutions + " executions");
+        }
+
+        @Override
+        public void run() {
+            executionCount++;
+            if (executionCount > numberOfExecutions) {
+                return;
+            }
+            out("Executing thread dump " + executionCount + " of " + numberOfExecutions);
+            OutputStream out = null;
+            try {
+                String dump = new ThreadMonitor().getFullThreadInfo();
+                if (toSystemOut) {
+                    System.out.println(dump);
+                }
+                if (targetFile != null) {
+                    out = new FileOutputStream(targetFile, true);
+                    out.write(new ThreadMonitor().getFullThreadInfo().getBytes("UTF-8"));
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (targetFile != null) {
+                    IOUtils.closeQuietly(out);
+                }
+                if (executionCount >= numberOfExecutions) {
+                    timer.cancel();
+                    out("Stopping thread dump task after " + executionCount + " executions");
+                }
+            }
+        }
+    }
+
+    private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+    
+    private static final String DUMP_END ="\n<EndOfDump>\n\n";
+
+    private static String INDENT = "    ";
+    private static File getNextThreadDumpFile(String postfix) {
+        Date now = new Date();
+        File todaysDirectory = new File(new File(System.getProperty("java.io.tmpdir"),
+                "jahia-threads"), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
+        todaysDirectory.mkdirs();
+        return new File(todaysDirectory, "thread-dump-"
+                + ErrorFileDumper.DATE_FORMAT_FILE.format(now) + (postfix != null ? postfix : "")
+                + ".out");
+    }
 
     private String dumpPrefix = "\nFull thread dump ";
+    
+    private MBeanServerConnection server;
+
+    private ThreadMXBean tmbean;
+
+    /**
+     * Constructs a ThreadMonitor object to get thread information in the local JVM.
+     */
+    public ThreadMonitor() {
+        this(getPlatformMBeanServer());
+    }
 
     /**
      * Constructs a ThreadMonitor object to get thread information in a remote JVM.
@@ -76,33 +161,36 @@ public class ThreadMonitor {
     }
 
     /**
-     * Constructs a ThreadMonitor object to get thread information in the local JVM.
-     */
-    public ThreadMonitor() {
-        this(getPlatformMBeanServer());
-    }
-
-    /**
      * Prints the thread dump information to System.out.
      */
     public void dumpThreadInfo() {
-        generateThreadInfo(new PrintWriter(System.out));
+        dumpThreadInfo(true, false);
     }
 
     /**
-     * Generates a string with the full thread dump information.
-     * 
-     * @return
+     * Prints the thread dump information to System.out or/and to a file.
+     * @param toSysOut print the generated thread dump to a System.out
+     * @param toFile print the generated thread dump to a file
      */
-    public void generateThreadInfo(PrintWriter writer) {
-        StringBuilder dump = new StringBuilder();
-
-        dumpThreadInfo(dump);
-
-        writer.println(dump.toString());
+    public void dumpThreadInfo(boolean toSysOut, boolean toFile) {
+        if (!(toSysOut || toFile)) {
+            return;
+        }
+        
+        String threadInfo = getFullThreadInfo();
+        if (toSysOut) {
+            System.out.print(threadInfo);
+        }
+        
+        if (toFile) {
+            final File dumpFile = getNextThreadDumpFile(null);
+            try {
+                FileUtils.writeStringToFile(dumpFile, threadInfo, "UTF-8");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
-
-    private static String INDENT = "    ";
 
     private void dumpThreadInfo(StringBuilder dump) {
         dump.append(getDumpDate());
@@ -114,20 +202,91 @@ public class ThreadMonitor {
             ThreadInfo ti = tinfos[i];
             printThreadInfo(ti, dump);
         }
+        dump.append(DUMP_END);
     }
 
-    private void printThreadInfo(ThreadInfo ti, StringBuilder dump) {
-        // print thread information
-        printThread(ti, dump);
-
-        // print stack trace with locks
-        StackTraceElement[] stacktrace = ti.getStackTrace();
-        for (int i = 0; i < stacktrace.length; i++) {
-            StackTraceElement ste = stacktrace[i];
-            dump.append(INDENT + "at " + ste.toString());
-            dump.append("\n");
+    /**
+     * Starts a background thread to do series of thread dumps with the specified interval.
+     * 
+     * @param toSysOut
+     *            print the generated thread dump to a System.out
+     * @param toFile
+     *            print the generated thread dump to a file
+     * @param threadDumpCount
+     *            the number of thread dumps to do
+     * @param intervalSeconds
+     *            the interval between thread dumps in seconds
+     */
+    public void dumpThreadInfoWithInterval(boolean toSysOut, boolean toFile, int threadDumpCount,
+            int intervalSeconds) {
+        if (threadDumpCount < 1 || intervalSeconds < 1 || !(toSysOut || toFile)) {
+            return;
         }
-        dump.append("\n");
+        
+        Timer timer = new Timer(true);
+        File file = toFile ? getNextThreadDumpFile("-" + threadDumpCount + "-executions") : null;
+        timer.schedule(new ThreadDumpTask(timer, threadDumpCount, toSysOut, file), 0,
+                intervalSeconds * 1000L);
+    }
+
+    /**
+     * Checks if any threads are deadlocked. If any, print the thread dump information.
+     */
+    public String findDeadlock() {
+        StringBuilder dump = new StringBuilder();
+        long[] tids = tmbean.findMonitorDeadlockedThreads();
+        if (tids == null) {
+            return null;
+        }
+        dump.append("\n\nFound one Java-level deadlock:\n");
+        dump.append("==============================\n");
+        ThreadInfo[] infos = tmbean.getThreadInfo(tids, Integer.MAX_VALUE);
+        for (int i = 1; i < infos.length; i++) {
+            ThreadInfo ti = infos[i];
+            // print thread information
+            printThreadInfo(ti, dump);
+        }
+
+        return (dump.toString());
+    }
+
+    /**
+     * Generates a string with the full thread dump information.
+     * 
+     * @param writer the output writer
+     */
+    public void generateThreadInfo(Writer writer) {
+        try {
+            writer.write(getFullThreadInfo());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * create dump date similar to format used by 1.6 VMs
+     * 
+     * @return dump date (e.g. 2007-10-25 08:00:00)
+     */
+    private String getDumpDate() {
+        return (DATE_FORMAT.format(new Date()));
+    }
+
+    /**
+     * Generates a string with the full thread dump information.
+     * 
+     * @return the thread dump content as string
+     */
+    public String getFullThreadInfo() {
+        StringBuilder dump = new StringBuilder();
+
+        dumpThreadInfo(dump);
+
+        return dump.toString();
+    }
+
+    private void parseMBeanInfo() throws IOException {
+            setDumpPrefix();
     }
 
     private void printThread(ThreadInfo ti, StringBuilder dump) {
@@ -164,36 +323,31 @@ public class ThreadMonitor {
         }
     }
 
-    /**
-     * create dump date similar to format used by 1.6 VMs
-     * 
-     * @return dump date (e.g. 2007-10-25 08:00:00)
-     */
-    private String getDumpDate() {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
-                Locale.ENGLISH);
-        return (sdfDate.format(new Date()));
+    private void printThreadInfo(ThreadInfo ti, StringBuilder dump) {
+        // print thread information
+        printThread(ti, dump);
+
+        // print stack trace with locks
+        StackTraceElement[] stacktrace = ti.getStackTrace();
+        for (int i = 0; i < stacktrace.length; i++) {
+            StackTraceElement ste = stacktrace[i];
+            dump.append(INDENT + "at " + ste.toString());
+            dump.append("\n");
+        }
+        dump.append("\n");
     }
 
-    /**
-     * Checks if any threads are deadlocked. If any, print the thread dump information.
-     */
-    public String findDeadlock() {
-        StringBuilder dump = new StringBuilder();
-        long[] tids = tmbean.findMonitorDeadlockedThreads();
-        if (tids == null) {
-            return null;
+    private void setDumpPrefix() {
+        try {
+            RuntimeMXBean rmbean = (RuntimeMXBean) ManagementFactory
+                    .newPlatformMXBeanProxy(server,
+                            ManagementFactory.RUNTIME_MXBEAN_NAME,
+                            RuntimeMXBean.class);
+            dumpPrefix += rmbean.getVmName() + " (" + rmbean.getVmVersion()
+                    + ")\n";
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        dump.append("\n\nFound one Java-level deadlock:\n");
-        dump.append("==============================\n");
-        ThreadInfo[] infos = tmbean.getThreadInfo(tids, Integer.MAX_VALUE);
-        for (int i = 1; i < infos.length; i++) {
-            ThreadInfo ti = infos[i];
-            // print thread information
-            printThreadInfo(ti, dump);
-        }
-
-        return (dump.toString());
     }
 
     /**
@@ -213,20 +367,4 @@ public class ThreadMonitor {
         }
     }
 
-    private void parseMBeanInfo() throws IOException {
-            setDumpPrefix();
-    }
-
-    private void setDumpPrefix() {
-        try {
-            RuntimeMXBean rmbean = (RuntimeMXBean) ManagementFactory
-                    .newPlatformMXBeanProxy(server,
-                            ManagementFactory.RUNTIME_MXBEAN_NAME,
-                            RuntimeMXBean.class);
-            dumpPrefix += rmbean.getVmName() + " (" + rmbean.getVmVersion()
-                    + ")\n";
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
 }

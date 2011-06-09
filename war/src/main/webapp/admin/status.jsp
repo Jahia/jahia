@@ -1,7 +1,8 @@
 <%@include file="/admin/include/header.inc"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import = "org.jahia.bin.*"%>
-<%@page import="org.jahia.bin.errors.ErrorFileDumper" %>
+<%@page import="org.jahia.tools.jvm.ThreadMonitor" %>
 <%@page import = "java.util.*" %>
 <%@page import = "java.text.*" %>
 <%@page import = "org.jahia.registries.*" %>
@@ -137,7 +138,7 @@
                      <fmt:message key="org.jahia.admin.serverStatus.label"/>
                 </div>
                 <div style="float:right;display:inline;padding:5px 10px 0 0">
-                    <a href="<c:url value='/tools/systemInfo.jsp?file=true'/>" target="_blank"><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/>Download full status</a>
+                    <a href="<c:url value='/tools/systemInfo.jsp?file=true'/>" target="_blank"><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.downloadStatus"/></a>
                 </div>
             </div>
 <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"status","&sub=process")%>' method="post">
@@ -452,9 +453,6 @@
 <c:if test="${param['gc']}">
 <% System.gc(); %>
 </c:if>
-<c:if test="${param['threadDump']}">
-<% ErrorFileDumper.outputSystemInfo(new java.io.PrintWriter(System.out), false, false, false, false, true, true); %>
-</c:if>
 <div class="stretcher">
     <table class="evenOddTable full" width="100%" border="0" cellspacing="0" cellpadding="5">
         <tr class="evenLine">
@@ -482,11 +480,60 @@
             </td>
         </tr>
         <tr class="oddLine">
-            <td colspan="2" align="right">
-        		<span style="float:left"><a href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp" title="Launch the current TDA 2.2 release from the browser (requires Java Webstart). Disclaimer: this is an external program from http://java.net/projects/tda/" target="_blank"><img src="<c:url value='/icons/tda.gif'/>" height="16" width="16" alt=" " align="top"/>Launch Thread Dump Analyzer</a></span>
-                <a href="?do=status&amp;sub=display&amp;threadDump=true&amp;timestamp=${timestamp}#memory"><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" " align="top"/>Perform thread dump</a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="?do=status&amp;sub=display&amp;gc=true&amp;timestamp=${timestamp}#memory"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Run Garbage Collector</a>
+            <td colspan="2" align="left">
+                <a href="?do=status&amp;sub=display&amp;gc=true&amp;timestamp=${timestamp}#memory"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.runGarbageCollector"/></a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="stretcher-head head" title="threads">
+    <div class="object-title">
+      <a href="#threads" class="sectionLink"><fmt:message key="org.jahia.admin.status.ManageStatus.title.threadsSection.label"/></a>
+    </div>                
+</div>
+<c:if test="${empty param.threadDumpCount && (param.threadDump == 'sysout' || param.threadDump == 'file')}">
+<% new ThreadMonitor().dumpThreadInfo("sysout".equals(request.getParameter("threadDump")), "file".equals(request.getParameter("threadDump"))); %>
+</c:if>
+<c:if test="${not empty param.threadDumpCount && (param.threadDump == 'sysout' || param.threadDump == 'file')}">
+<% new ThreadMonitor().dumpThreadInfoWithInterval("sysout".equals(request.getParameter("threadDump")), "file".equals(request.getParameter("threadDump")), Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("threadDumpCount"), "10")), Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("threadDumpInterval"), "10"))); %>
+</c:if>
+<div class="stretcher">
+    <table class="evenOddTable full" width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr class="evenLine">
+            <td align="left">
+                <a href="<c:url value='/tools/threadDump.jsp'/>" target="_blank"><img src="<c:url value='/icons/filePreview.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/> (<fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump.window"/>)</a>
+            </td>
+        </tr>
+        <tr class="oddLine">
+            <td align="left">
+                <a href="<c:url value='/tools/threadDump.jsp?file=true'/>" target="_blank"><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/> (<fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump.download"/>)</a>
+            </td>
+        </tr>
+        <tr class="evenLine">
+            <td align="left">
+                <a href="?do=status&amp;sub=display&amp;threadDump=sysout&amp;timestamp=${timestamp}#threads"><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/> (System.out)</a>
+            </td>
+        </tr>
+        <tr class="oddLine">
+            <td align="left">
+                <a href="?do=status&amp;sub=display&amp;threadDump=file&amp;timestamp=${timestamp}#threads"><img src="<c:url value='/icons/globalRepository.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/> (<fmt:message key="fileMenu.label"/>)</a>
+            </td>
+        </tr>
+        <tr class="evenLine">
+            <td align="left">
+                <a href="#dump" onclick="this.href='?do=status&amp;sub=display&amp;threadDump=file&amp;threadDumpCount=' + document.getElementById('threadDumpCount').value + '&amp;threadDumpInterval=' + document.getElementById('threadDumpInterval').value + '&amp;timestamp=${timestamp}#threads'; return true;"><img src="<c:url value='/icons/workflowManager.png'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump"/> (<fmt:message key="org.jahia.admin.status.ManageStatus.performThreadDump.multiple"/>)</a>
+                &nbsp;&nbsp;
+                <label for="threadDumpCount"><fmt:message key="column.count.label"/>:&nbsp;</label><input type="text" id="threadDumpCount" name="threadDumpCount" size="2" value="${not empty param.threadDumpCount ? param.threadDumpCount : '10'}"/>
+                &nbsp;&nbsp;
+                <label for="threadDumpInterval"><fmt:message key="label.interval"/>:&nbsp;</label><input type="text" id="threadDumpInterval" name="threadDumpInterval" size="2" value="${not empty param.threadDumpInterval ? param.threadDumpInterval : '10'}"/>&nbsp;<fmt:message key="label.seconds"/>
+            </td>
+        </tr>
+        <tr class="oddLine">
+            <td align="left">
+                <a href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp"
+                     title="<fmt:message key='org.jahia.admin.status.ManageStatus.launchTda.disclaimer'/>" 
+                     target="_blank"><img src="<c:url value='/icons/tda.gif'/>" height="16" width="16" alt=" " align="top"/><fmt:message key="org.jahia.admin.status.ManageStatus.launchTda"/></a>                
             </td>
         </tr>
     </table>

@@ -41,6 +41,7 @@
 package org.jahia.bin.listeners;
 
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
 import org.slf4j.Logger;
@@ -64,7 +65,10 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import javax.servlet.jsp.jstl.core.Config;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Locale;
@@ -105,6 +109,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             System.setProperty("jahia.license", "");
         }
         Jahia.initContextData(servletContext);
+        writePID(servletContext);
         
         try {
             boolean configExists = event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;
@@ -132,6 +137,30 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
     }
 
+    private void writePID(ServletContext servletContext) {
+        String pid = "";
+        try {
+            pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        } catch (Exception e) {
+            logger.warn("Unable to determine process id", e);
+        }
+        String path = servletContext.getRealPath("WEB-INF/var");
+        if (path != null) {
+            try {
+                FileUtils.writeStringToFile(new File(path, "jahia.pid"), pid);
+            } catch (IOException e) {
+                logger.warn("Unable to write process ID into a file " + new File(path, "jahia.pid"), e);
+            }
+        }
+    }
+
+    private void removePID(ServletContext servletContext) {
+        String path = servletContext.getRealPath("WEB-INF/var");
+        if (path != null) {
+            FileUtils.deleteQuietly(new File(path, "jahia.pid"));
+        }
+    }
+
     private void requireLicense() {
         try {
             if (!ContextLoader.getCurrentWebApplicationContext().getBean("licenseChecker")
@@ -147,6 +176,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public void contextDestroyed(ServletContextEvent event) {
+        removePID(servletContext);
         try {
             if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
                 try {

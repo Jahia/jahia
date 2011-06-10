@@ -22,7 +22,7 @@
 				<c:url var="facetUrl" value="${url.mainResource}">
 					<c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
 				</c:url>
-				<li><a href="${facetUrl}">
+				<li><a href="${facetUrl}" rel="nofollow">
 					<facet:facetValueLabel currentFacetField="${currentFacet}" facetValueCount="${facetValue}" facetValueLabels="${facetValueLabels}" facetValueFormats="${facetValueFormats}" facetValueRenderers="${facetValueRenderers}" facetValueNodeTypes="${facetValueNodeTypes}"/>
 				</a> (${facetValue.count})<br/></li>
 			</c:if>

@@ -89,6 +89,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     private static long startupTime;
 
     private static long sessionCount = 0;
+    
+    private static String pid = "";
 
     @SuppressWarnings("unchecked")
     private static Map<ServletRequest, Long> requestTimes = Collections.synchronizedMap(new LRUMap(1000));
@@ -138,7 +140,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     private void writePID(ServletContext servletContext) {
-        String pid = "";
         try {
             pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
         } catch (Exception e) {
@@ -291,5 +292,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     public static long getRequestCount() {
         return requestTimes.size();
+    }
+
+    public static String getPid() {
+        return pid;
     }
 }

@@ -57,6 +57,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.jahia.bin.errors.ErrorFileDumper;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.settings.SettingsBean;
 
 import java.io.*;
 
@@ -205,6 +207,18 @@ public class ThreadMonitor {
         dump.append(DUMP_END);
     }
 
+    private void dumpThreadInfoUsingJstack(StringBuilder dump) {
+        try {
+            Process p = Runtime.getRuntime().exec("jstack " + JahiaContextLoaderListener.getPid());
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            for (String line = br.readLine(); line != null; line = br.readLine()) {
+                dump.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Starts a background thread to do series of thread dumps with the specified interval.
      * 
@@ -278,10 +292,14 @@ public class ThreadMonitor {
      * @return the thread dump content as string
      */
     public String getFullThreadInfo() {
-        StringBuilder dump = new StringBuilder();
+        StringBuilder dump = new StringBuilder(65536);
 
-        dumpThreadInfo(dump);
-
+        if (SettingsBean.getInstance().isUseJstackForThtreadDumps()) {
+            dumpThreadInfoUsingJstack(dump);
+        } else {
+            dumpThreadInfo(dump);
+        }
+        
         return dump.toString();
     }
 

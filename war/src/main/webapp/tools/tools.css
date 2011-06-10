@@ -10,6 +10,6 @@ body {
 #goToUuid {
     width: 270px;
 }
-pre {
+pre, code {
     font-size: 120%;
 }

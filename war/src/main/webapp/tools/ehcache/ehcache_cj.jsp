@@ -5,6 +5,7 @@
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
 <%@ page import="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator" %>
 <%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
+<%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Collections" %>
 <%@ page import="java.util.Date" %>
@@ -20,7 +21,7 @@
     <%
         System.out.println(request.getParameter("flushkey"));
         boolean removed = ModuleCacheProvider.getInstance().getCache().remove(request.getParameter("flushkey"));
-        pageContext.setAttribute("removed",removed);
+        pageContext.setAttribute("removed", removed);
     %>
 </c:if>
 <c:if test="${not empty param.key}">
@@ -38,12 +39,15 @@
     <html>
     <head>
         <style type="text/css" title="currentStyle">
-        @import "../resources/css/demo_page.css";
-        @import "../resources/css/demo_table_jui.css";
-        @import "../resources/css/le-frog/jquery-ui-1.8.13.custom.css";
-    </style>
-    <script type="text/javascript" src="../resources/jquery.min.js"></script>
-    <script type="text/javascript" src="../resources/jquery.dataTables.min.js"></script>
+            @import "../resources/css/demo_page.css";
+            @import "../resources/css/demo_table_jui.css";
+            @import "../resources/css/TableTools_JUI.css";
+            @import "../resources/css/le-frog/jquery-ui-1.8.13.custom.css";
+        </style>
+        <script type="text/javascript" src="../resources/jquery.min.js"></script>
+        <script type="text/javascript" src="../resources/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="../resources/ZeroClipboard.js"></script>
+        <script type="text/javascript" src="../resources/TableTools.js"></script>
         <title>Display content of module output cache</title>
         <script type="text/javascript">
             var myTable = $(document).ready(function() {
@@ -55,7 +59,23 @@
                             "bAutoWidth": true,
                             "bStateSave" : true,
                             "bJQueryUI" : true,
-                            "sPaginationType": "full_numbers"
+                            "sPaginationType": "full_numbers",
+                            "aLengthMenu": [
+                                [50, 100, 200, -1],
+                                [50, 100, 200, "All"]
+                            ],
+                            "sDom": '<"H"Tlfr>t<"F"p>',
+                            "oTableTools": {
+                                "sSwfPath": "../resources/swf/copy_cvs_xls.swf",
+                                "aButtons": [
+                                    "copy", "csv", "xls",
+                                    {
+                                        "sExtends":    "collection",
+                                        "sButtonText": "Save",
+                                        "aButtons":    [ "csv", "xls" ]
+                                    }
+                                ]
+                            }
                         });
             });
         </script>
@@ -120,7 +140,8 @@
                     %>
 
                     <td>${key}</td>
-                    <td><%=SimpleDateFormat.getDateTimeInstance().format(new Date(element1.getExpirationTime()))%>
+                    <td><%=SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(
+                            element1.getExpirationTime()))%>
                     </td>
                     <% String content = (String) ((CacheEntry) element1.getValue()).getObject();
                         cacheSize += content != null ? content.length() : 0;

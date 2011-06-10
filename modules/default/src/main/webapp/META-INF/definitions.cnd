@@ -42,11 +42,10 @@
  - name (string) indexed=no
  - width (long) indexed=no
  - height (long) indexed=no
- - frameborder (long) = '0' indexed=no
+ - frameborder (boolean) indexed=no
  - marginwidth (long) = '0' indexed=no
  - marginheight (long) = '0' indexed=no
  - scrolling (string, choicelist[resourceBundle]) indexed=no < 'yes','no','auto'
- - alt (string) i18n indexed=no
 
 [jnt:video] > jnt:content, mix:title, jmix:multimediaContent
  - source (weakreference, picker[type='file'])

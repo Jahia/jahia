@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="java.io.PrintWriter"%>
 <%@page import="java.io.StringWriter"%>
+<%@page import="java.util.Locale"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="javax.jcr.query.Query"%>
 <%@page import="javax.jcr.query.QueryManager"%>
@@ -12,6 +13,7 @@
 <%@page import="org.jahia.services.content.JCRNodeWrapper"%>
 <%@page import="org.jahia.services.content.JCRSessionFactory"%>
 <%@page import="org.jahia.services.content.JCRSessionWrapper"%>
+<%@page import="org.jahia.utils.LanguageCodeConverters"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -37,14 +39,26 @@
 </script>
 </head>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>
+<c:set var="locale" value="${functions:default(fn:escapeXml(param.locale), 'en')}"/>
 <c:set var="lang" value="${functions:default(fn:escapeXml(param.lang), 'JCR-SQL2')}"/>
 <c:set var="limit" value="${functions:default(fn:escapeXml(param.limit), '20')}"/>
 <c:set var="offset" value="${functions:default(fn:escapeXml(param.offset), '0')}"/>
+<%
+Locale currentLocale = LanguageCodeConverters.languageCodeToLocale((String) pageContext.getAttribute("locale"));
+pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(currentLocale));
+%>
 <body>
 <c:set var="switchToWorkspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
 <fieldset>
     <legend>
-        <strong>${workspace}</strong>&nbsp;workspace&nbsp;(<a href="#switchWorkspace" onclick="document.getElementById('workspace').value='${switchToWorkspace}'; document.getElementById('navigateForm').submit(); return false;">switch to ${switchToWorkspace}</a>)</legend>
+        <strong>${workspace}</strong>&nbsp;workspace&nbsp;(<a href="#switchWorkspace" onclick="document.getElementById('workspace').value='${switchToWorkspace}'; document.getElementById('navigateForm').submit(); return false;">switch to ${switchToWorkspace}</a>)
+        <select name="localeSelector">
+            <c:forEach items="${locales}" var="loc">
+                <% pageContext.setAttribute("localeLabel", ((Locale) pageContext.getAttribute("loc")).getDisplayName(currentLocale)); %>
+                <option value="${loc}"${loc == locale ? 'selected="selected"' : ''}>${fn:escapeXml(localeLabel)}</option>
+            </c:forEach>
+        </select>
+    </legend>
     <form id="navigateForm" action="?" method="get">
         <input type="hidden" name="workspace" id="workspace" value="${workspace}"/>
         <textarea rows="3" cols="75" name="query" id="query"
@@ -73,7 +87,7 @@
 </fieldset>
 <%
 JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
-JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
+JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"), currentLocale, Locale.ENGLISH);
 try {
     String query = request.getParameter("query");
     Long limit = Long.valueOf(StringUtils.defaultIfEmpty(request.getParameter("limit"), "20"));
@@ -83,7 +97,6 @@ try {
         Query q = jcrSession.getWorkspace().getQueryManager().createQuery(query, (String) pageContext.getAttribute("lang"));
         q.setLimit(Long.valueOf((String) pageContext.getAttribute("limit")));
         q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
-        System.out.println("Executing " + q.getLanguage() + " statement " + q.getStatement() + " with limit " + Long.valueOf((String) pageContext.getAttribute("limit")) + " and offset " + Long.valueOf((String) pageContext.getAttribute("offset")));
         QueryResult result = q.execute();
         pageContext.setAttribute("count", JCRContentUtils.size(result.getNodes()));
         pageContext.setAttribute("nodes", result.getNodes());
@@ -100,7 +113,9 @@ try {
         <a title="Open in Repository Explorer" href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt="open" title="Open in Repository Explorer"></a>
         <br/>
         <strong>Path: </strong>${fn:escapeXml(node.path)}<br/>
-        <strong>ID: </strong>${fn:escapeXml(node.identifier)}
+        <strong>ID: </strong>${fn:escapeXml(node.identifier)}<br/>
+        <strong>created on </strong><fmt:formatDate value="${node.properties['jcr:created'].time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${fn:escapeXml(node.properties['jcr:createdBy'].string)},
+        <strong> last modified on </strong><fmt:formatDate value="${node.properties['jcr:lastModified'].time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${fn:escapeXml(node.properties['jcr:lastModifiedBy'].string)}
     </li>
 </c:forEach>
 </ol>

@@ -46,6 +46,10 @@ public class ExportBO {
 	private Integer numberOfFilesToGenerate;
 	
 	private Integer numberOfBigTextPerPage;
+	
+	private Integer numberOfUsers;
+	
+	private Integer numberOfGroups;	
 
 	public File getOutputFile() {
 		return outputFile;
@@ -189,6 +193,22 @@ public class ExportBO {
 
 	public void setNumberOfBigTextPerPage(Integer numberOfBigTextPerPage) {
 		this.numberOfBigTextPerPage = numberOfBigTextPerPage;
+	}
+
+	public Integer getNumberOfUsers() {
+		return numberOfUsers;
+	}
+
+	public void setNumberOfUsers(Integer numberOfUsers) {
+		this.numberOfUsers = numberOfUsers;
+	}
+
+	public Integer getNumberOfGroups() {
+		return numberOfGroups;
+	}
+
+	public void setNumberOfGroups(Integer numberOfGroups) {
+		this.numberOfGroups = numberOfGroups;
 	}
 
 	public ExportBO() {

@@ -113,6 +113,16 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	 */
 	protected Integer numberOfBigTextPerPage;
 
+	/**
+	 * @parameter expression="${jahia.cg.numberOfUsers}" default-value="25"
+	 */
+	protected Integer numberOfUsers;
+
+	/**
+	 * @parameter expression="${jahia.cg.numberOfGroups}" default-value="1"
+	 */
+	protected Integer numberOfGroups;
+
 	@Override
 	public abstract void execute() throws MojoExecutionException, MojoFailureException;
 
@@ -121,7 +131,7 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	 * 
 	 * @return a new export BO containing all the parameters
 	 */
-	protected ExportBO initExport() throws MojoExecutionException, MojoFailureException {
+	protected ExportBO initExport() throws MojoExecutionException {
 		ExportBO export = new ExportBO();
 		ContentGeneratorService contentGeneratorService = ContentGeneratorService.getInstance();
 
@@ -242,6 +252,18 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 			export.setNumberOfBigTextPerPage(Integer.valueOf("1"));
 		} else {
 			export.setNumberOfBigTextPerPage(numberOfBigTextPerPage);
+		}
+
+		if (numberOfUsers == null) {
+			export.setNumberOfUsers(Integer.valueOf(25));
+		} else {
+			export.setNumberOfUsers(numberOfUsers);
+		}
+		
+		if (numberOfGroups == null) {
+			export.setNumberOfGroups(Integer.valueOf(5));
+		} else {
+			export.setNumberOfGroups(numberOfGroups);
 		}
 
 		export.setNumberOfFilesToGenerate(numberOfFilesToGenerate);

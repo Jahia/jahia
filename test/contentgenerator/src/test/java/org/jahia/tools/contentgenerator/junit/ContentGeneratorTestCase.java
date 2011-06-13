@@ -1,17 +1,19 @@
 package org.jahia.tools.contentgenerator.junit;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ContentGeneratorTestCase extends TestCase {
+public abstract class ContentGeneratorTestCase {
 	protected ExportBO export_default;
 	
 	protected List<ArticleBO> articles;
@@ -29,15 +31,15 @@ public class ContentGeneratorTestCase extends TestCase {
 	
 	protected String SITE_KEY = "ACME";
 	
+	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 		createPages();
 		createArticles();
 		createExport();
 	}
 
+	@After
 	public void tearDown() throws Exception {
-		super.tearDown();
 	}
 	
 	private PageBO createPage(int pageID, List<PageBO> subPages) {
@@ -94,10 +96,5 @@ public class ContentGeneratorTestCase extends TestCase {
 	private void createExport() {
 		export_default = new ExportBO();
 		export_default.setAddFilesToPage(ContentGeneratorCst.VALUE_NONE);
-	}
-	
-	@Test
-	public void testDummy() {
-		assertTrue(Boolean.TRUE);
 	}
 }

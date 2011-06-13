@@ -1,26 +1,28 @@
 package org.jahia.tools.contentgenerator.junit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.tools.contentgenerator.PageService;
-import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class PageServiceTest extends ContentGeneratorTestCase {
 	private static PageService pageService;
 	
-	@BeforeClass
+	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 		pageService = new PageService();
 	}
 
-	@AfterClass
+	@After
 	public void tearDown() {
 		// run for one time after all test cases
 	}

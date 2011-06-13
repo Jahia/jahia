@@ -15,20 +15,13 @@ import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 
 public class PageService {
 	private static final Logger logger = Logger.getLogger(PageService.class.getName());
-	
-	private static PageService instance;
-	
+
+	String sep;
+
 	public PageService() {
-		
+		sep = System.getProperty("file.separator");
 	}
-	
-	public static PageService getInstance() {
-		if (instance == null) {
-			instance = new PageService();
-		}
-		return instance;
-	}
-	
+
 	/**
 	 * Main method, create top pages and for each calls the sub pages
 	 * generation. Each time a top page and its sub pages have been generated,
@@ -45,7 +38,7 @@ public class PageService {
 	 */
 	public void createTopPages(ExportBO export, List<ArticleBO> articles) throws IOException {
 		ArticleService articleService = ArticleService.getInstance();
-		
+
 		logger.info("Creating top pages");
 		PageBO pageTopLevel = null;
 		ArticleBO articleEn = null;
@@ -53,23 +46,21 @@ public class PageService {
 
 		articleEn = articleService.getArticle(articles);
 		articleFr = articleService.getArticle(articles);
-		PageBO homePage = createNewPage(export, articleEn, articleFr, export.getNbSubLevels() + 1, null);
+
+		String rootPageName = export.getRootPageName();
+
+		PageBO rootPage = createNewPage(export, rootPageName, articleEn, articleFr, export.getNbSubLevels() + 1, null);
 
 		OutputService outService = new OutputService();
 		outService.initOutputFile(export.getOutputFile());
 		outService.appendStringToFile(export.getOutputFile(), export.toString());
-		outService.appendStringToFile(export.getOutputFile(), homePage.getHeader());
+		outService.appendStringToFile(export.getOutputFile(), rootPage.getHeader());
 
 		for (int i = 1; i <= export.getNbPagesTopLevel().intValue(); i++) {
 			articleEn = articleService.getArticle(articles);
 			articleFr = articleService.getArticle(articles);
-			pageTopLevel = createNewPage(
-					export,
-					articleEn,
-					articleFr,
-					export.getNbSubLevels() + 1,
-					createSubPages(export, articles, ContentGeneratorService.currentPageIndex, export.getNbSubLevels(),
-							export.getMaxArticleIndex()));
+			pageTopLevel = createNewPage(export, null, articleEn, articleFr, export.getNbSubLevels() + 1,
+					createSubPages(export, articles, export.getNbSubLevels(), export.getMaxArticleIndex()));
 			outService.appendPageToFile(export.getOutputFile(), pageTopLevel);
 
 			// path
@@ -78,14 +69,14 @@ public class PageService {
 				List<PageBO> listeTopPage = new ArrayList<PageBO>();
 				listeTopPage.add(pageTopLevel);
 
-				List<String> pagesPath = getPagesPath(listeTopPage, "/" + homePage.getUniqueName());
+				List<String> pagesPath = getPagesPath(listeTopPage, "/" + rootPage.getUniqueName());
 				outService.appendPathToFile(export.getMapFile(), pagesPath);
 			}
 
 			logger.debug("XML code of top level page #" + i + " written in output file");
 			logger.info("Top page #" + i + " with subpages created and written to file");
 		}
-		outService.appendStringToFile(export.getOutputFile(), homePage.getFooter());
+		outService.appendStringToFile(export.getOutputFile(), rootPage.getFooter());
 	}
 
 	/**
@@ -97,9 +88,6 @@ public class PageService {
 	 *            configure his/her content generation
 	 * @param articles
 	 *            List of articles selected from database
-	 * @param articleIndex
-	 *            Current cursor in the articles table, to avoid random choice
-	 *            as long as some articles have not been selected yet
 	 * @param level
 	 *            Current level in the tree decrease each time, top level ==
 	 *            number of levels requested by the user)
@@ -107,8 +95,7 @@ public class PageService {
 	 *            Index of the last article
 	 * @return A list of Page BO, containing their sub pages (if they have some)
 	 */
-	public List<PageBO> createSubPages(ExportBO export, List<ArticleBO> articles, Integer articleIndex, Integer level,
-			Integer maxArticleIndex) {
+	public List<PageBO> createSubPages(ExportBO export, List<ArticleBO> articles, Integer level, Integer maxArticleIndex) {
 		ArticleService articleService = ArticleService.getInstance();
 		List<PageBO> listePages = new ArrayList<PageBO>();
 		ArticleBO articleEn;
@@ -121,13 +108,8 @@ public class PageService {
 			for (int i = 0; i < nbPagesPerLevel; i++) {
 				articleEn = articleService.getArticle(articles);
 				articleFr = articleService.getArticle(articles);
-				PageBO page = createNewPage(
-						export,
-						articleEn,
-						articleFr,
-						level,
-						createSubPages(export, articles, articleIndex.intValue() + 1, level.intValue() - 1,
-								maxArticleIndex));
+				PageBO page = createNewPage(export, null, articleEn, articleFr, level,
+						createSubPages(export, articles, level.intValue() - 1, maxArticleIndex));
 				listePages.add(page);
 			}
 		}
@@ -140,6 +122,10 @@ public class PageService {
 	 * @param export
 	 *            Export BO contains all the parameters chose by the user to
 	 *            configure his/her content generation
+	 * @param pageName
+	 *            Used only for root page, or to specify a page name If null,
+	 *            creates a unique page name from concatenation of page name
+	 *            prefix and unique ID
 	 * @param articleEn
 	 *            English article (language is on the Jahia side, article object
 	 *            can contain different language, as it is from the database)
@@ -152,34 +138,38 @@ public class PageService {
 	 *            List of sub pages related
 	 * @return
 	 */
-	public PageBO createNewPage(ExportBO export, ArticleBO articleEn, ArticleBO articleFr, int level,
+	public PageBO createNewPage(ExportBO export, String pageName, ArticleBO articleEn, ArticleBO articleFr, int level,
 			List<PageBO> subPages) {
-		
+
 		boolean addFile = false;
 		if (export.getAddFilesToPage().equals(ContentGeneratorCst.VALUE_ALL)) {
 			addFile = true;
 		} else if (export.getAddFilesToPage().equals(ContentGeneratorCst.VALUE_RANDOM)) {
-			Random random  = new Random();			
+			Random random = new Random();
 			addFile = random.nextBoolean();
 		}
-		
+
 		String fileName = null;
 		if (addFile) {
-			FileService fileService = FileService.getInstance();
-			 fileName = fileService.getFileName(export.getFileNames());
+			FileService fileService = new FileService();
+			fileName = fileService.getFileName(export.getFileNames());
 		}
-		
-		logger.debug("		Creating new page level " + level + " - Page " + ContentGeneratorService.currentPageIndex + " - Article FR "
-				+ articleFr.getId() + " - Article EN " + articleEn.getId() + " - file attached "+fileName);
-		
-		
-		PageBO page = new PageBO(ContentGeneratorService.currentPageIndex, formatForXml(articleEn.getTitle()),
-				formatForXml(articleEn.getContent()), formatForXml(articleFr.getTitle()),
-				formatForXml(articleFr.getContent()), level, subPages, export.getPagesHaveVanity(), export.getSiteKey(), fileName);
+
+		logger.debug("		Creating new page level " + level + " - Page " + ContentGeneratorService.currentPageIndex
+				+ " - Article FR " + articleFr.getId() + " - Article EN " + articleEn.getId() + " - file attached "
+				+ fileName);
+
+		if (pageName == null) {
+			pageName = ContentGeneratorCst.PAGE_NAME_PREFIX + ContentGeneratorService.currentPageIndex;
+		}
+
+		PageBO page = new PageBO(pageName, formatForXml(articleEn.getTitle()), formatForXml(articleEn.getContent()),
+				formatForXml(articleFr.getTitle()), formatForXml(articleFr.getContent()), level, subPages,
+				export.getPagesHaveVanity(), export.getSiteKey(), fileName);
 		ContentGeneratorService.currentPageIndex = ContentGeneratorService.currentPageIndex + 1;
 		return page;
 	}
-	
+
 	/**
 	 * getPagesPathrecursively retrieves absolute paths for each page, from the
 	 * top page. If choosen by the user, a map of this path will be generated.
@@ -196,7 +186,7 @@ public class PageService {
 		List<String> siteMap = new ArrayList<String>();
 
 		for (Iterator<PageBO> iterator = pages.iterator(); iterator.hasNext();) {
-			PageBO page = (PageBO) iterator.next();
+			PageBO page = iterator.next();
 			String newPath = path + "/" + page.getUniqueName();
 			logger.debug("new path: " + newPath);
 			siteMap.add(newPath);

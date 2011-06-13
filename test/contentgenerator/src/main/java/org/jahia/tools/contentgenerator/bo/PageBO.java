@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class PageBO {
-	private Integer idPage;
 	private String uniqueName;
 	private String titleEn;
 	private String contentEn;
@@ -16,14 +15,6 @@ public class PageBO {
 	private Boolean hasVanity;
 	private String siteKey;
 	private String fileName;
-
-	public Integer getIdPage() {
-		return idPage;
-	}
-
-	public void setIdPage(Integer idPage) {
-		this.idPage = idPage;
-	}
 
 	public String getUniqueName() {
 		return uniqueName;
@@ -109,16 +100,15 @@ public class PageBO {
 		this.fileName = fileName;
 	}
 
-	public PageBO(final Integer pId, final String pTitleEn, final String pContentEn, final String pTitleFr,
+	public PageBO (final String pUniqueName, final String pTitleEn, final String pContentEn, final String pTitleFr,
 			final String pContentFr, final int pLevel, final List<PageBO> pSubPages, Boolean pHasVanity, String pSiteKey, String pFileName) {
-		this.idPage = pId;
 		this.titleEn = pTitleEn;
 		this.contentEn = pContentEn;
 		this.titleFr = pTitleFr;
 		this.contentFr = pContentFr;
 		this.level = pLevel;
 		this.subPages = pSubPages;
-		this.uniqueName = "page" + pId.toString();
+		this.uniqueName = pUniqueName;
 		this.hasVanity = pHasVanity;
 		this.siteKey = pSiteKey;
 		this.fileName = pFileName;

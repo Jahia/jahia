@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.jahia.tools.contentgenerator.ContentGeneratorService;
+import org.jahia.tools.contentgenerator.FileService;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.jahia.tools.contentgenerator.properties.DatabaseProperties;
@@ -19,7 +19,6 @@ import org.jahia.tools.contentgenerator.properties.DatabaseProperties;
  * 
  */
 public abstract class ContentGeneratorMojo extends AbstractMojo {
-	protected static final Logger logger = Logger.getLogger(ContentGeneratorMojo.class.getName());
 
 	/**
 	 * @parameter expression="${jahia.cg.mysql.host}"
@@ -27,7 +26,6 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	protected String mysql_host;
 
 	/**
-	private static final Logger logger = Logger.getLogger(GeneratePagesMojo.class.getName());
 	 * @parameter expression="${jahia.cg.mysql.login}"
 	 */
 
@@ -148,7 +146,7 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 		}
 
 		if (mysql_table == null) {
-			logger.info("No MySQL table name provided, uses default \"" + ContentGeneratorCst.MYSQL_TABLE_DEFAULT + "\"");
+			getLog().info("No MySQL table name provided, uses default \"" + ContentGeneratorCst.MYSQL_TABLE_DEFAULT + "\"");
 			DatabaseProperties.TABLE = "articles";
 		} else {
 			DatabaseProperties.TABLE = mysql_table;
@@ -186,6 +184,7 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 			}
 			File outputFile = new File(outputDirectory + pathSeparator + outputFileName);
 			export.setOutputFile(outputFile);
+			export.setOutputDir(outputDirectory);
 		}
 
 		if (createMapYn == null) {
@@ -228,7 +227,10 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
                     fPoolDirectory.mkdirs();
 				}
 				export.setFilesDirectory(fPoolDirectory);
-				export.setFileNames(getFileNamesAvailable(export.getFilesDirectory()));
+				
+				FileService fileService = new FileService();
+				List<String> filesNamesAvailable = fileService.getFileNamesAvailable(export.getFilesDirectory());
+				export.setFileNames(filesNamesAvailable);
 			}
 		}
 		
@@ -243,25 +245,5 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 		}
 
 		return export;
-	}
-
-	/**
-	 * Returns a list of the files that can be used as attachements
-	 * 
-	 * @param filesDirectoryPath
-	 *            directory containing the files that will be uploaded into the
-	 *            Jahia repository and can be used as attachements
-	 * @return list of file names
-	 */
-	protected List<String> getFileNamesAvailable(File filesDirectory) {
-		List<String> fileNames = new ArrayList<String>();
-		File[] files = filesDirectory.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			if (files[i].isFile()) {
-				logger.debug("\"" + files[i].getName() + "\" added to the list of available files.");
-				fileNames.add(files[i].getName());
-			}
-		}
-		return fileNames;
 	}
 }

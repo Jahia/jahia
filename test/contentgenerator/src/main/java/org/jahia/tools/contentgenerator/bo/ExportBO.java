@@ -24,6 +24,8 @@ public class ExportBO {
 	private Integer nbSubPagesPerPage;
 
 	private Integer totalPages;
+	
+	private String rootPageName;
 
 	private Integer maxArticleIndex;
 
@@ -97,6 +99,14 @@ public class ExportBO {
 
 	public void setTotalPages(Integer totalPages) {
 		this.totalPages = totalPages;
+	}
+
+	public String getRootPageName() {
+		return rootPageName;
+	}
+
+	public void setRootPageName(String rootPageName) {
+		this.rootPageName = rootPageName;
 	}
 
 	public Integer getMaxArticleIndex() {

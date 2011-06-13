@@ -2,67 +2,53 @@ package org.jahia.tools.contentgenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
+import org.jahia.tools.contentgenerator.bo.SiteBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 
 public class ContentGeneratorService {
 
 	public static ContentGeneratorService instance;
-	
+
 	private static final Logger logger = Logger.getLogger(ContentGeneratorService.class.getName());
 
 	public static int currentPageIndex = 0;
-	
+
 	public static int currentFileIndex = 0;
-	
+
 	private ContentGeneratorService() {
-		
 	}
-	
+
 	public static ContentGeneratorService getInstance() {
 		if (instance == null) {
 			instance = new ContentGeneratorService();
 		}
 		return instance;
 	}
-	
+
 	/**
+	 * Generates an XML files containing the pages tree and that can be imported
+	 * into a Jahia website
 	 * 
 	 * @param export
 	 */
-	public void generatePages(ExportBO export) throws MojoExecutionException {
-        if (!ContentGeneratorCst.VALUE_NONE.equals(export.getAddFilesToPage()) && export.getFileNames().isEmpty()) {
-            throw new MojoExecutionException(
-                    "Directory containing files to include is empty, use jahia-cg:generate-files first");
-        }
-
-		logger.info("Jahia content generator starts");
-		logger.info(export.getTotalPages() + " pages will be created");
+	public void generatePages(ExportBO export) throws MojoExecutionException, IOException {
+		if (!ContentGeneratorCst.VALUE_NONE.equals(export.getAddFilesToPage()) && export.getFileNames().isEmpty()) {
+			throw new MojoExecutionException(
+					"Directory containing files to include is empty, use jahia-cg:generate-files first");
+		}
 
 		List<ArticleBO> articles = DatabaseService.getInstance().selectArticles(export, export.getTotalPages());
 
 		PageService pageService = new PageService();
-		
-		try {
-			pageService.createTopPages(export, articles);
-			logger.info("XML import file available here: " + export.getOutputFile().getAbsolutePath());
-			if (export.getCreateMap()) {
-				logger.info("Paths list available here: " + export.getMapFile().getAbsolutePath());
-			}
-
-			logger.info("Completed, " + export.getTotalPages() + " pages created");
-			logger.info("Please remember that your export contains articles randomly picked from Wikipedia data, and the content generator is not responsible for the articles content. Thank you!");
-
-		} catch (IOException e) {
-			logger.error("Error while writing to output file: ", e);
-		}
+		pageService.createTopPages(export, articles);
 	}
 
 	/**
@@ -81,7 +67,8 @@ public class ContentGeneratorService {
 			throw new MojoExecutionException("numberOfFilesToGenerate parameter is null");
 		}
 
-		List<ArticleBO> articles = DatabaseService.getInstance().selectArticles(export, export.getNumberOfFilesToGenerate());
+		List<ArticleBO> articles = DatabaseService.getInstance().selectArticles(export,
+				export.getNumberOfFilesToGenerate());
 		int indexArticle = 0;
 		File outputFile;
 
@@ -103,7 +90,72 @@ public class ContentGeneratorService {
 			indexArticle++;
 		}
 	}
-	
+
+	/**
+	 * Generates pages and then creates a ZIP archive containing those pages,
+	 * the files needed for attachments and site.properties
+	 * 
+	 * @param export
+	 * @return Absolute path of ZIP file created
+	 * @throws MojoExecutionException
+	 */
+	public String generateSite(ExportBO export) throws MojoExecutionException {
+		String zipFilePath = null;
+		
+		// as we create a full site we will need a home page
+		export.setRootPageName(ContentGeneratorCst.ROOT_PAGE_NAME);
+		SiteBO site = new SiteBO();
+		site.setSiteKey(export.getSiteKey());
+		
+		try {
+			SiteService siteService = new SiteService();
+
+			generatePages(export);
+
+			List<File> filesToZip = new ArrayList<File>();
+
+			// 1 - create temporary dir in output dir (siteKey)
+			File tempOutputDir = siteService.createSiteDirectory(export.getSiteKey(), new File(export.getOutputDir()));
+			
+			// 2 - copy pages => repository.xml
+			//File pagesFile = siteService.copyPagesFile(export.getOutputFile(), tempOutputDir);
+			//filesToZip.add(pagesFile);
+			File repositoryFile = siteService.createAndPopulateRepositoryFile(tempOutputDir, site, export.getOutputFile());
+			filesToZip.add(repositoryFile);
+			
+			// 3 - create properties file
+			File propertiesFile = siteService.createPropertiesFile(export.getSiteKey(), tempOutputDir);
+			filesToZip.add(propertiesFile);
+
+			// 4 - create tree dirs for files attachments (if files are not at
+			// "none")
+			if (!ContentGeneratorCst.VALUE_NONE.equals(export.getAddFilesToPage())) {
+				FileService fileService = new FileService();
+				File filesDirectory = siteService.createFilesDirectoryTree(export.getSiteKey(), tempOutputDir);
+				filesToZip.add(new File(tempOutputDir + "/content"));
+				
+				// get all files available in the pool dir
+				List<File> filesToCopy = fileService.getFilesAvailable(export.getFilesDirectory());
+
+				// if there are more files available than pages created, we copy
+				// only the total of files that have been used
+				if (filesToCopy.size() > export.getTotalPages()) {
+					filesToCopy = filesToCopy.subList(0, export.getTotalPages() - 1);
+				}
+
+				fileService.copyFilesForAttachment(filesToCopy, filesDirectory);
+			}
+			
+			OutputService os = new OutputService();
+			String zipFileName = export.getSiteKey() + ".zip";
+			os.createSiteArchive(zipFileName, tempOutputDir.getAbsolutePath(), filesToZip);
+			zipFilePath = tempOutputDir.getAbsolutePath() + System.getProperty("file.separator") + zipFileName;
+		} catch (IOException e) {
+			throw new MojoExecutionException("Exception while creating the website ZIP archive: " + e);
+		}
+		return zipFilePath;
+	}
+
 	/**
 	 * Calculates the number of pages needed, used to know how much articles we
 	 * will need

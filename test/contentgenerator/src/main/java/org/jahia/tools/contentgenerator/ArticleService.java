@@ -38,6 +38,6 @@ public class ArticleService {
 		} else {
 			index = generator.nextInt(maxIndex);
 		}
-		return (ArticleBO) articles.get(index);
+		return articles.get(index);
 	}
 }

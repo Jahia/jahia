@@ -20,19 +20,25 @@ public class SiteService {
 		sep = System.getProperty("file.separator");
 	}
 
-	public File createAndPopulateRepositoryFile(File tempOutputDir, SiteBO site, File pagesFile) throws IOException {
+	public File createAndPopulateRepositoryFile(File tempOutputDir, SiteBO site, File pagesFile, File filesFile)
+			throws IOException {
 		File repositoryFile = new File(tempOutputDir + sep + "repository.xml");
-		
+
 		StringBuffer sb = new StringBuffer();
-		sb.append( site.getHeader());
-		
+		sb.append(site.getHeader());
+
+		if (filesFile != null) {
+			String files = FileUtils.readFileToString(filesFile);
+			sb.append(files);
+		}
+
 		String pages = FileUtils.readFileToString(pagesFile);
 		sb.append(pages);
-		
+
 		sb.append(site.getFooter());
-				
+
 		FileUtils.writeStringToFile(repositoryFile, sb.toString());
-		
+
 		return repositoryFile;
 	}
 

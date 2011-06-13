@@ -27,7 +27,7 @@ public class ArticleService {
 	 * @param articles
 	 *            All articles BO available
 	 * @param maxArticleIndex
-	 * @return
+	 * @return selected article
 	 */
 	public ArticleBO getArticle(List<ArticleBO> articles) {
 		Random generator = new Random();

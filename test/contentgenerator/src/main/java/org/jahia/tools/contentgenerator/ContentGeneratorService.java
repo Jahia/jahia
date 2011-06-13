@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPopupMenu.Separator;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -114,21 +116,16 @@ public class ContentGeneratorService {
 
 			List<File> filesToZip = new ArrayList<File>();
 
-			// 1 - create temporary dir in output dir (siteKey)
+			// create temporary dir in output dir (siteKey)
 			File tempOutputDir = siteService.createSiteDirectory(export.getSiteKey(), new File(export.getOutputDir()));
-			
-			// 2 - copy pages => repository.xml
-			//File pagesFile = siteService.copyPagesFile(export.getOutputFile(), tempOutputDir);
-			//filesToZip.add(pagesFile);
-			File repositoryFile = siteService.createAndPopulateRepositoryFile(tempOutputDir, site, export.getOutputFile());
-			filesToZip.add(repositoryFile);
-			
-			// 3 - create properties file
+						
+			// create properties file
 			File propertiesFile = siteService.createPropertiesFile(export.getSiteKey(), tempOutputDir);
 			filesToZip.add(propertiesFile);
 
-			// 4 - create tree dirs for files attachments (if files are not at
+			// create tree dirs for files attachments (if files are not at
 			// "none")
+			File tempXmlFile = null;
 			if (!ContentGeneratorCst.VALUE_NONE.equals(export.getAddFilesToPage())) {
 				FileService fileService = new FileService();
 				File filesDirectory = siteService.createFilesDirectoryTree(export.getSiteKey(), tempOutputDir);
@@ -144,7 +141,15 @@ public class ContentGeneratorService {
 				}
 
 				fileService.copyFilesForAttachment(filesToCopy, filesDirectory);
+				
+				// generates XML code for files
+				tempXmlFile = new File(export.getOutputDir() + System.getProperty("file.separator") + "jcrFiles.xml");
+				fileService.createAndPopulateFilesXmlFile(tempXmlFile, filesToCopy);
 			}
+			
+			// 2 - copy pages => repository.xml
+			File repositoryFile = siteService.createAndPopulateRepositoryFile(tempOutputDir, site, export.getOutputFile(), tempXmlFile);
+			filesToZip.add(repositoryFile);
 			
 			OutputService os = new OutputService();
 			String zipFileName = export.getSiteKey() + ".zip";

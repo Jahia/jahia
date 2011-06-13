@@ -185,6 +185,9 @@ public class PageService {
 	public List<String> getPagesPath(List<PageBO> pages, String path) {
 		List<String> siteMap = new ArrayList<String>();
 
+		if (path == null) {
+			path = "";
+		}
 		for (Iterator<PageBO> iterator = pages.iterator(); iterator.hasNext();) {
 			PageBO page = iterator.next();
 			String newPath = path + "/" + page.getUniqueName();

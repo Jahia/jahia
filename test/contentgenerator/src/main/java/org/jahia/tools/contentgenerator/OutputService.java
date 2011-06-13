@@ -38,7 +38,7 @@ public class OutputService {
 
 	public void appendPagesToFile(File f, List<PageBO> listePages) throws IOException {
 		for (Iterator<PageBO> iterator = listePages.iterator(); iterator.hasNext();) {
-			PageBO page = (PageBO) iterator.next();
+			PageBO page = iterator.next();
 			appendPageToFile(f, page);
 		}
 	}
@@ -49,7 +49,7 @@ public class OutputService {
 
 	public void appendPathToFile(File f, List<String> paths) throws IOException {
 		for (Iterator<String> iterator = paths.iterator(); iterator.hasNext();) {
-			String path = (String) iterator.next();
+			String path = iterator.next();
 			path = path + ",";
 			appendStringToFile(f, path);
 		}
@@ -73,25 +73,26 @@ public class OutputService {
 
 	/**
 	 * Zip a file, get the filename as ZIP entry name
+	 * 
 	 * @param f
 	 * @param out
 	 * @throws IOException
 	 */
- 	private void zipFile(File f, ZipOutputStream out) throws IOException {
- 		zipFile(f, f.getName(), out);
- 	}
-	
- 	/**
- 	 * Zip files and directories
- 	 * Call itself for sub files/sub directories
- 	 * @param f
- 	 * @param fileName
- 	 * @param out
- 	 * @throws IOException
- 	 */
+	private void zipFile(File f, ZipOutputStream out) throws IOException {
+		zipFile(f, f.getName(), out);
+	}
+
+	/**
+	 * Zip files and directories Call itself for sub files/sub directories
+	 * 
+	 * @param f
+	 * @param fileName
+	 * @param out
+	 * @throws IOException
+	 */
 	// name is the name for the file
 	private void zipFile(File f, String fileName, ZipOutputStream out) throws IOException {
-	
+
 		if (f.isDirectory()) {
 			File[] files = f.listFiles();
 			if (files != null) {

@@ -6,12 +6,17 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
+import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
+import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.junit.Test;
 
 public class ContentGeneratorTestCase extends TestCase {
+	protected ExportBO export_default;
+	
 	protected List<ArticleBO> articles;
 	protected List<PageBO> pages;
+	protected Integer total_pages = 7;
 	
 	protected ArticleBO articleEn;
 	protected ArticleBO articleFr;
@@ -21,6 +26,8 @@ public class ContentGeneratorTestCase extends TestCase {
 	
 	protected static String TITLE_EN = "Title EN";
 	protected static String CONTENT_EN = "CONTENT EN";
+	
+	protected String SITE_KEY = "ACME";
 	
 	public void setUp() throws Exception {
 		super.setUp();
@@ -33,41 +40,48 @@ public class ContentGeneratorTestCase extends TestCase {
 		super.tearDown();
 	}
 	
+	private PageBO createPage(int pageID, List<PageBO> subPages) {
+		boolean hasVanity = true;		
+		PageBO page = new PageBO("page" + pageID, "Title " + pageID, "Content " + pageID, "Titre " + pageID, "Contenu " + pageID, 0, subPages, hasVanity, SITE_KEY, null, 2);
+		return page;
+	}
+	
 	private void createPages() {
 		pages = new ArrayList();
 
-		List subPages = new ArrayList();
-
-		boolean hasVanity = true;
-		String siteKey = "mySite";
+		List<PageBO> subPages = new ArrayList<PageBO>();
+		
 		int pageID = 111;
-		PageBO page111 = new PageBO("page" + pageID, "Title " + pageID, "Content " + pageID, "Titre " + pageID, "Contenu " + pageID, 0, null, hasVanity, siteKey, null);
+		PageBO page111 = createPage(pageID, null) ;
 		pageID=112;
-		PageBO page112 = new PageBO("page" + pageID, "Title " + pageID, "Content " + pageID, "Titre " + pageID, "Contenu " + pageID, 0, null, hasVanity, siteKey, null);
+		PageBO page112 = createPage(pageID, null);
 		
 		subPages.add(page111);
 		subPages.add(page112);
 		
 		pageID=11;
-		PageBO page11 = new PageBO("page" + pageID, "Title " + pageID, "Content " + pageID, "Titre " + pageID, "Contenu " + pageID, 0, null, hasVanity, siteKey, null);
+		PageBO page11 = createPage(pageID, subPages);
 		pageID=12;
-		PageBO page12 = new PageBO("page" + pageID, "Title " + pageID, "Content " + pageID, "Titre " + pageID, "Contenu " + pageID, 0, null, hasVanity, siteKey, null);
+		PageBO page12 = createPage(pageID, null);
+		
+		subPages = new ArrayList<PageBO>();
 		subPages.add(page11);
 		subPages.add(page12);
 		
 		pageID=1;
-		PageBO page1 = new PageBO("page" + pageID, "Title " + pageID, "Content " + pageID, "Titre " + pageID, "Contenu " + pageID, 0, null, hasVanity, siteKey, null);
+		PageBO page1 = createPage(pageID, subPages);
 
 		pageID=2;
-		PageBO page2 = new PageBO("page" + pageID, "Title " + pageID, "Content " + pageID, "Titre " + pageID, "Contenu " + pageID, 0, null, hasVanity, siteKey, null);
+		PageBO page2 = createPage(pageID, null);
 		
 		pageID=3;
-		PageBO page3 = new PageBO("page" + pageID, "Title " + pageID, "Content " + pageID, "Titre " + pageID, "Contenu " + pageID, 0, null, hasVanity, siteKey, null);
+		PageBO page3 = createPage(pageID, null);
 		
 		pages.add(page1);
 		pages.add(page2);
 		pages.add(page3);
 	}
+	
 	
 	private void createArticles() {
 		/*
@@ -78,7 +92,8 @@ public class ContentGeneratorTestCase extends TestCase {
 	}
 	
 	private void createExport() {
-		
+		export_default = new ExportBO();
+		export_default.setAddFilesToPage(ContentGeneratorCst.VALUE_NONE);
 	}
 	
 	@Test

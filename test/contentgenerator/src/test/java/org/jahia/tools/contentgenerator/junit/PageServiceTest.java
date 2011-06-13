@@ -13,8 +13,6 @@ import org.junit.Test;
 public class PageServiceTest extends ContentGeneratorTestCase {
 	private static PageService pageService;
 	
-	private static List<PageBO> pages;
-	
 	@BeforeClass
 	public void setUp() throws Exception {
 		super.setUp();
@@ -41,15 +39,24 @@ public class PageServiceTest extends ContentGeneratorTestCase {
 	@Ignore
 	@Test
 	public void testCreateNewPage() {
-		ExportBO export = new ExportBO();
+		String pageName = "myPage";
 		
-		//	pageService.createNewPage(export, articleEn, articleFr, level, subPages)
+		PageBO newPage = pageService.createNewPage(super.export_default, pageName, articleEn, articleFr, 1, null);
+		assertEquals(pageName, newPage.getUniqueName());
 	}
 	
 	@Ignore
 	@Test
 	public void testGetPagesPath() {
-		
+		List pagesPath = pageService.getPagesPath(super.pages, null);
+		assertEquals(super.total_pages.intValue(), pagesPath.size());
+		assertTrue(pagesPath.contains("/page1"));
+		assertTrue(pagesPath.contains("/page2"));
+		assertTrue(pagesPath.contains("/page3"));
+		assertTrue(pagesPath.contains("/page1/page11"));
+		assertTrue(pagesPath.contains("/page1/page12"));
+		assertTrue(pagesPath.contains("/page1/page11/page111"));
+		assertTrue(pagesPath.contains("/page1/page11/page112"));
 	}
 	
 	@Ignore

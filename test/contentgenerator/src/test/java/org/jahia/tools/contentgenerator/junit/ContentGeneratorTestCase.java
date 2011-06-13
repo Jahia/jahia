@@ -1,7 +1,5 @@
 package org.jahia.tools.contentgenerator.junit;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +9,6 @@ import org.jahia.tools.contentgenerator.bo.PageBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 public abstract class ContentGeneratorTestCase {
 	protected ExportBO export_default;
@@ -96,5 +93,6 @@ public abstract class ContentGeneratorTestCase {
 	private void createExport() {
 		export_default = new ExportBO();
 		export_default.setAddFilesToPage(ContentGeneratorCst.VALUE_NONE);
+		export_default.setPagesHaveVanity(Boolean.FALSE);
 	}
 }

@@ -14,7 +14,7 @@ public final class ContentGeneratorCst {
 	public static final String VALUE_NONE = "none";
 	public static final String VALUE_RANDOM = "random";
 	
-	
+	public static final String PAGE_PATH_SEPARATOR = "/"; 
 	/**
 	 * Default value
 	 */

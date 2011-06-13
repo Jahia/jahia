@@ -69,7 +69,7 @@ public class PageService {
 				List<PageBO> listeTopPage = new ArrayList<PageBO>();
 				listeTopPage.add(pageTopLevel);
 
-				List<String> pagesPath = getPagesPath(listeTopPage, "/" + rootPage.getUniqueName());
+				List<String> pagesPath = getPagesPath(listeTopPage, ContentGeneratorCst.PAGE_PATH_SEPARATOR + rootPage.getUniqueName());
 				outService.appendPathToFile(export.getMapFile(), pagesPath);
 			}
 
@@ -190,7 +190,7 @@ public class PageService {
 		}
 		for (Iterator<PageBO> iterator = pages.iterator(); iterator.hasNext();) {
 			PageBO page = iterator.next();
-			String newPath = path + "/" + page.getUniqueName();
+			String newPath = path + ContentGeneratorCst.PAGE_PATH_SEPARATOR + page.getUniqueName();
 			logger.debug("new path: " + newPath);
 			siteMap.add(newPath);
 			if (page.getSubPages() != null) {

@@ -2,6 +2,7 @@ package org.jahia.tools.contentgenerator.junit;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.tools.contentgenerator.PageService;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.PageBO;
@@ -34,18 +35,24 @@ public class PageServiceTest extends ContentGeneratorTestCase {
 	@Test
 	public void testCreateSubPages() {
 		
-	}
-	
-	@Ignore
+	}	
+
 	@Test
 	public void testCreateNewPage() {
 		String pageName = "myPage";
+		Integer totalBigText = Integer.valueOf(5);
+		super.export_default.setNumberOfBigTextPerPage(totalBigText);
 		
 		PageBO newPage = pageService.createNewPage(super.export_default, pageName, articleEn, articleFr, 1, null);
 		assertEquals(pageName, newPage.getUniqueName());
+		String sPage = newPage.getContentFr();
+		StringUtils.contains(sPage, "<bigText_1");
+		StringUtils.contains(sPage, "<bigText_2");
+		StringUtils.contains(sPage, "<bigText_3");
+		StringUtils.contains(sPage, "<bigText_4");
+		StringUtils.contains(sPage, "<bigText_5");
 	}
 	
-	@Ignore
 	@Test
 	public void testGetPagesPath() {
 		List pagesPath = pageService.getPagesPath(super.pages, null);

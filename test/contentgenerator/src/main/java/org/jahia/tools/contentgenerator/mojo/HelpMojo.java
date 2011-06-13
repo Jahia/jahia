@@ -57,11 +57,16 @@ public class HelpMojo extends AbstractMojo {
 
 		getLog().info("* jahia.cg.poolDirectory (required if jahia.cg.addFiles != " + ContentGeneratorCst.VALUE_NONE + ")");
 		getLog().info("* jahia.cg.numberOfFilesToGenerate required for file generation. Files will be generated in poolDirectory path.");
+		getLog().info("* jahia.cg.numberOfBigTextPerPage (optional, default = 1");
+		
 		
 		getLog().info("");
 		getLog().info("NB:");
 		getLog().info("1. You can not generate more than " + ContentGeneratorCst.MAX_TOTAL_PAGES + " pages");
 		getLog().info("2. The content generator will select " + ContentGeneratorCst.SQL_RECORDSET_SIZE + " articles maximum, and reuse them if you asked for more pages");
+		
+		//getLog().info(" ");
+		//getLog().info("With your current configuration Jahia-cg will generate " + ContentGeneratorService.getInstance().getTotalNumberOfPagesNeeded(nbPagesTopLevel, nbLevels, nbPagesPerLevel) + " pages");
 		
 		getLog().info(" ");
 		getLog().info("Generated content with default values:");

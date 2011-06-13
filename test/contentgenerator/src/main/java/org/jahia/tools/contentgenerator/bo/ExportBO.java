@@ -44,6 +44,8 @@ public class ExportBO {
 	private List<String> fileNames;
 	
 	private Integer numberOfFilesToGenerate;
+	
+	private Integer numberOfBigTextPerPage;
 
 	public File getOutputFile() {
 		return outputFile;
@@ -181,6 +183,14 @@ public class ExportBO {
 		this.numberOfFilesToGenerate = numberOfFilesToGenerate;
 	}
 
+	public Integer getNumberOfBigTextPerPage() {
+		return numberOfBigTextPerPage;
+	}
+
+	public void setNumberOfBigTextPerPage(Integer numberOfBigTextPerPage) {
+		this.numberOfBigTextPerPage = numberOfBigTextPerPage;
+	}
+
 	public ExportBO() {
 
 	}
@@ -194,6 +204,7 @@ public class ExportBO {
 		sb.append("<!-- total pages: " + this.getTotalPages() + " -->\n");
 		sb.append("<!-- site key: " + this.getSiteKey() + " -->\n");
 		sb.append("<!-- files added: " + this.getAddFilesToPage() + " -->\n");
+		sb.append("<!-- big text per page: " + this.getNumberOfBigTextPerPage() + " -->\n");
 		return sb.toString();
 	}
 }

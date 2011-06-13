@@ -1,7 +1,6 @@
 package org.jahia.tools.contentgenerator.mojo;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -62,12 +61,14 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	protected Integer nbPagesPerLevel;
 
 	/**
-	 * @parameter expression="${jahia.cg.outputDirectory}" default-value="output"
+	 * @parameter expression="${jahia.cg.outputDirectory}"
+	 *            default-value="output"
 	 */
 	protected String outputDirectory;
 
 	/**
-	 * @parameter expression="${jahia.cg.outputFileName}" default-value="jahia-cg-output.xml"
+	 * @parameter expression="${jahia.cg.outputFileName}"
+	 *            default-value="jahia-cg-output.xml"
 	 */
 	protected String outputFileName;
 
@@ -100,15 +101,21 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 	 * @parameter expression="${jahia.cg.poolDirectory}"
 	 */
 	protected String poolDirectory;
-	
+
 	/**
 	 * @parameter expression="${jahia.cg.numberOfFilesToGenerate}"
 	 */
 	protected Integer numberOfFilesToGenerate;
 
+	/**
+	 * @parameter expression="${jahia.cg.numberOfBigTextPerPage}"
+	 *            default-value="1"
+	 */
+	protected Integer numberOfBigTextPerPage;
+
 	@Override
 	public abstract void execute() throws MojoExecutionException, MojoFailureException;
-	
+
 	/**
 	 * Get properties and initialize ExportBO
 	 * 
@@ -129,24 +136,22 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 
 		if (mysql_db == null) {
 			throw new MojoExecutionException("No database name provided");
-		} else {
-			DatabaseProperties.DATABASE = mysql_db;
 		}
+		DatabaseProperties.DATABASE = mysql_db;
 
 		if (mysql_login == null) {
 			throw new MojoExecutionException("No database user provided");
-		} else {
-			DatabaseProperties.USER = mysql_login;
 		}
+		DatabaseProperties.USER = mysql_login;
 
 		if (mysql_password == null) {
 			throw new MojoExecutionException("No database user password provided");
-		} else {
-			DatabaseProperties.PASSWORD = mysql_password;
 		}
+		DatabaseProperties.PASSWORD = mysql_password;
 
 		if (mysql_table == null) {
-			getLog().info("No MySQL table name provided, uses default \"" + ContentGeneratorCst.MYSQL_TABLE_DEFAULT + "\"");
+			getLog().info(
+					"No MySQL table name provided, uses default \"" + ContentGeneratorCst.MYSQL_TABLE_DEFAULT + "\"");
 			DatabaseProperties.TABLE = "articles";
 		} else {
 			DatabaseProperties.TABLE = mysql_table;
@@ -173,19 +178,18 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 		String pathSeparator = System.getProperty("file.separator");
 		if (outputDirectory == null) {
 			throw new MojoExecutionException("outputDirectory property can not be null");
-		} else {
-			File fOutputDirectory = new File(outputDirectory);
-			if (!fOutputDirectory.exists()) {
-				fOutputDirectory.mkdirs();
-			}
-
-			if (outputFileName == null) {
-				outputFileName = ContentGeneratorCst.OUTPUT_FILE_DEFAULT;
-			}
-			File outputFile = new File(outputDirectory + pathSeparator + outputFileName);
-			export.setOutputFile(outputFile);
-			export.setOutputDir(outputDirectory);
 		}
+		File fOutputDirectory = new File(outputDirectory);
+		if (!fOutputDirectory.exists()) {
+			fOutputDirectory.mkdirs();
+		}
+
+		if (outputFileName == null) {
+			outputFileName = ContentGeneratorCst.OUTPUT_FILE_DEFAULT;
+		}
+		File outputFile = new File(outputDirectory + pathSeparator + outputFileName);
+		export.setOutputFile(outputFile);
+		export.setOutputDir(outputDirectory);
 
 		if (createMapYn == null) {
 			export.setCreateMap(ContentGeneratorCst.CREATE_MAP_DEFAULT);
@@ -221,23 +225,29 @@ public abstract class ContentGeneratorMojo extends AbstractMojo {
 				|| ContentGeneratorCst.VALUE_RANDOM.equals(export.getAddFilesToPage())) {
 			if (poolDirectory == null) {
 				throw new MojoExecutionException("Pool directory property can not be null");
-			} else {
-				File fPoolDirectory = new File(poolDirectory);
-				if (!fPoolDirectory.exists()) {
-                    fPoolDirectory.mkdirs();
-				}
-				export.setFilesDirectory(fPoolDirectory);
-				
-				FileService fileService = new FileService();
-				List<String> filesNamesAvailable = fileService.getFileNamesAvailable(export.getFilesDirectory());
-				export.setFileNames(filesNamesAvailable);
 			}
-		}
-		
-		export.setNumberOfFilesToGenerate(numberOfFilesToGenerate);
-		
+			File fPoolDirectory = new File(poolDirectory);
+			if (!fPoolDirectory.exists()) {
+				fPoolDirectory.mkdirs();
+			}
+			export.setFilesDirectory(fPoolDirectory);
 
-		Integer totalPages = contentGeneratorService.getTotalNumberOfPagesNeeded(nbPagesOnTopLevel, nbSubLevels, nbPagesPerLevel);
+			FileService fileService = new FileService();
+			List<String> filesNamesAvailable = fileService.getFileNamesAvailable(export.getFilesDirectory());
+			export.setFileNames(filesNamesAvailable);
+
+		}
+
+		if (numberOfBigTextPerPage == null) {
+			export.setNumberOfBigTextPerPage(Integer.valueOf("1"));
+		} else {
+			export.setNumberOfBigTextPerPage(numberOfBigTextPerPage);
+		}
+
+		export.setNumberOfFilesToGenerate(numberOfFilesToGenerate);
+
+		Integer totalPages = contentGeneratorService.getTotalNumberOfPagesNeeded(nbPagesOnTopLevel, nbSubLevels,
+				nbPagesPerLevel);
 		export.setTotalPages(totalPages);
 		if (export.getTotalPages().compareTo(ContentGeneratorCst.MAX_TOTAL_PAGES) > 0) {
 			throw new MojoExecutionException("You asked to generate " + export.getTotalPages()

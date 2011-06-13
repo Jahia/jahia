@@ -15,6 +15,7 @@ public class PageBO {
 	private Boolean hasVanity;
 	private String siteKey;
 	private String fileName;
+	private Integer numberBigText;
 
 	public String getUniqueName() {
 		return uniqueName;
@@ -100,8 +101,17 @@ public class PageBO {
 		this.fileName = fileName;
 	}
 
-	public PageBO (final String pUniqueName, final String pTitleEn, final String pContentEn, final String pTitleFr,
-			final String pContentFr, final int pLevel, final List<PageBO> pSubPages, Boolean pHasVanity, String pSiteKey, String pFileName) {
+	public Integer getNumberBigText() {
+		return numberBigText;
+	}
+
+	public void setNumberBigText(Integer numberBigText) {
+		this.numberBigText = numberBigText;
+	}
+
+	public PageBO(final String pUniqueName, final String pTitleEn, final String pContentEn, final String pTitleFr,
+			final String pContentFr, final int pLevel, final List<PageBO> pSubPages, Boolean pHasVanity,
+			String pSiteKey, String pFileName, Integer pNumberBigText) {
 		this.titleEn = pTitleEn;
 		this.contentEn = pContentEn;
 		this.titleFr = pTitleFr;
@@ -112,6 +122,7 @@ public class PageBO {
 		this.hasVanity = pHasVanity;
 		this.siteKey = pSiteKey;
 		this.fileName = pFileName;
+		this.numberBigText = pNumberBigText;
 	}
 
 	public String getHeader() {
@@ -133,21 +144,28 @@ public class PageBO {
 				+ "		<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"mix:title\" jcr:primaryType=\"jnt:translation\" jcr:title=\""
 				+ this.getTitleEn()
 				+ "\" />\n"
-				+ "		<listA jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">\n"
-				+ "			<bigText_17 jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">\n"
-				+ "				<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
-				+ this.getContentFr()
-				+ " \" />"
-				+ "				<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
-				+ this.getContentEn() + " \" />\n" + "			</bigText_17>\n");
-
+				+ "		<listA jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:contentList\">\n");
+		// Big text (content)
+		for (int i = 1; i <= numberBigText.intValue(); i++) {
+			sb.append("			<bigText_" + i + " jcr:created=\"2011-03-28T13:00:41.415-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:renderable\" jcr:primaryType=\"jnt:bigText\">\n"
+					+ "				<j:translation_fr jcr:language=\"fr\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
+					+ this.getContentFr()
+					+ " \" />"
+					+ "				<j:translation_en jcr:language=\"en\" jcr:lastModified=\"2011-03-28T13:01:06.712-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" text=\""
+					+ this.getContentEn() + " \" />\n");
+			sb.append("			</bigText_" + i + ">\n");
+		}
 		if (this.getFileName() != null) {
 			sb.append(" 		<random-file j:lastPublished=\"2011-05-19T16:59:37.556-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"2011-05-19T16:47:00.851-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-05-19T16:56:26.242-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:fileReference\">"
 					+ " 			<j:translation_en j:lastPublished=\"2011-05-19T16:47:14.923-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:language=\"en\" jcr:lastModified=\"2011-05-19T16:47:01.057-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" jcr:title=\"My file\" />"
 					+ "			</random-file>");
 
 			sb.append(" 		<publication j:lastPublished=\"2011-05-19T16:59:37.556-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"2011-05-19T16:59:11.177-04:00\" jcr:createdBy=\"root\" jcr:lastModified=\"2011-05-19T16:59:11.266-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:publication\">"
-					+ "				<j:translation_en author=\"Jahia Content Generator\" body=\"&lt;p&gt;  Random publication&lt;/p&gt; \" date=\"01/01/1970\" file=\"/sites/" + this.getSiteKey() + "/files/contributed/" + this.getFileName() + "\" j:lastPublished=\"2011-05-19T17:09:50.163-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:language=\"en\" jcr:lastModified=\"2011-05-19T17:09:35.467-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" jcr:title=\"Random publication\" source=\"Jahia\" />"
+					+ "				<j:translation_en author=\"Jahia Content Generator\" body=\"&lt;p&gt;  Random publication&lt;/p&gt; \" date=\"01/01/1970\" file=\"/sites/"
+					+ this.getSiteKey()
+					+ "/files/contributed/"
+					+ this.getFileName()
+					+ "\" j:lastPublished=\"2011-05-19T17:09:50.163-04:00\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:language=\"en\" jcr:lastModified=\"2011-05-19T17:09:35.467-04:00\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:translation\" jcr:title=\"Random publication\" source=\"Jahia\" />"
 					+ "			</publication>");
 		}
 

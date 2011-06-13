@@ -165,7 +165,7 @@ public class PageService {
 
 		PageBO page = new PageBO(pageName, formatForXml(articleEn.getTitle()), formatForXml(articleEn.getContent()),
 				formatForXml(articleFr.getTitle()), formatForXml(articleFr.getContent()), level, subPages,
-				export.getPagesHaveVanity(), export.getSiteKey(), fileName);
+				export.getPagesHaveVanity(), export.getSiteKey(), fileName, export.getNumberOfBigTextPerPage());
 		ContentGeneratorService.currentPageIndex = ContentGeneratorService.currentPageIndex + 1;
 		return page;
 	}

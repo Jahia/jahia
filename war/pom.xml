@@ -66,6 +66,16 @@
     </pluginRepositories>
     <repositories>
         <repository>
+        	<id>jboss-public</id>
+        	<url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        	<snapshots>
+        		<enabled>false</enabled>
+        	</snapshots>
+        </repository>
+        <repository>
             <id>gwt-maven-google</id>
             <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
             <snapshots>

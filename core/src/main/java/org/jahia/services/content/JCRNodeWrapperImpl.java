@@ -3098,7 +3098,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                 }
                 boolean b = checkI18nAndMandatoryPropertiesForLocale(locale);
-                if(!b && siteNode.isMixLanguagesActive()) {
+                if(!b && siteNode != null && siteNode.isMixLanguagesActive()) {
                     b = checkI18nAndMandatoryPropertiesForLocale(LanguageCodeConverters.getLocaleFromCode(siteNode.getDefaultLanguage()));
                 }
                 return b;

@@ -114,8 +114,16 @@ try {
         <br/>
         <strong>Path: </strong>${fn:escapeXml(node.path)}<br/>
         <strong>ID: </strong>${fn:escapeXml(node.identifier)}<br/>
-        <strong>created on </strong><fmt:formatDate value="${node.properties['jcr:created'].time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${fn:escapeXml(node.properties['jcr:createdBy'].string)},
-        <strong> last modified on </strong><fmt:formatDate value="${node.properties['jcr:lastModified'].time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${fn:escapeXml(node.properties['jcr:lastModifiedBy'].string)}
+		<jcr:nodeProperty node="${node}" name="jcr:created" var="created"/>
+		<jcr:nodeProperty node="${node}" name="jcr:createdBy" var="createdBy"/>
+		<jcr:nodeProperty node="${node}" name="jcr:lastModified" var="lastModified"/>
+		<jcr:nodeProperty node="${node}" name="jcr:lastModifiedBy" var="lastModifiedBy"/>
+        <c:if test="${not empty created}">
+        <strong>created on </strong><fmt:formatDate value="${created.time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${not empty createdBy.string ? fn:escapeXml(createdBy.string) : 'n.a.'},
+        </c:if>
+        <c:if test="${not empty lastModified}">
+        <strong> last modified on </strong><fmt:formatDate value="${lastModified.time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${not empty lastModifiedBy.string ? fn:escapeXml(lastModifiedBy.string) : 'n.a.'}
+        </c:if>
     </li>
 </c:forEach>
 </ol>

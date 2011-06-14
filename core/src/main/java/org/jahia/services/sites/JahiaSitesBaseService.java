@@ -509,7 +509,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
             // continue if the site is added correctly...
             if (site.getID() != -1) {
-                if (getNbSites() == 1 && !site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY)) {
+                if (!site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY) && getNbSites() == 2) {
                     setDefaultSite(site);
                 }
                 if (!importingSystemSite) {

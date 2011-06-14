@@ -121,7 +121,7 @@ public class SiteService {
 		siteProp.setProperty("description", ContentGeneratorCst.DESCRIPTION_DEFAULT);
 		siteProp.setProperty("templatePackageName", ContentGeneratorCst.TEMPLATE_SET_DEFAULT);
 		siteProp.setProperty("mixLanguage", Boolean.FALSE.toString());
-		siteProp.setProperty("defaultLanguage", siteKey);
+		siteProp.setProperty("defaultLanguage", "en");
 		siteProp.setProperty("installedModules.1", ContentGeneratorCst.TEMPLATE_SET_DEFAULT);
 		siteProp.setProperty("language.en.activated", Boolean.TRUE.toString());
 		siteProp.setProperty("language.en.mandatory", Boolean.TRUE.toString());

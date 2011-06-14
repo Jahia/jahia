@@ -47,7 +47,7 @@ public class FileService {
 	 * Returns a list of the files that can be used as attachments Return only
 	 * filename as String, sorted alphabetically
 	 * 
-	 * @param filesDirectoryPath
+	 * @param filesDirectory
 	 *            directory containing the files that will be uploaded into the
 	 *            Jahia repository and can be used as attachments
 	 * @return list of file names
@@ -139,17 +139,17 @@ public class FileService {
 		FileUtils.writeStringToFile(tempXmlFile, sep);
 
 		StringBuffer filesXml = new StringBuffer();
-		filesXml.append("<files j:lastPublished=\"" + now
+		filesXml.append("\t<files j:lastPublished=\"" + now
 				+ "\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"" + now
 				+ "\" jcr:createdBy=\"system\" jcr:lastModified=\"" + now
 				+ "\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:folder\">");
 		filesXml.append("    <contributed j:lastPublished=\"" + now
 				+ "\" j:lastPublishedBy=\"root\" j:published=\"true\" jcr:created=\"" + now
 				+ "\" jcr:createdBy=\"system\" jcr:lastModified=\"" + now
-				+ "\" jcr:lastModifiedBy=\"\" jcr:mixinTypes=\"jmix:accessControlled\" jcr:primaryType=\"jnt:folder\">");
-		filesXml.append("     <j:acl jcr:primaryType=\"jnt:acl\">");
-		filesXml.append("        <GRANT_g_site-privileged j:aceType=\"GRANT\" j:principal=\"g:privileged\" j:protected=\"false\" j:roles=\"contributor\" jcr:primaryType=\"jnt:ace\" />");
-		filesXml.append("     </j:acl>");
+				+ "\" jcr:lastModifiedBy=\"\" jcr:mixinTypes=\"jmix:accessControlled\" jcr:primaryType=\"jnt:folder\">\n");
+		filesXml.append("     <j:acl jcr:primaryType=\"jnt:acl\">\n");
+		filesXml.append("        <GRANT_g_site-privileged j:aceType=\"GRANT\" j:principal=\"g:privileged\" j:protected=\"false\" j:roles=\"contributor\" jcr:primaryType=\"jnt:ace\" />\n");
+		filesXml.append("     </j:acl>\n");
 		
 		for (Iterator<File> iterator = fileNames.iterator(); iterator.hasNext();) {
 			File file = iterator.next();
@@ -157,23 +157,21 @@ public class FileService {
 			
 			filesXml.append("          <"
 					+ fileName
-					+ " j:appName=\"" + getFileNameWithoutExtension(fileName) + "\" j:keywords=\"\" j:lastPublished=\""
-					+ now
-					+ "\" j:lastPublishedBy=\"root\" j:published=\"true\" j:subject=\"\" jcr:created=\""
+					+ " jcr:created=\""
 					+ now
 					+ "\" jcr:createdBy=\"root\" jcr:lastModified=\""
 					+ now
-					+ "\" jcr:lastModifiedBy=\"root\" jcr:mixinTypes=\"jmix:keywords jmix:document\" jcr:primaryType=\"jnt:file\" jcr:title=\"ACME_WP_BuildingFirstClassHotelUS\">");
-			filesXml.append("             <jcr:content j:extractedText=\"     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure  dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit  anim id est laborum.  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure  dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit  anim id est laborum.  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure  dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit  anim id est laborum.  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure  dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit  anim id est laborum.  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure  dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit  anim id est laborum.   \" j:lastExtractionDate=\""
+					+ "\" jcr:lastModifiedBy=\"root\" jcr:primaryType=\"jnt:file\" jcr:title=\""
+                    + fileName
+                    + "\">\n");
+			filesXml.append("             <jcr:content jcr:lastModified=\""
 					+ now
-					+ "\" jcr:lastModified=\""
-					+ now
-					+ "\" jcr:lastModifiedBy=\"\" jcr:mimeType=\"application/pdf\" jcr:primaryType=\"jnt:resource\" />");
-			filesXml.append("          </" + fileName + ">");
+					+ "\" jcr:lastModifiedBy=\"\" jcr:mimeType=\"application/txt\" jcr:primaryType=\"jnt:resource\" />\n");
+			filesXml.append("          </" + fileName + ">\n");
 		}
 
-		filesXml.append("    </contributed>");
-		filesXml.append("</files>");
+		filesXml.append("    </contributed>\n");
+		filesXml.append("</files>\n");
 
 
 		FileUtils.writeStringToFile(tempXmlFile, filesXml.toString());

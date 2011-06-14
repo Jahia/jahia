@@ -154,7 +154,7 @@ public class ContentGeneratorService {
 			OutputService os = new OutputService();
 			String zipFileName = export.getSiteKey() + ".zip";
 			os.createSiteArchive(zipFileName, tempOutputDir.getAbsolutePath(), filesToZip);
-			zipFilePath = tempOutputDir.getAbsolutePath() + System.getProperty("file.separator") + zipFileName;
+			zipFilePath = tempOutputDir.getParentFile().getAbsolutePath() + System.getProperty("file.separator") + zipFileName;
 		} catch (IOException e) {
 			throw new MojoExecutionException("Exception while creating the website ZIP archive: " + e);
 		}

@@ -13,7 +13,7 @@
     <tag>
         <description>Compound query QOM constraint that conjuncts (ANDs) its child constraints.</description>
         <name>and</name>
-        <tag-class>org.jahia.taglibs.query.CompoundConstraintTag$AndTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.AndTag</tag-class>
         <body-content>JSP</body-content>
     </tag>        
     
@@ -241,7 +241,7 @@
     <tag>
         <description>Used to define an Equal To Constraint</description>
         <name>equalTo</name>
-        <tag-class>org.jahia.taglibs.query.ComparisonTag$EqualToTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.EqualToTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
         	<description>
@@ -315,7 +315,7 @@
     <tag>
         <description>Used to define a Greater Than Constraint</description>
         <name>greaterThan</name>
-        <tag-class>org.jahia.taglibs.query.ComparisonTag$GreaterThanTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.GreaterThanTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
         	<description>
@@ -345,7 +345,7 @@
     <tag>
         <description>Used to define a Greater Than Or Equal To Constraint</description>
         <name>greaterThanOrEqualTo</name>
-        <tag-class>org.jahia.taglibs.query.ComparisonTag$GreaterThanOrEqualToTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.GreaterThanOrEqualToTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
         	<description>
@@ -375,7 +375,7 @@
     <tag>
         <description>Used to define a Less Than Constraint</description>
         <name>lessThan</name>
-        <tag-class>org.jahia.taglibs.query.ComparisonTag$LessThanTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.LessThanTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
         	<description>
@@ -405,7 +405,7 @@
     <tag>
         <description>Used to define a Less Than Or Equal To Constraint</description>
         <name>lessThanOrEqualTo</name>
-        <tag-class>org.jahia.taglibs.query.ComparisonTag$LessThanOrEqualToTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.LessThanOrEqualToTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
         	<description>
@@ -435,7 +435,7 @@
     <tag>
         <description>Used to define a Like Constraint</description>
         <name>like</name>
-        <tag-class>org.jahia.taglibs.query.ComparisonTag$LikeTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.LikeTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
         	<description>
@@ -470,14 +470,14 @@
      		negated.
 		</description>
         <name>not</name>
-        <tag-class>org.jahia.taglibs.query.CompoundConstraintTag$NotTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.NotTag</tag-class>
         <body-content>JSP</body-content>
     </tag>
     
     <tag>
         <description>Used to define a Not Equal To Constraint</description>
         <name>notEqualTo</name>
-        <tag-class>org.jahia.taglibs.query.ComparisonTag$NotEqualToTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.NotEqualToTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
         	<description>
@@ -508,7 +508,7 @@
     <tag>
         <description>Compound query QOM constraint that disjuncts (ORs) its child constraints.</description>
         <name>or</name>
-        <tag-class>org.jahia.taglibs.query.CompoundConstraintTag$OrTag</tag-class>
+        <tag-class>org.jahia.taglibs.query.OrTag</tag-class>
         <body-content>JSP</body-content>
     </tag>
     

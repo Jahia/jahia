@@ -40,62 +40,19 @@
 
 package org.jahia.taglibs.query;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.qom.Constraint;
-import javax.servlet.jsp.JspTagException;
+import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN;
 
 /**
- * Represents constraint aggregation tag (AND or OR) that is used to conjunct
- * multiple constraints together.
+ * Tag used to create a Less Than ConstraintImpl
  * 
- * @author Sergiy Shyrkov
+ * User: hollis Date: 7 nov. 2007 Time: 15:33:24
  */
-public abstract class CompoundConstraintTag extends ConstraintTag {
+public class LessThanTag extends ComparisonTag {
 
-    private static final long serialVersionUID = -2449018230515946004L;
-
-    private List<Constraint> constraints = new LinkedList<Constraint>();
-
-    public final void addConstraint(Constraint constraint) {
-        constraints.add(constraint);
-    }
-
-    /**
-     * Performs the conjunction/disjunction of the provided constraints.
-     * 
-     * @param constraint1 the first constraint to use in the logical operation
-     * @param constraint2 the first constraint to use in the logical operation
-     * @return the resulting constraint
-     * @throws InvalidQueryException
-     * @throws JspTagException
-     * @throws RepositoryException
-     */
-    protected abstract Constraint doLogic(Constraint constraint1, Constraint constraint2) throws InvalidQueryException,
-            JspTagException, RepositoryException;
+    private static final long serialVersionUID = 5372749170431370477L;
 
     @Override
-    protected Constraint getConstraint() throws Exception {
-        Constraint compoundConstraint = null;
-        if (!constraints.isEmpty()) {
-            if (constraints.size() == 1) {
-                compoundConstraint = constraints.get(0);
-            } else {
-                for (Constraint constraint : constraints) {
-                    compoundConstraint = compoundConstraint != null ? doLogic(compoundConstraint,
-                            constraint) : constraint;
-                }
-            }
-        }
-        return compoundConstraint;
-    }
-
-    @Override
-    protected void resetState() {
-        constraints = new LinkedList<Constraint>();
-        super.resetState();
+    public String getOperator() {
+        return JCR_OPERATOR_LESS_THAN;
     }
 }

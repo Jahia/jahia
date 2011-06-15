@@ -40,62 +40,23 @@
 
 package org.jahia.taglibs.query;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.qom.Constraint;
 import javax.servlet.jsp.JspTagException;
 
 /**
- * Represents constraint aggregation tag (AND or OR) that is used to conjunct
- * multiple constraints together.
+ * Compound query QOM constraint that conjuncts its child constraints.
  * 
  * @author Sergiy Shyrkov
  */
-public abstract class CompoundConstraintTag extends ConstraintTag {
+public class AndTag extends CompoundConstraintTag {
 
-    private static final long serialVersionUID = -2449018230515946004L;
-
-    private List<Constraint> constraints = new LinkedList<Constraint>();
-
-    public final void addConstraint(Constraint constraint) {
-        constraints.add(constraint);
-    }
-
-    /**
-     * Performs the conjunction/disjunction of the provided constraints.
-     * 
-     * @param constraint1 the first constraint to use in the logical operation
-     * @param constraint2 the first constraint to use in the logical operation
-     * @return the resulting constraint
-     * @throws InvalidQueryException
-     * @throws JspTagException
-     * @throws RepositoryException
-     */
-    protected abstract Constraint doLogic(Constraint constraint1, Constraint constraint2) throws InvalidQueryException,
-            JspTagException, RepositoryException;
+    private static final long serialVersionUID = -6244170043221718028L;
 
     @Override
-    protected Constraint getConstraint() throws Exception {
-        Constraint compoundConstraint = null;
-        if (!constraints.isEmpty()) {
-            if (constraints.size() == 1) {
-                compoundConstraint = constraints.get(0);
-            } else {
-                for (Constraint constraint : constraints) {
-                    compoundConstraint = compoundConstraint != null ? doLogic(compoundConstraint,
-                            constraint) : constraint;
-                }
-            }
-        }
-        return compoundConstraint;
-    }
-
-    @Override
-    protected void resetState() {
-        constraints = new LinkedList<Constraint>();
-        super.resetState();
+    protected Constraint doLogic(Constraint constraint1, Constraint constraint2) throws InvalidQueryException,
+            JspTagException, RepositoryException {
+        return getQOMFactory().and(constraint1, constraint2);
     }
 }

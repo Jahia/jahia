@@ -155,7 +155,6 @@ public class FacetHandler {
 
 
     public void handleFacets(IndexReader reader) {
-        System.out.println("handle facets");
         IndexSearcher searcher = new IndexSearcher(reader);
         try {
             String facetFunctionPrefix = session.getJCRName(REP_FACET_LPAR);

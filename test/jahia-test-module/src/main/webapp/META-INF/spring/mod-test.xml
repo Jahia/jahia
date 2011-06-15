@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean class="org.jahia.bin.TestBean">
-        <property name="priority" value="40" />
+        <property name="priority" value="40"/>
 
         <property name="testCases">
             <list>
@@ -114,7 +114,7 @@
                     testCopyNodesVersionableAndCheckedIn(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesVersionableTest)
                 </value>
                 <value>testCheckPermission(org.apache.jackrabbit.test.api.CheckPermissionTest)</value>
-                org.apache.jackrabbit.test.api.SerializationTest
+                <value>org.apache.jackrabbit.test.api.SerializationTest</value>
                 <value>testReadOnlyPermission(org.apache.jackrabbit.test.api.HasPermissionTest)</value>
                 <value>testReadWritePermission(org.apache.jackrabbit.test.api.HasPermissionTest)</value>
                 <value>testAdminPermission(org.apache.jackrabbit.test.api.HasPermissionTest)</value>
@@ -125,7 +125,7 @@
                 </value>
                 <value>testCheckoutNonVersionableNode(org.apache.jackrabbit.test.api.version.simple.CheckoutTest)
                 </value>
-                org.apache.jackrabbit.test.api.lock.LockManagerTest
+                <value>org.apache.jackrabbit.test.api.lock.LockManagerTest</value>
                 <value>testGetLockJcr2(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testHoldsLockJcr2(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testIsLockedJcr2(org.apache.jackrabbit.test.api.version.VersionTest)</value>
@@ -191,7 +191,6 @@
                 <value>testSameUUIDAtAncestorWorkspace(org.apache.jackrabbit.test.api.DocumentViewImportTest)</value>
                 <value>testSameUUIDAtAncestorSessionHandler(org.apache.jackrabbit.test.api.DocumentViewImportTest)
                 </value>
-
                 <!-- Failing due to Jackrabbit bugs or old and no longer compatible test (check jackrabbit-jcr-rmi/pom.xml for known issues)-->
                 <value>testUndefinedProperty(org.apache.jackrabbit.test.api.UndefinedPropertyTest)</value>
                 <value>testRequiredDescriptors(org.apache.jackrabbit.test.api.RepositoryDescriptorTest)</value>
@@ -226,9 +225,9 @@
                 <value>testRestoreName(org.apache.jackrabbit.test.api.version.simple.RestoreTest)</value>
                 <value>testExpandedNameValue(org.apache.jackrabbit.test.api.NameTest)</value>
                 <value>testExpandedNameValueProperty(org.apache.jackrabbit.test.api.NameTest)</value>
-                org.apache.jackrabbit.test.api.lock.DeepLockTest
-                org.apache.jackrabbit.test.api.lock.OpenScopedLockTest
-                org.apache.jackrabbit.test.api.lock.SessionScopedLockTest
+                <value>org.apache.jackrabbit.test.api.lock.DeepLockTest</value>
+                <value>org.apache.jackrabbit.test.api.lock.OpenScopedLockTest</value>
+                <value>org.apache.jackrabbit.test.api.lock.SessionScopedLockTest</value>
                 <value>testAddNonExisting(org.apache.jackrabbit.test.api.NodeSetPrimaryTypeTest)</value>
                 <value>testCheckedIn(org.apache.jackrabbit.test.api.NodeSetPrimaryTypeTest)</value>
                 <value>testLocked(org.apache.jackrabbit.test.api.NodeSetPrimaryTypeTest)</value>
@@ -443,13 +442,12 @@
                 <value>testModifyCalendarPropertySession(org.apache.jackrabbit.test.api.SetPropertyCalendarTest)</value>
                 <value>testNewCalendarPropertyParent(org.apache.jackrabbit.test.api.SetPropertyCalendarTest)</value>
                 <value>testModifyCalendarPropertyParent(org.apache.jackrabbit.test.api.SetPropertyCalendarTest)</value>
-
                 <!--Test failing due to lack of Jahia ValueFactory creating JCRValueWrapperImpl-->
                 <value>testBaseVersionAfterCheckin(org.apache.jackrabbit.test.api.version.CheckinTest)</value>
                 <value>testBaseVersionAfterCheckinJcr2(org.apache.jackrabbit.test.api.version.CheckinTest)</value>
                 <value>testGetUUID(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testInitialNodePredecessors(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
-                <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)
+                <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
             </list>
         </property>
 

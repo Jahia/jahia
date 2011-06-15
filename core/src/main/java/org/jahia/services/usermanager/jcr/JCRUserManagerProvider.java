@@ -437,17 +437,41 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      *
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "username"="*test*") or
-     *                        null to search without criterias
+     *                        null to search without criteria
      * @return Set a set of JahiaUser elements that correspond to those
-     *         search criterias
+     *         search criteria
      */
     public Set<JahiaUser> searchUsers(final Properties searchCriterias) {
+        return searchUsers(searchCriterias, false, null);
+    }
+
+    /**
+     * Find users according to a table of name=value properties. If the left
+     * side value is "*" for a property then it will be tested against all the
+     * properties. ie *=test* will match every property that starts with "test"
+     *
+     * @param searchCriterias a Properties object that contains search criteria
+     *                        in the format name,value (for example "*"="*" or "username"="*test*") or
+     *                        null to search without criteria
+     * @param external do we consider only external users? <code>null</code> if all users should be considered
+     * @param providerKey the key of the user provider; <code>null</code> if all users should be considered
+     * @return Set a set of JahiaUser elements that correspond to those
+     *         search criteria
+     */
+    public Set<JahiaUser> searchUsers(final Properties searchCriterias, final Boolean external, final String providerKey) {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Set<JahiaUser>>() {
                 public Set<JahiaUser> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Set<JahiaUser> users = new HashSet<JahiaUser>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        StringBuilder query = new StringBuilder("SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[" + JCRUser.J_EXTERNAL + "] = 'false'");
+                        StringBuilder query = new StringBuilder(128);
+                        if (external != null) {
+                            query.append("u.[" + JCRUser.J_EXTERNAL + "] = '").append(external).append("'");
+                        }
+                        if (providerKey != null) {
+                            query.append(query.length() > 0 ? " AND " : "").append(" u.[" + JCRUser.J_EXTERNAL_SOURCE + "] = '").append(providerKey).append("'");
+                        }
+                        
                         if (searchCriterias != null && searchCriterias.size() > 0) {
                             // Avoid wildcard attribute
                             if (!(searchCriterias.containsKey(
@@ -455,7 +479,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                     "*"))) {
                                 Iterator<Map.Entry<Object, Object>> objectIterator = searchCriterias.entrySet().iterator();
                                 if (objectIterator.hasNext()) {
-                                    query.append(" AND (");
+                                    query.append(query.length() > 0 ? " AND " : "").append(" (");
                                     while (objectIterator.hasNext()) {
                                         Map.Entry<Object, Object> entry = objectIterator.next();
                                         String propertyKey = (String) entry.getKey();
@@ -488,6 +512,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                 }
                             }
                         }
+                        if (query.length() > 0) {
+                            query.insert(0, "WHERE ");
+                        }
+                        query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u ");
                         query.append(" ORDER BY u.[j:nodename]");
                         if (logger.isDebugEnabled()) {
                             logger.debug(query.toString());
@@ -510,7 +538,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             return new HashSet<JahiaUser>();
         }
     }
-
+    
     /**
      * This method indicates that any internal cache for a provider should be
      * updated because the value has changed and needs to be transmitted to the

@@ -57,6 +57,7 @@ import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.runner.manipulation.Filter;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.apache.commons.io.IOUtils;
@@ -71,13 +72,7 @@ import javax.servlet.ServletException;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -162,18 +157,19 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                     logger.error("Error executing test", e);
                 }
             } else {
+                WebApplicationContext webApplicationContext = (WebApplicationContext) servletContext.getAttribute(WebApplicationContext.class.getName() + ".jahiaModules");
+                Map<String,TestBean> testBeans = webApplicationContext.getBeansOfType(TestBean.class);
+
                 PrintWriter pw = httpServletResponse.getWriter();
                 // Return the lists of available tests
                 List<String> tests = new LinkedList<String>();
-                tests.addAll(readTests("TestFirst.properties", true));
-                tests.addAll(readTests("TestFirstPack.properties", true));
-                tests.addAll(readTests("TestFirstEE.properties", true));
-                tests.addAll(readTests("Test.properties", true));
-                tests.addAll(readTests("TestPack.properties", true));
-                tests.addAll(readTests("TestEE.properties", true));
-                tests.addAll(readTests("TestLast.properties", true));
-                tests.addAll(readTests("TestLastPack.properties", true));
-                tests.addAll(readTests("TestLastEE.properties", true));
+                SortedSet<TestBean> s = new TreeSet<TestBean>(testBeans.values());
+                for (TestBean testBean : s) {
+                    for (String o : testBean.getTestCases()) {
+                        tests.add(o);
+                    }
+                }
+
                 for (String c : tests) {
 					pw.println(c);
 				}
@@ -234,9 +230,16 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
     }
     
     private Set<String> getIgnoreTests() {
+        WebApplicationContext webApplicationContext = (WebApplicationContext) servletContext.getAttribute(WebApplicationContext.class.getName() + ".jahiaModules");
+        Map<String,TestBean> testBeans = webApplicationContext.getBeansOfType(TestBean.class);
+
+        // Return the lists of available tests
         Set<String> ignoreTests = new HashSet<String>();
-    	ignoreTests.addAll(readTests("IgnoreTest.properties", false));
-    	ignoreTests.addAll(readTests("IgnoreTestEE.properties", false));
+
+        SortedSet<TestBean> s = new TreeSet<TestBean>(testBeans.values());
+        for (TestBean testBean : s) {
+            ignoreTests.addAll(testBean.getIgnoredTests());
+        }
 
         return ignoreTests;
     }

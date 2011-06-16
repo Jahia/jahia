@@ -109,7 +109,7 @@ public class User {
     }
 
     public JahiaUser getJahiaUser() {
-        if (user == null) {
+        if (user == null && username != null) {
             if (!username.equals(JahiaLoginModule.SYSTEM) && !username.equals(JahiaLoginModule.GUEST)) {
                 user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
             }

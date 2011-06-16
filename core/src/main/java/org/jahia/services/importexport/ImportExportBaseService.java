@@ -47,8 +47,12 @@ import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
+import org.jahia.bin.JahiaAdministration;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.slf4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
@@ -170,7 +174,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 final List<File> files = (List<File>) args;
                 if (!files.isEmpty()) {
                     try {
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        JCRUser user = JCRUserManagerProvider.getInstance().lookupRootUser();
+                        JCRSessionFactory.getInstance().setCurrentUser(user);
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 JCRNodeWrapper dest = session.getNode("/imports");
                                 for (File file : files) {
@@ -193,6 +199,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         });
                     } catch (RepositoryException e) {
                         logger.error("error", e);
+                    } finally {
+                        JCRSessionFactory.getInstance().setCurrentUser(null);
                     }
                     for (File file : files) {
                         file.delete();

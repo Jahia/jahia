@@ -81,6 +81,8 @@ public class UrlRewriteTest {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         engine = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
+        engine.setSeoRulesEnabled(true);
+        engine.afterPropertiesSet();
         JahiaSite site = TestHelper.createSite(SITE_KEY, SERVER_NAME, TestHelper.WEB_TEMPLATES, null, null);
 
         ((ParamBean) Jahia.getThreadParamBean()).getSession(true).setAttribute(ParamBean.SESSION_SITE, site);

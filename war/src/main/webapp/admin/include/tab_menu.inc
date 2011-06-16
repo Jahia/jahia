@@ -38,7 +38,7 @@
     pageContext.setAttribute("theSite", theSite);
 %>
 <div class="dex-TabBar">
-    <ul class="dex-TabBarItem-wrapper" style="width: 80%;">
+    <ul class="dex-TabBarItem-wrapper" style="width: 79%;">
         <li class="dex-TabBarFirst">
             <div>
                 &nbsp;
@@ -120,7 +120,7 @@
             </div>
         </li>
     </ul>
-    <ul class="dex-langbar-wrapper" style="width: 20%;">
+    <ul class="dex-langbar-wrapper" style="width: 21%;">
         <li>
             <c:url value="/cms/logout" var="logoutUrl">
                 <c:param name="redirect" value="${pageContext.request.contextPath}/administration"/>

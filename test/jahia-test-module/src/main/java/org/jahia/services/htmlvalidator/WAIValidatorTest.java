@@ -41,23 +41,32 @@
 package org.jahia.services.htmlvalidator;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.xml.stream.util.StreamReaderDelegate;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import static org.junit.Assert.*;
 
 /**
- * Unit test to test the accessibility check methods implemented by Jahia's WAIValidator. 
+ * Unit test to test the accessibility check methods implemented by Jahia's WAIValidator.
  * The test is done with HTML fragments located under the same package name as this class,
  * just appending the path "pass" and "fail", which should list failing and passing HTML scripts.
- * 
  */
 public class WAIValidatorTest {
     @BeforeClass
@@ -89,20 +98,54 @@ public class WAIValidatorTest {
     }
 
     private void findAndTestScripts(boolean shouldFail) throws Exception {
-        URL scriptsUrl = WAIValidatorTest.class.getResource(shouldFail ? "fail" : "pass");
-        File scriptsDirectory = new File(scriptsUrl.toURI());
+        String[] res = getResourceListing(WAIValidatorTest.class,"org/jahia/services/htmlvalidator/"+(shouldFail ? "fail" : "pass"));
         WAIValidator validator = new WAIValidator(Locale.ENGLISH);
-        for (File file : scriptsDirectory.listFiles()) {
-            String content = FileUtils.readFileToString(file);
-            ValidatorResults results = validator.validate(content);
-            if (shouldFail) {
-                assertFalse("WAI validation for file " + file.getPath() + " should fail with errors or warnings", results
-                        .getErrors().isEmpty() && results.getWarnings().isEmpty());
-            } else {
-                assertTrue("WAI validation for file " + file.getPath() + " should pass without errors or warnings", results
-                        .getErrors().isEmpty() && results.getWarnings().isEmpty());
+        for (String re : res) {
+            String content = IOUtils.toString(WAIValidatorTest.class.getResourceAsStream("/" + re));
+            if (!StringUtils.isEmpty(content)) {
+                ValidatorResults results = validator.validate(content);
+                if (shouldFail) {
+                    assertFalse("WAI validation for file " + re + " should fail with errors or warnings", results
+                            .getErrors().isEmpty() && results.getWarnings().isEmpty());
+                } else {
+                    assertTrue("WAI validation for file " + re + " should pass without errors or warnings", results
+                            .getErrors().isEmpty() && results.getWarnings().isEmpty());
+                }
             }
         }
+    }
 
+    private String[] getResourceListing(Class clazz, String path) throws URISyntaxException, IOException {
+        URL dirURL = clazz.getResource(path);
+        if (dirURL != null && dirURL.getProtocol().equals("file")) {
+            /* A file path: easy enough */
+            return new File(dirURL.toURI()).list();
+        }
+
+        if (dirURL == null) {
+            /*
+            * In case of a jar file, we can't actually find a directory.
+            * Have to assume the same jar as clazz.
+            */
+            String me = clazz.getName().replace(".", "/") + ".class";
+            dirURL = clazz.getClassLoader().getResource(me);
+        }
+
+        if (dirURL.getProtocol().equals("jar")) {
+            /* A JAR path */
+            String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!")); //strip out only the JAR file
+            JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
+            Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
+            Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory
+            while (entries.hasMoreElements()) {
+                String name = entries.nextElement().getName();
+                if (name.startsWith(path)) { //filter according to the path
+                    result.add(name);
+                }
+            }
+            return result.toArray(new String[result.size()]);
+        }
+
+        throw new UnsupportedOperationException("Cannot list files for URL " + dirURL);
     }
 }

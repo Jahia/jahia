@@ -310,8 +310,6 @@ public class VersioningTest {
                 "home_subsubpage1").getName());
         assertEquals("Versioned node getNode() returns invalid nodetype", "jnt:page", versionNode.getNode(
                 "home_subsubpage1").getPrimaryNodeType().getName());
-        assertEquals("Versioned node getNode(..) returns invalid node name", "home", versionNode.getNode(
-                "src/main").getName());
 
         // now let's check the parent
         JCRNodeWrapper parentVersionNode = versionNode.getParent();

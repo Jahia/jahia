@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -95,7 +94,7 @@ public class ContentViews extends TopRightComponent {
 
         m_component.addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-                getLinker().getSelectionContext().refresh(LinkerSelectionContext.CONTENT_VIEWS_CONTEXT_MENU);
+                getLinker().getSelectionContext().refresh(LinkerSelectionContext.BOTH);
             }
         });
 

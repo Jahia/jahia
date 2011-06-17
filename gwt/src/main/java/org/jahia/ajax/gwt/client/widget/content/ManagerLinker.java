@@ -48,12 +48,10 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.LinkerComponent;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -170,7 +168,7 @@ public class ManagerLinker implements Linker {
 
 
     public void handleNewSelection() {
-        syncSelectionContext();
+        syncSelectionContext(LinkerSelectionContext.BOTH);
         if (m_topBar != null) {
             m_topBar.handleNewSelection();
         }
@@ -178,7 +176,7 @@ public class ManagerLinker implements Linker {
 
     public void handleNewSelection(List<GWTJahiaNode> nodes) {
         selectionContext.setSelectedNodes(nodes);
-        selectionContext.refresh();
+        selectionContext.refresh(LinkerSelectionContext.BOTH);
         if (m_topBar != null) {
             m_topBar.handleNewSelection();
         }
@@ -373,7 +371,7 @@ public class ManagerLinker implements Linker {
         return selectionContext;
     }
 
-    public void syncSelectionContext() {
+    public void syncSelectionContext(int context) {
         if (getTreeSelection() instanceof GWTJahiaNode) {
             selectionContext.setMainNode((GWTJahiaNode) getTreeSelection());
         }
@@ -382,7 +380,7 @@ public class ManagerLinker implements Linker {
             list = (List<GWTJahiaNode>) getTableSelection();
         }
         selectionContext.setSelectedNodes(list);
-        selectionContext.refresh();
+        selectionContext.refresh(context);
     }
 
     public GWTConfiguration getConfig() {

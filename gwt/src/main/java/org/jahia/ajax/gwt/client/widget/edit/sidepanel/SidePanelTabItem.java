@@ -41,18 +41,15 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -146,7 +143,7 @@ public class SidePanelTabItem implements Serializable {
 
             selectionModel.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
                 public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                    syncSelectionContext();
+                    syncSelectionContext(LinkerSelectionContext.BOTH);
                 }
             });
 
@@ -172,10 +169,10 @@ public class SidePanelTabItem implements Serializable {
         public void select(Object o) {
         }
 
-        public void syncSelectionContext() {
+        public void syncSelectionContext(int context) {
             ctx.setMainNode(selectionModel.getSelectedItem());
             ctx.setSelectedNodes(selectionModel.getSelectedItems());
-            ctx.refresh();
+            ctx.refresh(context);
         }
 
         public void setSelectPathAfterDataUpdate(String path) {

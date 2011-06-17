@@ -74,7 +74,7 @@ public interface Linker {
 
     public LinkerSelectionContext getSelectionContext();
 
-    public void syncSelectionContext();
+    public void syncSelectionContext(int context);
 
     public GWTConfiguration getConfig();
 

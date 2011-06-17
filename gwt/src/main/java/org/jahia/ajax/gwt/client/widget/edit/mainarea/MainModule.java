@@ -163,7 +163,7 @@ public class MainModule extends Module {
                 @Override
                 public boolean beforeShow() {
                     makeSelected();
-                    editLinker.getSelectionContext().refresh(LinkerSelectionContext.MAIN_AREA_CONTEXT_MENU);
+
                     if (editLinker.getSelectionContext().getSingleSelection() == null) {
                         return false;
                     }
@@ -465,7 +465,7 @@ public class MainModule extends Module {
     public void handleNewModuleSelection(Module selectedModule) {
         Selection l = Selection.getInstance();
         l.hide();
-        if (selectedModule != null) {
+        if (selectedModule != null && !(selectedModule instanceof MainModule)) {
             l.select(selectedModule);
             l.show();
         }

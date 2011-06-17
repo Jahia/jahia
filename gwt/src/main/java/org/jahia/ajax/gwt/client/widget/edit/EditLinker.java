@@ -48,7 +48,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -164,20 +163,20 @@ public class EditLinker implements Linker {
     }
 
     public void handleNewModuleSelection() {
-        syncSelectionContext();
+        syncSelectionContext(LinkerSelectionContext.SELECTED_NODE_ONLY);
         toolbar.handleNewLinkerSelection();
         mainModule.handleNewModuleSelection(selectedModule);
         sidePanel.handleNewModuleSelection(selectedModule);
     }
 
     public void handleNewMainSelection() {
-        syncSelectionContext();
+        syncSelectionContext(LinkerSelectionContext.SELECTED_NODE_ONLY);
         mainModule.handleNewMainSelection(mainPath,template, param);
         sidePanel.handleNewMainSelection(mainPath);
     }
 
     public void handleNewMainNodeLoaded() {
-        syncSelectionContext();
+        syncSelectionContext(LinkerSelectionContext.SELECTED_NODE_ONLY);
         toolbar.handleNewMainNodeLoaded(mainModule.getNode());
         sidePanel.handleNewMainNodeLoaded(mainModule.getNode());
     }
@@ -233,14 +232,14 @@ public class EditLinker implements Linker {
         return selectionContext;
     }
 
-    public void syncSelectionContext() {
+    public void syncSelectionContext(int context) {
         selectionContext.setMainNode(getMainModule().getNode());
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-        if (getSelectedModule() != null && getSelectedModule().getNode() != null) {
+        if (getSelectedModule() != null && getSelectedModule().getNode() != null && !(getSelectedModule() instanceof MainModule)) {
             nodes.add(getSelectedModule().getNode());
         }
         selectionContext.setSelectedNodes(nodes);
-        selectionContext.refresh();
+        selectionContext.refresh(context);
     }
 
     public void replaceMainAreaComponent(Widget w) {

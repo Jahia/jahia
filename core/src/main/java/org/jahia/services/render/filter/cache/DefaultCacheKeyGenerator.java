@@ -242,28 +242,30 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     path = "/";
                 }
             }
-            Set<JahiaGroup> aclGroups = allAclsGroups.get(path);
-            if (aclGroups == null) {
-                // found no specific entry for this path
-                String fakePath = path;
+
+            Set<JahiaGroup> aclGroups = new HashSet<JahiaGroup>();
+
+            String fakePath = path;
+            while (!fakePath.equals("")) {
                 while (!allAclsGroups.containsKey(fakePath) && !fakePath.equals("")) {
                     fakePath = StringUtils.substringBeforeLast(fakePath, "/");
                 }
                 if (fakePath.equals("")) {
                     fakePath = "/";
                 }
-                aclGroups = allAclsGroups.get(fakePath);
+                aclGroups.addAll(allAclsGroups.get(fakePath));
+                fakePath = StringUtils.substringBeforeLast(fakePath, "/");
             }
-            if (aclGroups != null) {
-                for (JahiaGroup g : aclGroups) {
-                    if (g != null && g.isMember(principal)) {
-                        if (b.length() > 0) {
-                            b.append("|");
-                        }
-                        b.append(g.getGroupname());
+
+            for (JahiaGroup g : aclGroups) {
+                if (g != null && g.isMember(principal)) {
+                    if (b.length() > 0) {
+                        b.append("|");
                     }
+                    b.append(g.getGroupname());
                 }
             }
+
             if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
                     JahiaUserManagerService.GUEST_USERNAME)) {
                 b.append("|" + JahiaGroupManagerService.USERS_GROUPNAME);
@@ -376,6 +378,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             if (aclGroups.isEmpty()) {
                 template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        aclGroups.put("/", new HashSet<JahiaGroup>());
+                        aclGroups.get("/").add(groupManagerService.lookupGroup(groupManagerService.ADMINISTRATORS_GROUPNAME));
                         Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
                                 "select * from [jnt:ace] as u where u.[j:principal] like 'g%'", Query.JCR_SQL2);
                         QueryResult groupQueryResult = groupQuery.execute();
@@ -383,7 +387,10 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                         while (nodeIterator.hasNext()) {
                             JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
                             String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
-                            final JahiaGroup group = groupManagerService.lookupGroup(s);
+                            JahiaGroup group = groupManagerService.lookupGroup(node.getResolveSite().getID(), s);
+                            if (group == null) {
+                                group = groupManagerService.lookupGroup(s);
+                            }
                             if (group != null) {
                                 String path = node.getParent().getParent().getPath();
                                 boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");

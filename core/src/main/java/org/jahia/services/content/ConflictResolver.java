@@ -487,7 +487,7 @@ public class ConflictResolver {
         public boolean apply() throws RepositoryException {
             if (sourceNode.getNode(newName).isVersioned() || targetNode.hasNode(newName)) {
                 if (targetNode.hasNode(newName) && (nextSibling == null || targetNode.hasNode(nextSibling)) && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
-                    if (!newName.contains("/") && !nextSibling.contains("/")) {
+                    if (!newName.contains("/") && (nextSibling == null || !nextSibling.contains("/"))) {
                         // todo reorder non-versionable sub nodes
                         targetNode.orderBefore(newName, nextSibling);
                     }

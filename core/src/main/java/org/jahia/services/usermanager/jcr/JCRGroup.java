@@ -418,7 +418,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                 memberNode.remove();
             }
             session.save();
-            mMembers.clear();
+            mMembers = null;
             mMembers = getMembersMap();
             JCRGroupManagerProvider.getInstance().updateMembershipCache(memberIdentifier);
             return true;

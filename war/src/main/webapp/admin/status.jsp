@@ -303,12 +303,12 @@
 		                </c:choose>
 		                <span style="color: ${effColour}"><fmt:formatNumber value="${cacheEfficiency}" pattern="0.00"/>&nbsp;%</span>
 		                <br/>
-		                Statistics: enabled (accuracy: ${ehcacheStats.statisticsAccuracyDescription})
-	                	<a href="?do=status&amp;sub=display&amp;enableEhcacheStats=false&amp;ehcache=${ehcacheName}&amp;timestamp=${timestamp}">Disable statistics</a>
+		                <fmt:message key='org.jahia.admin.status.ManageStatus.statistics'/>: <fmt:message key='org.jahia.admin.status.ManageStatus.enabled'/> (<fmt:message key='org.jahia.admin.status.ManageStatus.accuracy'/>: ${ehcacheStats.statisticsAccuracyDescription})
+	                	<a href="?do=status&amp;sub=display&amp;enableEhcacheStats=false&amp;ehcache=${ehcacheName}&amp;timestamp=${timestamp}"><fmt:message key='org.jahia.admin.status.ManageStatus.statistics.disable'/></a>
 	                </c:if>
         			<c:if test="${not ehcache.statisticsEnabled}">
-		                Statistics: disabled (accuracy: ${ehcacheStats.statisticsAccuracyDescription})
-	                	<a href="?do=status&amp;sub=display&amp;enableEhcacheStats=true&amp;ehcache=${ehcacheName}&amp;timestamp=${timestamp}">Enable statistics</a>
+		                <fmt:message key='org.jahia.admin.status.ManageStatus.statistics'/>: <fmt:message key='org.jahia.admin.status.ManageStatus.disabled'/> (<fmt:message key='org.jahia.admin.status.ManageStatus.accuracy'/>: ${ehcacheStats.statisticsAccuracyDescription})
+	                	<a href="?do=status&amp;sub=display&amp;enableEhcacheStats=true&amp;ehcache=${ehcacheName}&amp;timestamp=${timestamp}"><fmt:message key='org.jahia.admin.status.ManageStatus.statistics.enable'/></a>
 	                </c:if>
         		</td>
 	            <td>
@@ -321,7 +321,7 @@
     <table width="100%" class="evenOddTable full tBorder" border="0" cellspacing="0" cellpadding="5">
         <thead>
             <tr>
-                <th colspan="6">Hibernate Statistics</th>
+                <th colspan="6"><fmt:message key='org.jahia.admin.status.ManageStatus.hibernate.Statistics'/></th>
             </tr>
         </thead>
         <%
@@ -433,13 +433,13 @@
             }
         %>
             <tr class="oddLine">
-                <td colspan="6"><a href="?do=status&amp;sub=display&amp;enableStats=false&amp;timestamp=${timestamp}">Disable statistics</a></td>
+                <td colspan="6"><a href="?do=status&amp;sub=display&amp;enableStats=false&amp;timestamp=${timestamp}"><fmt:message key='org.jahia.admin.status.ManageStatus.statistics.disable'/></a></td>
             </tr>
         <%
             } else {
         %>
             <tr class="oddLine">
-                <td colspan="6"><a href="?do=status&amp;sub=display&amp;enableStats=true&amp;timestamp=${timestamp}">Enable statistics</a></td>
+                <td colspan="6"><a href="?do=status&amp;sub=display&amp;enableStats=true&amp;timestamp=${timestamp}"><fmt:message key='org.jahia.admin.status.ManageStatus.statistics.enable'/></a></td>
             </tr>
         <%  } %>
     </table>

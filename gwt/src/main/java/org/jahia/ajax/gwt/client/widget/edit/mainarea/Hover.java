@@ -104,6 +104,10 @@ public class Hover {
     private boolean hidden = true;
 
     public void addHover(Module module) {
+        if (boxes.containsKey(module)) {
+            return;
+        }
+
         LayoutContainer c = module.getContainer();
         Box b = new Box(c);
 //        if (module instanceof ListModule) {
@@ -148,6 +152,9 @@ public class Hover {
 
         mainModule.setSelectable(false);
 
+        if (boxes.containsKey(module)) {
+            return;
+        }
         b.show();
         boxes.put(module, b);
     }

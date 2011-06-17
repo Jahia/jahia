@@ -420,7 +420,6 @@ public class JCRPublicationService extends JahiaService {
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
-        List<JCRNodeWrapper> modified = new ArrayList<JCRNodeWrapper>();
         for (final JCRNodeWrapper node : toPublish) {
             if (node.hasProperty("jcr:mergeFailed")) {
                 Value[] failed = node.getProperty("jcr:mergeFailed").getValues();
@@ -430,23 +429,13 @@ public class JCRPublicationService extends JahiaService {
                 }
                 continue;
             }
-
-            if (!node.hasProperty("j:lastPublished")) {
-                modified.add(node);
-            } else if (node.isNodeType("jmix:lastPublished")) {
-                Date modificationDate = node.getProperty("jcr:lastModified").getDate().getTime();
-                Date publicationDate = node.getProperty("j:lastPublished").getDate().getTime();
-                if (publicationDate.getTime() < modificationDate.getTime()) {
-                    modified.add(node);
-                }
-            }
         }
 
-        if (modified.isEmpty()) {
+        if (toPublish.isEmpty()) {
             return;
         }
 
-        for (JCRNodeWrapper node : modified) {
+        for (JCRNodeWrapper node : toPublish) {
             if (node.isNodeType("jmix:lastPublished")) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Setting last published for {}", node.getPath());
@@ -469,13 +458,13 @@ public class JCRPublicationService extends JahiaService {
 
         sourceSession.save();
 
-        for (JCRNodeWrapper node : modified) {
+        for (JCRNodeWrapper node : toPublish) {
             // Node has been modified, check in now
             if (node.isNodeType("mix:versionable")) {
                 sourceVersionManager.checkpoint(node.getPath());
             }
         }
-        for (final JCRNodeWrapper node : modified) {
+        for (final JCRNodeWrapper node : toPublish) {
             try {
                 if (!node.isNodeType("mix:versionable")) {
                     destinationSession.getNode(node.getCorrespondingNodePath(destinationSession.getWorkspace().getName())).update(sourceSession.getWorkspace().getName());

@@ -136,12 +136,17 @@ public class ContentTest {
 
     @After
     public void tearDown() throws Exception {
+        JCRSessionFactory.getInstance().closeAllSessions();
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                for (String node : nodes) {
-                    session.getNodeByIdentifier(node).remove();
+                try {
+                    for (String node : nodes) {
+                        session.getNodeByIdentifier(node).remove();
+                    }
+                    session.save();
+                } catch (RepositoryException e) {
+                    logger.error("Error when deleting nodes",e);
                 }
-                session.save();
                 return null;
             }
         });

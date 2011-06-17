@@ -53,18 +53,16 @@
 [consequence][]Remove this property=insert (new DeletedPropertyFact(property, drools));
 [consequence][]Restore ACL inheritance on the {node}=service.setAclInheritanceBreak({node},false);
 [consequence][]Revoke all permissions on the {node}=service.revokeAllPermissions({node});
-[consequence][]Set and copy to staging the property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools, true));
-[consequence][]Set and copy to staging the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools, true));
 [consequence][]Set not existing property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools, false,false));
 [consequence][]Set not existing property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools, false,false));
-[consequence][]Set the property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools, false));
+[consequence][]Set the property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools));
 [consequence][]Set the property {property} of the {node} with the height of the image= imageService.setHeight({node}, "{property}", drools);
-[consequence][]Set the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools, false));
-[consequence][]Set the property {property} of the {node} with the name of the node=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", provider.decodeInternalName(node.getName()), drools, false));
-[consequence][]Set the property {property} of the {node} with the path of the node=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", provider.decodeInternalName(node.getPath()), drools, false));
-[consequence][]Set the property {property} of the {node} with the value "{value}"=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", "{value}", drools, false));
-[consequence][]Set the property {property} of the {node} with the value of that property=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", propertyValue, drools, false));
-[consequence][]Set the property {property} of the {node} with the value of {variable}=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", {variable}, drools, false));
+[consequence][]Set the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools));
+[consequence][]Set the property {property} of the {node} with the name of the node=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", provider.decodeInternalName(node.getName()), drools));
+[consequence][]Set the property {property} of the {node} with the path of the node=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", provider.decodeInternalName(node.getPath()), drools));
+[consequence][]Set the property {property} of the {node} with the value "{value}"=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", "{value}", drools));
+[consequence][]Set the property {property} of the {node} with the value of that property=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", propertyValue, drools));
+[consequence][]Set the property {property} of the {node} with the value of {variable}=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", {variable}, drools));
 [consequence][]Set the property {property} of the {node} with the width of the image= imageService.setWidth({node}, "{property}", drools);
 [consequence][]Set corresponding property with the value of the extracted {metadata}=if (node != null) {node.addType(metadata.getCorrespondingNodeTypeName(), drools ); insert (new ChangedPropertyFact(node, metadata.getCorrespondingPropertyName(), metadata.getValue(), drools, false)); }
 [consequence][]Increment the property {property} of the {node}=service.incrementProperty(node,"{property}", drools);

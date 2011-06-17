@@ -70,7 +70,7 @@ public class ActionContextMenu extends ActionToolbarMenu {
         // add listener on BedoreShow Event
         addListener(Events.BeforeShow, new Listener<MenuEvent>() {
             public void handleEvent(MenuEvent baseEvent) {
-                beforeShow();
+                baseEvent.setCancelled(!beforeShow());
             }
         });
     }
@@ -78,8 +78,9 @@ public class ActionContextMenu extends ActionToolbarMenu {
     /**
      * Override this method to provide a custom "beforeShow" behaviour
      */
-    public void beforeShow() {
+    public boolean beforeShow() {
         checkLinkerSelection();
+        return true;
     }
 
     /**

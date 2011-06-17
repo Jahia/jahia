@@ -101,8 +101,18 @@ public class LinkerSelectionContext {
                 singleSelection = mainNode;
                 isSecondarySelection = false;
                 break;
-            case CONTENT_VIEWS_CONTEXT_MENU:
             case MAIN_AREA_CONTEXT_MENU:
+                if (selectedNodes != null) {
+                    multipleSelection = selectedNodes;
+                    if (selectedNodes.size() == 1) {
+                        singleSelection = selectedNodes.get(0);
+                    } else {
+                        singleSelection = null;
+                    }
+                    isSecondarySelection = false;
+                }
+                break;
+            case CONTENT_VIEWS_CONTEXT_MENU:
             default:
                 if (selectedNodes != null) {
                     multipleSelection = selectedNodes;

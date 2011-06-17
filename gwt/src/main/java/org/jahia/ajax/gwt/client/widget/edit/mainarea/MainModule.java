@@ -161,18 +161,17 @@ public class MainModule extends Module {
             // contextMenu
             contextMenu = new ActionContextMenu(config.getContextMenu(), editLinker) {
                 @Override
-                public void beforeShow() {
+                public boolean beforeShow() {
                     makeSelected();
-                    super.beforeShow();
+                    editLinker.getSelectionContext().refresh(LinkerSelectionContext.MAIN_AREA_CONTEXT_MENU);
+                    if (editLinker.getSelectionContext().getSingleSelection() == null) {
+                        return false;
+                    }
+                    return super.beforeShow();
                 }
             };
             scrollContainer.setContextMenu(contextMenu);
 
-            scrollContainer.addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent be) {
-                    editLinker.getSelectionContext().refresh(LinkerSelectionContext.MAIN_AREA_CONTEXT_MENU);
-                }
-            });
         }
 
         infoLayers.initWithLinker(linker);

@@ -238,7 +238,9 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
 
         SortedSet<TestBean> s = new TreeSet<TestBean>(testBeans.values());
         for (TestBean testBean : s) {
-            ignoreTests.addAll(testBean.getIgnoredTests());
+            if (testBean.getIgnoredTests() != null) {
+                ignoreTests.addAll(testBean.getIgnoredTests());
+            }
         }
 
         return ignoreTests;

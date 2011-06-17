@@ -171,6 +171,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     if (node == null) {
                         return;
                     }
+                    if(logger.isDebugEnabled()) {
+                        logger.debug("Looking for absolute area "+path+", will be searched in node "+ node.getPath() +
+                                     " saved template = "+templateNode.serialize()+", previousTemplate set to null");
+                    }
                     node = node.getNode(path);
                 } catch (RepositoryException e) {
                     if (node != null) {
@@ -229,6 +233,12 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         }
                     }
                     renderContext.getRequest().setAttribute("previousTemplate", t);
+                    if(logger.isDebugEnabled()) {
+                        String tempNS = (templateNode!=null)?templateNode.serialize():null;
+                        String prevNS = (t!=null)?t.serialize():null;
+                        logger.debug("Looking for local area "+path+", will be searched in node "+ (node!=null?node.getPath():null) +
+                                     " saved template = "+tempNS+", previousTemplate set to "+prevNS);
+                    }
                     if (currentMain) {
                         renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
                     }
@@ -240,6 +250,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
                     // No more areas in an absolute area
                     renderContext.getRequest().setAttribute("previousTemplate", null);
+                    if(logger.isDebugEnabled()) {
+                        logger.debug("Looking for absolute area "+path+", will be searched in node "+ node.getPath() +
+                                     " saved template = "+templateNode.serialize()+", previousTemplate set to null");
+                    }
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
                     } catch (PathNotFoundException e) {
@@ -262,6 +276,9 @@ public class AreaTag extends ModuleTag implements ParamParent {
             return super.doEndTag();
         } finally {
             pageContext.getRequest().setAttribute("previousTemplate", templateNode);
+            if(logger.isDebugEnabled()) {
+                        logger.debug("Restoring previous template "+templateNode.serialize());
+                    }
             templateNode = null;
             level = null;
             pageContext.getRequest().setAttribute("inArea", o);

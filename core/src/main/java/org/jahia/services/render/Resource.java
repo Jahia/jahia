@@ -217,8 +217,8 @@ public class Resource {
         } catch (RepositoryException e) {
             logger.error("Error while retrieving node primary node type name", e);
         }
-        return "Resource{" + "node=" + node.getPath() + ", primaryNodeTypeName='" + primaryNodeTypeName + "', templateType='" + templateType + '\'' + ", template='" +
-                template + '\'' + '}';
+        return "Resource{" + "node=" + node.getPath() + ", primaryNodeTypeName='" + primaryNodeTypeName + "', templateType='" + templateType + "', template='" +
+                template + "', configuration='" + contextConfiguration + "'}";
     }
 
     public void addOption(String wrapper, ExtendedNodeType nodeType) {

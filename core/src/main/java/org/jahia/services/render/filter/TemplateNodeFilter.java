@@ -61,13 +61,25 @@ public class TemplateNodeFilter extends AbstractFilter {
             if (renderContext.getRequest().getAttribute("templateSet") == null) {
                 template = service.resolveTemplate(resource, renderContext);
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Template set to : " + template.serialize() + " for resource " + resource);
+                }
             } else if (renderContext.getRequest().getAttribute("cachedTemplate") != null) {
                 template = (Template) renderContext.getRequest().getAttribute("cachedTemplate");
+                if (logger.isDebugEnabled()) {
+                    logger.debug(
+                            "Restoring cached template to : " + template.serialize() + " for resource " + resource);
+                }
             } else {
                 previousTemplate = (Template) renderContext.getRequest().getAttribute("previousTemplate");
                 if (previousTemplate != null) {
                     template = previousTemplate.next;
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Using Previous Template : " + previousTemplate.serialize() + " for resource " + resource);
+                        logger.debug("Setting Template to use to : " + template.serialize() + " for resource " + resource);
+                    }
                 }
+
             }
 
             if (template != null) {
@@ -84,9 +96,12 @@ public class TemplateNodeFilter extends AbstractFilter {
                         if (currentLevel != null) {
                             renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + (currentLevel));
                         }
-
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Calling render service with template : " + template.serialize() +
+                                         " templateNode path : " + templateNode.getPath() + " for wrapperresource " +
+                                         wrapperResource);
+                        }
                         String output = RenderService.getInstance().render(wrapperResource, renderContext);
-
                         renderContext.getRequest().setAttribute("previousTemplate", previousTemplate);
 
                         return output;

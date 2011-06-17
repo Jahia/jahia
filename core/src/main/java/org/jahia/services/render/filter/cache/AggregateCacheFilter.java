@@ -597,25 +597,26 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
             Template oldOne = (Template) renderContext.getRequest().getAttribute("previousTemplate");
             boolean restoreOldOneIfNeeded = false;
-            if(!keyAttrbs.get("context").equals("page")) {
+            String context = keyAttrbs.get("context");
+            if(!context.equals("page")) {
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
             }
             if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
                 Template templateNodes = new Template(keyAttrbs.get("templateNodes"));
-                if(oldOne!=null) {
-                    renderContext.getRequest().setAttribute("previousTemplate", templateNodes);
-                } else {
-                    renderContext.getRequest().setAttribute("cachedTemplate", templateNodes);
-                }
+                renderContext.getRequest().setAttribute("previousTemplate", templateNodes);
             } else {
                 renderContext.getRequest().removeAttribute("previousTemplate");
                 restoreOldOneIfNeeded = true;
             }
+
+            if (context.equals("wrappedcontent")){
+                renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
+            }
+
             if(areaIdentifier!=null) {
                 renderContext.getRequest().setAttribute("areaListResource",currentUserSession.getNodeByIdentifier(areaIdentifier));
             }
-            Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"),
-                    keyAttrbs.get("context"));
+            Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), context);
             if (moduleParams != null) {
                 for (Map.Entry<String, Serializable> entry : moduleParams.entrySet()) {
                     resource.getModuleParams().put(entry.getKey(), entry.getValue());

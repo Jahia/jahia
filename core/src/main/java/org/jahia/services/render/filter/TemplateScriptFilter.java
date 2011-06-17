@@ -40,6 +40,7 @@
 
 package org.jahia.services.render.filter;
 
+import org.jahia.services.render.Template;
 import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
@@ -76,8 +77,17 @@ public class TemplateScriptFilter extends AbstractFilter {
         StringBuffer output = new StringBuffer();
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("Render " + script.getView().getPath() + " for resource: " + resource +
-                             " with mainResource " + renderContext.getMainResource());
+                logger.debug("Render " + script.getView().getPath() + " for resource: " + resource);
+                if(renderContext.getRequest().getAttribute("previousTemplate")!=null) {
+                    logger.debug("previousTemplate object for rendering before script: "+((Template) renderContext.getRequest().getAttribute("previousTemplate")).serialize());
+                } else {
+                    logger.debug("previousTemplate object for rendering before script is null.");
+                }
+                if(renderContext.getRequest().getAttribute("usedTemplate")!=null) {
+                    logger.debug("usedTemplate object for rendering before script: "+((Template) renderContext.getRequest().getAttribute("usedTemplate")).serialize());
+                } else {
+                    logger.debug("usedTemplate object for rendering before script is null.");
+                }
             }
             long start = 0;
             if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
@@ -85,6 +95,20 @@ public class TemplateScriptFilter extends AbstractFilter {
                 start = System.currentTimeMillis();
             }
             output.append(script.execute(resource, renderContext));
+
+            if (logger.isDebugEnabled()) {
+                if(renderContext.getRequest().getAttribute("previousTemplate")!=null) {
+                    logger.debug("Current previousTemplate object for rendering after script: "+((Template) renderContext.getRequest().getAttribute("previousTemplate")).serialize());
+                } else {
+                    logger.debug("previousTemplate object for rendering after script is null.");
+                }
+                if(renderContext.getRequest().getAttribute("usedTemplate")!=null) {
+                    logger.debug("Current usedTemplate object for rendering after script: "+((Template) renderContext.getRequest().getAttribute("usedTemplate")).serialize());
+                } else {
+                    logger.debug("usedTemplate object for rendering after script is null.");
+                }
+            }
+
             if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
                 output.append("<legend>")
                         .append("<img src=\"")

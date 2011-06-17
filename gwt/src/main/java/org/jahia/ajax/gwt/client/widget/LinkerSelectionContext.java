@@ -54,10 +54,9 @@ import java.util.List;
  * Time: 3:38:07 PM
  */
 public class LinkerSelectionContext {
-    public static final int NO_CONTEXT_MENU = 0;
-    public static final int CONTENT_VIEWS_CONTEXT_MENU = 1;
-    public static final int REPOSITORY_TABS_CONTEXT_MENU = 2;
-    public static final int MAIN_AREA_CONTEXT_MENU = 3;
+    public static final int BOTH = 1;
+    public static final int MAIN_NODE_ONLY = 2;
+    public static final int SELECTED_NODE_ONLY = 3;
 
     private GWTJahiaNode mainNode;
     private List<GWTJahiaNode> selectedNodes;
@@ -87,13 +86,9 @@ public class LinkerSelectionContext {
         this.selectedNodes = selectedNodes;
     }
 
-    public void refresh() {
-        refresh(NO_CONTEXT_MENU);
-    }
-
-    public void refresh(int contextMenu) {
-        switch (contextMenu) {
-            case REPOSITORY_TABS_CONTEXT_MENU:
+    public void refresh(int context) {
+        switch (context) {
+            case MAIN_NODE_ONLY:
                 multipleSelection = new ArrayList<GWTJahiaNode>();
                 if (mainNode != null) {
                     multipleSelection.add(mainNode);
@@ -101,7 +96,7 @@ public class LinkerSelectionContext {
                 singleSelection = mainNode;
                 isSecondarySelection = false;
                 break;
-            case MAIN_AREA_CONTEXT_MENU:
+            case SELECTED_NODE_ONLY:
                 if (selectedNodes != null) {
                     multipleSelection = selectedNodes;
                     if (selectedNodes.size() == 1) {
@@ -112,7 +107,7 @@ public class LinkerSelectionContext {
                     isSecondarySelection = false;
                 }
                 break;
-            case CONTENT_VIEWS_CONTEXT_MENU:
+            case BOTH:
             default:
                 if (selectedNodes != null) {
                     multipleSelection = selectedNodes;

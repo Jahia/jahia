@@ -195,10 +195,10 @@ public class URL {
         if (value.contains("$lang")) {
             value = value.replace("$lang", JahiaGWTParameters.getLanguage());
         }
-        if (selectedNode != null && value.contains("$nodepathnoescape")) {
+        if (value.contains("$nodepathnoescape")) {
             value = value.replace("$nodepathnoescape", selectedNode.getPath());
         }
-        if (selectedNode != null && value.contains("$nodepath")) {
+        if (value.contains("$nodepath")) {
             value = value.replace("$nodepath", com.google.gwt.http.client.URL.encodeQueryString(selectedNode.getPath()));
         }
         if (value.contains("$workspace")) {

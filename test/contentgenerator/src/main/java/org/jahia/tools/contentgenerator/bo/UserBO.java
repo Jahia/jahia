@@ -92,7 +92,6 @@ public class UserBO {
 		userElement.setAttribute("lastPublished", this.jcrDate, ContentGeneratorCst.NS_J);
 		userElement.setAttribute("lastPublishedBy", "root", ContentGeneratorCst.NS_J);
 		userElement.setAttribute("organization", "Organization", ContentGeneratorCst.NS_J);
-		// TODO: hash
 		userElement.setAttribute("password", this.password, ContentGeneratorCst.NS_J); // W6ph5Mm5Pz8GgiULbPgzG37mj9g
 		// TODO : picture
 		userElement.setAttribute("picture", this.jcrPath + "/files/profile/publisher.png", ContentGeneratorCst.NS_J); // 

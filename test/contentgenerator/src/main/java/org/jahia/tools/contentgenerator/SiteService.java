@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.SiteBO;
+import org.jahia.tools.contentgenerator.bo.UserBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -99,9 +101,7 @@ public class SiteService {
 		return treeFile;
 	}
 
-	public File createUsersFile(Integer nbUsers) {
-		throw new NotImplementedException();
-	}
+	
 
 	/**
 	 * Creates properties for the site created and write them to the default

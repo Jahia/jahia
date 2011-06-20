@@ -1,6 +1,11 @@
 package org.jahia.tools.contentgenerator;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -9,6 +14,9 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.PageBO;
+import org.jdom.Document;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 /**
  * Class used to write data into output files/directories
@@ -118,5 +126,16 @@ public class OutputService {
 			out.closeEntry();
 			in.close();
 		}
+	}
+
+	public void writeJdomDocumentToFile(Document doc, File file) throws IOException {
+		XMLOutputter out = new XMLOutputter();
+		java.io.FileWriter writer = new java.io.FileWriter(file);
+
+		out.setFormat(Format.getPrettyFormat());
+		
+		out.output(doc, writer);
+		writer.flush();
+		writer.close();
 	}
 }

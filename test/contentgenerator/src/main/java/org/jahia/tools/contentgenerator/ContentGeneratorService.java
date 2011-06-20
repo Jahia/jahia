@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,13 +16,14 @@ import org.apache.log4j.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
+import org.jahia.tools.contentgenerator.bo.GroupBO;
 import org.jahia.tools.contentgenerator.bo.SiteBO;
+import org.jahia.tools.contentgenerator.bo.UserBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 import org.w3c.dom.DOMException;
 
 public class ContentGeneratorService {
@@ -115,6 +117,7 @@ public class ContentGeneratorService {
 	public String generateSite(ExportBO export) throws MojoExecutionException, DOMException,
 			ParserConfigurationException {
 		String zipFilePath = null;
+		String sep = System.getProperty("file.separator");
 
 		// as we create a full site we will need a home page
 		export.setRootPageName(ContentGeneratorCst.ROOT_PAGE_NAME);
@@ -156,7 +159,7 @@ public class ContentGeneratorService {
 				fileService.copyFilesForAttachment(filesToCopy, filesDirectory);
 
 				// generates XML code for files
-				tempXmlFile = new File(export.getOutputDir() + System.getProperty("file.separator") + "jcrFiles.xml");
+				tempXmlFile = new File(export.getOutputDir() + sep + "jcrFiles.xml");
 				fileService.createAndPopulateFilesXmlFile(tempXmlFile, filesToCopy);
 			}
 
@@ -167,31 +170,35 @@ public class ContentGeneratorService {
 			// Add XML Groups
 			UserGroupService userGroupService = new UserGroupService();
 			// TODO: params nbUsers / nbGroups
-			Integer nbUsers = Integer.valueOf(10);
+			Integer nbUsers = Integer.valueOf(12);
 			Integer nbGroups = Integer.valueOf(5);
-			Element groupsNode = userGroupService.generateJcrGroups(export.getSiteKey(), nbUsers, nbGroups);
+			List<GroupBO> groups = userGroupService.generateUsersAndGroups(nbUsers, nbGroups);
+			Element groupsNode = userGroupService.generateJcrGroups(export.getSiteKey(), groups);
 
-			// TODO: transformer le repository String en repository global DOM
+			// TODO: transformer le repository String en repository global JDOM
 			Document repositoryDoc = readXmlFile(repositoryFile);
 			repositoryDoc = siteService.insertGroupsIntoSiteRepository(repositoryDoc, export.getSiteKey(), groupsNode);
 
-			// TODO: clean this
-			// save it to a file:
-			XMLOutputter out = new XMLOutputter();
-			java.io.FileWriter writer = new java.io.FileWriter(repositoryFile);
-			out.output(repositoryDoc, writer);
-			writer.flush();
-			writer.close();
-
+			OutputService os = new OutputService();
+			os.writeJdomDocumentToFile(repositoryDoc, repositoryFile);
 			filesToZip.add(repositoryFile);
 
-			// Add users.zip
-
-			OutputService os = new OutputService();
 			String zipFileName = export.getSiteKey() + ".zip";
 			os.createSiteArchive(zipFileName, tempOutputDir.getParentFile().getAbsolutePath(), filesToZip);
 			zipFilePath = tempOutputDir.getParentFile().getAbsolutePath() + System.getProperty("file.separator")
 					+ zipFileName;
+
+			// Users archive
+			List<UserBO> users = new ArrayList<UserBO>();
+			for (Iterator<GroupBO> iterator = groups.iterator(); iterator.hasNext();) {
+				GroupBO group = iterator.next();
+				users.addAll(group.getUsers());
+			}
+			File repositoryUsers = new File(tempOutputDir + sep + "users.xml");
+			Document usersRepositoryDocument = userGroupService.createUsersRepository(users);
+			os.writeJdomDocumentToFile(usersRepositoryDocument, repositoryUsers);
+
+			// Global site archive
 		} catch (IOException e) {
 			throw new MojoExecutionException("Exception while creating the website ZIP archive: " + e);
 		}
@@ -249,14 +256,9 @@ public class ContentGeneratorService {
 	}
 
 	/**
-	 * Add dates and common attributes to JCR elements:
-	 * - lastPublished
-	 * - lastPublishedBy
-	 * - published: true
-	 * - created
-	 * - createdBy: "system"
-	 * - lastModified
-	 * - lastModifiedBy: "root"
+	 * Add dates and common attributes to JCR elements: - lastPublished -
+	 * lastPublishedBy - published: true - created - createdBy: "system" -
+	 * lastModified - lastModifiedBy: "root"
 	 * 
 	 * @param element
 	 * @return element with new attribute

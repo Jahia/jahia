@@ -8,14 +8,40 @@ import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.GroupBO;
 import org.jahia.tools.contentgenerator.bo.UserBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
+import org.jdom.Document;
 import org.jdom.Element;
 
 public class UserGroupService {
 
 	private static final Logger logger = Logger.getLogger(UserGroupService.class.getName());
 
-	public Element generateJcrGroups(String siteKey, Integer nbUsers, Integer nbGroups) {
-		List<GroupBO> groups = generateUsersAndGroups(nbUsers, nbGroups);
+	public Document createUsersRepository(List<UserBO> users) {
+		String jcrDate = ContentGeneratorService.getInstance().getDateForJcrImport(null);
+		
+		Document doc = new Document();
+		Element contentNode = new Element("content");
+		doc.setRootElement(contentNode);
+		
+		Element usersNode = new Element("users");
+		ContentGeneratorService.getInstance().addJcrAttributes(usersNode, jcrDate);
+		contentNode.addContent(usersNode);
+		
+
+		// UserBO rootUser = new UserBO("root", hashPassword("root"), jcrDate,
+		// "");
+		// Element rootUserNode = rootUser.getJcrXml();
+		// usersNode.addContent(rootUserNode);
+		
+		for (Iterator<UserBO> iterator = users.iterator(); iterator.hasNext();) {
+			UserBO userBO = iterator.next();
+			usersNode.addContent(userBO.getJcrXml());
+		}
+		
+		return doc;
+	}
+	
+	public Element generateJcrGroups(String siteKey,List<GroupBO> groups) {
+		
 		String jcrDate = ContentGeneratorService.getInstance().getDateForJcrImport(null);
 
 		logger.info("Users and groups generated, creation of JCR document...");
@@ -49,7 +75,6 @@ public class UserGroupService {
 		sitePrivilegedNode.addContent(jmembersSitePrivileged);
 		
 		Element siteAdminGroup = new Element("site-administrators___2");
-		// @TODO: get siteKey
 		siteAdminGroup.setAttribute("member", "/sites/" + siteKey + "/groups/site-administrators", ContentGeneratorCst.NS_J);
 		siteAdminGroup.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
 		jmembersSitePrivileged.setContent(siteAdminGroup);

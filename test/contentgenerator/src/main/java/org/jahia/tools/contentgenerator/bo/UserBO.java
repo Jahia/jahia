@@ -71,9 +71,9 @@ public class UserBO {
 	}
 
 	public Element getJcrXml() {
-		String dir1 = getDirectoryName(0);
-		String dir2 = getDirectoryName(1);
-		String dir3 = getDirectoryName(2);
+		String dir1 = getDirectoryName(1);
+		String dir2 = getDirectoryName(2);
+		String dir3 = getDirectoryName(3);
 		
 		Element root = new Element(dir1);
 		root = ContentGeneratorService.getInstance().addJcrAttributes(root, this.jcrDate);

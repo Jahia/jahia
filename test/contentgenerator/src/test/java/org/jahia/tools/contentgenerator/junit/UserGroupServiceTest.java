@@ -33,17 +33,17 @@ public class UserGroupServiceTest extends ContentGeneratorTestCase{
 	}
 
 	@Test
-	public void testGetNbUsersLastGroup() {
+	public void testGetNbUsersRemaining() {
 		Integer nbGroups = new Integer(10);
 		Integer nbUsers = new Integer(550);
 		
-		Integer nbUsersLastGroup = userService.getNbUsersLastGroup(nbUsers, nbGroups);
-		assertEquals(Integer.valueOf(55), nbUsersLastGroup);
+		Integer nbUsersLastGroup = userService.getNbUsersRemaining(nbUsers, nbGroups);
+		assertEquals(Integer.valueOf(0), nbUsersLastGroup);
 		
 		nbGroups = new Integer(10);
 		nbUsers = new Integer(558);
 		
-		nbUsersLastGroup = userService.getNbUsersLastGroup(nbUsers, nbGroups);
+		nbUsersLastGroup = userService.getNbUsersRemaining(nbUsers, nbGroups);
 		assertEquals(Integer.valueOf(8), nbUsersLastGroup);
 	}
 }

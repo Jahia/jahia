@@ -115,23 +115,25 @@ public class UserGroupService {
 		String jcrDate = ContentGeneratorService.getInstance().getDateForJcrImport(null);
 		logger.debug("JCR Date = " + jcrDate);
 
-		// 1 - getNbUsersPerGroups
+		// users per group without modulo
 		Integer nbUsersPerGroup = getNbUsersPerGroup(nbUsers, nbGroups);
 
-		// 2 - getNbusersLastGroup
-		Integer nbUsersLastGroup = getNbUsersLastGroup(nbUsers, nbGroups);
+		// users with no group, will be dispatched
+		Integer nbUsersRemaining = getNbUsersRemaining(nbUsers, nbGroups);
 
-		// 3 cptGroup = 1
 		int cptGroups = 1;
 		int cptUsersTotal = 1;
 		while (cptGroups <= nbGroups.intValue()) {
-			// is this the last group?
-			if (cptGroups == nbGroups.intValue()) {
-				nbUsersPerGroup = nbUsersLastGroup;
-			}
-
 			List<UserBO> users = new ArrayList<UserBO>();
-			int cptUsers = 1;
+			
+			// if there is some users, we add one more user to this group
+			int cptUsers;
+			if (nbUsersRemaining > 0) {
+				cptUsers = 0;
+				nbUsersRemaining--;
+			} else {
+				cptUsers = 1;
+			}
 			while (cptUsers <= nbUsersPerGroup.intValue()) {
 				String dateJcr = ContentGeneratorService.getInstance().getDateForJcrImport(null);
 				String username = "user" + cptUsersTotal;
@@ -174,12 +176,9 @@ public class UserGroupService {
 		return nbUsersPerGroup;
 	}
 
-	public Integer getNbUsersLastGroup(Integer nbUsers, Integer nbGroups) {
-		Integer nbUsersLastGroup = nbUsers % nbGroups;
-		if (nbUsersLastGroup.equals(Integer.valueOf(0))) {
-			nbUsersLastGroup = getNbUsersPerGroup(nbUsers, nbGroups);
-		}
-		return nbUsersLastGroup;
+	public Integer getNbUsersRemaining(Integer nbUsers, Integer nbGroups) {
+		Integer nbUsersRemaining = nbUsers % nbGroups;
+		return nbUsersRemaining;
 	}
 
 	public String hashPassword(String password) {

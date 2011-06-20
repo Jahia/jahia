@@ -19,8 +19,7 @@ public class UserBO {
 	public UserBO(String name, String password, String dateJcr, String pathJcr) {
 		this.name = name;
 		this.password = password;
-		// TODO: hard-coded date
-		this.jcrDate = "2011-06-20T12:14:03.385-04:00"; // dateJcr;
+		this.jcrDate = dateJcr;
 		this.email = this.name + "@example.com";
 		this.jcrPath = pathJcr;
 	}

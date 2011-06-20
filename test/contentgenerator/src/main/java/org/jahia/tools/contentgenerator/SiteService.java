@@ -137,7 +137,6 @@ public class SiteService {
 	}
 	
 	public Document insertGroupsIntoSiteRepository(Document repository, String siteKey, Element groups) {
-		// @todo:siteKey
 		Element siteNode = repository.getRootElement().getChild("sites").getChild(siteKey);
 		siteNode.addContent(groups);
 		return repository;

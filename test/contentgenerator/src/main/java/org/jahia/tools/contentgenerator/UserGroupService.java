@@ -16,44 +16,45 @@ public class UserGroupService {
 
 	private static final Logger logger = Logger.getLogger(UserGroupService.class.getName());
 
-	public Element generateJcrGroups(Integer nbUsers, Integer nbGroups) throws ParserConfigurationException {
+	public Element generateJcrGroups(String siteKey, Integer nbUsers, Integer nbGroups) {
 		List<GroupBO> groups = generateUsersAndGroups(nbUsers, nbGroups);
-
-		logger.info("Users and groups generated, creation of Jcr document...");
-		Element groupsNode = new Element("groups");
 		String jcrDate = ContentGeneratorService.getInstance().getDateForJcrImport(null);
-		// groupsNode =
-		// ContentGeneratorService.getInstance().addJcrAttributes(groupsNode,
-		// jcrDate);
 
+		logger.info("Users and groups generated, creation of JCR document...");
+		Element groupsNode = new Element("groups");
+		groupsNode = ContentGeneratorService.getInstance().addJcrAttributes(groupsNode, jcrDate);
+
+		// site-administrators node
 		Element siteAdminNode = new Element("site-administrators");
 		siteAdminNode.setAttribute("mixinTypes", "jmix:systemNode", ContentGeneratorCst.NS_JCR);
 		siteAdminNode.setAttribute("primaryType", "jnt:group", ContentGeneratorCst.NS_JCR);
+		groupsNode.addContent(siteAdminNode);
 
-		Element jmembers = new Element("members", ContentGeneratorCst.NS_J);
-		jmembers.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
+		Element jmembersSiteAdmin = new Element("members", ContentGeneratorCst.NS_J);
+		jmembersSiteAdmin.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
+		siteAdminNode.addContent(jmembersSiteAdmin);
 
 		Element rootUser = new Element("root");
 		rootUser.setAttribute("member", "/users/root", ContentGeneratorCst.NS_J);
 		rootUser.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JNT);
-		jmembers.addContent(rootUser);
+		jmembersSiteAdmin.addContent(rootUser);
 
-		siteAdminNode.addContent(jmembers);
-
-		Element sitePrivileged = new Element("site-privileged");
-		// sitePrivileged =
-		// ContentGeneratorService.getInstance().addJcrAttributes(groupsNode,
-		// jcrDate);
-		sitePrivileged.setAttribute("mixinTypes", "systemNode", ContentGeneratorCst.NS_JMIX);
-		sitePrivileged.setAttribute("primaryType", "jnt:group", ContentGeneratorCst.NS_JNT);
-
+		// site-privileged node
+		Element sitePrivilegedNode = new Element("site-privileged");
+		sitePrivilegedNode = ContentGeneratorService.getInstance().addJcrAttributes(sitePrivilegedNode, jcrDate);
+		sitePrivilegedNode.setAttribute("mixinTypes", "systemNode", ContentGeneratorCst.NS_JMIX);
+		sitePrivilegedNode.setAttribute("primaryType", "jnt:group", ContentGeneratorCst.NS_JNT);
+		groupsNode.addContent(sitePrivilegedNode);
+		
+		Element jmembersSitePrivileged = new Element("members", ContentGeneratorCst.NS_J);
+		jmembersSitePrivileged.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
+		sitePrivilegedNode.addContent(jmembersSitePrivileged);
+		
 		Element siteAdminGroup = new Element("site-administrators___2");
 		// @TODO: get siteKey
-		siteAdminGroup.setAttribute("member", "/sites/mySite/groups/site-administrators", ContentGeneratorCst.NS_J);
+		siteAdminGroup.setAttribute("member", "/sites/" + siteKey + "/groups/site-administrators", ContentGeneratorCst.NS_J);
 		siteAdminGroup.setAttribute("primaryType", "jnt:member", ContentGeneratorCst.NS_JCR);
-		sitePrivileged.addContent(siteAdminGroup);
-		groupsNode.addContent(siteAdminNode);
-		// setContent(sitePrivileged);
+		jmembersSitePrivileged.setContent(siteAdminGroup);
 
 		for (Iterator<GroupBO> iterator = groups.iterator(); iterator.hasNext();) {
 			GroupBO group = iterator.next();
@@ -62,7 +63,7 @@ public class UserGroupService {
 			Element groupNode = group.getJcrXml();
 			for (Iterator<UserBO> iterator2 = users.iterator(); iterator2.hasNext();) {
 				UserBO userBO = iterator2.next();
-				// @todo: format
+				// TODO: format
 				groupNode.addContent(userBO.getJcrXml());
 			}
 			groupsNode.addContent(groupNode);
@@ -75,6 +76,7 @@ public class UserGroupService {
 
 		List<GroupBO> groups = new ArrayList<GroupBO>();
 		String jcrDate = ContentGeneratorService.getInstance().getDateForJcrImport(null);
+		logger.debug("JCR Date = " + jcrDate);
 
 		// 1 - getNbUsersPerGroups
 		Integer nbUsersPerGroup = getNbUsersPerGroup(nbUsers, nbGroups);
@@ -85,7 +87,6 @@ public class UserGroupService {
 		// 3 cptGroup = 1
 		int cptGroups = 1;
 		while (cptGroups <= nbGroups.intValue()) {
-			logger.info("Group " + cptGroups);
 			// is this the last group?
 			if (cptGroups == nbGroups.intValue()) {
 				nbUsersPerGroup = nbUsersLastGroup;
@@ -94,11 +95,11 @@ public class UserGroupService {
 			List<UserBO> users = new ArrayList<UserBO>();
 			int cptUsers = 1;
 			while (cptUsers <= nbUsersPerGroup.intValue()) {
-				logger.info("User " + cptUsers);
 				String dateJcr = ContentGeneratorService.getInstance().getDateForJcrImport(null);
-				// @TODO: create pathJCR with username
-				String pathJcr = "/ab/cd/ef";
-				UserBO user = new UserBO("user" + cptUsers, "user" + cptUsers, dateJcr, pathJcr);
+				String username = "user" + cptUsers;
+				String pathJcr = getPathForUsername(username);
+				// password == userName
+				UserBO user = new UserBO(username, hashPassword(username), dateJcr, pathJcr);
 				users.add(user);
 				cptUsers++;
 			}
@@ -112,22 +113,17 @@ public class UserGroupService {
 	}
 
 	public String getPathForUsername(String username) {
-		/*
-		 * StringBuilder builder = new StringBuilder();
-		 * 
-		 * int userNameHashcode = Math.abs(username.hashCode()); String
-		 * firstFolder = getFolderName(userNameHashcode).toLowerCase();
-		 * userNameHashcode = Math.round(userNameHashcode/100); String
-		 * secondFolder = getFolderName(userNameHashcode).toLowerCase();
-		 * userNameHashcode = Math.round(userNameHashcode/100); String
-		 * thirdFolder = getFolderName(userNameHashcode).toLowerCase(); return
-		 * builder
-		 * .append(usersRootNode).append("/").append(firstFolder).append("/"
-		 * ).append(secondFolder).append(
-		 * "/").append(thirdFolder).append("/").append
-		 * (JCRContentUtils.escapeLocalNodeName( username)).toString();
-		 */
-		return null;
+
+		StringBuilder builder = new StringBuilder();
+
+		int userNameHashcode = Math.abs(username.hashCode());
+		String firstFolder = getFolderName(userNameHashcode).toLowerCase();
+		userNameHashcode = Math.round(userNameHashcode / 100);
+		String secondFolder = getFolderName(userNameHashcode).toLowerCase();
+		userNameHashcode = Math.round(userNameHashcode / 100);
+		String thirdFolder = getFolderName(userNameHashcode).toLowerCase();
+		return builder.append("users").append("/").append(firstFolder).append("/").append(secondFolder).append("/")
+				.append(thirdFolder).append("/").append(username).toString();
 	}
 
 	private String getFolderName(int userNameHashcode) {
@@ -146,5 +142,11 @@ public class UserGroupService {
 			nbUsersLastGroup = getNbUsersPerGroup(nbUsers, nbGroups);
 		}
 		return nbUsersLastGroup;
+	}
+
+	public String hashPassword(String password) {
+		// TODO: make a real hash when method will be know. For now, we return
+		// "guillaume"
+		return "W6ph5Mm5Pz8GgiULbPgzG37mj9g";
 	}
 }

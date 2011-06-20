@@ -51,7 +51,7 @@ public class FileService {
 	 *            directory containing the files that will be uploaded into the
 	 *            Jahia repository and can be used as attachments
 	 * @return list of file names
-	 * @todo: get a list of file actually used as attachment and provide them as
+	 * TODO: get a list of file actually used as attachment and provide them as
 	 *        a zip
 	 */
 	public List<String> getFileNamesAvailable(File filesDirectory) {

@@ -166,23 +166,23 @@ public class ContentGeneratorService {
 
 			// Add XML Groups
 			UserGroupService userGroupService = new UserGroupService();
-			// @TODO: params nbUsers / nbGroups
+			// TODO: params nbUsers / nbGroups
 			Integer nbUsers = Integer.valueOf(10);
 			Integer nbGroups = Integer.valueOf(5);
-			Element groupsNode = userGroupService.generateJcrGroups(nbUsers, nbGroups);
+			Element groupsNode = userGroupService.generateJcrGroups(export.getSiteKey(), nbUsers, nbGroups);
 
-			// @todo: transformer le repository String en repository global DOM
+			// TODO: transformer le repository String en repository global DOM
 			Document repositoryDoc = readXmlFile(repositoryFile);
 			repositoryDoc = siteService.insertGroupsIntoSiteRepository(repositoryDoc, export.getSiteKey(), groupsNode);
 
-			// @todo: clean this
+			// TODO: clean this
 			// save it to a file:
-            XMLOutputter out = new XMLOutputter();
-            java.io.FileWriter writer = new java.io.FileWriter(repositoryFile);
-            out.output(repositoryDoc, writer);
-            writer.flush();
-            writer.close();
-            
+			XMLOutputter out = new XMLOutputter();
+			java.io.FileWriter writer = new java.io.FileWriter(repositoryFile);
+			out.output(repositoryDoc, writer);
+			writer.flush();
+			writer.close();
+
 			filesToZip.add(repositoryFile);
 
 			// Add users.zip
@@ -225,36 +225,41 @@ public class ContentGeneratorService {
 	 * @return formated date
 	 */
 	public String getDateForJcrImport(Date date) {
-		String newDate = null;
 		GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
 		if (date != null) {
 			gc.setTime(date);
 		}
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sbNewDate = new StringBuffer();
 		// 2011-04-01T17:39:59.265+02:00
-		sb.append(gc.get(Calendar.YEAR));
-		sb.append("-");
-		sb.append(gc.get(Calendar.MONTH));
-		sb.append("-");
-		sb.append(gc.get(Calendar.DAY_OF_MONTH));
-		sb.append("T");
-		sb.append(gc.get(Calendar.HOUR));
-		sb.append(":");
-		sb.append(gc.get(Calendar.MINUTE));
-		sb.append(":");
-		sb.append(gc.get(Calendar.SECOND));
-		sb.append(".");
-		sb.append(gc.get(Calendar.MILLISECOND));
-		sb.append("-");
-		sb.append(gc.get(Calendar.ZONE_OFFSET));
-		return newDate;
+		sbNewDate.append(gc.get(Calendar.YEAR));
+		sbNewDate.append("-");
+		sbNewDate.append(gc.get(Calendar.MONTH));
+		sbNewDate.append("-");
+		sbNewDate.append(gc.get(Calendar.DAY_OF_MONTH));
+		sbNewDate.append("T");
+		sbNewDate.append(gc.get(Calendar.HOUR_OF_DAY));
+		sbNewDate.append(":");
+		sbNewDate.append(gc.get(Calendar.MINUTE));
+		sbNewDate.append(":");
+		sbNewDate.append(gc.get(Calendar.SECOND));
+		sbNewDate.append(".");
+		sbNewDate.append(gc.get(Calendar.MILLISECOND));
+		sbNewDate.append(gc.get(Calendar.ZONE_OFFSET));
+		return sbNewDate.toString();
 	}
 
 	/**
-	 * Add dates and common attributes
+	 * Add dates and common attributes to JCR elements:
+	 * - lastPublished
+	 * - lastPublishedBy
+	 * - published: true
+	 * - created
+	 * - createdBy: "system"
+	 * - lastModified
+	 * - lastModifiedBy: "root"
 	 * 
 	 * @param element
-	 * @return
+	 * @return element with new attribute
 	 */
 	public Element addJcrAttributes(Element element, String jcrDate) {
 		element.setAttribute("lastPublished", jcrDate, ContentGeneratorCst.NS_J);
@@ -282,7 +287,7 @@ public class ContentGeneratorService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return document;
 	}
 }

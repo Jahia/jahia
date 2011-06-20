@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jahia.tools.contentgenerator.ContentGeneratorService;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.jdom.Element;
 
@@ -57,7 +58,7 @@ public class GroupBO {
 	public Element getJcrXml() {
 
 		Element groupNode = new Element(this.name);
-		//ContentGeneratorService.getInstance().addJcrAttributes(groupNode, this.dateJcr);
+		ContentGeneratorService.getInstance().addJcrAttributes(groupNode, this.dateJcr);
 		groupNode.setAttribute("primaryType", "jnt:group", ContentGeneratorCst.NS_JCR);
 
 		Element users = new Element("members", ContentGeneratorCst.NS_J);

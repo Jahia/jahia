@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.GroupBO;
 import org.jahia.tools.contentgenerator.bo.UserBO;
@@ -58,14 +56,8 @@ public class UserGroupService {
 
 		for (Iterator<GroupBO> iterator = groups.iterator(); iterator.hasNext();) {
 			GroupBO group = iterator.next();
-			List<UserBO> users = group.getUsers();
 
 			Element groupNode = group.getJcrXml();
-			for (Iterator<UserBO> iterator2 = users.iterator(); iterator2.hasNext();) {
-				UserBO userBO = iterator2.next();
-				// TODO: format
-				groupNode.addContent(userBO.getJcrXml());
-			}
 			groupsNode.addContent(groupNode);
 		}
 		return groupsNode;
@@ -85,7 +77,8 @@ public class UserGroupService {
 		Integer nbUsersLastGroup = getNbUsersLastGroup(nbUsers, nbGroups);
 
 		// 3 cptGroup = 1
-		int cptGroups = 1;
+		int cptGroups = 1;			
+		int cptUsersTotal = 1;
 		while (cptGroups <= nbGroups.intValue()) {
 			// is this the last group?
 			if (cptGroups == nbGroups.intValue()) {
@@ -96,16 +89,16 @@ public class UserGroupService {
 			int cptUsers = 1;
 			while (cptUsers <= nbUsersPerGroup.intValue()) {
 				String dateJcr = ContentGeneratorService.getInstance().getDateForJcrImport(null);
-				String username = "user" + cptUsers;
+				String username = "user" + cptUsersTotal;
 				String pathJcr = getPathForUsername(username);
 				// password == userName
 				UserBO user = new UserBO(username, hashPassword(username), dateJcr, pathJcr);
 				users.add(user);
 				cptUsers++;
+				cptUsersTotal++;
 			}
 
 			GroupBO group = new GroupBO("group" + cptGroups, users, jcrDate);
-			group.setUsers(users);
 			groups.add(group);
 			cptGroups++;
 		}
@@ -122,7 +115,7 @@ public class UserGroupService {
 		String secondFolder = getFolderName(userNameHashcode).toLowerCase();
 		userNameHashcode = Math.round(userNameHashcode / 100);
 		String thirdFolder = getFolderName(userNameHashcode).toLowerCase();
-		return builder.append("users").append("/").append(firstFolder).append("/").append(secondFolder).append("/")
+		return builder.append("/users").append("/").append(firstFolder).append("/").append(secondFolder).append("/")
 				.append(thirdFolder).append("/").append(username).toString();
 	}
 

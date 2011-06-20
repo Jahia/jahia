@@ -62,7 +62,7 @@ public class OutputService {
 
 			// Process each file or directory to add
 			for (Iterator<File> iterator = filesToArchive.iterator(); iterator.hasNext();) {
-				File f = (File) iterator.next();
+				File f = iterator.next();
 				zipFile(f, zipOutput);
 			}
 			zipOutput.close();

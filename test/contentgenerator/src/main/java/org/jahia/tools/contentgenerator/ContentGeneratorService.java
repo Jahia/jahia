@@ -3,9 +3,12 @@ package org.jahia.tools.contentgenerator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.swing.JPopupMenu.Separator;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -14,6 +17,12 @@ import org.jahia.tools.contentgenerator.bo.ArticleBO;
 import org.jahia.tools.contentgenerator.bo.ExportBO;
 import org.jahia.tools.contentgenerator.bo.SiteBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
+import org.w3c.dom.DOMException;
 
 public class ContentGeneratorService {
 
@@ -100,25 +109,29 @@ public class ContentGeneratorService {
 	 * @param export
 	 * @return Absolute path of ZIP file created
 	 * @throws MojoExecutionException
+	 * @throws ParserConfigurationException
+	 * @throws DOMException
 	 */
-	public String generateSite(ExportBO export) throws MojoExecutionException {
+	public String generateSite(ExportBO export) throws MojoExecutionException, DOMException,
+			ParserConfigurationException {
 		String zipFilePath = null;
-		
+
 		// as we create a full site we will need a home page
 		export.setRootPageName(ContentGeneratorCst.ROOT_PAGE_NAME);
 		SiteBO site = new SiteBO();
 		site.setSiteKey(export.getSiteKey());
-		
+
 		try {
 			SiteService siteService = new SiteService();
 
 			generatePages(export);
 
+			logger.debug("Pages generated, now site");
 			List<File> filesToZip = new ArrayList<File>();
 
 			// create temporary dir in output dir (siteKey)
 			File tempOutputDir = siteService.createSiteDirectory(export.getSiteKey(), new File(export.getOutputDir()));
-						
+
 			// create properties file
 			File propertiesFile = siteService.createPropertiesFile(export.getSiteKey(), tempOutputDir);
 			filesToZip.add(propertiesFile);
@@ -130,7 +143,7 @@ public class ContentGeneratorService {
 				FileService fileService = new FileService();
 				File filesDirectory = siteService.createFilesDirectoryTree(export.getSiteKey(), tempOutputDir);
 				filesToZip.add(new File(tempOutputDir + "/content"));
-				
+
 				// get all files available in the pool dir
 				List<File> filesToCopy = fileService.getFilesAvailable(export.getFilesDirectory());
 
@@ -141,20 +154,44 @@ public class ContentGeneratorService {
 				}
 
 				fileService.copyFilesForAttachment(filesToCopy, filesDirectory);
-				
+
 				// generates XML code for files
 				tempXmlFile = new File(export.getOutputDir() + System.getProperty("file.separator") + "jcrFiles.xml");
 				fileService.createAndPopulateFilesXmlFile(tempXmlFile, filesToCopy);
 			}
-			
+
 			// 2 - copy pages => repository.xml
-			File repositoryFile = siteService.createAndPopulateRepositoryFile(tempOutputDir, site, export.getOutputFile(), tempXmlFile);
+			File repositoryFile = siteService.createAndPopulateRepositoryFile(tempOutputDir, site,
+					export.getOutputFile(), tempXmlFile);
+
+			// Add XML Groups
+			UserGroupService userGroupService = new UserGroupService();
+			// @TODO: params nbUsers / nbGroups
+			Integer nbUsers = Integer.valueOf(10);
+			Integer nbGroups = Integer.valueOf(5);
+			Element groupsNode = userGroupService.generateJcrGroups(nbUsers, nbGroups);
+
+			// @todo: transformer le repository String en repository global DOM
+			Document repositoryDoc = readXmlFile(repositoryFile);
+			repositoryDoc = siteService.insertGroupsIntoSiteRepository(repositoryDoc, export.getSiteKey(), groupsNode);
+
+			// @todo: clean this
+			// save it to a file:
+            XMLOutputter out = new XMLOutputter();
+            java.io.FileWriter writer = new java.io.FileWriter(repositoryFile);
+            out.output(repositoryDoc, writer);
+            writer.flush();
+            writer.close();
+            
 			filesToZip.add(repositoryFile);
-			
+
+			// Add users.zip
+
 			OutputService os = new OutputService();
 			String zipFileName = export.getSiteKey() + ".zip";
 			os.createSiteArchive(zipFileName, tempOutputDir.getParentFile().getAbsolutePath(), filesToZip);
-			zipFilePath = tempOutputDir.getParentFile().getAbsolutePath() + System.getProperty("file.separator") + zipFileName;
+			zipFilePath = tempOutputDir.getParentFile().getAbsolutePath() + System.getProperty("file.separator")
+					+ zipFileName;
 		} catch (IOException e) {
 			throw new MojoExecutionException("Exception while creating the website ZIP archive: " + e);
 		}
@@ -178,5 +215,74 @@ public class ContentGeneratorService {
 		nbPages = nbPages * nbPagesTopLevel + nbPagesTopLevel;
 
 		return new Integer(nbPages.intValue());
+	}
+
+	/**
+	 * Format a date for inclusion in JCR XML file If date is null, current date
+	 * is used Format used: http://www.day.com/specs/jcr/1.0/6.2.5.1_Date.html
+	 * 
+	 * @param date
+	 * @return formated date
+	 */
+	public String getDateForJcrImport(Date date) {
+		String newDate = null;
+		GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
+		if (date != null) {
+			gc.setTime(date);
+		}
+		StringBuffer sb = new StringBuffer();
+		// 2011-04-01T17:39:59.265+02:00
+		sb.append(gc.get(Calendar.YEAR));
+		sb.append("-");
+		sb.append(gc.get(Calendar.MONTH));
+		sb.append("-");
+		sb.append(gc.get(Calendar.DAY_OF_MONTH));
+		sb.append("T");
+		sb.append(gc.get(Calendar.HOUR));
+		sb.append(":");
+		sb.append(gc.get(Calendar.MINUTE));
+		sb.append(":");
+		sb.append(gc.get(Calendar.SECOND));
+		sb.append(".");
+		sb.append(gc.get(Calendar.MILLISECOND));
+		sb.append("-");
+		sb.append(gc.get(Calendar.ZONE_OFFSET));
+		return newDate;
+	}
+
+	/**
+	 * Add dates and common attributes
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public Element addJcrAttributes(Element element, String jcrDate) {
+		element.setAttribute("lastPublished", jcrDate, ContentGeneratorCst.NS_J);
+		element.setAttribute("lastPublishedBy", "root", ContentGeneratorCst.NS_J);
+		element.setAttribute("published", Boolean.TRUE.toString(), ContentGeneratorCst.NS_J);
+		element.setAttribute("created", jcrDate, ContentGeneratorCst.NS_JCR);
+		element.setAttribute("createdBy", "system", ContentGeneratorCst.NS_JCR);
+		element.setAttribute("lastModified", jcrDate, ContentGeneratorCst.NS_JCR);
+		element.setAttribute("lastModifiedBy", "root", ContentGeneratorCst.NS_JCR);
+
+		return element;
+	}
+
+	// @TODO a supprimer
+	private Document readXmlFile(File xmlFile) {
+		SAXBuilder builder = new SAXBuilder();
+
+		Document document = null;
+		try {
+			document = builder.build(xmlFile);
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return document;
 	}
 }

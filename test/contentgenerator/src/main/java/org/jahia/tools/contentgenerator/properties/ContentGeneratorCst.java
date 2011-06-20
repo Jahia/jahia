@@ -1,5 +1,7 @@
 package org.jahia.tools.contentgenerator.properties;
 
+import org.jdom.Namespace;
+
 
 public final class ContentGeneratorCst {
 
@@ -41,8 +43,16 @@ public final class ContentGeneratorCst {
 	public static final String SITE_PROPERTIES_FILENAME = "site.properties";
 	public static final String EXPORT_PROPERTIES_FILENAME = "export.properties";
 	
+	/**
+	 * Namespaces
+	 */
 	
+	public static Namespace NS_JCR = Namespace.getNamespace("jcr", "http://www.jcp.org/jcr/1.0");
+	public static Namespace NS_JNT = Namespace.getNamespace("jnt", "http://www.jahia.org/jahia/nt/1.0"); 
+	public static Namespace NS_JMIX = Namespace.getNamespace("jmix", "http://www.jahia.org/jahia/mix/1.0"); 
+	public static Namespace NS_J = Namespace.getNamespace("j", "http://www.jahia.org/jahia/1.0"); 
 	
+	// jcr jnt jmix j
 	private ContentGeneratorCst() {
 
 	}

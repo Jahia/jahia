@@ -11,6 +11,8 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.jahia.tools.contentgenerator.bo.SiteBO;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
+import org.jdom.Document;
+import org.jdom.Element;
 
 public class SiteService {
 	Logger logger = Logger.getLogger(SiteService.class.getName());
@@ -132,5 +134,12 @@ public class SiteService {
 		siteProp.store(new FileOutputStream(propFile), ContentGeneratorCst.DESCRIPTION_DEFAULT);
 
 		return propFile;
+	}
+	
+	public Document insertGroupsIntoSiteRepository(Document repository, String siteKey, Element groups) {
+		// @todo:siteKey
+		Element siteNode = repository.getRootElement().getChild("sites").getChild(siteKey);
+		siteNode.addContent(groups);
+		return repository;
 	}
 }

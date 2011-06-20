@@ -1,5 +1,6 @@
 package org.jahia.tools.contentgenerator.bo;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.tools.contentgenerator.ContentGeneratorService;
 import org.jahia.tools.contentgenerator.properties.ContentGeneratorCst;
 import org.jdom.Element;
@@ -63,18 +64,27 @@ public class UserBO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public String getDirectoryName(int indexDir) {
+		String[] directories = StringUtils.split(this.jcrPath, "/");
+		return directories[indexDir];
+	}
 
 	public Element getJcrXml() {
-		Element root = new Element("dj");
+		String dir1 = getDirectoryName(0);
+		String dir2 = getDirectoryName(1);
+		String dir3 = getDirectoryName(2);
+		
+		Element root = new Element(dir1);
 		root = ContentGeneratorService.getInstance().addJcrAttributes(root, this.jcrDate);
 		root.setAttribute("primaryType", "jnt:usersFolder");
 
-		Element subElement1 = new Element("gi");
+		Element subElement1 = new Element(dir2);
 		subElement1 = ContentGeneratorService.getInstance().addJcrAttributes(subElement1,this.jcrDate);
 		subElement1.setAttribute("primaryType", "jnt:usersFolder");
 		root.addContent(subElement1);
 
-		Element subElement2 = new Element("ej");
+		Element subElement2 = new Element(dir3);
 		subElement2 = ContentGeneratorService.getInstance().addJcrAttributes(subElement2,this.jcrDate);
 		subElement2.setAttribute("primaryType", "jnt:usersFolder");
 		subElement1.addContent(subElement2);
